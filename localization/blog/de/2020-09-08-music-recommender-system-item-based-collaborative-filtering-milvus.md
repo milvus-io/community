@@ -1,22 +1,22 @@
 ---
 id: music-recommender-system-item-based-collaborative-filtering-milvus.md
-title: "\U0001F50E Auswahl einer Suchmaschine für Einbettungsähnlichkeit"
+title: "\U0001F50E Select an embedding similarity search engine"
 author: milvus
 date: 2020-09-08T00:01:59.064Z
-desc: Eine Fallstudie mit WANYIN APP
+desc: A case study with WANYIN APP
 cover: assets.zilliz.com/header_f8cea596d2.png
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/music-recommender-system-item-based-collaborative-filtering-milvus
 ---
-<custom-h1>Item-basierte kollaborative Filterung für Musikempfehlungssysteme</custom-h1><p>Die Wanyin App ist eine KI-basierte Musik-Community, die den Austausch von Musik fördern und Musikliebhabern das Komponieren erleichtern soll.</p>
-<p>Die Bibliothek von Wanyin enthält eine riesige Menge an Musik, die von Benutzern hochgeladen wurde. Die Hauptaufgabe besteht darin, die Musik, die für den Nutzer von Interesse ist, auf der Grundlage seines bisherigen Verhaltens auszusortieren. Wir haben zwei klassische Modelle evaluiert: benutzerbasierte kollaborative Filterung (User-based CF) und artikelbasierte kollaborative Filterung (Item-based CF) als mögliche Modelle für Empfehlungssysteme.</p>
+<custom-h1>Item-based Collaborative Filtering for Music Recommender System</custom-h1><p>Wanyin App is an AI-based music sharing community with an intention to encourage music sharing and make music composition easier for music enthusiasts.</p>
+<p>Wanyin’s library contains a massive amount of music uploaded by users. The primary task is to sort out the music of interest based on users’ previous behavior. We evaluated two classic models: user-based collaborative filtering (User-based CF) and item-based collaborative filtering (Item-based CF), as the potential recommender system models.</p>
 <ul>
-<li>Benutzerbasiertes CF verwendet Ähnlichkeitsstatistiken, um benachbarte Benutzer mit ähnlichen Vorlieben oder Interessen zu ermitteln. Anhand der ermittelten nächsten Nachbarn kann das System die Interessen des Zielbenutzers vorhersagen und Empfehlungen generieren.</li>
-<li>Die von Amazon eingeführte artikelbasierte CF, oder Item-to-Item (I2I) CF, ist ein bekanntes kollaboratives Filtermodell für Empfehlungssysteme. Es berechnet Ähnlichkeiten zwischen Elementen und nicht zwischen Benutzern, basierend auf der Annahme, dass Elemente von Interesse den Elementen mit hoher Punktzahl ähnlich sein müssen.</li>
+<li>User-based CF uses similarity statistics to obtain neighboring users with similar preferences or interests. With the retrieved set of nearest neighbors, the system can predict the interest of the target user and generate recommendations.</li>
+<li>Introduced by Amazon, item-based CF, or item-to-item (I2I) CF, is a well-known collaborative filtering model for recommender systems. It calculates similarities between items instead of users, based on the assumption that items of interest must be similar to the items of high scores.</li>
 </ul>
-<p>Nutzerbasierter CF kann ab einer bestimmten Anzahl von Nutzern zu einer unverhältnismäßig langen Berechnungszeit führen. In Anbetracht der Eigenschaften unseres Produkts haben wir uns bei der Implementierung des Musikempfehlungssystems für I2I CF entschieden. Da wir nicht viele Metadaten über die Lieder besitzen, müssen wir uns mit den Liedern an sich befassen und Merkmalsvektoren (Einbettungen) aus ihnen extrahieren. Unser Ansatz besteht darin, diese Lieder in ein Mel-Frequenz-Cepstrum (MFC) zu konvertieren, ein Faltungsneuronales Netzwerk (CNN) zu entwickeln, um die Merkmalseinbettungen der Lieder zu extrahieren, und dann durch eine Ähnlichkeitssuche nach Einbettungen Musikempfehlungen zu geben.</p>
-<h2 id="🔎-Select-an-embedding-similarity-search-engine" class="common-anchor-header">🔎 Auswahl einer Suchmaschine für Einbettungsähnlichkeit<button data-href="#🔎-Select-an-embedding-similarity-search-engine" class="anchor-icon" translate="no">
+<p>User-based CF may lead to prohibitively longer time for calculation when the user number passes a certain point. Taking the characteristics of our product into consideration, we decided to go with I2I CF to implement the music recommender system. Given that we do not possess much metadata about the songs, we have to deal with the songs per se, extracting feature vectors (embeddings) from them. Our approach is to convert these songs into mel-frequency cepstrum (MFC), design a convolutional neural network (CNN) to extract the songs’ feature embeddings, and then make music recommendations through embedding similarity search.</p>
+<h2 id="🔎-Select-an-embedding-similarity-search-engine" class="common-anchor-header">🔎 Select an embedding similarity search engine<button data-href="#🔎-Select-an-embedding-similarity-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -31,14 +31,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem wir nun die Merkmalsvektoren haben, bleibt die Frage, wie wir aus der großen Menge von Vektoren diejenigen herausfinden, die dem Zielvektor ähnlich sind. Was die Suchmaschine für Einbettungen betrifft, so haben wir zwischen Faiss und Milvus abgewogen. Ich bin auf Milvus aufmerksam geworden, als ich im November 2019 die Trending Repositories von GitHub durchging. Ich warf einen Blick auf das Projekt und es gefiel mir mit seinen abstrakten APIs. (Damals war es auf v0.5.x und jetzt auf v0.10.2.)</p>
-<p>Wir bevorzugen Milvus gegenüber Faiss. Einerseits haben wir Faiss schon früher benutzt und wollten daher etwas Neues ausprobieren. Andererseits ist Faiss im Vergleich zu Milvus eher eine zugrundeliegende Bibliothek und daher nicht ganz so bequem zu benutzen. Als wir mehr über Milvus erfuhren, entschieden wir uns schließlich für Milvus wegen seiner beiden Hauptmerkmale:</p>
+    </button></h2><p>Now that we have feature vectors, the remaining issue is how to retrieve from the large volume of vectors the ones that are similar to the target vector. When it comes to embeddings search engine, we were weighing between Faiss and Milvus. I noticed Milvus when I was going through GitHub’s trending repositories in November, 2019. I took a look at the project and it appealed to me with its abstract APIs. (It was on v0.5.x by then and v0.10.2 by now.)</p>
+<p>We prefer Milvus to Faiss. On the one hand, we have used Faiss before, and hence would like to try something new. One the other hand, compared to Milvus, Faiss is more of an underlying library, therefore not quite convenient to use. As we learned more about Milvus, we finally decided to adopt Milvus for its two main features:</p>
 <ul>
-<li>Milvus ist sehr einfach zu benutzen. Alles, was Sie tun müssen, ist, sein Docker-Image zu ziehen und die Parameter auf der Grundlage Ihres eigenen Szenarios zu aktualisieren.</li>
-<li>Milvus unterstützt mehr Indizes und verfügt über eine ausführliche Dokumentation.</li>
+<li>Milvus is very easy to use. All you need to do is to pull its Docker image and update the parameters based on your own scenario.</li>
+<li>It supports more indexes and has detailed supporting documentation.</li>
 </ul>
-<p>Kurz gesagt, Milvus ist sehr benutzerfreundlich und die Dokumentation ist sehr ausführlich. Wenn Sie auf ein Problem stoßen, können Sie in der Regel Lösungen in der Dokumentation finden; andernfalls können Sie jederzeit Unterstützung von der Milvus-Community erhalten.</p>
-<h2 id="Milvus-cluster-service-☸️-⏩" class="common-anchor-header">Milvus-Clusterdienst ☸️ ⏩<button data-href="#Milvus-cluster-service-☸️-⏩" class="anchor-icon" translate="no">
+<p>In a nutshell, Milvus is very friendly to users and the documentation is quite detailed. If you come across any problem, you can usually find solutions in the documentation; otherwise, you can always get support from the Milvus community.</p>
+<h2 id="Milvus-cluster-service-☸️-⏩" class="common-anchor-header">Milvus cluster service ☸️ ⏩<button data-href="#Milvus-cluster-service-☸️-⏩" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -53,20 +53,24 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem wir uns entschieden hatten, Milvus als Feature-Vektor-Suchmaschine zu verwenden, konfigurierten wir einen eigenständigen Knoten in einer Entwicklungsumgebung (DEV). Er lief einige Tage lang gut, so dass wir planten, die Tests in einer FAT-Umgebung (Factory Acceptance Test) durchzuführen. Wenn ein Standalone-Knoten in der Produktionsumgebung ausfiele, würde der gesamte Dienst nicht mehr verfügbar sein. Wir mussten also einen hochverfügbaren Suchdienst einrichten.</p>
-<p>Milvus bietet sowohl Mishards, eine Cluster-Sharding-Middleware, als auch Milvus-Helm für die Konfiguration. Der Prozess der Bereitstellung eines Milvus-Clusterdienstes ist einfach. Wir müssen nur einige Parameter aktualisieren und sie für die Bereitstellung in Kubernetes packen. Das folgende Diagramm aus der Milvus-Dokumentation zeigt, wie Mishards funktioniert:</p>
+    </button></h2><p>After deciding to use Milvus as the feature vector search engine, we configured a standalone node in a development (DEV) environment. It had been running well for a few days, so we planned to run tests in a factory acceptance test (FAT) environment. If a standalone node crashed in production, the entire service would become unavailable. Thus, we need to deploy a highly available search service.</p>
+<p>Milvus provides both Mishards, a cluster sharding middleware, and Milvus-Helm for configuration. The process of deploying a Milvus cluster service is simple. We only need to update some parameters and pack them for deployment in Kubernetes. The diagram below from Milvus’ documentation shows how Mishards works:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_how_mishards_works_in_milvus_documentation_43a73076bf.png" alt="1-how-mishards-works-in-milvus-documentation.png" class="doc-image" id="1-how-mishards-works-in-milvus-documentation.png" />
-   </span> <span class="img-wrapper"> <span>1-how-mishards-works-in-milvus-documentation.png</span> </span></p>
-<p>Mishards kaskadiert eine Anfrage vom Upstream bis hinunter zu seinen Untermodulen, die die Upstream-Anfrage aufteilen, und sammelt dann die Ergebnisse der Unterdienste und gibt sie an den Upstream zurück. Die Gesamtarchitektur der Mishards-basierten Clusterlösung ist unten dargestellt:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_how_mishards_works_in_milvus_documentation_43a73076bf.png" alt="1-how-mishards-works-in-milvus-documentation.png" class="doc-image" id="1-how-mishards-works-in-milvus-documentation.png" />
+    <span>1-how-mishards-works-in-milvus-documentation.png</span>
+  </span>
+</p>
+<p>Mishards cascades a request from upstream down to its sub-modules splitting the upstream request, and then collects and returns the results of the sub-services to upstream. The overall architecture of the Mishards-based cluster solution is shown below:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_mishards_based_cluster_solution_architecture_3ad89cf269.jpg" alt="2-mishards-based-cluster-solution-architecture.jpg" class="doc-image" id="2-mishards-based-cluster-solution-architecture.jpg" />
-   </span> <span class="img-wrapper"> <span>2-mishards-based-cluster-solution-architecture.jpg</span> </span></p>
-<p>Die offizielle Dokumentation bietet eine klare Einführung in Mishards. Sie können sich bei Interesse auf <a href="https://milvus.io/cn/docs/v0.10.2/mishards.md">Mishards</a> beziehen.</p>
-<p>In unserem Musikempfehlungssystem haben wir einen beschreibbaren Knoten, zwei schreibgeschützte Knoten und eine Mishards-Middleware-Instanz in Kubernetes unter Verwendung von Milvus-Helm implementiert. Nachdem der Dienst eine Zeit lang stabil in einer FAT-Umgebung lief, haben wir ihn in die Produktion überführt. Bis jetzt läuft er stabil.</p>
-<h2 id="🎧-I2I-music-recommendation-🎶" class="common-anchor-header">🎧 I2I-Musikempfehlung 🎶<button data-href="#🎧-I2I-music-recommendation-🎶" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_mishards_based_cluster_solution_architecture_3ad89cf269.jpg" alt="2-mishards-based-cluster-solution-architecture.jpg" class="doc-image" id="2-mishards-based-cluster-solution-architecture.jpg" />
+    <span>2-mishards-based-cluster-solution-architecture.jpg</span>
+  </span>
+</p>
+<p>The official documentation provides a clear introduction of Mishards. You can refer to <a href="https://milvus.io/cn/docs/v0.10.2/mishards.md">Mishards</a> if you are interested.</p>
+<p>In our music recommender system, we deployed one writable node, two read-only nodes, and one Mishards middleware instance in Kubernetes, using Milvus-Helm. After the service had been running stably in a FAT environment for a while, we deployed it in production. It has been stable so far.</p>
+<h2 id="🎧-I2I-music-recommendation-🎶" class="common-anchor-header">🎧 I2I music recommendation 🎶<button data-href="#🎧-I2I-music-recommendation-🎶" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,12 +85,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wie bereits erwähnt, haben wir das I2I-Musikempfehlungssystem von Wanyin mit Hilfe der extrahierten Einbettungen der vorhandenen Lieder aufgebaut. Zunächst trennten wir den Gesang und die BGM (Spurtrennung) eines neuen, vom Nutzer hochgeladenen Liedes und extrahierten die BGM-Einbettungen als Merkmalsdarstellung des Liedes. Dies hilft auch dabei, Coverversionen von Originalsongs auszusortieren. Anschließend speicherten wir diese Einbettungen in Milvus, suchten nach ähnlichen Liedern auf der Grundlage der Lieder, die der Benutzer gehört hatte, und sortierten und ordneten die gefundenen Lieder neu an, um Musikempfehlungen zu erstellen. Der Implementierungsprozess ist unten dargestellt:</p>
+    </button></h2><p>As mentioned above, we built Wanyin’s I2I music recommender system using the extracted embeddings of the existing songs. First, we separated the vocal and the BGM (track separation) of a new song uploaded by the user and extracted the BGM embeddings as the feature representation of the song. This also helps sort out cover versions of original songs. Next, we stored these embeddings in Milvus, searched for similar songs based on the songs that the user listened to, and then sorted and rearranged the retrieved songs to generate music recommendations. The implementation process is shown below:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_music_recommender_system_implementation_c52a333eb8.png" alt="3-music-recommender-system-implementation.png" class="doc-image" id="3-music-recommender-system-implementation.png" />
-   </span> <span class="img-wrapper"> <span>3-music-recommender-system-implementation.png</span> </span></p>
-<h2 id="🚫-Duplicate-song-filter" class="common-anchor-header">🚫 Filter für doppelte Lieder<button data-href="#🚫-Duplicate-song-filter" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_music_recommender_system_implementation_c52a333eb8.png" alt="3-music-recommender-system-implementation.png" class="doc-image" id="3-music-recommender-system-implementation.png" />
+    <span>3-music-recommender-system-implementation.png</span>
+  </span>
+</p>
+<h2 id="🚫-Duplicate-song-filter" class="common-anchor-header">🚫 Duplicate song filter<button data-href="#🚫-Duplicate-song-filter" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,15 +107,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ein weiteres Szenario, in dem wir Milvus verwenden, ist die Filterung von doppelten Songs. Einige Nutzer laden denselben Song oder Clip mehrmals hoch, und diese doppelten Songs können in ihrer Empfehlungsliste erscheinen. Das bedeutet, dass es die Nutzererfahrung beeinträchtigen würde, wenn die Empfehlungen ohne Vorverarbeitung generiert würden. Daher müssen wir die doppelten Songs herausfinden und sicherstellen, dass sie nicht in der gleichen Liste erscheinen, indem wir sie vorverarbeiten.</p>
-<p>Ein weiteres Szenario, in dem wir Milvus verwenden, ist die Filterung von doppelten Songs. Einige Nutzer laden denselben Song oder Clip mehrmals hoch, und diese doppelten Songs können in ihrer Empfehlungsliste erscheinen. Das bedeutet, dass es die Benutzerfreundlichkeit beeinträchtigen würde, wenn die Empfehlungen ohne Vorverarbeitung erstellt würden. Daher müssen wir die doppelten Songs herausfinden und sicherstellen, dass sie nicht in der gleichen Liste erscheinen, indem wir sie vorverarbeiten.</p>
-<p>Genau wie im vorherigen Szenario haben wir die Filterung doppelter Songs durch die Suche nach ähnlichen Merkmalsvektoren implementiert. Zunächst trennten wir den Gesang und die BGM und suchten mit Milvus eine Reihe ähnlicher Songs. Um doppelte Songs genau herauszufiltern, extrahierten wir die Audio-Fingerabdrücke des Zielsongs und der ähnlichen Songs (mit Technologien wie Echoprint, Chromaprint usw.) und berechneten die Ähnlichkeit zwischen dem Audio-Fingerabdruck des Zielsongs und jedem der Fingerabdrücke der ähnlichen Songs. Wenn die Ähnlichkeit den Schwellenwert überschreitet, definieren wir einen Titel als Duplikat des Zieltitels. Der Prozess des Audio-Fingerabdruck-Abgleichs macht die Filterung doppelter Songs genauer, ist aber auch zeitaufwändig. Wenn es darum geht, Lieder in einer umfangreichen Musikbibliothek zu filtern, verwenden wir daher Milvus, um unsere Kandidaten für doppelte Lieder in einem ersten Schritt zu filtern.</p>
+    </button></h2><p>Another scenario in which we use Milvus is duplicate song filtering. Some users upload the same song or clip several times, and these duplicate songs may appear in their recommendation list. This means that it would affect user experience to generate recommendations without pre-processing. Therefore, we need to find out the duplicate songs and ensure that they do not appear on the same list through pre-processing.</p>
+<p>Another scenario in which we use Milvus is duplicate song filtering. Some users upload the same song or clip several times, and these duplicate songs may appear in their recommendation list. This means that it would affect user experience to generate recommendations without pre-processing. Therefore, we need to find out the duplicate songs and ensure that they do not appear on the same list through pre-processing.</p>
+<p>Same with the previous scenario, we implemented duplicate song filtering by means of searching for similar feature vectors. First, we separated the vocal and the BGM and retrieved a number of similar songs using Milvus. In order to filter duplicate songs accurately, we extracted the audio fingerprints of the target song and the similar songs (with technologies such as Echoprint, Chromaprint, etc.), calculated the similarity between the audio fingerprint of the target song with each of the similar songs’ fingerprints. If the similarity goes beyond the threshold, we define a song as a duplicate of the target song. The process of audio fingerprint matching makes the filtering of duplicate songs more accurate, but it is also time-consuming. Therefore, when it comes to filtering songs in a massive music library, we use Milvus to filter our candidate duplicate songs as a preliminary step.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_using_milvus_filter_songs_music_recommender_duplicates_0ff68d3e67.png" alt="4-using-milvus-filter-songs-music-recommender-duplicates.png" class="doc-image" id="4-using-milvus-filter-songs-music-recommender-duplicates.png" />
-   </span> <span class="img-wrapper"> <span>4-benutzen-milvus-filtern-songs-musik-empfehlungsgeber-duplikate.png</span> </span></p>
-<p>Um das I2I-Empfehlungssystem für die riesige Musikbibliothek von Wanyin zu implementieren, extrahieren wir die Einbettungen von Liedern als deren Merkmal, rufen ähnliche Einbettungen wie die Einbettung des Ziellieds ab und sortieren und ordnen die Ergebnisse neu, um Empfehlungslisten für den Benutzer zu erstellen. Um Echtzeit-Empfehlungen zu erhalten, haben wir uns für Milvus und nicht für Faiss als Suchmaschine für die Ähnlichkeit von Feature-Vektoren entschieden, da sich Milvus als benutzerfreundlicher und ausgereifter erweist. Aus demselben Grund haben wir Milvus auch für unseren Filter für doppelte Lieder eingesetzt, was die Benutzerfreundlichkeit und Effizienz verbessert.</p>
-<p>Sie können die <a href="https://enjoymusic.ai/wanyin">Wanyin App</a> 🎶 herunterladen und ausprobieren. (Hinweis: ist möglicherweise nicht in allen App-Stores verfügbar).</p>
-<h3 id="📝-Authors" class="common-anchor-header">📝 Autoren:</h3><p>Jason, Algorithmusingenieur bei Stepbeats Shiyu Chen, Dateningenieur bei Zilliz</p>
-<h3 id="📚-References" class="common-anchor-header">📚 Referenzen:</h3><p>Mishards Docs: https://milvus.io/docs/v0.10.2/mishards.md Mishards: https://github.com/milvus-io/milvus/tree/master/shards Milvus-Helm: https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus</p>
-<p><strong>🤗 Seien Sie kein Fremder, folgen Sie uns auf <a href="https://twitter.com/milvusio/">Twitter</a> oder schließen Sie sich uns auf <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/">Slack</a> an! 👇🏻</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_using_milvus_filter_songs_music_recommender_duplicates_0ff68d3e67.png" alt="4-using-milvus-filter-songs-music-recommender-duplicates.png" class="doc-image" id="4-using-milvus-filter-songs-music-recommender-duplicates.png" />
+    <span>4-using-milvus-filter-songs-music-recommender-duplicates.png</span>
+  </span>
+</p>
+<p>To implement the I2I recommender system for Wanyin’s massive music library, our approach is to extract the embeddings of songs as their feature, recall similar embeddings to the embedding of the target song, and then sort and rearrange the results to generate recommendation lists for the user. To achieve real-time recommendation, we choose Milvus over Faiss as our feature vector similarity search engine, since Milvus proves to be more user-friendly and sophisticated. By the same token, we have also applied Milvus to our duplicate song filter, which improves user experience and efficiency.</p>
+<p>You can download <a href="https://enjoymusic.ai/wanyin">Wanyin App</a> 🎶 and try it out. (Note: might not be available on all app stores.)</p>
+<h3 id="📝-Authors" class="common-anchor-header">📝 Authors:</h3><p>Jason, Algorithm Engineer at Stepbeats
+Shiyu Chen, Data Engineer at Zilliz</p>
+<h3 id="📚-References" class="common-anchor-header">📚 References:</h3><p>Mishards Docs: https://milvus.io/docs/v0.10.2/mishards.md
+Mishards: https://github.com/milvus-io/milvus/tree/master/shards
+Milvus-Helm: https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus</p>
+<p><strong>🤗 Don’t be a stranger, follow us on <a href="https://twitter.com/milvusio/">Twitter</a> or join us on <a href="https://milvusio.slack.com/join/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ#/">Slack</a>!👇🏻</strong></p>

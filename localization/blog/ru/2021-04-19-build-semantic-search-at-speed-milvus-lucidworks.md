@@ -1,60 +1,68 @@
 ---
 id: build-semantic-search-at-speed-milvus-lucidworks.md
-title: Создайте семантический поиск на высокой скорости
+title: Build Semantic Search at Speed
 author: Elizabeth Edmiston
 date: 2021-04-19T07:32:50.416Z
 desc: >-
-  Узнайте больше об использовании методологии семантического машинного обучения
-  для повышения релевантности результатов поиска в вашей организации.
+  Learn more about using semantic machine learning methodologies to power more
+  relevant search results across your organization.
 cover: assets.zilliz.com/lucidworks_4753c98727.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/build-semantic-search-at-speed-milvus-lucidworks'
 ---
-<custom-h1>Создайте семантический поиск на высокой скорости</custom-h1><p><a href="https://lucidworks.com/post/what-is-semantic-search/">Семантический поиск</a> - отличный инструмент, помогающий вашим клиентам или сотрудникам находить нужные продукты или информацию. Он может даже выводить на поверхность трудноиндексируемую информацию для достижения лучших результатов. Однако если ваши семантические методологии не развернуты для быстрой работы, они не принесут вам никакой пользы. Клиент или сотрудник не собирается сидеть сложа руки, пока система не спешит отвечать на его запрос, а ведь одновременно с ним может быть получена еще тысяча других.</p>
-<p>Как сделать семантический поиск быстрым? Медленный семантический поиск не подходит.</p>
-<p>К счастью, Lucidworks любит решать именно такие проблемы. Недавно мы протестировали кластер скромных размеров - читайте дальше, чтобы узнать подробности - и получили 1500 RPS (запросов в секунду) для коллекции из более чем миллиона документов со средним временем ответа около 40 миллисекунд. Вот это уже серьезная скорость.</p>
+<custom-h1>Build Semantic Search at Speed</custom-h1><p><a href="https://lucidworks.com/post/what-is-semantic-search/">Semantic search</a> is a great tool to help your customers—or your employees—find the right products or information. It can even surface difficult-to-index information for better results. That said, if your semantic methodologies aren’t being deployed to work fast, they won’t do you any good. The customer or employee isn’t just going to sit around while the system takes its time responding to their query—and a thousand others are likely being ingested at the same time.</p>
+<p>How can you make semantic search fast? Slow semantic search isn’t going to cut it.</p>
+<p>Fortunately, this is the kind of problem Lucidworks loves to solve. We recently tested a modest-sized cluster—read on for more details—that resulted in 1500 RPS (requests per second) against a collection of over one million documents, with an average response time of roughly 40 milliseconds. Now that’s some serious speed.</p>
 <p><br/></p>
-<h3 id="Implementing-Semantic-Search" class="common-anchor-header">Реализация семантического поиска</h3><p>Чтобы сделать магию машинного обучения молниеносной, Lucidworks реализовала семантический поиск, используя подход семантического векторного поиска. Здесь есть две важные части.</p>
+<h3 id="Implementing-Semantic-Search" class="common-anchor-header">Implementing Semantic Search</h3><p>To make lightning-fast, machine learning magic happen, Lucidworks has implemented semantic search using the semantic vector search approach. There are two critical parts.</p>
 <p><br/></p>
-<h4 id="Part-One-The-Machine-Learning-Model" class="common-anchor-header">Часть первая: модель машинного обучения</h4><p>Во-первых, вам нужен способ закодировать текст в числовой вектор. Этим текстом может быть описание продукта, поисковый запрос пользователя, вопрос или даже ответ на вопрос. Модель семантического поиска обучается кодировать текст таким образом, чтобы текст, семантически схожий с другими текстами, кодировался в векторы, которые численно "близки" друг к другу. Этот этап кодирования должен быть быстрым, чтобы поддерживать тысячу или более возможных запросов клиентов или пользователей, поступающих каждую секунду.</p>
+<h4 id="Part-One-The-Machine-Learning-Model" class="common-anchor-header">Part One: The Machine Learning Model</h4><p>First, you need a way to encode text into a numerical vector. The text could be a product description, a user search query, a question, or even an answer to a question. A semantic search model is trained to encode text such that text that is semantically similar to other text is encoded into vectors that are numerically “close” to one another. This encoding step needs to be fast in order to support the thousand or more possible customer searches or user queries coming in every second.</p>
 <p><br/></p>
-<h4 id="Part-Two-The-Vector-Search-Engine" class="common-anchor-header">Часть вторая: Векторная поисковая система</h4><p>Во-вторых, вам нужен способ быстро найти наилучшие совпадения с запросом клиента или пользователя. В модели текст будет закодирован в числовой вектор. Затем вам нужно сравнить его со всеми числовыми векторами в вашем каталоге или списках вопросов и ответов, чтобы найти эти лучшие соответствия - векторы, которые "ближе всего" к вектору запроса. Для этого вам понадобится векторный движок, способный эффективно и молниеносно обрабатывать всю эту информацию. Он может содержать миллионы векторов, а вам нужны только двадцать или около того лучших совпадений с вашим запросом. И, конечно, он должен обрабатывать тысячу или около того таких запросов каждую секунду.</p>
-<p>Чтобы решить эти проблемы, мы добавили векторный поисковый движок <a href="https://doc.lucidworks.com/fusion/5.3/8821/milvus">Milvus</a> в наш <a href="https://lucidworks.com/post/enhance-personalization-efforts-with-new-features-in-fusion/">выпуск Fusion 5.3</a>. Milvus - это программное обеспечение с открытым исходным кодом, и он очень быстрый. Milvus использует FAISS<a href="https://ai.facebook.com/tools/faiss/">(Facebook AI Similarity Search</a>), ту же самую технологию, которую Facebook использует в производстве для своих собственных инициатив в области машинного обучения. При необходимости он может работать еще быстрее на <a href="https://en.wikipedia.org/wiki/Graphics_processing_unit">GPU</a>. При установке Fusion 5.3 (или выше) с компонентом машинного обучения Milvus автоматически устанавливается как часть этого компонента, поэтому вы можете легко включить все эти возможности.</p>
-<p>Размер векторов в данной коллекции, задаваемый при ее создании, зависит от модели, которая создает эти векторы. Например, в данной коллекции могут храниться векторы, созданные в результате кодирования (с помощью модели) всех описаний товаров в каталоге товаров. Без векторного поискового механизма, подобного Milvus, поиск по сходству во всем векторном пространстве был бы невозможен. Поэтому поиск по сходству пришлось бы ограничить заранее отобранными кандидатами из векторного пространства (например, 500), что привело бы к снижению производительности и качества результатов. Milvus может хранить сотни миллиардов векторов в нескольких коллекциях векторов, чтобы обеспечить быстроту поиска и релевантность результатов.</p>
+<h4 id="Part-Two-The-Vector-Search-Engine" class="common-anchor-header">Part Two: The Vector Search Engine</h4><p>Second, you need a way to quickly find the best matches to the customer search or user query. The model will have encoded that text into a numerical vector. From there, you need to compare that to all the numerical vectors in your catalog or lists of questions and answers to find those best matches—the vectors that are “closest” to the query vector. For that, you will need a vector engine that can handle all of that information effectively and at lightning speed. The engine could contain millions of vectors and you really just want the best twenty or so matches to your query. And of course, it needs to handle a thousand or so such queries every second.</p>
+<p>To tackle these challenges, we added the vector search engine <a href="https://doc.lucidworks.com/fusion/5.3/8821/milvus">Milvus</a> in our <a href="https://lucidworks.com/post/enhance-personalization-efforts-with-new-features-in-fusion/">Fusion 5.3 release</a>. Milvus is open-source software and it is fast. Milvus uses FAISS (<a href="https://ai.facebook.com/tools/faiss/">Facebook AI Similarity Search</a>), the same technology Facebook uses in production for its own machine learning initiatives. When needed, it can run even faster on <a href="https://en.wikipedia.org/wiki/Graphics_processing_unit">GPU</a>. When Fusion 5.3 (or higher) is installed with the machine learning component, Milvus is automatically installed as part of that component so you can turn on all of these capabilities with ease.</p>
+<p>The size of the vectors in a given collection, specified when the collection is created, depends on the model that produces those vectors. For example, a given collection could store the vectors created from encoding (via a model) all of the product descriptions in a product catalog. Without a vector search engine like Milvus, similarity searches would not be feasible across the entire vector space. So, similarity searches would have to be limited to pre-selected candidates from the vector space (for example, 500) and would have both slower performance and lower quality results. Milvus can store hundreds of billions of vectors across multiple collections of vectors to ensure that search is fast and results are relevant.</p>
 <p><br/></p>
-<h3 id="Using-Semantic-Search" class="common-anchor-header">Использование семантического поиска</h3><p>Давайте вернемся к рабочему процессу семантического поиска, после того как мы немного узнали о том, почему Milvus может быть так важен. Семантический поиск состоит из трех этапов. На первом этапе загружается и/или обучается модель машинного обучения. После этого данные индексируются в Milvus и Solr. Последний этап - это этап запроса, когда происходит собственно поиск. Ниже мы сосредоточимся на этих двух последних этапах.</p>
+<h3 id="Using-Semantic-Search" class="common-anchor-header">Using Semantic Search</h3><p>Let’s get back to the semantic search workflow, now that we’ve learned a little about why Milvus might be so important. Semantic search has three stages. During the first stage, the machine learning model is loaded and/or trained. Afterwards, data is indexed into Milvus and Solr. The final stage is the query stage, when the actual search occurs. We’ll focus on those last two stages below.</p>
 <p><br/></p>
-<h3 id="Indexing-into-Milvus" class="common-anchor-header">Индексирование в Milvus</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Lucidworks_1_47a9221723.png" alt="Lucidworks-1.png" class="doc-image" id="lucidworks-1.png" />
-   </span> <span class="img-wrapper"> <span>Lucidworks-1.png</span> </span></p>
-<p>Как показано на диаграмме выше, этап запросов начинается так же, как и этап индексирования, только вместо документов приходят запросы. Для каждого запроса:</p>
+<h3 id="Indexing-into-Milvus" class="common-anchor-header">Indexing into Milvus</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Lucidworks_1_47a9221723.png" alt="Lucidworks-1.png" class="doc-image" id="lucidworks-1.png" />
+    <span>Lucidworks-1.png</span>
+  </span>
+</p>
+<p>As shown in the above diagram, the query stage begins similarly to the indexing stage, just with queries coming in instead of documents. For each query:</p>
 <ol>
-<li>Запрос отправляется на конвейер индексации <a href="https://lucidworks.com/products/smart-answers/">Smart Answers</a>.</li>
-<li>Затем запрос отправляется в модель ML.</li>
-<li>ML-модель возвращает числовой вектор (зашифрованный из запроса). Опять же, тип модели определяет размер вектора.</li>
-<li>Вектор отправляется в Milvus, который определяет, какие векторы в указанной коллекции Milvus лучше всего соответствуют предоставленному вектору.</li>
-<li>Milvus возвращает список уникальных идентификаторов и расстояний, соответствующих векторам, определенным на четвертом шаге.</li>
-<li>Запрос, содержащий эти идентификаторы и расстояния, отправляется в Solr.</li>
-<li>Затем Solr возвращает упорядоченный список документов, связанных с этими идентификаторами.</li>
+<li>The query is sent to the <a href="https://lucidworks.com/products/smart-answers/">Smart Answers</a> index pipeline.</li>
+<li>The query is then sent to the ML model.</li>
+<li>The ML model returns a numeric vector (encrypted from the query). Again, the type of model determines the size of the vector.</li>
+<li>The vector is sent to Milvus, which then determines which vectors, in the specified Milvus collection, best match the provided vector.</li>
+<li>Milvus returns a list of unique IDs and distances corresponding to the vectors determined in step four.</li>
+<li>A query containing those IDs and distances is sent to Solr.</li>
+<li>Solr then returns an ordered list of the documents associated with those IDs.</li>
 </ol>
 <p><br/></p>
-<h3 id="Scale-Testing" class="common-anchor-header">Тестирование масштаба</h3><p>Чтобы доказать, что наши потоки семантического поиска работают с той эффективностью, которая требуется нашим клиентам, мы провели масштабные тесты с помощью скриптов Gatling на облачной платформе Google Cloud Platform, используя кластер Fusion с восемью репликами ML-модели, восемью репликами сервиса запросов и одним экземпляром Milvus. Тесты проводились с использованием индексов Milvus FLAT и HNSW. Индекс FLAT имеет 100 % отзыв, но менее эффективен - за исключением случаев, когда наборы данных малы. Индекс HNSW (Hierarchical Small World Graph) по-прежнему показывает высокое качество результатов и улучшает производительность на больших наборах данных.</p>
-<p>Давайте рассмотрим некоторые цифры из недавнего примера:</p>
+<h3 id="Scale-Testing" class="common-anchor-header">Scale Testing</h3><p>In order to prove that our semantic search flows are running at the efficiency we require for our customers, we run scale tests using Gatling scripts on the Google Cloud Platform using a Fusion cluster with eight replicas of the ML model, eight replicas of the query service, and a single instance of Milvus. Tests were run using the Milvus FLAT and HNSW indexes. The FLAT index has 100% recall, but is less efficient – except when the datasets are small. The HNSW (Hierarchical Small World Graph) index still has high quality results and it has improved performance on larger datasets.</p>
+<p>Let’s jump into some numbers from a recent example we ran:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Lucidworks_2_3162113560.png" alt="Lucidworks-2.png" class="doc-image" id="lucidworks-2.png" />
-   </span> <span class="img-wrapper"> <span>Lucidworks-2.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Lucidworks_2_3162113560.png" alt="Lucidworks-2.png" class="doc-image" id="lucidworks-2.png" />
+    <span>Lucidworks-2.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Lucidworks_3_3dc17f0ed8.png" alt="Lucidworks-3.png" class="doc-image" id="lucidworks-3.png" />
-   </span> <span class="img-wrapper"> <span>Lucidworks-3.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Lucidworks_3_3dc17f0ed8.png" alt="Lucidworks-3.png" class="doc-image" id="lucidworks-3.png" />
+    <span>Lucidworks-3.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Lucidworks_4_8a6edd2f59.png" alt="Lucidworks-4.png" class="doc-image" id="lucidworks-4.png" />
-   </span> <span class="img-wrapper"> <span>Lucidworks-4.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Lucidworks_4_8a6edd2f59.png" alt="Lucidworks-4.png" class="doc-image" id="lucidworks-4.png" />
+    <span>Lucidworks-4.png</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="Getting-Started" class="common-anchor-header">Начало работы</h3><p>Конвейеры <a href="https://lucidworks.com/products/smart-answers/">Smart Answers</a> разработаны так, чтобы ими было легко пользоваться. В Lucidworks есть <a href="https://doc.lucidworks.com/how-to/734/set-up-a-pre-trained-cold-start-model-for-smart-answers">предварительно обученные модели, которые легко внедряются</a> и обычно дают хорошие результаты, хотя обучение собственных моделей в тандеме с предварительно обученными моделями даст наилучшие результаты. Свяжитесь с нами сегодня, чтобы узнать, как вы можете внедрить эти инициативы в свои поисковые инструменты для получения более эффективных и приятных результатов.</p>
+<h3 id="Getting-Started" class="common-anchor-header">Getting Started</h3><p>The <a href="https://lucidworks.com/products/smart-answers/">Smart Answers</a> pipelines are designed to be easy-to-use. Lucidworks has <a href="https://doc.lucidworks.com/how-to/734/set-up-a-pre-trained-cold-start-model-for-smart-answers">pre-trained models that are easy-to-deploy</a> and generally have good results—though training your own models, in tandem with pre-trained models, will offer the best results. Contact us today to learn how you can implement these initiatives into your search tools to power more effective and delightful results.</p>
 <blockquote>
-<p>Этот блог перепощен с сайта: https://lucidworks.com/post/how-to-build-fast-semantic-search/?utm_campaign=Oktopost-Blog+Posts&amp;utm_medium=organic_social&amp;utm_source=linkedin</p>
+<p>This blog is reposted from: https://lucidworks.com/post/how-to-build-fast-semantic-search/?utm_campaign=Oktopost-Blog+Posts&amp;utm_medium=organic_social&amp;utm_source=linkedin</p>
 </blockquote>

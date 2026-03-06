@@ -1,62 +1,66 @@
 ---
 id: Whats-Inside-Milvus-1.0.md
-title: Milvus1.0の中身は？
+title: What's Inside Milvus 1.0?
 author: milvus
 date: 2021-04-29T08:46:04.019Z
-desc: Milvus v1.0がリリースされました。Milvus v1.0の主な機能とともに、Milvusの基礎についてご紹介します。
+desc: >-
+  Milvus v1.0 is available now. Learn about the Milvus fundamentals as well as
+  key features of Milvus v1.0.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Whats-Inside-Milvus-1.0'
 ---
-<custom-h1>Milvus1.0の中身とは？</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
-   </span> <span class="img-wrapper"> <span>Milvus.jpeg</span> </span></p>
-<p>Milvusは、100万、10億、あるいは1兆もの巨大なベクトルデータセットを管理するために設計されたオープンソースのベクトルデータベースです。Milvusは、新薬の発見、コンピューター・ビジョン、自律走行、レコメンデーション・エンジン、チャットボットなど、幅広い応用が可能です。</p>
-<p>2021年3月、Milvusを開発するZilliz社は、プラットフォーム初の長期サポートバージョンであるMilvus v1.0をリリースした。数ヶ月に及ぶ広範なテストの後、世界で最も人気のあるベクターデータベースの安定した量産可能なバージョンは、プライムタイムの準備が整いました。このブログでは、Milvusの基礎知識とv1.0の主な機能についてご紹介します。</p>
+<custom-h1>What’s Inside Milvus 1.0?</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
+    <span>Milvus.jpeg</span>
+  </span>
+</p>
+<p>Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more.</p>
+<p>In March, 2021 Zilliz, the company behind Milvus, released the platform’s first long-term support version—Milvus v1.0. After months of extensive testing, a stable, production ready version of the world’s most popular vector database is ready for prime time. This blog article covers some Milvus fundamentals as well as key features of v1.0.</p>
 <p><br/></p>
-<h3 id="Milvus-distributions" class="common-anchor-header">Milvusのディストリビューション</h3><p>Milvusには、CPUのみのディストリビューションとGPU対応のディストリビューションがあります。前者はインデックス構築と検索をCPUのみに依存し、後者はMilvusをさらに高速化するCPUとGPUのハイブリッド検索とインデックス構築を可能にする。例えば、ハイブリッドディストリビューションを使用すると、CPUを検索に、GPUをインデックス構築に使用することができ、クエリの効率をさらに向上させることができる。</p>
-<p>どちらのMilvusディストリビューションもDockerで利用可能です。DockerからMilvusをコンパイルするか（オペレーティングシステムがサポートしている場合）、Linux上でソースコードからMilvusをコンパイルすることができます（他のオペレーティングシステムはサポートしていません）。</p>
+<h3 id="Milvus-distributions" class="common-anchor-header">Milvus distributions</h3><p>Milvus is available in CPU-only and GPU-enabled distributions. The former relies exclusively on CPU for index building and search; the latter enables CPU and GPU hybrid search and index building that further accelerates Milvus. For example, using the hybrid distribution, CPU can be used for search and GPU for index building, further improving query efficiency.</p>
+<p>Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported).</p>
 <p><br/></p>
-<h3 id="Embedding-vectors" class="common-anchor-header">ベクトルの埋め込み</h3><p>Milvusではベクターはエンティティとして格納されます。各エンティティは1つのベクトルIDフィールドと1つのベクトルフィールドを持ちます。Milvus v1.0は整数ベクトルIDのみをサポートしています。Milvusでコレクションを作成する際、ベクターIDは自動生成または手動で定義することができます。Milvusは自動生成されたベクターIDが一意であることを保証しますが、手動で定義されたIDはMilvus内で重複する可能性があります。手動でIDを定義する場合、すべてのIDが一意であることを確認する責任はユーザーにあります。</p>
+<h3 id="Embedding-vectors" class="common-anchor-header">Embedding vectors</h3><p>Vectors are stored in Milvus as entities. Each entity has one vector ID field and one vector field. Milvus v1.0 supports integer vector IDs only. When creating a collection within Milvus, vector IDs can be automatically generated or manually defined. Milvus ensures auto-generated vector IDs are unique however, manually defined IDs can be duplicated within Milvus. If manually defining IDs, users are responsible for making sure all IDs are unique.</p>
 <p><br/></p>
-<h3 id="Partitions" class="common-anchor-header">パーティション</h3><p>Milvusはコレクション内にパーティションを作成することができます。データが定期的に挿入され、過去のデータが重要でない場合（ストリーミングデータなど）、パーティションを使用することでベクトルの類似性検索を高速化することができます。1つのコレクションは最大4,096のパーティションを持つことができます。特定のパーティション内でベクトル検索を指定すると、検索が絞り込まれ、特に1兆個以上のベクトルを含むコレクションでは、クエリ時間が大幅に短縮される可能性があります。</p>
+<h3 id="Partitions" class="common-anchor-header">Partitions</h3><p>Milvus supports creating partitions in a collection. In situations where data is inserted regularly and historical data isn’t significant (e.g., streaming data), partitions can be used to accelerate vector similarity search. One collection can have up to 4,096 partitions. Specifying a vector search within a specific partition narrows the search and may significantly reduce query time, particularly for collections that contain more than a trillion vectors.</p>
 <p><br/></p>
-<h3 id="Index-algorithm-optimizations" class="common-anchor-header">インデックスアルゴリズムの最適化</h3><p>Milvusは、Faiss、NMSLIB、Annoyなど、広く採用されている複数のインデックスライブラリの上に構築されています。Milvusは、これらのインデックスライブラリの基本的なラッパー以上のものです。以下は、基礎となるライブラリに加えられた主な機能強化の一部である：</p>
+<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Index algorithm optimizations</h3><p>Milvus is built on top of multiple widely-adopted index libraries, including Faiss, NMSLIB, and Annoy. Milvus is far more than a basic wrapper for these index libraries. Here are some of the major enhancements that have been made to the underlying libraries:</p>
 <ul>
-<li>Elkan k-meansアルゴリズムを使用したIVFインデックス性能の最適化。</li>
-<li>FLAT検索の最適化。</li>
-<li>IVF_SQ8Hハイブリッドインデックスのサポート。データの精度を犠牲にすることなく、インデックスファイルのサイズを最大75%削減することができます。IVF_SQ8HはIVF_SQ8をベースに構築されており、同一のリコール率でありながら、クエリー速度が大幅に高速化されている。IVF_SQ8HはGPUの並列処理能力とCPU/GPUコプロセッシングの相乗効果の可能性を活用するためにMilvusのために特別に設計されました。</li>
-<li>動的命令セットの互換性</li>
+<li>IVF index performance optimizations using the Elkan k-means algorithm.</li>
+<li>FLAT search optimizations.</li>
+<li>IVF_SQ8H hybrid index support, which can reduce index file sizes by up to 75% without sacrificing data accuracy. IVF_SQ8H is built upon IVF_SQ8, with identical recall but much faster query speed. It was designed specifically for Milvus to harnesses the parallel processing capacity of GPUs, and the potential for synergy between CPU/GPU co-processing.</li>
+<li>Dynamic instruction set compatibility.</li>
 </ul>
 <p><br/></p>
-<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">検索、インデックス構築、その他のMilvus最適化</h3><p>Milvusでは、検索およびインデックス構築のパフォーマンスを向上させるため、以下の最適化が行われています。</p>
+<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Search, index building, and other Milvus optimizations</h3><p>The following optimizations have been made to Milvus to improve search and index building performance.</p>
 <ul>
-<li>検索性能は、クエリー数(nq)がCPUスレッド数より少ない場合に最適化される。</li>
-<li>Milvusは同じtopKと検索パラメータを持つクライアントからの検索リクエストを結合する。</li>
-<li>インデックス構築は検索要求が来ると中断される。</li>
-<li>Milvusは開始時に自動的にコレクションをメモリにプリロードする。</li>
-<li>ベクトル類似検索の高速化のために複数のGPUデバイスを割り当てることができる。</li>
+<li>Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads.</li>
+<li>Milvus combines search requests from a client that take the same topK and search parameters.</li>
+<li>Index building is suspended when search requests come in.</li>
+<li>Milvus automatically preloads collections to memory at start.</li>
+<li>Multiple GPU devices can be assigned to accelerate vector similarity search.</li>
 </ul>
 <p><br/></p>
-<h3 id="Distance-metrics" class="common-anchor-header">距離メトリクス</h3><p>Milvusはベクトル類似検索のために構築されたベクトルデータベースです。このプラットフォームは、MLOpsやプロダクションレベルのAIアプリケーションを念頭に構築されています。Milvusは、ユークリッド距離（L2）、内積（IP）、ジャカード距離、谷本、ハミング距離、上部構造、下部構造など、類似度を計算するための幅広い距離メトリクスをサポートしています。最後の2つのメトリックスは、分子検索やAIによる新薬探索で一般的に使用されている。</p>
+<h3 id="Distance-metrics" class="common-anchor-header">Distance metrics</h3><p>Milvus is a vector database built to power vector similarity search. The platform was built with MLOps and production level AI applications in mind. Milvus supports a wide range of distance metrics for calculating similarity, such as Euclidean distance (L2), inner product (IP), Jaccard distance, Tanimoto, Hamming distance, superstructure, and substructure. The last two metrics are commonly used in molecular search and AI-powered new drug discovery.</p>
 <p><br/></p>
-<h3 id="Logging" class="common-anchor-header">ロギング</h3><p>milvusはログローテーションをサポートしている。システム設定ファイルのmilvus.yamlでは、1つのログファイルのサイズ、ログファイルの数、標準出力へのログ出力を設定できる。</p>
+<h3 id="Logging" class="common-anchor-header">Logging</h3><p>Milvus supports log rotation. In the system configuration file, milvus.yaml, you can set the size of a single log file, the number of log files, and log output to stdout.</p>
 <p><br/></p>
-<h3 id="Distributed-solution" class="common-anchor-header">分散ソリューション</h3><p>MilvusのシャーディングミドルウェアであるMishardsは、Milvusの分散ソリューションです。1つの書き込みノードと無制限の読み取りノードを持つMishardsは、サーバクラスタの計算能力を解き放ちます。リクエスト転送、リード/ライト分割、動的/水平スケーリングなどの機能を備えています。</p>
+<h3 id="Distributed-solution" class="common-anchor-header">Distributed solution</h3><p>Mishards, a Milvus sharding middleware, is the distributed solution for Milvus With one write node and an unlimited number of read nodes, Mishards unleashes the computational potential of server cluster. Its features include request forwarding, read/write splitting, dynamic/horizontal scaling, and more.</p>
 <p><br/></p>
-<h3 id="Monitoring" class="common-anchor-header">モニタリング</h3><p>Milvusは、オープンソースのシステム監視およびアラートツールキットであるPrometheusと互換性があります。MilvusはPrometheusのPushgatewayのサポートを追加し、Prometheusによる短時間のバッチメトリクスの取得を可能にします。監視・アラートシステムは以下のように動作します：</p>
+<h3 id="Monitoring" class="common-anchor-header">Monitoring</h3><p>Milvus is compatible with Prometheus, an open-source system monitoring and alerts toolkit. Milvus adds support for Pushgateway in Prometheus, making it possible for Prometheus to acquire short-lived batch metrics. The monitoring and alerts system works as follows:</p>
 <ul>
-<li>MilvusサーバーはカスタマイズされたメトリクスデータをPushgatewayにプッシュします。</li>
-<li>Pushgatewayは、エフェメラルなメトリクス・データがPrometheusに安全に送信されるようにします。</li>
-<li>PrometheusはPushgatewayからデータを取得し続けます。</li>
-<li>Alertmanagerを使用して、さまざまな指標のアラートしきい値を設定し、電子メールまたはメッセージでアラートを送信します。</li>
+<li>The Milvus server pushes customized metrics data to Pushgateway.</li>
+<li>Pushgateway ensures ephemeral metric data is safely sent to Prometheus.</li>
+<li>Prometheus continues pulling data from Pushgateway.</li>
+<li>Alertmanager is used to set the alert threshold for different indicators and send alerts via email or message.</li>
 </ul>
 <p><br/></p>
-<h3 id="Metadata-management" class="common-anchor-header">メタデータ管理</h3><p>Milvusはデフォルトでメタデータ管理にSQLiteを使用します。SQLiteはMilvusに実装されており、設定は不要です。本番環境では、メタデータ管理にMySQLを使用することをお勧めします。</p>
+<h3 id="Metadata-management" class="common-anchor-header">Metadata management</h3><p>Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management.</p>
 <p><br/></p>
-<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">オープンソースコミュニティ</h3><ul>
-<li><a href="https://github.com/milvus-io/milvus/">GitHubで</a>Milvusを検索したり、Milvusに貢献することができます。</li>
-<li><a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slackで</a>コミュニティと交流する。</li>
-<li><a href="https://twitter.com/milvusio">Twitterで</a>私たちとつながりましょう。</li>
+<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

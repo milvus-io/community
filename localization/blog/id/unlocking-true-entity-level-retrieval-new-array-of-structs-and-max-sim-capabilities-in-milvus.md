@@ -1,9 +1,9 @@
 ---
 id: >-
   unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
-title: >-
-  Membuka Kunci Pengambilan Tingkat Entitas yang Sebenarnya: Kemampuan
-  Array-of-Structs dan MAX_SIM yang baru di Milvus
+title: >
+  Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM
+  Capabilities in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
 cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
@@ -15,24 +15,24 @@ meta_keywords: 'Milvus, Array of Structs, MAX_SIM, vector database, multi-vector
 meta_title: |
   Array of Structs in Milvus: Entity-Level Multi-Vector Retrieval
 desc: >-
-  Pelajari bagaimana Array of Structs dan MAX_SIM di Milvus memungkinkan
-  pencarian tingkat entitas yang sebenarnya untuk data multi-vektor,
-  menghilangkan deduping dan meningkatkan akurasi pengambilan.
+  Learn how Array of Structs and MAX_SIM in Milvus enable true entity-level
+  search for multi-vector data, eliminating deduping and improving retrieval
+  accuracy.
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>Jika Anda telah membangun aplikasi AI di atas basis data vektor, Anda mungkin mengalami masalah yang sama: basis data mengambil penyematan potongan-potongan individu, tetapi aplikasi Anda peduli dengan <strong><em>entitas</em></strong>. Ketidaksesuaian ini membuat seluruh alur kerja pengambilan menjadi rumit.</p>
-<p>Anda mungkin telah melihat hal ini berulang kali:</p>
+<p>If you’ve built AI applications on top of vector databases, you’ve probably hit the same pain point: the database retrieves embeddings of individual chunks, but your application cares about <strong><em>entities</em>.</strong> The mismatch makes the entire retrieval workflow complex.</p>
+<p>You’ve likely seen this play out again and again:</p>
 <ul>
-<li><p><strong>Basis pengetahuan RAG:</strong> Artikel dipotong-potong menjadi beberapa paragraf, sehingga mesin pencari mengembalikan potongan-potongan yang tersebar, bukan dokumen lengkap.</p></li>
-<li><p><strong>Rekomendasi e-commerce:</strong> Sebuah produk memiliki beberapa penyematan gambar, dan sistem Anda mengembalikan lima sudut pandang dari item yang sama, bukan lima produk unik.</p></li>
-<li><p><strong>Platform video:</strong> Video dipecah menjadi penyematan klip, tetapi hasil penelusuran menampilkan potongan-potongan video yang sama, bukan satu entri yang terkonsolidasi.</p></li>
-<li><p><strong>Pengambilan gaya ColBERT / ColPali:</strong> Dokumen meluas menjadi ratusan penyematan token atau patch-level, dan hasil pencarian Anda kembali sebagai potongan-potongan kecil yang masih perlu digabungkan.</p></li>
+<li><p><strong>RAG knowledge bases:</strong> Articles are chunked into paragraph embeddings, so the search engine returns scattered fragments instead of the complete document.</p></li>
+<li><p><strong>E-commerce recommendation:</strong> A product has multiple image embeddings, and your system returns five angles of the same item rather than five unique products.</p></li>
+<li><p><strong>Video platforms:</strong> Videos are split into clip embeddings, but search results surface slices of the same video rather than a single consolidated entry.</p></li>
+<li><p><strong>ColBERT / ColPali–style retrieval:</strong> Documents expand into hundreds of token or patch-level embeddings, and your results come back as tiny pieces that still require merging.</p></li>
 </ul>
-<p>Semua masalah ini berasal dari <em>kesenjangan arsitektur yang sama</em>: sebagian besar basis data vektor memperlakukan setiap penyematan sebagai baris yang terisolasi, sementara aplikasi nyata beroperasi pada entitas tingkat yang lebih tinggi - dokumen, produk, video, item, adegan. Akibatnya, tim teknik dipaksa untuk merekonstruksi entitas secara manual menggunakan logika deduplikasi, pengelompokan, bucketing, dan pemeringkatan ulang. Cara ini berhasil, tetapi rapuh, lambat, dan membebani lapisan aplikasi Anda dengan logika yang seharusnya tidak pernah ada di sana.</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> menutup celah ini dengan fitur baru: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> dengan tipe metrik <strong>MAX_SIM</strong>. Bersama-sama, keduanya memungkinkan semua penyematan untuk satu entitas disimpan dalam satu catatan dan memungkinkan Milvus untuk menilai dan mengembalikan entitas secara holistik. Tidak ada lagi set hasil yang diisi dengan duplikat. Tidak ada lagi post-processing yang rumit seperti pemeringkatan ulang dan penggabungan</p>
-<p>Pada artikel ini, kita akan membahas cara kerja Array of Structs dan MAX_SIM-dan mendemonstrasikannya melalui dua contoh nyata: Pengambilan dokumen Wikipedia dan pencarian dokumen berbasis gambar ColPali.</p>
-<h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">Apa yang dimaksud dengan Array of Structs?<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
+<p>All of these issues stem from the <em>same architectural gap</em>: most vector databases treat each embedding as an isolated row, while real applications operate on higher-level entities — documents, products, videos, items, scenes. As a result, engineering teams are forced to reconstruct entities manually using deduplication, grouping, bucketing, and reranking logic. It works, but it’s fragile, slow, and bloats your application layer with logic that should never have lived there in the first place.</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> closes this gap with a new feature: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> with the <strong>MAX_SIM</strong> metric type. Together, they allow all embeddings for a single entity to be stored in a single record and enable Milvus to score and return the entity holistically. No more duplicate-filled result sets. No more complex post-processing like reranking and merging</p>
+<p>In this article, we’ll walk through how Array of Structs and MAX_SIM work—and demonstrate them through two real examples: Wikipedia document retrieval and ColPali image-based document search.</p>
+<h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">What is an Array of Structs?<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,8 +47,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam Milvus, sebuah bidang <strong>Array of Structs</strong> memungkinkan sebuah catatan tunggal untuk berisi <em>daftar</em> elemen Struct yang <em>terurut</em>, masing-masing mengikuti skema yang sudah ditentukan sebelumnya. Sebuah Struct dapat menampung beberapa vektor serta bidang skalar, string, atau jenis lain yang didukung. Dengan kata lain, struktur ini memungkinkan Anda menggabungkan semua bagian yang termasuk dalam satu entitas-penyematan paragraf, tampilan gambar, vektor token, metadata-langsung di dalam satu baris.</p>
-<p>Berikut ini contoh entitas dari koleksi yang berisi bidang Array of Structs.</p>
+    </button></h2><p>In Milvus, an <strong>Array of Structs</strong> field allows a single record to contain an <em>ordered list</em> of Struct elements, each following the same predefined schema. A Struct can hold multiple vectors as well as scalar fields, strings, or any other supported types. In other words, it lets you bundle all the pieces that belong to one entity—paragraph embeddings, image views, token vectors, metadata—directly inside one row.</p>
+<p>Here’s an example of an entity from a collection that contains an Array of Structs field.</p>
 <pre><code translate="no">{
     <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">0</span>,
     <span class="hljs-string">&#x27;title&#x27;</span>: <span class="hljs-string">&#x27;Walden&#x27;</span>,
@@ -71,9 +71,9 @@ origin: >-
     <span class="hljs-comment">// hightlight-end</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>Pada contoh di atas, bidang <code translate="no">chunks</code> adalah bidang Array of Structs, dan setiap elemen Struct berisi bidangnya sendiri, yaitu <code translate="no">text</code>, <code translate="no">text_vector</code>, dan <code translate="no">chapter</code>.</p>
-<p>Pendekatan ini memecahkan masalah pemodelan yang sudah lama ada dalam database vektor. Secara tradisional, setiap penyematan atau atribut harus menjadi barisnya sendiri, yang memaksa <strong>entitas multi-vektor (dokumen, produk, video)</strong> untuk dipecah menjadi puluhan, ratusan, atau bahkan ribuan record. Dengan Array of Structs, Milvus memungkinkan Anda menyimpan seluruh entitas multi-vektor dalam satu bidang, sehingga cocok untuk daftar paragraf, penyematan token, urutan klip, gambar multi-tampilan, atau skenario apa pun di mana satu item logis terdiri dari banyak vektor.</p>
-<h2 id="How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="common-anchor-header">Bagaimana Cara Kerja Larik Struktur dengan MAX_SIM?<button data-href="#How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="anchor-icon" translate="no">
+<p>In the example above, the <code translate="no">chunks</code> field is an Array of Structs field, and each Struct element contains its own fields, namely <code translate="no">text</code>, <code translate="no">text_vector</code>, and <code translate="no">chapter</code>.</p>
+<p>This approach solves a long-standing modeling issue in vector databases. Traditionally, every embedding or attribute has to become its own row, which forces <strong>multi-vector entities (documents, products, videos)</strong> to be split into dozens, hundreds, or even thousands of records. With Array of Structs, Milvus lets you store the entire multi-vector entity in a single field, making it a natural fit for paragraph lists, token embeddings, clip sequences, multi-view images, or any scenario where one logical item is composed of many vectors.</p>
+<h2 id="How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="common-anchor-header">How Does an Array of Structs Work with MAX_SIM?<button data-href="#How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,67 +88,67 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Di atas larik struktur struktur baru ini terdapat <strong>MAX_SIM</strong>, sebuah strategi penilaian baru yang membuat pengambilan semantik menjadi sadar akan entitas. Ketika sebuah kueri masuk, Milvus membandingkannya dengan <em>setiap</em> vektor di dalam setiap larik struktur dan mengambil <strong>kemiripan maksimum</strong> sebagai skor akhir entitas. Entitas tersebut kemudian diberi peringkat - dan dikembalikan - berdasarkan skor tunggal tersebut. Hal ini menghindari masalah vektor-database klasik dalam mengambil fragmen-fragmen yang tersebar dan mendorong beban pengelompokan, deduping, dan pemeringkatan ulang ke dalam lapisan aplikasi. Dengan MAX_SIM, pengambilan tingkat entitas menjadi built-in, konsisten, dan efisien.</p>
-<p>Untuk memahami cara kerja MAX_SIM dalam praktiknya, mari kita lihat contoh konkretnya.</p>
-<p><strong>Catatan:</strong> Semua vektor dalam contoh ini dihasilkan oleh model penyematan yang sama, dan kemiripan diukur dengan kemiripan kosinus dalam rentang [0,1].</p>
-<p>Misalkan seorang pengguna mencari <strong>"Kursus Pemula Pembelajaran Mesin."</strong></p>
-<p>Kueri tersebut di-token menjadi tiga <strong>token</strong>:</p>
+    </button></h2><p>Layered on top of this new array of structs structure is <strong>MAX_SIM</strong>, a new scoring strategy that makes semantic retrieval entity-aware. When a query comes in, Milvus compares it against <em>every</em> vector inside each Array of Structs and takes the <strong>maximum similarity</strong> as the entity’s final score. The entity is then ranked—and returned—based on that single score. This avoids the classic vector-database problem of retrieving scattered fragments and pushing the burden of grouping, deduping, and reranking into the application layer. With MAX_SIM, entity-level retrieval becomes built-in, consistent, and efficient.</p>
+<p>To understand how MAX_SIM works in practice, let’s walk through a concrete example.</p>
+<p><strong>Note:</strong> All vectors in this example are generated by the same embedding model, and similarity is measured with cosine similarity in the [0,1] range.</p>
+<p>Suppose a user searches for <strong>“Machine Learning Beginner Course.”</strong></p>
+<p>The query is tokenized into three <strong>tokens</strong>:</p>
 <ul>
-<li><p><em>Pembelajaran mesin</em></p></li>
-<li><p><em>pemula</em></p></li>
-<li><p><em>kursus</em></p></li>
+<li><p><em>Machine learning</em></p></li>
+<li><p><em>beginner</em></p></li>
+<li><p><em>course</em></p></li>
 </ul>
-<p>Masing-masing token ini kemudian <strong>diubah menjadi vektor</strong> penyematan dengan model penyematan yang sama dengan yang digunakan untuk dokumen.</p>
-<p>Sekarang, bayangkan basis data vektor berisi dua dokumen:</p>
+<p>Each of these tokens is then <strong>converted into an embedding vector</strong> by the same embedding model used for the documents.</p>
+<p>Now, imagine the vector database contains two documents:</p>
 <ul>
-<li><p><strong>doc_1:</strong> <em>Panduan Pengenalan Jaringan Syaraf Tiruan dengan Python</em></p></li>
-<li><p><strong>doc_2:</strong> <em>Panduan Tingkat Lanjut untuk Membaca Makalah LLM</em></p></li>
+<li><p><strong>doc_1:</strong> <em>An Introduction Guide to Deep Neural Networks with Python</em></p></li>
+<li><p><strong>doc_2:</strong> <em>An Advanced Guide to LLM Paper Reading</em></p></li>
 </ul>
-<p>Kedua dokumen tersebut telah dimasukkan ke dalam vektor dan disimpan di dalam Array of Structs.</p>
-<h3 id="Step-1-Compute-MAXSIM-for-doc1" class="common-anchor-header"><strong>Langkah 1: Hitung MAX_SIM untuk doc_1</strong></h3><p>Untuk setiap vektor kueri, Milvus menghitung kemiripan kosinus terhadap setiap vektor dalam doc_1:</p>
+<p>Both documents have been embedded into vectors and stored inside an Array of Structs.</p>
+<h3 id="Step-1-Compute-MAXSIM-for-doc1" class="common-anchor-header"><strong>Step 1: Compute MAX_SIM for doc_1</strong></h3><p>For each query vector, Milvus computes its cosine similarity against every vector in doc_1:</p>
 <table>
 <thead>
-<tr><th></th><th>Pengantar</th><th>panduan</th><th>jaringan syaraf tiruan dalam</th><th>python</th></tr>
+<tr><th></th><th>Introduction</th><th>guide</th><th>deep neural networks</th><th>python</th></tr>
 </thead>
 <tbody>
-<tr><td>pembelajaran mesin</td><td>0.0</td><td>0.0</td><td><strong>0.9</strong></td><td>0.3</td></tr>
-<tr><td>pemula</td><td><strong>0.8</strong></td><td>0.1</td><td>0.0</td><td>0.3</td></tr>
-<tr><td>kursus</td><td>0.3</td><td><strong>0.7</strong></td><td>0.1</td><td>0.1</td></tr>
+<tr><td>machine learning</td><td>0.0</td><td>0.0</td><td><strong>0.9</strong></td><td>0.3</td></tr>
+<tr><td>beginner</td><td><strong>0.8</strong></td><td>0.1</td><td>0.0</td><td>0.3</td></tr>
+<tr><td>course</td><td>0.3</td><td><strong>0.7</strong></td><td>0.1</td><td>0.1</td></tr>
 </tbody>
 </table>
-<p>Untuk setiap vektor kueri, MAX_SIM memilih kemiripan <strong>tertinggi</strong> dari barisnya:</p>
+<p>For each query vector, MAX_SIM selects the <strong>highest</strong> similarity from its row:</p>
 <ul>
-<li><p>pembelajaran mesin → jaringan syaraf tiruan dalam (0.9)</p></li>
-<li><p>pemula → pengenalan (0.8)</p></li>
-<li><p>kursus → panduan (0,7)</p></li>
+<li><p>machine learning → deep neural networks (0.9)</p></li>
+<li><p>beginner → introduction (0.8)</p></li>
+<li><p>course → guide (0.7)</p></li>
 </ul>
-<p>Menjumlahkan kecocokan terbaik memberikan <strong>skor MAX_SIM sebesar 2,4</strong> kepada doc_1.</p>
-<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Langkah 2: Menghitung MAX_SIM untuk doc_2</h3><p>Sekarang kita ulangi proses ini untuk doc_2:</p>
+<p>Summing the best matches gives doc_1 a <strong>MAX_SIM score of 2.4</strong>.</p>
+<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Step 2: Compute MAX_SIM for doc_2</h3><p>Now we repeat the process for doc_2:</p>
 <table>
 <thead>
-<tr><th></th><th>lanjutan</th><th>panduan</th><th>LLM</th><th>kertas</th><th>membaca</th></tr>
+<tr><th></th><th>advanced</th><th>guide</th><th>LLM</th><th>paper</th><th>reading</th></tr>
 </thead>
 <tbody>
-<tr><td>pembelajaran mesin</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
-<tr><td>pemula</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
-<tr><td>kursus saja.</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
+<tr><td>machine learning</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
+<tr><td>beginner</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
+<tr><td>course</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
 </tbody>
 </table>
-<p>Match (kecocokan) terbaik untuk doc_2 adalah:</p>
+<p>The best matches for doc_2 are:</p>
 <ul>
-<li><p>"pembelajaran mesin" → "LLM" (0.9)</p></li>
-<li><p>"pemula" → "panduan" (0.6)</p></li>
-<li><p>"kursus" → "panduan" (0.8)</p></li>
+<li><p>“machine learning” → “LLM” (0.9)</p></li>
+<li><p>“beginner” → “guide” (0.6)</p></li>
+<li><p>“course” → “guide” (0.8)</p></li>
 </ul>
-<p>Menjumlahkan keduanya akan memberikan <strong>skor MAX_SIM</strong> doc_2 <strong>sebesar 2,3</strong>.</p>
-<h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">Langkah 3: Bandingkan Skor</h3><p>Karena <strong>2.4 &gt; 2.3</strong>, <strong>doc_1 memiliki peringkat yang lebih tinggi daripada doc_2</strong>, yang secara intuitif masuk akal, karena doc_1 lebih dekat dengan panduan pembelajaran mesin.</p>
-<p>Dari contoh ini, kita dapat menyoroti tiga karakteristik inti dari MAX_SIM:</p>
+<p>Summing them gives doc_2 a <strong>MAX_SIM score of 2.3</strong>.</p>
+<h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">Step 3: Compare the Scores</h3><p>Because <strong>2.4 &gt; 2.3</strong>, <strong>doc_1 ranks higher than doc_2</strong>, which makes intuitive sense, since doc_1 is closer to an introductory machine learning guide.</p>
+<p>From this example, we can highlight three core characteristics of MAX_SIM:</p>
 <ul>
-<li><p><strong>Semantik terlebih dahulu, bukan berbasis kata kunci:</strong> MAX_SIM membandingkan sematan, bukan literal teks. Meskipun <em>"pembelajaran mesin"</em> dan <em>"jaringan syaraf tiruan"</em> tidak memiliki kata yang tumpang tindih, kemiripan semantiknya adalah 0,9. Hal ini membuat MAX_SIM kuat terhadap sinonim, parafrase, tumpang tindih konseptual, dan beban kerja yang kaya akan penyematan modern.</p></li>
-<li><p><strong>Tidak sensitif terhadap panjang dan urutan:</strong> MAX_SIM tidak mengharuskan kueri dan dokumen memiliki jumlah vektor yang sama (misalnya, doc_1 memiliki 4 vektor sementara doc_2 memiliki 5 vektor, dan keduanya berfungsi dengan baik). MAX_SIM juga mengabaikan urutan vektor - "pemula" yang muncul lebih awal dalam kueri dan "pendahuluan" yang muncul kemudian dalam dokumen tidak berdampak pada skor.</p></li>
-<li><p><strong>Setiap vektor kueri penting:</strong> MAX_SIM mengambil kecocokan terbaik untuk setiap vektor kueri dan menjumlahkan skor terbaik tersebut. Hal ini mencegah vektor yang tidak cocok untuk mempengaruhi hasil dan memastikan bahwa setiap token kueri yang penting berkontribusi pada skor akhir. Sebagai contoh, kecocokan berkualitas rendah untuk "pemula" di doc_2 secara langsung mengurangi skor keseluruhannya.</p></li>
+<li><p><strong>Semantic first, not keyword-based:</strong> MAX_SIM compares embeddings, not text literals. Even though <em>“machine learning”</em> and <em>“deep neural networks”</em> share zero overlapping words, their semantic similarity is 0.9. This makes MAX_SIM robust to synonyms, paraphrases, conceptual overlap, and modern embedding-rich workloads.</p></li>
+<li><p><strong>Insensitive to length and order:</strong> MAX_SIM does not require the query and document to have the same number of vectors (e.g., doc_1 has 4 vectors while doc_2 has 5, and both work fine). It also ignores vector order—“beginner” appearing earlier in the query and “introduction” appearing later in the document has no impact on the score.</p></li>
+<li><p><strong>Every query vector matters:</strong> MAX_SIM takes the best match for each query vector and sums those best scores. This prevents unmatched vectors from skewing the result and ensures that every important query token contributes to the final score. For example, the lower-quality match for “beginner” in doc_2 directly reduces its overall score.</p></li>
 </ul>
-<h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">Mengapa MAX_SIM + Larik Struktur Penting dalam Basis Data Vektor<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">
+<h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">Why MAX_SIM + Array of Structs Matter in Vector Database<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -163,13 +163,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> adalah basis data vektor sumber terbuka dan berkinerja tinggi dan sekarang sepenuhnya mendukung MAX_SIM bersama dengan Array of Structs, yang memungkinkan pengambilan multi-vektor tingkat entitas secara asli:</p>
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source, high-performance vector database and it now fully supports MAX_SIM together with Array of Structs, enabling vector-native, entity-level multi-vector retrieval:</p>
 <ul>
-<li><p><strong>Menyimpan entitas multi-vektor secara native:</strong> Array of Structs memungkinkan Anda untuk menyimpan kelompok vektor terkait dalam satu bidang tanpa memisahkannya ke dalam baris atau tabel tambahan yang terpisah.</p></li>
-<li><p><strong>Komputasi pencocokan terbaik yang efisien:</strong> Dikombinasikan dengan indeks vektor seperti IVF dan HNSW, MAX_SIM dapat menghitung kecocokan terbaik tanpa memindai setiap vektor, sehingga menjaga kinerja tetap tinggi bahkan dengan dokumen yang besar.</p></li>
-<li><p><strong>Dibuat khusus untuk beban kerja yang berat secara semantik:</strong> Pendekatan ini unggul dalam pencarian teks panjang, pencocokan semantik multi-segi, penyelarasan ringkasan dokumen, kueri multi-kata kunci, dan skenario AI lainnya yang membutuhkan penalaran semantik yang fleksibel dan berbutir halus.</p></li>
+<li><p><strong>Store multi-vector entities natively:</strong> Array of Structs allows you to store groups of related vectors in a single field without splitting them into separate rows or auxiliary tables.</p></li>
+<li><p><strong>Efficient best-match computation:</strong> Combined with vector indexes such as IVF and HNSW, MAX_SIM can compute the best matches without scanning every vector, keeping performance high even with large documents.</p></li>
+<li><p><strong>Purpose-built for semantic-heavy workloads:</strong> This approach excels in long-text retrieval, multi-facet semantic matching, document–summary alignment, multi-keyword queries, and other AI scenarios that require flexible, fine-grained semantic reasoning.</p></li>
 </ul>
-<h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">Kapan Menggunakan Array of Structs<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
+<h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">When to Use an Array of Structs<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -184,24 +184,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nilai <strong>Array of Structs</strong> menjadi jelas ketika Anda melihat apa yang dimungkinkannya. Pada intinya, fitur ini menyediakan tiga kemampuan dasar:</p>
+    </button></h2><p>The value of <strong>Array of Structs</strong> becomes clear when you look at what it enables. At its core, this feature provides three foundational capabilities:</p>
 <ul>
-<li><p>Fitur<strong>ini menggabungkan data heterogen-vektor</strong>, skalar, string, metadata-ke dalam satu objek terstruktur.</p></li>
-<li><p>Fitur<strong>ini menyelaraskan penyimpanan dengan entitas dunia nyata</strong>, sehingga setiap baris basis data dipetakan dengan jelas ke item aktual seperti artikel, produk, atau video.</p></li>
-<li><p><strong>Ketika dikombinasikan dengan fungsi agregat seperti MAX_SIM</strong>, ini memungkinkan pengambilan multi-vektor tingkat entitas yang sebenarnya langsung dari basis data, menghilangkan deduplikasi, pengelompokan, atau pengurutan ulang di lapisan aplikasi.</p></li>
+<li><p><strong>It bundles heterogeneous data</strong>—vectors, scalars, strings, metadata—into a single structured object.</p></li>
+<li><p><strong>It aligns storage with real-world entities</strong>, so each database row maps cleanly to an actual item such as an article, a product, or a video.</p></li>
+<li><p><strong>When combined with aggregate functions like MAX_SIM</strong>, it enables true entity-level multi-vector retrieval directly from the database, eliminating deduplication, grouping, or reranking in the application layer.</p></li>
 </ul>
-<p>Karena sifat-sifat ini, Array of Structs sangat cocok setiap kali <em>entitas logis tunggal diwakili oleh beberapa vektor</em>. Contoh umum termasuk artikel yang dipecah menjadi beberapa paragraf, dokumen yang diuraikan menjadi penyematan token, atau produk yang diwakili oleh beberapa gambar. Jika hasil pencarian Anda mengalami duplikat hit, fragmen yang tersebar, atau entitas yang sama muncul beberapa kali di hasil teratas, Array of Structs menyelesaikan masalah ini pada lapisan penyimpanan dan pengambilan - bukan melalui penambalan setelah fakta dalam kode aplikasi.</p>
-<p>Pola ini sangat kuat untuk sistem AI modern yang mengandalkan <strong>pengambilan multi-vektor</strong>, sebagai contoh:</p>
+<p>Because of these properties, Array of Structs is a natural fit whenever a <em>single logical entity is represented by multiple vectors</em>. Common examples include articles split into paragraphs, documents decomposed into token embeddings, or products represented by multiple images. If your search results suffer from duplicate hits, scattered fragments, or the same entity appearing multiple times in the top results, Array of Structs solves these issues at the storage and retrieval layer—not through after-the-fact patching in application code.</p>
+<p>This pattern is especially powerful for modern AI systems that rely on <strong>multi-vector retrieval</strong>.
+For instance:</p>
 <ul>
-<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> merepresentasikan satu dokumen sebagai 100-500 penyematan token untuk pencocokan semantik berbutir halus di seluruh domain seperti teks hukum dan penelitian akademis.</p></li>
-<li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong> mengubah </a>setiap halaman PDF menjadi 256-1024 tambalan gambar untuk pencarian lintas-modal di seluruh laporan keuangan, kontrak, faktur, dan dokumen pindaian lainnya.</p></li>
+<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> represents a single document as 100–500 token embeddings for fine-grained semantic matching across domains such as legal text and academic research.</p></li>
+<li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong> </a>converts each PDF page into 256–1024 image patches for cross-modal retrieval across financial statements, contracts, invoices, and other scanned documents.</p></li>
 </ul>
-<p>Sebuah array Structs memungkinkan Milvus menyimpan semua vektor ini di bawah satu entitas dan menghitung kemiripan agregat (mis., MAX_SIM) secara efisien dan native. Untuk memperjelas hal ini, berikut adalah dua contoh konkret.</p>
-<h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">Contoh 1: Pencarian Produk E-commerce</h3><p>Sebelumnya, produk dengan banyak gambar disimpan dalam skema datar-satu gambar per baris. Sebuah produk dengan foto depan, samping, dan miring menghasilkan tiga baris. Hasil pencarian sering kali mengembalikan beberapa gambar dari produk yang sama, sehingga membutuhkan deduplikasi manual dan pemeringkatan ulang.</p>
-<p>Dengan Array Struktur, setiap produk menjadi <strong>satu baris</strong>. Semua penyematan gambar dan metadata (angle, is_primary, dll.) berada di dalam bidang <code translate="no">images</code> sebagai array of structs. Milvus memahami bahwa mereka adalah bagian dari produk yang sama dan mengembalikan produk tersebut secara keseluruhan - bukan gambar individualnya.</p>
-<h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">Contoh 2: Basis Pengetahuan atau Pencarian Wikipedia</h3><p>Sebelumnya, satu artikel Wikipedia dibagi menjadi <em>N</em> baris paragraf. Hasil pencarian mengembalikan paragraf yang tersebar, memaksa sistem untuk mengelompokkannya dan menebak artikel mana yang termasuk di dalamnya.</p>
-<p>Dengan Array of Structs, seluruh artikel menjadi <strong>satu baris</strong>. Semua paragraf dan penyematannya dikelompokkan di bawah bidang paragraf, dan basis data mengembalikan artikel lengkap, bukan potongan-potongan yang terpecah-pecah.</p>
-<h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">Tutorial Praktis: Pengambilan Tingkat Dokumen dengan Array of Structs<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
+<p>An array of Structs lets Milvus store all these vectors under a single entity and compute aggregate similarity (e.g., MAX_SIM) efficiently and natively. To make this clearer, here are two concrete examples.</p>
+<h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">Example 1: E-commerce Product Search</h3><p>Previously, products with multiple images were stored in a flat schema—one image per row. A product with front, side, and angled shots produced three rows. Search results often returned multiple images of the same product, requiring manual deduplication and reranking.</p>
+<p>With an Array of Structs, each product becomes <strong>one row</strong>. All image embeddings and metadata (angle, is_primary, etc.) live inside an <code translate="no">images</code> field as an array of structs. Milvus understands they belong to the same product and returns the product as a whole—not its individual images.</p>
+<h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">Example 2: Knowledge Base or Wikipedia Search</h3><p>Previously, a single Wikipedia article was split into <em>N</em> paragraph rows. Search results returned scattered paragraphs, forcing the system to group them and guess which article they belonged to.</p>
+<p>With an Array of Structs, the entire article becomes <strong>one row</strong>. All paragraphs and their embeddings are grouped under a paragraphs field, and the database returns the full article, not fragmented pieces.</p>
+<h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">Hands-on Tutorials: Document-Level Retrieval with the Array of Structs<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,17 +217,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. Pengambilan Dokumen Wikipedia</h3><p>Dalam tutorial ini, kita akan membahas cara menggunakan <strong>Array of Structs</strong> untuk mengubah data tingkat paragraf menjadi catatan dokumen lengkap - memungkinkan Milvus untuk melakukan <strong>pengambilan tingkat dokumen yang sebenarnya</strong> daripada mengembalikan fragmen-fragmen yang terisolasi.</p>
-<p>Banyak pipeline basis pengetahuan menyimpan artikel Wikipedia sebagai potongan paragraf. Hal ini bekerja dengan baik untuk penyematan dan pengindeksan, tetapi ini merusak pengambilan: kueri pengguna biasanya mengembalikan paragraf yang terpencar-pencar, memaksa Anda untuk mengelompokkan dan merekonstruksi artikel secara manual. Dengan Array of Structs dan MAX_SIM, kita dapat mendesain ulang skema penyimpanan sehingga <strong>setiap artikel menjadi satu baris</strong>, dan Milvus dapat mengurutkan dan mengembalikan seluruh dokumen secara native.</p>
-<p>Di langkah selanjutnya, kami akan menunjukkan caranya:</p>
+    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. Wikipedia Document Retrieval</h3><p>In this tutorial, we’ll walk through how to use an <strong>Array of Structs</strong> to convert paragraph-level data into full document records—allowing Milvus to perform <strong>true document-level retrieval</strong> rather than returning isolated fragments.</p>
+<p>Many knowledge base pipelines store Wikipedia articles as paragraph chunks. This works well for embedding and indexing, but it breaks retrieval: a user query typically returns scattered paragraphs, forcing you to manually group and reconstruct the article. With an Array of Structs and MAX_SIM, we can redesign the storage schema so that <strong>each article becomes one row</strong>, and Milvus can rank and return the entire document natively.</p>
+<p>In the next steps, we’ll show how to:</p>
 <ol>
-<li><p>Memuat dan melakukan praproses data paragraf Wikipedia</p></li>
-<li><p>Mengelompokkan semua paragraf yang termasuk dalam artikel yang sama ke dalam Array of Structs</p></li>
-<li><p>Masukkan dokumen terstruktur ini ke dalam Milvus</p></li>
-<li><p>Menjalankan kueri MAX_SIM untuk mengambil artikel lengkap - dengan bersih, tanpa melakukan deduping atau pengurutan ulang</p></li>
+<li><p>Load and preprocess Wikipedia paragraph data</p></li>
+<li><p>Bundle all paragraphs belonging to the same article into an Array of Structs</p></li>
+<li><p>Insert these structured documents into Milvus</p></li>
+<li><p>Run MAX_SIM queries to retrieve full articles—cleanly, without deduping or reranking</p></li>
 </ol>
-<p>Pada akhir tutorial ini, Anda akan memiliki pipeline yang berfungsi di mana Milvus menangani pengambilan tingkat entitas secara langsung, persis seperti yang diharapkan pengguna.</p>
-<p><strong>Model Data:</strong></p>
+<p>By the end of this tutorial, you’ll have a working pipeline where Milvus handles entity-level retrieval directly, exactly the way users expect.</p>
+<p><strong>Data Model:</strong></p>
 <pre><code translate="no">{
     <span class="hljs-string">&quot;wiki_id&quot;</span>: <span class="hljs-built_in">int</span>,                  <span class="hljs-comment"># WIKI ID(primary key） </span>
     <span class="hljs-string">&quot;paragraphs&quot;</span>: ARRAY&lt;STRUCT&lt;      <span class="hljs-comment"># Array of paragraph structs</span>
@@ -235,8 +236,8 @@ origin: >-
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 1: Mengelompokkan dan Mengubah Data</strong></p>
-<p>Untuk demo ini, kita menggunakan dataset <a href="https://huggingface.co/datasets/Cohere/wikipedia-22-12-simple-embeddings">Wikipedia Embeddings Sederhana</a>.</p>
+<p><strong>Step 1: Group and Transform the Data</strong></p>
+<p>For this demo, we use the <a href="https://huggingface.co/datasets/Cohere/wikipedia-22-12-simple-embeddings">Simple Wikipedia Embeddings</a> dataset.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> pyarrow <span class="hljs-keyword">as</span> pa
 
@@ -253,7 +254,7 @@ wiki_data = []
                        <span class="hljs-keyword">for</span> _, row <span class="hljs-keyword">in</span> group.iterrows()]
     })
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 2: Membuat Koleksi Milvus</strong></p>
+<p><strong>Step 2: Create the Milvus Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -271,7 +272,7 @@ schema.add_field(<span class="hljs-string">&quot;paragraphs&quot;</span>, DataTy
 
 client.create_collection(<span class="hljs-string">&quot;wiki_docs&quot;</span>, schema=schema)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 3: Memasukkan Data dan Membangun Indeks</strong></p>
+<p><strong>Step 3: Insert Data and Build Index</strong></p>
 <pre><code translate="no"><span class="hljs-meta"># Batch insert documents</span>
 client.insert(<span class="hljs-string">&quot;wiki_docs&quot;</span>, wiki_data)
 
@@ -286,7 +287,7 @@ index_params.add_index(
 client.create_index(<span class="hljs-string">&quot;wiki_docs&quot;</span>, index_params)
 client.load_collection(<span class="hljs-string">&quot;wiki_docs&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 4: Mencari Dokumen</strong></p>
+<p><strong>Step 4: Search Documents</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Search query</span>
 <span class="hljs-keyword">import</span> cohere
 <span class="hljs-keyword">from</span> pymilvus.client.embedding_list <span class="hljs-keyword">import</span> EmbeddingList
@@ -317,51 +318,51 @@ results = client.search(
 <span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> results[<span class="hljs-number">0</span>]:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Article <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;entity&#x27;</span>][<span class="hljs-string">&#x27;wiki_id&#x27;</span>]}</span>: Score <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 5: Membandingkan Keluaran: Pengambilan Tradisional vs Array of Structs</strong></p>
-<p>Dampak dari Array of Structs menjadi jelas ketika kita melihat apa yang sebenarnya dihasilkan oleh database:</p>
+<p><strong>Comparing Outputs: Traditional Retrieval vs. Array of Structs</strong></p>
+<p>The impact of Array of Structs becomes clear when we look at what the database actually returns:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Dimensi</strong></th><th style="text-align:center"><strong>Pendekatan Tradisional</strong></th><th style="text-align:center"><strong>Larik Struktur</strong></th></tr>
+<tr><th style="text-align:center"><strong>Dimension</strong></th><th style="text-align:center"><strong>Traditional Approach</strong></th><th style="text-align:center"><strong>Array of Structs</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>Keluaran Basis Data</strong></td><td style="text-align:center">Mengembalikan <strong>100 paragraf teratas</strong> (redundansi tinggi)</td><td style="text-align:center">Mengembalikan <em>10 dokumen lengkap teratas</em> - bersih dan akurat</td></tr>
-<tr><td style="text-align:center"><strong>Logika Aplikasi</strong></td><td style="text-align:center">Membutuhkan <strong>pengelompokan, deduplikasi, dan pengurutan ulang</strong> (kompleks)</td><td style="text-align:center">Tidak perlu pemrosesan pasca - hasil tingkat entitas datang langsung dari Milvus</td></tr>
+<tr><td style="text-align:center"><strong>Database Output</strong></td><td style="text-align:center">Returns <strong>Top 100 paragraphs</strong> (high redundancy)</td><td style="text-align:center">Returns the <em>top 10 full documents</em> — clean and accurate</td></tr>
+<tr><td style="text-align:center"><strong>Application Logic</strong></td><td style="text-align:center">Requires <strong>grouping, deduplication, and reranking</strong> (complex)</td><td style="text-align:center">No post-processing needed — entity-level results come directly from Milvus</td></tr>
 </tbody>
 </table>
-<p>Dalam contoh Wikipedia, kami hanya mendemonstrasikan kasus yang paling sederhana: menggabungkan vektor paragraf ke dalam representasi dokumen terpadu. Tetapi kekuatan sebenarnya dari Array of Structs adalah bahwa ia dapat digeneralisasi ke model data multi-vektor apa <strong>pun</strong> - baik jalur pengambilan klasik maupun arsitektur AI modern.</p>
-<p><strong>Skenario Pengambilan Multi-Vektor Tradisional</strong></p>
-<p>Banyak sistem pencarian dan rekomendasi yang sudah mapan secara alami beroperasi pada entitas dengan beberapa vektor terkait. Array of Structs memetakan kasus-kasus penggunaan ini dengan jelas:</p>
+<p>In the Wikipedia example, we demonstrated only the simplest case: combining paragraph vectors into a unified document representation. But the real strength of Array of Structs is that it generalizes to <strong>any</strong> multi-vector data model—both classic retrieval pipelines and modern AI architectures.</p>
+<p><strong>Traditional Multi-Vector Retrieval Scenarios</strong></p>
+<p>Many well-established search and recommendation systems naturally operate on entities with multiple associated vectors. Array of Structs maps to these use cases cleanly:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Skenario</strong></th><th style="text-align:center"><strong>Model Data</strong></th><th style="text-align:center"><strong>Vektor per Entitas</strong></th></tr>
+<tr><th style="text-align:center"><strong>Scenario</strong></th><th style="text-align:center"><strong>Data Model</strong></th><th style="text-align:center"><strong>Vectors per Entity</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">🛍️ <strong>Produk e-commerce</strong></td><td style="text-align:center">Satu produk → beberapa gambar</td><td style="text-align:center">5-20</td></tr>
-<tr><td style="text-align:center">🎬 <strong>Pencarian video</strong></td><td style="text-align:center">Satu video → beberapa klip</td><td style="text-align:center">20-100</td></tr>
-<tr><td style="text-align:center">📖 <strong>Pengambilan kertas</strong></td><td style="text-align:center">Satu kertas → beberapa bagian</td><td style="text-align:center">5-15</td></tr>
+<tr><td style="text-align:center">🛍️ <strong>E-commerce products</strong></td><td style="text-align:center">One product → multiple images</td><td style="text-align:center">5–20</td></tr>
+<tr><td style="text-align:center">🎬 <strong>Video search</strong></td><td style="text-align:center">One video → multiple clips</td><td style="text-align:center">20–100</td></tr>
+<tr><td style="text-align:center">📖 <strong>Paper retrieval</strong></td><td style="text-align:center">One paper → multiple sections</td><td style="text-align:center">5–15</td></tr>
 </tbody>
 </table>
-<p><strong>Beban Kerja Model AI (Kasus Penggunaan Multi-Vektor Utama)</strong></p>
-<p>Array of Structs menjadi semakin penting dalam model AI modern yang secara sengaja menghasilkan kumpulan besar vektor per entitas untuk penalaran semantik berbutir halus.</p>
+<p><strong>AI Model Workloads (Key Multi-Vector Use Cases)</strong></p>
+<p>Array of Structs becomes even more critical in modern AI models that intentionally produce large sets of vectors per entity for fine-grained semantic reasoning.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Model Data</strong></th><th style="text-align:center"><strong>Vektor per Entitas</strong></th><th style="text-align:center"><strong>Aplikasi</strong></th></tr>
+<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Data Model</strong></th><th style="text-align:center"><strong>Vectors per Entity</strong></th><th style="text-align:center"><strong>Application</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">Satu dokumen → banyak penyematan token</td><td style="text-align:center">100-500</td><td style="text-align:center">Teks hukum, makalah akademis, pengambilan dokumen berbutir halus</td></tr>
-<tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">Satu halaman PDF → banyak penyematan tambalan</td><td style="text-align:center">256-1024</td><td style="text-align:center">Laporan keuangan, kontrak, faktur, pencarian dokumen multimodal</td></tr>
+<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">One document → many token embeddings</td><td style="text-align:center">100–500</td><td style="text-align:center">Legal text, academic papers, fine-grained document retrieval</td></tr>
+<tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">One PDF page → many patch embeddings</td><td style="text-align:center">256–1024</td><td style="text-align:center">Financial reports, contracts, invoices, multimodal document search</td></tr>
 </tbody>
 </table>
-<p>Model-model ini <em>membutuhkan</em> pola penyimpanan multi-vektor. Sebelum Array of Structs, pengembang harus membagi vektor menjadi beberapa baris dan secara manual menyatukan hasilnya. Dengan Milvus, entitas-entitas ini sekarang dapat disimpan dan diambil secara native, dengan MAX_SIM yang menangani penilaian tingkat dokumen secara otomatis.</p>
-<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. Pencarian Dokumen Berbasis Gambar ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> adalah model yang kuat untuk pengambilan PDF lintas-modal. Alih-alih mengandalkan teks, ColPali memproses setiap halaman PDF sebagai gambar dan mengirisnya menjadi hingga 1024 tambalan visual, menghasilkan satu penyematan per tambalan. Dalam skema database tradisional, hal ini memerlukan penyimpanan satu halaman sebagai ratusan atau ribuan baris terpisah, sehingga database tidak dapat memahami bahwa baris-baris tersebut adalah bagian dari halaman yang sama. Akibatnya, pencarian tingkat entitas menjadi terfragmentasi dan tidak praktis.</p>
-<p>Array of Structs memecahkan masalah ini dengan menyimpan semua patch yang disematkan di <em>dalam satu bidang</em>, sehingga Milvus dapat memperlakukan halaman sebagai satu entitas multi-vektor yang kohesif.</p>
-<p>Pencarian PDF tradisional sering kali bergantung pada <strong>OCR</strong>, yang mengubah gambar halaman menjadi teks. Ini berfungsi untuk teks biasa tetapi kehilangan bagan, tabel, tata letak, dan isyarat visual lainnya. ColPali menghindari keterbatasan ini dengan bekerja secara langsung pada gambar halaman, mempertahankan semua informasi visual dan tekstual. Pengorbanannya adalah skala: setiap halaman sekarang berisi ratusan vektor, yang membutuhkan basis data yang dapat menggabungkan banyak penyematan ke dalam satu entitas - persis seperti yang disediakan oleh Array of Structs + MAX_SIM.</p>
-<p>Kasus penggunaan yang paling umum adalah <strong>Vision RAG</strong>, di mana setiap halaman PDF menjadi entitas multi-vektor. Skenario umum meliputi:</p>
+<p>These models <em>require</em> a multi-vector storage pattern. Before Array of Structs, developers had to split vectors across rows and manually stitch results back together. With Milvus, these entities can now be stored and retrieved natively, with MAX_SIM handling document-level scoring automatically.</p>
+<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. ColPali Image-Based Document Search</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> is a powerful model for cross-modal PDF retrieval. Instead of relying on text, it processes each PDF page as an image and slices it into up to 1024 visual patches, generating one embedding per patch. Under a traditional database schema, this would require storing a single page as hundreds or thousands of separate rows, making it impossible for the database to understand that these rows belong to the same page. As a result, entity-level search becomes fragmented and impractical.</p>
+<p>Array of Structs solves this cleanly by storing all patch embeddings <em>inside a single field</em>, allowing Milvus to treat the page as one cohesive multi-vector entity.</p>
+<p>Traditional PDF search often depends on <strong>OCR</strong>, which converts page images into text. This works for plain text but loses charts, tables, layout, and other visual cues. ColPali avoids this limitation by working directly on page images, preserving all visual and textual information. The trade-off is scale: each page now contains hundreds of vectors, which requires a database that can aggregate many embeddings into one entity—exactly what Array of Structs + MAX_SIM provides.</p>
+<p>The most common use case is <strong>Vision RAG</strong>, where each PDF page becomes a multi-vector entity. Typical scenarios include:</p>
 <ul>
-<li><p><strong>Laporan keuangan:</strong> mencari ribuan PDF untuk halaman yang berisi bagan atau tabel tertentu.</p></li>
-<li><p><strong>Kontrak:</strong> mengambil klausul dari dokumen hukum yang dipindai atau difoto.</p></li>
-<li><p><strong>Faktur:</strong> menemukan faktur berdasarkan vendor, jumlah, atau tata letak.</p></li>
-<li><p><strong>Presentasi:</strong> menemukan slide yang berisi gambar atau diagram tertentu.</p></li>
+<li><p><strong>Financial reports:</strong> searching thousands of PDFs for pages containing specific charts or tables.</p></li>
+<li><p><strong>Contracts:</strong> retrieving clauses from scanned or photographed legal documents.</p></li>
+<li><p><strong>Invoices:</strong> finding invoices by vendor, amount, or layout.</p></li>
+<li><p><strong>Presentations:</strong> locating slides that contain a particular figure or diagram.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -369,7 +370,7 @@ results = client.search(
     <span></span>
   </span>
 </p>
-<p><strong>Model Data:</strong></p>
+<p><strong>Data Model:</strong></p>
 <pre><code translate="no">{
     <span class="hljs-string">&quot;page_id&quot;</span>: <span class="hljs-built_in">int</span>,                     <span class="hljs-comment"># Page ID (primary key) </span>
     <span class="hljs-string">&quot;page_number&quot;</span>: <span class="hljs-built_in">int</span>,                 <span class="hljs-comment"># Page number within the document </span>
@@ -379,7 +380,8 @@ results = client.search(
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 1: Siapkan Data</strong>Anda dapat merujuk ke dokumen untuk mengetahui detail tentang bagaimana ColPali mengubah gambar atau teks menjadi representasi multi-vektor.</p>
+<p><strong>Step 1: Prepare the Data</strong>
+You can refer to the doc for details on how ColPali converts images or text into multi-vector representations.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 
@@ -406,7 +408,7 @@ batch_images = processor.process_images(images).to(model.device)
 <span class="hljs-keyword">with</span> torch.no_grad():
     image_embeddings = model(**batch_images)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 2: Membuat Koleksi Milvus</strong></p>
+<p><strong>Step 2: Create the Milvus Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -425,7 +427,7 @@ schema.add_field(<span class="hljs-string">&quot;patches&quot;</span>, DataType.
 
 client.create_collection(<span class="hljs-string">&quot;doc_pages&quot;</span>, schema=schema)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 3: Memasukkan Data dan Membangun Indeks</strong></p>
+<p><strong>Step 3: Insert Data and Build Index</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Prepare data for insertion</span>
 page_data=[
     {
@@ -460,7 +462,7 @@ index_params.add_index(
 client.create_index(<span class="hljs-string">&quot;doc_pages&quot;</span>, index_params)
 client.load_collection(<span class="hljs-string">&quot;doc_pages&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Langkah 4: Pencarian Lintas Moda: Kueri Teks → Hasil Gambar</strong></p>
+<p><strong>Step 4: Cross-Modal Search: Text Query → Image Results</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Run the search</span>
 <span class="hljs-keyword">from</span> pymilvus.client.embedding_list <span class="hljs-keyword">import</span> EmbeddingList
 
@@ -494,7 +496,7 @@ results = client.search(
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{i}</span>. <span class="hljs-subst">{entity[<span class="hljs-string">&#x27;doc_name&#x27;</span>]}</span> - Page <span class="hljs-subst">{entity[<span class="hljs-string">&#x27;page_number&#x27;</span>]}</span>&quot;</span>)
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;   Score: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Contoh Keluaran:</strong></p>
+<p><strong>Sample Output:</strong></p>
 <pre><code translate="no"><span class="hljs-title class_">Query</span>: <span class="hljs-string">&#x27;quarterly revenue growth chart&#x27;</span>
 <span class="hljs-number">1.</span> Q1_Financial_Report.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">2</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.9123</span>
@@ -505,8 +507,8 @@ results = client.search(
 <span class="hljs-number">3.</span> <span class="hljs-title class_">Product</span>_Manual.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">1</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.5231</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Di sini, hasilnya langsung mengembalikan halaman PDF penuh. Kita tidak perlu khawatir tentang penyematan patch 1024 yang mendasarinya-Milvus menangani semua agregasi secara otomatis.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Here, the results directly return full PDF pages. We don’t need to worry about the underlying 1024 patch embeddings—Milvus handles all the aggregation automatically.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -521,10 +523,10 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebagian besar basis data vektor menyimpan setiap fragmen sebagai catatan independen, yang berarti aplikasi harus mengumpulkan kembali fragmen-fragmen tersebut ketika mereka membutuhkan dokumen, produk, atau halaman lengkap. Array Structs mengubah hal itu. Dengan menggabungkan skalar, vektor, teks, dan bidang lain ke dalam satu objek terstruktur, memungkinkan satu baris basis data mewakili satu entitas lengkap dari ujung ke ujung.</p>
-<p>Hasilnya sederhana namun sangat kuat: pekerjaan yang dulunya membutuhkan pengelompokan, deduping, dan pengurutan ulang yang rumit di lapisan aplikasi menjadi kemampuan basis data asli. Dan itulah arah masa depan database vektor - struktur yang lebih kaya, pengambilan yang lebih cerdas, dan pipeline yang lebih sederhana.</p>
-<p>Untuk informasi lebih lanjut tentang Array of Structs dan MAX_SIM, lihat dokumentasi di bawah ini:</p>
+    </button></h2><p>Most vector databases store each fragment as an independent record, which means applications have to reassemble those fragments when they need a full document, product, or page. An array of Structs changes that. By combining scalars, vectors, text, and other fields into a single structured object, it allows one database row to represent one complete entity end-to-end.</p>
+<p>The result is simple but powerful: work that used to require complex grouping, deduping, and reranking in the application layer becomes a native database capability. And that’s exactly where the future of vector databases is heading—richer structures, smarter retrieval, and simpler pipelines.</p>
+<p>For more information about Array of Structs and MAX_SIM, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Dokumentasi Milvus</a></li>
+<li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Milvus Documentation</a></li>
 </ul>
-<p>Ada pertanyaan atau ingin mendalami fitur-fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

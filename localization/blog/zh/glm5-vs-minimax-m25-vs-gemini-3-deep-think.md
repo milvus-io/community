@@ -1,6 +1,8 @@
 ---
 id: glm5-vs-minimax-m25-vs-gemini-3-deep-think.md
-title: GLM-5 vs. MiniMax M2.5 vs. Gemini 3 深度思考：哪种模型适合您的人工智能代理堆栈？
+title: >
+  GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Deep Think: Which Model Fits Your AI Agent
+  Stack?
 author: 'Lumina Wang, Julie Xia'
 date: 2026-02-14T00:00:00.000Z
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
@@ -11,21 +13,21 @@ tags: 'Gemini, GLM, Minimax, ChatGPT'
 meta_keywords: 'Gemini 3, GLM5, Minimax m2.5, ChatGPT'
 meta_title: |
   GLM-5 vs MiniMax M2.5 vs Gemini 3 Deep Think Compared
-desc: >-
-  对 GLM-5、MiniMax M2.5 和 Gemini 3 Deep Think 进行编码、推理和人工智能 Agents 的实践比较。包括与
-  Milvus 的 RAG 教程。
+desc: >
+  Hands-on comparison of GLM-5, MiniMax M2.5, and Gemini 3 Deep Think for
+  coding, reasoning, and AI agents. Includes a RAG tutorial with Milvus.
 origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
 ---
-<p>在短短两天多的时间里，三个主要模型接连发布：GLM-5、MiniMax M2.5 和 Gemini 3 Deep Think。三者头顶相同的功能：<strong>编码、深度推理和 Agents 工作流程。</strong>三者都宣称具有最先进的成果。如果你眯起眼睛看一下规格表，你几乎可以玩一个配对游戏，找出三者的相同点。</p>
+<p>In just over two days, three major models dropped back-to-back: GLM-5, MiniMax M2.5, and Gemini 3 Deep Think. All three headline the same capabilities: <strong>coding, deep reasoning, and agentic workflows.</strong> All three claim state-of-the-art results. If you squint at the spec sheets, you could almost play a matching game and eliminate identical talking points across all three.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/comparsion_minimax_vs_glm5_vs_gemini3_d05715d4c2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>更可怕的是什么？你的老板可能已经看到了这些公告，并迫不及待地要你在本周结束前使用这三种模型构建九个内部应用程序。</p>
-<p>那么，这些模型究竟有何不同？应该如何选择？以及（一如既往的）如何将它们与<a href="https://milvus.io/">Milvus</a>连接起来，以构建内部知识库？收藏本页。这里有你需要的一切。</p>
-<h2 id="GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="common-anchor-header">GLM-5、MiniMax M2.5 和双子座 3 深度思考一览<button data-href="#GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="anchor-icon" translate="no">
+<p>The scarier thought? Your boss has probably already seen the announcements and is itching for you to build nine internal apps using the three models before the week is even over.</p>
+<p>So what actually sets these models apart? How should you choose between them? And (as always) how do you wire them up with <a href="https://milvus.io/">Milvus</a> to ship an internal knowledge base? Bookmark this page. It’s got everything you need.</p>
+<h2 id="GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="common-anchor-header">GLM-5, MiniMax M2.5, and Gemini 3 Deep Think at a Glance<button data-href="#GLM-5-MiniMax-M25-and-Gemini-3-Deep-Think-at-a-Glance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,10 +42,10 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="GLM-5-leads-in-complex-system-engineering-and-long-horizon-agent-tasks" class="common-anchor-header">GLM-5 在复杂系统工程和长地平线 Agents 任务中处于领先地位</h3><p>2 月 12 日，Zhipu 正式推出 GLM-5，该机型在复杂系统工程和长航时代理工作流方面表现出色。</p>
-<p>该模型有 355B-744B 个参数（40B 个活动参数），在 28.5T 标记上进行了训练。它将稀疏注意力机制与名为 Slime 的异步强化学习框架集成在一起，使其能够在不降低质量的情况下处理超长上下文，同时降低部署成本。</p>
-<p>GLM-5 在关键基准测试中遥遥领先于其他开源产品，在 SWE-bench Verified（77.8 分）和 Terminal Bench 2.0（56.2 分）测试中名列第一，领先于 MiniMax 2.5 和 Gemini 3 Deep Think。尽管如此，它的主要得分仍然落后于 Claude Opus 4.5 和 GPT-5.2 等顶级闭源模型。在商业模拟评估 Vending Bench 2 中，GLM-5 的模拟年利润为 4,432 美元，与闭源系统大致相当。</p>
-<p>GLM-5 还对其系统工程和远程代理能力进行了重大升级。现在，它可以将文本或原始材料直接转换为 .docx、.pdf 和 .xlsx 文件，并生成特定的交付成果，如产品需求文档、教案、考试、电子表格、财务报告、流程图和菜单。</p>
+    </button></h2><h3 id="GLM-5-leads-in-complex-system-engineering-and-long-horizon-agent-tasks" class="common-anchor-header">GLM-5 leads in complex system engineering and long-horizon agent tasks</h3><p>On February 12, Zhipu officially launched GLM-5, which excels in complex system engineering and long-running agent workflows.</p>
+<p>The model has 355B-744B parameters (40B active), trained on 28.5T tokens. It integrates sparse attention mechanisms with an asynchronous reinforcement learning framework called Slime, enabling it to handle ultra-long contexts without quality loss while keeping deployment costs down.</p>
+<p>GLM-5 led the open-source pack on key benchmarks, ranking #1 on SWE-bench Verified (77.8) and #1 on Terminal Bench 2.0 (56.2)—ahead of MiniMax 2.5 and Gemini 3 Deep Think. That said, its headline scores still trail top closed-source models such as Claude Opus 4.5 and GPT-5.2. In Vending Bench 2, a business-simulation evaluation, GLM-5 generated $4,432 in simulated annual profit, putting it roughly in the same range as closed-source systems.</p>
+<p>GLM-5 also made significant upgrades to its system engineering and long-horizon agent capabilities. It can now convert text or raw materials directly into .docx, .pdf, and .xlsx files, and generate specific deliverables like product requirement documents, lesson plans, exams, spreadsheets, financial reports, flowcharts, and menus.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/benchmark_1_aa8211e962.png" alt="" class="doc-image" id="" />
@@ -56,7 +58,7 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
     <span></span>
   </span>
 </p>
-<h3 id="Gemini-3-Deep-Think-sets-a-new-bar-for-scientific-reasoning" class="common-anchor-header">双子座 3 深度思考为科学推理设定了新标准</h3><p>2026 年 2 月 13 日凌晨，谷歌正式发布了双子座 3 Deep Think，这是一次重大升级，我（暂且）称之为这个星球上最强的研究推理模型。毕竟，双子座是唯一通过洗车测试的模型：<em>"我想洗车，而洗车场离我只有 50 米远。我是应该发动汽车开过去，还是步行过去</em>？</p>
+<h3 id="Gemini-3-Deep-Think-sets-a-new-bar-for-scientific-reasoning" class="common-anchor-header">Gemini 3 Deep Think sets a new bar for scientific reasoning</h3><p>In the early hours of February 13, 2026, Google officially released Gemini 3 Deep Think, a major upgrade I’ll (tentatively) call the strongest research and reasoning model on the planet. After all, Gemini was the only model that passed the car wash test: “<em>I want to wash my car and the car wash is just 50 meters away. Should I start my car and drive there or just walk</em>?”</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/car_wash_test_gemini_859ee40db8.png" alt="" class="doc-image" id="" />
@@ -69,11 +71,11 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
     <span></span>
   </span>
 </p>
-<p>它的核心优势是顶级推理和竞赛性能：在 Codeforces 上达到 3455 Elo，相当于世界第八强的竞技程序员。它在 2025 年国际物理、化学和数学奥林匹克竞赛中的书面部分达到了金牌标准。成本效益是另一项突破。ARC-AGI-1 每个任务的运行成本仅为 7.17 美元，与 14 个月前 OpenAI 的 o3-preview 相比，降低了 280 倍到 420 倍。在应用方面，Deep Think 最大的收获是在科学研究领域。专家们已经将其用于专业数学论文的同行评审，以及优化复杂的晶体生长制备工作流程。</p>
-<h3 id="MiniMax-M25-competes-on-cost-and-speed-for-production-workloads" class="common-anchor-header">MiniMax M2.5 在生产工作负载的成本和速度方面具有竞争力</h3><p>同一天，MiniMax 发布了 M2.5，将其定位为生产应用案例中的成本和效率冠军。</p>
-<p>作为业内迭代速度最快的模型系列之一，M2.5 在编码、工具调用、搜索和办公效率方面创造了新的 SOTA 成绩。成本是其最大的卖点：快速版本的运行速度约为 100 TPS，输入价格为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.30</mn><mi>permilliontokens</mi></mrow><annotation encoding="application/x-tex">，输出</annotation></semantics></math></span></span>价格为 0.<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">30</annotation><mrow><mn>per million tokens</mn></mrow><annotation encoding="application/x-tex">，输出价格为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span></span></span></span>0<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.30</span><span class="mord mathnormal">permilliontokens</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">输出价格</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">为 2</span></span></span></span>.40<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">per million</span></span></span></span>tokens。50 TPS 版本的输出成本又降低了一半。速度比之前的 M2.1 提高了 37%，平均 22.8 分钟即可完成 SWE-bench 验证任务，与 Claude Opus 4.6 大致相当。在能力方面，M2.5 支持 Go、Rust 和 Kotlin 等 10 多种语言的全栈开发，涵盖从零到一系统设计到完整代码审查的所有内容。在办公流程方面，其 Office Skills 功能与 Word、PPT 和 Excel 深度集成。当与金融和法律领域知识相结合时，它可以生成可直接使用的研究报告和金融模型。</p>
-<p>这就是高级概述。接下来，让我们看看它们在实际测试中的表现如何。</p>
-<h2 id="Hands-On-Comparisons" class="common-anchor-header">上机比较<button data-href="#Hands-On-Comparisons" class="anchor-icon" translate="no">
+<p>Its core strength is top-tier reasoning and competition performance: it hit 3455 Elo on Codeforces, equivalent to the world’s eighth-best competitive programmer. It reached gold-medal standard on the written portions of the 2025 International Physics, Chemistry, and Math Olympiads. Cost efficiency is another breakthrough. ARC-AGI-1 runs at just $7.17 per task, a 280x to 420x reduction compared to OpenAI’s o3-preview from 14 months earlier. On the applied side, Deep Think’s biggest gains are in scientific research. Experts are already using it for peer review of professional mathematics papers and for optimizing complex crystal growth preparation workflows.</p>
+<h3 id="MiniMax-M25-competes-on-cost-and-speed-for-production-workloads" class="common-anchor-header">MiniMax M2.5 competes on cost and speed for production workloads</h3><p>The same day, MiniMax released M2.5, positioning it as the cost- and efficiency-champion for production use cases.</p>
+<p>As one of the fastest-iterating model families in the industry, M2.5 sets new SOTA results across coding, tool calling, search, and office productivity. Cost is its biggest selling point: the fast version runs at roughly 100 TPS, with input priced at <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.30</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi><mi>s</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>o</mi><mi>u</mi><mi>t</mi><mi>p</mi><mi>u</mi><mi>t</mi><mi>a</mi><mi>t</mi></mrow><annotation encoding="application/x-tex">0.30 per million tokens and output at</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">0.30</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">mi</span><span class="mord mathnormal" style="margin-right:0.01968em;">ll</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mord mathnormal">an</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mord mathnormal">u</span><span class="mord mathnormal">tp</span><span class="mord mathnormal">u</span><span class="mord mathnormal">t</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span></span></span></span>2.40 per million tokens. The 50 TPS version cuts output cost by another half. Speed improved 37% over the previous M2.1, and it completes SWE-bench Verified tasks in an average of 22.8 minutes, roughly matching Claude Opus 4.6. On the capability side, M2.5 supports full-stack development in over 10 languages, including Go, Rust, and Kotlin, covering everything from zero-to-one system design to full code review. For office workflows, its Office Skills feature integrates deeply with Word, PPT, and Excel. When combined with domain knowledge in finance and law, it can generate research reports and financial models that are ready for direct use.</p>
+<p>That’s the high-level overview. Next, let’s look at how they actually perform in hands-on tests.</p>
+<h2 id="Hands-On-Comparisons" class="common-anchor-header">Hands-On Comparisons<button data-href="#Hands-On-Comparisons" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,48 +90,54 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="3D-scene-rendering-Gemini-3-Deep-Think-produces-the-most-realistic-results" class="common-anchor-header">3D 场景渲染：双子座 3 Deep Think 的效果最逼真</h3><p>我们将用户已经在 Gemini 3 Deep Think 上测试过的一个提示通过 GLM-5 和 MiniMax M2.5 进行了直接比较。提示：在单个 HTML 文件中构建一个完整的 Three.js 场景，渲染一个完全三维的室内房间，与博物馆中的古典油画无异。</p>
+    </button></h2><h3 id="3D-scene-rendering-Gemini-3-Deep-Think-produces-the-most-realistic-results" class="common-anchor-header">3D scene rendering: Gemini 3 Deep Think produces the most realistic results</h3><p>We took a prompt that users had already tested on Gemini 3 Deep Think and ran it through GLM-5 and MiniMax M2.5 for a direct comparison. The prompt: build a complete Three.js scene in a single HTML file that renders a fully 3D interior room indistinguishable from a classical oil painting in a museum.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/emily_instgram_0af85c65fb.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>双子座 3 深度思考</p>
+<p>Gemini 3 Deep Think</p>
 <iframe width="352" height="625" src="https://www.youtube.com/embed/Lhg-XsIM_CQ" title="gemini3 deep think test: 3D redering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>GLM-5</p>
 <iframe width="707" height="561" src="https://www.youtube.com/embed/tTuW7qQBO1Y" title="GLM 5 test: 3D scene rendering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>MiniMax M2.5</p>
 <iframe width="594" height="561" src="https://www.youtube.com/embed/KJMhnXqa4Uc" title="minimax m2.5 test: 3D scene rendering" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p><strong>Gemini 3 Deep Think</strong>的效果最为突出。它准确地解释了提示并生成了高质量的三维场景。照明效果最为突出：阴影的方向和落差看起来很自然，清晰地传达了自然光从窗户射入的空间关系。精细的细节也令人印象深刻，包括蜡烛半融化的质感和红色蜡封的材料质量。整体视觉保真度很高。</p>
-<p><strong>GLM-5</strong>制作了详细的物体模型和纹理，但其照明系统存在明显问题。桌子的阴影呈现为坚硬的纯黑色块，没有柔和的过渡。蜡封似乎漂浮在桌面表面，无法正确处理物体与桌面之间的接触关系。这些假象表明，全局照明和空间推理还有改进的余地。</p>
-<p><strong>MiniMax M2.5</strong>无法有效解析复杂的场景描述。输出结果只是无序的粒子运动，这表明在处理具有精确视觉要求的多层语义指令时，在理解和生成方面都存在很大的局限性。</p>
-<h3 id="SVG-generation-all-three-models-handle-it-differently" class="common-anchor-header">SVG 生成：三种模型的处理方式不同</h3><p>
+<p><strong>Gemini 3 Deep Think</strong> delivered the strongest result. It accurately interpreted the prompt and generated a high-quality 3D scene. Lighting was the standout: shadow direction and falloff looked natural, clearly conveying the spatial relationship of natural light coming through a window. Fine details were impressive too, including the half-melted texture of candles and the material quality of red wax seals. Overall visual fidelity was high.</p>
+<p><strong>GLM-5</strong> produced detailed object modeling and texture work, but its lighting system had noticeable issues. Table shadows rendered as hard, pure-black blocks without soft transitions. The wax seal appeared to float above the table surface, failing to handle the contact relationship between objects and the tabletop correctly. These artifacts point to room for improvement in global illumination and spatial reasoning.</p>
+<p><strong>MiniMax M2.5</strong> couldn’t parse the complex scene description effectively. The output was just disordered particle motion, indicating significant limitations in both comprehension and generation when handling multi-layered semantic instructions with precise visual requirements.</p>
+<h3 id="SVG-generation-all-three-models-handle-it-differently" class="common-anchor-header">SVG generation: all three models handle it differently</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/simon_twitter_screenshot_fef1c01cbf.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>提示：</strong>生成一个加利福尼亚棕色鹈鹕骑自行车的 SVG 图形。自行车必须有辐条和形状正确的车架。鹈鹕必须有它特有的大袋子，而且羽毛应该清晰可见。鹈鹕必须清楚地蹬着自行车。图片应显示加州褐鹈鹕的完整繁殖羽色。</p>
-<p><strong>双子座 3 深度思考</strong></p>
+<p><strong>Prompt:</strong> Generate an SVG of a California brown pelican riding a bicycle. The bicycle must have spokes and a correctly shaped bicycle frame. The pelican must have its characteristic large pouch, and there should be a clear indication of feathers. The pelican must be clearly pedaling the bicycle. The image should show the full breeding plumage of the California brown pelican.</p>
+<p><strong>Gemini 3 Deep Think</strong></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/gemini_3_generated_image_182aaefe26.png" alt="Gemini 3 Deep Think" class="doc-image" id="gemini-3-deep-think" />
-   </span> <span class="img-wrapper"> <span>双子座 3 深度思考</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/gemini_3_generated_image_182aaefe26.png" alt="Gemini 3 Deep Think" class="doc-image" id="gemini-3-deep-think" />
+    <span>Gemini 3 Deep Think</span>
+  </span>
+</p>
 <p><strong>GLM-5</strong></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/GLM_5_generated_image_e84302d987.png" alt="GLM-5" class="doc-image" id="glm-5" />
-   </span> <span class="img-wrapper"> <span>GLM-5</span> </span></p>
-<p><strong>迷你型 M2.5</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/GLM_5_generated_image_e84302d987.png" alt="GLM-5" class="doc-image" id="glm-5" />
+    <span>GLM-5</span>
+  </span>
+</p>
+<p><strong>MiniMax M2.5</strong></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/minimax_m2_5_generated_image_06d50f8fa7.png" alt="MiniMax M2.5" class="doc-image" id="minimax-m2.5" />
-   </span> <span class="img-wrapper"> <span>MiniMax M2.5</span> </span></p>
-<p><strong>Gemini 3 Deep Think</strong>制作了最完整的 SVG。鹈鹕的骑行姿势准确无误：重心自然落在座椅上，双脚踩在踏板上，摆出了动感单车的姿势。羽毛纹理细腻，层次分明。一个不足之处是，鹈鹕标志性的喉袋画得过大，使整体比例略有偏差。</p>
-<p><strong>GLM-5</strong>有明显的姿势问题。GLM-5 的双脚正确地放在踏板上，但整体坐姿偏离了自然的骑行姿势，身体与座椅的关系看起来也不协调。尽管如此，它的细节做工还是很扎实的：喉咙袋的比例很好，羽毛纹理的质量也可圈可点。</p>
-<p><strong>MiniMax M2.5</strong>采用了极简风格，完全跳过了背景元素。鹈鹕在自行车上的位置大致正确，但细节处理欠佳。车把的形状不对，羽毛的纹理几乎不存在，脖子太粗，图像中还有一些不应该出现的白色椭圆形伪影。</p>
-<h2 id="How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="common-anchor-header">如何在 GLM-5、MiniMax M2.5 和 Gemin 3 Deep Think 之间做出选择<button data-href="#How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/minimax_m2_5_generated_image_06d50f8fa7.png" alt="MiniMax M2.5" class="doc-image" id="minimax-m2.5" />
+    <span>MiniMax M2.5</span>
+  </span>
+</p>
+<p><strong>Gemini 3 Deep Think</strong> produced the most complete SVG overall. The pelican’s riding posture is accurate: its center of gravity sits naturally on the seat, and its feet rest on the pedals in a dynamic cycling pose. Feather texture is detailed and layered. The one weak spot is that the pelican’s signature throat pouch is drawn too large, which throws off the overall proportions slightly.</p>
+<p><strong>GLM-5</strong> had noticeable posture issues. The feet are placed correctly on the pedals, but the overall sitting position drifts away from a natural riding posture, and the body-to-seat relationship looks off. That said, its detail work is solid: the throat pouch is proportioned well, and the feather texture quality is respectable.</p>
+<p><strong>MiniMax M2.5</strong> went with a minimalist style and skipped background elements entirely. The pelican’s position on the bicycle is roughly correct, but the detail work falls short. The handlebars are the wrong shape, the feather texture is almost nonexistent, the neck is too thick, and there are stray white oval artifacts in the image that shouldn’t be there.</p>
+<h2 id="How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="common-anchor-header">How to Choose Between GLM-5, MiniMax M2.5 and Gemin 3 Deep Think<button data-href="#How-to-Choose-Between-GLM-5-MiniMax-M25-and-Gemin-3-Deep-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,19 +152,19 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在所有测试中，MiniMax M2.5 的输出速度最慢，需要最长的思考和推理时间。GLM-5 性能稳定，速度与 Gemini 3 Deep Think 大致相当。</p>
-<p>以下是我们整理的快速选择指南：</p>
+    </button></h2><p>Across all our tests, MiniMax M2.5 was the slowest to generate output, requiring the longest time for thinking and reasoning. GLM-5 performed consistently and was roughly on par with Gemini 3 Deep Think in speed.</p>
+<p>Here’s a quick selection guide we put together:</p>
 <table>
 <thead>
-<tr><th>核心用例</th><th>推荐模型</th><th>主要优势</th></tr>
+<tr><th>Core Use Case</th><th>Recommended Model</th><th>Key Strengths</th></tr>
 </thead>
 <tbody>
-<tr><td>科学研究、高级推理（物理、化学、数学、复杂算法设计）</td><td>双子座 3 深度思考</td><td>学术竞赛中的金牌表现。顶级科学数据验证。Codeforces 上世界一流的编程竞赛。经过验证的研究应用，包括识别专业论文中的逻辑缺陷。(目前仅限于 Google AI Ultra 订阅者和部分企业用户；每个任务的成本相对较高）。</td></tr>
-<tr><td>开源部署、企业内网定制、全栈开发、办公技能集成</td><td>智浦 GLM-5</td><td>顶级开源模型。强大的系统级工程能力。支持本地部署，成本可控。</td></tr>
-<tr><td>成本敏感型工作负载、多语言编程、跨平台开发（Web/Android/iOS/Windows）、办公兼容性</td><td>MiniMax M2.5</td><td>在 100 TPS 时：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">每</annotation><mrow><mn>百万</mn><mi>输入</mi></mrow><annotation encoding="application/x-tex">令牌 0.30，</annotation></semantics></math></span></span>每百万<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">输入</span></span></span></span>令牌<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">0.30</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base">，<span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">每百万</span><span class="mord mathnormal">输入</span></span></span></span>令牌<span class="katex">0<span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.30</span><span class="mpunct">，</span></span></span></span>每百万输出令牌 2.40。在办公、编码和工具调用基准中获得 SOTA。在 Multi-SWE-Bench 中排名第一。通用性强。Droid/OpenCode 通过率超过 Claude Opus 4.6。</td></tr>
+<tr><td>Scientific research, advanced reasoning (physics, chemistry, math, complex algorithm design)</td><td>Gemini 3 Deep Think</td><td>Gold-medal performance in academic competitions. Top-tier scientific data verification. World-class competitive programming on Codeforces. Proven research applications, including identifying logical flaws in professional papers. (Currently limited to Google AI Ultra subscribers and select enterprise users; per-task cost is relatively high.)</td></tr>
+<tr><td>Open-source deployment, enterprise intranet customization, full-stack development, office skills integration</td><td>Zhipu GLM-5</td><td>Top-ranked open-source model. Strong system-level engineering capabilities. Supports local deployment with manageable costs.</td></tr>
+<tr><td>Cost-sensitive workloads, multi-language programming, cross-platform development (Web/Android/iOS/Windows), office compatibility</td><td>MiniMax M2.5</td><td>At 100 TPS: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.30</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>i</mi><mi>l</mi><mi>l</mi><mi>i</mi><mi>o</mi><mi>n</mi><mi>i</mi><mi>n</mi><mi>p</mi><mi>u</mi><mi>t</mi><mi>t</mi><mi>o</mi><mi>k</mi><mi>e</mi><mi>n</mi><mi>s</mi><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">0.30 per million input tokens,</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">0.30</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">mi</span><span class="mord mathnormal" style="margin-right:0.01968em;">ll</span><span class="mord mathnormal">i</span><span class="mord mathnormal">o</span><span class="mord mathnormal">nin</span><span class="mord mathnormal">p</span><span class="mord mathnormal">u</span><span class="mord mathnormal">tt</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span><span class="mord mathnormal">e</span><span class="mord mathnormal">n</span><span class="mord mathnormal">s</span><span class="mpunct">,</span></span></span></span>2.40 per million output tokens. SOTA across office, coding, and tool-calling benchmarks. Ranked first on the Multi-SWE-Bench. Strong generalization. Pass rates on Droid/OpenCode exceed Claude Opus 4.6.</td></tr>
 </tbody>
 </table>
-<h2 id="RAG-Tutorial-Wire-Up-GLM-5-with-Milvus-for-a-Knowledge-Base" class="common-anchor-header">RAG 教程：用 Milvus 为 GLM-5 连接知识库<button data-href="#RAG-Tutorial-Wire-Up-GLM-5-with-Milvus-for-a-Knowledge-Base" class="anchor-icon" translate="no">
+<h2 id="RAG-Tutorial-Wire-Up-GLM-5-with-Milvus-for-a-Knowledge-Base" class="common-anchor-header">RAG Tutorial: Wire Up GLM-5 with Milvus for a Knowledge Base<button data-href="#RAG-Tutorial-Wire-Up-GLM-5-with-Milvus-for-a-Knowledge-Base" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,21 +179,21 @@ origin: 'https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GLM-5 和 MiniMax M2.5 均可通过<a href="https://openrouter.ai/">OpenRouter</a> 获取。注册并创建<code translate="no">OPENROUTER_API_KEY</code> 即可开始使用。</p>
-<p>本教程使用 Zhipu 的 GLM-5 作为 LLM 示例。要使用 MiniMax 代替，只需将模型名称改为<code translate="no">minimax/minimax-m2.5</code> 。</p>
-<h3 id="Dependencies-and-environment-setup" class="common-anchor-header">依赖项和环境设置</h3><p>安装或升级 pymilvus、openai、requests 和 tqdm 至最新版本：</p>
+    </button></h2><p>Both GLM-5 and MiniMax M2.5 are available through <a href="https://openrouter.ai/">OpenRouter</a>. Sign up and create an <code translate="no">OPENROUTER_API_KEY</code> to get started.</p>
+<p>This tutorial uses Zhipu’s GLM-5 as the example LLM. To use MiniMax instead, just swap the model name to <code translate="no">minimax/minimax-m2.5</code>.</p>
+<h3 id="Dependencies-and-environment-setup" class="common-anchor-header">Dependencies and environment setup</h3><p>Install or upgrade pymilvus, openai, requests, and tqdm to their latest versions:</p>
 <pre><code translate="no">pip install --upgrade pymilvus openai requests tqdm 
 <button class="copy-code-btn"></button></code></pre>
-<p>本教程使用 GLM-5 作为 LLM，使用 OpenAI 的 text-embedding-3-small 作为嵌入模型。</p>
+<p>This tutorial uses GLM-5 as the LLM and OpenAI’s text-embedding-3-small as the embedding model.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;OPENROUTER_API_KEY&quot;</span>] = <span class="hljs-string">&quot;**********&quot;</span> 
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Data-preparation" class="common-anchor-header">数据准备</h3><p>我们将使用 Milvus 2.4.x 文档中的常见问题页面作为我们的私人知识库。</p>
-<p>下载压缩文件，并将文档解压缩到<code translate="no">milvus_docs</code> 文件夹中：</p>
+<h3 id="Data-preparation" class="common-anchor-header">Data preparation</h3><p>We’ll use the FAQ pages from the Milvus 2.4.x documentation as our private knowledge base.</p>
+<p>Download the zip file and extract the docs into a <code translate="no">milvus_docs</code> folder:</p>
 <pre><code translate="no">wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>从<code translate="no">milvus_docs/en/faq</code> 加载所有 Markdown 文件。我们在<code translate="no">&quot;# &quot;</code> 上对每个文件进行了拆分，以便按主要部分大致区分内容：</p>
+<p>Load all the Markdown files from <code translate="no">milvus_docs/en/faq</code>. We split each file on <code translate="no">&quot;# &quot;</code> to roughly separate the content by major sections:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 text_lines = []
 <span class="hljs-keyword">for</span> file_path <span class="hljs-keyword">in</span> glob(<span class="hljs-string">&quot;milvus_docs/en/faq/*.md&quot;</span>, recursive=<span class="hljs-literal">True</span>):
@@ -193,14 +201,14 @@ text_lines = []
         file_text = file.read()
     text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="LLM-and-embedding-model-setup" class="common-anchor-header">LLM 和 Embeddings 模型设置</h3><p>我们将使用 GLM-5 作为 LLM，使用 text-embedding-3-small 作为嵌入模型：</p>
+<h3 id="LLM-and-embedding-model-setup" class="common-anchor-header">LLM and embedding model setup</h3><p>We’ll use GLM-5 as the LLM and text-embedding-3-small as the embedding model:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
 glm_client = <span class="hljs-title class_">OpenAI</span>(
     api_key=os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;OPENROUTER_API_KEY&quot;</span>],
     base_url=<span class="hljs-string">&quot;https://openrouter.ai/api/v1&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>生成一个测试嵌入并打印其尺寸和前几个元素：</p>
+<p>Generate a test embedding and print its dimensions and first few elements:</p>
 <pre><code translate="no">EMBEDDING_MODEL = <span class="hljs-string">&quot;openai/text-embedding-3-small&quot;</span>  <span class="hljs-comment"># OpenRouter embedding model</span>
 resp = glm_client.embeddings.create(
     model=EMBEDDING_MODEL,
@@ -211,26 +219,26 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embeddings[<span cla
 <span class="hljs-built_in">print</span>(embedding_dim)
 <span class="hljs-built_in">print</span>(test_embeddings[<span class="hljs-number">0</span>][:<span class="hljs-number">10</span>])
 <button class="copy-code-btn"></button></code></pre>
-<p>输出：</p>
+<p>Output:</p>
 <pre><code translate="no"><span class="hljs-number">1536</span>
 [<span class="hljs-meta">0.010637564584612846, -0.017222722992300987, 0.05409347265958786, -0.04377825930714607, -0.017545074224472046, -0.04196695610880852, -0.0011963422875851393, 0.03837504982948303, 0.0008855042979121208, 0.015181170776486397</span>]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Load-data-into-Milvus" class="common-anchor-header">将数据载入 Milvus</h3><p><strong>创建 Collections：</strong></p>
+<h3 id="Load-data-into-Milvus" class="common-anchor-header">Load data into Milvus</h3><p><strong>Create a collection:</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>关于 MilvusClient 配置的说明：</p>
+<p>A note on MilvusClient configuration:</p>
 <ul>
-<li><p>将 URI 设置为本地文件（如<code translate="no">./milvus.db</code> ）是最简单的选项。它会自动使用 Milvus Lite 将所有数据存储到该文件中。</p></li>
-<li><p>对于大规模数据，可以在 Docker 或 Kubernetes 上部署性能更强的 Milvus 服务器。在这种情况下，请使用服务器 URI（如<code translate="no">http://localhost:19530</code> ）。</p></li>
-<li><p>要使用 Zilliz Cloud（Milvus 的完全托管云版本），请从 Zilliz Cloud 控制台将 URI 和令牌设置为公共端点和 API 密钥。</p></li>
+<li><p>Setting the URI to a local file (e.g., <code translate="no">./milvus.db</code>) is the simplest option. It automatically uses Milvus Lite to store all data in that file.</p></li>
+<li><p>For large-scale data, you can deploy a more performant Milvus server on Docker or Kubernetes. In that case, use the server URI (e.g., <code translate="no">http://localhost:19530</code>).</p></li>
+<li><p>To use Zilliz Cloud (the fully managed cloud version of Milvus), set the URI and token to the Public Endpoint and API key from your Zilliz Cloud console.</p></li>
 </ul>
-<p>检查 Collections 是否已存在，如果已存在，则将其删除：</p>
+<p>Check whether the collection already exists, and drop it if so:</p>
 <pre><code translate="no">if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<p>使用指定参数创建新 Collections。如果不提供字段定义，Milvus 会自动创建一个默认的<code translate="no">id</code> 字段作为主键，并为向量数据创建一个<code translate="no">vector</code> 字段。保留的 JSON 字段存储 Schema 中未定义的任何字段和值：</p>
+<p>Create a new collection with the specified parameters. If you don’t provide field definitions, Milvus automatically creates a default <code translate="no">id</code> field as the primary key and a <code translate="no">vector</code> field for vector data. A reserved JSON field stores any fields and values not defined in the schema:</p>
 <pre><code translate="no">milvus_client.<span class="hljs-title function_">create_collection</span>(
     collection_name=collection_name,
     dimension=embedding_dim,
@@ -238,7 +246,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Insert-data" class="common-anchor-header">插入数据</h3><p>遍历文本行，生成 Embeddings，并将数据插入 Milvus。这里的<code translate="no">text</code> 字段没有在 Schema 中定义。它会自动添加为一个动态字段，由 Milvus 的预留 JSON 字段支持：</p>
+<h3 id="Insert-data" class="common-anchor-header">Insert data</h3><p>Iterate through the text lines, generate embeddings, and insert the data into Milvus. The <code translate="no">text</code> field here isn’t defined in the schema. It’s automatically added as a dynamic field backed by Milvus’s reserved JSON field:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 data = []
 resp = glm_client.embeddings.create(model=EMBEDDING_MODEL, <span class="hljs-built_in">input</span>=text_lines)
@@ -247,15 +255,15 @@ doc_embeddings = [d.embedding <span class="hljs-keyword">for</span> d <span clas
     data.append({<span class="hljs-string">&quot;id&quot;</span>: i, <span class="hljs-string">&quot;vector&quot;</span>: doc_embeddings[i], <span class="hljs-string">&quot;text&quot;</span>: line})
 milvus_client.insert(collection_name=collection_name, data=data)
 <button class="copy-code-btn"></button></code></pre>
-<p>输出：</p>
+<p>Output:</p>
 <pre><code translate="no">Creating embeddings: 100%|██████████████████████████| 72/72 [00:00&lt;00:00, 125203.10it/s]
 {<span class="hljs-string">&#x27;insert_count&#x27;</span>: 72, <span class="hljs-string">&#x27;ids&#x27;</span>: [0, 1, 2, ..., 71], <span class="hljs-string">&#x27;cost&#x27;</span>: 0}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Build-the-RAG-pipeline" class="common-anchor-header">构建 RAG 管道</h3><p><strong>检索相关文档：</strong></p>
-<p>让我们提出一个有关 Milvus 的常见问题：</p>
+<h3 id="Build-the-RAG-pipeline" class="common-anchor-header">Build the RAG pipeline</h3><p><strong>Retrieve relevant documents:</strong></p>
+<p>Let’s ask a common question about Milvus:</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>在 Collections 中搜索前 3 个最相关的结果：</p>
+<p>Search the collection for the top 3 most relevant results:</p>
 <pre><code translate="no">resp = glm_client.embeddings.create(model=EMBEDDING_MODEL, <span class="hljs-built_in">input</span>=[question])
 question_embedding = resp.data[<span class="hljs-number">0</span>].embedding
 search_res = milvus_client.search(
@@ -266,7 +274,7 @@ search_res = milvus_client.search(
     output_fields=[<span class="hljs-string">&quot;text&quot;</span>],
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>结果按距离排序，最近的优先：</p>
+<p>Results are sorted by distance, nearest first:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 
 retrieved_lines_with_distances = [
@@ -289,13 +297,13 @@ retrieved_lines_with_distances = [
     ]
 ]
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>使用 LLM 生成回复：</strong></p>
-<p>将检索到的文档合并为上下文字符串：</p>
+<p><strong>Generate a response with the LLM:</strong></p>
+<p>Combine the retrieved documents into a context string:</p>
 <pre><code translate="no">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>设置系统和用户提示。根据从 Milvus 检索到的文档建立用户提示：</p>
+<p>Set up the system and user prompts. The user prompt is built from the documents retrieved from Milvus:</p>
 <pre><code translate="no">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 Human: You are an AI assistant. You can find answers to the questions in the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -309,7 +317,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>调用 GLM-5 生成最终答案：</p>
+<p>Call GLM-5 to generate the final answer:</p>
 <pre><code translate="no">response = glm_client.chat.completions.create(
     model=<span class="hljs-string">&quot;z-ai/glm-5&quot;</span>,
     messages=[
@@ -319,7 +327,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 )
 <span class="hljs-built_in">print</span>(response.choices[<span class="hljs-number">0</span>].message.content)
 <button class="copy-code-btn"></button></code></pre>
-<p>GLM-5 返回一个结构良好的答案：</p>
+<p>GLM-5 returns a well-structured answer:</p>
 <pre><code translate="no">Based <span class="hljs-keyword">on</span> the provided context, Milvus stores data <span class="hljs-keyword">in</span> two main ways, depending <span class="hljs-keyword">on</span> the data type:
 
 <span class="hljs-number">1.</span> Inserted Data
@@ -332,7 +340,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
    - What it includes: data generated within Milvus modules.
    - How it <span class="hljs-keyword">is</span> stored: <span class="hljs-keyword">in</span> etcd.
 </span><button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion-Pick-the-Model-Then-Build-the-Pipeline" class="common-anchor-header">结论：选择模型，然后构建管道<button data-href="#Conclusion-Pick-the-Model-Then-Build-the-Pipeline" class="anchor-icon" translate="no">
+<h2 id="Conclusion-Pick-the-Model-Then-Build-the-Pipeline" class="common-anchor-header">Conclusion: Pick the Model, Then Build the Pipeline<button data-href="#Conclusion-Pick-the-Model-Then-Build-the-Pipeline" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -347,15 +355,15 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>这三种模型都很强大，但它们的强项各不相同。当推理深度比成本更重要时，Gemini 3 Deep Think 是最佳选择。对于需要本地部署和系统级工程的团队来说，GLM-5 是最佳的开源选择。MiniMax M2.5 适合在生产工作负载中优化吞吐量和预算。</p>
-<p>选择什么样的模型只是成功的一半。要将上述任何一种模式转化为有用的应用，您都需要一个能够随数据扩展的检索层。这正是 Milvus 的优势所在。上述 RAG 教程适用于任何与 OpenAI 兼容的模型，因此在 GLM-5、MiniMax M2.5 或任何未来版本之间切换只需更改一行即可。</p>
-<p>如果您正在设计本地或内部部署的 AI Agents，并希望更详细地讨论存储架构、会话设计或安全回滚，请随时加入我们的<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack 频道</a>。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>预约 20 分钟的一对一服务，获得个性化指导。</p>
-<p>如果您想更深入地了解如何构建人工智能 Agents，这里有更多资源可以帮助您入门。</p>
+    </button></h2><p>All three models are strong, but they’re strong at different things. Gemini 3 Deep Think is the pick when reasoning depth matters more than cost. GLM-5 is the best open-source option for teams that need local deployment and system-level engineering. MiniMax M2.5 makes sense when you’re optimizing for throughput and budget across production workloads.</p>
+<p>The model you choose is only half the equation. To turn any of these into a useful application, you need a retrieval layer that can scale with your data. That’s where Milvus fits in. The RAG tutorial above works with any OpenAI-compatible model, so swapping between GLM-5, MiniMax M2.5, or any future release takes a single line change.</p>
+<p>If you’re designing local or on-prem AI agents and want to discuss storage architecture, session design, or safe rollback in more detail, feel free to join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a>.You can also book a 20-minute one-on-one through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> for personalized guidance.</p>
+<p>If you want to go deeper into building AI Agents, here are more resources to help you get started.</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md">如何使用 Agents 和 Milvus 构建生产就绪的多代理系统</a></p></li>
-<li><p><a href="https://zilliz.com/learn">为您的 RAG 管道选择合适的 Embeddings 模型</a></p></li>
-<li><p><a href="https://zilliz.com/learn">如何使用 Milvus 构建人工智能 Agents</a></p></li>
-<li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">什么是 OpenClaw？开源人工智能代理完全指南</a></p></li>
-<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw教程：为本地人工智能助理连接到Slack</a></p></li>
-<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">用 LangGraph 和 Milvus 构建爪机式人工智能代理</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md">How to Build Production-Ready Multi-Agent Systems with Agno and Milvus</a></p></li>
+<li><p><a href="https://zilliz.com/learn">Choosing the Right Embedding Model for Your RAG Pipeline</a></p></li>
+<li><p><a href="https://zilliz.com/learn">How to Build an AI Agent with Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a></p></li>
+<li><p><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></p></li>
+<li><p><a href="https://milvus.io/blog/clawdbot-long-running-ai-agents-langgraph-milvus.md">Build Clawdbot-Style AI Agents with LangGraph &amp; Milvus</a></p></li>
 </ul>

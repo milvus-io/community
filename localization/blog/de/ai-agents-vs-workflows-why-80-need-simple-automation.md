@@ -1,14 +1,13 @@
 ---
 id: ai-agents-vs-workflows-why-80-need-simple-automation.md
-title: >-
-  AI-Agenten oder Workflows? Warum Sie bei 80 % der Automatisierungsaufgaben auf
-  Agenten verzichten sollten
+title: |
+  AI Agents or Workflows? Why You Should Skip Agents for 80% of Automation Tasks
 author: Min Yin
 date: 2025-08-11T00:00:00.000Z
 desc: >-
-  Die Integration von Refly und Milvus bietet einen pragmatischen Ansatz für die
-  Automatisierung - einen Ansatz, der Zuverlässigkeit und Benutzerfreundlichkeit
-  über unnötige Komplexität stellt.
+  The integration of Refly and Milvus offers a pragmatic approach to
+  automation—one that values reliability and ease of use over unnecessary
+  complexity.
 cover: >-
   assets.zilliz.com/AI_Agents_or_Workflows_Why_You_Should_Skip_Agents_for_80_of_Automation_Tasks_9f54386e8a.png
 tag: Tutorials
@@ -20,11 +19,11 @@ meta_title: |
   AI Agents or Workflows? Why Skip Agents for 80% of Automation
 origin: 'https://milvus.io/blog/ai-agents-vs-workflows-why-80-need-simple-automation.md'
 ---
-<p>KI-Agenten sind derzeit allgegenwärtig - von Programmier-Copiloten bis hin zu Kundendienst-Bots - und sie können atemberaubend gut in komplexen Denkprozessen sein. Wie viele von Ihnen, liebe ich sie. Aber nachdem ich sowohl Agenten als auch Automatisierungsworkflows entwickelt habe, habe ich eine einfache Wahrheit gelernt: <strong>Agenten sind nicht die beste Lösung für jedes Problem.</strong></p>
-<p>Als ich zum Beispiel ein Multi-Agenten-System mit CrewAI für die Dekodierung von ML gebaut habe, wurden die Dinge schnell chaotisch. Forschungsagenten ignorierten Webcrawler zu 70 % der Zeit. Zusammenfassende Agenten ließen Zitate fallen. Die Koordination brach immer dann zusammen, wenn die Aufgaben nicht kristallklar waren.</p>
-<p>Und das gilt nicht nur für Experimente. Viele von uns pendeln bereits zwischen ChatGPT für das Brainstorming, Claude für die Codierung und einem halben Dutzend APIs für die Datenverarbeitung hin und her und denken im Stillen: <em>Es muss doch einen besseren Weg geben, all das zusammen zu bringen.</em></p>
-<p>Manchmal ist die Antwort ein Agent. Häufiger ist es ein <strong>gut durchdachter KI-Workflow</strong>, der Ihre vorhandenen Tools zu etwas Leistungsfähigem zusammenfügt, ohne die unvorhersehbare Komplexität.</p>
-<h2 id="Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="common-anchor-header">Aufbau intelligenter KI-Workflows mit Refly und Milvus<button data-href="#Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="anchor-icon" translate="no">
+<p>AI agents are everywhere right now—from coding copilots to customer service bots—and they can be jaw-droppingly good at complex reasoning. Like many of you, I love them. But after building both agents and automation workflows, I’ve learned a simple truth: <strong>agents aren’t the best solution for every problem.</strong></p>
+<p>For example, when I built a multi-agent system with CrewAI for decoding ML, things got messy fast. Research agents ignored web crawlers 70% of the time. Summary agents dropped citations. Coordination fell apart whenever tasks weren’t crystal clear.</p>
+<p>And it’s not just in experiments. Many of us are already bouncing between ChatGPT for brainstorming, Claude for coding, and a half-dozen APIs for data processing—quietly thinking: <em>there has to be a better way to make all this work together.</em></p>
+<p>Sometimes, the answer is an agent. More often, it’s a <strong>well-designed AI workflow</strong> that stitches your existing tools into something powerful, without the unpredictable complexity.</p>
+<h2 id="Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="common-anchor-header">Building Smarter AI Workflows with Refly and Milvus<button data-href="#Building-Smarter-AI-Workflows-with-Refly-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,44 +38,44 @@ origin: 'https://milvus.io/blog/ai-agents-vs-workflows-why-80-need-simple-automa
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ich weiß, dass einige von Ihnen bereits den Kopf schütteln: "Workflows? Die sind doch starr. Sie sind nicht intelligent genug für echte KI-Automatisierung." Das stimmt - die meisten Workflows sind starr, weil sie nach dem Vorbild von Fließbändern alter Schule gestaltet sind: Schritt A → Schritt B → Schritt C, keine Abweichung erlaubt.</p>
-<p>Aber das eigentliche Problem ist nicht die <em>Idee</em> der Workflows, sondern die <em>Ausführung</em>. Wir müssen uns nicht mit spröden, linearen Pipelines zufrieden geben. Wir können intelligentere Arbeitsabläufe entwerfen, die sich an den Kontext anpassen, mit Kreativität arbeiten und dennoch vorhersehbare Ergebnisse liefern.</p>
-<p>In diesem Leitfaden bauen wir ein komplettes System zur Erstellung von Inhalten mit Refly und Milvus auf, um zu zeigen, warum KI-Workflows komplexe Multi-Agenten-Architekturen übertreffen können, vor allem, wenn Sie Wert auf Geschwindigkeit, Zuverlässigkeit und Wartungsfreundlichkeit legen.</p>
-<h3 id="The-Tools-We’re-Using" class="common-anchor-header">Die von uns verwendeten Tools</h3><p><a href="https://refly.ai/"><strong>Refly</strong></a>: Eine Open-Source-Plattform für die Erstellung von KI-Inhalten, die auf einem "Free Canvas"-Konzept basiert.</p>
+    </button></h2><p>I know some of you are already shaking your heads: “Workflows? Those are rigid. They’re not smart enough for real AI automation.” Fair point—most workflows are rigid, because they’re modeled after old-school assembly lines: step A → step B → step C, no deviation allowed.</p>
+<p>But the real issue isn’t the <em>idea</em> of workflows—it’s the <em>execution</em>. We don’t have to settle for brittle, linear pipelines. We can design smarter workflows that adapt to context, flex with creativity, and still deliver predictable results.</p>
+<p>In this guide, we’ll build a complete content creation system using Refly and Milvus to show why AI workflows can outperform complex multi-agent architectures, especially if you care about speed, reliability, and maintainability.</p>
+<h3 id="The-Tools-We’re-Using" class="common-anchor-header">The Tools We’re Using</h3><p><a href="https://refly.ai/"><strong>Refly</strong></a>: An open-source, AI-native content creation platform built around a “free canvas” concept.</p>
 <ul>
-<li><p><strong>Kernfunktionen:</strong> Intelligente Leinwand, Wissensmanagement, Multithreading-Dialog und professionelle Erstellungstools.</p></li>
-<li><p><strong>Warum es nützlich ist:</strong> Dank der Drag-and-Drop-Workflow-Erstellung können Sie Tools zu zusammenhängenden Automatisierungssequenzen verketten, ohne sich auf eine starre, einseitige Ausführung festlegen zu müssen.</p></li>
+<li><p><strong>Core capabilities:</strong> intelligent canvas, knowledge management, multi-threaded dialogue, and professional creation tools.</p></li>
+<li><p><strong>Why it’s useful:</strong> Drag-and-drop workflow building lets you chain tools together into cohesive automation sequences, without locking you into rigid, single-path execution.</p></li>
 </ul>
-<p><a href="https://milvus.io/"><strong>Milvus</strong></a>: Eine Open-Source-Vektordatenbank für die Datenebene.</p>
+<p><a href="https://milvus.io/"><strong>Milvus</strong></a>: An open-source vector database handling the data layer.</p>
 <ul>
-<li><p><strong>Warum das wichtig ist:</strong> Bei der Erstellung von Inhalten geht es hauptsächlich darum, vorhandene Informationen zu finden und neu zu kombinieren. Herkömmliche Datenbanken können gut mit strukturierten Daten umgehen, aber die meisten kreativen Arbeiten beinhalten unstrukturierte Formate - Dokumente, Bilder, Videos.</p></li>
-<li><p><strong>Was es bringt:</strong> Milvus nutzt integrierte Einbettungsmodelle, um unstrukturierte Daten als Vektoren zu kodieren und eine semantische Suche zu ermöglichen, damit Ihre Arbeitsabläufe relevanten Kontext mit einer Latenzzeit von Millisekunden abrufen können. Über Protokolle wie MCP lässt sich Milvus nahtlos in Ihre KI-Frameworks integrieren, so dass Sie Daten in natürlicher Sprache abfragen können, anstatt sich mit der Datenbanksyntax herumzuschlagen.</p></li>
+<li><p><strong>Why it matters:</strong> Content creation is mostly about finding and recombining existing information. Traditional databases handle structured data well, but most creative work involves unstructured formats—documents, images, videos.</p></li>
+<li><p><strong>What it adds:</strong> Milvus leverages integrated embedding models to encode unstructured data as vectors, enabling semantic search so your workflows can retrieve relevant context with millisecond latency. Through protocols like MCP, it integrates seamlessly with your AI frameworks, letting you query data in natural language instead of wrestling with database syntax.</p></li>
 </ul>
-<h3 id="Setting-Up-Your-Environment" class="common-anchor-header">Einrichten Ihrer Umgebung</h3><p>Ich zeige Ihnen, wie Sie diesen Workflow lokal einrichten.</p>
-<p><strong>Schnelle Einrichtungs-Checkliste:</strong></p>
+<h3 id="Setting-Up-Your-Environment" class="common-anchor-header">Setting Up Your Environment</h3><p>Let me walk you through setting this workflow up locally.</p>
+<p><strong>Quick setup checklist:</strong></p>
 <ul>
-<li><p>Ubuntu 20.04+ (oder ein ähnliches Linux)</p></li>
+<li><p>Ubuntu 20.04+ (or similar Linux)</p></li>
 <li><p>Docker + Docker Compose</p></li>
-<li><p>Ein API-Schlüssel von einem LLM, der Funktionsaufrufe unterstützt. In dieser Anleitung verwende ich den LLM von <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>.</p></li>
+<li><p>An API key from any LLM that supports function calling. Here in this guide, I’ll use <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>’s LLM.</p></li>
 </ul>
-<p><strong>System-Anforderungen</strong></p>
+<p><strong>System Requirements</strong></p>
 <ul>
-<li><p>CPU: Mindestens 8 Kerne (16 Kerne empfohlen)</p></li>
-<li><p>Speicher: mindestens 16 GB (32 GB empfohlen)</p></li>
-<li><p>Speicherplatz: Mindestens 100 GB SSD (500 GB empfohlen)</p></li>
-<li><p>Netzwerk: Stabile Internetverbindung erforderlich</p></li>
+<li><p>CPU: 8 cores minimum (16 cores recommended)</p></li>
+<li><p>Memory: 16GB minimum (32GB recommended)</p></li>
+<li><p>Storage: 100GB SSD minimum (500GB recommended)</p></li>
+<li><p>Network: Stable internet connection required</p></li>
 </ul>
-<p><strong>Software-Abhängigkeiten</strong></p>
+<p><strong>Software Dependencies</strong></p>
 <ul>
-<li><p>Betriebssystem: Linux (Ubuntu 20.04+ empfohlen)</p></li>
-<li><p>Containerisierung: Docker + Docker Compose</p></li>
-<li><p>Python: Version 3.11 oder höher</p></li>
-<li><p>Sprachmodell: Jedes Modell, das Funktionsaufrufe unterstützt (Online-Dienste oder Ollama-Offline-Bereitstellung funktionieren beide)</p></li>
+<li><p>Operating System: Linux (Ubuntu 20.04+ recommended)</p></li>
+<li><p>Containerization: Docker + Docker Compose</p></li>
+<li><p>Python: Version 3.11 or higher</p></li>
+<li><p>Language Model: Any model supporting function calls (online services or Ollama offline deployment both work)</p></li>
 </ul>
-<h3 id="Step-1-Deploy-the-Milvus-Vector-Database" class="common-anchor-header">Schritt 1: Bereitstellen der Milvus-Vektor-Datenbank</h3><p><strong>1.1 Milvus herunterladen</strong></p>
+<h3 id="Step-1-Deploy-the-Milvus-Vector-Database" class="common-anchor-header">Step 1: Deploy the Milvus Vector Database</h3><p><strong>1.1 Download Milvus</strong></p>
 <pre><code translate="no">wget https://github.com/milvus-io/milvus/releases/download/v2.5.12/milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>1.2 Milvus-Dienste starten</strong></p>
+<p><strong>1.2 Launch Milvus services</strong></p>
 <pre><code translate="no">docker-compose up -d
 docker-compose ps -a
 <button class="copy-code-btn"></button></code></pre>
@@ -86,15 +85,15 @@ docker-compose ps -a
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Deploy-the-Refly-Platform" class="common-anchor-header">Schritt 2: Bereitstellen der Refly-Plattform</h3><p><strong>2.1 Klonen Sie das Repository</strong></p>
-<p>Sie können für alle Umgebungsvariablen Standardwerte verwenden, es sei denn, Sie haben spezielle Anforderungen:</p>
+<h3 id="Step-2-Deploy-the-Refly-Platform" class="common-anchor-header">Step 2: Deploy the Refly Platform</h3><p><strong>2.1 Clone the repository</strong></p>
+<p>You can use default values for all environment variables unless you have specific requirements:</p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/refly-ai/refly.git
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-built_in">cd</span> deploy/docker
 <span class="hljs-built_in">cp</span> ../../apps/api/.env.example .<span class="hljs-built_in">env</span> <span class="hljs-comment"># copy the example api env file</span>
 docker compose up -d
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2.2 Überprüfen des Dienststatus</strong></p>
+<p><strong>2.2 Verify service status</strong></p>
 <pre><code translate="no">docker ps -a
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -103,24 +102,24 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Set-Up-MCP-Services" class="common-anchor-header">Schritt 3: Einrichten der MCP-Dienste</h3><p><strong>3.1 Herunterladen des Milvus MCP-Servers</strong></p>
+<h3 id="Step-3-Set-Up-MCP-Services" class="common-anchor-header">Step 3: Set Up MCP Services</h3><p><strong>3.1 Download the Milvus MCP server</strong></p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/zilliztech/mcp-server-milvus.git
 <span class="hljs-built_in">cd</span> mcp-server-milvus
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3.2 Starten Sie den MCP-Dienst</strong></p>
-<p>In diesem Beispiel wird der SSE-Modus verwendet. Ersetzen Sie die URI durch Ihren verfügbaren Milvus-Dienst-Endpunkt:</p>
+<p><strong>3.2 Start the MCP service</strong></p>
+<p>This example uses SSE mode. Replace the URI with your available Milvus service endpoint:</p>
 <pre><code translate="no">uv run src/mcp_server_milvus/server.py --sse --milvus-uri http://localhost:19530 --port 8000
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3.3 Bestätigen Sie, dass der MCP-Dienst läuft</strong></p>
+<p><strong>3.3 Confirm MCP service is running</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_b755922c41.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Configuration-and-Setup" class="common-anchor-header">Schritt 4: Konfiguration und Einrichtung</h3><p>Jetzt, wo Ihre Infrastruktur läuft, können wir alles so konfigurieren, dass es nahtlos zusammenarbeitet.</p>
-<p><strong>4.1 Zugriff auf die Refly-Plattform</strong></p>
-<p>Navigieren Sie zu Ihrer lokalen Refly-Instanz:</p>
+<h3 id="Step-4-Configuration-and-Setup" class="common-anchor-header">Step 4: Configuration and Setup</h3><p>Now that your infrastructure is running, let’s configure everything to work together seamlessly.</p>
+<p><strong>4.1 Access the Refly platform</strong></p>
+<p>Navigate to your local Refly instance:</p>
 <pre><code translate="no"><span class="hljs-attr">http</span>:<span class="hljs-comment">//192.168.7.148:5700</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -129,7 +128,7 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<p><strong>4.2 Erstellen Sie Ihr Konto</strong></p>
+<p><strong>4.2 Create your account</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/42_4b8af22fe3.png" alt="" class="doc-image" id="" />
@@ -142,26 +141,26 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<p><strong>4.3 Konfigurieren Sie Ihr Sprachmodell</strong></p>
-<p>Für diesen Leitfaden verwenden wir <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>. Registrieren Sie sich zunächst und erhalten Sie Ihren API-Schlüssel.</p>
-<p><strong>4.4 Fügen Sie Ihren Modellanbieter hinzu</strong></p>
-<p>Geben Sie den API-Schlüssel ein, den Sie im vorherigen Schritt erhalten haben:</p>
+<p><strong>4.3 Configure your language model</strong></p>
+<p>For this guide, we’ll use <a href="https://platform.moonshot.ai/docs/introduction#text-generation-model">Moonshot</a>. First, register and obtain your API key.</p>
+<p><strong>4.4 Add your model provider</strong></p>
+<p>Enter the API key you obtained in the previous step:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/44_b085f9a263.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>4.5 Konfigurieren Sie das LLM-Modell</strong></p>
-<p>Stellen Sie sicher, dass Sie ein Modell auswählen, das Funktionsaufrufe unterstützt, da dies für die Workflow-Integrationen, die wir erstellen werden, unerlässlich ist:</p>
+<p><strong>4.5 Configure the LLM model</strong></p>
+<p>Make sure to select a model that supports function calling capabilities, as this is essential for the workflow integrations we’ll be building:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/45_a05213d0fa.pngQ" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>4.6 Integrieren Sie den Milvus-MCP-Dienst</strong></p>
-<p>Beachten Sie, dass die Webversion keine Verbindungen vom Typ stdio unterstützt, daher verwenden wir den HTTP-Endpunkt, den wir zuvor eingerichtet haben:</p>
+<p><strong>4.6 Integrate Milvus-MCP service</strong></p>
+<p>Note that the web version doesn’t support stdio-type connections, so we’ll use the HTTP endpoint we set up earlier:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/46_027e21e479.png" alt="" class="doc-image" id="" />
@@ -174,48 +173,48 @@ docker compose up -d
     <span></span>
   </span>
 </p>
-<p>Ausgezeichnet! Nachdem nun alles konfiguriert ist, wollen wir das System anhand einiger praktischer Beispiele in Aktion sehen.</p>
-<p><strong>4.7 Beispiel: Effizientes Abrufen von Vektoren mit MCP-Milvus-Server</strong></p>
-<p>Dieses Beispiel zeigt, wie der <strong>MCP-Milvus-Server</strong> als Middleware zwischen Ihren KI-Modellen und den Milvus-Vektor-Datenbankinstanzen arbeitet. Er agiert wie ein Übersetzer - er nimmt natürlichsprachliche Anfragen von Ihrem KI-Modell an, konvertiert sie in die richtigen Datenbankabfragen und gibt die Ergebnisse zurück, so dass Ihre Modelle mit Vektordaten arbeiten können, ohne eine Datenbanksyntax zu kennen.</p>
-<p><strong>4.7.1 Erstellen Sie eine neue Leinwand</strong></p>
+<p>Excellent! With everything configured, let’s see this system in action through some practical examples.</p>
+<p><strong>4.7 Example: Efficient Vector Retrieval with MCP-Milvus-Server</strong></p>
+<p>This example shows how the <strong>MCP-Milvus-Server</strong> works as middleware between your AI models and Milvus vector database instances. It acts like a translator—accepting natural language requests from your AI model, converting them into the right database queries, and returning the results—so your models can work with vector data without knowing any database syntax.</p>
+<p><strong>4.7.1 Create a new canvas</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/471_a684e275ed.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>4.7.2 Starten Sie eine Konversation</strong></p>
-<p>Öffnen Sie die Dialogschnittstelle, wählen Sie Ihr Modell aus, geben Sie Ihre Frage ein und senden Sie.</p>
-<p><strong>4.7.3 Überprüfen Sie die Ergebnisse</strong></p>
+<p><strong>4.7.2 Start a conversation</strong></p>
+<p>Open the dialogue interface, select your model, input your question, and send.</p>
+<p><strong>4.7.3 Review the results</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/473_7c24a28999.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Was hier passiert, ist ziemlich bemerkenswert: Wir haben gerade gezeigt, wie eine Milvus-Vektordatenbank mit Hilfe von <a href="https://milvus.io/blog/talk-to-vector-db-manage-milvus-via-natural-language.md">MCP-Milvus-Server</a> als Integrationsschicht über natürliche Sprache gesteuert wird. Keine komplexe Abfragesyntax - sagen Sie dem System einfach, was Sie brauchen, und es erledigt die Datenbankoperationen für Sie.</p>
-<p><strong>4.8 Beispiel 2: Erstellung einer Refly-Einsatzanleitung mit Workflows</strong></p>
-<p>Dieses zweite Beispiel zeigt die wahre Stärke der Workflow-Orchestrierung. Wir werden einen vollständigen Einsatzleitfaden erstellen, indem wir mehrere KI-Tools und Datenquellen in einem einzigen, kohärenten Prozess kombinieren.</p>
-<p><strong>4.8.1 Sammeln Sie Ihr Quellmaterial</strong></p>
-<p>Die Stärke von Refly ist seine Flexibilität im Umgang mit verschiedenen Eingabeformaten. Sie können Ressourcen in verschiedenen Formaten importieren, egal ob es sich um Dokumente, Bilder oder strukturierte Daten handelt.</p>
-<p><strong>4.8.2 Aufgaben erstellen und Ressourcenkarten verknüpfen</strong></p>
-<p>Jetzt erstellen wir unseren Arbeitsablauf, indem wir Aufgaben definieren und sie mit unseren Quellmaterialien verknüpfen.</p>
-<p><strong>4.8.3 Drei Verarbeitungsaufgaben einrichten</strong></p>
-<p>Hier kommt der Workflow-Ansatz voll zur Geltung. Anstatt zu versuchen, alles in einem komplexen Prozess zu bearbeiten, unterteilen wir die Arbeit in drei konzentrierte Aufgaben, die hochgeladene Materialien integrieren und systematisch verfeinern.</p>
+<p>What’s happening here is pretty remarkable: we’ve just shown natural language control of a Milvus vector database using <a href="https://milvus.io/blog/talk-to-vector-db-manage-milvus-via-natural-language.md">MCP-Milvus-Server</a> as the integration layer. No complex query syntax—just tell the system what you need in plain English, and it handles the database operations for you.</p>
+<p><strong>4.8 Example 2: Building a Refly Deployment Guide with Workflows</strong></p>
+<p>This second example shows the real power of workflow orchestration. We’ll create a complete deployment guide by combining multiple AI tools and data sources into a single, coherent process.</p>
+<p><strong>4.8.1 Gather your source materials</strong></p>
+<p>The power of Refly is its flexibility in handling different input formats. You can import resources in multiple formats, whether they’re documents, images, or structured data.</p>
+<p><strong>4.8.2 Create tasks and link resource cards</strong></p>
+<p>Now we’ll create our workflow by defining tasks and connecting them to our source materials.</p>
+<p><strong>4.8.3 Set up three processing tasks</strong></p>
+<p>This is where the workflow approach really shines. Instead of trying to handle everything in one complex process, we break the work into three focused tasks that integrate uploaded materials and refine them systematically.</p>
 <ul>
-<li><p><strong>Aufgabe zur Integration von Inhalten</strong>: Kombiniert und strukturiert das Quellmaterial</p></li>
-<li><p><strong>Aufgabe zur Verfeinerung des Inhalts</strong>: Verbessert die Klarheit und den Fluss</p></li>
-<li><p><strong>Zusammenstellung des endgültigen Entwurfs</strong>: Erstellung einer publikationsreifen Ausgabe</p></li>
+<li><p><strong>Content integration task</strong>: Combines and structures source materials</p></li>
+<li><p><strong>Content refinement task</strong>: Improves clarity and flow</p></li>
+<li><p><strong>Final draft compilation</strong>: Creates publication-ready output</p></li>
 </ul>
-<p>Die Ergebnisse sprechen für sich selbst. Was früher stundenlange manuelle Koordination über mehrere Werkzeuge hinweg erforderte, wird jetzt automatisch erledigt, wobei jeder Schritt logisch auf dem vorhergehenden aufbaut.</p>
-<p><strong>Multimodale Workflow-Funktionen:</strong></p>
+<p>The results speak for themselves. What would have taken hours of manual coordination across multiple tools is now handled automatically, with each step building logically on the previous one.</p>
+<p><strong>Multi-modal workflow capabilities:</strong></p>
 <ul>
-<li><p><strong>Bilderzeugung und -verarbeitung</strong>: Integration mit hochwertigen Modellen wie flux-schnell, flux-pro und SDXL</p></li>
-<li><p><strong>Videogenerierung und -verstehen</strong>: Unterstützung für verschiedene stilisierte Videomodelle, darunter Seedance, Kling und Veo</p></li>
-<li><p><strong>Werkzeuge zur Audiogenerierung</strong>: Musikgenerierung durch Modelle wie Lyria-2 und Sprachsynthese durch Modelle wie Chatterbox</p></li>
-<li><p><strong>Integrierte Verarbeitung</strong>: Alle multimodalen Ausgaben können innerhalb des Systems referenziert, analysiert und weiterverarbeitet werden.</p></li>
+<li><p><strong>Image generation and processing</strong>: Integration with high-quality models including flux-schnell, flux-pro, and SDXL</p></li>
+<li><p><strong>Video generation and understanding</strong>: Support for various stylized video models, including Seedance, Kling, and Veo</p></li>
+<li><p><strong>Audio generation tools</strong>: Music generation through models like Lyria-2 and voice synthesis via models like Chatterbox</p></li>
+<li><p><strong>Integrated processing</strong>: All multi-modal outputs can be referenced, analyzed, and reprocessed within the system</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,11 +229,11 @@ docker compose up -d
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die Integration von <strong>Refly</strong> und <strong>Milvus</strong> bietet einen pragmatischen Ansatz für die Automatisierung - einen Ansatz, der Zuverlässigkeit und Benutzerfreundlichkeit über unnötige Komplexität stellt. Durch die Kombination von Workflow-Orchestrierung und multimodaler Verarbeitung können Teams schneller vom Konzept zur Veröffentlichung gelangen und behalten dabei in jeder Phase die volle Kontrolle.</p>
-<p>Hier geht es nicht darum, KI-Agenten zu verwerfen. Sie sind wertvoll für die Bewältigung wirklich komplexer, unvorhersehbarer Probleme. Aber bei vielen Automatisierungsanforderungen - vor allem bei der Erstellung von Inhalten und der Datenverarbeitung - kann ein gut durchdachter Workflow bessere Ergebnisse bei geringerem Aufwand liefern.</p>
-<p>Mit der Weiterentwicklung der KI-Technologie werden die effektivsten Systeme wahrscheinlich beide Strategien kombinieren:</p>
+    </button></h2><p>The integration of <strong>Refly</strong> and <strong>Milvus</strong> offers a pragmatic approach to automation—one that values reliability and ease of use over unnecessary complexity. By combining workflow orchestration with multi-modal processing, teams can move from concept to publication faster while retaining full control at every stage.</p>
+<p>This isn’t about dismissing AI agents. They’re valuable for tackling genuinely complex, unpredictable problems. But for many automation needs—especially in content creation and data processing—a well-designed workflow can deliver better results with less overhead.</p>
+<p>As AI tech evolves, the most effective systems will likely blend both strategies:</p>
 <ul>
-<li><p><strong>Workflows</strong>, bei denen Vorhersagbarkeit, Wartbarkeit und Reproduzierbarkeit im Vordergrund stehen.</p></li>
-<li><p><strong>Agenten</strong>, bei denen echtes Denkvermögen, Anpassungsfähigkeit und offene Problemlösungen gefragt sind.</p></li>
+<li><p><strong>Workflows</strong> where predictability, maintainability, and reproducibility are key.</p></li>
+<li><p><strong>Agents</strong> where real reasoning, adaptability, and open-ended problem-solving are required.</p></li>
 </ul>
-<p>Das Ziel ist nicht, die auffälligste KI zu entwickeln, sondern die <em>nützlichste</em>. Und oft ist die hilfreichste Lösung auch die einfachste.</p>
+<p>The goal isn’t to build the flashiest AI—it’s to build the most <em>useful</em> one. And often, the most helpful solution is also the most straightforward.</p>

@@ -1,62 +1,66 @@
 ---
 id: Whats-Inside-Milvus-1.0.md
-title: Milvus 1.0 包含哪些内容？
+title: What's Inside Milvus 1.0?
 author: milvus
 date: 2021-04-29T08:46:04.019Z
-desc: Milvus v1.0 现已发布。了解 Milvus 的基本原理以及 Milvus v1.0 的主要功能。
+desc: >-
+  Milvus v1.0 is available now. Learn about the Milvus fundamentals as well as
+  key features of Milvus v1.0.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Whats-Inside-Milvus-1.0'
 ---
-<custom-h1>Milvus 1.0 内部有什么？</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
-   </span> <span class="img-wrapper"> <span>Milvus.jpeg</span> </span></p>
-<p>Milvus 是一个开源向量数据库，旨在管理百万、十亿甚至万亿级的海量向量数据集。Milvus 应用广泛，涵盖新药发现、计算机视觉、自动驾驶、推荐引擎、聊天机器人等领域。</p>
-<p>2021 年 3 月，Milvus 背后的公司 Zilliz 发布了该平台的首个长期支持版本--Milvus v1.0。经过几个月的广泛测试，世界上最流行的向量数据库的稳定生产就绪版本已准备就绪，进入黄金时间。这篇博客文章涉及 Milvus 的一些基本原理以及 v1.0 的主要功能。</p>
+<custom-h1>What’s Inside Milvus 1.0?</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
+    <span>Milvus.jpeg</span>
+  </span>
+</p>
+<p>Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more.</p>
+<p>In March, 2021 Zilliz, the company behind Milvus, released the platform’s first long-term support version—Milvus v1.0. After months of extensive testing, a stable, production ready version of the world’s most popular vector database is ready for prime time. This blog article covers some Milvus fundamentals as well as key features of v1.0.</p>
 <p><br/></p>
-<h3 id="Milvus-distributions" class="common-anchor-header">Milvus 发行版</h3><p>Milvus 有仅支持 CPU 的发行版和支持 GPU 的发行版。前者完全依赖 CPU 进行索引构建和搜索；后者可启用 CPU 和 GPU 混合搜索和索引构建，进一步加速 Milvus。例如，使用混合发行版，CPU 可用于搜索，GPU 可用于索引构建，从而进一步提高查询效率。</p>
-<p>Milvus 的两个发行版都可以在 Docker 中使用。你既可以从 Docker 编译 Milvus（如果你的操作系统支持），也可以在 Linux 上从源代码编译 Milvus（不支持其他操作系统）。</p>
+<h3 id="Milvus-distributions" class="common-anchor-header">Milvus distributions</h3><p>Milvus is available in CPU-only and GPU-enabled distributions. The former relies exclusively on CPU for index building and search; the latter enables CPU and GPU hybrid search and index building that further accelerates Milvus. For example, using the hybrid distribution, CPU can be used for search and GPU for index building, further improving query efficiency.</p>
+<p>Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported).</p>
 <p><br/></p>
-<h3 id="Embedding-vectors" class="common-anchor-header">嵌入向量</h3><p>向量在 Milvus 中以实体形式存储。每个实体有一个向量 ID 字段和一个向量字段。Milvus v1.0 仅支持整数向量 ID。在 Milvus 中创建 Collections 时，可自动生成或手动定义向量 ID。Milvus 可确保自动生成的向量 ID 是唯一的，但手动定义的 ID 可在 Milvus 内重复。如果手动定义 ID，用户有责任确保所有 ID 都是唯一的。</p>
+<h3 id="Embedding-vectors" class="common-anchor-header">Embedding vectors</h3><p>Vectors are stored in Milvus as entities. Each entity has one vector ID field and one vector field. Milvus v1.0 supports integer vector IDs only. When creating a collection within Milvus, vector IDs can be automatically generated or manually defined. Milvus ensures auto-generated vector IDs are unique however, manually defined IDs can be duplicated within Milvus. If manually defining IDs, users are responsible for making sure all IDs are unique.</p>
 <p><br/></p>
-<h3 id="Partitions" class="common-anchor-header">分区</h3><p>Milvus 支持在 Collections 中创建分区。在数据定期插入且历史数据并不重要的情况下（如流数据），分区可用于加速向量相似性搜索。一个 Collections 最多可以有 4,096 个分区。在特定分区内指定向量搜索可缩小搜索范围，并可能显著缩短查询时间，尤其是对于包含超过一万亿个向量的 Collections。</p>
+<h3 id="Partitions" class="common-anchor-header">Partitions</h3><p>Milvus supports creating partitions in a collection. In situations where data is inserted regularly and historical data isn’t significant (e.g., streaming data), partitions can be used to accelerate vector similarity search. One collection can have up to 4,096 partitions. Specifying a vector search within a specific partition narrows the search and may significantly reduce query time, particularly for collections that contain more than a trillion vectors.</p>
 <p><br/></p>
-<h3 id="Index-algorithm-optimizations" class="common-anchor-header">索引算法优化</h3><p>Milvus 建立在多个广泛采用的索引库之上，包括 Faiss、NMSLIB 和 Annoy。Milvus 远不止是这些索引库的基本封装。以下是对底层库的一些主要改进：</p>
+<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Index algorithm optimizations</h3><p>Milvus is built on top of multiple widely-adopted index libraries, including Faiss, NMSLIB, and Annoy. Milvus is far more than a basic wrapper for these index libraries. Here are some of the major enhancements that have been made to the underlying libraries:</p>
 <ul>
-<li>使用 Elkan k-means 算法优化 IVF 索引性能。</li>
-<li>FLAT 搜索优化。</li>
-<li>支持 IVF_SQ8H 混合索引，可在不影响数据准确性的情况下将索引文件大小减少 75%。IVF_SQ8H 基于 IVF_SQ8，具有相同的召回率，但查询速度更快。它是专为 Milvus 设计的，以利用 GPU 的并行处理能力以及 CPU/GPU 协同处理之间的协同潜力。</li>
-<li>动态指令集兼容性。</li>
+<li>IVF index performance optimizations using the Elkan k-means algorithm.</li>
+<li>FLAT search optimizations.</li>
+<li>IVF_SQ8H hybrid index support, which can reduce index file sizes by up to 75% without sacrificing data accuracy. IVF_SQ8H is built upon IVF_SQ8, with identical recall but much faster query speed. It was designed specifically for Milvus to harnesses the parallel processing capacity of GPUs, and the potential for synergy between CPU/GPU co-processing.</li>
+<li>Dynamic instruction set compatibility.</li>
 </ul>
 <p><br/></p>
-<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">搜索、索引构建和 Milvus 的其他优化功能</h3><p>Milvus 进行了以下优化，以提高搜索和索引构建性能。</p>
+<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Search, index building, and other Milvus optimizations</h3><p>The following optimizations have been made to Milvus to improve search and index building performance.</p>
 <ul>
-<li>当查询次数 (nq) 少于 CPU 线程数时，搜索性能将得到优化。</li>
-<li>Milvus 会合并来自客户端的搜索请求，这些请求会使用相同的 topK 和搜索参数。</li>
-<li>当收到搜索请求时，将暂停建立索引。</li>
-<li>Milvus 会在启动时自动将 Collections 预加载到内存中。</li>
-<li>可分配多个 GPU 设备来加速向量相似性搜索。</li>
+<li>Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads.</li>
+<li>Milvus combines search requests from a client that take the same topK and search parameters.</li>
+<li>Index building is suspended when search requests come in.</li>
+<li>Milvus automatically preloads collections to memory at start.</li>
+<li>Multiple GPU devices can be assigned to accelerate vector similarity search.</li>
 </ul>
 <p><br/></p>
-<h3 id="Distance-metrics" class="common-anchor-header">距离度量</h3><p>Milvus 是一个向量数据库，旨在为向量相似性搜索提供动力。该平台是针对 MLOps 和生产级人工智能应用而构建的。Milvus 支持多种用于计算相似性的距离度量，如欧氏距离（L2）、内积（IP）、杰卡德距离、谷本距离、汉明距离、上层结构和下层结构。后两种度量常用于分子搜索和人工智能驱动的新药发现。</p>
+<h3 id="Distance-metrics" class="common-anchor-header">Distance metrics</h3><p>Milvus is a vector database built to power vector similarity search. The platform was built with MLOps and production level AI applications in mind. Milvus supports a wide range of distance metrics for calculating similarity, such as Euclidean distance (L2), inner product (IP), Jaccard distance, Tanimoto, Hamming distance, superstructure, and substructure. The last two metrics are commonly used in molecular search and AI-powered new drug discovery.</p>
 <p><br/></p>
-<h3 id="Logging" class="common-anchor-header">对数</h3><p>Milvus 支持日志轮换。在系统配置文件 milvus.yaml 中，你可以设置单个日志文件的大小、日志文件的数量以及日志输出到 stdout 的位置。</p>
+<h3 id="Logging" class="common-anchor-header">Logging</h3><p>Milvus supports log rotation. In the system configuration file, milvus.yaml, you can set the size of a single log file, the number of log files, and log output to stdout.</p>
 <p><br/></p>
-<h3 id="Distributed-solution" class="common-anchor-header">分布式解决方案</h3><p>Mishards 是 Milvus 的分片中间件，是 Milvus 的分布式解决方案。 Mishards 有一个写节点和无限多个读节点，能释放服务器集群的计算潜力。其功能包括请求转发、读/写分片、动态/横向扩展等。</p>
+<h3 id="Distributed-solution" class="common-anchor-header">Distributed solution</h3><p>Mishards, a Milvus sharding middleware, is the distributed solution for Milvus With one write node and an unlimited number of read nodes, Mishards unleashes the computational potential of server cluster. Its features include request forwarding, read/write splitting, dynamic/horizontal scaling, and more.</p>
 <p><br/></p>
-<h3 id="Monitoring" class="common-anchor-header">监控</h3><p>Milvus 与开源系统监控和警报工具包 Prometheus 兼容。Milvus 增加了对 Prometheus 中 Pushgateway 的支持，使 Prometheus 获取短时批量指标成为可能。监控和警报系统的工作原理如下：</p>
+<h3 id="Monitoring" class="common-anchor-header">Monitoring</h3><p>Milvus is compatible with Prometheus, an open-source system monitoring and alerts toolkit. Milvus adds support for Pushgateway in Prometheus, making it possible for Prometheus to acquire short-lived batch metrics. The monitoring and alerts system works as follows:</p>
 <ul>
-<li>Milvus 服务器将定制的度量数据推送到 Pushgateway。</li>
-<li>Pushgateway 确保将短暂指标数据安全发送到 Prometheus。</li>
-<li>Prometheus 继续从 Pushgateway 提取数据。</li>
-<li>Alertmanager 用于设置不同指标的警报阈值，并通过电子邮件或消息发送警报。</li>
+<li>The Milvus server pushes customized metrics data to Pushgateway.</li>
+<li>Pushgateway ensures ephemeral metric data is safely sent to Prometheus.</li>
+<li>Prometheus continues pulling data from Pushgateway.</li>
+<li>Alertmanager is used to set the alert threshold for different indicators and send alerts via email or message.</li>
 </ul>
 <p><br/></p>
-<h3 id="Metadata-management" class="common-anchor-header">元数据管理</h3><p>Milvus 默认使用 SQLite 进行元数据管理。SQLite 在 Milvus 中实现，无需配置。在生产环境中，建议使用 MySQL 进行元数据管理。</p>
+<h3 id="Metadata-management" class="common-anchor-header">Metadata management</h3><p>Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management.</p>
 <p><br/></p>
-<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">参与我们的开源社区：</h3><ul>
-<li>在<a href="https://github.com/milvus-io/milvus/">GitHub</a> 上查找 Milvus 或为其做出贡献。</li>
-<li>通过<a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a> 与社区互动。</li>
-<li>在<a href="https://twitter.com/milvusio">Twitter</a> 上与我们联系。</li>
+<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

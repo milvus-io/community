@@ -2,50 +2,49 @@
 id: >-
   milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better.md
 title: >-
-  Milvus 1.0 Il database vettoriale open source più diffuso al mondo è appena
-  migliorato
+  Milvus 1.0 The World's Most Popular Open-Source Vector Database Just Got
+  Better
 author: milvus
 date: 2021-03-10T06:58:36.647Z
 desc: >-
-  Milvus v1.0, una versione stabile e con supporto a lungo termine, è ora
-  disponibile. Milvus consente la ricerca di immagini/video, chatbot e molte
-  altre applicazioni di intelligenza artificiale.
+  Milvus v1.0, a stable, long-term support version, is available now. Milvlus
+  powers image/video search, chatbots, and many more AI applications.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/milvus-1-0-the-worlds-most-popular-open-source-vector-database-just-got-better
 ---
-<custom-h1>Milvus 1.0: Il database vettoriale open source più diffuso al mondo è appena migliorato</custom-h1><p>Zilliz è orgogliosa di annunciare il rilascio di Milvus v1.0. Dopo mesi di test approfonditi, Milvus v1.0, basato su una versione stabile di Milvus v0.10.6, è disponibile per l'uso.</p>
-<p>Milvus v1.0 offre le seguenti caratteristiche principali:</p>
+<custom-h1>Milvus 1.0: The World’s Most Popular Open-Source Vector Database Just Got Better</custom-h1><p>Zilliz is proud to announce the release of Milvus v1.0. After months of extensive testing Milvus v1.0, which is based on a stable version of Milvus v0.10.6, is available for use.</p>
+<p>Milvus v1.0 offers the following key features:</p>
 <ul>
-<li>Supporto per le principali metriche di similarità, tra cui la distanza euclidea, il prodotto interno, la distanza di Hamming, il coefficiente di Jaccard e altre ancora.</li>
-<li>Integrazione e miglioramento degli algoritmi SOTA ANNs, tra cui Faiss, Hnswlib, Annoy, NSG e altri.</li>
-<li>Capacità di scale-out attraverso il proxy di sharding Mishards.</li>
-<li>Supporto per i processori comunemente utilizzati negli scenari di intelligenza artificiale, tra cui X86, GPU Nvidia, Xilinx FPGA e altri.</li>
+<li>Support for mainstream similarity metrics, including Euclidean distance, inner product, Hamming distance, Jaccard coefficient, and more.</li>
+<li>Integration with, and improvements to, SOTA ANNs algorithms, including Faiss, Hnswlib, Annoy, NSG, and more.</li>
+<li>Scale-out capability through the Mishards sharding proxy.</li>
+<li>Support for processors commonly used in AI scenarios, including X86, Nvidia GPU, Xilinx FPGA, and more.</li>
 </ul>
-<p>Per ulteriori caratteristiche di Milvus v1.0, consultare le <a href="https://www.milvus.io/docs/v1.0.0/release_notes.md">note di rilascio</a>.</p>
-<p>Milvus è un progetto software open-source (OSS) in corso. La sua prima versione principale ha le seguenti implicazioni per gli utenti:</p>
+<p>See the <a href="https://www.milvus.io/docs/v1.0.0/release_notes.md">Release Notes</a> for additional Milvus v1.0 features.</p>
+<p>Milvus is an ongoing open-source software (OSS) project. Its first major release has the following implications for users:</p>
 <ul>
-<li>Milvus v1.0 riceverà un supporto a lungo termine (oltre 3 anni).</li>
-<li>La versione più stabile di Milvus è ben strutturata e pronta per l'integrazione con gli ecosistemi di intelligenza artificiale esistenti.</li>
+<li>Milvus v1.0 will receive long-term support (3+ years).</li>
+<li>The most stable Milvus release to date is well structured and ready for integration with existing AI ecosystems.</li>
 </ul>
-<h3 id="The-first-version-of-Milvus-with-long-term-support" class="common-anchor-header">La prima versione di Milvus con supporto a lungo termine</h3><p>Grazie anche alla sponsorizzazione di Zilliz, la comunità di Milvus fornirà supporto per la correzione dei bug di Milvus v1.0 fino al 31 dicembre 2024. Le nuove funzionalità saranno disponibili solo nelle versioni successive alla v1.0.</p>
-<p>Per informazioni sulla cadenza dei <a href="https://milvus.io/docs/v1.0.0/milvus_release_guideline.md">rilasci</a> e altro, consultare le <a href="https://milvus.io/docs/v1.0.0/milvus_release_guideline.md">linee guida per i rilasci di Milvus</a>.</p>
-<h3 id="Toolchain-enhancements-and-seamless-AI-ecosystem-integration" class="common-anchor-header">Miglioramenti alla toolchain e integrazione perfetta dell'ecosistema AI</h3><p>A partire dalla v1.0, la toolchain di Milvus sarà l'obiettivo principale dello sviluppo. Abbiamo intenzione di creare gli strumenti e le utilità necessarie per soddisfare le esigenze della comunità di utenti di Milvus.</p>
-<p>La stabilità rende facile l'integrazione di Milvus con gli ecosistemi di IA. Cerchiamo di intensificare la collaborazione tra la comunità di Milvus e altre comunità OSS incentrate sull'IA. Incoraggiamo i contributi ai nuovi ASIC (circuiti integrati specifici per le applicazioni) di Milvus.</p>
-<h3 id="The-future-of-Milvus" class="common-anchor-header">Il futuro di Milvus</h3><p>Crediamo che Milvus abbia un futuro brillante grazie ai seguenti fattori:</p>
+<h3 id="The-first-version-of-Milvus-with-long-term-support" class="common-anchor-header">The first version of Milvus with long-term support</h3><p>Thanks in part to sponsorship from Zilliz, the Milvus community will provide bug fix support for Milvus v1.0 until December 31st, 2024. New features will be available only in releases following v1.0.</p>
+<p>See <a href="https://milvus.io/docs/v1.0.0/milvus_release_guideline.md">The Milvus release guideline</a> for information about release cadences and more.</p>
+<h3 id="Toolchain-enhancements-and-seamless-AI-ecosystem-integration" class="common-anchor-header">Toolchain enhancements and seamless AI ecosystem integration</h3><p>Beginning with v1.0, Milvus’ toolchain will be a primary development focus. We plan to create the necessary tooling and utilities to meet the needs of the Milvus user community.</p>
+<p>Stability makes integrating Milvus with AI ecosystems a breeze. We are seeking further collaboration between the Milvus community and other AI-focused OSS communities. We encourage contributions to the new AI ASICs (application-specific integrated circuits) in Milvus.</p>
+<h3 id="The-future-of-Milvus" class="common-anchor-header">The future of Milvus</h3><p>We believe Milvus has a bright future thanks to the following factors:</p>
 <ul>
-<li>Contributi regolari da parte degli sviluppatori della comunità Milvus.</li>
-<li>Supporto per l'integrazione con qualsiasi ambiente cloud-nativo.</li>
+<li>Regular contributions from developers in the Milvus community.</li>
+<li>Support for integration with any cloud-native environment.</li>
 </ul>
-<p>Abbiamo redatto delle <a href="https://milvus.io/docs/v1.0.0/milvus_community_charters.md">carte della comunità</a> per aiutare a guidare, alimentare e far progredire la comunità di Milvus man mano che la nostra tecnologia e la nostra base di utenti crescono. Le carte includono diverse decisioni tecniche prese per attirare più partecipanti alla comunità.</p>
+<p>We have drafted <a href="https://milvus.io/docs/v1.0.0/milvus_community_charters.md">community charters</a> to help guide, nurture, and advance the Milvus community as our technology and user base grows. The charters include several technical decisions made to attract more participants to the community.</p>
 <ul>
-<li>Golang sarà ora utilizzato per sviluppare il motore di Milvus, ma il componente dell'algoritmo ANNS sarà ancora sviluppato in C++.</li>
-<li>La prossima versione distribuita di Milvus utilizzerà il più possibile i componenti cloud esistenti.</li>
+<li>Golang will now be used to develop the Milvus engine however, the ANNS algorithm component will still be developed in C++.</li>
+<li>The forthcoming distributed version of Milvus will use existing cloud components as much as possible.</li>
 </ul>
-<p>Siamo entusiasti di collaborare con la comunità del software open-source per costruire il data fabric cloud di prossima generazione fatto per l'intelligenza artificiale. Mettiamoci al lavoro!</p>
-<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Non essere un estraneo</h3><ul>
-<li>Trova o contribuisci a Milvus su <a href="https://github.com/milvus-io/milvus/">GitHub</a></li>
-<li>Interagite con la comunità via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Connettetevi con noi su <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<p>We are thrilled to partner with the open-source software community to build the next-generation cloud data fabric made for AI. Let’s get to work!</p>
+<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Don’t be a stranger</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a></li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

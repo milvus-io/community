@@ -1,12 +1,14 @@
 ---
 id: >-
   tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
-title: よりスマートにトークン化し、より良い検索を：全文検索のためのMilvus Analyzerのディープダイブ
+title: >
+  Tokenize Smarter, Retrieve Better: A Deep Dive into Milvus Analyzer for
+  Full-Text Search
 author: Jack Li
 date: 2025-10-16T00:00:00.000Z
 desc: >-
-  効率的なトークン化とフィルタリングにより、Milvus
-  AnalyzerがハイブリッドAI検索を強化し、より高速でスマートな全文検索を可能にする方法をご覧ください。
+  Explore how Milvus Analyzer powers hybrid AI retrieval with efficient
+  tokenization and filtering, enabling faster, smarter full-text search.
 cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
@@ -17,10 +19,10 @@ meta_keywords: 'Milvus Analyzer, RAG, full-text search, vector database, tokeniz
 origin: >-
   https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
 ---
-<p>現代のAIアプリケーションは複雑で、一次元的であることはほとんどない。多くの場合、単一の検索手法だけでは現実世界の問題を解決できない。例えば、推薦システムを考えてみよう。テキストや画像の背後にある意味を理解するための<strong>ベクトル検索</strong>、価格やカテゴリー、場所によって結果を絞り込むための<strong>メタデータフィルタリング</strong>、そして "ナイキ エアマックス "のような直接的なクエリを処理するための<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>全文検索が</strong></a>必要となる。それぞれの方法がパズルの異なる部分を解決し、実用的なシステムはそれらすべてがシームレスに連動することに依存している。</p>
-<p>Milvusはベクトル検索とメタデータフィルタリングを得意とし、バージョン2.5からは最適化されたBM25アルゴリズムに基づく全文検索を導入した。このアップグレードにより、AI検索はより賢く、より正確になり、意味理解と正確なキーワードインテントを組み合わせることができる。<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6では</a>、全文検索がさらに高速化され、<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Elasticsearchの4倍のパフォーマンスとなった</a>。</p>
-<p><strong>Milvus Analyzerは</strong>、生のテキストを検索可能なトークンに変換するコンポーネントです。Milvusが効率的に言語を解釈し、キーワードマッチを大規模に実行できるようにするものだ。この記事では、Milvus Analyzerがどのように機能するのか、そしてなぜMilvusのハイブリッド検索の可能性を最大限に引き出す鍵となるのかについてご紹介します。</p>
-<h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">Milvus Analyzerとは？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
+<p>Modern AI applications are complex and rarely one-dimensional. In many cases, a single search method can’t solve real-world problems on its own. Take a recommendation system, for example. It requires <strong>vector search</strong> to comprehend the meaning behind text or images, <strong>metadata filtering</strong> to refine results by price, category, or location, and<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>full-text search</strong></a> to handle direct queries like “Nike Air Max.” Each method solves a different part of the puzzle—and practical systems depend on all of them working together seamlessly.</p>
+<p>Milvus excels at vector search and metadata filtering, and starting with version 2.5, it introduced full-text search based on the optimized BM25 algorithm. This upgrade makes AI search both smarter and more accurate, combining semantic understanding with precise keyword intent. With<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a>, full-text search becomes even faster—up to<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4× the performance of Elasticsearch</a>.</p>
+<p>At the heart of this capability is the <strong>Milvus Analyzer</strong>, the component that transforms raw text into searchable tokens. It’s what enables Milvus to interpret language efficiently and perform keyword matching at scale. In the rest of this post, we’ll dive into how the Milvus Analyzer works—and why it’s key to unlocking the full potential of hybrid search in Milvus.</p>
+<h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">What is Milvus Analyzer？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,19 +37,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>キーワードマッチであれ、意味検索であれ、効率的な全文検索を実現するための最初のステップは常に同じです。</p>
-<p><strong>Milvus Analyzerは</strong>このステップを処理します。これは組み込みのテキスト前処理およびトークン化コンポーネントで、入力テキストを個別のトークンに分割し、正規化、クレンジング、標準化を行い、クエリや文書間で一貫したマッチングを実現します。このプロセスにより、正確で高性能な全文検索とハイブリッド検索の基盤が構築されます。</p>
-<p>以下はMilvus Analyzerアーキテクチャの概要です：</p>
+    </button></h2><p>To power efficient full-text search—whether for keyword matching or semantic retrieval—the first step is always the same: turning raw text into tokens that the system can understand, index, and compare.</p>
+<p>The <strong>Milvus Analyzer</strong> handles this step. It’s a built-in text preprocessing and tokenization component that breaks input text into discrete tokens, then normalizes, cleans, and standardizes them to ensure consistent matching across queries and documents. This process lays the foundation for accurate, high-performance full-text search and hybrid retrieval.</p>
+<p>Here’s an overview of the Milvus Analyzer architecture:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_5_8e0ec1dbdf.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図が示すように、Analyzerには<strong>トーケナイザーと</strong> <strong>フィルターという</strong>2つのコアコンポーネントがあります。これらが一体となって、入力テキストをトークンに変換し、効率的なインデックス作成と検索のために最適化します。</p>
+<p>As the diagram shows, Analyzer has two core components: the <strong>Tokenizer</strong> and the <strong>Filter</strong>. Together, they convert input text into tokens and optimize them for efficient indexing and retrieval.</p>
 <ul>
-<li><p><strong>トーケナイザー</strong>：空白文字分割（Whitespace）、中国語単語分割（Jieba）、多言語分割（ICU）などのメソッドを使用して、テキストを基本トークンに分割する。</p></li>
-<li><p><strong>フィルタ</strong>：特定の変換を通してトークンを処理します。Milvusには、大文字小文字の正規化(Lowercase)、句読点の除去(Removepunct)、ストップワードのフィルタリング(Stop)、ステミング(Stemmer)、パターンマッチング(Regex)などの処理のための豊富な組み込みフィルターセットがあります。複数のフィルタを連結して、複雑な処理ニーズに対応することができます。</p></li>
+<li><p><strong>Tokenizer</strong>: Splits text into basic tokens using methods like whitespace splitting (Whitespace), Chinese word segmentation (Jieba), or multilingual segmentation (ICU).</p></li>
+<li><p><strong>Filter</strong>: Processes tokens through specific transformations. Milvus includes a rich set of built-in filters for operations like case normalization (Lowercase), punctuation removal (Removepunct), stop word filtering (Stop), stemming (Stemmer), and pattern matching (Regex). You can chain multiple filters to handle complex processing needs.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -55,22 +57,22 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Milvusには、3つのビルトインオプション(標準、英語、中国語)、独自のトークナイザーとフィルターの組み合わせを定義するカスタムアナライザー、多言語文書を処理するための多言語アナライザーなど、いくつかのアナライザーがあります。処理の流れは簡単です：生テキスト → トーケナイザー → フィルター → トークン。</p>
-<h3 id="Tokenizer" class="common-anchor-header">トーケナイザー</h3><p>トーケナイザーは最初の処理ステップです。生テキストをより小さなトークン（単語またはサブワード）に分割しますが、適切な選択は言語とユースケースによって異なります。</p>
-<p>Milvusは現在、以下の種類のトークナイザをサポートしています：</p>
+<p>Milvus offers several Analyzer types: three built-in options (Standard, English, and Chinese), Custom Analyzers where you define your own Tokenizer and Filter combinations, and the Multi-language Analyzer for handling multilingual documents. The processing flow is straightforward: Raw text → Tokenizer → Filter → Tokens.</p>
+<h3 id="Tokenizer" class="common-anchor-header">Tokenizer</h3><p>The Tokenizer is the first processing step. It splits raw text into smaller tokens (words or subwords), and the right choice depends on your language and use case.</p>
+<p>Milvus currently supports the following types of tokenizers:</p>
 <table>
 <thead>
-<tr><th><strong>トークナイザー</strong></th><th><strong>使用例</strong></th><th><strong>説明</strong></th></tr>
+<tr><th><strong>Tokenizer</strong></th><th><strong>Use Case</strong></th><th><strong>Description</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>標準</td><td>英語およびスペース区切りの言語</td><td>最も一般的な汎用トークナイザー。単語の境界を検出し、それに応じて分割します。</td></tr>
-<tr><td>空白</td><td>前処理を最小限に抑えた単純なテキスト</td><td>空白のみで分割。句読点や大文字小文字は扱わない。</td></tr>
-<tr><td>キーバ（中国語）</td><td>中国語テキスト</td><td>連続する漢字を意味のある単語に分割する、辞書と確率ベースのトークナイザ。</td></tr>
-<tr><td>Lindera（JP/KR）</td><td>日本語・韓国語テキスト</td><td>Linderaの形態素解析により、効果的なセグメンテーションを行う。</td></tr>
-<tr><td>ICU（多言語）</td><td>アラビア語などの複雑な言語や、多言語シナリオに対応。</td><td>ICUライブラリをベースとし、Unicodeを介した多言語トークン化をサポートします。</td></tr>
+<tr><td>Standard</td><td>English and space-delimited languages</td><td>The most common general-purpose tokenizer; detects word boundaries and splits accordingly.</td></tr>
+<tr><td>Whitespace</td><td>Simple text with minimal preprocessing</td><td>Splits only by spaces; does not handle punctuation or casing.</td></tr>
+<tr><td>Jieba（Chinese）</td><td>Chinese text</td><td>Dictionary and probability-based tokenizer that splits continuous Chinese characters into meaningful words.</td></tr>
+<tr><td>Lindera（JP/KR）</td><td>Japanese and Korean text</td><td>Uses Lindera morphological analysis for effective segmentation.</td></tr>
+<tr><td>ICU（Multi-language）</td><td>Complex languages like Arabic, and multilingual scenarios</td><td>Based on the ICU library with support for multilingual tokenization across Unicode.</td></tr>
 </tbody>
 </table>
-<p>トーケナイザは、コレクションのスキーマを作成する際、特に<code translate="no">analyzer_params</code> パラメータで<code translate="no">VARCHAR</code> フィールドを定義する際に設定できます。つまり、トークナイザはスタンドアロンのオブジェクトではなく、フィールドレベルの構成です。Milvusはデータ挿入時に自動的にトークン化と前処理を行います。</p>
+<p>You can configure the Tokenizer when creating your Collection’s Schema, specifically when defining <code translate="no">VARCHAR</code> fields through the <code translate="no">analyzer_params</code> parameter. In other words, the Tokenizer is not a standalone object but a field-level configuration. Milvus automatically performs tokenization and preprocessing when inserting data.</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -80,29 +82,29 @@ origin: >-
     }
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Filter" class="common-anchor-header">フィルタ</h3><p>Tokenizerがテキストを切り離した場合、Filterは残ったものを洗練させます。フィルタはトークンを標準化、クリーン化、変換して検索に対応できるようにします。</p>
-<p>一般的なフィルタ処理には、大文字小文字の正規化、ストップワード（"the "や "and "など）の削除、句読点の除去、ステミング（"running "を "run "に変換）などがあります。</p>
-<p>Milvusには、ほとんどの言語処理ニーズに対応する多くの組み込みフィルタがあります：</p>
+<h3 id="Filter" class="common-anchor-header">Filter</h3><p>If the Tokenizer cuts text apart, the Filter refines what’s left. Filters standardize, clean, or transform your tokens to make them search-ready.</p>
+<p>Common Filter operations include normalizing case, removing stop words (like “the” and “and”), stripping punctuation, and applying stemming (reducing “running” to “run”).</p>
+<p>Milvus includes many built-in Filters for most language processing needs:</p>
 <table>
 <thead>
-<tr><th><strong>フィルタ名</strong></th><th><strong>機能</strong></th><th><strong>使用例</strong></th></tr>
+<tr><th><strong>Filter Name</strong></th><th><strong>Function</strong></th><th><strong>Use Case</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>小文字</td><td>すべてのトークンを小文字に変換します。</td><td>英語検索では大文字小文字の不一致を避けるために必須</td></tr>
-<tr><td>アスキー</td><td>アクセント記号付きの文字をASCIIに変換</td><td>多言語シナリオ（例："café"→"cafe"）</td></tr>
-<tr><td>アルファベットのみ</td><td>アルファベットと数字のみを保持</td><td>ログなどのテキストから混合記号を取り除く</td></tr>
-<tr><td>漢字のみ</td><td>漢字のみを保持</td><td>中国語コーパスのクリーニング</td></tr>
-<tr><td>Cnalphanumonly</td><td>中国語、英語、数字のみを保持</td><td>中英混合テキスト</td></tr>
-<tr><td>長さ</td><td>長さによるトークンのフィルタリング</td><td>過度に短い、または長いトークンを削除します。</td></tr>
-<tr><td>停止</td><td>ストップワードフィルタリング</td><td>"is "や "the "のような頻度の高い無意味な単語を除去します。</td></tr>
-<tr><td>デコンパウンダー</td><td>複合語を分割</td><td>ドイツ語やオランダ語など、複合語が頻出する言語</td></tr>
-<tr><td>ステマー</td><td>単語のステミング</td><td>英語のシナリオ（例：&quot;studies&quot; と &quot;studying&quot; → &quot;study&quot;</td></tr>
-<tr><td>句読点の除去</td><td>句読点を削除</td><td>一般的なテキストのクリーニング</td></tr>
-<tr><td>正規表現</td><td>正規表現パターンによるフィルタリングまたは置換</td><td>カスタムニーズ（メールアドレスのみの抽出など</td></tr>
+<tr><td>Lowercase</td><td>Converts all tokens to lowercase</td><td>Essential for English search to avoid case mismatches</td></tr>
+<tr><td>Asciifolding</td><td>Converts accented characters to ASCII</td><td>Multilingual scenarios (e.g., “café” → “cafe”)</td></tr>
+<tr><td>Alphanumonly</td><td>Keeps only letters and numbers</td><td>Strips mixed symbols from text like logs</td></tr>
+<tr><td>Cncharonly</td><td>Keeps only Chinese characters</td><td>Chinese corpus cleaning</td></tr>
+<tr><td>Cnalphanumonly</td><td>Keeps only Chinese, English, and numbers</td><td>Mixed Chinese-English text</td></tr>
+<tr><td>Length</td><td>Filters tokens by length</td><td>Removes excessively short or long tokens</td></tr>
+<tr><td>Stop</td><td>Stop word filtering</td><td>Removes high-frequency meaningless words like “is” and “the”</td></tr>
+<tr><td>Decompounder</td><td>Splits compound words</td><td>Languages with frequent compounds like German and Dutch</td></tr>
+<tr><td>Stemmer</td><td>Word stemming</td><td>English scenarios (e.g.,&quot;studies&quot; and “studying” → “study”</td></tr>
+<tr><td>Removepunct</td><td>Removes punctuation</td><td>General text cleaning</td></tr>
+<tr><td>Regex</td><td>Filters or replaces with a regex pattern</td><td>Custom needs, like extracting only email addresses</td></tr>
 </tbody>
 </table>
-<p>フィルタの威力はその柔軟性にあります。ニーズに応じてクリーニングルールを組み合わせて使用できます。英語検索の場合、典型的な組み合わせは小文字＋ストップ＋ステマーで、大文字と小文字の統一を確保し、フィラー語を除去し、語幹に正規化します。</p>
-<p>中国語の検索では、よりクリーンで正確な結果を得るために、通常Cncharonly + Stopを組み合わせます。フィルターはトーケナイザーと同じように、FieldSchemaの<code translate="no">analyzer_params</code> ：</p>
+<p>The power of Filters is in their flexibility—you can mix and match cleaning rules based on your needs. For English search, a typical combination is Lowercase + Stop + Stemmer, ensuring case uniformity, removing filler words, and normalizing word forms to their stem.</p>
+<p>For Chinese search, you’ll usually combine Cncharonly + Stop for cleaner, more precise results. Configure Filters the same way as Tokenizers, through <code translate="no">analyzer_params</code> in your FieldSchema:</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -122,7 +124,7 @@ origin: >-
     }
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Analyzer-Types" class="common-anchor-header">アナライザー・タイプ<button data-href="#Analyzer-Types" class="anchor-icon" translate="no">
+<h2 id="Analyzer-Types" class="common-anchor-header">Analyzer Types<button data-href="#Analyzer-Types" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -137,34 +139,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>適切なアナライザーを使用することで、検索がより速く、より費用対効果の高いものになります。Milvusは様々なニーズに対応するため、3つのタイプを提供しています：Built-in、Multi-language、Custom Analyzerです。</p>
-<h3 id="Built-in-Analyzer" class="common-anchor-header">ビルトインアナライザー</h3><p>ビルトインAnalyzerは、ほとんどの一般的なシナリオに対応する標準的な構成で、すぐにご利用いただけます。トーケナイザーとフィルターの組み合わせがあらかじめ定義されています：</p>
+    </button></h2><p>The right Analyzer makes your search both faster and more cost-effective. To fit different needs, Milvus provides three types: Built-in, Multi-language, and Custom Analyzers.</p>
+<h3 id="Built-in-Analyzer" class="common-anchor-header">Built-in Analyzer</h3><p>Built-in Analyzers are ready to use out of the box—standard configurations that work for most common scenarios. They come with predefined Tokenizer and Filter combinations:</p>
 <table>
 <thead>
-<tr><th><strong>名前</strong></th><th><strong>コンポーネント（トークナイザー+フィルター）</strong></th><th><strong>使用例</strong></th></tr>
+<tr><th><strong>Name</strong></th><th><strong>Components（Tokenizer+Filters）</strong></th><th><strong>Use Case</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>標準</td><td>標準トークナイザー＋小文字</td><td>英語またはスペースで区切られた言語の一般的な使用法</td></tr>
-<tr><td>英語</td><td>標準トーケナイザー＋小文字＋ストップ＋ステマー</td><td>より精度の高い英語検索</td></tr>
-<tr><td>中国語</td><td>Jieba トーケナイザー + Cnalphanumonly</td><td>自然な単語分割による中国語テキスト検索</td></tr>
+<tr><td>Standard</td><td>Standard Tokenizer + Lowercase</td><td>General use for English or space-delimited languages</td></tr>
+<tr><td>English</td><td>Standard Tokenizer + Lowercase + Stop + Stemmer</td><td>English search with higher precision</td></tr>
+<tr><td>Chinese</td><td>Jieba Tokenizer + Cnalphanumonly</td><td>Chinese text search with natural word segmentation</td></tr>
 </tbody>
 </table>
-<p>英語または中国語の簡単な検索であれば、これらの内蔵アナライザは追加設定なしで動作します。</p>
-<p>重要な注意点として、Standard Analyzerはデフォルトで英語用に設計されています。中国語テキストに適用すると、全文検索で結果が返されない場合があります。</p>
-<h3 id="Multi-language-Analyzer" class="common-anchor-header">多言語アナライザー</h3><p>複数の言語を扱う場合、単一のトークナイザではすべてを処理できないことがよくあります。そこで、Multi-language Analyzer の出番です。各テキストの言語に基づいて、適切なトークナイザを自動的に選択します。以下は、言語とトークナイザの対応表です：</p>
+<p>For straightforward English or Chinese search, these built-in Analyzers work without any extra setup.</p>
+<p>One important note: the Standard Analyzer is designed for English by default. If applied to Chinese text, full-text search may return no results.</p>
+<h3 id="Multi-language-Analyzer" class="common-anchor-header">Multi-language Analyzer</h3><p>When you deal with multiple languages, a single tokenizer often can’t handle everything. That’s where the Multi-language Analyzer comes in—it automatically picks the right tokenizer based on each text’s language. Here’s how languages map to Tokenizers:</p>
 <table>
 <thead>
-<tr><th><strong>言語コード</strong></th><th><strong>使用されるトークナイザー</strong></th></tr>
+<tr><th><strong>Language Code</strong></th><th><strong>Tokenizer Used</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>エン</td><td>英語アナライザ</td></tr>
-<tr><td>zh</td><td>jieba</td></tr>
+<tr><td>en</td><td>English Analyzer</td></tr>
+<tr><td>zh</td><td>Jieba</td></tr>
 <tr><td>ja / ko</td><td>Lindera</td></tr>
 <tr><td>ar</td><td>ICU</td></tr>
 </tbody>
 </table>
-<p>データセットに英語、中国語、日本語、韓国語、そしてアラビア語が混在していても、Milvusはそれらを同じフィールドで扱うことができます。これにより、手作業による前処理を大幅に削減することができます。</p>
-<h3 id="Custom-Analyzer" class="common-anchor-header">カスタムアナライザー</h3><p>Milvusではカスタムアナライザを構築することができます。トーケナイザーとフィルタを組み合わせて、お客様のニーズに合ったものを作成できます。以下に例を示します：</p>
+<p>If your dataset mixes English, Chinese, Japanese, Korean, and even Arabic, Milvus can handle them all in the same field. This cuts down dramatically on manual preprocessing.</p>
+<h3 id="Custom-Analyzer" class="common-anchor-header">Custom Analyzer</h3><p>When Built-in or Multi-language Analyzers don’t quite fit, Milvus lets you build Custom Analyzers. Mix and match Tokenizers and Filters to create something tailored to your needs. Here’s an example:</p>
 <pre><code translate="no">FieldSchema(
         name=<span class="hljs-string">&quot;text&quot;</span>,
         dtype=DataType.VARCHAR,
@@ -175,7 +177,7 @@ origin: >-
         }
     )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Hands-on-Coding-with-Milvus-Analyzer" class="common-anchor-header">Milvus Analyzerを使ったハンズオンコーディング<button data-href="#Hands-on-Coding-with-Milvus-Analyzer" class="anchor-icon" translate="no">
+<h2 id="Hands-on-Coding-with-Milvus-Analyzer" class="common-anchor-header">Hands-on Coding with Milvus Analyzer<button data-href="#Hands-on-Coding-with-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,8 +192,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>セオリーも役立ちますが、完全なコード例に勝るものはありません。ここではPython SDKを使ったMilvusのAnalyzerの使い方を、ビルトインAnalyzerと多言語Analyzerの両方について説明します。これらの例ではMilvus v2.6.1とPymilvus v2.6.1を使用しています。</p>
-<h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">ビルトインアナライザの使い方</h3><p>トークン化とデータ挿入時の前処理を自動的に行う英語テキスト検索用のコレクションを構築したいとします。ここでは、組み込みの英語アナライザ（<code translate="no">standard + lowercase + stop + stemmer</code> と同等）を使用します。</p>
+    </button></h2><p>Theory helps, but nothing beats a full code example. Let’s walk through how to use Analyzers in Milvus with the Python SDK, covering both built-in Analyzers and multi-language Analyzers. These examples use Milvus v2.6.1 and Pymilvus v2.6.1.</p>
+<h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">How to Use Built-in Analyzer</h3><p>Say you want to build a Collection for English text search that automatically handles tokenization and preprocessing during data insertion. We’ll use the built-in English Analyzer (equivalent to <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 client = MilvusClient(
@@ -352,7 +354,7 @@ search_queries = [
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Search complete！&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">60</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>出力</p>
+<p>Output：</p>
 <pre><code translate="no">Dropped existing collection: english_demo
 Successfully created collection: english_demo
 
@@ -397,7 +399,7 @@ Query <span class="hljs-number">4</span>: <span class="hljs-string">&#x27;learn&
 Search complete！
 ============================================================
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">多言語アナライザの使用方法</h3><p>データセットに複数の言語（例えば英語、中国語、日本語）が含まれている場合、Multi-language Analyzerを有効にすることができます。Milvusは各テキストの言語に基づいて、適切なトークナイザーを自動的に選択します。</p>
+<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">How to Use Multi-language Analyzer</h3><p>When your dataset contains multiple languages—English, Chinese, and Japanese, for example—you can enable the Multi-language Analyzer. Milvus will automatically pick the right tokenizer based on each text’s language.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 <span class="hljs-keyword">import</span> time
 
@@ -587,7 +589,7 @@ search_cases = [
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nComplete&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>出力</p>
+<p>Output：</p>
 <pre><code translate="no"><span class="hljs-title class_">Waiting</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BM25</span> vector generation...
 
 <span class="hljs-title class_">Tokenizer</span> <span class="hljs-title class_">Analysis</span>:
@@ -611,8 +613,8 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
 
 <span class="hljs-title class_">Complete</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>また、Milvusは検索用のlanguage_identifierトークナイザーをサポートしています。つまり、言語フィールドはオプションです。詳しくは、<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> Milvus 2.6で多言語全文検索をスケールアップする方法を</a>ご覧ください。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Also, Milvus supports the language_identifier tokenizer for search. It automatically detects the languages of a given text, which means the language field is optional. For more details, check out<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> How Milvus 2.6 Upgrades Multilingual Full-Text Search at Scale</a>.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -627,5 +629,5 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Analyzerは、従来は単純な前処理ステップであったものを、テキストを処理するための明確に定義されたモジュラーシステムに変えました。トークン化とフィルタリングを中心に構築された設計により、開発者は言語をどのように解釈し、クリーニングし、インデックスを作成するかを細かく制御することができます。単一言語のアプリケーションを構築する場合でも、複数の言語にまたがるグローバルなRAGシステムを構築する場合でも、Analyzerは全文検索のための一貫した基盤を提供します。Milvusの一部であり、他のすべての機能を静かに向上させます。</p>
-<p>ご質問がある場合、または機能について詳しく知りたい場合は、Discordチャンネルにご参加ください。私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察やガイダンス、質問への回答を得ることもできます。</p>
+    </button></h2><p>The Milvus Analyzer turns what used to be a simple preprocessing step into a well-defined, modular system for handling text. Its design—built around tokenization and filtering—gives developers fine-grained control over how language is interpreted, cleaned, and indexed. Whether you’re building a single-language application or a global RAG system that spans multiple languages, the Analyzer provides a consistent foundation for full-text search. It’s the part of Milvus that quietly makes everything else work better.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

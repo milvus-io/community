@@ -1,14 +1,14 @@
 ---
 id: >-
   when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md
-title: >-
-  عندما تتم هندسة السياق بشكل صحيح، يمكن أن تكون الهلوسة شرارة إبداع الذكاء
-  الاصطناعي
+title: >
+  When Context Engineering Is Done Right, Hallucinations Can Be the Spark of AI
+  Creativity
 author: James Luan
 date: 2025-09-30T00:00:00.000Z
 desc: >-
-  اكتشف لماذا لا تكون هلوسات الذكاء الاصطناعي مجرد أخطاء بل هي شرارات من الإبداع
-  - وكيف تحولها هندسة السياق إلى نتائج موثوقة وواقعية.
+  Discover why AI hallucinations aren’t just errors but sparks of creativity—and
+  how context engineering turns them into reliable, real-world outcomes.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_1_2025_10_42_15_AM_101639b3bf.png
 tag: Engineering
 recommend: true
@@ -20,11 +20,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md
 ---
-<p>لفترة طويلة، تعامل الكثير منا - وأنا منهم - مع هلوسات LLM على أنها ليست أكثر من عيوب. وقد تم بناء سلسلة أدوات كاملة حول القضاء عليها: أنظمة الاسترجاع، وحواجز الحماية، والضبط الدقيق، وغير ذلك. لا تزال هذه الضمانات ذات قيمة. ولكن كلما درستُ أكثر كيف تولد النماذج استجابات فعلية - وكيف تتلاءم أنظمة مثل <a href="https://milvus.io/"><strong>ميلفوس</strong></a> مع خطوط أنابيب الذكاء الاصطناعي الأوسع - كلما قل اعتقادي بأن الهلوسة هي مجرد إخفاقات. في الواقع، يمكن أن تكون أيضاً شرارة إبداع الذكاء الاصطناعي.</p>
-<p>إذا نظرنا إلى الإبداع البشري، نجد نفس النمط. فكل اختراق يعتمد على قفزات خيالية. لكن هذه القفزات لا تأتي أبداً من العدم. فالشعراء يتقنون أولاً الإيقاع والوزن قبل أن يخرقوا القواعد. ويعتمد العلماء على نظريات راسخة قبل أن يغامروا في منطقة غير مجربة. ويعتمد التقدم على هذه القفزات، طالما أنها تستند إلى معرفة وفهم راسخين.</p>
-<p>ويعمل العلماء بنفس الطريقة. تنبثق ما يسمى ب "الهلوسات" أو "القفزات" - التشبيهات والارتباطات والاستقراءات - من نفس العملية التوليدية التي تسمح للنماذج بإجراء الروابط وتوسيع نطاق المعرفة وإبراز الأفكار التي تتجاوز ما تم تدريبهم عليه بشكل صريح. لا تنجح كل قفزة، ولكن عندما تنجح، يمكن أن تكون النتائج مقنعة.</p>
-<p>لهذا السبب أرى أن <strong>هندسة السياق</strong> هي الخطوة التالية الحاسمة. فبدلاً من محاولة القضاء على كل هلوسة، يجب أن نركز على <em>توجيهها</em>. من خلال تصميم السياق الصحيح، يمكننا تحقيق التوازن - إبقاء النماذج مبدعة بما يكفي لاستكشاف آفاق جديدة، مع ضمان بقائها راسخة بما يكفي لتكون محل ثقة.</p>
-<h2 id="What-is-Context-Engineering" class="common-anchor-header">ما هي هندسة السياق؟<button data-href="#What-is-Context-Engineering" class="anchor-icon" translate="no">
+<p>For a long time, many of us — myself included — treated LLM hallucinations as nothing more than defects. An entire toolchain has been built around eliminating them: retrieval systems, guardrails, fine-tuning, and more. These safeguards are still valuable. But the more I’ve studied how models actually generate responses — and how systems like <a href="https://milvus.io/"><strong>Milvus</strong></a> fit into broader AI pipelines — the less I believe hallucinations are simply failures. In fact, they can also be the spark of AI creativity.</p>
+<p>If we look at human creativity, we find the same pattern. Every breakthrough relies on imaginative leaps. But those leaps never come out of nowhere. Poets first master rhythm and meter before they break the rules. Scientists rely on established theories before venturing into untested territory. Progress depends on these leaps, as long as they are grounded in solid knowledge and understanding.</p>
+<p>LLMs operate in much the same way. Their so-called “hallucinations” or “leaps”— analogies, associations, and extrapolations — emerge from the same generative process that allows models to make connections, extend knowledge, and surface ideas beyond what they’ve been explicitly trained on. Not every leap succeeds, but when it does, the results can be compelling.</p>
+<p>That’s why I see <strong>Context Engineering</strong> as the critical next step. Rather than trying to eliminate every hallucination, we should focus on <em>steering</em> them. By designing the right context, we can strike a balance — keeping models imaginative enough to explore new ground, while ensuring they remain anchored enough to be trusted.</p>
+<h2 id="What-is-Context-Engineering" class="common-anchor-header">What is Context Engineering?<button data-href="#What-is-Context-Engineering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,8 +39,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ماذا نعني بالضبط <em>بهندسة</em> السياق؟ قد يكون المصطلح جديداً، لكن هذه الممارسة تتطور منذ سنوات. تقنيات مثل RAG، والمطالبة، واستدعاء الدالة، و MCP كلها محاولات مبكرة لحل نفس المشكلة: تزويد النماذج بالبيئة المناسبة لإنتاج نتائج مفيدة. تتعلق هندسة السياق بتوحيد هذه الأساليب في إطار عمل متماسك.</p>
-<h2 id="The-Three-Pillars-of-Context-Engineering" class="common-anchor-header">الركائز الثلاث لهندسة السياق<button data-href="#The-Three-Pillars-of-Context-Engineering" class="anchor-icon" translate="no">
+    </button></h2><p>So what exactly do we mean by <em>context engineering</em>? The term may be new, but the practice has been evolving for years. Techniques such as RAG, prompting, function calling, and MCP are all early attempts at solving the same problem: providing models with the right environment to produce useful results. Context engineering is about unifying those approaches into a coherent framework.</p>
+<h2 id="The-Three-Pillars-of-Context-Engineering" class="common-anchor-header">The Three Pillars of Context Engineering<button data-href="#The-Three-Pillars-of-Context-Engineering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,18 +55,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تعتمد هندسة السياق الفعالة على ثلاث طبقات مترابطة:</p>
+    </button></h2><p>Effective context engineering rests on three interconnected layers:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/context_engineering_1_8f2b39c5e7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="1-The-Instructions-Layer--Defining-Direction" class="common-anchor-header">1. طبقة التعليمات - تحديد الاتجاه</h3><p>تتضمن هذه الطبقة المطالبات والأمثلة القليلة والعروض التوضيحية. إنه نظام الملاحة الخاص بالنموذج: ليس مجرد عبارة غامضة "اتجه شمالاً"، بل طريق واضح مع نقاط طريق. تضع التعليمات جيدة التنظيم الحدود، وتحدد الأهداف، وتقلل من الغموض في سلوك النموذج.</p>
-<h3 id="2-The-Knowledge-Layer--Supplying-Ground-Truth" class="common-anchor-header">2. طبقة المعرفة - توفير الحقيقة الأساسية</h3><p>هنا نضع الحقائق والرموز والوثائق والحالة التي يحتاجها النموذج للتفكير بفعالية. بدون هذه الطبقة، يرتجل النظام من ذاكرة غير مكتملة. باستخدامها، يمكن للنموذج أن يؤسس مخرجاته على بيانات خاصة بالمجال. وكلما كانت المعرفة أكثر دقة وملاءمة كلما كان الاستدلال أكثر موثوقية.</p>
-<h3 id="3-The-Tools-Layer--Enabling-Action-and-Feedback" class="common-anchor-header">3. طبقة الأدوات - تمكين العمل والتغذية الراجعة</h3><p>تغطي هذه الطبقة واجهات برمجة التطبيقات، واستدعاءات الوظائف، والتكاملات الخارجية. وهي ما يمكّن النظام من الانتقال من الاستدلال إلى التنفيذ - استرداد البيانات أو إجراء العمليات الحسابية أو تشغيل سير العمل. وبنفس القدر من الأهمية، توفر هذه الأدوات تغذية راجعة في الوقت الفعلي يمكن ربطها مرة أخرى في منطق النموذج. هذه التغذية الراجعة هي ما يتيح التصحيح والتكيف والتحسين المستمر. ومن الناحية العملية، هذا هو ما يحول الآلات ذات المسؤولية المحدودة من مستجيبين سلبيين إلى مشاركين نشطين في النظام.</p>
-<p>هذه الطبقات ليست صوامع - فهي تعزز بعضها البعض. فالتعليمات تحدد الوجهة، والمعرفة توفر المعلومات للعمل بها، والأدوات تحول القرارات إلى أفعال وتغذي النتائج مرة أخرى في الحلقة. إذا تم تنسيقها بشكل جيد، فإنها تخلق بيئة يمكن أن تكون فيها النماذج مبدعة ويمكن الاعتماد عليها.</p>
-<h2 id="The-Long-Context-Challenges-When-More-Becomes-Less" class="common-anchor-header">تحديات السياق الطويل: عندما يصبح المزيد أقل<button data-href="#The-Long-Context-Challenges-When-More-Becomes-Less" class="anchor-icon" translate="no">
+<h3 id="1-The-Instructions-Layer--Defining-Direction" class="common-anchor-header">1. The Instructions Layer — Defining Direction</h3><p>This layer includes prompts, few-shot examples, and demonstrations. It’s the model’s navigation system: not just a vague “go north,” but a clear route with waypoints. Well-structured instructions set boundaries, define goals, and reduce ambiguity in model behavior.</p>
+<h3 id="2-The-Knowledge-Layer--Supplying-Ground-Truth" class="common-anchor-header">2. The Knowledge Layer — Supplying Ground Truth</h3><p>Here we place the facts, code, documents, and state that the model needs to reason effectively. Without this layer, the system improvises from incomplete memory. With it, the model can ground its outputs in domain-specific data. The more accurate and relevant the knowledge, the more reliable the reasoning.</p>
+<h3 id="3-The-Tools-Layer--Enabling-Action-and-Feedback" class="common-anchor-header">3. The Tools Layer — Enabling Action and Feedback</h3><p>This layer covers APIs, function calls, and external integrations. It’s what enables the system to move beyond reasoning to execution—retrieving data, performing calculations, or triggering workflows. Just as importantly, these tools provide real-time feedback that can be looped back into the model’s reasoning. That feedback is what enables correction, adaptation, and continuous improvement. In practice, this is what transforms LLMs from passive responders into active participants in a system.</p>
+<p>These layers aren’t silos—they reinforce each other. Instructions set the destination, knowledge provides the information to work with, and tools turn decisions into action and feed results back into the loop. Orchestrated well, they create an environment where models can be both creative and dependable.</p>
+<h2 id="The-Long-Context-Challenges-When-More-Becomes-Less" class="common-anchor-header">The Long Context Challenges: When More Becomes Less<button data-href="#The-Long-Context-Challenges-When-More-Becomes-Less" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,49 +81,49 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تُعلن العديد من نماذج الذكاء الاصطناعي الآن عن نوافذ بملايين الرموز - وهو ما يكفي لحوالي 75000 سطر من التعليمات البرمجية أو مستند مكون من 750 ألف كلمة. لكن المزيد من السياق لا يؤدي تلقائياً إلى نتائج أفضل. في الممارسة العملية، تقدم السياقات الطويلة جداً أنماط فشل متميزة يمكن أن تقلل من الاستدلال والموثوقية.</p>
-<h3 id="Context-Poisoning--When-Bad-Information-Spreads" class="common-anchor-header">تسمم السياق - عندما تنتشر المعلومات السيئة</h3><p>بمجرد دخول معلومات خاطئة إلى سياق العمل - سواء في الأهداف أو الملخصات أو الحالة الوسيطة - يمكن أن تعرقل عملية الاستدلال بأكملها. يقدم <a href="https://arxiv.org/pdf/2507.06261">تقرير Gemini 2.5 من DeepMind</a> مثالاً واضحاً على ذلك. أخطأ وكيل LLM الذي يلعب بوكيمون في قراءة حالة اللعبة وقرر أن مهمته هي "اصطياد الأسطوري الذي لا يمكن اصطياده". تم تسجيل هذا الهدف غير الصحيح كحقيقة واقعة، مما أدى بالوكيل إلى إنشاء استراتيجيات متقنة ولكنها مستحيلة.</p>
-<p>وكما هو موضح في المقتطف أدناه، فإن السياق المسموم أوقع النموذج في حلقة مفرغة - تكرار الأخطاء، وتجاهل المنطق السليم، وتعزيز نفس الخطأ حتى انهارت عملية التفكير بأكملها.</p>
+    </button></h2><p>Many AI models now advertise million-token windows—enough for ~75,000 lines of code or a 750,000-word document. But more context doesn’t automatically yield better results. In practice, very long contexts introduce distinct failure modes that can degrade reasoning and reliability.</p>
+<h3 id="Context-Poisoning--When-Bad-Information-Spreads" class="common-anchor-header">Context Poisoning — When Bad Information Spreads</h3><p>Once false information enters the working context—whether in goals, summaries, or intermediate state—it can derail the entire reasoning process. <a href="https://arxiv.org/pdf/2507.06261">DeepMind’s Gemini 2.5 report</a> provides a clear example. An LLM agent playing Pokémon misread the game state and decided its mission was to “catch the uncatchable legendary.” That incorrect goal was recorded as fact, leading the agent to generate elaborate but impossible strategies.</p>
+<p>As shown in the excerpt below, the poisoned context trapped the model in a loop—repeating errors, ignoring common sense, and reinforcing the same mistake until the entire reasoning process collapsed.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_1_Excerpt_from_Gemini_2_5_Tech_Paper_e89adf9eed.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>الشكل 1: مقتطف من <a href="https://arxiv.org/pdf/2507.06261">ورقة Gemini 2.5 التقنية</a></p>
-<h3 id="Context-Distraction--Lost-in-the-Details" class="common-anchor-header">تشتيت السياق - الضياع في التفاصيل</h3><p>مع توسع نوافذ السياق، يمكن أن تبدأ النماذج في زيادة الوزن الزائد للنسخة وعدم استخدام ما تعلمته أثناء التدريب. على سبيل المثال، يدعم برنامج Gemini 2.5 Pro من DeepMind's Gemini 2.5 Pro نافذة من مليون رمز ولكنه <a href="https://arxiv.org/pdf/2507.06261">يبدأ في الانجراف نحو 100,000 رمز تقريبًا - أي إعادة تدوير</a>الإجراءات السابقة بدلاً من توليد استراتيجيات جديدة. تُظهر <a href="https://www.databricks.com/blog/long-context-rag-performance-llms">أبحاث داتابريكس</a> أن النماذج الأصغر، مثل Llama 3.1-405B، تصل إلى هذا الحد في وقت أقرب بكثير عند حوالي 32,000 رمز. إنه تأثير بشري مألوف: الكثير من القراءة في الخلفية، فتفقد الحبكة.</p>
+<p>Figure 1: Excerpt from <a href="https://arxiv.org/pdf/2507.06261">Gemini 2.5 Tech Paper</a></p>
+<h3 id="Context-Distraction--Lost-in-the-Details" class="common-anchor-header">Context Distraction — Lost in the Details</h3><p>As context windows expand, models can start to overweight the transcript and underuse what they learned during training. DeepMind’s Gemini 2.5 Pro, for example, supports a million-token window but <a href="https://arxiv.org/pdf/2507.06261">begins to drift around ~100,000 tokens</a>—recycling past actions instead of generating new strategies. <a href="https://www.databricks.com/blog/long-context-rag-performance-llms">Databricks’ research</a> shows that smaller models, like Llama 3.1-405B, reach that limit far sooner at roughly ~32,000 tokens. It’s a familiar human effect: too much background reading, and you lose the plot.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_2_Excerpt_from_Gemini_2_5_Tech_Paper_56d775c59d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>الشكل 2: مقتطف من <a href="https://arxiv.org/pdf/2507.06261">ورقة Gemini 2.5 التقنية</a></p>
+<p>Figure 2: Excerpt from <a href="https://arxiv.org/pdf/2507.06261">Gemini 2.5 Tech Paper</a></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_3_Long_context_performance_of_GPT_Claude_Llama_Mistral_and_DBRX_models_on_4_curated_RAG_datasets_Databricks_Docs_QA_Finance_Bench_Hot_Pot_QA_and_Natural_Questions_Source_Databricks_99086246b9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل 3: الشكل 3: أداء السياق الطويل لنماذج GPT وClaude وLlama وMistral وDBRX على 4 مجموعات بيانات RAG المنسقة (Databricks DocsQA وFinanceBench وHotPotQA وNatural Questions) [المصدر:</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em></p>
-<h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">ارتباك السياق - أدوات كثيرة جدًا في المطبخ</h3><p>إضافة المزيد من الأدوات لا يساعد دائمًا. تُظهر <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">لوحة Berkeley Function-Calling-Calling Leaderboard</a> أنه عندما يعرض السياق قوائم أدوات واسعة النطاق - غالبًا ما تحتوي على العديد من الخيارات غير ذات الصلة - تقل موثوقية النموذج، ويتم استدعاء الأدوات حتى عندما لا تكون هناك حاجة إليها. أحد الأمثلة الواضحة على ذلك: فشل Llama 3.1-8B المكمّل مع توفر 46 أداة، لكنه نجح عندما تم تقليص المجموعة إلى 19 أداة. إنها مفارقة الاختيار بالنسبة لأنظمة الذكاء الاصطناعي - خيارات كثيرة جداً، وقرارات أسوأ.</p>
-<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">تضارب السياق - عندما تتعارض المعلومات</h3><p>تضيف التفاعلات متعددة الأدوار نمط فشل متميز: يتضاعف سوء الفهم المبكر مع تفرع الحوار. في <a href="https://arxiv.org/pdf/2505.06120v1">تجارب مايكروسوفت و Salesforce،</a> كان أداء كل من أنظمة الذكاء الاصطناعي ذات الوزن المفتوح والمغلق أسوأ بشكل ملحوظ في الإعدادات متعددة الأدوار مقارنةً بالإعدادات ذات الدور الواحد - بمتوسط انخفاض بنسبة 39% عبر ست مهام توليد. بمجرد أن يدخل افتراض خاطئ في حالة المحادثة، ترثه الأدوار اللاحقة وتضخم الخطأ.</p>
+<p><em>Figure 3: Long context performance of GPT, Claude, Llama, Mistral and DBRX models on 4 curated RAG datasets (Databricks DocsQA, FinanceBench, HotPotQA and Natural Questions) [Source:</em> <a href="https://www.databricks.com/blog/long-context-rag-performance-llms"><em>Databricks</em></a><em>]</em></p>
+<h3 id="Context-Confusion--Too-Many-Tools-in-the-Kitchen" class="common-anchor-header">Context Confusion — Too Many Tools in the Kitchen</h3><p>Adding more tools doesn’t always help. The <a href="https://gorilla.cs.berkeley.edu/leaderboard.html">Berkeley Function-Calling Leaderboard</a> shows that when the context displays extensive tool menus—often with many irrelevant options—model reliability decreases, and tools are invoked even when none are needed. One clear example: a quantized Llama 3.1-8B failed with 46 tools available, but succeeded when the set was reduced to 19. It’s the paradox of choice for AI systems—too many options, worse decisions.</p>
+<h3 id="Context-Clash--When-Information-Conflicts" class="common-anchor-header">Context Clash — When Information Conflicts</h3><p>Multi-turn interactions add a distinct failure mode: early misunderstandings compound as the dialogue branches. In <a href="https://arxiv.org/pdf/2505.06120v1">Microsoft and Salesforce experiments</a>, both open- and closed-weight LLMs performed markedly worse in multi-turn vs. single-turn settings—an average 39% drop across six generation tasks. Once a wrong assumption enters the conversation state, subsequent turns inherit it and amplify the error.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_4_LL_Ms_get_lost_in_multi_turn_conversations_in_experiments_21f194b02d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل 4: تضيع الفرضيات الخاطئة في المحادثات متعددة الأدوار في التجارب</em></p>
-<p>يظهر التأثير حتى في النماذج الأمامية. عندما تم توزيع المهام المعيارية عبر المنعطفات، انخفضت درجة أداء نموذج o3 من OpenAI من <strong>98.1</strong> إلى <strong>64.1</strong>. إن القراءة الخاطئة الأولية "تحدد" نموذج العالم بشكل فعال؛ فكل رد يبني عليه، مما يحول التناقض الصغير إلى نقطة عمياء متصلبة ما لم يتم تصحيحه بشكل صريح.</p>
+<p><em>Figure 4: LLMs get lost in multi-turn conversations in experiments</em></p>
+<p>The effect shows up even in frontier models. When benchmark tasks were distributed across turns, the performance score of OpenAI’s o3 model fell from <strong>98.1</strong> to <strong>64.1</strong>. An initial misread effectively “sets” the world model; each reply builds on it, turning a small contradiction into a hardened blind spot unless explicitly corrected.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_4_The_performance_scores_in_LLM_multi_turn_conversation_experiments_414d3a0b3f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>الشكل 4: درجات الأداء في تجارب محادثة LLM متعددة الأدوار</em></p>
-<h2 id="Six-Strategies-to-Tame-Long-Context" class="common-anchor-header">ست استراتيجيات لترويض السياق الطويل<button data-href="#Six-Strategies-to-Tame-Long-Context" class="anchor-icon" translate="no">
+<p><em>Figure 4: The performance scores in LLM multi-turn conversation experiments</em></p>
+<h2 id="Six-Strategies-to-Tame-Long-Context" class="common-anchor-header">Six Strategies to Tame Long Context<button data-href="#Six-Strategies-to-Tame-Long-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,14 +138,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا يكمن الحل لتحديات السياق الطويل في التخلي عن القدرة - بل في هندستها بانضباط. فيما يلي ست استراتيجيات رأيناها تنجح عملياً:</p>
-<h3 id="Context-Isolation" class="common-anchor-header">عزل السياق</h3><p>تقسيم تدفقات العمل المعقدة إلى عوامل متخصصة ذات سياقات معزولة. يركز كل وكيل على مجاله الخاص دون تداخل، مما يقلل من خطر انتشار الأخطاء. وهذا لا يحسّن الدقة فحسب، بل يتيح أيضاً التنفيذ المتوازي، تماماً مثل فريق هندسي منظم بشكل جيد.</p>
-<h3 id="Context-Pruning" class="common-anchor-header">تشذيب السياق</h3><p>تدقيق وتشذيب السياق بانتظام. قم بإزالة التفاصيل الزائدة والمعلومات القديمة والآثار غير ذات الصلة. فكّر في الأمر على أنه إعادة هيكلة: نظف التعليمات البرمجية والتبعيات الميتة، مع ترك الأساسيات فقط. يتطلب التقليم الفعال معايير واضحة لما ينتمي وما لا ينتمي.</p>
-<h3 id="Context-Summarization" class="common-anchor-header">تلخيص السياق</h3><p>ليس من الضروري نقل التواريخ الطويلة بالكامل. وبدلاً من ذلك، قم بتلخيصها في ملخصات موجزة تلتقط فقط ما هو ضروري للخطوة التالية. يحتفظ التلخيص الجيد بالحقائق والقرارات والقيود المهمة، مع التخلص من التكرار والتفاصيل غير الضرورية. الأمر أشبه باستبدال مواصفات من 200 صفحة بموجز تصميم من صفحة واحدة لا يزال يمنحك كل ما تحتاجه للمضي قدمًا.</p>
-<h3 id="Context-Offloading" class="common-anchor-header">تفريغ السياق</h3><p>لا يجب أن تكون كل التفاصيل جزءًا من السياق المباشر. احتفظ بالبيانات غير الحرجة في أنظمة خارجية - قواعد المعرفة أو مخازن المستندات أو قواعد البيانات المتجهة مثل Milvus - ولا تجلبها إلا عند الحاجة. هذا يخفف العبء المعرفي للنموذج مع الحفاظ على إمكانية الوصول إلى المعلومات الأساسية.</p>
-<h3 id="Strategic-RAG" class="common-anchor-header">الاسترجاع الاستراتيجي</h3><p>لا يكون استرجاع المعلومات قويًا إلا إذا كان انتقائيًا. قم بإدخال المعرفة الخارجية من خلال التصفية الصارمة وضوابط الجودة، مما يضمن أن النموذج يستهلك مدخلات ذات صلة ودقيقة. كما هو الحال مع أي خط أنابيب للبيانات: القمامة في، القمامة خارج - ولكن مع الاسترجاع عالي الجودة، يصبح السياق أحد الأصول وليس عائقًا.</p>
-<h3 id="Optimized-Tool-Loading" class="common-anchor-header">التحميل الأمثل للأدوات</h3><p>لا يعني المزيد من الأدوات أداءً أفضل. تظهر الدراسات أن الموثوقية تنخفض بشكل حاد بعد حوالي 30 أداة متاحة. قم بتحميل الوظائف التي تتطلبها مهمة معينة فقط، وبوابة الوصول إلى الباقي. يعزز صندوق الأدوات المرن الدقة ويقلل من الضوضاء التي يمكن أن تطغى على عملية صنع القرار.</p>
-<h2 id="The-Infrastructure-Challenge-of-Context-Engineering" class="common-anchor-header">تحدي البنية التحتية لهندسة السياق<button data-href="#The-Infrastructure-Challenge-of-Context-Engineering" class="anchor-icon" translate="no">
+    </button></h2><p>The answer to long-context challenges isn’t to abandon the capability—it’s to engineer it with discipline. Here are six strategies we’ve seen work in practice:</p>
+<h3 id="Context-Isolation" class="common-anchor-header">Context Isolation</h3><p>Break complex workflows into specialized agents with isolated contexts. Each agent focuses on its own domain without interference, reducing the risk of error propagation. This not only improves accuracy but also enables parallel execution, much like a well-structured engineering team.</p>
+<h3 id="Context-Pruning" class="common-anchor-header">Context Pruning</h3><p>Regularly audit and trim the context. Remove redundant details, stale information, and irrelevant traces. Think of it as refactoring: clean out dead code and dependencies, leaving only the essentials. Effective pruning requires explicit criteria for what belongs and what doesn’t.</p>
+<h3 id="Context-Summarization" class="common-anchor-header">Context Summarization</h3><p>Long histories don’t need to be carried around in full. Instead, condense them into concise summaries that capture only what is essential for the next step. Good summarization retains the critical facts, decisions, and constraints, while eliminating repetition and unnecessary details. It’s like replacing a 200-page spec with a one-page design brief that still gives you everything you need to move forward.</p>
+<h3 id="Context-Offloading" class="common-anchor-header">Context Offloading</h3><p>Not every detail needs to be part of the live context. Persist non-critical data in external systems—knowledge bases, document stores, or vector databases like Milvus—and fetch it only when needed. This lightens the model’s cognitive load while keeping background information accessible.</p>
+<h3 id="Strategic-RAG" class="common-anchor-header">Strategic RAG</h3><p>Information retrieval is powerful only if it’s selective. Introduce external knowledge through rigorous filtering and quality controls, ensuring the model consumes relevant and accurate inputs. As with any data pipeline: garbage in, garbage out—but with high-quality retrieval, the context becomes an asset, not a liability.</p>
+<h3 id="Optimized-Tool-Loading" class="common-anchor-header">Optimized Tool Loading</h3><p>More tools don’t equal better performance. Studies show reliability drops sharply beyond ~30 available tools. Load only the functions a given task requires, and gate access to the rest. A lean toolbox fosters precision and reduces the noise that can overwhelm decision-making.</p>
+<h2 id="The-Infrastructure-Challenge-of-Context-Engineering" class="common-anchor-header">The Infrastructure Challenge of Context Engineering<button data-href="#The-Infrastructure-Challenge-of-Context-Engineering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -160,11 +160,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا تكون هندسة السياق فعالة إلا بقدر فعالية البنية التحتية التي تعمل عليها. وتواجه الشركات اليوم عاصفة مثالية من تحديات البيانات:</p>
-<h3 id="Scale-Explosion--From-Terabytes-to-Petabytes" class="common-anchor-header">انفجار النطاق - من تيرابايت إلى بيتابايت</h3><p>اليوم، أعاد نمو البيانات تعريف خط الأساس. فأحمال العمل التي كانت تتناسب بشكل مريح مع قاعدة بيانات واحدة أصبحت الآن تمتد إلى بيتابايت، مما يتطلب تخزينًا وحسابًا موزعًا. يمكن أن يتحول تغيير المخطط الذي كان عبارة عن تحديث SQL من سطر واحد إلى جهد تنسيق كامل عبر المجموعات وخطوط الأنابيب والخدمات. لا يتعلق التوسع ببساطة بإضافة الأجهزة - بل يتعلق بالهندسة من أجل التنسيق والمرونة والمرونة على نطاق يتم فيه اختبار كل افتراض على نطاق واسع.</p>
-<h3 id="Consumption-Revolution--Systems-That-Speak-AI" class="common-anchor-header">ثورة الاستهلاك - الأنظمة التي تتحدث الذكاء الاصطناعي</h3><p>لا يكتفي وكلاء الذكاء الاصطناعي بالاستعلام عن البيانات فحسب، بل يقومون بتوليدها وتحويلها واستهلاكها بشكل مستمر بسرعة الآلة. لا تستطيع البنية التحتية المصممة فقط للتطبيقات التي تواجه الإنسان مواكبة ذلك. ولدعم الوكلاء، يجب أن توفر الأنظمة استرجاعاً منخفض الكمون وتحديثات متدفقة وأعباء عمل ثقيلة في الكتابة دون تعطل. وبعبارة أخرى، يجب أن يتم بناء حزمة البنية التحتية "للتحدث بالذكاء الاصطناعي" باعتبارها عبء العمل الأصلي، وليس كفكرة لاحقة.</p>
-<h3 id="Multimodal-Complexity--Many-Data-Types-One-System" class="common-anchor-header">التعقيد متعدد الوسائط - العديد من أنواع البيانات، نظام واحد</h3><p>تمزج أعباء عمل الذكاء الاصطناعي بين النصوص والصور والصوت والفيديو والتضمينات عالية الأبعاد، وكل منها مرفق ببيانات وصفية غنية. إدارة هذا التغاير هو جوهر هندسة السياق العملي. لا يكمن التحدي في تخزين العناصر المتنوعة فحسب، بل في فهرستها واسترجاعها بكفاءة والحفاظ على الاتساق الدلالي عبر الطرائق. يجب أن تتعامل البنية التحتية الجاهزة حقًا للذكاء الاصطناعي مع تعدد الوسائط كمبدأ تصميم من الدرجة الأولى، وليس كميزة إضافية.</p>
-<h2 id="Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="common-anchor-header">ميلفوس + لون: بنية تحتية للبيانات مصممة خصيصاً للذكاء الاصطناعي<button data-href="#Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="anchor-icon" translate="no">
+    </button></h2><p>Context engineering is only as effective as the infrastructure it runs on. And today’s enterprises are hitting a perfect storm of data challenges:</p>
+<h3 id="Scale-Explosion--From-Terabytes-to-Petabytes" class="common-anchor-header">Scale Explosion — From Terabytes to Petabytes</h3><p>Today, data growth has redefined the baseline. Workloads that once fit comfortably in a single database now span petabytes, demanding distributed storage and compute. A schema change that used to be a one-line SQL update can cascade into a full orchestration effort across clusters, pipelines, and services. Scaling isn’t simply about adding hardware—it’s about engineering for coordination, resilience, and elasticity at a scale where every assumption gets stress-tested.</p>
+<h3 id="Consumption-Revolution--Systems-That-Speak-AI" class="common-anchor-header">Consumption Revolution — Systems That Speak AI</h3><p>AI agents don’t just query data; they generate, transform, and consume it continuously at machine speeds. Infrastructure designed just for human-facing applications can’t keep up. To support agents, systems must provide low-latency retrieval, streaming updates, and write-heavy workloads without breaking. In other words, the infrastructure stack must be built to “speak AI” as its native workload, not as an afterthought.</p>
+<h3 id="Multimodal-Complexity--Many-Data-Types-One-System" class="common-anchor-header">Multimodal Complexity — Many Data Types, One System</h3><p>AI workloads blend text, images, audio, video, and high-dimensional embeddings, each with rich metadata attached. Managing this heterogeneity is the crux of practical context engineering. The challenge isn’t just storing diverse objects; it’s indexing them, retrieving them efficiently, and keeping semantic consistency across modalities. A truly AI-ready infrastructure must treat multimodality as a first-class design principle, not a bolt-on feature.</p>
+<h2 id="Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="common-anchor-header">Milvus + Loon: Purpose-Built Data Infrastructure for AI<button data-href="#Milvus-+-Loon-Purpose-Built-Data-Infrastructure-for-AI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -179,10 +179,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا يمكن حل تحديات الحجم والاستهلاك وتعدد الوسائط بالاعتماد على النظرية وحدها، فهي تتطلب بنية تحتية مصممة خصيصاً للذكاء الاصطناعي. لهذا السبب قمنا في <a href="https://zilliz.com/">Zilliz</a> بتصميم <strong>Milvus</strong> <strong>وLoon</strong> للعمل معاً، لمعالجة جانبي المشكلة: الاسترجاع عالي الأداء في وقت التشغيل ومعالجة البيانات على نطاق واسع في مرحلة ما قبل التشغيل.</p>
+    </button></h2><p>The challenges of scale, consumption, and multimodality can’t be solved with theory alone—they demand infrastructure that is purpose-built for AI. That’s why we at <a href="https://zilliz.com/">Zilliz</a> designed <strong>Milvus</strong> and <strong>Loon</strong> to work together, addressing both sides of the problem: high-performance retrieval at runtime and large-scale data processing upstream.</p>
 <ul>
-<li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: قاعدة البيانات المتجهة مفتوحة المصدر الأكثر اعتماداً على نطاق واسع والمُحسّنة لاسترجاع وتخزين المتجهات عالية الأداء.</p></li>
-<li><p><strong>Loon</strong>: خدمة بحيرة البيانات متعددة الوسائط السحابية القادمة المصممة لمعالجة وتنظيم البيانات متعددة الوسائط على نطاق واسع قبل أن تصل إلى قاعدة البيانات. ترقبوا المزيد.</p></li>
+<li><p><a href="https://milvus.io/"><strong>Milvus</strong></a>: the most widely adopted open-source vector database optimized for high-performance vector retrieval and storage.</p></li>
+<li><p><strong>Loon</strong>: our upcoming cloud-native multimodal data lake service designed to process and organize massive-scale multimodal data before it ever reaches the database. Stay tuned.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -190,12 +190,12 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Lightning-Fast-Vector-Search" class="common-anchor-header">بحث فائق السرعة في المتجهات</h3><p>تم تصميم<strong>Milvus</strong> من الألف إلى الياء لأعباء عمل المتجهات. وباعتباره طبقة العرض، فإنه يوفر استرجاعًا دون 10 مللي ثانية عبر مئات الملايين - أو حتى المليارات - من المتجهات، سواء كانت مستمدة من النصوص أو الصور أو الصوت أو الفيديو. بالنسبة لتطبيقات الذكاء الاصطناعي، فإن سرعة الاسترجاع ليست "أمراً لطيفاً". بل هي ما يحدد ما إذا كان الوكيل يشعر بالاستجابة أو البطء، وما إذا كانت نتيجة البحث ذات صلة أو غير ملائمة. يظهر الأداء هنا بشكل مباشر في تجربة المستخدم النهائي.</p>
-<h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">خدمة بحيرة البيانات متعددة الوسائط على نطاق واسع</h3><p><strong>Loon</strong> هي خدمة بحيرة البيانات متعددة الوسائط القادمة لدينا، وهي مصممة لمعالجة وتحليلات البيانات غير المهيكلة على نطاق واسع دون اتصال بالإنترنت. وهي تكمل خدمة Milvus على جانب خط الأنابيب، حيث تقوم بإعداد البيانات قبل أن تصل إلى قاعدة البيانات. غالبًا ما تكون مجموعات البيانات متعددة الوسائط في العالم الحقيقي - التي تمتد عبر النصوص والصور والصوت والفيديو - فوضوية في كثير من الأحيان، مع وجود ازدواجية وضوضاء وتنسيقات غير متسقة. تتولى Loon هذا العمل الشاق باستخدام أطر عمل موزعة مثل راي ودافت، حيث تقوم بضغط البيانات وإلغاء تكرارها وتجميعها قبل بثها مباشرةً إلى ميلفوس. والنتيجة بسيطة: لا توجد اختناقات في التدريج، ولا تحويلات تنسيق مؤلمة - فقط بيانات نظيفة ومنظمة يمكن للنماذج استخدامها على الفور.</p>
-<h3 id="Cloud-Native-Elasticity" class="common-anchor-header">المرونة السحابية الأصلية</h3><p>كلا النظامين مصممان على السحابة الأصلية، مع توسيع نطاق التخزين والحوسبة بشكل مستقل. وهذا يعني أنه مع نمو أعباء العمل من غيغابايت إلى بيتابايت، يمكنك موازنة الموارد بين العرض في الوقت الفعلي والتدريب دون اتصال بالإنترنت، بدلاً من الإفراط في توفير الموارد لأحدهما أو التقليل من الآخر.</p>
-<h3 id="Future-Proof-Architecture" class="common-anchor-header">بنية مقاومة للمستقبل</h3><p>الأهم من ذلك هو أن هذه البنية مصممة للنمو معك. لا تزال هندسة السياق في تطور مستمر. في الوقت الحالي، تركز معظم الفرق على البحث الدلالي وخطوط أنابيب RAG. لكن الموجة التالية ستتطلب المزيد - دمج أنواع متعددة من البيانات، والاستدلال عبرها، وتشغيل تدفقات العمل التي يحركها الوكيل.</p>
-<p>مع Milvus و Loon، لا يتطلب هذا الانتقال تمزيق الأساس الخاص بك. يمكن أن تمتد نفس الحزمة التي تدعم حالات استخدام اليوم بشكل طبيعي إلى حالات الغد. يمكنك إضافة قدرات جديدة دون البدء من جديد، مما يعني مخاطر أقل، وتكلفة أقل، ومسار أكثر سلاسة مع زيادة تعقيد أعباء عمل الذكاء الاصطناعي.</p>
-<h2 id="Your-Next-Move" class="common-anchor-header">خطوتك التالية<button data-href="#Your-Next-Move" class="anchor-icon" translate="no">
+<h3 id="Lightning-Fast-Vector-Search" class="common-anchor-header">Lightning-Fast Vector Search</h3><p><strong>Milvus</strong> is built from the ground up for vector workloads. As the serving layer, it delivers sub-10ms retrieval across hundreds of millions—or even billions—of vectors, whether derived from text, images, audio, or video. For AI applications, retrieval speed isn’t a “nice to have.” It’s what determines whether an agent feels responsive or sluggish, whether a search result feels relevant or out of step. Performance here is directly visible in the end-user experience.</p>
+<h3 id="Multimodal-Data-Lake-Service-at-Scale" class="common-anchor-header">Multimodal Data Lake Service at Scale</h3><p><strong>Loon</strong> is our upcoming multimodal data lake service, designed for massive-scale offline processing and analytics of unstructured data. It complements Milvus on the pipeline side, preparing data before it ever reaches the database. Real-world multimodal datasets—spanning text, images, audio, and video—are often messy, with duplication, noise, and inconsistent formats. Loon takes care of this heavy lifting using distributed frameworks like Ray and Daft, compressing, deduplicating, and clustering the data before streaming it directly into Milvus. The result is simple: no staging bottlenecks, no painful format conversions—just clean, structured data that models can use immediately.</p>
+<h3 id="Cloud-Native-Elasticity" class="common-anchor-header">Cloud-Native Elasticity</h3><p>Both systems are built cloud-native, with storage and compute scaling independently. That means as workloads grow from gigabytes to petabytes, you can balance resources between real-time serving and offline training, rather than overprovisioning for one or undercutting the other.</p>
+<h3 id="Future-Proof-Architecture" class="common-anchor-header">Future-Proof Architecture</h3><p>Most importantly, this architecture is designed to grow with you. Context engineering is still evolving. Right now, most teams are focused on semantic search and RAG pipelines. But the next wave will demand more—integrating multiple data types, reasoning across them, and powering agent-driven workflows.</p>
+<p>With Milvus and Loon, that transition doesn’t require ripping out your foundation. The same stack that supports today’s use cases can extend naturally into tomorrow’s. You add new capabilities without starting over, which means less risk, lower cost, and a smoother path as AI workloads become more complex.</p>
+<h2 id="Your-Next-Move" class="common-anchor-header">Your Next Move<button data-href="#Your-Next-Move" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -210,10 +210,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>هندسة السياق ليست مجرد تخصص تقني آخر - إنها الطريقة التي نطلق بها العنان لإمكانات الذكاء الاصطناعي الإبداعية مع الحفاظ على ثباتها وموثوقيتها. إذا كنت مستعداً لوضع هذه الأفكار موضع التنفيذ، فابدأ من حيث الأهمية القصوى.</p>
+    </button></h2><p>Context engineering isn’t just another technical discipline—it’s how we unlock AI’s creative potential while keeping it grounded and reliable. If you’re ready to put these ideas into practice, start where it matters most.</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/overview.md"><strong>جرب مع Milvus</strong></a> لترى كيف يمكن لقواعد البيانات المتجهة أن ترسخ الاسترجاع في عمليات النشر في العالم الحقيقي.</p></li>
-<li><p><a href="https://www.linkedin.com/company/the-milvus-project/"><strong>تابع Milvus</strong></a> للحصول على تحديثات حول إصدار Loon ورؤى حول إدارة البيانات متعددة الوسائط على نطاق واسع.</p></li>
-<li><p><a href="https://discord.com/invite/8uyFbECzPX"><strong>انضم إلى مجتمع Zilliz على Discord</strong></a> لمشاركة الاستراتيجيات ومقارنة البنى والمساعدة في تشكيل أفضل الممارسات.</p></li>
+<li><p><a href="https://milvus.io/docs/overview.md"><strong>Experiment with Milvus</strong></a> to see how vector databases can anchor retrieval in real-world deployments.</p></li>
+<li><p><a href="https://www.linkedin.com/company/the-milvus-project/"><strong>Follow Milvus</strong></a> for updates on Loon’s release and insights into managing large-scale multimodal data.</p></li>
+<li><p><a href="https://discord.com/invite/8uyFbECzPX"><strong>Join the Zilliz community on Discord</strong></a> to share strategies, compare architectures, and help shape best practices.</p></li>
 </ul>
-<p>الشركات التي تتقن هندسة السياق اليوم ستشكل مشهد الذكاء الاصطناعي غداً. لا تدع البنية التحتية تكون القيد - قم ببناء الأساس الذي يستحقه إبداع الذكاء الاصطناعي لديك.</p>
+<p>The companies that master context engineering today will shape the AI landscape tomorrow. Don’t let infrastructure be the constraint—build the foundation your AI creativity deserves.</p>

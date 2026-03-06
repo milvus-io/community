@@ -1,26 +1,28 @@
 ---
 id: building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md
-title: البنية الشاملة
+title: Overall Architecture
 author: milvus
 date: 2021-07-29T08:46:39.920Z
-desc: تسهّل شركة Milvus تقديم خدمة التوصيات المخصصة للمستخدمين.
+desc: >-
+  Milvus makes it easy to provide the personalized recommendation service to
+  users.
 cover: assets.zilliz.com/blog_shopping_27fba2c990.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
-<custom-h1>بناء نظام التوصية بالمنتجات المخصص مع فيب شوب وميلفوس</custom-h1><p>مع النمو الهائل لنطاق بيانات الإنترنت، تزداد كمية المنتجات وكذلك الفئة في منصة التجارة الإلكترونية السائدة حاليًا من ناحية، وتزداد صعوبة عثور المستخدمين على المنتجات التي يحتاجونها من ناحية أخرى.</p>
-<p><a href="https://www.vip.com/">شركة Vipshop</a> هي شركة رائدة في مجال البيع بالتجزئة للعلامات التجارية عبر الإنترنت للعلامات التجارية في الصين. تقدم الشركة منتجات عالية الجودة وذات علامات تجارية شهيرة للمستهلكين في جميع أنحاء الصين بخصم كبير عن أسعار التجزئة. ولتحسين تجربة التسوق لعملائها، قررت الشركة بناء نظام توصية بحث مخصص يعتمد على الكلمات الرئيسية لاستعلام المستخدم وصور المستخدم.</p>
-<p>وتتمثل الوظيفة الأساسية لنظام توصيات البحث في التجارة الإلكترونية في استرداد المنتجات المناسبة من عدد كبير من المنتجات وعرضها على المستخدمين وفقًا لقصد البحث وتفضيلاتهم. في هذه العملية، يحتاج النظام إلى حساب التشابه بين المنتجات ونوايا بحث المستخدمين وتفضيلاتهم، ويوصي بأفضل المنتجات ذات التشابه الأعلى للمستخدمين.</p>
-<p>البيانات مثل معلومات المنتج ونية بحث المستخدم وتفضيلاته كلها بيانات غير منظمة. لقد حاولنا حساب تشابه هذه البيانات باستخدام CosineSimilarity(7.x) من محرك البحث Elasticsearch (ES)، ولكن هذا النهج له العيوب التالية</p>
+<custom-h1>Building a Personalized Product Recommender System with Vipshop and Milvus</custom-h1><p>With the explosive growth of Internet data scale, the product quantity as well as category in the current mainstream e-commerce platform increase on the one hand, the difficulty for users to find the products they need surges on the other hand.</p>
+<p><a href="https://www.vip.com/">Vipshop</a> is a leading online discount retailer for brands in China. The Company offers high-quality and popular branded products to consumers throughout China at a significant discount from retail prices. To optimize the shopping experience for their customers, the company decided to build a personalized search recommendation system based on user query keywords and user portraits.</p>
+<p>The core function of the e-commerce search recommendation system is to retrieve suitable products from a large number of products and display them to users according to their search intent and preference. In this process, the system needs to calculate the similarity between products and users’ search intent &amp; preference, and recommends the TopK products with the highest similarity to users.</p>
+<p>Data such as product information, user search intent, and user preferences are all unstructured data. We tried to calculate the similarity of such data using CosineSimilarity(7.x) of the search engine Elasticsearch (ES), but this approach has the following drawbacks.</p>
 <ul>
-<li><p>وقت الاستجابة الحسابي الطويل - يبلغ متوسط زمن الاستجابة الحسابية لاسترداد نتائج TopK من ملايين العناصر حوالي 300 مللي ثانية.</p></li>
-<li><p>تكلفة الصيانة العالية لفهارس ES - يتم استخدام نفس مجموعة الفهارس لكل من ناقلات ميزات السلع والبيانات الأخرى ذات الصلة، مما يسهل بالكاد بناء الفهرس، ولكنه ينتج عنه كمية هائلة من البيانات.</p></li>
+<li><p>Long computational response time - the average latency to retrieve TopK results from millions of items is around 300 ms.</p></li>
+<li><p>High maintenance cost of ES indexes - the same set of indexes is used for both commodity feature vectors and other related data, which hardly facilitates the index construction, but produces a massive amount of data.</p></li>
 </ul>
-<p>لقد حاولنا تطوير مكون التجزئة الإضافي الحساس محليًا الخاص بنا لتسريع حساب CosineSimilarity لـ ES. على الرغم من تحسن الأداء والإنتاجية بشكل كبير بعد التسريع، إلا أن زمن الاستجابة الذي يزيد عن 100 مللي ثانية كان لا يزال من الصعب تلبية متطلبات استرجاع المنتجات الفعلية عبر الإنترنت.</p>
-<p>بعد إجراء بحث شامل، قررنا استخدام Milvus، وهي قاعدة بيانات متجهة مفتوحة المصدر، والتي تتميز بدعم النشر الموزع، وحزم SDK متعددة اللغات، وفصل القراءة/الكتابة، وما إلى ذلك، مقارنةً بـ Faiss المستقل شائع الاستخدام.</p>
-<p>باستخدام نماذج مختلفة للتعلم العميق، نقوم بتحويل البيانات الضخمة غير المهيكلة إلى متجهات مميزة، واستيراد المتجهات إلى Milvus. وبفضل الأداء الممتاز لـ Milvus، يمكن لنظام توصيات البحث في التجارة الإلكترونية الخاص بنا الاستعلام بكفاءة عن متجهات TopK المشابهة للمتجهات المستهدفة.</p>
-<h2 id="Overall-Architecture" class="common-anchor-header">البنية الشاملة<button data-href="#Overall-Architecture" class="anchor-icon" translate="no">
+<p>We tried to develop our own locally sensitive hash plug-in to accelerate the CosineSimilarity calculation of ES. Although the performance and throughput were significantly improved after the acceleration, the latency of 100+ ms was still difficult to meet the actual online product retrieval requirements.</p>
+<p>After a thorough research, we decided to use Milvus, an open source vector database, which is advantaged with the support for distributed deployment, multi-language SDKs, read/write separation, etc. compared to the commonly used standalone Faiss.</p>
+<p>Using various deep learning models, we convert massive unstructured data into feature vectors, and import the vectors into Milvus. With the excellent performance of Milvus, our e-commerce search recommendation system can efficiently query the TopK vectors that are similar to the target vectors.</p>
+<h2 id="Overall-Architecture" class="common-anchor-header">Overall Architecture<button data-href="#Overall-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,16 +37,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>![الهندسة المعمارية] (https://assets.zilliz.com/1_01551e7b2b.jpg &quot;الهندسة المعمارية.) كما هو موضح في الرسم التخطيطي، تتكون البنية الكلية للنظام من جزأين رئيسيين.</p>
+    </button></h2><p>![Architecture](https://assets.zilliz.com/1_01551e7b2b.jpg &quot;Architecture.)
+As shown in the diagram, the system overall architecture consists of two main parts.</p>
 <ul>
-<li><p>عملية الكتابة: يتم تطبيع ناقلات سمات العنصر (المشار إليها فيما يلي باسم ناقلات العناصر) التي تم إنشاؤها بواسطة نموذج التعلم العميق وكتابتها في MySQL. ثم تقوم MySQL بقراءة متجهات سمات العناصر المعالجة باستخدام أداة مزامنة البيانات (ETL) واستيرادها إلى قاعدة بيانات المتجهات Milvus.</p></li>
-<li><p>عملية القراءة: تحصل خدمة البحث على متجهات ميزات تفضيلات المستخدم (يشار إليها فيما يلي باسم متجهات المستخدم) بناءً على الكلمات الرئيسية لاستعلام المستخدم وصور المستخدم، وتستعلم عن المتجهات المماثلة في Milvus وتستدعي متجهات العناصر TopK.</p></li>
+<li><p>Write process: the item feature vectors (hereinafter referred to as item vectors) generated by the deep learning model are normalized and written into MySQL. MySQL then reads the processed item feature vectors using the data synchronization tool (ETL) and import them into the vector database Milvus.</p></li>
+<li><p>Read process: The search service obtains user preference feature vectors (hereinafter referred to as user vectors) based on user query keywords and user portraits, queries similar vectors in Milvus and recalls TopK item vectors.</p></li>
 </ul>
-<p>يدعم Milvus كلاً من التحديث التدريجي للبيانات والتحديث الكامل للبيانات. يجب على كل تحديث تزايدي حذف متجه العنصر الموجود وإدراج متجه عنصر جديد، مما يعني أنه سيتم إعادة فهرسة كل مجموعة تم تحديثها حديثًا. يناسب هذا السيناريو بشكل أفضل مع قراءات أكثر وكتابات أقل. لذلك، نختار طريقة تحديث البيانات بالكامل. علاوة على ذلك، يستغرق الأمر بضع دقائق فقط لكتابة البيانات بأكملها على دفعات من أقسام متعددة، وهو ما يعادل تحديثات شبه فورية.</p>
-<p>تقوم عقد الكتابة في Milvus بتنفيذ جميع عمليات الكتابة، بما في ذلك إنشاء مجموعات البيانات، وبناء الفهارس، وإدراج المتجهات، وما إلى ذلك، وتقديم الخدمات للجمهور بأسماء نطاقات الكتابة. تقوم عقد القراءة Milvus بتنفيذ جميع عمليات القراءة وتقدم خدمات للجمهور بأسماء نطاقات للقراءة فقط.</p>
-<p>في حين أن الإصدار الحالي من Milvus لا يدعم تبديل الأسماء المستعارة للمجموعات، فإننا نقدم Redis لتبديل الأسماء المستعارة بسلاسة بين مجموعات بيانات متعددة كاملة.</p>
-<p>تحتاج عقدة القراءة فقط إلى قراءة معلومات البيانات الوصفية الموجودة وبيانات المتجهات أو الفهارس من MySQL وMilvus ونظام الملفات الموزعة GlusterFS، لذلك يمكن توسيع إمكانية القراءة أفقياً عن طريق نشر مثيلات متعددة.</p>
-<h2 id="Implementation-Details" class="common-anchor-header">تفاصيل التنفيذ<button data-href="#Implementation-Details" class="anchor-icon" translate="no">
+<p>Milvus supports both incremental data update and entire data update. Each incremental update has to delete the existing item vector and insert a new item vector, meaning that every newly updated collection will be re-indexed. It better suits the scenario with more reads and fewer writes. Therefore, we choose the entire data update method. Moreover, it takes only a few minutes to write the entire data in batches of multiple partitions, which is equivalent to near real-time updates.</p>
+<p>Milvus write nodes perform all write operations, including creating data collections, building indexes, inserting vectors, etc., and provide services to the public with write domain names. Milvus read nodes perform all read operations and provide services to the public with read-only domain names.</p>
+<p>Whereas the current version of Milvus does not support switching collection aliases, we introduce Redis to seamlessly switch aliases between multiple entire data collections.</p>
+<p>The read node only needs to read existing metadata information and vector data or indexes from MySQL, Milvus, and GlusterFS distributed file system, so the read capability can be horizontally extended by deploying multiple instances.</p>
+<h2 id="Implementation-Details" class="common-anchor-header">Implementation Details<button data-href="#Implementation-Details" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -59,36 +62,49 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Data-Update" class="common-anchor-header">تحديث البيانات</h3><p>لا تتضمن خدمة تحديث البيانات كتابة البيانات المتجهة فحسب، بل تشمل أيضًا اكتشاف حجم البيانات المتجهة وإنشاء الفهرس والتحميل المسبق للفهرس والتحكم في الأسماء المستعارة وما إلى ذلك. وتتم العملية الشاملة على النحو التالي. <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_6052b01334.jpg" alt="Process" class="doc-image" id="process" /><span>العملية</span> </span></p>
+    </button></h2><h3 id="Data-Update" class="common-anchor-header">Data Update</h3><p>The data update service includes not only writing vector data, but also data volume detection of vectors, index construction, index pre-loading, alias control, etc. The overall process is as follows.
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_6052b01334.jpg" alt="Process" class="doc-image" id="process" />
+    <span>Process</span>
+  </span>
+</p>
 <ol>
-<li><p>لنفترض أنه قبل بناء البيانات بالكامل، توفر المجموعة أ خدمة البيانات للجمهور، ويتم توجيه البيانات المستخدمة بالكامل إلى المجموعة أ (<code translate="no">redis key1 = CollectionA</code>). الغرض من بناء كامل البيانات هو إنشاء مجموعة جديدة CollectionB.</p></li>
-<li><p>التحقق من بيانات السلع - التحقق من رقم الصنف لبيانات السلع في جدول MySQL، ومقارنة بيانات السلع بالبيانات الموجودة في المجموعةA. يمكن تعيين التنبيه وفقًا للكمية أو النسبة المئوية. إذا لم يتم الوصول إلى الكمية المحددة (النسبة المئوية)، لن يتم بناء البيانات بالكامل، وسيتم اعتبار ذلك بمثابة فشل عملية البناء هذه، مما يؤدي إلى إطلاق التنبيه؛ بمجرد الوصول إلى الكمية المحددة (النسبة المئوية)، تبدأ عملية بناء البيانات بالكامل.</p></li>
-<li><p>ابدأ بناء البيانات بالكامل - قم بتهيئة الاسم المستعار للبيانات التي يتم بناؤها بالكامل، وقم بتحديث Redis. بعد التحديث، يتم توجيه الاسم المستعار لكامل البيانات الجاري بناؤها إلى المجموعة ب (<code translate="no">redis key2 = CollectionB</code>).</p></li>
-<li><p>إنشاء مجموعة كاملة جديدة - تحديد ما إذا كانت المجموعة ب موجودة. إذا كانت موجودة، فاحذفها قبل إنشاء مجموعة جديدة.</p></li>
-<li><p>كتابة البيانات على دفعات - احسب معرّف القسم لكل بيانات سلعة بمعرفها الخاص باستخدام عملية التعديل، واكتب البيانات إلى أقسام متعددة إلى المجموعة المنشأة حديثًا على دفعات.</p></li>
-<li><p>إنشاء فهرس وتحميله مسبقًا - إنشاء فهرس (<code translate="no">createIndex()</code>) للمجموعة الجديدة. يتم تخزين ملف الفهرس في خادم التخزين الموزع GlusterFS. يقوم النظام تلقائيًا بمحاكاة الاستعلام على المجموعة الجديدة وتحميل الفهرس مسبقًا لإحماء الاستعلام.</p></li>
-<li><p>التحقق من بيانات المجموعة - التحقق من رقم عنصر البيانات في المجموعة الجديدة، ومقارنة البيانات مع المجموعة الحالية، وتعيين الإنذارات بناءً على الكمية والنسبة المئوية. إذا لم يتم الوصول إلى الرقم المحدد (النسبة المئوية)، فلن يتم تبديل المجموعة وستعتبر عملية البناء فاشلة، مما يؤدي إلى إطلاق الإنذار.</p></li>
-<li><p>تبديل المجموعة - التحكم في الاسم المستعار. بعد تحديث ريديس، يتم توجيه الاسم المستعار للبيانات المستخدمة بالكامل إلى المجموعة ب (<code translate="no">redis key1 = CollectionB</code>)، ويتم حذف مفتاح ريديس الأصلي2، وتكتمل عملية البناء.</p></li>
+<li><p>Assume that before building the entire data, CollectionA provides data service to the public, and the entire data being used is directed to CollectionA (<code translate="no">redis key1 = CollectionA</code>). The purpose of constructing entire data is to create a new collection CollectionB.</p></li>
+<li><p>Commodity data check - check the item number of commodity data in the MySQL table, compare the commodity data with the existing data in CollectionA. Alert can be set in accordance with quantity or percentage. If the set quantity (percentage) is not reached, the entire data will not be built, and it will be regarded as the failure of this building operation, triggering the alert; once the set quantity (percentage) is reached, the entire data building process starts.</p></li>
+<li><p>Start building the entire data - initialize the alias of the entire data being built, and update Redis. After updating, the alias of the entire data being built is directed to CollectionB (<code translate="no">redis key2 = CollectionB</code>).</p></li>
+<li><p>Create a new entire collection - determine if CollectionB exists. If it does, delete it before creating a new one.</p></li>
+<li><p>Data batch write-in - calculate the partition ID of each commodity data with its own ID using modulo operation, and write the data to multiple partitions to the newly created collection in batches.</p></li>
+<li><p>Build and pre-load index - Create index (<code translate="no">createIndex()</code>) for the new collection. The index file is stored in distributed storage server GlusterFS. The system automatically simulates query on the new collection and pre-load the index for query warm-up.</p></li>
+<li><p>Collection data check - check the item number of data in the new collection, compare the data with the existing collection, and set alarms based on the quantity and percentage. If the set number (percentage) is not reached, the collection will not be switched and the building process will be regarded as a failure, triggering the alert.</p></li>
+<li><p>Switching collection - Alias control. After updating Redis, the entire data alias being used is directed to CollectionB (<code translate="no">redis key1 = CollectionB</code>), the original Redis key2 is deleted, and the building process is completed.</p></li>
 </ol>
-<h3 id="Data-Recall" class="common-anchor-header">استدعاء البيانات</h3><p>يتم استدعاء بيانات قسم ميلفوس عدة مرات لحساب التشابه بين متجهات المستخدم، التي تم الحصول عليها بناءً على الكلمات الرئيسية لاستعلام المستخدم وصورة المستخدم، ومتجه العنصر، ويتم إرجاع متجهات العناصر TopK بعد الدمج. مخطط سير العمل الكلي كما يلي: <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_93518602b1.jpg" alt="workflow" class="doc-image" id="workflow" /><span>سير العمل</span> </span>يسرد الجدول التالي الخدمات الرئيسية المشاركة في هذه العملية. يمكن ملاحظة أن متوسط زمن الاستجابة لاستدعاء متجهات TopK يبلغ حوالي 30 مللي ثانية.</p>
+<h3 id="Data-Recall" class="common-anchor-header">Data Recall</h3><p>The Milvus partition data is called several times to calculate the similarity between user vectors, obtained based on user query keywords and user portrait, and item vector, and the TopK item vectors are returned after merging. The overall workflow schematic is as follow:
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_93518602b1.jpg" alt="workflow" class="doc-image" id="workflow" />
+    <span>workflow</span>
+  </span>
+
+The following table lists the main services involved in this process. It can be seen that the average latency for recalling TopK vectors is about 30 ms.</p>
 <table>
 <thead>
-<tr><th><strong>الخدمة</strong></th><th><strong>الدور</strong></th><th><strong>معلمات الإدخال</strong></th><th><strong>معلمات الإخراج</strong></th><th><strong>زمن الاستجابة</strong></th></tr>
+<tr><th><strong>Service</strong></th><th><strong>Role</strong></th><th><strong>Input Parameters</strong></th><th><strong>Output parameters</strong></th><th><strong>Response latency</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>الحصول على متجهات المستخدم</td><td>الحصول على متجه المستخدم</td><td>معلومات المستخدم + الاستعلام</td><td>متجه المستخدم</td><td>10 مللي ثانية</td></tr>
-<tr><td>بحث ميلفوس</td><td>حساب تشابه المتجه وإرجاع نتائج TopK</td><td>متجه المستخدم</td><td>متجه العنصر</td><td>10 مللي ثانية</td></tr>
-<tr><td>منطق الجدولة</td><td>استدعاء النتائج المتزامنة ودمجها</td><td>متجهات العناصر المسترجعة متعددة القنوات ودرجة التشابه</td><td>أعلىK العناصر</td><td>10 مللي ثانية</td></tr>
+<tr><td>User vectors acquisition</td><td>Obtain user vector</td><td>user info + query</td><td>user vector</td><td>10 ms</td></tr>
+<tr><td>Milvus Search</td><td>Calculate the vector similarity and return TopK results</td><td>user vector</td><td>item vector</td><td>10 ms</td></tr>
+<tr><td>Scheduling Logic</td><td>Concurrent result recalling and merging</td><td>Multi-channel recalled item vectors and the similarity score</td><td>TopK items</td><td>10 ms</td></tr>
 </tbody>
 </table>
-<p><strong>عملية التنفيذ:</strong></p>
+<p><strong>Implementation process:</strong></p>
 <ol>
-<li>بناءً على الكلمات الرئيسية لاستعلام المستخدم وصورة المستخدم، يتم حساب متجه المستخدم بواسطة نموذج التعلم العميق.</li>
-<li>الحصول على الاسم المستعار للمجموعة لكامل البيانات المستخدمة من Redis currentInUseKeyKeyRef والحصول على اسم المجموعة Milvus CollectionName. هذه العملية هي خدمة مزامنة البيانات، أي تبديل الاسم المستعار إلى Redis بعد تحديث البيانات بالكامل.</li>
-<li>يتم استدعاء Milvus بشكل متزامن وغير متزامن مع متجه المستخدم للحصول على البيانات من أقسام مختلفة من نفس المجموعة، ويحسب Milvus التشابه بين متجه المستخدم ومتجه العنصر، ويُرجع أفضل عدد من متجهات العناصر المتشابهة في كل قسم.</li>
-<li>دمج متجهات العناصر TopK التي تم إرجاعها من كل قسم، وترتيب النتائج بالترتيب العكسي لمسافة التشابه، والتي يتم حسابها باستخدام الضرب الداخلي ل IP (كلما زادت المسافة بين المتجهات، كلما كانت أكثر تشابهًا). يتم إرجاع متجهات العناصر النهائية TopK.</li>
+<li>Based on the user query keywords and user portrait, the user vector is calculated by the deep learning model.</li>
+<li>Obtain the collection alias of the entire data being used from Redis currentInUseKeyRef and get Milvus CollectionName. This process is data synchronization service, i.e. switching alias to Redis after entire data update.</li>
+<li>Milvus is called concurrently and asynchronously with the user vector to obtain data from different partitions of the same collection, and Milvus calculates the similarity between the user vector and the item vector, and returns the TopK similar item vectors in each partition.</li>
+<li>Merge the TopK item vectors returned from each partition, and rank the results in the reverse order of similarity distance, which are calculated using the IP inner product (the greater the distance between the vectors, the more similar they are). The final TopK item vectors are returned.</li>
 </ol>
-<h2 id="Looking-Ahead" class="common-anchor-header">استشراف المستقبل<button data-href="#Looking-Ahead" class="anchor-icon" translate="no">
+<h2 id="Looking-Ahead" class="common-anchor-header">Looking Ahead<button data-href="#Looking-Ahead" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -103,15 +119,15 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في الوقت الحاضر، يمكن استخدام البحث المتجه المستند إلى ميلفوس بشكل مطرد في البحث عن سيناريوهات التوصية، ويمنحنا أداؤه العالي مساحة أكبر للعب في أبعاد النموذج واختيار الخوارزمية.</p>
-<p>ستلعب Milvus دورًا حاسمًا كبرنامج وسيط لمزيد من السيناريوهات، بما في ذلك استدعاء البحث في الموقع الرئيسي وتوصيات جميع السيناريوهات.</p>
-<p>فيما يلي أهم ثلاث ميزات متوقعة من ميلفوس في المستقبل</p>
+    </button></h2><p>At present, Milvus-based vector search can be used steadily in the search of recommendation scenarios, and its high performance gives us more room to play in the dimensionality of the model and algorithm selection.</p>
+<p>Milvus will play a crucial role as the middleware for more scenarios, including recall of main site search and all-scenario recommendations.</p>
+<p>The three most anticipated features of Milvus in the future are as follows.</p>
 <ul>
-<li>منطق تبديل الأسماء المستعارة للمجموعات - تنسيق التبديل عبر المجموعات بدون مكونات خارجية.</li>
-<li>آلية التصفية - يدعم Milvus v0.11.0 الإصدار 0.11.0 آلية تصفية ES DSL فقط في الإصدار المستقل. يدعم الإصدار Milvus 2.0 الذي تم إصداره حديثًا التصفية العددية وفصل القراءة/الكتابة.</li>
-<li>دعم التخزين لنظام ملفات Hadoop الموزعة (HDFS) - يدعم الإصدار Milvus v0.10.6 الذي نستخدمه واجهة ملفات POSIX فقط، وقد نشرنا GlusterFS مع دعم FUSE كواجهة تخزين خلفية. ومع ذلك، فإن HDFS هو الخيار الأفضل من حيث الأداء وسهولة التوسع.</li>
+<li>Logic for collection alias switching - coordinate the switching across collections without external conponents.</li>
+<li>Filtering mechanism - Milvus v0.11.0 only supports ES DSL filtering mechanism in standalone version. The newly released Milvus 2.0 supports scalar filtering, and read/write separation.</li>
+<li>Storage support for Hadoop Distributed File System (HDFS) - The Milvus v0.10.6 we are using only supports POSIX file interface, and we have deployed GlusterFS with FUSE support as the storage backend. However, HDFS is a better choice in terms of performance and ease of scaling.</li>
 </ul>
-<h2 id="Lessons-Learned-and-Best-Practices" class="common-anchor-header">الدروس المستفادة وأفضل الممارسات<button data-href="#Lessons-Learned-and-Best-Practices" class="anchor-icon" translate="no">
+<h2 id="Lessons-Learned-and-Best-Practices" class="common-anchor-header">Lessons Learned and Best Practices<button data-href="#Lessons-Learned-and-Best-Practices" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,9 +143,9 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><ol>
-<li>بالنسبة للتطبيقات التي تكون فيها عمليات القراءة هي التركيز الأساسي، يمكن أن يؤدي نشر فصل القراءة عن الكتابة إلى زيادة قوة المعالجة وتحسين الأداء بشكل كبير.</li>
-<li>يفتقر عميل Milvus Java إلى آلية إعادة الاتصال لأن عميل Milvus الذي تستخدمه خدمة الاستدعاء مقيم في الذاكرة. يتعين علينا بناء تجمع الاتصال الخاص بنا لضمان توافر الاتصال بين عميل جافا والخادم من خلال اختبار نبضات القلب.</li>
-<li>تحدث استعلامات بطيئة في بعض الأحيان على Milvus. ويرجع ذلك إلى عدم كفاية إحماء المجموعة الجديدة. من خلال محاكاة الاستعلام على المجموعة الجديدة، يتم تحميل ملف الفهرس في الذاكرة لتحقيق إحماء الفهرس.</li>
-<li>nlist هي معلمة بناء الفهرس و nprobe هي معلمة الاستعلام. تحتاج إلى الحصول على قيمة عتبة معقولة وفقًا لسيناريو عملك من خلال تجارب اختبار الضغط لتحقيق التوازن بين أداء الاسترجاع والدقة.</li>
-<li>بالنسبة لسيناريو البيانات الثابتة، يكون من الأكثر كفاءة استيراد جميع البيانات إلى المجموعة أولاً وبناء الفهارس لاحقًا.</li>
+<li>For applications where read operations are the primary focus, a read-write separation deployment can significantly increase the processing power and improve performance.</li>
+<li>The Milvus Java client lacks a reconnection mechanism because the Milvus client used by the recall service is resident in memory. We have to build our own connection pool to ensure the availability of the connection between the Java client and the server through heartbeat test.</li>
+<li>Slow queries occur occasionally on Milvus. This is due to insufficient warm-up of the new collection. By simulating the query on the new collection, the index file is loaded into the memory to achieve the  index warm-up.</li>
+<li>nlist is the index building parameter and nprobe is the query parameter. You need to get a reasonable threshold value according to your business scenario through pressure testing experiments to balance the retrieval performance and accuracy.</li>
+<li>For static data scenario, it is more efficient to import all data into the collection first and build indexes later.</li>
 </ol>

@@ -1,12 +1,12 @@
 ---
 id: deploying-milvus-on-kubernetes-just-got-easier-with-the-milvus-operator.md
-title: Desplegar Milvus en Kubernetes es ahora más fácil con Milvus Operator
+title: |
+  Deploying Milvus on Kubernetes Just Got Easier with the Milvus Operator
 author: Min Yin
 date: 2025-08-04T00:00:00.000Z
 desc: >-
-  Milvus Operator es una herramienta de gestión nativa de Kubernetes que
-  automatiza el ciclo de vida completo de las implementaciones de bases de datos
-  vectoriales de Milvus.
+  Milvus Operator is a Kubernetes-native management tool that automates the
+  complete lifecycle of Milvus vector database deployments.
 cover: >-
   assets.zilliz.com/Deploying_Milvus_on_Kubernetes_Just_Got_Easier_with_the_Milvus_Operator_1f6f48e55c.png
 tag: Tutorials
@@ -19,10 +19,10 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/deploying-milvus-on-kubernetes-just-got-easier-with-the-milvus-operator.md
 ---
-<p>Configurar un clúster Milvus listo para producción no debería ser como desactivar una bomba. Sin embargo, cualquiera que haya configurado manualmente despliegues Kubernetes para bases de datos vectoriales conoce el ejercicio: docenas de archivos YAML, gestión de dependencias intrincada y esa sensación de hundimiento cuando algo se rompe a las 2 AM y no estás seguro de cuál de los 47 archivos de configuración es el culpable.</p>
-<p>El enfoque tradicional para desplegar Milvus implica orquestar múltiples servicios -etcd para el almacenamiento de metadatos, Pulsar para la cola de mensajes, MinIO para el almacenamiento de objetos y los diversos componentes de Milvus. Cada servicio requiere una configuración cuidadosa, una secuencia de arranque adecuada y un mantenimiento continuo. Si esto se extiende a múltiples entornos o clústeres, la complejidad operativa se vuelve abrumadora.</p>
-<p>Aquí es donde <a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a> cambia fundamentalmente las reglas del juego. En lugar de gestionar la infraestructura manualmente, usted describe lo que desea y Operator se encarga del cómo.</p>
-<h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">¿Qué es Milvus Operator?<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
+<p>Setting up a production-ready Milvus cluster shouldn’t feel like defusing a bomb. Yet anyone who has manually configured Kubernetes deployments for vector databases knows the drill: dozens of YAML files, intricate dependency management, and that sinking feeling when something breaks at 2 AM and you’re not sure which of the 47 configuration files is the culprit.</p>
+<p>The traditional approach to deploying Milvus involves orchestrating multiple services—etcd for metadata storage, Pulsar for message queuing, MinIO for object storage, and the various Milvus components themselves. Each service requires careful configuration, proper startup sequencing, and ongoing maintenance. Scale this across multiple environments or clusters, and the operational complexity becomes overwhelming.</p>
+<p>This is where <a href="https://github.com/zilliztech/milvus-operator"><strong>Milvus Operator</strong></a> fundamentally changes the game. Instead of managing infrastructure manually, you describe what you want, and the Operator handles the how.</p>
+<h2 id="What-is-the-Milvus-Operator" class="common-anchor-header">What is the Milvus Operator?<button data-href="#What-is-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,24 +37,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md"><strong>Milvus Operator</strong></a> es una herramienta de gestión nativa de Kubernetes que automatiza el ciclo de vida completo de las implementaciones de bases de datos vectoriales de Milvus. Construido sobre el patrón de Kubernetes Operator, encapsula años de conocimiento operativo sobre la ejecución de Milvus en producción y codifica esa experiencia en un software que se ejecuta junto con su clúster.</p>
-<p>Piense en ello como tener un administrador experto de Milvus que nunca duerme, nunca comete errores tipográficos y tiene memoria perfecta de cada detalle de configuración. El Operator supervisa continuamente la salud de su clúster, gestiona automáticamente las decisiones de escalado, gestiona las actualizaciones sin tiempo de inactividad y se recupera de los fallos más rápido que cualquier operador humano.</p>
-<p>En esencia, Operator ofrece cuatro funciones esenciales.</p>
+    </button></h2><p><a href="https://milvus.io/docs/install_cluster-milvusoperator.md"><strong>Milvus Operator</strong></a> is a Kubernetes-native management tool that automates the complete lifecycle of Milvus vector database deployments. Built on the Kubernetes Operator pattern, it encapsulates years of operational knowledge about running Milvus in production and codifies that expertise into software that runs alongside your cluster.</p>
+<p>Think of it as having an expert Milvus administrator who never sleeps, never makes typos, and has perfect memory of every configuration detail. The Operator continuously monitors your cluster’s health, automatically handles scaling decisions, manages upgrades without downtime, and recovers from failures faster than any human operator could.</p>
+<p>At its core, the Operator provides four essential capabilities.</p>
 <ul>
-<li><p><strong>Despliegue automatizado</strong>: Configure un clúster Milvus totalmente funcional con un único manifiesto.</p></li>
-<li><p><strong>Gestión del ciclo de vida</strong>: Automatice las actualizaciones, el escalado horizontal y el desmantelamiento de recursos en un orden definido y seguro.</p></li>
-<li><p><strong>Supervisión y comprobaciones de estado integradas</strong>: Supervise continuamente el estado de los componentes de Milvus y sus dependencias relacionadas, incluidos etcd, Pulsar y MinIO.</p></li>
-<li><p><strong>Mejores prácticas operativas por defecto</strong>: Aplique patrones nativos de Kubernetes que garanticen la confiabilidad sin requerir un profundo conocimiento de la plataforma.</p></li>
+<li><p><strong>Automated Deployment</strong>: Set up a fully functional Milvus cluster with a single manifest.</p></li>
+<li><p><strong>Lifecycle Management</strong>: Automate upgrades, horizontal scaling, and resource teardown in a defined, safe order.</p></li>
+<li><p><strong>Built-in Monitoring and Health Checks</strong>: Continuously monitor the state of Milvus components and their related dependencies, including etcd, Pulsar, and MinIO.</p></li>
+<li><p><strong>Operational Best Practices by Default</strong>: Apply Kubernetes-native patterns that ensure reliability without requiring deep platform knowledge.</p></li>
 </ul>
-<h3 id="Understanding-the-Kubernetes-Operator-Pattern" class="common-anchor-header">Comprender el patrón de operador de Kubernetes</h3><p>Antes de explorar las ventajas de Milvus Operator, entendamos primero la base sobre la que se construye: el <strong>patrón Kubernetes Operator.</strong></p>
-<p>El patrón Kubernetes Operator ayuda a gestionar aplicaciones complejas que necesitan algo más que las funciones básicas de Kubernetes. Un Operador tiene tres partes principales:</p>
+<h3 id="Understanding-the-Kubernetes-Operator-Pattern" class="common-anchor-header">Understanding the Kubernetes Operator Pattern</h3><p>Before we explore the advantages of the Milvus Operator, let’s first understand the foundation it’s built on: the <strong>Kubernetes Operator pattern.</strong></p>
+<p>The Kubernetes Operator pattern helps manage complex applications that need more than basic Kubernetes features. An Operator has three main parts:</p>
 <ul>
-<li><p><strong>Las definiciones de recursos personalizadas</strong> permiten describir la aplicación mediante archivos de configuración al estilo de Kubernetes.</p></li>
-<li><p><strong>Un Controlador</strong> observa estas configuraciones y realiza los cambios necesarios en su clúster.</p></li>
-<li><p><strong>State Management</strong> se asegura de que su clúster coincide con lo que usted ha solicitado y corrige cualquier diferencia.</p></li>
+<li><p><strong>Custom Resource Definitions</strong> let you describe your application using Kubernetes-style configuration files.</p></li>
+<li><p><strong>A Controller</strong> watches these configurations and makes the necessary changes to your cluster.</p></li>
+<li><p><strong>State Management</strong> ensures your cluster matches what you’ve requested and fixes any differences.</p></li>
 </ul>
-<p>Esto significa que usted puede describir su despliegue Milvus de una manera familiar, y el Operador se encarga de todo el trabajo detallado de la creación de vainas, la creación de redes, y la gestión del ciclo de vida ...</p>
-<h2 id="How-the-Milvus-Operator-Works" class="common-anchor-header">Cómo funciona Milvus Operator<button data-href="#How-the-Milvus-Operator-Works" class="anchor-icon" translate="no">
+<p>This means you can describe your Milvus deployment in a familiar way, and the Operator handles all the detailed work of creating pods, setting up networking, and managing the lifecycle…</p>
+<h2 id="How-the-Milvus-Operator-Works" class="common-anchor-header">How the Milvus Operator Works<button data-href="#How-the-Milvus-Operator-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,15 +69,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Operator sigue un proceso directo que hace que la gestión de la base de datos sea mucho más sencilla. Desglosemos el modelo operativo central de Milvus Operator:</p>
+    </button></h2><p>Milvus Operator follows a straightforward process that makes database management much simpler. Let’s break down the core operational model of the Milvus Operator:</p>
 <ol>
-<li><p><strong>Recurso personalizado (CR):</strong> Los usuarios definen un despliegue de Milvus utilizando un CR (por ejemplo, tipo: <code translate="no">Milvus</code>). Este archivo incluye configuraciones tales como modo de cluster, versión de imagen, requerimientos de recursos y dependencias.</p></li>
-<li><p><strong>Lógica del controlador:</strong> El controlador del Operator está atento a las CR nuevas o actualizadas. Una vez que detecta un cambio, orquesta la creación de los componentes necesarios: servicios Milvus y dependencias como etcd, Pulsar y MinIO.</p></li>
-<li><p><strong>Gestión automatizada del ciclo de vida:</strong> Cuando se producen cambios, como la actualización de la versión o la modificación del almacenamiento, Operator realiza actualizaciones continuas o reconfigura los componentes sin interrumpir el clúster.</p></li>
-<li><p><strong>Autocuración:</strong> El controlador comprueba continuamente el estado de cada componente. Si algo falla, sustituye automáticamente el pod o restaura el estado del servicio para garantizar el tiempo de actividad.</p></li>
+<li><p><strong>Custom Resource (CR):</strong> Users define a Milvus deployment using a CR (e.g., kind: <code translate="no">Milvus</code>). This file includes configurations such as cluster mode, image version, resource requirements, and dependencies.</p></li>
+<li><p><strong>Controller Logic:</strong> The Operator’s controller watches for new or updated CRs. Once it detects a change, it orchestrates the creation of required components—Milvus services and dependencies like etcd, Pulsar, and MinIO.</p></li>
+<li><p><strong>Automated Lifecycle Management:</strong> When changes occur—like updating the version or modifying storage—the Operator performs rolling updates or reconfigures components without disrupting the cluster.</p></li>
+<li><p><strong>Self-Healing:</strong> The controller continuously checks the health of each component. If something crashes, it automatically replaces the pod or restores service state to ensure uptime.</p></li>
 </ol>
-<p>Este enfoque es mucho más potente que los despliegues YAML o Helm tradicionales porque proporciona una gestión continua en lugar de una configuración inicial.</p>
-<h2 id="Why-Use-Milvus-Operator-Instead-of-Helm-or-YAML" class="common-anchor-header">¿Por qué utilizar Milvus Operator en lugar de Helm o YAML?<button data-href="#Why-Use-Milvus-Operator-Instead-of-Helm-or-YAML" class="anchor-icon" translate="no">
+<p>This approach is much more powerful than traditional YAML or Helm deployments because it provides ongoing management instead of just initial setup.</p>
+<h2 id="Why-Use-Milvus-Operator-Instead-of-Helm-or-YAML" class="common-anchor-header">Why Use Milvus Operator Instead of Helm or YAML?<button data-href="#Why-Use-Milvus-Operator-Instead-of-Helm-or-YAML" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -92,27 +92,27 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Al desplegar Milvus, puede elegir entre archivos YAML manuales, gráficos Helm o el Operador Milvus. Cada uno tiene su lugar, pero el Operator ofrece ventajas significativas para las operaciones en curso.</p>
-<h3 id="Operation-Automation" class="common-anchor-header">Automatización de operaciones</h3><p>Los métodos tradicionales requieren trabajo manual para las tareas rutinarias. El escalado implica actualizar varios archivos de configuración y coordinar los cambios. Las actualizaciones requieren una planificación cuidadosa para evitar interrupciones del servicio. Operator gestiona estas tareas automáticamente. Puede detectar cuándo es necesario escalar y realizar los cambios de forma segura. Las ampliaciones se convierten en simples actualizaciones de la configuración que el operador ejecuta en la secuencia adecuada y con capacidad de reversión si es necesario.</p>
-<h3 id="Better-State-Visibility" class="common-anchor-header">Mejor visibilidad del estado</h3><p>Los archivos YAML le dicen a Kubernetes lo que usted quiere, pero no le muestran el estado actual de su sistema. Helm ayuda con la gestión de la configuración, pero no supervisa el estado de ejecución de su aplicación. El Operador vigila continuamente todo su clúster. Puede detectar problemas como problemas de recursos o respuestas lentas y tomar medidas antes de que se conviertan en problemas graves. Esta supervisión proactiva mejora significativamente la fiabilidad.</p>
-<h3 id="Easier-Long-term-Management" class="common-anchor-header">Gestión a largo plazo más sencilla</h3><p>Gestionar múltiples entornos con archivos YAML significa mantener sincronizados muchos archivos de configuración. Incluso con plantillas Helm, las operaciones complejas siguen requiriendo una importante coordinación manual.</p>
-<p>The Operator encapsula el conocimiento de gestión de Milvus en su código. Esto significa que los equipos pueden gestionar clusters de forma efectiva sin convertirse en expertos en cada componente. La interfaz operativa se mantiene consistente a medida que su infraestructura escala.</p>
-<p>Utilizar Operator significa optar por un enfoque más automatizado de la gestión de Milvus. Reduce el trabajo manual a la vez que mejora la fiabilidad a través de la experiencia integrada, ventajas valiosas a medida que las bases de datos vectoriales se vuelven más críticas para las aplicaciones.</p>
-<h3 id="The-Architecture-of-Milvus-Operation" class="common-anchor-header">La arquitectura de Milvus Operation</h3><p>
+    </button></h2><p>When deploying Milvus, you can choose between manual YAML files, Helm charts, or the Milvus Operator. Each has its place, but the Operator offers significant advantages for ongoing operations.</p>
+<h3 id="Operation-Automation" class="common-anchor-header">Operation Automation</h3><p>Traditional methods require manual work for routine tasks. Scaling means updating several configuration files and coordinating the changes. Upgrades need careful planning to avoid service interruptions. The Operator handles these tasks automatically. It can detect when scaling is needed and perform the changes safely. Upgrades become simple configuration updates that the Operator executes with proper sequencing and rollback capabilities if needed.</p>
+<h3 id="Better-State-Visibility" class="common-anchor-header">Better State Visibility</h3><p>YAML files tell Kubernetes what you want, but they don’t show you the current health of your system. Helm helps with configuration management but doesn’t monitor your application’s runtime state. The Operator continuously watches your entire cluster. It can detect issues like resource problems or slow responses and take action before they become serious problems. This proactive monitoring significantly improves reliability.</p>
+<h3 id="Easier-Long-term-Management" class="common-anchor-header">Easier Long-term Management</h3><p>Managing multiple environments with YAML files means keeping many configuration files synchronized. Even with Helm templates, complex operations still require significant manual coordination.</p>
+<p>The Operator encapsulates Milvus management knowledge in its code. This means teams can manage clusters effectively without becoming experts in every component. The operational interface stays consistent as your infrastructure scales.</p>
+<p>Using the Operator means choosing a more automated approach to Milvus management. It reduces manual work while improving reliability through built-in expertise—valuable benefits as vector databases become more critical for applications.</p>
+<h3 id="The-Architecture-of-Milvus-Operation" class="common-anchor-header">The Architecture of Milvus Operation</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_operator_deployment_architecture_3ff8570480.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>El diagrama representa claramente la estructura de despliegue de Milvus Operator dentro de un clúster Kubernetes:</p>
+<p>The diagram clearly depicts the deployment structure of Milvus Operator within a Kubernetes cluster:</p>
 <ul>
-<li><p>Izquierda (Área azul): Componentes centrales de Operator, incluyendo el Controlador y el Milvus-CRD.</p></li>
-<li><p>Derecha (Área Verde): Varios componentes del clúster Milvus, como el Proxy, el Coordinador y el Nodo.</p></li>
-<li><p>Centro (Flechas - "crear/gestionar"): El flujo de operaciones que muestra cómo el Operador gestiona el cluster Milvus.</p></li>
-<li><p>Parte inferior (Área naranja): Servicios dependientes como etcd y MinIO/S3/MQ.</p></li>
+<li><p>Left (Blue Area): Core components of the Operator, including the Controller and the Milvus-CRD.</p></li>
+<li><p>Right (Green Area): Various components of the Milvus cluster, such as the Proxy, Coordinator, and Node.</p></li>
+<li><p>Center (Arrows – “create/manage”): The flow of operations showing how the Operator manages the Milvus cluster.</p></li>
+<li><p>Bottom (Orange Area): Dependent services such as etcd and MinIO/S3/MQ.</p></li>
 </ul>
-<p>Esta estructura visual, con bloques de colores distintos y flechas direccionales, aclara eficazmente las interacciones y el flujo de datos entre los diferentes componentes.</p>
-<h2 id="Getting-Started-with-Milvus-Operator" class="common-anchor-header">Primeros pasos con Milvus Operator<button data-href="#Getting-Started-with-Milvus-Operator" class="anchor-icon" translate="no">
+<p>This visual structure, with distinct colored blocks and directional arrows, effectively clarifies the interactions and data flow between different components.</p>
+<h2 id="Getting-Started-with-Milvus-Operator" class="common-anchor-header">Getting Started with Milvus Operator<button data-href="#Getting-Started-with-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,37 +127,37 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Esta guía le muestra cómo desplegar Milvus utilizando el Operador. Utilizaremos estas versiones en esta guía.</p>
+    </button></h2><p>This walkthrough shows you how to deploy Milvus using the Operator. We’ll use these versions in thi s guide.</p>
 <ul>
-<li><p><strong>Sistema operativo</strong>: openEuler 22.03 LTS SP3 x86_64</p></li>
+<li><p><strong>Operating System</strong>: openEuler 22.03 LTS SP3 x86_64</p></li>
 <li><p><strong>Kubernetes</strong>: v1.28.8</p></li>
 <li><p><strong>Milvus</strong>: v2.5.4</p></li>
 </ul>
-<h3 id="1-Prerequisites" class="common-anchor-header">(1) Requisitos previos</h3><p>Su cluster Kubernetes necesita al menos una StorageClass configurada. Puede comprobar cuáles están disponibles:</p>
+<h3 id="1-Prerequisites" class="common-anchor-header">(1) Prerequisites</h3><p>Your Kubernetes cluster needs at least one StorageClass configured. You can check what’s available:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> sc
 <button class="copy-code-btn"></button></code></pre>
-<p>En nuestro ejemplo, tenemos dos opciones:</p>
+<p>In our example, we have two options:</p>
 <ul>
-<li><p><code translate="no">local</code> (por defecto) - utiliza discos locales</p></li>
-<li><p><code translate="no">nfs-sc</code>- utiliza almacenamiento NFS (bien para pruebas, pero evítelo en producción)</p></li>
+<li><p><code translate="no">local</code> (default) - uses local disks</p></li>
+<li><p><code translate="no">nfs-sc</code>- uses NFS storage (fine for testing, but avoid in production)</p></li>
 </ul>
 <pre><code translate="no">RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
 <span class="hljs-built_in">local</span> (default)   openebs.io/local      Delete    WaitForFirstConsumer   <span class="hljs-literal">false</span>    284d
 nfs-sc            k8s-sigs.io/nfs-...   Delete    Immediate              <span class="hljs-literal">false</span>    230d
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Installing-Milvus-Operator" class="common-anchor-header">(2) Instalando Milvus Operator</h3><p>Puede instalar Operator con <a href="https://milvus.io/docs/install_cluster-milvusoperator.md#Install-with-Helm">Helm</a> o <a href="https://milvus.io/docs/install_cluster-milvusoperator.md#Install-with-kubectl">kubectl</a>. Usaremos kubectl ya que es más sencillo.</p>
-<p>Descargue el manifiesto de despliegue de Operator:</p>
+<h3 id="2-Installing-Milvus-Operator" class="common-anchor-header">(2) Installing Milvus Operator</h3><p>You can install the Operator with <a href="https://milvus.io/docs/install_cluster-milvusoperator.md#Install-with-Helm">Helm</a> or <a href="https://milvus.io/docs/install_cluster-milvusoperator.md#Install-with-kubectl">kubectl</a>. We’ll use kubectl since it’s simpler.</p>
+<p>Download the Operator deployment manifest:</p>
 <pre><code translate="no">wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/zilliztech/milvus-operator/main/deploy/manifests/deployment.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Sustituya la dirección de la imagen (opcional):</p>
-<p><strong>Opcional: Utilice un registro de imágenes diferente</strong> Si no puede acceder a DockerHub o prefiere su propio registro:</p>
-<p><em>Nota: La dirección del repositorio de imágenes proporcionada aquí es para fines de prueba. Sustitúyala por su dirección de repositorio real según sea necesario.</em></p>
+<p>Replace the image address (optional):</p>
+<p><strong>Optional: Use a different image registry</strong> If you can’t access DockerHub or prefer your own registry:</p>
+<p><em>Note: The image repository address provided here is for testing purposes. Replace it with your actual repository address as needed.</em></p>
 <pre><code translate="no">sed -i <span class="hljs-string">&#x27;s#milvusdb/milvus-operator:v1.2.1#registry.milvus-mirror.cn/&amp;#g&#x27;</span> deployment.<span class="hljs-property">yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Instale Milvus Operator:</p>
+<p>Install Milvus Operator:</p>
 <pre><code translate="no">kubectl apply -f deployment.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>Después de la instalación, debería ver una salida similar a:</p>
+<p>After installation, you should see output similar to:</p>
 <pre><code translate="no">namespace/milvus-operator created
 serviceaccount/milvus-operator created
 customresourcedefinition.apiextensions.k8s.io/milvusclusters.milvus.io created
@@ -171,7 +171,7 @@ service/milvus-operator-metrics-service created
 service/milvus-operator-webhook-service created
 deployment.apps/milvus-operator created
 <button class="copy-code-btn"></button></code></pre>
-<p>Verifique el despliegue de Milvus Operator y los recursos del pod:</p>
+<p>Verify the Milvus Operator deployment and pod resources:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment,pod -n milvus-<span class="hljs-keyword">operator</span>
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">NAME                              READY   UP-TO-DATE   AVAILABLE   AGE
@@ -179,11 +179,11 @@ deployment.apps/milvus-operator   1/1     1            1           10m
 NAME                                   READY   STATUS        RESTARTS   AGE
 pod/milvus-operator-54d4fb854b-7hprh   1/1     Running       0          97s
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Deploying-the-Milvus-Cluster" class="common-anchor-header">(3) Desplegando el Cluster Milvus</h3><p>Una vez que el pod Milvus Operator está en ejecución, puede desplegar el cluster Milvus con los siguientes pasos.</p>
-<p>Descargue el manifiesto de despliegue del cluster Milvus:</p>
+<h3 id="3-Deploying-the-Milvus-Cluster" class="common-anchor-header">(3) Deploying the Milvus Cluster</h3><p>Once the Milvus Operator pod is running, you can deploy the Milvus cluster with the following steps.</p>
+<p>Download the Milvus cluster deployment manifest:</p>
 <pre><code translate="no">wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/zilliztech/milvus-operator/main/config/samples/milvus_cluster_default.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>La configuración por defecto es mínima:</p>
+<p>The default config is minimal:</p>
 <pre><code translate="no"><span class="hljs-comment"># This is a sample to deploy a milvus cluster in milvus-operator&#x27;s default configurations.</span>
 apiVersion: milvus.io/v1beta1
 kind: Milvus
@@ -197,20 +197,20 @@ spec:
   components: {}
   config: {}
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Para un despliegue real, querrá personalizarla:</strong></p>
+<p><strong>For a real deployment, you’ll want to customize:</strong></p>
 <ul>
-<li><p>Nombre personalizado del cluster: <code translate="no">milvus-release-v25</code></p></li>
-<li><p>Custom Image: (para usar una imagen online diferente o una imagen offline local) <code translate="no">registry.milvus-mirror.cn/milvusdb/milvus:v2.5.4</code></p></li>
-<li><p>Nombre personalizado de StorageClass: En entornos con múltiples clases de almacenamiento, puede que necesite especificar la StorageClass para componentes persistentes como MinIO y etcd. En este ejemplo, se utiliza <code translate="no">nfs-sc</code>.</p></li>
-<li><p>Recursos personalizados: Establezca los límites de CPU y memoria para los componentes de Milvus. Por defecto, no se establecen límites, lo que podría sobrecargar sus nodos Kubernetes.</p></li>
-<li><p>Eliminación automática de recursos relacionados: Por defecto, cuando se elimina el clúster Milvus, se conservan los recursos asociados.</p></li>
+<li><p>Custom Cluster Name: <code translate="no">milvus-release-v25</code></p></li>
+<li><p>Custom Image: (to use a different online image or a local offline image) <code translate="no">registry.milvus-mirror.cn/milvusdb/milvus:v2.5.4</code></p></li>
+<li><p>Custom StorageClass Name: In environments with multiple storage classes, you might need to specify the StorageClass for persistent components like MinIO and etcd. In this example, <code translate="no">nfs-sc</code> is used.</p></li>
+<li><p>Custom Resources: Set CPU and memory limits for Milvus components. By default, no limits are set, which might overload your Kubernetes nodes.</p></li>
+<li><p>Automatic Deletion of Related Resources: By default, when the Milvus cluster is deleted, associated resources are retained.</p></li>
 </ul>
-<p>Para configurar parámetros adicionales, consulte:</p>
+<p>For additional parameter configuration, refer to:</p>
 <ul>
-<li><p><a href="https://github.com/zilliztech/milvus-operator/blob/main/docs/CRD/milvus.md">Definición de recursos personalizados de Milvus</a></p></li>
-<li><p><a href="https://artifacthub.io/packages/helm/apache/pulsar/3.3.0?modal=values">Valores de Pulsar</a></p></li>
+<li><p><a href="https://github.com/zilliztech/milvus-operator/blob/main/docs/CRD/milvus.md">Milvus Custom Resource Definition</a></p></li>
+<li><p><a href="https://artifacthub.io/packages/helm/apache/pulsar/3.3.0?modal=values">Pulsar Values</a></p></li>
 </ul>
-<p>El manifiesto modificado es:</p>
+<p>The modified manifest is:</p>
 <pre><code translate="no">apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
@@ -293,11 +293,11 @@ spec:
               repository: registry.milvus-mirror.cn/apachepulsar/pulsar
               tag: 3.0.7
 <button class="copy-code-btn"></button></code></pre>
-<p>Desplegar el clúster Milvus:</p>
+<p>Deploy the Milvus cluster:</p>
 <pre><code translate="no">kubectl apply -f milvus_cluster_default.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Verifying-Milvus-Cluster-Status" class="common-anchor-header">Verificación del estado del clúster Milvus</h4><p>Milvus Operator configura primero las dependencias de middleware para Milvus-como etcd, Zookeeper, Pulsar y MinIO-antes de desplegar los componentes de Milvus (por ejemplo, proxy, coordinador y nodos).</p>
-<p>Ver Despliegues:</p>
+<h4 id="Verifying-Milvus-Cluster-Status" class="common-anchor-header">Verifying Milvus Cluster Status</h4><p>Milvus Operator first sets up the middleware dependencies for Milvus—such as etcd, Zookeeper, Pulsar, and MinIO—before deploying the Milvus components (e.g., proxy, coordinator, and nodes).</p>
+<p>View Deployments:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">NAME                                    READY   UP-TO-DATE   AVAILABLE   AGE
@@ -309,14 +309,14 @@ milvus-release-v25-milvus-querynode-0   1/1     1            1           52m
 milvus-release-v25-milvus-querynode-1   0/0     0            0           52m
 milvus-release-v25-milvus-standalone    0/0     0            0           52m
 <button class="copy-code-btn"></button></code></pre>
-<p>Nota especial:</p>
-<p>Puede observar que el Operador Milvus crea un despliegue <code translate="no">standalone</code> y <code translate="no">querynode-1</code> con 0 réplicas.</p>
-<p>Esto es intencionado. Hemos enviado un problema al repositorio de Milvus Operator, la respuesta oficial es:</p>
+<p>Special Note:</p>
+<p>You may notice that the Milvus Operator creates a <code translate="no">standalone</code> and a <code translate="no">querynode-1</code> deployment with 0 replicas.</p>
+<p>This is intentional. We submitted an issue to the Milvus Operator repository, the official response is:</p>
 <ul>
-<li><p>a. Los despliegues funcionan como se espera. La versión independiente se mantiene para permitir transiciones sin problemas de un clúster a un despliegue independiente sin interrupción del servicio.</p></li>
-<li><p>b. Disponer tanto de <code translate="no">querynode-0</code> como de <code translate="no">querynode-1</code> es útil durante las actualizaciones continuas. Al final, sólo uno de ellos estará activo.</p></li>
+<li><p>a. The deployments work as expected. The standalone version is retained to allow seamless transitions from a cluster to a standalone deployment without service interruption.</p></li>
+<li><p>b. Having both <code translate="no">querynode-0</code> and <code translate="no">querynode-1</code> is useful during rolling upgrades. In the end, only one of them will be active.</p></li>
 </ul>
-<h4 id="Verifying-That-All-Pods-Are-Running-Correctly" class="common-anchor-header">Verificación de que todos los Pods funcionan correctamente</h4><p>Una vez que su cluster Milvus esté listo, verifique que todos los pods están funcionando como se esperaba:</p>
+<h4 id="Verifying-That-All-Pods-Are-Running-Correctly" class="common-anchor-header">Verifying That All Pods Are Running Correctly</h4><p>Once your Milvus cluster is ready, verify that all pods are running as expected:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">NAME                                                    READY   STATUS      RESTARTS        AGE
@@ -346,7 +346,7 @@ milvus-release-v25-pulsar-zookeeper<span class="hljs-number">-0</span>          
 milvus-release-v25-pulsar-zookeeper<span class="hljs-number">-1</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running     <span class="hljs-number">0</span>               <span class="hljs-number">7</span>m12s
 milvus-release-v25-pulsar-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running     <span class="hljs-number">0</span>               <span class="hljs-number">7</span>m12s
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Verifying-the-StorageClass" class="common-anchor-header">Verificación de la StorageClass</h4><p>Asegúrese de que su StorageClass personalizada (<code translate="no">nfs-sc</code>) y las capacidades de almacenamiento especificadas se han aplicado correctamente:</p>
+<h4 id="Verifying-the-StorageClass" class="common-anchor-header">Verifying the StorageClass</h4><p>Ensure that your custom StorageClass (<code translate="no">nfs-sc</code>) and the specified storage capacities have been correctly applied:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pvc
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-variable constant_">NAME</span>                                                                             <span class="hljs-variable constant_">STATUS</span>   <span class="hljs-variable constant_">VOLUME</span>                                     <span class="hljs-variable constant_">CAPACITY</span>   <span class="hljs-variable constant_">ACCESS</span> <span class="hljs-variable constant_">MODES</span>   <span class="hljs-variable constant_">STORAGECLASS</span>   <span class="hljs-variable constant_">AGE</span>
@@ -367,23 +367,23 @@ milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-<sp
 milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-<span class="hljs-number">1</span>   <span class="hljs-title class_">Bound</span>    pvc-<span class="hljs-number">75904229</span>-3bbf-458e-b0e3-3982e430621b   5Gi        <span class="hljs-variable constant_">RWO</span>            nfs-sc         36m
 milvus-release-v25-pulsar-zookeeper-data-milvus-release-v25-pulsar-zookeeper-<span class="hljs-number">2</span>   <span class="hljs-title class_">Bound</span>    pvc-2e068b79-75ac-4aa9-<span class="hljs-number">9e90</span>-423ff399bad0   5Gi        <span class="hljs-variable constant_">RWO</span>            nfs-sc         36m
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Verifying-Milvus-Resource-Limits" class="common-anchor-header">Verificación de los límites de recursos de Milvus</h4><p>Por ejemplo, para verificar que los límites de recursos para el componente <code translate="no">mixcoord</code> se han aplicado correctamente, ejecute:</p>
+<h4 id="Verifying-Milvus-Resource-Limits" class="common-anchor-header">Verifying Milvus Resource Limits</h4><p>For example, to verify that the resource limits for the <code translate="no">mixcoord</code> component have been applied correctly, run:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment milvus-release-v25-milvus-mixcoord -o jsonpath=<span class="hljs-string">&#x27;{.spec.template.spec.containers[*].resources.limits}&#x27;</span> | jq
 {
   <span class="hljs-string">&quot;cpu&quot;</span>: <span class="hljs-string">&quot;2&quot;</span>,
   <span class="hljs-string">&quot;memory&quot;</span>: <span class="hljs-string">&quot;8Gi&quot;</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Verifying-the-Custom-Image" class="common-anchor-header">Verificación de la imagen personalizada</h4><p>Confirme que se está utilizando la imagen personalizada correcta:</p>
+<h4 id="Verifying-the-Custom-Image" class="common-anchor-header">Verifying the Custom Image</h4><p>Confirm that the correct custom image is in use:</p>
 <pre><code translate="no">kubectl get deployment milvus-release-v25-milvus-mixcoord -o jsonpath=<span class="hljs-string">&#x27;{.spec.template.spec.containers[0].image}&#x27;</span>
 registry.milvus-mirror.cn/milvusdb/milvus:v2.5.4
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Accessing-Your-Cluster-from-Outside" class="common-anchor-header">(4) Acceso a su cluster desde el exterior</h3><p>Una pregunta común es: ¿Cómo puede acceder a los servicios Milvus desde fuera de su clúster Kubernetes?</p>
-<p>Por defecto, el servicio Milvus desplegado por el Operador es de tipo <code translate="no">ClusterIP</code>, lo que significa que sólo es accesible dentro del clúster. Para exponerlo externamente, debe definir un método de acceso externo. Esta guía opta por el enfoque más simple: utilizar un NodePort.</p>
-<p>Cree y edite el manifiesto del servicio para el acceso externo:</p>
+<h3 id="4-Accessing-Your-Cluster-from-Outside" class="common-anchor-header">(4) Accessing Your Cluster from Outside</h3><p>A common question is: How can you access Milvus services from outside your Kubernetes cluster?</p>
+<p>By default, the Milvus service deployed by the Operator is of type <code translate="no">ClusterIP</code>, meaning it is only accessible within the cluster. To expose it externally, you must define an external access method. This guide opts for the simplest approach: using a NodePort.</p>
+<p>Create and edit the service manifest for external access:</p>
 <pre><code translate="no">vi milvus-external-svc.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>Incluya el siguiente contenido:</p>
+<p>Include the following content:</p>
 <pre><code translate="no">kind: Service
 apiVersion: v1
 metadata:
@@ -411,12 +411,12 @@ spec:
   <span class="hljs-built_in">type</span>: NodePort
 <button class="copy-code-btn"></button></code></pre>
 <ol>
-<li>Aplique el manifiesto de servicio externo:</li>
+<li>Apply the external service manifest:</li>
 </ol>
 <pre><code translate="no">kubectl apply -f milvus-external-svc.yaml
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>Compruebe el estado del servicio externo:</li>
+<li>Check the status of the external service:</li>
 </ol>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> svc
 <button class="copy-code-btn"></button></code></pre>
@@ -434,13 +434,13 @@ milvus-release-v25-pulsar-recovery    ClusterIP   <span class="hljs-literal">Non
 milvus-release-v25-pulsar-zookeeper   ClusterIP   <span class="hljs-literal">None</span>            &lt;none&gt;        <span class="hljs-number">8000</span>/TCP,<span class="hljs-number">2888</span>/TCP,<span class="hljs-number">3888</span>/TCP,<span class="hljs-number">2181</span>/TCP                           16m
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>Acceso a Milvus WebUI</li>
+<li>Accessing Milvus WebUI</li>
 </ol>
-<p>Milvus proporciona una GUI integrada-la Milvus WebUI-que mejora la observabilidad con una interfaz intuitiva. Utilícela para supervisar las métricas de los componentes de Milvus y sus dependencias, revisar información detallada sobre bases de datos y colecciones, e inspeccionar los detalles completos de la configuración. Para más detalles, consulte la <a href="https://milvus.io/docs/milvus-webui.md">documentación oficial de Milvus WebUI</a>.</p>
-<p>Tras el despliegue, abra la siguiente URL en su navegador (sustituya <code translate="no">&lt;any_k8s_node_IP&gt;</code> por la dirección IP de cualquier nodo Kubernetes):</p>
+<p>Milvus provides a built-in GUI—the Milvus WebUI—which enhances observability with an intuitive interface. Use it to monitor metrics for Milvus components and their dependencies, review detailed information on databases and collections, and inspect complete configuration details. For additional details, refer to the <a href="https://milvus.io/docs/milvus-webui.md">official Milvus WebUI documentation</a>.</p>
+<p>After deployment, open the following URL in your browser (replace <code translate="no">&lt;any_k8s_node_IP&gt;</code> with the IP address of any Kubernetes node):</p>
 <p><code translate="no">http://&lt;any_k8s_node_IP&gt;:31531/webui/</code></p>
-<p>Esto iniciará la interfaz WebUI.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This will launch the WebUI interface.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -455,9 +455,9 @@ milvus-release-v25-pulsar-zookeeper   ClusterIP   <span class="hljs-literal">Non
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Milvus Operator</strong> es más que una herramienta de despliegue: es una inversión estratégica en excelencia operativa para la infraestructura de bases de datos de vectores. Al automatizar las tareas rutinarias e integrar las mejores prácticas en su entorno Kubernetes, libera a los equipos para que se centren en lo que más importa: crear y mejorar aplicaciones basadas en IA.</p>
-<p>La adopción de la gestión basada en operadores requiere cierto esfuerzo inicial, incluidos cambios en los flujos de trabajo y los procesos de los equipos. Pero para las organizaciones que operan a gran escala -o que planean hacerlo- los beneficios a largo plazo son significativos: mayor fiabilidad, menor sobrecarga operativa y ciclos de despliegue más rápidos y coherentes.</p>
-<p>A medida que la IA se convierte en el núcleo de las operaciones empresariales modernas, la necesidad de una infraestructura de base de datos vectorial sólida y escalable no hace más que crecer. Milvus Operator respalda esta evolución ofreciendo un enfoque maduro y centrado en la automatización que se adapta a su carga de trabajo y a sus necesidades específicas.</p>
-<p>Si su equipo se enfrenta a una complejidad operativa, prevé un crecimiento o simplemente desea reducir la gestión manual de la infraestructura, la adopción temprana de Milvus Operator puede ayudarle a evitar futuras deudas técnicas y mejorar la resistencia general del sistema.</p>
-<p>El futuro de la infraestructura es inteligente, automatizado y fácil de desarrollar. <strong>Milvus Operator lleva ese futuro a su capa de base de datos, hoy mismo.</strong></p>
+    </button></h2><p>The <strong>Milvus Operator</strong> is more than a deployment tool—it’s a strategic investment in operational excellence for vector database infrastructure. By automating routine tasks and embedding best practices into your Kubernetes environment, it frees teams to focus on what matters most: building and improving AI-driven applications.</p>
+<p>Adopting Operator-based management does require some upfront effort, including changes to workflows and team processes. But for organizations operating at scale—or planning to—the long-term gains are significant: increased reliability, lower operational overhead, and faster, more consistent deployment cycles.</p>
+<p>As AI becomes core to modern business operations, the need for robust, scalable vector database infrastructure only grows. The Milvus Operator supports that evolution by offering a mature, automation-first approach that scales with your workload and adapts to your specific needs.</p>
+<p>If your team is facing operational complexity, anticipating growth, or simply wants to reduce manual infrastructure management, adopting the Milvus Operator early can help avoid future technical debt and improve overall system resilience.</p>
+<p>The future of infrastructure is intelligent, automated, and developer-friendly. <strong>Milvus Operator brings that future to your database layer—today.</strong></p>
 <hr>

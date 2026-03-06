@@ -1,14 +1,13 @@
 ---
 id: comparing-vector-database-vector-search-plugin-vector-search-libraries.md
-title: >-
-  Comparação de bases de dados vectoriais, bibliotecas de pesquisa vetorial e
-  plug-ins de pesquisa vetorial
+title: |
+  Comparing Vector Databases, Vector Search Libraries, and Vector Search Plugins
 author: Frank Liu
 date: 2023-11-9
 desc: >-
-  Nesta publicação, continuaremos a explorar o intrincado domínio da pesquisa
-  vetorial, comparando bases de dados vectoriais, plug-ins de pesquisa vetorial
-  e bibliotecas de pesquisa vetorial.
+  In this post, we’ll continue to explore the intricate realm of vector search,
+  comparing vector databases, vector search plugins, and vector search
+  libraries.
 cover: >-
   assets.zilliz.com/Vector_Databases_vs_Vector_Search_Plugins_vs_Vector_Search_Libraries_74def521ad.png
 tag: Engineering
@@ -25,10 +24,10 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>Olá - bem-vindo de volta ao Vetor Database 101!</p>
-<p>O aumento do <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> e de outros modelos de linguagem de grande porte (LLMs) impulsionou o crescimento das tecnologias de pesquisa vetorial, apresentando bancos de dados vetoriais especializados, como <a href="https://zilliz.com/what-is-milvus">Milvus</a> e <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, juntamente com bibliotecas como <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a> e plug-ins de pesquisa vetorial integrados em bancos de dados convencionais.</p>
-<p>Na <a href="https://zilliz.com/learn/what-is-vector-database">publicação anterior da</a> nossa <a href="https://zilliz.com/learn/what-is-vector-database">série</a>, analisámos os fundamentos das bases de dados vectoriais. Nesta publicação, continuaremos a explorar o complexo domínio da pesquisa vetorial, comparando bases de dados vectoriais, plug-ins de pesquisa vetorial e bibliotecas de pesquisa vetorial.</p>
-<h2 id="What-is-vector-search" class="common-anchor-header">O que é pesquisa vetorial?<button data-href="#What-is-vector-search" class="anchor-icon" translate="no">
+<p>Hey there - welcome back to Vector Database 101!</p>
+<p>The surge in <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> and other large language models (LLMs) has driven the growth of vector search technologies, featuring specialized vector databases like <a href="https://zilliz.com/what-is-milvus">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a> alongside libraries such as <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a> and integrated vector search plugins within conventional databases.</p>
+<p>In our <a href="https://zilliz.com/learn/what-is-vector-database">previous series post</a>, we delved into the fundamentals of vector databases. In this post, we’ll continue to explore the intricate realm of vector search, comparing vector databases, vector search plugins, and vector search libraries.</p>
+<h2 id="What-is-vector-search" class="common-anchor-header">What is vector search?<button data-href="#What-is-vector-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,9 +42,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/learn/vector-similarity-search">A pesquisa vetorial</a>, também conhecida como pesquisa de similaridade vetorial, é uma técnica para recuperar os resultados top-k que são mais semelhantes ou semanticamente relacionados a um determinado vetor de consulta entre uma extensa coleção de dados vetoriais densos. Antes de efetuar pesquisas de semelhança, utilizamos redes neuronais para transformar <a href="https://zilliz.com/learn/introduction-to-unstructured-data">dados não estruturados</a>, como texto, imagens, vídeos e áudio, em vectores numéricos de elevada dimensão, denominados vectores de incorporação. Depois de gerar vectores de incorporação, os motores de pesquisa vetorial comparam a distância espacial entre o vetor de consulta de entrada e os vectores nos armazenamentos vectoriais. Quanto mais próximos estiverem no espaço, mais semelhantes são.</p>
-<p>Estão disponíveis no mercado várias tecnologias de pesquisa vetorial, incluindo bibliotecas de aprendizagem automática como a NumPy do Python, bibliotecas de pesquisa vetorial como a FAISS, plug-ins de pesquisa vetorial criados em bases de dados tradicionais e bases de dados vectoriais especializadas como a Milvus e a Zilliz Cloud.</p>
-<h2 id="Vector-databases-vs-vector-search-libraries" class="common-anchor-header">Bases de dados vectoriais vs. bibliotecas de pesquisa vetorial<button data-href="#Vector-databases-vs-vector-search-libraries" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://zilliz.com/learn/vector-similarity-search">Vector search</a>, also known as vector similarity search, is a technique for retrieving the top-k results that are most similar or semantically related to a given query vector among an extensive collection of dense vector data. Before conducting similarity searches, we leverage neural networks to transform <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a>, such as text, images, videos, and audio, into high-dimensional numerical vectors called embedding vectors. After generating embedding vectors, vector search engines compare the spatial distance between the input query vector and the vectors in the vector stores. The closer they are in space, the more similar they are.</p>
+<p>Multiple vector search technologies are available in the market, including machine learning libraries like Python’s NumPy, vector search libraries like FAISS, vector search plugins built on traditional databases, and specialized vector databases like Milvus and Zilliz Cloud.</p>
+<h2 id="Vector-databases-vs-vector-search-libraries" class="common-anchor-header">Vector databases vs. vector search libraries<button data-href="#Vector-databases-vs-vector-search-libraries" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,17 +59,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/blog/what-is-a-real-vector-database">Os bancos de dados vetoriais especializados</a> não são a única pilha para pesquisas de similaridade. Antes do advento dos bancos de dados vetoriais, muitas bibliotecas de pesquisa de vetores, como FAISS, ScaNN e HNSW, eram usadas para recuperação de vetores.</p>
-<p>As bibliotecas de pesquisa vetorial podem ajudá-lo a criar rapidamente um protótipo de sistema de pesquisa vetorial de elevado desempenho. Tomando o FAISS como exemplo, é de código aberto e foi desenvolvido pela Meta para uma pesquisa eficiente de semelhanças e agrupamento de vectores densos. O FAISS pode lidar com colecções de vectores de qualquer tamanho, mesmo aquelas que não podem ser totalmente carregadas na memória. Além disso, o FAISS oferece ferramentas para avaliação e ajuste de parâmetros. Embora escrito em C++, o FAISS fornece uma interface Python/NumPy.</p>
-<p>No entanto, as bibliotecas de pesquisa vetorial são apenas bibliotecas ANN leves, em vez de soluções geridas, e têm uma funcionalidade limitada. Se o seu conjunto de dados for pequeno e limitado, estas bibliotecas podem ser suficientes para o processamento de dados não estruturados, mesmo para sistemas em produção. No entanto, à medida que o tamanho do conjunto de dados aumenta e mais utilizadores são integrados, o problema da escala torna-se cada vez mais difícil de resolver. Além disso, não permitem quaisquer modificações nos seus dados de índice e não podem ser consultadas durante a importação de dados.</p>
-<p>Em contrapartida, as bases de dados vectoriais são uma solução mais adequada para o armazenamento e a recuperação de dados não estruturados. Podem armazenar e consultar milhões ou mesmo milhares de milhões de vectores, fornecendo simultaneamente respostas em tempo real; são altamente escaláveis para satisfazer as crescentes necessidades comerciais dos utilizadores.</p>
-<p>Além disso, as bases de dados vectoriais como o Milvus têm caraterísticas muito mais fáceis de utilizar para dados estruturados/semi-estruturados: natividade da nuvem, multi-tenancy, escalabilidade, etc. Estas caraterísticas tornar-se-ão claras à medida que nos aprofundarmos neste tutorial.</p>
-<p>Também operam numa camada de abstração totalmente diferente das bibliotecas de pesquisa vetorial - as bases de dados vectoriais são serviços completos, enquanto as bibliotecas ANN se destinam a ser integradas na aplicação que está a desenvolver. Neste sentido, as bibliotecas ANN são um dos muitos componentes sobre os quais as bases de dados vectoriais são construídas, da mesma forma que o Elasticsearch é construído sobre o Apache Lucene.</p>
-<p>Para dar um exemplo do motivo pelo qual esta abstração é tão importante, vejamos como inserir um novo elemento de dados não estruturados numa base de dados vetorial. Isto é muito fácil no Milvus:</p>
+    </button></h2><p><a href="https://zilliz.com/blog/what-is-a-real-vector-database">Specialized vector databases</a> are not the only stack for similarity searches. Before the advent of vector databases, many vector searching libraries, such as FAISS, ScaNN, and HNSW, were used for vector retrieval.</p>
+<p>Vector search libraries can help you quickly build a high-performance prototype vector search system. Taking FAISS as an example, it is open-source and developed by Meta for efficient similarity search and dense vector clustering. FAISS can handle vector collections of any size, even those that cannot be fully loaded into memory. Additionally, FAISS offers tools for evaluation and parameter tuning. Even though written in C++, FAISS provides a Python/NumPy interface.</p>
+<p>However, vector search libraries are merely lightweight ANN libraries rather than managed solutions, and they have limited functionality. If your dataset is small and limited, these libraries can be sufficient for unstructured data processing, even for systems running in production. However, as dataset sizes increase and more users are onboarded, the scale problem becomes increasingly difficult to solve. Moreover, they don’t allow any modifications to their index data and cannot be queried during data import.</p>
+<p>By contrast, vector databases are a more optimal solution for unstructured data storage and retrieval. They can store and query millions or even billions of vectors while providing real-time responses simultaneously; they’re highly scalable to meet users’ growing business needs.</p>
+<p>In addition, vector databases like Milvus have much more user-friendly features for structured/semi-structured data:  cloud-nativity, multi-tenancy, scalability, etc. These features will become clear as we dive deeper into this tutorial.</p>
+<p>They also operate in a totally different layer of abstraction from vector search libraries - vector databases are full-fledged services, while ANN libraries are meant to be integrated into the application that you’re developing. In this sense, ANN libraries are one of the many components that vector databases are built on top of, similar to how Elasticsearch is built on top of Apache Lucene.</p>
+<p>To give an example of why this abstraction is so important, let’s look at inserting a new unstructured data element into a vector database. This is super easy in Milvus:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">Collectioncollection</span> = <span class="hljs-title class_">Collection</span>(<span class="hljs-string">&#x27;book&#x27;</span>)mr = collection.<span class="hljs-title function_">insert</span>(data)
 <button class="copy-code-btn"></button></code></pre>
-<p>É realmente tão fácil quanto isso - 3 linhas de código. Com uma biblioteca como a FAISS ou a ScaNN, não há, infelizmente, uma forma fácil de o fazer sem recriar manualmente todo o índice em determinados pontos de controlo. Mesmo que fosse possível, as bibliotecas de pesquisa vetorial continuam a não ter escalabilidade e multilocação, duas das caraterísticas mais importantes das bases de dados vectoriais.</p>
-<h2 id="Vector-databases-vs-vector-search-plugins-for-traditional-databases" class="common-anchor-header">Bases de dados vectoriais vs. plugins de pesquisa vetorial para bases de dados tradicionais<button data-href="#Vector-databases-vs-vector-search-plugins-for-traditional-databases" class="anchor-icon" translate="no">
+<p>It’s really as easy as that - 3 lines of code. With a library such as FAISS or ScaNN, there is, unfortunately, no easy way of doing this without manually re-creating the entire index at certain checkpoints. Even if you could, vector search libraries still lack scalability and multi-tenancy, two of the most important vector database features.</p>
+<h2 id="Vector-databases-vs-vector-search-plugins-for-traditional-databases" class="common-anchor-header">Vector databases vs. vector search plugins for traditional databases<button data-href="#Vector-databases-vs-vector-search-plugins-for-traditional-databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -85,9 +84,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ótimo, agora que já estabelecemos a diferença entre bibliotecas de pesquisa vetorial e bases de dados vectoriais, vamos ver como as bases de dados vectoriais diferem dos <strong>plugins de pesquisa vetorial</strong>.</p>
-<p>Um número crescente de bancos de dados relacionais tradicionais e sistemas de pesquisa como o Clickhouse e o <a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">Elasticsearch</a> estão incluindo plug-ins de pesquisa vetorial integrados. O Elasticsearch 8.0, por exemplo, inclui a inserção de vetores e a funcionalidade de pesquisa ANN que pode ser chamada por meio de pontos de extremidade de API restrita. O problema com os plug-ins de pesquisa vetorial deve ser claro como a noite e o dia - <strong>essas soluções não adotam uma abordagem de pilha completa para incorporar o gerenciamento e a pesquisa vetorial</strong>. Em vez disso, esses plug-ins devem ser aprimorados em arquiteturas existentes, o que os torna limitados e não otimizados. Desenvolver uma aplicação de dados não estruturados sobre uma base de dados tradicional seria como tentar encaixar baterias de lítio e motores eléctricos na estrutura de um carro a gasolina - não é uma boa ideia!</p>
-<p>Para ilustrar esta situação, voltemos à lista de funcionalidades que uma base de dados vetorial deve implementar (da primeira secção). Os plugins de pesquisa vetorial carecem de duas destas caraterísticas - afinabilidade e APIs/SDKs fáceis de utilizar. Continuarei a utilizar o motor ANN do Elasticsearch como exemplo; outros plugins de pesquisa vetorial funcionam de forma muito semelhante, pelo que não entrarei muito em pormenores. O Elasticsearch suporta o armazenamento de vectores através do tipo de campo de dados <code translate="no">dense_vector</code> e permite a consulta através do <code translate="no">knnsearch endpoint</code>:</p>
+    </button></h2><p>Great, now that we’ve established the difference between vector search libraries and vector databases, let’s take a look at how vector databases differ from <strong>vector search plugins</strong>.</p>
+<p>An increasing number of traditional relational databases, and search systems such as Clickhouse and <a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">Elasticsearch</a> are including built-in vector search plugins. Elasticsearch 8.0, for example, includes vector insertion and ANN search functionality that can be called via restful API endpoints. The problem with vector search plugins should be clear as night and day - <strong>these solutions do not take a full-stack approach to embedding management and vector search</strong>. Instead, these plugins are meant to be enhancements on top of existing architectures, thereby making them limited and unoptimized. Developing an unstructured data application atop a traditional database would be like trying to fit lithium batteries and electric motors inside the frame of a gas-powered car - not a great idea!</p>
+<p>To illustrate why this is, let’s go back to the list of features that a vector database should implement (from the first section). Vector search plugins are missing two of these features - tunability and user-friendly APIs/SDKs. I’ll continue to use Elasticsearch’s ANN engine as an example; other vector search plugins operate very similarly so I won’t go too much further into detail. Elasticsearch supports vector storage via the <code translate="no">dense_vector</code> data field type and allows for querying via the <code translate="no">knnsearch endpoint</code>:</p>
 <pre><code translate="no" class="language-json">PUT index
 {
 <span class="hljs-string">&quot;mappings&quot;</span>: {
@@ -118,7 +117,7 @@ PUT index/_doc
 }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>O plug-in ANN do Elasticsearch suporta apenas um algoritmo de indexação: Hierarchical Navigable Small Worlds, também conhecido como HNSW (gosto de pensar que o criador estava à frente da Marvel quando se tratou de popularizar o multiverso). Para além disso, apenas a distância L2/Euclidiana é suportada como métrica de distância. É um bom começo, mas vamos compará-lo com o Milvus, uma base de dados vetorial completa. Usando <code translate="no">pymilvus</code>:</p>
+<p>Elasticsearch’s ANN plugin supports only one indexing algorithm: Hierarchical Navigable Small Worlds, also known as HNSW (I like to think that the creator was ahead of Marvel when it came to popularizing the multiverse). On top of that, only L2/Euclidean distance is supported as a distance metric. This is an okay start, but let’s compare it to Milvus, a full-fledged vector database. Using <code translate="no">pymilvus</code>:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-meta">&gt;&gt;&gt; </span>field1 = FieldSchema(name=<span class="hljs-string">&#x27;id&#x27;</span>, dtype=DataType.INT64, description=<span class="hljs-string">&#x27;int64&#x27;</span>, is_primary=<span class="hljs-literal">True</span>)
 <span class="hljs-meta">&gt;&gt;&gt; </span>field2 = FieldSchema(name=<span class="hljs-string">&#x27;embedding&#x27;</span>, dtype=DataType.FLOAT_VECTOR, description=<span class="hljs-string">&#x27;embedding&#x27;</span>, dim=<span class="hljs-number">128</span>, is_primary=<span class="hljs-literal">False</span>)
 <span class="hljs-meta">&gt;&gt;&gt; </span>schema = CollectionSchema(fields=[field1, field2], description=<span class="hljs-string">&#x27;hello world collection&#x27;</span>)
@@ -138,9 +137,9 @@ PUT index/_doc
    }
 <span class="hljs-meta">&gt;&gt;&gt; </span>results = collection.search(**search_param)
 <button class="copy-code-btn"></button></code></pre>
-<p>Embora tanto <a href="https://zilliz.com/comparison/elastic-vs-milvus">o Elasticsearch quanto o Milvus</a> tenham métodos para criar índices, inserir vetores de incorporação e executar a pesquisa de vizinho mais próximo, fica claro a partir desses exemplos que o Milvus tem uma API de pesquisa vetorial mais intuitiva (melhor API voltada para o usuário) e um índice vetorial mais amplo + suporte à métrica de distância (melhor ajuste). Milvus também planeia suportar mais índices vectoriais e permitir a consulta através de instruções do tipo SQL no futuro, melhorando ainda mais a afinação e a usabilidade.</p>
-<p>Acabámos de passar por uma grande quantidade de conteúdo. Esta secção foi reconhecidamente bastante longa, por isso, para aqueles que a passaram despercebidos, aqui fica um tl;dr rápido: o Milvus é melhor do que os plugins de pesquisa vetorial porque o Milvus foi construído de raiz como uma base de dados vetorial, permitindo um conjunto mais rico de funcionalidades e uma arquitetura mais adequada a dados não estruturados.</p>
-<h2 id="How-to-choose-from-different-vector-search-technologies" class="common-anchor-header">Como escolher entre diferentes tecnologias de pesquisa vetorial?<button data-href="#How-to-choose-from-different-vector-search-technologies" class="anchor-icon" translate="no">
+<p>While both <a href="https://zilliz.com/comparison/elastic-vs-milvus">Elasticsearch and Milvus</a> have methods for creating indexes, inserting embedding vectors, and performing nearest neighbor search, it’s clear from these examples that Milvus has a more intuitive vector search API (better user-facing API) and broader vector index + distance metric support (better tunability). Milvus also plans to support more vector indices and allow for querying via SQL-like statements in the future, further improving both tunability and usability.</p>
+<p>We just blew through quite a bit of content. This section was admittedly fairly long, so for those of you who skimmed it, here’s a quick tl;dr: Milvus is better than vector search plugins because Milvus was built from the ground-up as a vector database, allowing for a richer set of features and an architecture more suited towards unstructured data.</p>
+<h2 id="How-to-choose-from-different-vector-search-technologies" class="common-anchor-header">How to choose from different vector search technologies?<button data-href="#How-to-choose-from-different-vector-search-technologies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -155,9 +154,9 @@ PUT index/_doc
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nem todas as bases de dados vectoriais são criadas da mesma forma; cada uma possui caraterísticas únicas que se adaptam a aplicações específicas. As bibliotecas e os plugins de pesquisa vetorial são fáceis de utilizar e ideais para lidar com ambientes de produção de pequena escala com milhões de vectores. Se a dimensão dos seus dados for pequena e apenas necessitar de uma funcionalidade básica de pesquisa de vectores, estas tecnologias são suficientes para a sua empresa.</p>
-<p>No entanto, uma base de dados especializada em vectores deve ser a sua primeira escolha para empresas com grande volume de dados, que lidam com centenas de milhões de vectores e exigem respostas em tempo real. O Milvus, por exemplo, gere sem esforço milhares de milhões de vectores, oferecendo velocidades de consulta extremamente rápidas e uma funcionalidade rica. Além disso, as soluções totalmente geridas, como o Zilliz, revelam-se ainda mais vantajosas, libertando-o dos desafios operacionais e permitindo-lhe concentrar-se exclusivamente nas suas actividades principais.</p>
-<h2 id="Take-another-look-at-the-Vector-Database-101-courses" class="common-anchor-header">Dê outra vista de olhos aos cursos Vetor Database 101<button data-href="#Take-another-look-at-the-Vector-Database-101-courses" class="anchor-icon" translate="no">
+    </button></h2><p>Not all vector databases are created equal; each possesses unique traits that cater to specific applications. Vector search libraries and plugins are user-friendly and ideal for handling small-scale production environments with millions of vectors. If your data size is small and you just require basic vector search functionality, these technologies are sufficient for your business.</p>
+<p>However, a specialized vector database should be your top choice for data-intensive businesses dealing with hundreds of millions of vectors and demanding real-time responses. Milvus, for instance, effortlessly manages billions of vectors, offering lightning-fast query speeds and rich functionality. Moreover, fully managed solutions like Zilliz prove even more advantageous, liberating you from operational challenges and enabling an exclusive focus on your core business activities.</p>
+<h2 id="Take-another-look-at-the-Vector-Database-101-courses" class="common-anchor-header">Take another look at the Vector Database 101 courses<button data-href="#Take-another-look-at-the-Vector-Database-101-courses" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -173,16 +172,16 @@ PUT index/_doc
         ></path>
       </svg>
     </button></h2><ol>
-<li><a href="https://zilliz.com/blog/introduction-to-unstructured-data">Introdução aos dados não estruturados</a></li>
-<li><a href="https://zilliz.com/learn/what-is-vector-database">O que é uma Base de Dados Vetorial?</a></li>
-<li><a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">Comparação entre Bases de Dados Vectoriais, Bibliotecas de Pesquisa Vetorial e Plugins de Pesquisa Vetorial</a></li>
-<li><a href="https://zilliz.com/blog/introduction-to-milvus-vector-database">Introdução ao Milvus</a></li>
-<li><a href="https://zilliz.com/blog/milvus-vector-database-quickstart">Início rápido do Milvus</a></li>
-<li><a href="https://zilliz.com/blog/vector-similarity-search">Introdução à pesquisa de similaridade vetorial</a></li>
-<li><a href="https://zilliz.com/blog/vector-index">Noções básicas sobre o índice vetorial e o índice de arquivo invertido</a></li>
-<li><a href="https://zilliz.com/blog/scalar-quantization-and-product-quantization">Quantização escalar e quantização de produtos</a></li>
-<li><a href="https://zilliz.com/blog/hierarchical-navigable-small-worlds-HNSW">Mundos pequenos navegáveis hierárquicos (HNSW)</a></li>
-<li><a href="https://zilliz.com/learn/approximate-nearest-neighbor-oh-yeah-ANNOY">Vizinhos mais próximos aproximados Oh Yeah (ANNOY)</a></li>
-<li><a href="https://zilliz.com/learn/choosing-right-vector-index-for-your-project">Escolhendo o índice vetorial correto para seu projeto</a></li>
-<li><a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DiskANN e o Algoritmo Vamana</a></li>
+<li><a href="https://zilliz.com/blog/introduction-to-unstructured-data">Introduction to Unstructured Data</a></li>
+<li><a href="https://zilliz.com/learn/what-is-vector-database">What is a Vector Database?</a></li>
+<li><a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">Comparing Vector Databases, Vector Search Libraries, and Vector Search Plugins</a></li>
+<li><a href="https://zilliz.com/blog/introduction-to-milvus-vector-database">Introduction to Milvus</a></li>
+<li><a href="https://zilliz.com/blog/milvus-vector-database-quickstart">Milvus Quickstart</a></li>
+<li><a href="https://zilliz.com/blog/vector-similarity-search">Introduction to Vector Similarity Search</a></li>
+<li><a href="https://zilliz.com/blog/vector-index">Vector Index Basics and the Inverted File Index</a></li>
+<li><a href="https://zilliz.com/blog/scalar-quantization-and-product-quantization">Scalar Quantization and Product Quantization</a></li>
+<li><a href="https://zilliz.com/blog/hierarchical-navigable-small-worlds-HNSW">Hierarchical Navigable Small Worlds (HNSW)</a></li>
+<li><a href="https://zilliz.com/learn/approximate-nearest-neighbor-oh-yeah-ANNOY">Approximate Nearest Neighbors Oh Yeah (ANNOY)</a></li>
+<li><a href="https://zilliz.com/learn/choosing-right-vector-index-for-your-project">Choosing the Right Vector Index for Your Project</a></li>
+<li><a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DiskANN and the Vamana Algorithm</a></li>
 </ol>

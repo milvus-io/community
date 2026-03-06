@@ -1,6 +1,7 @@
 ---
 id: how-to-build-productionready-ai-agents-with-deep-agents-and-milvus.md
-title: ディープエージェントとmilvusを使った生産準備の整ったAIエージェントの構築方法
+title: |
+  How to Build Production-Ready AI Agents with Deep Agents and Milvus
 author: Min Yin
 date: 2026-03-02T00:00:00.000Z
 cover: assets.zilliz.com/cover_deepagents_b45edd5f94.png
@@ -13,15 +14,17 @@ meta_keywords: >-
   agent memory
 meta_title: |
   How to Build Production-Ready AI Agents with Deep Agents
-desc: Deep AgentsとMilvusを使用したスケーラブルなAIエージェントの構築方法をご紹介します。
+desc: >
+  Learn how to build scalable AI agents using Deep Agents and Milvus for
+  long-running tasks, lower token costs, and persistent memory.
 origin: >-
   https://milvus.io/blog/how-to-build-productionready-ai-agents-with-deep-agents-and-milvus.md
 ---
-<p>より多くのチームがAIエージェントを構築しており、彼らに割り当てるタスクはより複雑になっている。実世界のワークフローの多くは、複数のステップと多くのツールコールを伴う長時間ジョブを含んでいる。このようなタスクが増えるにつれて、トークンのコスト上昇とモデルのコンテキストウィンドウの限界という2つの問題がすぐに現れます。エージェントはまた、過去の研究結果やユーザーの好み、以前の会話など、セッションをまたいで情報を記憶する必要があることも多い。</p>
-<p>LangChainがリリースした<a href="https://docs.langchain.com/oss/python/deepagents/overview"><strong>Deep Agentsの</strong></a>ようなフレームワークは、これらのワークフローを整理するのに役立つ。タスクプランニング、ファイルアクセス、サブエージェントの委譲をサポートし、構造化されたエージェントの実行方法を提供する。これにより、長いマルチステップのタスクをより確実に処理できるエージェントの構築が容易になる。</p>
-<p>しかし、ワークフローだけでは十分ではありません。エージェントは、以前のセッションから有用な情報を取り出すことができるように、<strong>長期記憶も</strong>必要とする。そこで、オープンソースのベクトルデータベースである<a href="https://milvus.io/"><strong>Milvusの</strong></a>出番となる。Milvusは、会話、ドキュメント、ツールの結果を埋め込んで保存することで、エージェントが過去の知識を検索して呼び出すことを可能にします。</p>
-<p>この記事では、Deep Agentsの仕組みを説明し、Milvusと組み合わせて、構造化されたワークフローと長期記憶を持つAIエージェントを構築する方法を紹介する。</p>
-<h2 id="What-Is-Deep-Agents" class="common-anchor-header">Deep Agentsとは？<button data-href="#What-Is-Deep-Agents" class="anchor-icon" translate="no">
+<p>More and more teams are building AI agents, and the tasks they assign to them are becoming more complex. Many real-world workflows involve long-running jobs with multiple steps and many tool calls. As these tasks grow, two problems appear quickly: higher token costs and the limits of the model’s context window. Agents also often need to remember information across sessions, such as past research results, user preferences, or earlier conversations.</p>
+<p>Frameworks like <a href="https://docs.langchain.com/oss/python/deepagents/overview"><strong>Deep Agents</strong></a>, released by LangChain, help organize these workflows. It provides a structured way to run agents, with support for task planning, file access, and sub-agent delegation. This makes it easier to build agents that can handle long, multi-step tasks more reliably.</p>
+<p>But workflows alone are not enough. Agents also need <strong>long-term memory</strong> so they can retrieve useful information from previous sessions. This is where <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database, comes in. By storing embeddings of conversations, documents, and tool results, Milvus allows agents to search and recall past knowledge.</p>
+<p>In this article, we’ll explain how Deep Agents works and show how to combine it with Milvus to build AI agents with structured workflows and long-term memory.</p>
+<h2 id="What-Is-Deep-Agents" class="common-anchor-header">What Is Deep Agents?<button data-href="#What-Is-Deep-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,24 +39,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Deep Agentsは</strong>LangChainチームによって構築されたオープンソースのエージェントフレームワークです。このフレームワークは、エージェントが長期にわたるマルチステップタスクをより確実に処理できるように設計されています。3つの主要な機能に焦点を当てています：</p>
-<p><strong>1.タスクプランニング</strong></p>
-<p>Deep Agents には<code translate="no">write_todos</code> や<code translate="no">read_todos</code> のようなビルトインツールが含まれています。エージェントは、複雑なタスクを明確な ToDo リストに分割し、各項目をステップごとに処理し、完了したタスクに印を付けます。</p>
-<p><strong>2.ファイルシステムへのアクセス</strong></p>
-<p><code translate="no">ls</code> 、<code translate="no">read_file</code> 、<code translate="no">write_file</code> のようなツールを提供し、エージェントはファイルの表示、読み込み、書き込みができる。ツールが大きな出力を生成する場合、その結果はモデルのコンテキスト・ウィンドウに留まるのではなく、自動的にファイルに保存されます。これは、コンテキスト・ウィンドウがいっぱいになるのを防ぐのに役立ちます。</p>
-<p><strong>3.サブエージェントの委任</strong></p>
-<p><code translate="no">task</code> ツールを使って、メインエージェントはサブタスクを専門のサブエージェントに委譲することができます。各サブエージェントは、独自のコンテキストウィンドウとツールを持ち、作業の整理整頓に役立ちます。</p>
+    </button></h2><p><strong>Deep Agents</strong> is an open-source agent framework built by the LangChain team. It is designed to help agents handle long-running, multi-step tasks more reliably. It focuses on three main capabilities:</p>
+<p><strong>1. Task Planning</strong></p>
+<p>Deep Agents includes built-in tools like <code translate="no">write_todos</code> and <code translate="no">read_todos</code>. The agent breaks a complex task into a clear to-do list, then works through each item step by step, marking tasks as completed.</p>
+<p><strong>2. File System Access</strong></p>
+<p>It provides tools such as <code translate="no">ls</code>, <code translate="no">read_file</code>, and <code translate="no">write_file</code>, so the agent can view, read, and write files. If a tool produces a large output, the result is automatically saved to a file instead of staying in the model’s context window. This helps prevent the context window from filling up.</p>
+<p><strong>3. Sub-agent Delegation</strong></p>
+<p>Using a <code translate="no">task</code> tool, the main agent can hand off subtasks to specialized sub-agents. Each sub-agent has its own context window and tools, which helps keep work organized.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_59401bc198.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>技術的には、<code translate="no">create_deep_agent</code> で作成されたエージェントは、コンパイルされた<strong>LangGraph StateGraph</strong> です。(LangGraphはLangChainチームによって開発されたワークフローライブラリであり、StateGraphはその中核となる状態構造である)。このため、ディープエージェントは、ストリーミング出力、チェックポイント、ヒューマン・イン・ザ・ループ・インタラクションといったLangGraphの機能を直接使用することができます。</p>
-<p><strong>では、ディープエージェントが実際に役立つのはなぜでしょうか？</strong></p>
-<p>長時間実行されるエージェントタスクは、しばしばコンテキストの制限、高いトークンコスト、信頼性の低い実行といった問題に直面します。Deep Agentsは、エージェントのワークフローをより構造化し、管理しやすくすることで、これらの問題の解決を支援します。不要なコンテキストの増加を抑えることで、トークンの使用量を減らし、長時間実行するタスクのコスト効率を維持します。</p>
-<p>また、複雑な複数ステップのタスクを整理しやすくします。サブタスクは互いに干渉することなく独立して実行できるため、信頼性が向上する。同時に、システムは柔軟であり、開発者はエージェントが単純な実験から本番アプリケーションに成長するのに合わせてカスタマイズし、拡張することができます。</p>
-<h2 id="Customization-in-Deep-Agents" class="common-anchor-header">ディープエージェントにおけるカスタマイズ<button data-href="#Customization-in-Deep-Agents" class="anchor-icon" translate="no">
+<p>Technically, an agent created with <code translate="no">create_deep_agent</code> is a compiled <strong>LangGraph StateGraph</strong>. (LangGraph is the workflow library developed by the LangChain team, and StateGraph is its core state structure.) Because of this, Deep Agents can directly use LangGraph features like streaming output, checkpointing, and human-in-the-loop interaction.</p>
+<p><strong>So what makes Deep Agents useful in practice?</strong></p>
+<p>Long-running agent tasks often face problems such as context limits, high token costs, and unreliable execution. Deep Agents helps solve these issues by making agent workflows more structured and easier to manage. By reducing unnecessary context growth, it lowers token usage and keeps long-running tasks more cost-efficient.</p>
+<p>It also makes complex, multi-step tasks easier to organize. Subtasks can run independently without interfering with each other, which improves reliability. At the same time, the system is flexible, allowing developers to customize and extend it as their agents grow from simple experiments to production applications.</p>
+<h2 id="Customization-in-Deep-Agents" class="common-anchor-header">Customization in Deep Agents<button data-href="#Customization-in-Deep-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,42 +71,42 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>一般的なフレームワークでは、あらゆる業界やビジネスのニーズをカバーすることはできません。Deep Agentsは柔軟に設計されているため、開発者は独自のユースケースに合わせて調整できます。</p>
-<p>カスタマイズにより、次のことが可能になります：</p>
+    </button></h2><p>A general framework cannot cover every industry or business need. Deep Agents is designed to be flexible, so developers can adjust it to fit their own use cases.</p>
+<p>With customization, you can:</p>
 <ul>
-<li><p>独自の社内ツールとAPIを接続する</p></li>
-<li><p>ドメイン固有のワークフローを定義する</p></li>
-<li><p>エージェントがビジネスルールに従うことを確認する</p></li>
-<li><p>セッション間の記憶とナレッジ共有をサポートする</p></li>
+<li><p>Connect your own internal tools and APIs</p></li>
+<li><p>Define domain-specific workflows</p></li>
+<li><p>Make sure the agent follows business rules</p></li>
+<li><p>Support memory and knowledge sharing across sessions</p></li>
 </ul>
-<p>Deep Agentをカスタマイズする主な方法は次のとおりです：</p>
-<h3 id="System-Prompt-Customization" class="common-anchor-header">システムプロンプトのカスタマイズ</h3><p>ミドルウェアが提供するデフォルトの指示に、独自のシステムプロンプトを追加できます。これは、ドメイン・ルールおよびワークフローを定義するのに便利です。</p>
-<p>優れたカスタムプロンプトには、以下が含まれます：</p>
+<p>Here are the main ways you can customize Deep Agents:</p>
+<h3 id="System-Prompt-Customization" class="common-anchor-header">System Prompt Customization</h3><p>You can add your own system prompt on top of the default instructions provided by middleware. This is useful for defining domain rules and workflows.</p>
+<p>A good custom prompt may include:</p>
 <ul>
-<li><strong>ドメイン・ワークフロー・ルール</strong></li>
+<li><strong>Domain workflow rules</strong></li>
 </ul>
-<p>例「データ分析タスクでは、モデルを構築する前に必ず探索的分析を実行する。</p>
+<p>Example: “For data analysis tasks, always run exploratory analysis before building a model.”</p>
 <ul>
-<li><strong>具体例</strong></li>
+<li><strong>Specific examples</strong></li>
 </ul>
-<p>例"類似文献の検索依頼を1つのTodo項目にまとめる"</p>
+<p>Example: “Combine similar literature search requests into one todo item.”</p>
 <ul>
-<li><strong>停止ルール</strong></li>
+<li><strong>Stopping rules</strong></li>
 </ul>
-<p>具体例"100以上のツールコールが使用されたら停止する"</p>
+<p>Example: “Stop if more than 100 tool calls are used.”</p>
 <ul>
-<li><strong>ツール調整ガイダンス</strong></li>
+<li><strong>Tool coordination guidance</strong></li>
 </ul>
-<p>例"<code translate="no">grep</code> 、コードの場所を見つけ、<code translate="no">read_file</code> 、詳細を見る。"</p>
-<p>ミドルウェアがすでに処理している命令の繰り返しは避け、デフォルトの動作と矛盾するルールの追加は避ける。</p>
-<h3 id="Tools" class="common-anchor-header">ツール</h3><p>組み込みのツールセットに独自のツールを追加することができます。ツールは通常の Python 関数として定義され、その docstrings に何を行うかが記述されています。</p>
+<p>Example: “Use <code translate="no">grep</code> to find code locations, then use <code translate="no">read_file</code> to view details.”</p>
+<p>Avoid repeating instructions that middleware already handles, and avoid adding rules that conflict with the default behavior.</p>
+<h3 id="Tools" class="common-anchor-header">Tools</h3><p>You can add your own tools to the built-in toolset. Tools are defined as normal Python functions, and their docstrings describe what they do.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> create_deep_agent
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">internet_search</span>(<span class="hljs-params">query: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     <span class="hljs-string">&quot;&quot;&quot;Run a web search&quot;&quot;&quot;</span>
     <span class="hljs-keyword">return</span> tavily_client.search(query)
 agent = create_deep_agent(tools=[internet_search])
 <button class="copy-code-btn"></button></code></pre>
-<p>Deep Agents は、<code translate="no">langchain-mcp-adapters</code> を介してモデル・コンテキスト・プロトコル (MCP) 標準に従うツールもサポートしています。</p>
+<p>Deep Agents also supports tools that follow the Model Context Protocol (MCP) standard through <code translate="no">langchain-mcp-adapters</code>.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain_mcp_adapters.client <span class="hljs-keyword">import</span> MultiServerMCPClient
 <span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> create_deep_agent
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
@@ -113,11 +116,11 @@ agent = create_deep_agent(tools=[internet_search])
     <span class="hljs-keyword">async</span> <span class="hljs-keyword">for</span> chunk <span class="hljs-keyword">in</span> agent.astream({<span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;...&quot;</span>}]}):
         chunk[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>].pretty_print()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Middleware" class="common-anchor-header">ミドルウェア</h3><p>以下のカスタム・ミドルウェアを記述できます：</p>
+<h3 id="Middleware" class="common-anchor-header">Middleware</h3><p>You can write custom middleware to:</p>
 <ul>
-<li><p>ツールの追加または変更</p></li>
-<li><p>プロンプトの調整</p></li>
-<li><p>エージェントの実行のさまざまな段階にフックする</p></li>
+<li><p>Add or modify tools</p></li>
+<li><p>Adjust prompts</p></li>
+<li><p>Hook into different stages of the agent’s execution</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain_core.tools <span class="hljs-keyword">import</span> tool
 <span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> create_deep_agent
@@ -130,22 +133,22 @@ agent = create_deep_agent(tools=[internet_search])
     tools = [get_weather]
 agent = create_deep_agent(middleware=[WeatherMiddleware()])
 <button class="copy-code-btn"></button></code></pre>
-<p>Deep Agents には、計画、サブエージェント管理、および実行制御のための組み込みミドルウェアも含まれています。</p>
+<p>Deep Agents also includes built-in middleware for planning, sub-agent management, and execution control.</p>
 <table>
 <thead>
-<tr><th>ミドルウェア</th><th>機能</th></tr>
+<tr><th>Middleware</th><th>Function</th></tr>
 </thead>
 <tbody>
-<tr><td>TodoList ミドルウェア</td><td>タスクリストを管理するための write_todos と read_todos ツールを提供します。</td></tr>
-<tr><td>ファイルシステムミドルウェア</td><td>ファイル操作ツールを提供し、大きなツール出力を自動保存する。</td></tr>
-<tr><td>サブエージェントミドルウェア</td><td>サブエージェントに作業を委任するタスクツールを提供</td></tr>
-<tr><td>要約ミドルウェア</td><td>コンテキストが170kトークンを超えると自動的に要約する</td></tr>
-<tr><td>AnthropicPromptCachingミドルウェア</td><td>Anthropicモデルのプロンプトキャッシングを有効にする</td></tr>
-<tr><td>PatchToolCallsミドルウェア</td><td>中断による不完全なツールコールを修正</td></tr>
-<tr><td>HumanInTheLoopミドルウェア</td><td>人間の承認が必要なツールの設定</td></tr>
+<tr><td>TodoListMiddleware</td><td>Provides write_todos and read_todos tools to manage task lists</td></tr>
+<tr><td>FilesystemMiddleware</td><td>Provides file operation tools and automatically saves large tool outputs</td></tr>
+<tr><td>SubAgentMiddleware</td><td>Provides the task tool to delegate work to sub-agents</td></tr>
+<tr><td>SummarizationMiddleware</td><td>Automatically summarizes when context exceeds 170k tokens</td></tr>
+<tr><td>AnthropicPromptCachingMiddleware</td><td>Enables prompt caching for Anthropic models</td></tr>
+<tr><td>PatchToolCallsMiddleware</td><td>Fixes incomplete tool calls caused by interruptions</td></tr>
+<tr><td>HumanInTheLoopMiddleware</td><td>Configures tools that require human approval</td></tr>
 </tbody>
 </table>
-<h3 id="Sub-agents" class="common-anchor-header">サブエージェント</h3><p>メインエージェントは、<code translate="no">task</code> ツールを使用してサブエージェントにサブタスクを委任することができます。各サブエージェントは、独自のコンテキストウィンドウで実行され、独自のツールとシステムプロンプトを持ちます。</p>
+<h3 id="Sub-agents" class="common-anchor-header">Sub-agents</h3><p>The main agent can delegate subtasks to sub-agents using the <code translate="no">task</code> tool. Each sub-agent runs in its own context window and has its own tools and system prompt.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> create_deep_agent
 research_subagent = {
     <span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;research-agent&quot;</span>,
@@ -156,7 +159,7 @@ research_subagent = {
 }
 agent = create_deep_agent(subagents=[research_subagent])
 <button class="copy-code-btn"></button></code></pre>
-<p>高度な使用例では、サブエージェントとして事前に構築されたLangGraphワークフローを渡すこともできます。</p>
+<p>For advanced use cases, you can even pass in a pre-built LangGraph workflow as a sub-agent.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> <span class="hljs-title class_">CompiledSubAgent</span>, create_deep_agent
 custom_graph = <span class="hljs-title function_">create_agent</span>(model=..., tools=..., prompt=...)
 agent = <span class="hljs-title function_">create_deep_agent</span>(
@@ -167,7 +170,7 @@ agent = <span class="hljs-title function_">create_deep_agent</span>(
     )]
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="interrupton-Human-Approval-Control" class="common-anchor-header"><code translate="no">interrupt_on</code> (人間の承認コントロール）</h3><p><code translate="no">interrupt_on</code> パラメータを使って、人間の承認を必要とする特定のツールを指定することができます。エージェントがこれらのツールを呼び出すと、人がレビューして承認するまで実行は一時停止します。</p>
+<h3 id="interrupton-Human-Approval-Control" class="common-anchor-header"><code translate="no">interrupt_on</code> (Human Approval Control)</h3><p>You can specify certain tools that require human approval using the <code translate="no">interrupt_on</code> parameter. When the agent calls one of these tools, execution pauses until a person reviews and approves it.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain_core.tools <span class="hljs-keyword">import</span> tool
 <span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> create_deep_agent
 <span class="hljs-keyword">from</span> langgraph.checkpoint.memory <span class="hljs-keyword">import</span> MemorySaver
@@ -185,10 +188,10 @@ agent = create_deep_agent(
     checkpointer=MemorySaver()
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Backend-Customization-Storage" class="common-anchor-header">バックエンドのカスタマイズ（ストレージ）</h3><p>ファイルの処理方法を制御するために、異なるストレージバックエンドを選択できます。現在のオプションは以下の通りです：</p>
+<h3 id="Backend-Customization-Storage" class="common-anchor-header">Backend Customization (Storage)</h3><p>You can choose different storage backends to control how files are handled. Current options include:</p>
 <ul>
-<li><p><strong>StateBackend</strong>（一時ストレージ）</p></li>
-<li><p><strong>FilesystemBackend</strong>(ローカルディスクストレージ)</p></li>
+<li><p><strong>StateBackend</strong> (temporary storage)</p></li>
+<li><p><strong>FilesystemBackend</strong> (local disk storage)</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-title class_">StoreBackend</span>(persistent storage)、<span class="hljs-title class_">CompositeBackend</span>(hybrid routing)。
 <span class="hljs-keyword">from</span> deepagents <span class="hljs-keyword">import</span> create_deep_agent
@@ -197,8 +200,8 @@ agent = <span class="hljs-title function_">create_deep_agent</span>(
     backend=<span class="hljs-title class_">FilesystemBackend</span>(root_dir=<span class="hljs-string">&quot;/path/to/project&quot;</span>)
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>バックエンドを変更することで、システム全体の設計を変更することなく、ファイルストレージの動作を調整できます。</p>
-<h2 id="Why-Use-Deep-Agents-with-Milvus-for-AI-Agents" class="common-anchor-header">なぜAIエージェントにMilvusのDeep Agentを使うのか？<button data-href="#Why-Use-Deep-Agents-with-Milvus-for-AI-Agents" class="anchor-icon" translate="no">
+<p>By changing the backend, you can adjust file storage behavior without changing the overall system design.</p>
+<h2 id="Why-Use-Deep-Agents-with-Milvus-for-AI-Agents" class="common-anchor-header">Why Use Deep Agents with Milvus for AI Agents?<button data-href="#Why-Use-Deep-Agents-with-Milvus-for-AI-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -213,28 +216,28 @@ agent = <span class="hljs-title function_">create_deep_agent</span>(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>実際のアプリケーションでは、エージェントはしばしばセッションをまたいで持続するメモリを必要とします。例えば、ユーザの好みを記憶したり、時間をかけてドメイン知識を蓄積したり、行動を調整するためにフィードバックを記録したり、長期的な調査タスクを追跡したりする必要があるかもしれません。</p>
-<p>デフォルトでは、Deep Agents は<code translate="no">StateBackend</code> を使用し、単一のセッション中のみデータを保存します。セッションが終了すると、すべてクリアされます。つまり、長期的なクロス・セッション・メモリをサポートすることはできません。</p>
-<p>永続的な記憶を可能にするために、<a href="https://milvus.io/"><strong>Milvus を</strong></a> <code translate="no">StoreBackend</code> と共にベクトル・データベースとして使用する。その仕組みは以下の通り：重要な会話内容やツールの結果はエンベッディング（意味を表す数値ベクトル）に変換され、Milvus に保存される。新しいタスクが始まると、エージェントは関連する過去の記憶を取り出すために意味検索を行う。これによりエージェントは以前のセッションの関連情報を「記憶」することができる。</p>
-<p>Milvusは、計算機とストレージを分離したアーキテクチャのため、このユースケースに適しています。Milvusは以下をサポートしている：</p>
+    </button></h2><p>In real applications, agents often need memory that lasts across sessions. For example, they may need to remember user preferences, build up domain knowledge over time, record feedback to adjust behavior, or keep track of long-term research tasks.</p>
+<p>By default, Deep Agents uses <code translate="no">StateBackend</code>, which only stores data during a single session. When the session ends, everything is cleared. This means it cannot support long-term, cross-session memory.</p>
+<p>To enable persistent memory, we use <a href="https://milvus.io/"><strong>Milvus</strong></a> as the vector database together with <code translate="no">StoreBackend</code>. Here’s how it works: important conversation content and tool results are converted into embeddings (numerical vectors that represent meaning) and stored in Milvus. When a new task starts, the agent performs semantic search to retrieve related past memories. This allows the agent to “remember” relevant information from previous sessions.</p>
+<p>Milvus is well suited for this use case because of its compute-storage separation architecture. It supports:</p>
 <ul>
-<li><p>数百億ベクトルへの水平スケーリング</p></li>
-<li><p>高同期クエリ</p></li>
-<li><p>リアルタイムのデータ更新</p></li>
-<li><p>大規模システム向けのプロダクション対応デプロイメント</p></li>
+<li><p>Horizontal scaling to tens of billions of vectors</p></li>
+<li><p>High-concurrency queries</p></li>
+<li><p>Real-time data updates</p></li>
+<li><p>Production-ready deployment for large-scale systems</p></li>
 </ul>
-<p>技術的には、Deep Agentsは<code translate="no">CompositeBackend</code> 、異なるストレージバックエンドに異なるパスをルーティングします：</p>
+<p>Technically, Deep Agents uses <code translate="no">CompositeBackend</code> to route different paths to different storage backends:</p>
 <table>
 <thead>
-<tr><th>パス</th><th>バックエンド</th><th>目的</th></tr>
+<tr><th>Path</th><th>Backend</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td>/ワークスペース/, /temp/</td><td>状態バックエンド</td><td>セッション終了後に消去される一時的なデータ</td></tr>
-<tr><td>/メモリー/、/ナレッジ</td><td>StoreBackend + milvus</td><td>セッションをまたいで検索可能な永続データ</td></tr>
+<tr><td>/workspace/, /temp/</td><td>StateBackend</td><td>Temporary data, cleared after the session</td></tr>
+<tr><td>/memories/, /knowledge/</td><td>StoreBackend + Milvus</td><td>Persistent data, searchable across sessions</td></tr>
 </tbody>
 </table>
-<p>このセットアップでは、開発者は長期的なデータを<code translate="no">/memories/</code> のようなパスに保存するだけでよい。システムは自動的にクロス・セッション・メモリを処理する。詳細な設定手順は以下のセクションで説明する。</p>
-<h2 id="Hands-on-Build-an-AI-Agent-with-Long-Term-Memory-Using-Milvus-and-Deep-Agents" class="common-anchor-header">ハンズオンMilvusとDeep Agentsを使用した長期メモリ付きAIエージェントの構築<button data-href="#Hands-on-Build-an-AI-Agent-with-Long-Term-Memory-Using-Milvus-and-Deep-Agents" class="anchor-icon" translate="no">
+<p>With this setup, developers only need to save long-term data under paths like <code translate="no">/memories/</code>. The system automatically handles cross-session memory. Detailed configuration steps are provided in the section below.</p>
+<h2 id="Hands-on-Build-an-AI-Agent-with-Long-Term-Memory-Using-Milvus-and-Deep-Agents" class="common-anchor-header">Hands-on: Build an AI Agent with Long-Term Memory Using Milvus and Deep Agents<button data-href="#Hands-on-Build-an-AI-Agent-with-Long-Term-Memory-Using-Milvus-and-Deep-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -249,10 +252,10 @@ agent = <span class="hljs-title function_">create_deep_agent</span>(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この例では、Milvusを使用してDeepAgentsベースのエージェントに永続的なメモリを与える方法を示します。</p>
-<h3 id="Step-1-Install-dependencies" class="common-anchor-header">ステップ1: 依存関係のインストール</h3><pre><code translate="no">pip install deepagents tavily-python langchain-milvus
+    </button></h2><p>This example shows how to give a DeepAgents-based agent persistent memory using Milvus.</p>
+<h3 id="Step-1-Install-dependencies" class="common-anchor-header">Step 1: Install dependencies</h3><pre><code translate="no">pip install deepagents tavily-python langchain-milvus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Set-up-the-memory-backend" class="common-anchor-header">ステップ2: メモリバックエンドのセットアップ</h3><pre><code translate="no"><span class="hljs-keyword">from</span> deepagents.backends <span class="hljs-keyword">import</span> CompositeBackend, StateBackend, StoreBackend
+<h3 id="Step-2-Set-up-the-memory-backend" class="common-anchor-header">Step 2: Set up the memory backend</h3><pre><code translate="no"><span class="hljs-keyword">from</span> deepagents.backends <span class="hljs-keyword">import</span> CompositeBackend, StateBackend, StoreBackend
 <span class="hljs-keyword">from</span> langchain_milvus.storage <span class="hljs-keyword">import</span> MilvusStore
 <span class="hljs-comment"># from langgraph.store.memory import InMemoryStore # for testing only</span>
 <span class="hljs-comment"># Configure Milvus storage</span>
@@ -265,7 +268,7 @@ backend = CompositeBackend(
     routes={<span class="hljs-string">&quot;/memories/&quot;</span>: StoreBackend(store=InMemoryStore())} 
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Create-the-agent" class="common-anchor-header">ステップ 3: エージェントの作成</h3><pre><code translate="no"><span class="hljs-keyword">from</span> tavily <span class="hljs-keyword">import</span> TavilyClient
+<h3 id="Step-3-Create-the-agent" class="common-anchor-header">Step 3: Create the agent</h3><pre><code translate="no"><span class="hljs-keyword">from</span> tavily <span class="hljs-keyword">import</span> TavilyClient
 <span class="hljs-keyword">import</span> os
 tavily_client = TavilyClient(api_key=os.environ[<span class="hljs-string">&quot;TAVILY_API_KEY&quot;</span>])
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">internet_search</span>(<span class="hljs-params">query: <span class="hljs-built_in">str</span>, max_results: <span class="hljs-built_in">int</span> = <span class="hljs-number">5</span></span>) -&gt; <span class="hljs-built_in">str</span>:
@@ -282,20 +285,20 @@ result = agent.invoke({
     <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;Research the technical features of the Milvus vector database&quot;</span>}]
 })
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>キーポイント</strong></p>
+<p><strong>Key Points</strong></p>
 <ul>
-<li><strong>永続パス</strong></li>
+<li><strong>Persistent path</strong></li>
 </ul>
-<p><code translate="no">/memories/</code> の下に保存されたファイルは永続的に保存され、異なるセッションでもアクセスできます。</p>
+<p>Any files saved under <code translate="no">/memories/</code> will be stored permanently and can be accessed across different sessions.</p>
 <ul>
-<li><strong>本番用セットアップ</strong></li>
+<li><strong>Production setup</strong></li>
 </ul>
-<p>この例では、テスト用に<code translate="no">InMemoryStore()</code> を使用しています。本番環境では、スケーラブルなセマンティック検索を可能にするために、Milvusアダプターに置き換えてください。</p>
+<p>The example uses <code translate="no">InMemoryStore()</code> for testing. In production, replace it with a Milvus adapter to enable scalable semantic search.</p>
 <ul>
-<li><strong>自動メモリ</strong></li>
+<li><strong>Automatic memory</strong></li>
 </ul>
-<p>エージェントは、調査結果と重要なアウトプットを自動的に<code translate="no">/memories/</code> フォルダに保存します。後のタスクでは、関連する過去の情報を検索して取り出すことができます。</p>
-<h2 id="Built-in-Tools-Overview" class="common-anchor-header">組み込みツールの概要<button data-href="#Built-in-Tools-Overview" class="anchor-icon" translate="no">
+<p>The agent automatically saves research results and important outputs to the <code translate="no">/memories/</code> folder. In later tasks, it can search and retrieve relevant past information.</p>
+<h2 id="Built-in-Tools-Overview" class="common-anchor-header">Built-in Tools Overview<button data-href="#Built-in-Tools-Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -310,50 +313,50 @@ result = agent.invoke({
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Deep Agents には、ミドルウェアを通じて提供されるいくつかの組み込みツールがあります。これらは主に 3 つのグループに分類されます：</p>
-<h3 id="Task-Management-TodoListMiddleware" class="common-anchor-header">タスク管理 (<code translate="no">TodoListMiddleware</code>)</h3><ul>
+    </button></h2><p>Deep Agents includes several built-in tools, provided through middleware. They fall into three main groups:</p>
+<h3 id="Task-Management-TodoListMiddleware" class="common-anchor-header">Task Management (<code translate="no">TodoListMiddleware</code>)</h3><ul>
 <li><code translate="no">write_todos</code></li>
 </ul>
-<p>構造化されたTodoリストを作成します。各タスクには、説明、優先度、および依存関係を含めることができます。</p>
+<p>Creates a structured todo list. Each task can include a description, priority, and dependencies.</p>
 <ul>
 <li><code translate="no">read_todos</code></li>
 </ul>
-<p>完了したタスクと保留中のタスクを含む、現在のTodoリストを表示します。</p>
-<h3 id="File-System-Tools-FilesystemMiddleware" class="common-anchor-header">ファイルシステムツール (<code translate="no">FilesystemMiddleware</code>)</h3><ul>
+<p>Shows the current todo list, including completed and pending tasks.</p>
+<h3 id="File-System-Tools-FilesystemMiddleware" class="common-anchor-header">File System Tools (<code translate="no">FilesystemMiddleware</code>)</h3><ul>
 <li><code translate="no">ls</code></li>
 </ul>
-<p>ディレクトリ内のファイルを一覧表示します。絶対パス（<code translate="no">/</code> で始まる）を使用する必要があります。</p>
+<p>Lists files in a directory. Must use an absolute path (starting with <code translate="no">/</code>).</p>
 <ul>
 <li><code translate="no">read_file</code></li>
 </ul>
-<p>ファイルの内容を読み取ります。大容量ファイル用に<code translate="no">offset</code> と<code translate="no">limit</code> をサポート。</p>
+<p>Reads file content. Supports <code translate="no">offset</code> and <code translate="no">limit</code> for large files.</p>
 <ul>
 <li><code translate="no">write_file</code></li>
 </ul>
-<p>ファイルの作成または上書き。</p>
+<p>Creates or overwrites a file.</p>
 <ul>
 <li><code translate="no">edit_file</code></li>
 </ul>
-<p>ファイル内の特定のテキストを置換します。</p>
+<p>Replaces specific text inside a file.</p>
 <ul>
 <li><code translate="no">glob</code></li>
 </ul>
-<p>すべての Python ファイルを検索する<code translate="no">**/*.py</code> のように、パターンを使用してファイルを検索します。</p>
+<p>Finds files using patterns, such as <code translate="no">**/*.py</code> to search for all Python files.</p>
 <ul>
 <li><code translate="no">grep</code></li>
 </ul>
-<p>ファイル内のテキストを検索します。</p>
+<p>Searches for text inside files.</p>
 <ul>
 <li><code translate="no">execute</code></li>
 </ul>
-<p>サンドボックス環境でシェルコマンドを実行します。バックエンドが<code translate="no">SandboxBackendProtocol</code> をサポートしている必要があります。</p>
-<h3 id="Sub-agent-Delegation-SubAgentMiddleware" class="common-anchor-header">サブエージェント委任 (<code translate="no">SubAgentMiddleware</code>)</h3><ul>
+<p>Runs shell commands in a sandbox environment. Requires the backend to support <code translate="no">SandboxBackendProtocol</code>.</p>
+<h3 id="Sub-agent-Delegation-SubAgentMiddleware" class="common-anchor-header">Sub-agent Delegation (<code translate="no">SubAgentMiddleware</code>)</h3><ul>
 <li><code translate="no">task</code></li>
 </ul>
-<p>サブタスクを特定のサブエージェントに送る。サブエージェント名とタスクの説明を指定する。</p>
-<h3 id="How-Tool-Outputs-Are-Handled" class="common-anchor-header">ツール出力の処理方法</h3><p>ツールが大きな結果を生成した場合、Deep Agents はそれを自動的にファイルに保存します。</p>
-<p>例えば、<code translate="no">internet_search</code> が 100KB のコンテンツを返す場合、システムはそれを<code translate="no">/tool_results/internet_search_1.txt</code> のように保存します。エージェントは、コンテキスト内のファイル・パスのみを保持します。これにより、トークンの使用量が減り、コンテキスト・ウィンドウが小さくなります。</p>
-<h2 id="DeepAgents-vs-Agent-Builder-When-Should-You-Use-Each" class="common-anchor-header">DeepAgent とエージェント・ビルダーの比較：それぞれを使用する必要があるのはどのような場合ですか?<button data-href="#DeepAgents-vs-Agent-Builder-When-Should-You-Use-Each" class="anchor-icon" translate="no">
+<p>Sends a subtask to a specific sub-agent. You provide the sub-agent name and the task description.</p>
+<h3 id="How-Tool-Outputs-Are-Handled" class="common-anchor-header">How Tool Outputs Are Handled</h3><p>If a tool generates a large result, Deep Agents automatically saves it to a file.</p>
+<p>For example, if <code translate="no">internet_search</code> returns 100KB of content, the system saves it to something like <code translate="no">/tool_results/internet_search_1.txt</code>. The agent keeps only the file path in its context. This reduces Token usage and keeps the context window small.</p>
+<h2 id="DeepAgents-vs-Agent-Builder-When-Should-You-Use-Each" class="common-anchor-header">DeepAgents vs. Agent Builder: When Should You Use Each?<button data-href="#DeepAgents-vs-Agent-Builder-When-Should-You-Use-Each" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -368,12 +371,12 @@ result = agent.invoke({
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><em>この記事はDeepAgentsに焦点を当てているので、</em><em>LangChainエコシステムのもう一つのエージェント構築オプションである</em> <a href="https://www.langchain.com/langsmith/agent-builder"><em>Agent Builderとの</em></a><em>比較も理解しておくと便利です。</em></p>
-<p>LangChainはAIエージェントを構築するためのいくつかの方法を提供しており、最適な選択は通常、あなたがシステムをどの程度コントロールしたいかによって決まります。</p>
-<p><strong>DeepAgentsは</strong>、長時間のマルチステップタスクを処理する自律型エージェントを構築するために設計されています。開発者は、エージェントがどのようにタスクを計画し、ツールを使用し、メモリを管理するかを完全に制御することができます。LangGraph上に構築されているため、コンポーネントをカスタマイズし、Pythonツールを統合し、ストレージバックエンドを変更することができます。このため、DeepAgentsは、信頼性と柔軟性が重要な複雑なワークフローや生産システムに適しています。</p>
-<p>対照的に、<strong>Agent Builderは</strong>使いやすさに重点を置いています。技術的な詳細はほとんど隠されているため、エージェントを記述し、ツールを追加し、迅速に実行できます。メモリ、ツールの使用、人間の承認ステップは自動的に処理されます。このため、Agent Builderは、迅速なプロトタイプ、内部ツール、または初期の実験に便利です。</p>
-<p><strong>Agent BuilderとDeepAgentsは別個のシステムではなく、同じスタックの一部です。</strong>Agent Builderは、DeepAgentsの上に構築されています。多くのチームは、まずAgent Builderでアイデアをテストし、さらに制御が必要になったらDeepAgentsに切り替えます。DeepAgentsで作成したワークフローは、Agent Builderのテンプレートに変換できるため、他のチームが簡単に再利用できます。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p><em>Since this article focuses on DeepAgents, it’s also helpful to understand how it compares with</em> <a href="https://www.langchain.com/langsmith/agent-builder"><em>Agent Builder</em></a><em>, another agent-building option in the LangChain ecosystem.</em></p>
+<p>LangChain offers several ways to build AI agents, and the best choice usually depends on how much control you want over the system.</p>
+<p><strong>DeepAgents</strong> is designed for building autonomous agents that handle long-running, multi-step tasks. It gives developers full control over how the agent plans tasks, uses tools, and manages memory. Because it is built on LangGraph, you can customize components, integrate Python tools, and modify the storage backend. This makes DeepAgents a good fit for complex workflows and production systems where reliability and flexibility are important.</p>
+<p><strong>Agent Builder</strong>, in contrast, focuses on ease of use. It hides most of the technical details, so you can describe an agent, add tools, and run it quickly. Memory, tool usage, and human approval steps are handled automatically. This makes Agent Builder useful for quick prototypes, internal tools, or early experiments.</p>
+<p><strong>Agent Builder and DeepAgents are not separate systems—they are part of the same stack.</strong> Agent Builder is built on top of DeepAgents. Many teams start with Agent Builder to test ideas, then switch to DeepAgents when they need more control. Workflows created with DeepAgents can also be turned into Agent Builder templates so others can reuse them easily.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -388,7 +391,7 @@ result = agent.invoke({
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Deep Agents は、タスク計画、ファイルストレージ、およびサブエージェントの委任という 3 つの主要なアイデアを使用することで、複雑なエージェントのワークフローを管理しやすくします。これらのメカニズムは、面倒なマルチステッププロセスを構造化されたワークフローに変えます。Milvusと組み合わせてベクトル検索を行うことで、エージェントはセッションをまたいで長期記憶を保持することができます。</p>
-<p>開発者にとっては、トークンのコストが下がり、シンプルなデモから本番環境までスケールできる、より信頼性の高いシステムができることを意味します。</p>
-<p>構造化されたワークフローと実際の長期記憶を必要とするAIエージェントを構築している場合、ぜひご連絡ください。</p>
-<p>ディープエージェントやMilvusを永続メモリバックエンドとして使用することについてご質問がありますか？<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slackチャンネルに</a>ご参加いただくか、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワーの</a>20分セッションをご予約ください。</p>
+    </button></h2><p>Deep Agents makes complex agent workflows easier to manage by using three main ideas: task planning, file storage, and sub-agent delegation. These mechanisms turn messy, multi-step processes into structured workflows. When combined with Milvus for vector search, the agent can also keep long-term memory across sessions.</p>
+<p>For developers, this means lower Token costs and a more reliable system that can scale from a simple demo to a production environment.</p>
+<p>If you’re building AI agents that need structured workflows and real long-term memory, we’d love to connect.</p>
+<p>Have questions about Deep Agents or using Milvus as a persistent memory backend? Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session to discuss your use case.</p>

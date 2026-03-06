@@ -1,9 +1,9 @@
 ---
 id: >-
   milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md
-title: >-
-  تقديم فهرس ميلفوس نغرام: مطابقة أسرع للكلمات المفتاحية واستعلامات مشابهة
-  لأحمال عمل الوكلاء
+title: >
+  Introducing the Milvus Ngram Index: Faster Keyword Matching and LIKE Queries
+  for Agent Workloads
 author: Chenjie Tang
 date: 2025-12-16T00:00:00.000Z
 cover: assets.zilliz.com/Ngram_Index_cover_9e6063c638.png
@@ -16,28 +16,28 @@ meta_title: >
   Milvus Ngram Index: Faster Keyword Matching and LIKE Queries for Agent
   Workloads
 desc: >-
-  تعلّم كيف يعمل فهرس Ngram في Milvus على تسريع استعلامات LIKE من خلال تحويل
-  مطابقة السلاسل الفرعية إلى عمليات بحث فعّالة عن n-gram، مما يوفر أداءً أسرع ب
-  100 مرة.
+  Learn how the Ngram Index in Milvus accelerates LIKE queries by turning
+  substring matching into efficient n-gram lookups, delivering 100× faster
+  performance.
 origin: >-
   https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md
 ---
-<p>في أنظمة الوكلاء، يعد <strong>استرجاع السياق</strong> لبنة أساسية في جميع مراحل العملية، حيث يوفر الأساس للتفكير والتخطيط والعمل في المراحل النهائية. ويساعد البحث المتجه الوكلاء على استرجاع السياق الدلالي ذي الصلة التي تلتقط القصد والمعنى عبر مجموعات البيانات الكبيرة وغير المنظمة. ومع ذلك، فإن الصلة الدلالية وحدها لا تكفي في كثير من الأحيان. تعتمد خطوط أنابيب الوكيل أيضًا على البحث في النص الكامل لفرض قيود الكلمات الرئيسية الدقيقة - مثل أسماء المنتجات أو استدعاءات الوظائف أو رموز الأخطاء أو المصطلحات ذات الأهمية القانونية. تضمن هذه الطبقة الداعمة ألا يكون السياق المسترجع وثيق الصلة بالموضوع فحسب، بل يفي أيضًا بشكل صريح بالمتطلبات النصية الصعبة.</p>
-<p>تعكس أعباء العمل الحقيقية هذه الحاجة باستمرار:</p>
+<p>In agent systems, <strong>context retrieval</strong> is a foundational building block across the entire pipeline, providing the basis for downstream reasoning, planning, and action. Vector search helps agents retrieve semantically relevant context that captures intent and meaning across large and unstructured datasets. However, semantic relevance alone is often not enough. Agent pipelines also rely on full-text search to enforce exact keyword constraints—such as product names, function calls, error codes, or legally significant terms. This supporting layer ensures that retrieved context is not only relevant, but also explicitly satisfies hard textual requirements.</p>
+<p>Real workloads consistently reflect this need:</p>
 <ul>
-<li><p>يجب على مساعدي دعم العملاء العثور على محادثات تشير إلى منتج أو مكون معين.</p></li>
-<li><p>يبحث مساعدو البرمجة عن مقتطفات تحتوي على اسم دالة أو استدعاء واجهة برمجة التطبيقات أو سلسلة أخطاء.</p></li>
-<li><p>كما يقوم الوكلاء القانونيون والطبيون والأكاديميون بتصفية المستندات بحثاً عن البنود أو الاقتباسات التي يجب أن تظهر حرفياً.</p></li>
+<li><p>Customer support assistants must find conversations mentioning a specific product or ingredient.</p></li>
+<li><p>Coding copilots look for snippets containing an exact function name, API call, or error string.</p></li>
+<li><p>Legal, medical, and academic agents filter documents for clauses or citations that must appear verbatim.</p></li>
 </ul>
-<p>تقليديًا، تعاملت الأنظمة مع هذا الأمر باستخدام مشغل SQL <code translate="no">LIKE</code>. يعتبر الاستعلام مثل <code translate="no">name LIKE '%rod%'</code> بسيطًا ومدعومًا على نطاق واسع، ولكن في ظل التزامن العالي وأحجام البيانات الكبيرة، فإن هذه البساطة تحمل تكاليف أداء كبيرة.</p>
+<p>Traditionally, systems have handled this with the SQL <code translate="no">LIKE</code> operator. A query such as <code translate="no">name LIKE '%rod%'</code> is simple and widely supported, but under high concurrency and large data volumes, this simplicity carries major performance costs.</p>
 <ul>
-<li><p><strong>فبدون فهرس،</strong> يقوم استعلام <code translate="no">LIKE</code> بمسح مخزن السياق بأكمله وتطبيق مطابقة النمط صفًا بصف. عند وجود ملايين السجلات، يمكن أن يستغرق حتى استعلام واحد ثوانٍ - وهو بطيء جدًا بالنسبة لتفاعلات الوكيل في الوقت الفعلي.</p></li>
-<li><p><strong>حتى مع وجود فهرس مقلوب تقليدي،</strong> تظل أنماط أحرف البدل مثل <code translate="no">%rod%</code> صعبة التحسين لأن المحرك لا يزال يتعين على المحرك اجتياز القاموس بأكمله وتشغيل مطابقة الأنماط على كل إدخال. تتجنب العملية عمليات مسح الصفوف ولكنها تظل خطية بشكل أساسي، مما يؤدي إلى تحسينات هامشية فقط.</p></li>
+<li><p><strong>Without an index</strong>, a <code translate="no">LIKE</code> query scans the entire context store and applies pattern matching row by row. At millions of records, even a single query can take seconds—far too slow for real-time agent interactions.</p></li>
+<li><p><strong>Even with a conventional inverted index</strong>, wildcard patterns such as <code translate="no">%rod%</code> remain hard to optimize because the engine must still traverse the entire dictionary and run pattern matching on each entry. The operation avoids row scans but remains fundamentally linear, resulting in only marginal improvements.</p></li>
 </ul>
-<p>هذا يخلق فجوة واضحة في أنظمة الاسترجاع الهجينة: يعالج البحث المتجه الصلة الدلالية بكفاءة، ولكن غالبًا ما تصبح تصفية الكلمات الرئيسية الدقيقة أبطأ خطوة في خط الأنابيب.</p>
-<p>يدعم Milvus أصلاً البحث الهجين المتجه والبحث في النص الكامل مع تصفية البيانات الوصفية. ولمعالجة القيود المفروضة على مطابقة الكلمات المفتاحية، يقدم Milvus <a href="https://milvus.io/docs/ngram.md"><strong>فهرس Ngram،</strong></a> الذي يحسن أداء <code translate="no">LIKE</code> من خلال تقسيم النص إلى سلاسل فرعية صغيرة وفهرستها للبحث الفعال. يقلل هذا الأمر بشكل كبير من كمية البيانات التي يتم فحصها أثناء تنفيذ الاستعلام، مما يوفر <strong>عشرات إلى مئات المرات أسرع</strong> <code translate="no">LIKE</code> الاستعلامات في أعباء العمل العميل الحقيقي.</p>
-<p>تستعرض بقية هذه المقالة كيفية عمل فهرس نغرام في ميلفوس وتقييم أدائه في سيناريوهات العالم الحقيقي.</p>
-<h2 id="What-Is-the-Ngram-Index" class="common-anchor-header">ما هو فهرس نغرام؟<button data-href="#What-Is-the-Ngram-Index" class="anchor-icon" translate="no">
+<p>This creates a clear gap in hybrid retrieval systems: vector search handles semantic relevance efficiently, but exact keyword filtering often becomes the slowest step in the pipeline.</p>
+<p>Milvus natively supports hybrid vector and full-text search with metadata filtering. To address the limitations of keyword matching, Milvus introduces the <a href="https://milvus.io/docs/ngram.md"><strong>Ngram Index</strong></a>, which improves <code translate="no">LIKE</code> performance by splitting text into small substrings and indexing them for efficient lookup. This dramatically reduces the amount of data examined during query execution, delivering <strong>tens to hundreds of times faster</strong> <code translate="no">LIKE</code> queries in real agentic workloads.</p>
+<p>The rest of this post walks through how the Ngram Index works in Milvus and evaluates its performance in real-world scenarios.</p>
+<h2 id="What-Is-the-Ngram-Index" class="common-anchor-header">What Is the Ngram Index?<button data-href="#What-Is-the-Ngram-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,23 +52,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في قواعد البيانات، عادةً ما يتم التعبير عن تصفية النصوص باستخدام <strong>SQL،</strong> وهي لغة الاستعلام القياسية المستخدمة لاسترجاع البيانات وإدارتها. أحد أكثر مشغلات النصوص استخدامًا هو <code translate="no">LIKE</code> ، والذي يدعم مطابقة السلاسل المستندة إلى الأنماط.</p>
-<p>يمكن تجميع تعبيرات LIKE بشكل عام في أربعة أنواع أنماط شائعة، اعتمادًا على كيفية استخدام أحرف البدل:</p>
+    </button></h2><p>In databases, text filtering is commonly expressed using <strong>SQL</strong>, the standard query language used to retrieve and manage data. One of its most widely used text operators is <code translate="no">LIKE</code>, which supports pattern-based string matching.</p>
+<p>LIKE expressions can be broadly grouped into four common pattern types, depending on how wildcards are used:</p>
 <ul>
-<li><p><strong>مطابقة إنفكس</strong> (<code translate="no">name LIKE '%rod%'</code>): يطابق السجلات التي يظهر فيها قضيب السلسلة الفرعية في أي مكان في النص.</p></li>
-<li><p><strong>مطابقة البادئة</strong> (<code translate="no">name LIKE 'rod%'</code>): يطابق السجلات التي يبدأ نصها ب "قضيب".</p></li>
-<li><p><strong>مطابقة لاحقة</strong> (<code translate="no">name LIKE '%rod'</code>): يطابق السجلات التي ينتهي نصها ب قضيب.</p></li>
-<li><p><strong>مطابقة أحرف البدل</strong> (<code translate="no">name LIKE '%rod%aab%bc_de'</code>): يجمع بين شروط السلاسل الفرعية المتعددة (<code translate="no">%</code>) مع أحرف البدل ذات الحرف الواحد (<code translate="no">_</code>) في نمط واحد.</p></li>
+<li><p><strong>Infix match</strong> (<code translate="no">name LIKE '%rod%'</code>): Matches records where the substring rod appears anywhere in the text.</p></li>
+<li><p><strong>Prefix match</strong> (<code translate="no">name LIKE 'rod%'</code>): Matches records whose text starts with rod.</p></li>
+<li><p><strong>Suffix match</strong> (<code translate="no">name LIKE '%rod'</code>): Matches records whose text ends with rod.</p></li>
+<li><p><strong>Wildcard match</strong> (<code translate="no">name LIKE '%rod%aab%bc_de'</code>): Combines multiple substring conditions (<code translate="no">%</code>) with single-character wildcards (<code translate="no">_</code>) in a single pattern.</p></li>
 </ul>
-<p>على الرغم من اختلاف هذه الأنماط في المظهر والتعبير، إلا أن <strong>فهرس نغرام</strong> في ميلفوس يسرّعها جميعًا باستخدام نفس النهج الأساسي.</p>
-<p>قبل بناء الفهرس، يقسّم ميلفوس كل قيمة نصية إلى سلاسل فرعية قصيرة ومتداخلة ذات أطوال ثابتة، تُعرف باسم <em>n-grams</em>. على سبيل المثال، عندما تكون n = 3، تتحلل كلمة <strong>"Milvus"</strong> إلى 3 جرامات التالية: <strong>"Mil"، و</strong> <strong>"ilv"، و</strong> <strong>"lvu"،</strong> و <strong>"vus".</strong> ثم يتم تخزين كل n-gram في فهرس مقلوب يعيّن السلسلة الفرعية إلى مجموعة معرّفات المستندات التي تظهر فيها. في وقت الاستعلام، تُترجم شروط <code translate="no">LIKE</code> إلى مجموعات من عمليات البحث عن n-gram، مما يسمح لـ Milvus بتصفية معظم السجلات غير المطابقة بسرعة وتقييم النمط مقابل مجموعة مرشحة أصغر بكثير. وهذا ما يحول عمليات مسح السلاسل المكلفة إلى استعلامات فعالة قائمة على الفهرس.</p>
-<p>تتحكم معلمتان في كيفية إنشاء فهرس Ngram: <code translate="no">min_gram</code> و <code translate="no">max_gram</code>. ويحددان معًا نطاق أطوال السلاسل الفرعية التي يقوم ميلفوس بتوليدها وفهرستها.</p>
+<p>While these patterns differ in appearance and expressiveness, the <strong>Ngram Index</strong> in Milvus accelerates all of them using the same underlying approach.</p>
+<p>Before building the index, Milvus splits each text value into short, overlapping substrings of fixed lengths, known as <em>n-grams</em>. For example, when n = 3, the word <strong>“Milvus”</strong> is decomposed into the following 3-grams: <strong>“Mil”</strong>, <strong>“ilv”</strong>, <strong>“lvu”</strong>, and <strong>“vus”</strong>. Each n-gram is then stored in an inverted index that maps the substring to the set of document IDs in which it appears. At query time, <code translate="no">LIKE</code> conditions are translated into combinations of n-gram lookups, allowing Milvus to quickly filter out most non-matching records and evaluate the pattern against a much smaller candidate set. This is what turns expensive string scans into efficient index-based queries.</p>
+<p>Two parameters control how the Ngram Index is constructed: <code translate="no">min_gram</code> and <code translate="no">max_gram</code>. Together, they define the range of substring lengths that Milvus generates and indexes.</p>
 <ul>
-<li><p><strong><code translate="no">min_gram</code></strong>: أقصر طول سلسلة فرعية للفهرسة. في الممارسة العملية، يحدد هذا أيضًا الحد الأدنى لطول السلسلة الفرعية للاستعلام التي يمكن أن تستفيد من فهرس Ngram</p></li>
-<li><p><strong><code translate="no">max_gram</code></strong>: أطول طول سلسلة فرعية للفهرسة. في وقت الاستعلام، يُحدّد بالإضافة إلى ذلك الحد الأقصى لحجم النافذة المستخدمة عند تقسيم سلاسل الاستعلام الأطول إلى ن-غرامات.</p></li>
+<li><p><strong><code translate="no">min_gram</code></strong>: The shortest substring length to index. In practice, this also sets the minimum query substring length that can benefit from the Ngram Index</p></li>
+<li><p><strong><code translate="no">max_gram</code></strong>: The longest substring length to index. At query time, it additionally determines the maximum window size used when splitting longer query strings into n-grams.</p></li>
 </ul>
-<p>من خلال فهرسة جميع السلاسل الفرعية المتجاورة التي تقع أطوالها بين <code translate="no">min_gram</code> و <code translate="no">max_gram</code> ، يؤسس ميلفوس أساسًا متسقًا وفعالًا لتسريع جميع أنواع الأنماط المدعومة <code translate="no">LIKE</code>.</p>
-<h2 id="How-Does-the-Ngram-Index-Work" class="common-anchor-header">كيف يعمل فهرس نغرام؟<button data-href="#How-Does-the-Ngram-Index-Work" class="anchor-icon" translate="no">
+<p>By indexing all contiguous substrings whose lengths fall between <code translate="no">min_gram</code> and <code translate="no">max_gram</code>, Milvus establishes a consistent and efficient foundation for accelerating all supported <code translate="no">LIKE</code> pattern types.</p>
+<h2 id="How-Does-the-Ngram-Index-Work" class="common-anchor-header">How Does the Ngram Index Work?<button data-href="#How-Does-the-Ngram-Index-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,36 +83,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يقوم ميلفوس بتنفيذ فهرس نغرام في عملية من مرحلتين:</p>
+    </button></h2><p>Milvus implements the Ngram Index in a two-phase process:</p>
 <ul>
-<li><p><strong>بناء الفهرس:</strong> توليد أنماط نغرام لكل مستند وبناء فهرس مقلوب أثناء استيعاب البيانات.</p></li>
-<li><p><strong>تسريع الاستعلامات:</strong> استخدام الفهرس لتضييق نطاق البحث إلى مجموعة مرشحة صغيرة، ثم التحقق من التطابقات الدقيقة <code translate="no">LIKE</code> على تلك الملفات المرشحة.</p></li>
+<li><p><strong>Build the index:</strong> Generate n-grams for each document and build an inverted index during data ingestion.</p></li>
+<li><p><strong>Accelerate queries:</strong> Use the index to narrow the search to a small candidate set, then verify exact <code translate="no">LIKE</code> matches on those candidates.</p></li>
 </ul>
-<p>مثال ملموس يسهّل فهم هذه العملية.</p>
-<h3 id="Phase-1-Build-the-index" class="common-anchor-header">المرحلة 1: بناء الفهرس</h3><p><strong>حلل النص إلى ن-غرامات:</strong></p>
-<p>افترض أننا نقوم بفهرسة النص <strong>"Apple"</strong> بالإعدادات التالية:</p>
+<p>A concrete example makes this process easier to understand.</p>
+<h3 id="Phase-1-Build-the-index" class="common-anchor-header">Phase 1: Build the index</h3><p><strong>Decompose text into n-grams:</strong></p>
+<p>Assume we index the text <strong>“Apple”</strong> with the following settings:</p>
 <ul>
 <li><p><code translate="no">min_gram = 2</code></p></li>
 <li><p><code translate="no">max_gram = 3</code></p></li>
 </ul>
-<p>في ظل هذا الإعداد، يُنشئ ميلفوس جميع السلاسل الفرعية المتجاورة ذات الطول 2 و3:</p>
+<p>Under this setting, Milvus generates all contiguous substrings of length 2 and 3:</p>
 <ul>
-<li><p>2-غرامات <code translate="no">Ap</code> ، <code translate="no">pp</code> ، <code translate="no">pl</code>, <code translate="no">le</code></p></li>
-<li><p>3 - جرامات: <code translate="no">App</code> ، <code translate="no">ppl</code>, <code translate="no">ple</code></p></li>
+<li><p>2-grams: <code translate="no">Ap</code>, <code translate="no">pp</code>, <code translate="no">pl</code>, <code translate="no">le</code></p></li>
+<li><p>3-grams: <code translate="no">App</code>, <code translate="no">ppl</code>, <code translate="no">ple</code></p></li>
 </ul>
-<p><strong>إنشاء فهرس مقلوب:</strong></p>
-<p>ضع في اعتبارك الآن مجموعة بيانات صغيرة مكونة من خمسة سجلات:</p>
+<p><strong>Build an inverted index:</strong></p>
+<p>Now consider a small dataset of five records:</p>
 <ul>
-<li><p><strong>المستند 0</strong>: <code translate="no">Apple</code></p></li>
-<li><p><strong>المستند 1</strong>: <code translate="no">Pineapple</code></p></li>
-<li><p><strong>المستند 2</strong>: <code translate="no">Maple</code></p></li>
-<li><p><strong>المستند 3</strong>: <code translate="no">Apply</code></p></li>
-<li><p><strong>المستند 4: المستند 4</strong>: <code translate="no">Snapple</code></p></li>
+<li><p><strong>Document 0</strong>: <code translate="no">Apple</code></p></li>
+<li><p><strong>Document 1</strong>: <code translate="no">Pineapple</code></p></li>
+<li><p><strong>Document 2</strong>: <code translate="no">Maple</code></p></li>
+<li><p><strong>Document 3</strong>: <code translate="no">Apply</code></p></li>
+<li><p><strong>Document 4</strong>: <code translate="no">Snapple</code></p></li>
 </ul>
-<p>أثناء الاستيعاب، يُنشئ ميلفوس n-غرامات لكل سجل ويدرجها في فهرس مقلوب. في هذا الفهرس:</p>
+<p>During ingestion, Milvus generates n-grams for each record and inserts them into an inverted index. In this index:</p>
 <ul>
-<li><p><strong>المفاتيح</strong> هي ن-غرامات (سلاسل فرعية)</p></li>
-<li><p><strong>القيم</strong> هي قوائم بمعرّفات المستندات التي يظهر فيها ن-غرام</p></li>
+<li><p><strong>Keys</strong> are n-grams (substrings)</p></li>
+<li><p><strong>Values</strong> are lists of document IDs where the n-gram appears</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-string">&quot;Ap&quot;</span>  -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">3</span>]
 <span class="hljs-string">&quot;App&quot;</span> -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">3</span>]
@@ -141,44 +141,44 @@ origin: >-
 <span class="hljs-string">&quot;pp&quot;</span>  -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
 <span class="hljs-string">&quot;ppl&quot;</span> -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>الآن تم بناء الفهرس بالكامل.</p>
-<h3 id="Phase-2-Accelerate-queries" class="common-anchor-header">المرحلة 2: تسريع الاستعلامات</h3><p>عندما يتم تنفيذ فلتر <code translate="no">LIKE</code> ، يستخدم ميلفوس فهرس نغرام لتسريع تقييم الاستعلام من خلال الخطوات التالية:</p>
-<p><strong>1. استخراج مصطلح الاستعلام:</strong> يتم استخراج السلاسل الفرعية المتجاورة بدون أحرف البدل من التعبير <code translate="no">LIKE</code> (على سبيل المثال، <code translate="no">'%apple%'</code> يصبح <code translate="no">apple</code>).</p>
-<p><strong>2. تحليل مصطلح الاستعلام:</strong> يتحلل مصطلح الاستعلام إلى n-غرامات بناءً على طوله (<code translate="no">L</code>) والمكون <code translate="no">min_gram</code> و <code translate="no">max_gram</code>.</p>
-<p><strong>3. البحث عن كل غرام وتقاطعه:</strong> يبحث Milvus عن ن-غرامات الاستعلام في الفهرس المقلوب ويتقاطع مع قوائم معرّفات المستندات الخاصة بها لإنتاج مجموعة صغيرة مرشحة.</p>
-<p><strong>4. التحقق من النتائج وإرجاعها:</strong> يتم تطبيق شرط <code translate="no">LIKE</code> الأصلي فقط على هذه المجموعة المرشحة لتحديد النتيجة النهائية.</p>
-<p>من الناحية العملية، تعتمد الطريقة التي يتم بها تقسيم الاستعلام إلى ن-غرامات على شكل النمط نفسه. لنرى كيف يعمل هذا، سنركّز على حالتين شائعتين: مطابقات اللواحق ومطابقات أحرف البدل. تتصرف مطابقات البادئة واللاحقة بنفس الطريقة التي تتصرف بها مطابقات اللواحق، لذا لن نتناولها بشكل منفصل.</p>
-<p><strong>مطابقة اللواحق</strong></p>
-<p>بالنسبة لمطابقة اللواحق، يعتمد التنفيذ على طول السلسلة الفرعية الحرفية (<code translate="no">L</code>) بالنسبة إلى <code translate="no">min_gram</code> و <code translate="no">max_gram</code>.</p>
-<p><strong>1. <code translate="no">min_gram ≤ L ≤ max_gram</code></strong> (على سبيل المثال، <code translate="no">strField LIKE '%ppl%'</code>)</p>
-<p>تقع السلسلة الفرعية الحرفية <code translate="no">ppl</code> بالكامل ضمن نطاق n-gram المكوّن. يبحث Milvus مباشرةً عن n-gram <code translate="no">&quot;ppl&quot;</code> في الفهرس المقلوب، مما ينتج عنه معرفات المستندات المرشحة <code translate="no">[0, 1, 3, 4]</code>.</p>
-<p>ولأن الحرف الحرفي نفسه هو عبارة عن n-غرام مفهرس، فإن جميع المرشحين يستوفون بالفعل شرط اللواحق. لا تستبعد خطوة التحقق النهائية أي سجلات، وتبقى النتيجة <code translate="no">[0, 1, 3, 4]</code>.</p>
-<p><strong>2. <code translate="no">L &gt; max_gram</code></strong> (على سبيل المثال، <code translate="no">strField LIKE '%pple%'</code>)</p>
-<p>تكون السلسلة الفرعية الحرفية <code translate="no">pple</code> أطول من <code translate="no">max_gram</code> ، لذلك يتم تحليلها إلى ن-غرامات متداخلة باستخدام حجم نافذة <code translate="no">max_gram</code>. مع <code translate="no">max_gram = 3</code> ، ينتج عن ذلك ن-غرامات <code translate="no">&quot;ppl&quot;</code> و <code translate="no">&quot;ple&quot;</code>.</p>
-<p>يبحث ميلفوس عن كل n-غرام في الفهرس المقلوب:</p>
+<p>Now the index is fully built.</p>
+<h3 id="Phase-2-Accelerate-queries" class="common-anchor-header">Phase 2: Accelerate queries</h3><p>When a <code translate="no">LIKE</code> filter is executed, Milvus uses the Ngram Index to speed up query evaluation through the following steps:</p>
+<p><strong>1. Extract the query term:</strong> Contiguous substrings without wildcards are extracted from the <code translate="no">LIKE</code> expression (for example, <code translate="no">'%apple%'</code> becomes <code translate="no">apple</code>).</p>
+<p><strong>2. Decompose the query term:</strong> The query term is decomposed into n-grams based on its length (<code translate="no">L</code>) and the configured <code translate="no">min_gram</code> and <code translate="no">max_gram</code>.</p>
+<p><strong>3. Look for each gram &amp; intersect:</strong> Milvus looks up query n-grams in the inverted index and intersects their document ID lists to produce a small candidate set.</p>
+<p><strong>4. Verify and return results:</strong> The original <code translate="no">LIKE</code> condition is applied only to this candidate set to determine the final result.</p>
+<p>In practice, the way a query is split into n-grams depends on the shape of the pattern itself. To see how this works, we’ll focus on two common cases: infix matches and wildcard matches. Prefix and suffix matches behave the same as infix matches, so we won’t cover them separately.</p>
+<p><strong>Infix match</strong></p>
+<p>For an infix match, execution depends on the length of the literal substring (<code translate="no">L</code>) relative to <code translate="no">min_gram</code> and <code translate="no">max_gram</code>.</p>
+<p><strong>1. <code translate="no">min_gram ≤ L ≤ max_gram</code></strong> (e.g., <code translate="no">strField LIKE '%ppl%'</code>)</p>
+<p>The literal substring <code translate="no">ppl</code> falls entirely within the configured n-gram range. Milvus directly looks up the n-gram <code translate="no">&quot;ppl&quot;</code> in the inverted index, producing the candidate document IDs <code translate="no">[0, 1, 3, 4]</code>.</p>
+<p>Because the literal itself is an indexed n-gram, all candidates already satisfy the infix condition. The final verification step does not eliminate any records, and the result remains <code translate="no">[0, 1, 3, 4]</code>.</p>
+<p><strong>2. <code translate="no">L &gt; max_gram</code></strong> (e.g., <code translate="no">strField LIKE '%pple%'</code>)</p>
+<p>The literal substring <code translate="no">pple</code> is longer than <code translate="no">max_gram</code>, so it is decomposed into overlapping n-grams using a window size of <code translate="no">max_gram</code>. With <code translate="no">max_gram = 3</code>, this produces the n-grams <code translate="no">&quot;ppl&quot;</code> and <code translate="no">&quot;ple&quot;</code>.</p>
+<p>Milvus looks up each n-gram in the inverted index:</p>
 <ul>
 <li><p><code translate="no">&quot;ppl&quot;</code> → <code translate="no">[0, 1, 3, 4]</code></p></li>
 <li><p><code translate="no">&quot;ple&quot;</code> → <code translate="no">[0, 1, 2, 4]</code></p></li>
 </ul>
-<p>ينتج عن تقاطع هذه القوائم المجموعة المرشحة <code translate="no">[0, 1, 4]</code>. ثم يتم تطبيق مرشح <code translate="no">LIKE '%pple%'</code> الأصلي على هؤلاء المرشحين. يستوفي الثلاثة جميعًا الشرط، وبالتالي تظل النتيجة النهائية <code translate="no">[0, 1, 4]</code>.</p>
-<p><strong>3. <code translate="no">L &lt; min_gram</code></strong> (على سبيل المثال، <code translate="no">strField LIKE '%pp%'</code>)</p>
-<p>تكون السلسلة الفرعية الحرفية أقصر من <code translate="no">min_gram</code> وبالتالي لا يمكن تحليلها إلى نغرامات ن مفهرسة. في هذه الحالة، لا يمكن استخدام فهرس Ngram، ويعود Milvus إلى مسار التنفيذ الافتراضي، حيث يقوم بتقييم الشرط <code translate="no">LIKE</code> من خلال مسح كامل مع مطابقة النمط.</p>
-<p><strong>مطابقة أحرف البدل</strong> (على سبيل المثال، <code translate="no">strField LIKE '%Ap%pple%'</code>)</p>
-<p>يحتوي هذا النمط على عدة أحرف بدل، لذا يقوم ميلفوس أولاً بتقسيمه إلى حروف متجاورة: <code translate="no">&quot;Ap&quot;</code> و <code translate="no">&quot;pple&quot;</code>.</p>
-<p>ثم يقوم ميلفوس بمعالجة كل حرف بشكل مستقل:</p>
+<p>Intersecting these lists yields the candidate set <code translate="no">[0, 1, 4]</code>. The original <code translate="no">LIKE '%pple%'</code> filter is then applied to these candidates. All three satisfy the condition, so the final result remains <code translate="no">[0, 1, 4]</code>.</p>
+<p><strong>3. <code translate="no">L &lt; min_gram</code></strong> (e.g., <code translate="no">strField LIKE '%pp%'</code>)</p>
+<p>The literal substring is shorter than <code translate="no">min_gram</code> and therefore cannot be decomposed into indexed n-grams. In this case, the Ngram Index cannot be used, and Milvus falls back to the default execution path, evaluating the <code translate="no">LIKE</code> condition through a full scan with pattern matching.</p>
+<p><strong>Wildcard match</strong> (e.g., <code translate="no">strField LIKE '%Ap%pple%'</code>)</p>
+<p>This pattern contains multiple wildcards, so Milvus first splits it into contiguous literals: <code translate="no">&quot;Ap&quot;</code> and <code translate="no">&quot;pple&quot;</code>.</p>
+<p>Milvus then processes each literal independently:</p>
 <ul>
-<li><p><code translate="no">&quot;Ap&quot;</code> طوله 2 ويقع ضمن نطاق n-غرام.</p></li>
-<li><p><code translate="no">&quot;pple&quot;</code> أطول من <code translate="no">max_gram</code> ويتحلل إلى <code translate="no">&quot;ppl&quot;</code> و <code translate="no">&quot;ple&quot;</code>.</p></li>
+<li><p><code translate="no">&quot;Ap&quot;</code> has length 2 and falls within the n-gram range.</p></li>
+<li><p><code translate="no">&quot;pple&quot;</code> is longer than <code translate="no">max_gram</code> and is decomposed into <code translate="no">&quot;ppl&quot;</code> and <code translate="no">&quot;ple&quot;</code>.</p></li>
 </ul>
-<p>وهذا يقلل الاستعلام إلى ن-غرامات التالية:</p>
+<p>This reduces the query to the following n-grams:</p>
 <ul>
 <li><p><code translate="no">&quot;Ap&quot;</code> → <code translate="no">[0, 3]</code></p></li>
 <li><p><code translate="no">&quot;ppl&quot;</code> → <code translate="no">[0, 1, 3, 4]</code></p></li>
 <li><p><code translate="no">&quot;ple&quot;</code> → <code translate="no">[0, 1, 2, 4]</code></p></li>
 </ul>
-<p>ينتج عن تقاطع هذه القوائم مرشح واحد: <code translate="no">[0]</code>.</p>
-<p>أخيرًا، يتم تطبيق مرشح <code translate="no">LIKE '%Ap%pple%'</code> الأصلي على المستند 0 (<code translate="no">&quot;Apple&quot;</code>). نظرًا لأنه لا يفي بالنمط الكامل، تكون مجموعة النتائج النهائية فارغة.</p>
-<h2 id="Limitations-and-Trade-offs-of-the-Ngram-Index" class="common-anchor-header">القيود والمقايضات في فهرس نغرام<button data-href="#Limitations-and-Trade-offs-of-the-Ngram-Index" class="anchor-icon" translate="no">
+<p>Intersecting these lists produces a single candidate: <code translate="no">[0]</code>.</p>
+<p>Finally, the original <code translate="no">LIKE '%Ap%pple%'</code> filter is applied to document 0 (<code translate="no">&quot;Apple&quot;</code>). Since it does not satisfy the full pattern, the final result set is empty.</p>
+<h2 id="Limitations-and-Trade-offs-of-the-Ngram-Index" class="common-anchor-header">Limitations and Trade-offs of the Ngram Index<button data-href="#Limitations-and-Trade-offs-of-the-Ngram-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -193,16 +193,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في حين أن فهرس Ngram يمكن أن يحسّن أداء الاستعلام <code translate="no">LIKE</code> بشكل كبير، إلا أنه يقدم مقايضات يجب أخذها بعين الاعتبار في عمليات النشر في العالم الحقيقي.</p>
+    </button></h2><p>While the Ngram Index can significantly improve <code translate="no">LIKE</code> query performance, it introduces trade-offs that should be considered in real-world deployments.</p>
 <ul>
-<li><strong>زيادة حجم الفهرس</strong></li>
+<li><strong>Increased index size</strong></li>
 </ul>
-<p>التكلفة الأساسية لفهرس Ngram هي زيادة حجم التخزين. نظرًا لأن الفهرس يخزن جميع السلاسل الفرعية المتجاورة التي تقع أطوالها بين <code translate="no">min_gram</code> و <code translate="no">max_gram</code> ، فإن عدد ن-غرامات التي تم إنشاؤها ينمو بسرعة مع توسع هذا النطاق. فكل طول ن-غرام إضافي يضيف فعليًا مجموعة كاملة أخرى من السلاسل الفرعية المتداخلة لكل قيمة نصية، مما يزيد من عدد مفاتيح الفهرس وقوائم ترحيلها. عمليًا، يمكن أن يؤدي توسيع النطاق بحرف واحد فقط إلى مضاعفة حجم الفهرس تقريبًا مقارنةً بالفهرس المقلوب القياسي.</p>
+<p>The primary cost of the Ngram Index is higher storage overhead. Because the index stores all contiguous substrings whose lengths fall between <code translate="no">min_gram</code> and <code translate="no">max_gram</code>, the number of generated n-grams grows quickly as this range expands. Each additional n-gram length effectively adds another full set of overlapping substrings for every text value, increasing both the number of index keys and their posting lists. In practice, expanding the range by just one character can roughly double the index size compared to a standard inverted index.</p>
 <ul>
-<li><strong>غير فعّال لجميع أعباء العمل</strong></li>
+<li><strong>Not effective for all workloads</strong></li>
 </ul>
-<p>لا يعمل فهرس Ngram على تسريع كل أحمال العمل. فإذا كانت أنماط الاستعلام غير منتظمة إلى حدٍّ كبير، أو كانت تحتوي على حروف قصيرة جدًا، أو فشلت في تقليل مجموعة البيانات إلى مجموعة مرشحة صغيرة في مرحلة التصفية، فقد تكون فائدة الأداء محدودة. في مثل هذه الحالات، لا يزال بإمكان تنفيذ الاستعلام أن يقترب من تكلفة المسح الكامل، على الرغم من وجود الفهرس.</p>
-<h2 id="Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="common-anchor-header">تقييم أداء فهرس Ngram على استعلامات LIKE<button data-href="#Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="anchor-icon" translate="no">
+<p>The Ngram Index does not accelerate every workload. If query patterns are highly irregular, contain very short literals, or fail to reduce the dataset to a small candidate set in the filtering phase, the performance benefit may be limited. In such cases, query execution can still approach the cost of a full scan, even though the index is present.</p>
+<h2 id="Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="common-anchor-header">Evaluating Ngram Index Performance on LIKE Queries<button data-href="#Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -217,76 +217,76 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>الهدف من هذا المعيار هو تقييم مدى فعالية فهرس Ngram في تسريع استعلامات <code translate="no">LIKE</code> عمليًا.</p>
-<h3 id="Test-Methodology" class="common-anchor-header">منهجية الاختبار</h3><p>لوضع أدائه في سياقه، نقوم بمقارنته مع وضعين أساسيين للتنفيذ:</p>
+    </button></h2><p>The goal of this benchmark is to evaluate how effectively the Ngram Index accelerates <code translate="no">LIKE</code> queries in practice.</p>
+<h3 id="Test-Methodology" class="common-anchor-header">Test Methodology</h3><p>To put its performance in context, we compare it against two baseline execution modes:</p>
 <ul>
-<li><p><strong>الرئيسي</strong>: التنفيذ بالقوة الغاشمة دون أي فهرس.</p></li>
-<li><p><strong>مقلوب رئيسي</strong>: التنفيذ باستخدام فهرس مقلوب تقليدي.</p></li>
+<li><p><strong>Master</strong>: Brute-force execution without any index.</p></li>
+<li><p><strong>Master-inverted</strong>: Execution using a conventional inverted index.</p></li>
 </ul>
-<p>قمنا بتصميم سيناريوهين للاختبار لتغطية خصائص البيانات المختلفة:</p>
+<p>We designed two test scenarios to cover different data characteristics:</p>
 <ul>
-<li><p><strong>مجموعة بيانات Wiki النصية</strong>: 100,000 صف، مع اقتطاع كل حقل نصي إلى 1 كيلوبايت.</p></li>
-<li><p><strong>مجموعة بيانات كلمة واحدة</strong>: 1,000,000 صف، حيث يحتوي كل صف على كلمة واحدة.</p></li>
+<li><p><strong>Wiki text dataset</strong>: 100,000 rows, with each text field truncated to 1 KB.</p></li>
+<li><p><strong>Single-word dataset</strong>: 1,000,000 rows, where each row contains a single word.</p></li>
 </ul>
-<p>في كلا السيناريوهين، يتم تطبيق الإعدادات التالية باستمرار:</p>
+<p>Across both scenarios, the following settings are applied consistently:</p>
 <ul>
-<li><p>تستخدم الاستعلامات <strong>نمط المطابقة اللواحق</strong> (<code translate="no">%xxx%</code>)</p></li>
-<li><p>يتم تكوين فهرس Ngram باستخدام <code translate="no">min_gram = 2</code> و <code translate="no">max_gram = 4</code></p></li>
-<li><p>لعزل تكلفة تنفيذ الاستعلام وتجنب النفقات الزائدة لتجسيد النتائج، تقوم جميع الاستعلامات بإرجاع <code translate="no">count(*)</code> بدلاً من مجموعات النتائج الكاملة.</p></li>
+<li><p>Queries use the <strong>infix match pattern</strong> (<code translate="no">%xxx%</code>)</p></li>
+<li><p>The Ngram Index is configured with <code translate="no">min_gram = 2</code> and <code translate="no">max_gram = 4</code></p></li>
+<li><p>To isolate query execution cost and avoid result materialization overhead, all queries return <code translate="no">count(*)</code> instead of full result sets.</p></li>
 </ul>
-<h3 id="Results" class="common-anchor-header">النتائج</h3><p><strong>اختبار للويكي، كل سطر عبارة عن نص ويكي مع اقتطاع طول المحتوى بمقدار 1000، 100 ألف صف</strong></p>
+<h3 id="Results" class="common-anchor-header">Results</h3><p><strong>Test for wiki, each line is a wiki text with content length truncated by 1000, 100K rows</strong></p>
 <table>
 <thead>
-<tr><th></th><th>حرفي</th><th>الوقت (مللي ثانية)</th><th>السرعة</th><th>العد</th></tr>
+<tr><th></th><th>Literal</th><th>Time(ms)</th><th>Speedup</th><th>Count</th></tr>
 </thead>
 <tbody>
-<tr><td>ماجستير</td><td>الملعب</td><td>207.8</td><td></td><td>335</td></tr>
-<tr><td>ملعب رئيسي مقلوب</td><td></td><td>2095</td><td></td><td>335</td></tr>
-<tr><td>نغرام</td><td></td><td>1.09</td><td>190 / 1922</td><td>335</td></tr>
+<tr><td>Master</td><td>stadium</td><td>207.8</td><td></td><td>335</td></tr>
+<tr><td>Master-inverted</td><td></td><td>2095</td><td></td><td>335</td></tr>
+<tr><td>Ngram</td><td></td><td>1.09</td><td>190 / 1922</td><td>335</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ماجستير</td><td>مدرسة ثانوية</td><td>204.8</td><td></td><td>340</td></tr>
-<tr><td>ماجستير مقلوب</td><td></td><td>2000</td><td></td><td>340</td></tr>
-<tr><td>نغرام</td><td></td><td>1.26</td><td>162.5 / 1587</td><td>340</td></tr>
+<tr><td>Master</td><td>secondary school</td><td>204.8</td><td></td><td>340</td></tr>
+<tr><td>Master-inverted</td><td></td><td>2000</td><td></td><td>340</td></tr>
+<tr><td>Ngram</td><td></td><td>1.26</td><td>162.5 / 1587</td><td>340</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ماستر</td><td>هي مدرسة ثانوية مختلطة ذات نظام تعليمي مختلط، مدرسة ثانوية راعية</td><td>223.9</td><td></td><td>1</td></tr>
-<tr><td>ماستر مقلوب</td><td></td><td>2100</td><td></td><td>1</td></tr>
-<tr><td>نغرام</td><td></td><td>1.69</td><td>132.5 / 1242.6</td><td>1</td></tr>
+<tr><td>Master</td><td>is a coeducational, secondary school sponsore</td><td>223.9</td><td></td><td>1</td></tr>
+<tr><td>Master-inverted</td><td></td><td>2100</td><td></td><td>1</td></tr>
+<tr><td>Ngram</td><td></td><td>1.69</td><td>132.5 / 1242.6</td><td>1</td></tr>
 </tbody>
 </table>
-<p><strong>اختبار للكلمات المفردة، 1 مليون صف</strong></p>
+<p><strong>Test for single words, 1M rows</strong></p>
 <table>
 <thead>
-<tr><th></th><th>حرفي</th><th>الوقت (مللي ثانية)</th><th>تسريع</th><th>العد</th></tr>
+<tr><th></th><th>Literal</th><th>Time(ms)</th><th>Speedup</th><th>Count</th></tr>
 </thead>
 <tbody>
-<tr><td>الرئيسي</td><td>نا</td><td>128.6</td><td></td><td>40430</td></tr>
-<tr><td>سيد مقلوب</td><td></td><td>66.5</td><td></td><td>40430</td></tr>
-<tr><td>نغرام</td><td></td><td>1.38</td><td>93.2 / 48.2</td><td>40430</td></tr>
+<tr><td>Master</td><td>na</td><td>128.6</td><td></td><td>40430</td></tr>
+<tr><td>Master-inverted</td><td></td><td>66.5</td><td></td><td>40430</td></tr>
+<tr><td>Ngram</td><td></td><td>1.38</td><td>93.2 / 48.2</td><td>40430</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ماجستير</td><td>نات</td><td>122</td><td></td><td>5200</td></tr>
-<tr><td>سيد مقلوب</td><td></td><td>65.1</td><td></td><td>5200</td></tr>
-<tr><td>نغرام</td><td></td><td>1.27</td><td>96 / 51.3</td><td>5200</td></tr>
+<tr><td>Master</td><td>nat</td><td>122</td><td></td><td>5200</td></tr>
+<tr><td>Master-inverted</td><td></td><td>65.1</td><td></td><td>5200</td></tr>
+<tr><td>Ngram</td><td></td><td>1.27</td><td>96 / 51.3</td><td>5200</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ماجستير</td><td>ناتي</td><td>118.8</td><td></td><td>1630</td></tr>
-<tr><td>سيد مقلوب</td><td></td><td>66.9</td><td></td><td>1630</td></tr>
-<tr><td>نغرام</td><td></td><td>1.21</td><td>98.2 / 55.3</td><td>1630</td></tr>
+<tr><td>Master</td><td>nati</td><td>118.8</td><td></td><td>1630</td></tr>
+<tr><td>Master-inverted</td><td></td><td>66.9</td><td></td><td>1630</td></tr>
+<tr><td>Ngram</td><td></td><td>1.21</td><td>98.2 / 55.3</td><td>1630</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ماجستير</td><td>ناتو</td><td>118.4</td><td></td><td>1100</td></tr>
-<tr><td>سيد مقلوب</td><td></td><td>65.1</td><td></td><td>1100</td></tr>
-<tr><td>نغرام</td><td></td><td>1.33</td><td>89 / 48.9</td><td>1100</td></tr>
+<tr><td>Master</td><td>natio</td><td>118.4</td><td></td><td>1100</td></tr>
+<tr><td>Master-inverted</td><td></td><td>65.1</td><td></td><td>1100</td></tr>
+<tr><td>Ngram</td><td></td><td>1.33</td><td>89 / 48.9</td><td>1100</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>ماجستير</td><td>الأمة</td><td>118</td><td></td><td>1100</td></tr>
-<tr><td>سيد مقلوب</td><td></td><td>63.3</td><td></td><td>1100</td></tr>
-<tr><td>نغرام</td><td></td><td>1.4</td><td>84.3 / 45.2</td><td>1100</td></tr>
+<tr><td>Master</td><td>nation</td><td>118</td><td></td><td>1100</td></tr>
+<tr><td>Master-inverted</td><td></td><td>63.3</td><td></td><td>1100</td></tr>
+<tr><td>Ngram</td><td></td><td>1.4</td><td>84.3 / 45.2</td><td>1100</td></tr>
 </tbody>
 </table>
-<p><strong>ملاحظة:</strong> تستند هذه النتائج إلى معايير أجريت في مايو/أيار. منذ ذلك الحين، خضع الفرع الرئيسي إلى تحسينات إضافية على الأداء، لذا من المتوقع أن تكون فجوة الأداء الملحوظة هنا أصغر في الإصدارات الحالية.</p>
-<p>تُبرز النتائج المعيارية نمطًا واضحًا: يُسرّع فهرس Ngram استعلامات LIKE بشكل كبير في جميع الحالات، وتعتمد سرعة أداء الاستعلامات بشكل كبير على بنية وطول البيانات النصية الأساسية.</p>
+<p><strong>Note:</strong> These results are based on benchmarks conducted in May. Since then, the Master branch has undergone additional performance optimizations, so the performance gap observed here is expected to be smaller in current versions.</p>
+<p>The benchmark results highlight a clear pattern: the Ngram Index significantly accelerates LIKE queries in all cases, and how much faster the queries run depends strongly on the structure and length of the underlying text data.</p>
 <ul>
-<li><p>بالنسبة <strong>للحقول النصية الطويلة،</strong> مثل المستندات على غرار ويكي التي تم اقتطاعها إلى 1,000 بايت، فإن مكاسب الأداء تكون واضحة بشكل خاص. فمقارنةً بالتنفيذ بالقوة الغاشمة مع عدم وجود فهرس، يحقق فهرس Ngram تسريعًا يتراوح <strong>بين 100-200 مرة</strong> تقريبًا. وعند مقارنته بالفهرس المقلوب التقليدي، يكون التحسن أكثر دراماتيكيةً، حيث يصل إلى <strong>1,200-1,900×</strong>. ويرجع ذلك إلى أن الاستعلامات المماثلة على النصوص الطويلة مكلفة بشكل خاص بالنسبة لمقاربات الفهرسة التقليدية، في حين أن عمليات البحث عن نغرام يمكن أن تضيّق مساحة البحث بسرعة إلى مجموعة صغيرة جدًا من المرشحين.</p></li>
-<li><p>في مجموعات البيانات التي تتألف من <strong>إدخالات من كلمة</strong> واحدة، تكون المكاسب أقل لكنها تظل كبيرة. في هذا السيناريو، يعمل فهرس نغرام أسرع بحوالي <strong>80-100 ضعف تقريب</strong> ًا من التنفيذ بالقوة الغاشمة وأسرع <strong>بـ45-55 ضعفًا</strong> من الفهرس المقلوب التقليدي. على الرغم من أن النص الأقصر أرخص بطبيعته في المسح الضوئي، إلا أن النهج القائم على n-gram لا يزال يتجنب المقارنات غير الضرورية ويقلل من تكلفة الاستعلام باستمرار.</p></li>
+<li><p>For <strong>long text fields</strong>, such as Wiki-style documents truncated to 1,000 bytes, the performance gains are especially pronounced. Compared to brute-force execution with no index, the Ngram Index achieves speedups of roughly <strong>100–200×</strong>. When compared against a conventional inverted index, the improvement is even more dramatic, reaching <strong>1,200–1,900×</strong>. This is because LIKE queries on long text are particularly expensive for traditional indexing approaches, while n-gram lookups can quickly narrow the search space to a very small set of candidates.</p></li>
+<li><p>On datasets consisting of <strong>single-word entries</strong>, the gains are smaller but still substantial. In this scenario, the Ngram Index runs approximately <strong>80–100×</strong> faster than brute-force execution and <strong>45–55×</strong> faster than a conventional inverted index. Although shorter text is inherently cheaper to scan, the n-gram–based approach still avoids unnecessary comparisons and consistently reduces query cost.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -301,15 +301,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يعمل فهرس Ngram على تسريع الاستعلامات <code translate="no">LIKE</code> من خلال تقسيم النص إلى نغرامات ذات طول ثابت وفهرستها باستخدام بنية مقلوبة. يحول هذا التصميم مطابقة السلاسل الفرعية المكلفة إلى عمليات بحث فعالة عن نغرام متبوعة بالحد الأدنى من التحقق. ونتيجة لذلك، يتم تجنب عمليات مسح النص الكامل بينما يتم الحفاظ على الدلالات الدقيقة لـ <code translate="no">LIKE</code>.</p>
-<p>من الناحية العملية، يكون هذا النهج فعالاً عبر مجموعة واسعة من أعباء العمل، مع نتائج قوية بشكل خاص للمطابقة الضبابية في الحقول النصية الطويلة. وبالتالي، فإن فهرس Ngram مناسب تمامًا لسيناريوهات الوقت الحقيقي مثل البحث عن الرموز، ووكلاء دعم العملاء، واسترجاع المستندات القانونية والطبية، وقواعد المعرفة المؤسسية، والبحث الأكاديمي، حيث تظل المطابقة الدقيقة للكلمات الرئيسية ضرورية.</p>
-<p>في الوقت نفسه، يستفيد فهرس Ngram من التكوين الدقيق. اختيار القيم المناسبة <code translate="no">min_gram</code> و <code translate="no">max_gram</code> أمر بالغ الأهمية لتحقيق التوازن بين حجم الفهرس وأداء الاستعلام. عندما يتم ضبطه ليعكس أنماط الاستعلام الحقيقية، يوفر فهرس نغرام حلاً عملياً وقابلاً للتطوير للاستعلامات عالية الأداء <code translate="no">LIKE</code> في أنظمة الإنتاج.</p>
-<p>لمزيد من المعلومات حول فهرس نغرام، راجع الوثائق أدناه:</p>
+    </button></h2><p>The Ngram Index accelerates <code translate="no">LIKE</code> queries by breaking text into fixed-length n-grams and indexing them using an inverted structure. This design turns expensive substring matching into efficient n-gram lookups followed by minimal verification. As a result, full-text scans are avoided while the exact semantics of <code translate="no">LIKE</code> are preserved.</p>
+<p>In practice, this approach is effective across a wide range of workloads, with especially strong results for fuzzy matching on long text fields. The Ngram Index is therefore well suited for real-time scenarios such as code search, customer support agents, legal and medical document retrieval, enterprise knowledge bases, and academic search, where precise keyword matching remains essential.</p>
+<p>At the same time, the Ngram Index benefits from careful configuration. Choosing appropriate <code translate="no">min_gram</code> and <code translate="no">max_gram</code> values is critical to balancing index size and query performance. When tuned to reflect real query patterns, the Ngram Index provides a practical, scalable solution for high-performance <code translate="no">LIKE</code> queries in production systems.</p>
+<p>For more information about the Ngram Index, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/ngram.md">وثائق فهرس نغرام | وثائق ميلفوس</a></li>
+<li><a href="https://milvus.io/docs/ngram.md">Ngram Index | Milvus Documentation</a></li>
 </ul>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة من أحدث إصدار من ميلفوس؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة ديسكورد</a> الخاصة بنا أو قم بتسجيل المشاكل على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل ميلفوس المكتبية</a>.</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">تعرف على المزيد حول ميزات Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -325,15 +325,15 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">تقديم ميلفوس 2.6: بحث متجه ميسور التكلفة على نطاق المليار</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">تقديم وظيفة التضمين: كيف يعمل ملفوس 2.6 على تبسيط عملية البحث في المتجهات والبحث الدلالي</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">تمزيق JSON في ميلفوس: تصفية JSON أسرع ب 88.9 مرة مع المرونة</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">فتح الاسترجاع الحقيقي على مستوى الكيان: مصفوفة جديدة من الهياكل وقدرات MAX_SIM في ميلفوس</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">الجمع بين التصفية الجغرافية المكانية والبحث في المتجهات مع الحقول الهندسية وRTREE في ملفوس 2.6</a></p></li>
-<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">تقديم AISAQ في Milvus: أصبح البحث عن المتجهات بمليارات النطاقات أرخص ب 3,200 مرة على الذاكرة</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">تحسين NVIDIA CAGRA في Milvus: نهج هجين بين وحدة معالجة الرسومات ووحدة المعالجة المركزية للفهرسة الأسرع والاستعلامات الأرخص</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH في Milvus: السلاح السري لمكافحة التكرارات في بيانات تدريب LLM </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">الارتقاء بضغط المتجهات إلى أقصى الحدود: كيف يخدم ميلفوس 3 أضعاف الاستعلامات باستخدام RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">تكذب المعايير - قواعد بيانات المتجهات تستحق اختبارًا حقيقيًا </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">استبدلنا كافكا/بولسار بنقار الخشب في ميلفوس </a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6</a></p></li>
+<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200× Cheaper on Memory</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster Indexing and Cheaper Queries</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus </a></p></li>
 </ul>

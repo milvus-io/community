@@ -1,17 +1,17 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-2.md
-title: الجيل الثاني من نظام البحث عن طريق الصور
+title: The second-generation search-by-image system
 author: Rife Wang
 date: 2020-08-11T22:20:27.855Z
 desc: >-
-  حالة مستخدم للاستفادة من Milvus لبناء نظام بحث عن تشابه الصور للأعمال التجارية
-  في العالم الحقيقي.
+  A user case of leveraging Milvus to build an image similarity search system
+  for real-world business.
 cover: assets.zilliz.com/header_c73631b1e7.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2'
 ---
-<custom-h1>رحلة تحسين البحث عن الصور على نطاق المليار صورة (2/2)</custom-h1><p>هذه المقالة هي الجزء الثاني من <strong>رحلة تحسين البحث عن الصور على نطاق المليار من UPYUN</strong>. إذا فاتك الجزء الأول، انقر <a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">هنا</a>.</p>
-<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">الجيل الثاني من نظام البحث عن طريق الصور<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
+<custom-h1>The Journey to Optimizing Billion-scale Image Search (2/2)</custom-h1><p>This article is the second part of <strong>The Journey to Optimizing Billion-scale Image Search by UPYUN</strong>. If you miss the first one, click <a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">here</a>.</p>
+<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">The second-generation search-by-image system<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -26,8 +26,8 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يختار الجيل الثاني من نظام البحث عن طريق الصور من الناحية التقنية حل CNN + Milvus. يعتمد النظام على متجهات الميزات ويوفر دعمًا تقنيًا أفضل.</p>
-<h2 id="Feature-extraction" class="common-anchor-header">استخراج الميزات<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
+    </button></h2><p>The second-generation search-by-image system technically chooses the CNN + Milvus solution. The system is based on feature vectors and provides better technical support.</p>
+<h2 id="Feature-extraction" class="common-anchor-header">Feature extraction<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,21 +42,23 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في مجال الرؤية الحاسوبية، أصبح استخدام الذكاء الاصطناعي هو السائد في مجال الرؤية الحاسوبية. وبالمثل، يستخدم استخراج الميزات في الجيل الثاني من نظام البحث عن طريق الصورة من الجيل الثاني الشبكة العصبية التلافيفية (CNN) كتقنية أساسية</p>
-<p>يصعب فهم مصطلح CNN. نركز هنا على الإجابة عن سؤالين:</p>
+    </button></h2><p>In the field of computer vision, the use of artificial intelligence has become the mainstream. Similarly, the feature extraction of the second-generation search-by-image system uses convolutional neural network (CNN) as the underlying technology</p>
+<p>The term CNN is difficult to understand. Here we focus on answering two questions:</p>
 <ul>
-<li>ما الذي يمكن أن تفعله شبكة CNN؟</li>
-<li>لماذا يمكنني استخدام شبكة CNN للبحث عن الصور؟</li>
+<li>What can CNN do?</li>
+<li>Why can I use CNN for an image search?</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
-   </span> <span class="img-wrapper"> <span>1-ميم.jpg</span> </span></p>
-<p>هناك العديد من المنافسات في مجال الذكاء الاصطناعي وتصنيف الصور من أهمها. تتمثل مهمة تصنيف الصور في تحديد ما إذا كان محتوى الصورة يتعلق بقطة أو كلب أو تفاحة أو كمثرى أو غيرها من أنواع الأشياء.</p>
-<p>ما الذي يمكن أن تفعله CNN؟ يمكنها استخراج الميزات والتعرف على الأشياء. فهو يستخرج الميزات من أبعاد متعددة ويقيس مدى قرب ميزات الصورة من ميزات القطط أو الكلاب. ويمكننا اختيار الأقرب منها كنتيجة للتعرف على الأشياء، وهو ما يشير إلى ما إذا كان محتوى صورة معينة يتعلق بقط أو كلب أو أي شيء آخر.</p>
-<p>ما هي العلاقة بين وظيفة تحديد الكائنات في شبكة CNN والبحث عن طريق الصورة؟ ما نريده ليس نتيجة التحديد النهائية، بل متجه السمات المستخرجة من أبعاد متعددة. يجب أن تكون متجهات السمات لصورتين متشابهتين في المحتوى متقاربة.</p>
-<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">ما هو نموذج CNN الذي يجب أن أستخدمه؟</h3><p>الإجابة هي VGG16. لماذا تختاره؟ أولاً، يتمتع VGG16 بقدرة جيدة على التعميم، أي أنه متعدد الاستخدامات. ثانيًا، تحتوي متجهات السمات المستخرجة بواسطة VGG16 على 512 بُعدًا. إذا كان هناك عدد قليل جدًا من الأبعاد، فقد تتأثر الدقة. إذا كان هناك الكثير من الأبعاد، فإن تكلفة تخزين وحساب متجهات السمات هذه مرتفعة نسبيًا.</p>
-<p>يعد استخدام شبكة CNN لاستخراج ميزات الصورة حلاً سائدًا. يمكننا استخدام VGG16 كنموذج و Keras + TensorFlow للتنفيذ التقني. هذا هو المثال الرسمي لـ Keras:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
+    <span>1-meme.jpg</span>
+  </span>
+</p>
+<p>There are many competitions in the AI field and image classification is one of the most important. The job of image classification is to determine whether the content of the picture is about a cat, a dog, an apple, a pear, or other types of objects.</p>
+<p>What can CNN do? It can extract features and recognize objects. It extracts features from multiple dimensions and measures how close the features of an image are to the features of cats or dogs. We can choose the closest ones as our identification result which indicates whether the content of a specific image is about a cat, a dog, or something else.</p>
+<p>What is the connection between the object identification function of CNN and search by image? What we want is not the final identification result, but the feature vector extracted from multiple dimensions. The feature vectors of two images with similar content must be close.</p>
+<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">Which CNN model should I use?</h3><p>The answer is VGG16. Why choose it? First, VGG16 has good generalization capability, that is, it is very versatile. Second, the feature vectors extracted by VGG16 have 512 dimensions. If there are very few dimensions, the accuracy may be affected. If there are too many dimensions, the cost of storing and calculating these feature vectors is relatively high.</p>
+<p>Using CNN to extract image features is a mainstream solution. We can use VGG16 as the model and Keras + TensorFlow for technical implementation. Here is the official example of Keras:</p>
 <pre><code translate="no">from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
@@ -69,16 +71,16 @@ x = np.expand_dims(x, axis=0)
 x = preprocess_input(x)
 features = model.predict(x)
 </code></pre>
-<p>الميزات المستخرجة هنا هي متجهات الميزات.</p>
-<h3 id="1-Normalization" class="common-anchor-header">1. التطبيع</h3><p>لتسهيل العمليات اللاحقة، غالبًا ما نقوم بتطبيع الميزة:</p>
-<p>ما يتم استخدامه لاحقًا هو أيضًا تطبيع <code translate="no">norm_feat</code>.</p>
-<h3 id="2-Image-description" class="common-anchor-header">2. وصف الصورة</h3><p>يتم تحميل الصورة باستخدام طريقة <code translate="no">image.load_img</code> من <code translate="no">keras.preprocessing</code>:</p>
+<p>The features extracted here are feature vectors.</p>
+<h3 id="1-Normalization" class="common-anchor-header">1. Normalization</h3><p>To facilitate subsequent operations, we often normalize feature:</p>
+<p>What is used subsequently is also the normalized <code translate="no">norm_feat</code>.</p>
+<h3 id="2-Image-description" class="common-anchor-header">2. Image description</h3><p>The image is loaded using the <code translate="no">image.load_img</code> method of <code translate="no">keras.preprocessing</code>:</p>
 <pre><code translate="no">from keras.preprocessing import image
 img_path = 'elephant.jpg'
 img = image.load_img(img_path, target_size=(224, 224))
 </code></pre>
-<p>في الواقع، إنها في الواقع طريقة TensorFlow التي تستدعيها Keras. لمزيد من التفاصيل، راجع وثائق TensorFlow. كائن الصورة النهائي هو في الواقع مثيل صورة PIL (PIL المستخدمة من قبل TensorFlow).</p>
-<h3 id="3-Bytes-conversion" class="common-anchor-header">3. تحويل البايتات</h3><p>من الناحية العملية، غالبًا ما يتم نقل محتوى الصورة عبر الشبكة. لذلك، بدلًا من تحميل الصور من المسار، نفضل تحويل بيانات البايت مباشرةً إلى كائنات صورة، أي صور PIL:</p>
+<p>In fact, it is the TensorFlow method called by Keras. For details, see the TensorFlow documentation. The final image object is actually a PIL Image instance (the PIL used by TensorFlow).</p>
+<h3 id="3-Bytes-conversion" class="common-anchor-header">3. Bytes conversion</h3><p>In practical terms, image content is often transmitted through the network. Therefore, instead of loading images from path, we prefer converting bytes data directly into image objects, that is, PIL Images:</p>
 <pre><code translate="no">import io
 from PIL import Image
 
@@ -88,14 +90,14 @@ img = img.convert('RGB')
 
 img = img.resize((224, 224), Image.NEAREST)
 </code></pre>
-<p>صورة img أعلاه هي نفس النتيجة التي تم الحصول عليها بواسطة طريقة image.load_img. هناك أمران يجب الانتباه إليهما:</p>
+<p>The above img is the same as the result obtained by the image.load_img method. There are two things to pay attention to:</p>
 <ul>
-<li>يجب أن تقوم بتحويل RGB.</li>
-<li>يجب تغيير الحجم (تغيير الحجم هو المعلمة الثانية من <code translate="no">load_img method</code>).</li>
+<li>You must do RGB conversion.</li>
+<li>You must resize (resize is the second parameter of the <code translate="no">load_img method</code>).</li>
 </ul>
-<h3 id="4-Black-border-processing" class="common-anchor-header">4. معالجة الحدود السوداء</h3><p>قد تحتوي الصور، مثل لقطات الشاشة، أحيانًا على عدد غير قليل من الحدود السوداء. هذه الحدود السوداء ليس لها قيمة عملية وتسبب الكثير من التداخل. لهذا السبب، تعد إزالة الحدود السوداء ممارسة شائعة أيضًا.</p>
-<p>الحد الأسود هو في الأساس صف أو عمود من وحدات البكسل حيث تكون جميع وحدات البكسل (0، 0، 0) (صورة RGB). لإزالة الحد الأسود هو العثور على هذه الصفوف أو الأعمدة وحذفها. هذه في الواقع عملية ضرب مصفوفة ثلاثية الأبعاد في NumPy.</p>
-<p>مثال على إزالة الحدود السوداء الأفقية:</p>
+<h3 id="4-Black-border-processing" class="common-anchor-header">4. Black border processing</h3><p>Images, such as screenshots, may occasionally have quite a few black borders. These black borders have no practical value and cause much interference. For this reason, removing black borders is also a common practice.</p>
+<p>A black border is essentially a row or column of pixels where all pixels are (0, 0, 0) (RGB image). To remove the black border is to find these rows or columns and delete them. This is actually a 3-D matrix multiplication in NumPy.</p>
+<p>An example of removing horizontal black borders:</p>
 <pre><code translate="no"># -*- coding: utf-8 -*-
 import numpy as np
 from keras.preprocessing import image
@@ -111,8 +113,8 @@ Returns:
    img = image.array_to_img(img_without_black)
 return img
 </code></pre>
-<p>هذا إلى حد كبير ما أريد أن أتحدث عنه باستخدام شبكة CNN لاستخراج ميزات الصورة وتنفيذ معالجة أخرى للصور. الآن دعونا نلقي نظرة على محركات البحث المتجهة.</p>
-<h2 id="Vector-search-engine" class="common-anchor-header">محرك البحث المتجه<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
+<p>This is pretty much what I want to talk about using CNN to extract image features and implement other image processing. Now let’s take a look at vector search engines.</p>
+<h2 id="Vector-search-engine" class="common-anchor-header">Vector search engine<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,16 +129,19 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تم حل مشكلة استخراج متجهات السمات من الصور. ثم المشاكل المتبقية هي:</p>
+    </button></h2><p>The problem of extracting feature vectors from images has been solved. Then the remaining problems are:</p>
 <ul>
-<li>كيفية تخزين متجهات السمات؟</li>
-<li>كيفية حساب تشابه متجهات السمات، أي كيفية البحث؟ يمكن لمحرك البحث المتجه مفتوح المصدر Milvus حل هاتين المشكلتين. حتى الآن، يعمل بشكل جيد في بيئة الإنتاج لدينا.</li>
+<li>How to store feature vectors?</li>
+<li>How to calculate the similarity of feature vectors, that is, how to search?
+The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
-   </span> <span class="img-wrapper"> <span>3-ميلفوس-شعار.png</span> </span></p>
-<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">ميلفوس، محرك البحث المتجه<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
+    <span>3-milvus-logo.png</span>
+  </span>
+</p>
+<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">Milvus, the vector search engine<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -151,70 +156,70 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>استخراج متجهات السمات من الصورة ليس كافياً على الإطلاق. نحن بحاجة أيضًا إلى إدارة متجهات الميزات هذه ديناميكيًا (إضافة وحذف وتحديث)، وحساب تشابه المتجهات، وإرجاع بيانات المتجهات في أقرب نطاق جار. يؤدي محرك البحث المتجه مفتوح المصدر Milvus هذه المهام بشكل جيد.</p>
-<p>ستصف بقية هذه المقالة الممارسات والنقاط المحددة التي يجب ملاحظتها.</p>
-<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1. متطلبات وحدة المعالجة المركزية</h3><p>لاستخدام Milvus، يجب أن تدعم وحدة المعالجة المركزية الخاصة بك مجموعة تعليمات avx2. بالنسبة لأنظمة لينكس، استخدم الأمر التالي للتحقق من مجموعات التعليمات التي تدعمها وحدة المعالجة المركزية لديك:</p>
+    </button></h2><p>Extracting feature vectors from an image is far from enough. We also need to dynamically manage these feature vectors (addition, deletion, and update), calculate the similarity of the vectors, and return the vector data in the nearest neighbor range. The open-source vector search engine Milvus performs these tasks quite well.</p>
+<p>The rest of this article will describe specific practices and points to be noted.</p>
+<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1. Requirements for CPU</h3><p>To use Milvus, your CPU must support the avx2 instruction set. For Linux systems, use the following command to check which instruction sets your CPU supports:</p>
 <p><code translate="no">cat /proc/cpuinfo | grep flags</code></p>
-<p>ثم تحصل على شيء مثل:</p>
+<p>Then you get something like:</p>
 <pre><code translate="no">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb         rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2     ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
 </code></pre>
-<p>ما يلي الأعلام هي مجموعات التعليمات التي تدعمها وحدة المعالجة المركزية لديك. بالطبع، هذه أكثر بكثير مما أحتاج إليه. أريد فقط معرفة ما إذا كانت مجموعة تعليمات معينة، مثل avx2، مدعومة. ما عليك سوى إضافة grep لتصفية ذلك:</p>
+<p>What follows flags is the instruction sets your CPU supports. Of course, these are much more than I need. I just want to see if a specific instruction set, such as avx2, is supported. Just add a grep to filter it:</p>
 <pre><code translate="no">cat /proc/cpuinfo | grep flags | grep avx2
 </code></pre>
-<p>إذا لم يتم إرجاع أي نتيجة، فهذا يعني أن مجموعة التعليمات المحددة هذه غير مدعومة. تحتاج إلى تغيير جهازك إذن.</p>
-<h3 id="2-Capacity-planning" class="common-anchor-header">2. تخطيط السعة</h3><p>تخطيط السعة هو أول اعتباراتنا عندما نصمم نظامًا. ما مقدار البيانات التي نحتاج إلى تخزينها؟ ما مقدار الذاكرة ومساحة القرص التي تتطلبها البيانات؟</p>
-<p>لنقم ببعض العمليات الحسابية السريعة. كل بعد من أبعاد المتجه هو float32. ويشغل النوع float32 4 بايت. إذاً متجه من 512 بُعداً يتطلب 2 كيلوبايت من التخزين. وعلى نفس المنوال</p>
+<p>If no result is returned, it means that this specific instruction set is not supported. You need to change your machine then.</p>
+<h3 id="2-Capacity-planning" class="common-anchor-header">2. Capacity planning</h3><p>Capacity planning is our first consideration when we design a system. How much data do we need to store? How much memory and disk space does the data require?</p>
+<p>Let’s do some quick maths. Each dimension of a vector is float32. A float32 type takes up 4 Bytes. Then a vector of 512 dimensions requires 2 KB of storage. By the same token:</p>
 <ul>
-<li>ألف متجه من 512 بُعداً يتطلب 2 ميغابايت من التخزين.</li>
-<li>مليون متجه من 512 بُعدًا يتطلب 2 جيجابايت من التخزين.</li>
-<li>10 ملايين متجه من 512 بُعدًا تتطلب 20 جيجابايت من التخزين.</li>
-<li>100 مليون متجه 512 بُعداً تتطلب 200 جيجابايت من التخزين.</li>
-<li>يتطلب مليار متجه من 512 متجه 512 بُعدًا 2 تيرابايت من التخزين.</li>
+<li>One thousand 512-dimensional vectors require 2 MB of storage.</li>
+<li>One million 512-dimensional vectors require 2 GB of storage.</li>
+<li>10 million 512-dimensional vectors require 20 GB of storage.</li>
+<li>100 million 512-dimensional vectors require 200 GB of storage.</li>
+<li>One billion 512-dimensional vectors require 2 TB of storage.</li>
 </ul>
-<p>إذا أردنا تخزين جميع البيانات في الذاكرة، فإن النظام يحتاج إلى سعة الذاكرة المقابلة على الأقل.</p>
-<p>يوصى باستخدام أداة حساب الحجم الرسمية: أداة تحجيم ميلفوس.</p>
-<p>في الواقع قد لا تكون ذاكرتنا بهذا الحجم. (لا يهم حقًا إذا لم يكن لديك ذاكرة كافية. يقوم ميلفوس تلقائيًا بمسح البيانات على القرص). بالإضافة إلى البيانات المتجهة الأصلية، نحتاج أيضًا إلى النظر في تخزين البيانات الأخرى مثل السجلات.</p>
-<h3 id="3-System-configuration" class="common-anchor-header">3. تكوين النظام</h3><p>لمزيد من المعلومات حول تكوين النظام، راجع وثائق ملفوس:</p>
+<p>If we want to store all the data in the memory, then the system needs at least the corresponding memory capacity.</p>
+<p>It is recommended that you use the official size calculation tool: Milvus sizing tool.</p>
+<p>Actually our memory may not be that big. (It doesn’t really matter if you don’t have enough memory. Milvus automatically flushes data onto the disk.) In addition to the original vector data, we also need to consider the storage of other data such as logs.</p>
+<h3 id="3-System-configuration" class="common-anchor-header">3. System configuration</h3><p>For more information about the system configuration, see the Milvus documentation:</p>
 <ul>
-<li>تكوين خادم ميلفوس: https://milvus.io/docs/v0.10.1/milvus_config.md</li>
+<li>Milvus server configuration: https://milvus.io/docs/v0.10.1/milvus_config.md</li>
 </ul>
-<h3 id="4-Database-design" class="common-anchor-header">4. تصميم قاعدة البيانات</h3><p><strong>التجميع والتقسيم</strong></p>
+<h3 id="4-Database-design" class="common-anchor-header">4. Database design</h3><p><strong>Collection &amp; Partition</strong></p>
 <ul>
-<li>يُعرف التجميع أيضًا باسم الجدول.</li>
-<li>يشير التقسيم إلى الأقسام الموجودة داخل مجموعة.</li>
+<li>Collection is also known as table.</li>
+<li>Partition refers to the partitions inside a collection.</li>
 </ul>
-<p>إن التنفيذ الأساسي للتقسيم هو في الواقع نفس تنفيذ المجموعة، باستثناء أن التقسيم يكون تحت مجموعة. ولكن مع الأقسام، يصبح تنظيم البيانات أكثر مرونة. يمكننا أيضًا الاستعلام عن قسم معين في مجموعة لتحقيق نتائج استعلام أفضل.</p>
-<p>كم عدد المجموعات والأقسام التي يمكننا الحصول عليها؟ المعلومات الأساسية عن المجموعة والقسم موجودة في البيانات الوصفية. يستخدم Milvus إما SQLite (التكامل الداخلي لـ Milvus) أو MySQL (يتطلب اتصالاً خارجيًا) لإدارة البيانات الوصفية الداخلية. إذا كنت تستخدم SQLite بشكل افتراضي لإدارة البيانات الوصفية (Metadata)، فسوف تعاني من فقدان شديد في الأداء عندما تكون أعداد المجموعات والأقسام كبيرة جداً. ولذلك، يجب ألا يتجاوز العدد الإجمالي للمجموعات والأقسام 50,000 (سيحدد Milvus 0.8.0 هذا العدد بـ 4,096). إذا كنت بحاجة إلى تعيين رقم أكبر، فمن المستحسن استخدام MySQL عبر اتصال خارجي.</p>
-<p>بنية البيانات التي تدعمها مجموعة وقسم ميلفوس بسيطة للغاية، أي <code translate="no">ID + vector</code>. بمعنى آخر، لا يوجد سوى عمودين في الجدول: المعرف وبيانات المتجه.</p>
-<p><strong>ملاحظة:</strong></p>
+<p>The underlying implementation of partition is actually the same with that of collection, except that a partition is under a collection. But with partitions, the organization of data becomes more flexible. We can also query a specific partition in a collection to achieve better query results.</p>
+<p>How many collections and partitions can we have? The basic information on collection and partition is in Metadata. Milvus uses either SQLite (Milvus internal integration) or MySQL (requires external connection) for internal metadata management. If you use SQLite by default to manage Metadata, you will suffer severe performance loss when the numbers of collections and partitions are too large. Therefore, the total number of collections and partitions should not exceed 50,000 (Milvus 0.8.0 will limit this number to 4,096). If you need to set a larger number, it is recommended that you use MySQL via an external connection.</p>
+<p>The data structure supported by Milvus’ collection and partition is very simple, that is, <code translate="no">ID + vector</code>. In other words, there are only two columns in the table: ID and vector data.</p>
+<p><strong>Note:</strong></p>
 <ul>
-<li>يجب أن يكون المعرف أعدادًا صحيحة.</li>
-<li>نحتاج إلى التأكد من أن المعرف فريد داخل مجموعة وليس داخل قسم.</li>
+<li>ID should be integers.</li>
+<li>We need to ensure that the ID is unique within a collection instead of within a partition.</li>
 </ul>
-<p><strong>التصفية الشرطية</strong></p>
-<p>عندما نستخدم قواعد البيانات التقليدية، يمكننا تحديد قيم الحقول كشروط تصفية. على الرغم من أن ميلفوس لا يقوم بالتصفية بنفس الطريقة بالضبط، يمكننا تنفيذ تصفية مشروطة بسيطة باستخدام المجموعات والأقسام. على سبيل المثال، لدينا كمية كبيرة من بيانات الصور والبيانات تخص مستخدمين محددين. ثم يمكننا تقسيم البيانات إلى أقسام حسب المستخدم. لذلك، فإن استخدام المستخدم كشرط تصفية هو في الواقع تحديد القسم.</p>
-<p><strong>البيانات المهيكلة وتعيين المتجهات</strong></p>
-<p>يدعم Milvus فقط بنية بيانات المعرف + المتجه. ولكن في سيناريوهات العمل، ما نحتاجه هو بيانات منظمة تحمل معنى العمل. بمعنى آخر، نحتاج إلى العثور على بيانات منظمة من خلال المتجهات. وفقًا لذلك، نحتاج إلى الحفاظ على علاقات التعيين بين البيانات المنظمة والمتجهات من خلال المعرف.</p>
+<p><strong>Conditional filtering</strong></p>
+<p>When we use traditional databases, we can specify field values as filtering conditions. Though Milvus does not filter exactly the same way, we can implement simple conditional filtering using collections and partitions. For example, we have a large amount of image data and the data belongs to specific users. Then we can divide the data into partitions by user. Therefore, using the user as the filter condition is actually specifying the partition.</p>
+<p><strong>Structured data and vector mapping</strong></p>
+<p>Milvus only supports the ID + vector data structure. But in business scenarios, what we need is structured data-bearing business meaning. In other words, we need to find structured data through vectors. Accordingly, we need to maintain the mapping relations between structured data and vectors through ID.</p>
 <pre><code translate="no">structured data ID &lt;--&gt; mapping table &lt;--&gt; Milvus ID
 </code></pre>
-<p><strong>تحديد الفهرس</strong></p>
-<p>يمكنك الرجوع إلى المقالات التالية:</p>
+<p><strong>Selecting index</strong></p>
+<p>You can refer to the following articles:</p>
 <ul>
-<li>أنواع الفهرس: https://www.milvus.io/docs/v0.10.1/index.md</li>
-<li>كيفية تحديد الفهرس: https://medium.com/@milvusio/كيفية اختيار فهرس في ميلفوس-4f3d1525259212</li>
+<li>Types of index: https://www.milvus.io/docs/v0.10.1/index.md</li>
+<li>How to select index: https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212</li>
 </ul>
-<h3 id="5-Processing-search-results" class="common-anchor-header">5. معالجة نتائج البحث</h3><p>نتائج البحث في ميلفوس هي مجموعة من المعرف + المسافة:</p>
+<h3 id="5-Processing-search-results" class="common-anchor-header">5. Processing search results</h3><p>The search results of Milvus are a collection of ID + distance:</p>
 <ul>
-<li>المعرف: المعرف في المجموعة.</li>
-<li>المسافة: تشير قيمة المسافة من 0 ~ 1 إلى مستوى التشابه؛ كلما كانت القيمة أصغر، كلما كان المتجهان أكثر تشابهًا.</li>
+<li>ID: the ID in a collection.</li>
+<li>Distance: a distance value of 0 ~ 1 indicates similarity level; the smaller the value, the more similar the two vectors.</li>
 </ul>
-<p><strong>تصفية البيانات التي يكون معرّفها -1</strong></p>
-<p>عندما يكون عدد المجموعات صغيرًا جدًا، قد تحتوي نتائج البحث على بيانات معرفها -1. نحتاج إلى تصفيتها بأنفسنا.</p>
-<p><strong>ترقيم الصفحات</strong></p>
-<p>البحث عن المتجهات مختلف تمامًا. يتم فرز نتائج الاستعلام بترتيب تنازلي من حيث التشابه، ويتم تحديد أكثر النتائج تشابهًا (topK) من النتائج (يتم تحديد topK من قبل المستخدم في وقت الاستعلام).</p>
-<p>لا يدعم ميلفوس ترقيم الصفحات. نحتاج إلى تنفيذ وظيفة ترقيم الصفحات بأنفسنا إذا احتجنا إليها في العمل. على سبيل المثال، إذا كان لدينا عشر نتائج في كل صفحة ونريد عرض الصفحة الثالثة فقط، نحتاج إلى تحديد أن topK = 30 وإرجاع آخر عشر نتائج فقط.</p>
-<p><strong>عتبة التشابه للأعمال</strong></p>
-<p>تتراوح المسافة بين متجهي صورتين بين 0 و1. إذا أردنا تحديد ما إذا كانت صورتان متشابهتين في سيناريو عمل معين، نحتاج إلى تحديد عتبة ضمن هذا النطاق. تكون الصورتان متشابهتين إذا كانت المسافة بينهما أصغر من العتبة، أو تكونان مختلفتين تمامًا عن بعضهما البعض إذا كانت المسافة أكبر من العتبة. تحتاج إلى ضبط العتبة لتلبية احتياجات عملك الخاصة.</p>
+<p><strong>Filtering data whose ID is -1</strong></p>
+<p>When the number of collections is too small, the search results may contain data whose ID is -1. We need to filter it out by ourselves.</p>
+<p><strong>Pagination</strong></p>
+<p>The search for vectors is quite different. The query results are sorted in descending order of similarity, and the most similar (topK) of results are selected (topK is specified by the user at the time of query).</p>
+<p>Milvus does not support pagination. We need to implement the pagination function by ourselves if we need it for business. For example, if we have ten results on each page and only want to display the third page, we need to specify that topK = 30 and only return the last ten results.</p>
+<p><strong>Similarity threshold for business</strong></p>
+<p>The distance between the vectors of two images is between 0 and 1. If we want to decide whether two images are similar in a specific business scenario, we need to specify a threshold within this range. The two images are similar if the distance is smaller than the threshold, or they are quite different from each other if the distance is larger than the threshold. You need to adjust the threshold to meet your own business needs.</p>
 <blockquote>
-<p>تمت كتابة هذه المقالة من قبل rifewang، مستخدم Milvus ومهندس برمجيات في UPYUN. إذا أعجبك هذا المقال، فمرحبًا بك لتلقي التحية على https://github.com/rifewang.</p>
+<p>This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi @ https://github.com/rifewang.</p>
 </blockquote>

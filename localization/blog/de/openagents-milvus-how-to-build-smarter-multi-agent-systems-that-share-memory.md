@@ -1,9 +1,9 @@
 ---
 id: >-
   openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md
-title: >-
-  OpenAgents x Milvus: Wie man intelligentere Multi-Agenten-Systeme mit
-  gemeinsamem Speicher aufbaut
+title: >
+  OpenAgents x Milvus: How to Build Smarter Multi-Agent Systems That Share
+  Memory
 author: Min Yin
 date: 2025-11-24T00:00:00.000Z
 cover: assets.zilliz.com/openagents_cover_b60b987944.png
@@ -14,17 +14,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'multi-agent, Milvus, vector database, distributed AI architecture, OpenAgents'
 meta_title: Build Smarter Multi-Agent Systems with OpenAgents and Milvus
 desc: >-
-  Erfahren Sie, wie OpenAgents verteilte Multi-Agenten-Zusammenarbeit
-  ermöglicht, warum Milvus für das Hinzufügen von skalierbarem Speicher
-  unverzichtbar ist und wie man ein vollständiges System aufbaut.
+  Explore how OpenAgents enables distributed multi-agent collaboration, why
+  Milvus is essential for adding scalable memory, and how to build a full
+  system.
 origin: >-
   https://milvus.io/blog/openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md
 ---
-<p>Die meisten Entwickler beginnen ihre agentischen Systeme mit einem einzigen Agenten und stellen erst später fest, dass sie im Grunde einen sehr teuren Chatbot gebaut haben. Für einfache Aufgaben funktioniert ein Agent im Stil von ReAct gut, aber er stößt schnell an seine Grenzen: Er kann keine Schritte parallel ausführen, er verliert den Überblick über lange Argumentationsketten und er neigt dazu, auseinanderzufallen, sobald man zu viele Tools in den Mix einbringt. Multi-Agenten-Setups versprechen, dies zu beheben, aber sie bringen ihre eigenen Probleme mit sich: Koordinationsaufwand, brüchige Übergaben und ein ausufernder gemeinsamer Kontext, der die Qualität des Modells leise untergräbt.</p>
-<p><a href="https://github.com/OpenAgentsInc">OpenAgents</a> ist ein Open-Source-Framework für den Aufbau von Multi-Agenten-Systemen, in denen KI-Agenten zusammenarbeiten, Ressourcen gemeinsam nutzen und Projekte mit langen Laufzeiten in dauerhaften Gemeinschaften angehen. Anstelle eines einzigen zentralen Orchestrators ermöglicht OpenAgents den Agenten eine verteilte Zusammenarbeit: Sie können sich gegenseitig entdecken, kommunizieren und sich auf gemeinsame Ziele hin koordinieren.</p>
-<p>In Verbindung mit der Vektordatenbank <a href="https://milvus.io/">Milvus</a> erhält diese Pipeline eine skalierbare, leistungsstarke Langzeitspeicherschicht. Milvus unterstützt den Agentenspeicher mit einer schnellen semantischen Suche, flexiblen Indizierungsoptionen wie HNSW und IVF und einer sauberen Isolierung durch Partitionierung, so dass Agenten Wissen speichern, abrufen und wiederverwenden können, ohne im Kontext zu ertrinken oder auf die Daten der anderen zu treten.</p>
-<p>In diesem Beitrag gehen wir darauf ein, wie OpenAgents die verteilte Zusammenarbeit mehrerer Agenten ermöglicht, warum Milvus eine wichtige Grundlage für einen skalierbaren Agentenspeicher ist und wie man ein solches System Schritt für Schritt zusammenstellt.</p>
-<h2 id="Challenges-in-Building-Real-World-Agent-Systems" class="common-anchor-header">Herausforderungen beim Aufbau von Agentensystemen in der realen Welt<button data-href="#Challenges-in-Building-Real-World-Agent-Systems" class="anchor-icon" translate="no">
+<p>Most developers start their agentic systems with a single agent and only later realize they’ve basically built a very expensive chatbot. For simple tasks, a ReAct-style agent works fine, but it quickly hits limits: it can’t run steps in parallel, it loses track of long reasoning chains, and it tends to fall apart once you add too many tools to the mix. Multi-agent setups promise to fix this, but they bring their own problems: coordination overhead, brittle handoffs, and a ballooning shared context that quietly erodes model quality.</p>
+<p><a href="https://github.com/OpenAgentsInc">OpenAgents</a> is an open-source framework for building multi-agent systems in which AI agents work together, share resources, and tackle long-horizon projects within persistent communities. Instead of a single central orchestrator, OpenAgents lets agents collaborate in a more distributed way: they can discover each other, communicate, and coordinate around shared goals.</p>
+<p>Paired with the <a href="https://milvus.io/">Milvus</a> vector database, this pipeline gains a scalable, high-performance long-term memory layer. Milvus powers agent memory with fast semantic search, flexible indexing choices like HNSW and IVF, and clean isolation through partitioning, so agents can store, retrieve, and reuse knowledge without drowning in context or stepping on each other’s data.</p>
+<p>In this post, we’ll walk through how OpenAgents enables distributed multi-agent collaboration, why Milvus is a critical foundation for scalable agent memory, and how to assemble such a system step by step.</p>
+<h2 id="Challenges-in-Building-Real-World-Agent-Systems" class="common-anchor-header">Challenges in Building Real-World Agent Systems<button data-href="#Challenges-in-Building-Real-World-Agent-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,15 +39,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Viele der heute gängigen Agenten-Frameworks - LongChain, AutoGen, CrewAI und andere - basieren auf einem <strong>aufgabenzentrierten</strong> Modell. Man stellt eine Reihe von Agenten zusammen, gibt ihnen eine Aufgabe, definiert vielleicht einen Workflow und lässt sie laufen. Dies funktioniert gut für enge oder kurzlebige Anwendungsfälle, aber in echten Produktionsumgebungen stößt man auf drei strukturelle Einschränkungen:</p>
+    </button></h2><p>Many mainstream agent frameworks today—LangChain, AutoGen, CrewAI, and others—are built around a <strong>task-centric</strong> model. You spin up a set of agents, give them a job, maybe define a workflow, and let them run. This works well for narrow or short-lived use cases, but in real production environments, it exposes three structural limitations:</p>
 <ul>
-<li><p><strong>Das Wissen bleibt isoliert.</strong> Die Erfahrungen eines Agenten beschränken sich auf seinen eigenen Einsatz. Ein Agent in der Entwicklungsabteilung, der den Code prüft, teilt seine Erkenntnisse nicht mit einem Agenten des Produktteams, der die Machbarkeit prüft. Am Ende muss jedes Team sein Wissen von Grund auf neu aufbauen, was sowohl ineffizient als auch brüchig ist.</p></li>
-<li><p><strong>Die Zusammenarbeit ist starr.</strong> Selbst in Multi-Agenten-Frameworks hängt die Zusammenarbeit in der Regel von im Voraus definierten Arbeitsabläufen ab. Wenn sich die Zusammenarbeit ändern muss, können diese statischen Regeln nicht angepasst werden, was das gesamte System weniger flexibel macht.</p></li>
-<li><p><strong>Fehlen eines dauerhaften Zustands.</strong> Die meisten Agenten folgen einem einfachen Lebenszyklus: <em>Starten → Ausführen → Beenden.</em> Zwischen den einzelnen Durchläufen vergessen sie alles - Kontext, Beziehungen, getroffene Entscheidungen und Interaktionsverlauf. Ohne einen dauerhaften Zustand können Agenten kein Langzeitgedächtnis aufbauen oder ihr Verhalten weiterentwickeln.</p></li>
+<li><p><strong>Knowledge remains siloed.</strong> An agent’s experience is confined to its own deployment. A code-review agent in engineering doesn’t share what it learns with a product-team agent evaluating feasibility. Every team ends up rebuilding knowledge from scratch, which is both inefficient and brittle.</p></li>
+<li><p><strong>Collaboration is rigid.</strong> Even in multi-agent frameworks, cooperation usually depends on workflows defined in advance. When collaboration needs to shift, these static rules cannot adapt, making the entire system less flexible.</p></li>
+<li><p><strong>A lack of a persistent state.</strong> Most agents follow a simple lifecycle: <em>start → execute → shut down.</em> They forget everything between runs—context, relationships, decisions made, and interaction history. Without a persistent state, agents cannot build long-term memory or evolve their behavior.</p></li>
 </ul>
-<p>Diese strukturellen Probleme rühren daher, dass Agenten als isolierte Ausführer von Aufgaben behandelt werden und nicht als Teilnehmer an einem breiteren kollaborativen Netzwerk.</p>
-<p>Das OpenAgents-Team ist der Meinung, dass zukünftige Agentensysteme mehr als nur eine stärkere Argumentation benötigen - sie brauchen einen Mechanismus, der es den Agenten ermöglicht, sich gegenseitig zu entdecken, Beziehungen aufzubauen, Wissen zu teilen und dynamisch zusammenzuarbeiten. Und dies sollte nicht von einem einzigen zentralen Controller abhängen. Das Internet funktioniert, weil es verteilt ist - kein einzelner Knotenpunkt bestimmt alles, und das System wird robuster und skalierbarer, wenn es wächst. Multiagentensysteme profitieren von demselben Prinzip. Deshalb beseitigt OpenAgents die Idee eines allmächtigen Orchestrators und ermöglicht stattdessen eine dezentralisierte, netzwerkgesteuerte Zusammenarbeit.</p>
-<h2 id="What’s-OpenAgents" class="common-anchor-header">Was ist OpenAgents?<button data-href="#What’s-OpenAgents" class="anchor-icon" translate="no">
+<p>These structural issues come from treating agents as isolated task executors rather than participants in a broader collaborative network.</p>
+<p>The OpenAgents team believes that future agent systems need more than stronger reasoning—they need a mechanism that enables agents to discover one another, build relationships, share knowledge, and work together dynamically. And critically, this should not depend on a single central controller. The internet works because it’s distributed—no single node dictates everything, and the system becomes more robust and scalable as it grows. Multi-agent systems benefit from the same design principle. That’s why OpenAgents removes the idea of an all-powerful orchestrator and instead enables decentralized, network-driven cooperation.</p>
+<h2 id="What’s-OpenAgents" class="common-anchor-header">What’s OpenAgents?<button data-href="#What’s-OpenAgents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,38 +62,38 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenAgents ist ein Open-Source-Framework für den Aufbau von KI-Agenten-Netzwerken, das eine offene Zusammenarbeit ermöglicht, bei der KI-Agenten zusammenarbeiten, Ressourcen gemeinsam nutzen und langfristige Projekte in Angriff nehmen. Es bietet die Infrastruktur für ein Internet der Agenten, in dem Agenten offen mit Millionen anderer Agenten in dauerhaften, wachsenden Gemeinschaften zusammenarbeiten. Auf technischer Ebene ist das System um drei Kernkomponenten herum aufgebaut: <strong>Agentennetzwerk, Netzwerk-Mods und Transporte.</strong></p>
-<h3 id="1-Agent-Network-A-Shared-Environment-for-Collaboration" class="common-anchor-header">1. Agentennetzwerk: Ein gemeinsames Umfeld für die Zusammenarbeit</h3><p>Ein Agentennetzwerk ist eine gemeinsame Umgebung, in der sich mehrere Agenten verbinden, kommunizieren und zusammenarbeiten können, um komplexe Aufgaben zu lösen. Zu seinen Hauptmerkmalen gehören:</p>
+    </button></h2><p>OpenAgents is an open-source framework for building AI agent networks that enables open collaboration, where AI agents work together, share resources, and tackle long-horizon projects. It provides the infrastructure for an internet of agents — where agents collaborate openly with millions of other agents in persistent, growing communities. At the technical level, the system is structured around three core components: <strong>Agent Network, Network Mods, and Transports.</strong></p>
+<h3 id="1-Agent-Network-A-Shared-Environment-for-Collaboration" class="common-anchor-header">1. Agent Network: A Shared Environment for Collaboration</h3><p>An agent network is a shared environment where multiple agents can connect, communicate, and work together to solve complex tasks. Its core characteristics include:</p>
 <ul>
-<li><p><strong>Dauerhafter Betrieb:</strong> Einmal erstellt, bleibt das Netzwerk unabhängig von einer einzelnen Aufgabe oder einem Arbeitsablauf online.</p></li>
-<li><p><strong>Dynamische Agenten:</strong> Agenten können jederzeit mit einer Netzwerk-ID beitreten; eine Vorregistrierung ist nicht erforderlich.</p></li>
-<li><p><strong>Unterstützung mehrerer Protokolle:</strong> Eine einheitliche Abstraktionsschicht unterstützt die Kommunikation über WebSocket, gRPC, HTTP und libp2p.</p></li>
-<li><p><strong>Autonome Konfiguration:</strong> Jedes Netzwerk verwaltet seine eigenen Berechtigungen, Governance und Ressourcen.</p></li>
+<li><p><strong>Persistent operation:</strong> Once created, the Network stays online independently of any single task or workflow.</p></li>
+<li><p><strong>Dynamic agent:</strong> Agents can join at any time using a Network ID; no pre-registration required.</p></li>
+<li><p><strong>Multi-protocol support:</strong> A unified abstraction layer supports communication over WebSocket, gRPC, HTTP, and libp2p.</p></li>
+<li><p><strong>Autonomous configuration:</strong> Each Network maintains its own permissions, governance, and resources.</p></li>
 </ul>
-<p>Mit nur einer Zeile Code können Sie ein Netzwerk einrichten, und jeder Agent kann über Standardschnittstellen sofort beitreten.</p>
-<h3 id="2-Network-Mods-Pluggable-Extensions-for-Collaboration" class="common-anchor-header">2. Netzwerk-Mods: Steckbare Erweiterungen für die Zusammenarbeit</h3><p>Mods bieten eine modulare Schicht von Kollaborationsfunktionen, die vom Kernsystem entkoppelt bleiben. Sie können Mods je nach Ihren spezifischen Anforderungen kombinieren und so auf jeden Anwendungsfall zugeschnittene Kooperationsmuster ermöglichen.</p>
+<p>With just one line of code, you can spin up a Network, and any agent can join immediately through standard interfaces.</p>
+<h3 id="2-Network-Mods-Pluggable-Extensions-for-Collaboration" class="common-anchor-header">2. Network Mods: Pluggable Extensions for Collaboration</h3><p>Mods provide a modular layer of collaboration features that stay decoupled from the core system. You can mix and match Mods based on your specific needs, enabling collaboration patterns tailored to each use case.</p>
 <table>
 <thead>
-<tr><th><strong>Mod</strong></th><th><strong>Zweck</strong></th><th><strong>Anwendungsfälle</strong></th></tr>
+<tr><th><strong>Mod</strong></th><th><strong>Purpose</strong></th><th><strong>Use cases</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Arbeitsbereich Messaging</strong></td><td>Nachrichtenkommunikation in Echtzeit</td><td>Streaming-Antworten, sofortiges Feedback</td></tr>
-<tr><td><strong>Forum</strong></td><td>Asynchrone Diskussion</td><td>Überprüfung von Vorschlägen, Beratung in mehreren Runden</td></tr>
-<tr><td><strong>Wiki</strong></td><td>Gemeinsame Wissensbasis</td><td>Wissenskonsolidierung, Zusammenarbeit bei Dokumenten</td></tr>
-<tr><td><strong>Soziales</strong></td><td>Beziehungsdiagramm</td><td>Experten-Routing, Vertrauensnetzwerke</td></tr>
+<tr><td><strong>Workspace Messaging</strong></td><td>Real-time message communication</td><td>Streaming responses, instant feedback</td></tr>
+<tr><td><strong>Forum</strong></td><td>Asynchronous discussion</td><td>Proposal reviews, multi-round deliberation</td></tr>
+<tr><td><strong>Wiki</strong></td><td>Shared knowledge base</td><td>Knowledge consolidation, document collaboration</td></tr>
+<tr><td><strong>Social</strong></td><td>Relationship graph</td><td>Expert routing, trust networks</td></tr>
 </tbody>
 </table>
-<p>Alle Mods arbeiten mit einem einheitlichen Ereignissystem, so dass es einfach ist, den Rahmen zu erweitern oder benutzerdefinierte Verhaltensweisen einzuführen, wann immer dies erforderlich ist.</p>
-<h3 id="3-Transports-A-Protocol-Agnostic-Channel-for-Communication" class="common-anchor-header">3. Transporte: Ein protokoll-agnostischer Kommunikationskanal</h3><p>Transports sind die Kommunikationsprotokolle, die es heterogenen Agenten ermöglichen, sich zu verbinden und Nachrichten innerhalb eines OpenAgents-Netzwerks auszutauschen. OpenAgents unterstützt mehrere Transportprotokolle, die gleichzeitig innerhalb desselben Netzes laufen können, darunter:</p>
+<p>All Mods operate on a unified event system, making it easy to extend the framework or introduce custom behaviors whenever required.</p>
+<h3 id="3-Transports-A-Protocol-Agnostic-Channel-for-Communication" class="common-anchor-header">3. Transports: A Protocol-Agnostic Channel for Communication</h3><p>Transports are the communication protocols that allow heterogeneous agents to connect and exchange messages within an OpenAgents network. OpenAgents supports multiple transport protocols that can run simultaneously inside the same network, including:</p>
 <ul>
-<li><p><strong>HTTP/REST</strong> für eine breite, sprachübergreifende Integration</p></li>
-<li><p><strong>WebSocket</strong> für bidirektionale Kommunikation mit niedriger Latenz</p></li>
-<li><p><strong>gRPC</strong> für Hochleistungs-RPC, geeignet für große Cluster</p></li>
-<li><p><strong>libp2p</strong> für dezentralisierte Peer-to-Peer-Netzwerke</p></li>
-<li><p><strong>A2A</strong>, ein aufkommendes Protokoll, das speziell für die Kommunikation von Agent zu Agent entwickelt wurde</p></li>
+<li><p><strong>HTTP/REST</strong> for broad, cross-language integration</p></li>
+<li><p><strong>WebSocket</strong> for low-latency, bidirectional communication</p></li>
+<li><p><strong>gRPC</strong> for high-performance RPC suited to large-scale clusters</p></li>
+<li><p><strong>libp2p</strong> for decentralized, peer-to-peer networking</p></li>
+<li><p><strong>A2A</strong>, an emerging protocol designed specifically for agent-to-agent communication</p></li>
 </ul>
-<p>Alle Transporte funktionieren über ein einheitliches, ereignisbasiertes Nachrichtenformat, das eine nahtlose Übersetzung zwischen den Protokollen ermöglicht. Sie müssen sich nicht darum kümmern, welches Protokoll ein Peer-Agent verwendet - das Framework erledigt dies automatisch. Agenten, die in einer beliebigen Sprache oder einem beliebigen Framework erstellt wurden, können einem OpenAgents-Netzwerk beitreten, ohne dass vorhandener Code umgeschrieben werden muss.</p>
-<h2 id="Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="common-anchor-header">Integration von OpenAgents mit Milvus für ein langfristiges Agentengedächtnis<button data-href="#Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="anchor-icon" translate="no">
+<p>All transports operate through a unified event-based message format, enabling seamless translation between protocols. You don’t need to worry about which protocol a peer agent uses—the framework handles it automatically. Agents built in any language or framework can join an OpenAgents network without rewriting existing code.</p>
+<h2 id="Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="common-anchor-header">Integrating OpenAgents with Milvus for Long-Term Agentic Memory<button data-href="#Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -108,37 +108,37 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenAgents löst die Herausforderung, wie Agenten <strong>kommunizieren, sich gegenseitig entdecken und zusammenarbeiten - aber</strong>Zusammenarbeit allein ist nicht genug. Agenten generieren Erkenntnisse, Entscheidungen, Gesprächsverläufe, Toolergebnisse und domänenspezifisches Wissen. Ohne eine persistente Speicherebene verpufft all dies in dem Moment, in dem ein Agent heruntergefahren wird.</p>
-<p>An dieser Stelle wird <strong>Milvus</strong> unverzichtbar. Milvus bietet den leistungsstarken Vektorspeicher und die semantische Abfrage, die erforderlich sind, um Agenteninteraktionen in einen dauerhaften, wiederverwendbaren Speicher zu verwandeln. Wenn es in das OpenAgents-Netzwerk integriert wird, bietet es drei wesentliche Vorteile:</p>
-<h4 id="1-Semantic-Search" class="common-anchor-header"><strong>1. Semantische Suche</strong></h4><p>Milvus bietet eine schnelle semantische Suche mit Indexierungsalgorithmen wie HNSW und IVF_FLAT. Agenten können die relevantesten historischen Aufzeichnungen auf der Grundlage von Bedeutungen und nicht von Schlüsselwörtern abrufen, was es ihnen ermöglicht:</p>
+    </button></h2><p>OpenAgents solves the challenge of how agents <strong>communicate, discover each other, and collaborate</strong>—but collaboration alone isn’t enough. Agents generate insights, decisions, conversation history, tool results, and domain-specific knowledge. Without a persistent memory layer, all of that evaporates the moment an agent shuts down.</p>
+<p>This is where <strong>Milvus</strong> becomes essential. Milvus provides the high-performance vector storage and semantic retrieval needed to turn agent interactions into durable, reusable memory. When integrated into the OpenAgents network, it offers three major advantages:</p>
+<h4 id="1-Semantic-Search" class="common-anchor-header"><strong>1. Semantic Search</strong></h4><p>Milvus delivers fast semantic search using indexing algorithms like HNSW and IVF_FLAT. Agents can retrieve the most relevant historical records based on meaning rather than keywords, enabling them to:</p>
 <ul>
-<li><p>frühere Entscheidungen oder Pläne abzurufen,</p></li>
-<li><p>die Wiederholung von Arbeit zu vermeiden,</p></li>
-<li><p>einen langfristigen Kontext über mehrere Sitzungen hinweg aufrechtzuerhalten.</p></li>
+<li><p>recall prior decisions or plans,</p></li>
+<li><p>avoid repeating work,</p></li>
+<li><p>maintain long-horizon context across sessions.</p></li>
 </ul>
-<p>Dies ist das Rückgrat des <em>agenturischen Gedächtnisses</em>: schnelles, relevantes und kontextbezogenes Abrufen.</p>
-<h4 id="2-Billion-Scale-Horizontal-Scalability" class="common-anchor-header"><strong>2. Horizontale Skalierbarkeit im Milliardenmaßstab</strong></h4><p>Echte Agentennetzwerke erzeugen riesige Datenmengen. Milvus ist für einen komfortablen Betrieb in diesem Umfang ausgelegt und bietet:</p>
+<p>This is the backbone of <em>agentic memory</em>: fast, relevant, contextual retrieval.</p>
+<h4 id="2-Billion-Scale-Horizontal-Scalability" class="common-anchor-header"><strong>2. Billion-Scale Horizontal Scalability</strong></h4><p>Real agent networks generate massive amounts of data. Milvus is built to operate comfortably at this scale, offering:</p>
 <ul>
-<li><p>Speicherung und Suche über Milliarden von Vektoren,</p></li>
-<li><p>&lt; 30 ms Latenzzeit selbst bei Top-K-Abrufen mit hohem Durchsatz,</p></li>
-<li><p>eine vollständig verteilte Architektur, die bei wachsendem Bedarf linear skaliert.</p></li>
+<li><p>storage and search over billions of vectors,</p></li>
+<li><p>&lt; 30 ms latency even under high-throughput Top-K retrieval,</p></li>
+<li><p>a fully distributed architecture that scales linearly as demand grows.</p></li>
 </ul>
-<p>Egal, ob Sie ein Dutzend Agenten oder Tausende parallel arbeiten lassen, Milvus sorgt für eine schnelle und konsistente Abfrage.</p>
-<h4 id="3-Multi-Tenant-Isolation" class="common-anchor-header"><strong>3. Multi-Mandanten-Isolierung</strong></h4><p>Milvus bietet eine granulare Multi-Tenant-Isolation durch <strong>Partition Key</strong>, einen leichtgewichtigen Partitionierungsmechanismus, der den Speicher innerhalb einer einzigen Sammlung segmentiert. Dies ermöglicht:</p>
+<p>Whether you have a dozen agents or thousands working in parallel, Milvus keeps retrieval fast and consistent.</p>
+<h4 id="3-Multi-Tenant-Isolation" class="common-anchor-header"><strong>3. Multi-Tenant Isolation</strong></h4><p>Milvus provides granular multi-tenant isolation through <strong>Partition Key</strong>, a lightweight partitioning mechanism that segments memory inside a single collection. This allows:</p>
 <ul>
-<li><p>Verschiedene Teams, Projekte oder Agentengemeinschaften können unabhängige Speicherbereiche verwalten,</p></li>
-<li><p>einen drastisch geringeren Overhead im Vergleich zur Verwaltung mehrerer Sammlungen,</p></li>
-<li><p>optionales Abrufen von Wissen über mehrere Partitionen hinweg, wenn gemeinsames Wissen benötigt wird.</p></li>
+<li><p>different teams, projects, or agent communities to maintain independent memory spaces,</p></li>
+<li><p>dramatically lower overhead compared to maintaining multiple collections,</p></li>
+<li><p>optional cross-partition retrieval when shared knowledge is needed.</p></li>
 </ul>
-<p>Diese Isolierung ist entscheidend für große Multi-Agent-Einsätze, bei denen Datengrenzen respektiert werden müssen, ohne die Abrufgeschwindigkeit zu beeinträchtigen.</p>
-<p>OpenAgents stellt die Verbindung zu Milvus über <strong>benutzerdefinierte Mods</strong> her, die Milvus-APIs direkt aufrufen. Agentenmeldungen, Toolausgaben und Interaktionsprotokolle werden automatisch in Vektoren eingebettet und in Milvus gespeichert. Entwickler können anpassen:</p>
+<p>This isolation is crucial for large multi-agent deployments where data boundaries must be respected without compromising retrieval speed.</p>
+<p>OpenAgents connects to Milvus through <strong>custom Mods</strong> that call Milvus APIs directly. Agent messages, tool outputs, and interaction logs are automatically embedded into vectors and stored in Milvus. Developers can customize:</p>
 <ul>
-<li><p>das Einbettungsmodell,</p></li>
-<li><p>das Speicherschema und die Metadaten,</p></li>
-<li><p>und Abrufstrategien (z. B. hybride Suche, partitionierte Suche).</p></li>
+<li><p>the embedding model,</p></li>
+<li><p>storage schema and metadata,</p></li>
+<li><p>and retrieval strategies (e.g., hybrid search, partitioned search).</p></li>
 </ul>
-<p>Dadurch erhält jede Agentengemeinschaft eine Speicherebene, die skalierbar, beständig und für semantische Schlussfolgerungen optimiert ist.</p>
-<h2 id="How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="common-anchor-header">Wie man einen Multi-Agenten-Chatbot mit OpenAgent und Milvus erstellt<button data-href="#How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="anchor-icon" translate="no">
+<p>This gives each agent community a memory layer that is scalable, persistent, and optimized for semantic reasoning.</p>
+<h2 id="How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="common-anchor-header">How to Build a Multi-Agent Chatbot with OpenAgent and Milvus<button data-href="#How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -153,20 +153,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um die Dinge konkret zu machen, lassen Sie uns eine Demo durchgehen: Aufbau einer <strong>Entwickler-Support-Community</strong>, in der mehrere spezialisierte Agenten - Python-Experten, Datenbankexperten, DevOps-Ingenieure und andere - zusammenarbeiten, um technische Fragen zu beantworten. Anstatt sich auf einen einzigen überlasteten Generalisten-Agenten zu verlassen, steuert jeder Experte domänenspezifische Argumente bei, und das System leitet Anfragen automatisch an den am besten geeigneten Agenten weiter.</p>
-<p>Dieses Beispiel zeigt, wie <strong>Milvus</strong> in einen OpenAgents-Einsatz integriert werden kann, um ein Langzeitgedächtnis für technische Fragen und Antworten bereitzustellen. Agentengespräche, frühere Lösungen, Fehlerbehebungsprotokolle und Benutzeranfragen werden alle in Vektoreinbettungen umgewandelt und in Milvus gespeichert, so dass das Netzwerk in der Lage ist:</p>
+    </button></h2><p>To make things concrete, let’s walk through a demo: building a <strong>developer-support community</strong> where multiple specialist agents—Python experts, database experts, DevOps engineers, and more—collaborate to answer technical questions. Instead of relying on a single overworked generalist agent, each expert contributes domain-specific reasoning, and the system routes queries to the best-suited agent automatically.</p>
+<p>This example demonstrates how to integrate <strong>Milvus</strong> into an OpenAgents deployment to provide long-term memory for technical Q&amp;A. Agent conversations, past solutions, troubleshooting logs, and user queries are all converted into vector embeddings and stored in Milvus, giving the network the ability to:</p>
 <ul>
-<li><p>sich an frühere Antworten zu erinnern,</p></li>
-<li><p>frühere technische Erklärungen wiederzuverwenden,</p></li>
-<li><p>die Konsistenz über Sitzungen hinweg aufrechtzuerhalten und</p></li>
-<li><p>sich im Laufe der Zeit zu verbessern, wenn sich mehr Interaktionen ansammeln.</p></li>
+<li><p>remember previous answers,</p></li>
+<li><p>reuse prior technical explanations,</p></li>
+<li><p>maintain consistency across sessions, and</p></li>
+<li><p>improve over time as more interactions accumulate.</p></li>
 </ul>
-<h3 id="Prerequisite" class="common-anchor-header">Voraussetzung</h3><ul>
+<h3 id="Prerequisite" class="common-anchor-header">Prerequisite</h3><ul>
 <li><p>python3.11+</p></li>
 <li><p>conda</p></li>
-<li><p>Openai-Schlüssel</p></li>
+<li><p>Openai-key</p></li>
 </ul>
-<h3 id="1-Define-Dependencies" class="common-anchor-header">1. Abhängigkeiten definieren</h3><p>Definieren Sie die für das Projekt benötigten Python-Pakete:</p>
+<h3 id="1-Define-Dependencies" class="common-anchor-header">1. Define Dependencies</h3><p>Define the Python packages required for the project:</p>
 <pre><code translate="no"><span class="hljs-comment"># Core framework</span>
 openagents&gt;=<span class="hljs-number">0.6</span><span class="hljs-number">.11</span>
 <span class="hljs-comment"># Vector database</span>
@@ -178,7 +178,7 @@ openai&gt;=<span class="hljs-number">1.0</span><span class="hljs-number">.0</spa
 <span class="hljs-comment"># Environment config</span>
 python-dotenv&gt;=<span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Environment-Variables" class="common-anchor-header">2. Umgebungsvariablen</h3><p>Hier finden Sie die Vorlage für Ihre Umgebungskonfiguration:</p>
+<h3 id="2-Environment-Variables" class="common-anchor-header">2. Environment Variables</h3><p>Here is the template for your environment configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># LLM configuration (required)</span>
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
@@ -193,7 +193,7 @@ NETWORK_HOST=localhost
 NETWORK_PORT=8700
 STUDIO_PORT=8050
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Configure-Your-OpenAgents-Network" class="common-anchor-header">3. Konfigurieren Sie Ihr OpenAgents-Netzwerk</h3><p>Definieren Sie die Struktur Ihres Agentennetzes und seine Kommunikationseinstellungen:</p>
+<h3 id="3-Configure-Your-OpenAgents-Network" class="common-anchor-header">3. Configure Your OpenAgents Network</h3><p>Define the structure of your agent network and its communication settings:</p>
 <pre><code translate="no"><span class="hljs-comment"># Network transport protocol (HTTP on port 8700)</span>
 <span class="hljs-comment"># Multi-channel messaging system (general, coordination, expert channels)</span>
 <span class="hljs-comment"># Agent role definitions (coordinator, python_expert, etc.)</span>
@@ -223,7 +223,7 @@ network:
       <span class="hljs-built_in">type</span>: <span class="hljs-string">&quot;expert&quot;</span>
       domain: <span class="hljs-string">&quot;python&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Implement-Multi-Agent-Collaboration" class="common-anchor-header">4. Implementieren Sie die Multi-Agenten-Zusammenarbeit</h3><p>Im Folgenden finden Sie die wichtigsten Codeschnipsel (nicht die vollständige Implementierung).</p>
+<h3 id="4-Implement-Multi-Agent-Collaboration" class="common-anchor-header">4. Implement Multi-Agent Collaboration</h3><p>The following shows core code snippets (not the full implementation).</p>
 <pre><code translate="no"><span class="hljs-comment"># SharedMemory: Milvus’s SharedMemory system</span>
 <span class="hljs-comment"># CoordinatorAgent: Coordinator Agent, responsible for analyzing queries and dispatching tasks to expert agents</span>
 <span class="hljs-comment"># PythonExpertAgent: Python Expert</span>
@@ -312,16 +312,16 @@ load_dotenv()
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
     asyncio.run(run_multi_agent_demo())
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="5-Create-and-Activate-a-Virtual-Environment" class="common-anchor-header">5. Erstellen und Aktivieren einer virtuellen Umgebung</h3><pre><code translate="no">conda create -n openagents
+<h3 id="5-Create-and-Activate-a-Virtual-Environment" class="common-anchor-header">5. Create and Activate a Virtual Environment</h3><pre><code translate="no">conda create -n openagents
 conda activate openagents
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Abhängigkeiten installieren</strong></p>
+<p><strong>Install Dependencies</strong></p>
 <pre><code translate="no">pip install -r requirements.txt
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>API-Schlüssel konfigurieren</strong></p>
+<p><strong>Configure API Keys</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Starten Sie das OpenAgents-Netzwerk</strong></p>
+<p><strong>Start the OpenAgents Network</strong></p>
 <pre><code translate="no">openagents network start .
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -330,7 +330,7 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>Starten Sie den Multi-Agenten-Dienst</strong></p>
+<p><strong>Start the Multi-Agent Service</strong></p>
 <pre><code translate="no">python multi_agent_demo.py
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -339,7 +339,7 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>OpenAgents Studio starten</strong></p>
+<p><strong>Start OpenAgents Studio</strong></p>
 <pre><code translate="no">openagents studio -s
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -348,7 +348,7 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>Zugang zum Studio</strong></p>
+<p><strong>Access Studio</strong></p>
 <pre><code translate="no"><span class="hljs-attr">http</span>:<span class="hljs-comment">//localhost:8050</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -369,14 +369,14 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>Überprüfen Sie den Status Ihrer Agenten und Ihres Netzwerks:</strong></p>
+<p><strong>Check the status of your agents and network:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/check_state_bba1a4fe16.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Schlussfolgerung<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -391,8 +391,8 @@ conda activate openagents
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenAgents stellt die Koordinationsschicht bereit, die es Agenten ermöglicht, sich gegenseitig zu entdecken, zu kommunizieren und zusammenzuarbeiten, während Milvus das ebenso kritische Problem löst, wie Wissen gespeichert, gemeinsam genutzt und wiederverwendet wird. Durch die Bereitstellung einer hochleistungsfähigen Vektorspeicherschicht ermöglicht Milvus den Agenten den Aufbau eines dauerhaften Kontexts, die Erinnerung an vergangene Interaktionen und die Anhäufung von Fachwissen im Laufe der Zeit. Zusammen bringen sie KI-Systeme über die Grenzen isolierter Modelle hinaus und in Richtung des tieferen kollaborativen Potenzials eines echten Multi-Agenten-Netzwerks.</p>
-<p>Natürlich ist keine Multi-Agenten-Architektur ohne Kompromisse. Die parallele Ausführung von Agenten kann den Token-Verbrauch erhöhen, Fehler können sich über die Agenten hinweg ausbreiten, und die gleichzeitige Entscheidungsfindung kann zu gelegentlichen Konflikten führen. Dies sind Bereiche, in denen noch geforscht und Verbesserungen vorgenommen werden, aber sie schmälern nicht den Wert von Systemen, die sich koordinieren, erinnern und weiterentwickeln können.</p>
-<p>🚀 Sind Sie bereit, Ihren Agenten ein Langzeitgedächtnis zu verleihen?</p>
-<p>Lernen Sie <a href="https://milvus.io/">Milvus</a> kennen und versuchen Sie, es in Ihren eigenen Arbeitsablauf zu integrieren.</p>
-<p>Haben Sie Fragen oder möchten Sie eine Funktion genauer kennenlernen? Treten Sie unserem<a href="https://discord.com/invite/8uyFbECzPX"> Discord-Kanal</a> bei oder stellen Sie Fragen auf<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Sie können auch eine 20-minütige Einzelsitzung buchen, um Einblicke, Anleitung und Antworten auf Ihre Fragen in den<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus-Sprechstunden</a> zu erhalten.</p>
+    </button></h2><p>OpenAgents provides the coordination layer that lets agents discover each other, communicate, and collaborate, while Milvus solves the equally critical problem of how knowledge is stored, shared, and reused. By delivering a high-performance vector memory layer, Milvus enables agents to build persistent context, recall past interactions, and accumulate expertise over time. Together, they push AI systems beyond the limits of isolated models and toward the deeper collaborative potential of a true multi-agent network.</p>
+<p>Of course, no multi-agent architecture is without trade-offs. Running agents in parallel can increase token consumption, errors may cascade across agents, and simultaneous decision-making can lead to occasional conflicts. These are active areas of research and ongoing improvement—but they don’t diminish the value of building systems that can coordinate, remember, and evolve.</p>
+<p>🚀 Ready to give your agents long-term memory?</p>
+<p>Explore <a href="https://milvus.io/">Milvus</a> and try integrating it with your own workflow.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

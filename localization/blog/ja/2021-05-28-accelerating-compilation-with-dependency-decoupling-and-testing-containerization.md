@@ -1,83 +1,94 @@
 ---
 id: >-
   accelerating-compilation-with-dependency-decoupling-and-testing-containerization.md
-title: 依存性の分離とコンテナ化によるコンパイルの2.5倍高速化
+title: >-
+  Accelerating Compilation 2.5X with Dependency Decoupling & Testing
+  Containerization
 author: Zhifeng Zhang
 date: 2021-05-28T00:00:00.000Z
 desc: >-
-  大規模なAIおよびMLOpsプロジェクトにおいて、依存関係のデカップリングとコンテナ化技術を使用してコンパイル時間を2.5倍に短縮するzillizの方法をご覧ください。
+  Discover how zilliz to reduce compile times 2.5x using dependency decoupling
+  and containerization techniques for large-scale AI and MLOps projects.
 cover: assets.zilliz.com/cover_20e3cddb96.jpeg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/accelerating-compilation-with-dependency-decoupling-and-testing-containerization
 ---
-<custom-h1>依存性のデカップリングとテストのコンテナ化でコンパイルを2.5倍高速化</custom-h1><p>コンパイル時間は、開発プロセスを通じて変化する複雑な内部依存関係や外部依存関係、オペレーティング・システムやハードウェア・アーキテクチャなどのコンパイル環境の変化によって複雑になる可能性があります。以下は、大規模なAIプロジェクトやMLOpsプロジェクトで遭遇する可能性のある一般的な問題です：</p>
-<p><strong>極端に長いコンパイル</strong>- コード統合は毎日何百回も行われる。何十万行ものコードが存在するため、わずかな変更であっても、フル・コンパイルに通常1時間以上かかる可能性がある。</p>
-<p><strong>複雑なコンパイル環境</strong>- プロジェクトのコードは、CentOSやUbuntuなどのオペレーティング・システム、GCC、LLVM、CUDAなどの依存関係、ハードウェア・アーキテクチャなどが異なる環境下でコンパイルする必要があります。また、特定の環境下でのコンパイルは通常、異なる環境下では動作しないかもしれない。</p>
-<p><strong>複雑な依存関係</strong>- プロジェクトのコンパイルには、30以上のコンポーネント間依存関係やサードパーティ依存関係が含まれます。プロジェクトの開発によって依存関係が変更されることはよくあり、必然的に依存関係のコンフリクトが発生します。依存関係間のバージョン管理は非常に複雑であるため、依存関係のバージョンを更新すると、他のコンポーネントに影響を与えやすくなります。</p>
-<p><strong>サードパーティ依存ライブラリのダウンロードが遅い、または失敗する</strong>- ネットワークの遅延や不安定なサードパーティ依存ライブラリは、リソースのダウンロードに時間がかかったり、アクセスに失敗したりして、コードの統合に深刻な影響を与えます。</p>
-<p>依存関係を切り離し、テストのコンテナ化を実装することで、オープンソースの埋め込み類似検索プロジェクト<a href="https://milvus.io/">Milvusの</a>作業中に、平均コンパイル時間を60%短縮することに成功しました。</p>
+<custom-h1>Accelerating Compilation 2.5X with Dependency Decoupling &amp; Testing Containerization</custom-h1><p>Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects:</p>
+<p><strong>Prohibitively long compilation</strong> - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours.</p>
+<p><strong>Complex compilation environment</strong> - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.</p>
+<p><strong>Complex dependencies</strong> - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.</p>
+<p><strong>Third-party dependency download is slow or fails</strong> - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration.</p>
+<p>By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project <a href="https://milvus.io/">Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">プロジェクトの依存関係を切り離す</h3><p>プロジェクトのコンパイルには、通常、多数の内部および外部コンポーネントの依存関係が伴います。プロジェクトの依存関係が多ければ多いほど、その管理は複雑になる。ソフトウェアが大きくなるにつれて、依存関係を変更したり削除したりするのは難しくなり、コストもかかるようになる。依存関係が適切に機能するように、開発プロセス全体を通じて定期的なメンテナンスが必要である。 メンテナンスが不十分であったり、依存関係が複雑であったり、依存関係に欠陥があったりすると、コンフリクトが発生し、開発が遅れたり停滞したりする可能性がある。実際には、リソースのダウンロードの遅れや、コード統合に悪影響を与えるアクセス障害などを意味する。プロジェクトの依存関係をデカップリングすることで、不具合を軽減し、コンパイル時間を短縮することができます。</p>
-<p>したがって、プロジェクトの依存関係を切り離すことをお勧めします：</p>
+<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Decouple the dependencies of the project</h3><p>Project compilation usually involves a large number of internal and external component dependencies. The more dependencies a project has, the more complex it becomes to manage them. As software grows, it becomes more difficult and costly to change or remove dependencies, as well as identify the effects of doing so. Regular maintenance is required throughout the development process to ensure the dependencies functions properly.
+Poor maintenance, complex dependencies, or faulty dependencies can cause conflicts that slow or stall development. In practice, this can mean lagging resource downloads, access failures that negatively impact code integration, and more. Decoupling project dependencies can mitigate defects and reduce compile time, accelerating system testing and avoiding unnecessary drag on software development.</p>
+<p>Therefore, we recommend decouple dependencies your project:</p>
 <ul>
-<li>複雑な依存関係を持つコンポーネントを分割する</li>
-<li>バージョン管理には異なるリポジトリを使用する。</li>
-<li>設定ファイルを使用して、バージョン情報、コンパイル・オプション、依存関係などを管理する。</li>
-<li>設定ファイルをコンポーネント・ライブラリに追加し、プロジェクトが反復するときに更新されるようにする。</li>
+<li>Split up components with complex dependencies</li>
+<li>Use different repositories for version management.</li>
+<li>Use configuration files to manage version information, compilation options, dependencies, etc.</li>
+<li>Add the configuration files to the component libraries so that they are updated as the project iterates.</li>
 </ul>
-<p><strong>コンポーネント間のコンパイル最適化</strong>- 設定ファイルに記録された依存関係やコンパイルオプションに従って、関連するコンポーネントをプルしてコンパイルします。バイナリのコンパイル結果と対応するマニフェストファイルにタグ付けして梱包し、プライベートリポジトリにアップロードします。コンポーネントまたはコンポーネントが依存するコンポーネントに変更がない場合は、マニフェスト ファイルに従ってコンパイル結果を再生します。ネットワークの遅延や不安定なサードパーティ依存ライブラリなどの問題については、内部リポジトリをセットアップするか、ミラーされたリポジトリを使用してみてください。</p>
-<p>コンポーネント間のコンパイルを最適化するには</p>
-<p>1.依存関係グラフの作成 - コンポーネント・ライブラリの構成ファイルを使用して、依存関係グラフを作成します。依存関係を使用して、上流と下流の依存コンポーネントのバージョン情報（Gitブランチ、タグ、GitコミットID）やコンパイルオプションなどを取得します。</p>
+<p><strong>Compile optimization between components</strong> — Pull and compile the relevant component according to the dependencies and the compile options recorded in the configuration files. Tag and pack the binary compilation results and the corresponding manifest files, and then upload them to your private repository. If no change is made to a component or the components it depends on, playback its compilation results according to the manifest files. For issues such as network delays or unstable third-party dependency libraries, try setting up an internal repository or using mirrored repositories.</p>
+<p>To optimize compilation between components:</p>
+<p>1.Create dependency relationship graph — Use the configuration files in the component libraries to create dependency relationship graph. Use the dependency relationship to retrieve the version information (Git Branch, Tag, and Git commit ID) and compilation options and more of both upstream and downstream dependent components.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p>2.<strong>依存関係のチェック</strong>- 循環依存関係、バージョンの競合、コンポーネント間で発生するその他の問題に対するアラートを生成します。</p>
-<p>3.<strong>依存関係の平坦化</strong>- Depth First Search (DFS)によって依存関係をソートし、重複する依存関係を持つコンポーネントをフロントマージして依存関係グラフを形成します。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>2.<strong>Check for dependencies</strong> — Generate alerts for circular dependencies, version conflicts, and other issues that arise between components.</p>
+<p>3.<strong>Flatten dependencies</strong> — Sort dependencies by Depth First Search (DFS) and front-merge components with duplicate dependencies to form a dependency graph.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>4.MerkleTreeアルゴリズムを使用して、バージョン情報、コンパイルオプションなどに基づいて、各コンポーネントの依存関係を含むハッシュ（ルートハッシュ）を生成します。コンポーネント名などの情報と組み合わせることで、このアルゴリズムは各コンポーネントに固有のタグを形成する。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>4.Use MerkleTree algorithm to generate a hash (Root Hash) containing dependencies of each component based on version information, compilation options, and more. Combined with information such as component name, the algorithm forms a unique tag for each component.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<p>5.コンポーネントの一意なタグ情報に基づいて、対応するコンパイルアーカイブがプライベートリポジトリに存在するかどうかをチェックする。コンパイルアーカイブが検索された場合は、それを解凍して再生用のマニフェストファイルを取得します。そうでない場合は、コンポーネントをコンパイルし、生成されたコンパイルオブジェクトファイルとマニフェストファイルをマークアップして、プライベートリポジトリにアップロードします。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<p>5.Based on the component’s unique tag information, check if a corresponding compilation archive exists in the private repo. If a compilation archive is retrieved, unzip it to get the manifest file for playback; if not, compile the component, mark up the generated compilation object files and manifest file, and upload them to the private repo.</p>
 <p><br/></p>
-<p><strong>コンポーネント内でコンパイル最適化を実装する</strong>- 言語固有のコンパイルキャッシュツールを選択してコンパイル済みオブジェクトファイルをキャッシュし、プライベートリポジトリにアップロードして保存します。C/C++ コンパイルでは、CCache のようなコンパイル・キャッシュ・ツールを選択して C/C++ コンパイルの中間ファイルをキャッシュし、コンパイル後にローカルの CCache キャッシュをアーカイブします。このようなコンパイル・キャッシュ・ツールは、コンパイル後に変更されたコード・ファイルを1つずつキャッシュし、変更されていないコード・ファイルのコンパイル済みコンポーネントをコピーして、最終的なコンパイルに直接関与できるようにするだけである。 コンポーネント内のコンパイルの最適化には、次のステップが含まれる：</p>
+<p><strong>Implement compilation optimizations within components</strong> — Choose a language-specific compilation cache tool to cache the compiled object files, and upload and store them in your private repository. For C/C++ compilation, choose a compilation cache tool like CCache to cache the C/C++ compilation intermediate files, and then archive the local CCache cache after compilation. Such compile cache tools simply cache the changed code files one by one after compilation, and copy the compiled components of the unchanged code file so that they can be directly involved in the final compilation.
+Optimization of the compilation within components includes the following steps:</p>
 <ol>
-<li>必要なコンパイル依存関係をDockerfileに追加する。Hadolintを使ってDockerfileのコンプライアンスチェックを行い、イメージがDockerのベストプラクティスに準拠していることを確認する。</li>
-<li>プロジェクトのスプリントバージョン（バージョン＋ビルド）、オペレーティングシステム、その他の情報に従って、コンパイル環境をミラーリングする。</li>
-<li>ミラーリングしたコンパイル環境コンテナを実行し、イメージIDを環境変数としてコンテナに転送する。以下はイメージIDを取得するコマンドの例です： "docker inspect ' - type=image' - format '{{.ID}}' repository/build-env:v0.1-centos7".</li>
-<li>適切なコンパイルキャッシュツールを選択します：コードを統合してコンパイルするコンテナを入力し、適切なコンパイルキャッシュが存在するかどうかをプライベートリポジトリで確認します。存在する場合は、ダウンロードして指定したディレクトリに解凍します。すべてのコンポーネントがコンパイルされた後、コンパイルキャッシュツールによって生成されたキャッシュがパッケージ化され、プロジェクトのバージョンとイメージIDに基づいてプライベートリポジトリにアップロードされます。</li>
+<li>Add the necessary compilation dependencies to Dockerfile. Use Hadolint to perform compliance checks on Dockerfile to ensure that the image conforms to Docker’s best practices.</li>
+<li>Mirror the compilation environment according to the project sprint version (version + build), operating system, and other information.</li>
+<li>Run the mirrored compilation environment container, and transfer the image ID to the container as an environment variable. Here’s an example command for getting image ID: “docker inspect ‘ — type=image’ — format ‘{{.ID}}’ repository/build-env:v0.1-centos7”.</li>
+<li>Choose the appropriate compile cache tool: Enter your containter to integrate and compile your codes and check in your private repository if an appropriate compile cache exists. If yes, download and extract it to the specified directory. After all components are compiled, the cache generated by the compile cache tool is packaged and uploaded to your private repository based on the project version and image ID.</li>
 </ol>
 <p><br/></p>
-<h3 id="Further-compilation-optimization" class="common-anchor-header">さらなるコンパイルの最適化</h3><p>私たちの初期ビルドでは、ディスク容量とネットワーク帯域幅を占有しすぎ、デプロイに時間がかかるため、以下の対策を講じました：</p>
+<h3 id="Further-compilation-optimization" class="common-anchor-header">Further compilation optimization</h3><p>Our initially-built occupies too much disk space and network bandwidth, and takes a long time to deploy, we took the following measures:</p>
 <ol>
-<li>アルパイン、ビジーボックスなど、画像サイズを縮小するために最も無駄のないベース画像を選択する。</li>
-<li>イメージレイヤーの数を減らす。依存関係をできるだけ再利用する。複数のコマンドを"&amp;&amp;"でマージする。</li>
-<li>画像構築中の中間生成物をクリーンアップする。</li>
-<li>可能な限りイメージキャッシュを使用してイメージを構築する。</li>
+<li>Choose the leanest base image to reduce the image size, e.g. alpine, busybox, etc.</li>
+<li>Reduce the number of image layers. Reuse dependencies as much as possible. Merge multiple commands with “&amp;&amp;”.</li>
+<li>Clean up the intermediate products during image building.</li>
+<li>Use image cache to build image as much as possible.</li>
 </ol>
-<p>プロジェクトが進むにつれて、コンパイル・キャッシュが増加する一方で、一部のコンパイル・キャッシュが十分に利用されていないため、ディスク使用量とネットワーク・リソースが急増し始めました。そこで次のような調整を行った：</p>
-<p><strong>キャッシュ・ファイルの定期的なクリーンアップ</strong>- プライベート・リポジトリを定期的にチェックし（たとえばスクリプトを使用）、しばらく変更がなかったり、あまりダウンロードされていないキャッシュ・ファイルをクリーンアップする。</p>
-<p><strong>選択的なコンパイル・キャッシュ</strong>- リソースを必要とするコンパイルのみをキャッシュし、リソースをあまり必要としないコンパイルのキャッシュはスキップする。</p>
+<p>As our project continues to progress, disk usage and network resource began to soar as the compilation cache increases, while some of the compilation caches are underutilized. We then made the following adjustments:</p>
+<p><strong>Regularly clean up cache files</strong> — Regularly check the private repository (using scripts for example), and clean up cache files that have not changed for a while or have not been downloaded much.</p>
+<p><strong>Selective compile caching</strong> — Only cache resource-demanding compiles, and skip caching compiles that do not require much resource.</p>
 <p><br/></p>
-<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">コンテナ化テストの活用によるエラーの削減、安定性と信頼性の向上</h3><p>コードは、さまざまなオペレーティング・システム（CentOSやUbuntuなど）、基本的な依存関係（GCC、LLVM、CUDAなど）、特定のハードウェア・アーキテクチャを含む、さまざまな環境でコンパイルする必要があります。特定の環境で正常にコンパイルされたコードは、異なる環境では失敗する。コンテナ内でテストを実行することで、テストプロセスはより高速かつ正確になります。</p>
-<p>コンテナ化によって、テスト環境の一貫性が確保され、アプリケーションが期待通りに動作することが保証される。コンテナ化されたテスト・アプローチは、テストをイメージ・コンテナとしてパッケージ化し、真に分離されたテスト環境を構築する。私たちのテスト担当者は、このアプローチがかなり有用であることに気づき、最終的にコンパイル時間を60%も短縮することができました。</p>
-<p><strong>一貫したコンパイル環境の確保</strong>- コンパイルされた製品はシステム環境の変化に敏感であるため、異なるオペレーティング・システムでは未知のエラーが発生する可能性があります。コンパイル環境の変化に応じて、コンパイル済み製品のキャッシュにタグを付けてアーカイブする必要がありますが、分類が困難です。そこで、このような問題を解決するために、コンパイル環境を統一するコンテナ化技術を導入した。</p>
+<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Leveraging containerized testing to reduce errors, improve stability and reliability</h3><p>Codes have to be compiled in different environments, which involve variety of operating systems (e.g. CentOS and Ubuntu), underlying dependencies (e.g. GCC, LLVM, and CUDA), and specific hardware architectures. Code that successfully compiles under a specific environment fail in a different environment. By running tests inside containers, the testing process becomes faster and more accurate.</p>
+<p>Containerization ensures that the test environment is consistent, and that an application is working as expected. The containerized testing approach packages tests as image containers and builds a truly-isolated test environment. Our testers found that this approach pretty useful, which ended up reducing compile times by as much as 60%.</p>
+<p><strong>Ensure a consistent compile environment</strong> — As the compiled products are sensitive to changes in the system environment, unknown errors may occur in different operating systems. We have to tag and archive the compiled product cache according to the changes in the compile environment, but they are difficult to categorize. So we introduced containerization technology to unify the compile environment to solve such issues.</p>
 <p><br/></p>
-<h3 id="Conclusion" class="common-anchor-header">まとめ</h3><p>この記事では、プロジェクトの依存関係を分析することで、コンポーネント間およびコンポーネント内でのコンパイル最適化のためのさまざまな手法を紹介し、安定的かつ効率的な継続的コード統合を構築するためのアイデアとベストプラクティスを提供した。これらの手法は、複雑な依存関係に起因するコード統合の遅延を解決し、コンテナ内の操作を統一して環境の一貫性を確保し、コンパイル結果の再生やコンパイルキャッシュツールを使用して中間コンパイル結果をキャッシュすることでコンパイル効率を向上させるのに役立った。</p>
-<p>以上の実践により、プロジェクトのコンパイル時間は平均60%短縮され、コード統合の全体的な効率が大幅に改善された。今後は、コンポーネント間およびコンポーネント内でのコンパイルの並列化を継続し、コンパイル時間をさらに短縮していく。</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>By analyzing project dependencies, this article introduces different methods for compilation optimization between and within components, providing ideas and best practices for building stable and efficient continuous code integration. These methods helped solve slow code integration caused by complex dependencies, unify operations inside the container to ensure the consistency of the environment, and improve compilation efficiency through the playback of the compilation results and the use of compilation cache tools to cache the intermediate compilation results.</p>
+<p>This above-mentioned practices have reduced the compile time of the project by 60% on average, greatly improving the overall efficiency of code integration. Moving forward, we will continue parallelizing compilation between and within components to further reduce compilation times.</p>
 <p><br/></p>
-<p><em>本記事では、以下のソースを使用した：</em></p>
+<p><em>The following sources were used for this article:</em></p>
 <ul>
-<li>"ソースツリーをビルドレベル・コンポーネントにデカップリングする"</li>
-<li><a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">「プロジェクトにサードパーティの依存関係を追加する際に考慮すべき要因</a>"</li>
-<li>"<a href="https://queue.acm.org/detail.cfm?id=3344149">ソフトウェア依存関係を乗り切る</a>"</li>
-<li>"<a href="https://www.cc.gatech.edu/~beki/t1.pdf">依存関係を理解する：ソフトウェア開発における協調の課題の研究</a>"</li>
+<li>“Decoupling Source Trees into Build-Level Components”</li>
+<li>“<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Factors to consider when adding third party dependencies to a project</a>”</li>
+<li>“<a href="https://queue.acm.org/detail.cfm?id=3344149">Surviving Software Dependencies</a>”</li>
+<li>“<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Understanding Dependencies: A Study of the Coordination Challenges in Software Development</a>”</li>
 </ul>
 <p><br/></p>
-<h3 id="About-the-author" class="common-anchor-header">著者について</h3><p>Zhifeng ZhangはZilliz.comのシニアDevOpsエンジニアで、オープンソースのベクターデータベースであるMilvusに携わっている。広州ソフトウェア工学研究所でモノのインターネット（IoT）の学士号を取得。CI/CD、DevOps、ITインフラ管理、Cloud-Nativeツールキット、コンテナ化、コンパイルプロセスの最適化などの分野のプロジェクトに参加し、リーダーとしてキャリアを積んでいる。</p>
+<h3 id="About-the-author" class="common-anchor-header">About the author</h3><p>Zhifeng Zhang is a senior DevOps engineer at Zilliz.com working on Milvus, an open-source vector database, and authorized instructor of the LF open-source software university in China. He received his bachelor’s degree in Internet of Things (IOT) from Software Engineering Institute of Guangzhou. He spends his career participating in and leading projects in the area of CI/CD, DevOps, IT infrastructure management, Cloud-Native toolkit, containerization, and compilation process optimization.</p>

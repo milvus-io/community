@@ -1,6 +1,7 @@
 ---
 id: how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
-title: Как безопасно перейти с Milvus 2.5.x на Milvus 2.6.x
+title: |
+  How to Safely Upgrade from Milvus 2.5.x to Milvus 2.6.x
 author: Yiqing Lu
 date: 2025-12-25T00:00:00.000Z
 cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
@@ -12,16 +13,15 @@ meta_keywords: 'Milvus, vector databases, Milvus 2.6 features, Nvidia Cagra, ful
 meta_title: |
   How to Safely Upgrade from Milvus 2.5.x to Milvus 2.6.x
 desc: >-
-  Узнайте, что нового появилось в Milvus 2.6, включая изменения в архитектуре и
-  ключевые функции, а также узнайте, как выполнить скользящее обновление с
-  Milvus 2.5.
+  Explore what’s new in Milvus 2.6, including architecture changes and key
+  features, and learn how to perform a rolling upgrade from Milvus 2.5.
 origin: >-
   https://milvus.io/blog/how-to-safely-upgrade-from-milvu-2-5-x-to-milvus-2-6-x.md
 ---
-<p><a href="https://milvus.io/docs/release_notes.md"><strong>Milvus 2.6</strong></a> уже давно в продаже, и это серьезный шаг вперед для проекта. В релизе усовершенствована архитектура, повышена производительность в реальном времени, снижено потребление ресурсов и улучшено поведение при масштабировании в производственных средах. Многие из этих улучшений были сформированы непосредственно под влиянием отзывов пользователей, и первые пользователи 2.6.x уже сообщили о заметно более быстром поиске и более предсказуемой производительности системы при высоких или динамических нагрузках.</p>
-<p>Для команд, работающих с Milvus 2.5.x и рассматривающих возможность перехода на 2.6.x, это руководство является отправной точкой. В нем рассматриваются архитектурные различия, освещаются ключевые возможности, представленные в Milvus 2.6, и приводится практический пошаговый путь обновления, призванный свести к минимуму перебои в работе.</p>
-<p>Если ваши рабочие нагрузки включают конвейеры реального времени, мультимодальный или гибридный поиск или крупномасштабные векторные операции, этот блог поможет вам оценить соответствие версии 2.6 вашим потребностям и, если вы решите продолжить, уверенно перейти на новую версию, сохранив целостность данных и доступность сервисов.</p>
-<h2 id="Architecture-Changes-from-Milvus-25-to-Milvus-26" class="common-anchor-header">Изменения в архитектуре с Milvus 2.5 до Milvus 2.6<button data-href="#Architecture-Changes-from-Milvus-25-to-Milvus-26" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/docs/release_notes.md"><strong>Milvus 2.6</strong></a> has been live for a while, and it’s proving to be a solid step forward for the project. The release brings a refined architecture, stronger real-time performance, lower resource consumption, and smarter scaling behavior in production environments. Many of these improvements were shaped directly by user feedback, and early adopters of 2.6.x have already reported noticeably faster search and more predictable system performance under heavy or dynamic workloads.</p>
+<p>For teams running Milvus 2.5.x and evaluating a move to 2.6.x, this guide is your starting point. It breaks down the architectural differences, highlights the key capabilities introduced in Milvus 2.6, and provides a practical, step-by-step upgrade path designed to minimize operational disruption.</p>
+<p>If your workloads involve real-time pipelines, multimodal or hybrid search, or large-scale vector operations, this blog will help you assess whether 2.6 aligns with your needs—and, if you decide to proceed, upgrade with confidence while maintaining data integrity and service availability.</p>
+<h2 id="Architecture-Changes-from-Milvus-25-to-Milvus-26" class="common-anchor-header">Architecture Changes from Milvus 2.5 to Milvus 2.6<button data-href="#Architecture-Changes-from-Milvus-25-to-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,42 +36,46 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем перейти к самому процессу обновления, давайте сначала разберемся, как изменилась архитектура Milvus в Milvus 2.6.</p>
-<h3 id="Milvus-25-Architecture" class="common-anchor-header">Архитектура Milvus 2.5</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_5_4e228af3c4.PNG" alt="Milvus 2.5 Architecture" class="doc-image" id="milvus-2.5-architecture" />
-   </span> <span class="img-wrapper"> <span>Архитектура Milvus 2.5</span> </span></p>
-<p>В Milvus 2.5 потоковые и пакетные рабочие процессы были переплетены на нескольких рабочих узлах:</p>
+    </button></h2><p>Before diving into the upgrade workflow itself, let’s first understand how the Milvus architecture changes in Milvus 2.6.</p>
+<h3 id="Milvus-25-Architecture" class="common-anchor-header">Milvus 2.5 Architecture</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_5_4e228af3c4.PNG" alt="Milvus 2.5 Architecture" class="doc-image" id="milvus-2.5-architecture" />
+    <span>Milvus 2.5 Architecture</span>
+  </span>
+</p>
+<p>In Milvus 2.5, streaming and batch workflows were intertwined across multiple worker nodes:</p>
 <ul>
-<li><p><strong>QueryNode</strong> обрабатывал как исторические запросы <em>, так и</em> инкрементные (потоковые) запросы.</p></li>
-<li><p><strong>DataNode</strong> выполнял как промывку в момент поступления <em>, так и</em> фоновое уплотнение исторических данных.</p></li>
+<li><p><strong>QueryNode</strong> handled both historical queries <em>and</em> incremental (streaming) queries.</p></li>
+<li><p><strong>DataNode</strong> handled both ingest-time flushing <em>and</em> background compaction on historical data.</p></li>
 </ul>
-<p>Такое смешение логики пакетного и реального времени затрудняло независимое масштабирование пакетных рабочих нагрузок. Кроме того, состояние потоковых данных было разбросано по нескольким компонентам, что приводило к задержкам синхронизации, усложняло восстановление после сбоев и повышало операционную сложность.</p>
-<h3 id="Milvus-26-Architecture" class="common-anchor-header">Архитектура Milvus 2.6</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_6_ee6f1f0635.PNG" alt="Milvus 2.6 Architecture" class="doc-image" id="milvus-2.6-architecture" />
-   </span> <span class="img-wrapper"> <span>Архитектура Milvus 2.6</span> </span></p>
-<p>В Milvus 2.6 появился выделенный <strong>узел StreamingNode</strong>, который выполняет все обязанности по работе с данными в реальном времени: потребление очереди сообщений, запись инкрементных сегментов, обслуживание инкрементных запросов и управление восстановлением на основе WAL. С выделением потоковой передачи остальные компоненты приобретают более чистые и сфокусированные роли:</p>
+<p>This mixing of batch and real-time logic made it difficult to scale batch workloads independently. It also meant the streaming state was scattered across several components, introducing synchronization delays, complicating failure recovery, and increasing operational complexity.</p>
+<h3 id="Milvus-26-Architecture" class="common-anchor-header">Milvus 2.6 Architecture</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_2_6_ee6f1f0635.PNG" alt="Milvus 2.6 Architecture" class="doc-image" id="milvus-2.6-architecture" />
+    <span>Milvus 2.6 Architecture</span>
+  </span>
+</p>
+<p>Milvus 2.6 introduces a dedicated <strong>StreamingNode</strong> that handles all real-time data responsibilities: consuming the message queue, writing incremental segments, serving incremental queries, and managing WAL-based recovery. With streaming isolated, the remaining components take on cleaner, more focused roles:</p>
 <ul>
-<li><p><strong>QueryNode</strong> теперь обрабатывает <em>только</em> пакетные запросы к историческим сегментам.</p></li>
-<li><p><strong>DataNode</strong> теперь выполняет <em>только</em> задачи, связанные с историческими данными, такие как уплотнение и создание индексов.</p></li>
+<li><p><strong>QueryNode</strong> now handles <em>only</em> batch queries on historical segments.</p></li>
+<li><p><strong>DataNode</strong> now handles <em>only</em> historical data tasks such as compaction and index building.</p></li>
 </ul>
-<p>StreamingNode поглощает все задачи, связанные с потоковой передачей данных, которые в Milvus 2.5 были разделены между DataNode, QueryNode и даже Proxy, внося ясность и уменьшая межролевое разделение состояний.</p>
-<h3 id="Milvus-25x-vs-Milvus-26x-Component-by-Component-Comparison" class="common-anchor-header">Milvus 2.5.x vs Milvus 2.6.x: Сравнение по компонентам</h3><table>
+<p>The StreamingNode absorbs all streaming-related tasks that were split among DataNode, QueryNode, and even the Proxy in Milvus 2.5, bringing clarity and reducing cross-role state sharing.</p>
+<h3 id="Milvus-25x-vs-Milvus-26x-Component-by-Component-Comparison" class="common-anchor-header">Milvus 2.5.x vs Milvus 2.6.x: Component-by-Component Comparison</h3><table>
 <thead>
-<tr><th></th><th style="text-align:center"><strong>Milvus 2.5.x</strong></th><th style="text-align:center"><strong>Milvus 2.6.x</strong></th><th style="text-align:center"><strong>Что изменилось</strong></th></tr>
+<tr><th></th><th style="text-align:center"><strong>Milvus 2.5.x</strong></th><th style="text-align:center"><strong>Milvus 2.6.x</strong></th><th style="text-align:center"><strong>What Changed</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Сервисы координаторов</td><td style="text-align:center">RootCoord / QueryCoord / DataCoord (или MixCoord)</td><td style="text-align:center">MixCoord</td><td style="text-align:center">Управление метаданными и планирование задач объединены в единый MixCoord, что упрощает логику координации и снижает сложность распределения.</td></tr>
-<tr><td>Уровень доступа</td><td style="text-align:center">Прокси</td><td style="text-align:center">Прокси</td><td style="text-align:center">Запросы на запись направляются только через потоковый узел для ввода данных.</td></tr>
-<tr><td>Рабочие узлы</td><td style="text-align:center">-</td><td style="text-align:center">Узел потоковой обработки</td><td style="text-align:center">Выделенный узел потоковой обработки, отвечающий за всю логику инкрементальной обработки (растущие сегменты), включая:- инкрементное получение данных- запрос инкрементных данных- сохранение инкрементных данных в объектном хранилище- запись на основе потоков- восстановление после сбоев на основе WAL</td></tr>
-<tr><td></td><td style="text-align:center">Узел запросов</td><td style="text-align:center">Узел запросов</td><td style="text-align:center">Узел пакетной обработки, который обрабатывает запросы только к историческим данным.</td></tr>
-<tr><td></td><td style="text-align:center">Узел данных</td><td style="text-align:center">Узел данных</td><td style="text-align:center">Узел пакетной обработки, отвечающий только за исторические данные, включая уплотнение и построение индексов.</td></tr>
-<tr><td></td><td style="text-align:center">Индексный узел</td><td style="text-align:center">-</td><td style="text-align:center">Index Node объединен с Data Node, что упрощает определение ролей и топологию развертывания.</td></tr>
+<tr><td>Coordinator Services</td><td style="text-align:center">RootCoord / QueryCoord / DataCoord (or MixCoord)</td><td style="text-align:center">MixCoord</td><td style="text-align:center">Metadata management and task scheduling are consolidated into a single MixCoord, simplifying coordination logic and reducing distributed complexity.</td></tr>
+<tr><td>Access Layer</td><td style="text-align:center">Proxy</td><td style="text-align:center">Proxy</td><td style="text-align:center">Write requests are routed only through the Streaming Node for data ingestion.</td></tr>
+<tr><td>Worker Nodes</td><td style="text-align:center">—</td><td style="text-align:center">Streaming Node</td><td style="text-align:center">Dedicated streaming processing node responsible for all incremental (growing segments) logic, including:• Incremental data ingestion• Incremental data querying• Persisting incremental data to object storage• Stream-based writes• Failure recovery based on WAL</td></tr>
+<tr><td></td><td style="text-align:center">Query Node</td><td style="text-align:center">Query Node</td><td style="text-align:center">Batch-processing node that handles queries over historical data only.</td></tr>
+<tr><td></td><td style="text-align:center">Data Node</td><td style="text-align:center">Data Node</td><td style="text-align:center">Batch-processing node responsible for historical data only, including compaction and index building.</td></tr>
+<tr><td></td><td style="text-align:center">Index Node</td><td style="text-align:center">—</td><td style="text-align:center">Index Node is merged into Data Node, simplifying role definitions and deployment topology.</td></tr>
 </tbody>
 </table>
-<p>Одним словом, Milvus 2.6 проводит четкую границу между потоковыми и пакетными рабочими нагрузками, устраняя путаницу между компонентами, наблюдавшуюся в 2.5, и создавая более масштабируемую и удобную в обслуживании архитектуру.</p>
-<h2 id="Milvus-26-Feature-Highlights" class="common-anchor-header">Основные характеристики Milvus 2.6<button data-href="#Milvus-26-Feature-Highlights" class="anchor-icon" translate="no">
+<p>In short, Milvus 2.6 draws a clear line between streaming and batch workloads, eliminating the cross-component entanglement seen in 2.5 and creating a more scalable, maintainable architecture.</p>
+<h2 id="Milvus-26-Feature-Highlights" class="common-anchor-header">Milvus 2.6 Feature Highlights<button data-href="#Milvus-26-Feature-Highlights" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,29 +90,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем перейти к процессу обновления, кратко рассмотрим, что нового предлагает Milvus 2.6. <strong>В этом выпуске основное внимание уделяется снижению затрат на инфраструктуру, повышению производительности поиска и упрощению масштабирования больших динамических рабочих нагрузок ИИ.</strong></p>
-<h3 id="Cost--Efficiency-Improvements" class="common-anchor-header">Улучшения стоимости и эффективности</h3><ul>
-<li><p><strong>Квантование</strong><a href="https://milvus.io/docs/ivf-rabitq.md#RaBitQ"><strong>RaBitQ</strong></a> <strong>для первичных индексов</strong> - новый метод 1-битного квантования, который сжимает векторные индексы до <strong>1/32</strong> от их исходного размера. В сочетании с реранжированием SQ8 он сокращает использование памяти до ~28 %, увеличивает QPS на 4 × и поддерживает ~95 % запоминания, значительно снижая аппаратные затраты.</p></li>
-<li><p><a href="https://milvus.io/docs/full-text-search.md#BM25-implementation"><strong>Оптимизированный</strong></a><strong> полнотекстовый поиск</strong><a href="https://milvus.io/docs/full-text-search.md#BM25-implementation"><strong>BM25</strong></a> - встроенный скоринг BM25 на основе разреженных векторов веса терминов. Поиск по ключевым словам работает <strong>на 3-4× быстрее</strong> (до <strong>7×</strong> на некоторых наборах данных) по сравнению с Elasticsearch, при этом размер индекса составляет около трети от исходных текстовых данных.</p></li>
-<li><p><strong>Индексирование путей JSON с измельчением JSON</strong> - структурированная фильтрация по вложенному JSON теперь работает значительно быстрее и гораздо более предсказуемо. Предварительно проиндексированные пути JSON сокращают время задержки фильтрации с <strong>140 мс → 1,5 мс</strong> (P99: <strong>480 мс → 10 мс</strong>), делая гибридный векторный поиск + фильтрацию метаданных значительно более отзывчивыми.</p></li>
-<li><p><strong>Расширенная поддержка типов данных</strong> - добавлены типы векторов Int8, поля <a href="https://milvus.io/docs/geometry-field.md#Geometry-Field">геометрии</a> (POINT / LINESTRING / POLYGON) и массивы структур. Эти расширения поддерживают геопространственные рабочие нагрузки, более богатое моделирование метаданных и более чистые схемы.</p></li>
-<li><p><strong>Upsert для частичных обновлений</strong> - теперь вы можете вставлять или обновлять сущности с помощью одного вызова первичного ключа. Частичные обновления изменяют только указанные поля, уменьшая усиление записи и упрощая конвейеры, которые часто обновляют метаданные или вставки.</p></li>
+    </button></h2><p>Before getting into the upgrade workflow, here’s a quick look at what Milvus 2.6 brings to the table. <strong>This release focuses on lowering infrastructure cost, improving search performance, and making large, dynamic AI workloads easier to scale.</strong></p>
+<h3 id="Cost--Efficiency-Improvements" class="common-anchor-header">Cost &amp; Efficiency Improvements</h3><ul>
+<li><p><a href="https://milvus.io/docs/ivf-rabitq.md#RaBitQ"><strong>RaBitQ</strong></a> <strong>Quantization for Primary Indexes</strong> – A new 1-bit quantization method that compresses vector indexes to <strong>1/32</strong> of their original size. Combined with SQ8 reranking, it reduces memory usage to ~28%, boosts QPS by 4×, and maintains ~95% recall, significantly lowering hardware costs.</p></li>
+<li><p><a href="https://milvus.io/docs/full-text-search.md#BM25-implementation"><strong>BM25</strong></a><strong>-Optimized Full-Text Search</strong> – Native BM25 scoring powered by sparse term–weight vectors. Keyword search runs <strong>3–4× faster</strong> (up to <strong>7×</strong> on some datasets) compared to Elasticsearch, while keeping index size to around a third of the original text data.</p></li>
+<li><p><strong>JSON Path Indexing with JSON Shredding</strong> – Structured filtering on nested JSON is now dramatically faster and much more predictable. Pre-indexed JSON paths cut filter latency from <strong>140 ms → 1.5 ms</strong> (P99: <strong>480 ms → 10 ms</strong>), making hybrid vector search + metadata filtering significantly more responsive.</p></li>
+<li><p><strong>Expanded Data Type Support</strong> – Adds Int8 vector types, <a href="https://milvus.io/docs/geometry-field.md#Geometry-Field">Geometry</a> fields (POINT / LINESTRING / POLYGON), and Array-of-Structs. These extensions support geospatial workloads, richer metadata modeling, and cleaner schemas.</p></li>
+<li><p><strong>Upsert for Partial Updates</strong> – You can now insert or update entities using a single primary-key call. Partial updates modify only the fields provided, reducing write amplification and simplifying pipelines that frequently refresh metadata or embeddings.</p></li>
 </ul>
-<h3 id="Search-and-Retrieval-Enhancements" class="common-anchor-header">Улучшения в области поиска и извлечения информации</h3><ul>
-<li><p><strong>Улучшенная обработка текста и многоязычная поддержка:</strong> Новые токенизаторы Lindera и ICU улучшают обработку японских, корейских и <a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers">многоязычных</a> текстов. Jieba теперь поддерживает пользовательские словари. <code translate="no">run_analyzer</code> помогает отладить поведение токенизации, а мультиязычные анализаторы обеспечивают согласованный межъязыковой поиск.</p></li>
-<li><p><strong>Высокоточное сопоставление текстов:</strong> <a href="https://milvus.io/docs/phrase-match.md#Phrase-Match">Phrase Match</a> обеспечивает выполнение упорядоченных запросов по фразам с настраиваемым отклонением. Новый индекс <a href="https://milvus.io/docs/ngram.md#NGRAM">NGRAM</a> ускоряет выполнение подстрочных запросов и запросов <code translate="no">LIKE</code> как по полям VARCHAR, так и по путям JSON, обеспечивая быстрое частичное и нечеткое сопоставление текста.</p></li>
-<li><p><strong>Реранжирование с учетом времени и метаданных:</strong> <a href="https://milvus.io/docs/decay-ranker-overview.md">Ранжировщики с распадом</a> (экспоненциальный, линейный, гауссовый) корректируют оценки, используя временные метки; <a href="https://milvus.io/docs/boost-ranker.md#Boost-Ranker">ранжировщики с повышением</a> применяют правила, основанные на метаданных, для продвижения или понижения результатов. Оба способа помогают точно настроить поведение поиска без изменения базовых данных.</p></li>
-<li><p><strong>Упрощенная интеграция моделей и автовекторизация:</strong> Встроенная интеграция с OpenAI, Hugging Face и другими провайдерами встраивания позволяет Milvus автоматически векторизовать текст во время операций вставки и запроса. Больше не нужно вручную создавать конвейеры встраивания для распространенных случаев использования.</p></li>
-<li><p><strong>Онлайн-обновление схемы для скалярных полей:</strong> Добавление новых скалярных полей в существующие коллекции без простоев и перезагрузки, что упрощает эволюцию схемы по мере роста требований к метаданным.</p></li>
-<li><p><strong>Обнаружение близких дубликатов с помощью MinHash:</strong> <a href="https://milvus.io/docs/minhash-lsh.md#MINHASHLSH">MinHash</a> + LSH обеспечивает эффективное обнаружение близких дубликатов в больших наборах данных без дорогостоящих точных сравнений.</p></li>
+<h3 id="Search-and-Retrieval-Enhancements" class="common-anchor-header">Search and Retrieval Enhancements</h3><ul>
+<li><p><strong>Improved Text Processing &amp; Multilingual Support:</strong> New Lindera and ICU tokenizers improve Japanese, Korean, and <a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers">multi-language</a> text handling. Jieba now supports custom dictionaries. <code translate="no">run_analyzer</code> helps debug tokenization behavior, and multi-language analyzers ensure consistent cross-language search.</p></li>
+<li><p><strong>High-Precision Text Matching:</strong> <a href="https://milvus.io/docs/phrase-match.md#Phrase-Match">Phrase Match</a> enforces ordered phrase queries with configurable slop. The new <a href="https://milvus.io/docs/ngram.md#NGRAM">NGRAM</a> index accelerates substring and <code translate="no">LIKE</code> queries on both VARCHAR fields and JSON paths, enabling fast partial-text and fuzzy matching.</p></li>
+<li><p><strong>Time-Aware and Metadata-Aware Reranking:</strong> <a href="https://milvus.io/docs/decay-ranker-overview.md">Decay Rankers</a> (exponential, linear, Gaussian) adjust scores using timestamps; <a href="https://milvus.io/docs/boost-ranker.md#Boost-Ranker">Boost Rankers</a> apply metadata-driven rules to promote or demote results. Both help fine-tune retrieval behavior without changing your underlying data.</p></li>
+<li><p><strong>Simplified Model Integration &amp; Auto-Vectorization:</strong> Built-in integrations with OpenAI, Hugging Face, and other embedding providers let Milvus automatically vectorize text during insert and query operations. No more manual embedding pipelines for common use cases.</p></li>
+<li><p><strong>Online Schema Updates for Scalar Fields:</strong> Add new scalar fields to existing collections without downtime or reloads, simplifying schema evolution as metadata requirements grow.</p></li>
+<li><p><strong>Near-Duplicate Detection with MinHash:</strong> <a href="https://milvus.io/docs/minhash-lsh.md#MINHASHLSH">MinHash</a> + LSH enables efficient near-duplicate detection across large datasets without expensive exact comparisons.</p></li>
 </ul>
-<h3 id="Architecture-and-Scalability-Upgrades" class="common-anchor-header">Обновления архитектуры и масштабируемости</h3><ul>
-<li><p><a href="https://milvus.io/docs/tiered-storage-overview.md#Tiered-Storage-Overview"><strong>Многоуровневое хранилище</strong></a> <strong>для управления "горячими" и "холодными" данными:</strong> Разделение горячих и холодных данных между SSD и объектными хранилищами; поддержка ленивой и частичной загрузки; устранение необходимости полной локальной загрузки коллекций; снижение использования ресурсов до 50 % и ускорение загрузки больших наборов данных.</p></li>
-<li><p><strong>Служба потоковой передачи данных в режиме реального времени:</strong> Добавляет выделенные узлы потоковой передачи, интегрированные с Kafka/Pulsar, для непрерывного ввода данных; обеспечивает немедленное индексирование и доступность запросов; повышает пропускную способность записи и ускоряет восстановление после сбоев для быстро меняющихся рабочих нагрузок в режиме реального времени.</p></li>
-<li><p><strong>Улучшенная масштабируемость и стабильность:</strong> Milvus теперь поддерживает 100 000+ коллекций для крупных многопользовательских сред. Обновления инфраструктуры - <a href="https://milvus.io/docs/woodpecker_architecture.md#Woodpecker">Woodpecker</a> (WAL с нулевым диском), <a href="https://milvus.io/docs/roadmap.md#%F0%9F%94%B9-HotCold-Tiering--Storage-Architecture-StorageV2">Storage v2</a> (уменьшение IOPS/памяти) и <a href="https://milvus.io/docs/release_notes.md#Coordinator-Merge-into-MixCoord">Coordinator Merge</a> - повышают стабильность кластера и обеспечивают предсказуемое масштабирование при высоких рабочих нагрузках.</p></li>
+<h3 id="Architecture-and-Scalability-Upgrades" class="common-anchor-header">Architecture and Scalability Upgrades</h3><ul>
+<li><p><a href="https://milvus.io/docs/tiered-storage-overview.md#Tiered-Storage-Overview"><strong>Tiered Storage</strong></a> <strong>for Hot–Cold Data Management:</strong> Separates hot and cold data across SSD and object storage; supports lazy and partial loading; eliminates the need to fully load collections locally; reduces resource usage by up to 50% and speeds up load times for large datasets.</p></li>
+<li><p><strong>Real-Time Streaming Service:</strong> Adds dedicated Streaming Nodes integrated with Kafka/Pulsar for continuous ingestion; enables immediate indexing and query availability; improves write throughput and accelerates failure recovery for real-time, fast-changing workloads.</p></li>
+<li><p><strong>Enhanced Scalability &amp; Stability:</strong> Milvus now supports 100,000+ collections for large multi-tenant environments. Infrastructure upgrades — <a href="https://milvus.io/docs/woodpecker_architecture.md#Woodpecker">Woodpecker</a> (zero-disk WAL), <a href="https://milvus.io/docs/roadmap.md#%F0%9F%94%B9-HotCold-Tiering--Storage-Architecture-StorageV2">Storage v2</a> (reduced IOPS/memory), and the <a href="https://milvus.io/docs/release_notes.md#Coordinator-Merge-into-MixCoord">Coordinator Merge</a> — improve cluster stability and enable predictable scaling under heavy workloads.</p></li>
 </ul>
-<p>Полный список функций Milvus 2.6 можно найти в <a href="https://milvus.io/docs/release_notes.md">примечаниях к выпуску Milvus</a>.</p>
-<h2 id="How-to-Upgrade-from-Milvus-25x-to-Milvus-26x" class="common-anchor-header">Как перейти с Milvus 2.5.x на Milvus 2.6.x<button data-href="#How-to-Upgrade-from-Milvus-25x-to-Milvus-26x" class="anchor-icon" translate="no">
+<p>For a complete list of Milvus 2.6 features, check out the <a href="https://milvus.io/docs/release_notes.md">Milvus release notes</a>.</p>
+<h2 id="How-to-Upgrade-from-Milvus-25x-to-Milvus-26x" class="common-anchor-header">How to Upgrade from Milvus 2.5.x to Milvus 2.6.x<button data-href="#How-to-Upgrade-from-Milvus-25x-to-Milvus-26x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,26 +127,26 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Чтобы сохранить максимальную доступность системы во время обновления, кластеры Milvus 2.5 следует обновлять до Milvus 2.6 в следующем порядке.</p>
-<p><strong>1. Сначала запустите узел потоковой передачи</strong></p>
-<p>Запустите узел потоковой передачи заранее. Новый <strong>Delegator</strong> (компонент в Query Node, отвечающий за обработку потоковых данных) должен быть перемещен в Milvus 2.6 Streaming Node.</p>
-<p><strong>2. Обновление MixCoord</strong></p>
-<p>Обновите компоненты координатора до <strong>MixCoord</strong>. На этом этапе MixCoord должен определить версии рабочих узлов, чтобы обеспечить кросс-версионную совместимость в распределенной системе.</p>
-<p><strong>3. Обновление узла запросов</strong></p>
-<p>Обновление узла запросов обычно занимает больше времени. На этом этапе узлы данных и индексные узлы Milvus 2.5 могут продолжать выполнять такие операции, как промывка и построение индексов, что помогает снизить нагрузку на сторону запроса во время обновления узлов запроса.</p>
-<p><strong>4. Обновление узла данных</strong></p>
-<p>После того как узлы данных Milvus 2.5 будут выведены из сети, операции Flush станут недоступны, а данные в растущих сегментах могут продолжать накапливаться до тех пор, пока все узлы не будут полностью обновлены до Milvus 2.6.</p>
-<p><strong>5. Обновление прокси-сервера</strong></p>
-<p>После обновления прокси до Milvus 2.6 операции записи на этом прокси будут недоступны до тех пор, пока все компоненты кластера не будут обновлены до версии 2.6.</p>
-<p><strong>6. Удалите индексный узел</strong></p>
-<p>После обновления всех остальных компонентов автономный индексный узел можно безопасно удалить.</p>
-<p><strong>Примечания:</strong></p>
+    </button></h2><p>To keep the system as available as possible during the upgrade, Milvus 2.5 clusters should be upgraded to Milvus 2.6 in the following order.</p>
+<p><strong>1. Start the Streaming Node first</strong></p>
+<p>Start the Streaming Node in advance. The new <strong>Delegator</strong> (the component in the Query Node responsible for streaming data handling) must be moved to the Milvus 2.6 Streaming Node.</p>
+<p><strong>2. Upgrade MixCoord</strong></p>
+<p>Upgrade the coordinator components to <strong>MixCoord</strong>. During this step, MixCoord needs to detect the versions of Worker Nodes in order to handle cross-version compatibility within the distributed system.</p>
+<p><strong>3. Upgrade the Query Node</strong></p>
+<p>Query Node upgrades typically take longer. During this phase, Milvus 2.5 Data Nodes and Index Nodes can continue handling operations such as Flush and Index building, helping reduce query-side pressure while Query Nodes are being upgraded.</p>
+<p><strong>4. Upgrade the Data Node</strong></p>
+<p>Once Milvus 2.5 DataNodes are taken offline, Flush operations become unavailable, and data in Growing Segments may continue to accumulate until all nodes are fully upgraded to Milvus 2.6.</p>
+<p><strong>5. Upgrade the Proxy</strong></p>
+<p>After upgrading a Proxy to Milvus 2.6, write operations on that Proxy will remain unavailable until all cluster components are upgraded to 2.6.</p>
+<p><strong>6. Remove the Index Node</strong></p>
+<p>Once all other components are upgraded, the standalone Index Node can be safely removed.</p>
+<p><strong>Notes:</strong></p>
 <ul>
-<li><p>С момента завершения обновления DataNode и до завершения обновления Proxy операции Flush недоступны.</p></li>
-<li><p>С момента обновления первого Proxy до обновления всех узлов Proxy некоторые операции записи будут недоступны.</p></li>
-<li><p><strong>При обновлении непосредственно с Milvus 2.5.x до 2.6.6 операции DDL (Data Definition Language) будут недоступны в процессе обновления из-за изменений в структуре DDL.</strong></p></li>
+<li><p>From the completion of the DataNode upgrade until the completion of the Proxy upgrade, Flush operations are unavailable.</p></li>
+<li><p>From the time the first Proxy is upgraded until all Proxy nodes are upgraded, some write operations are unavailable.</p></li>
+<li><p><strong>When upgrading directly from Milvus 2.5.x to 2.6.6, DDL (Data Definition Language) operations are unavailable during the upgrade process due to changes in the DDL framework.</strong></p></li>
 </ul>
-<h2 id="How-to-Upgrade-to-Milvus-26-with-Milvus-Operator" class="common-anchor-header">Как обновиться до Milvus 2.6 с помощью Milvus Operator<button data-href="#How-to-Upgrade-to-Milvus-26-with-Milvus-Operator" class="anchor-icon" translate="no">
+<h2 id="How-to-Upgrade-to-Milvus-26-with-Milvus-Operator" class="common-anchor-header">How to Upgrade to Milvus 2.6 with Milvus Operator<button data-href="#How-to-Upgrade-to-Milvus-26-with-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -157,14 +161,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/milvus-operator">Milvus Operator</a> - это оператор Kubernetes с открытым исходным кодом, который обеспечивает масштабируемый, высокодоступный способ развертывания, управления и обновления всего стека сервисов Milvus на целевом кластере Kubernetes. Стек сервисов Milvus, управляемый оператором, включает в себя:</p>
+    </button></h2><p><a href="https://github.com/zilliztech/milvus-operator">Milvus Operator</a> is an open-source Kubernetes operator that provides a scalable, highly available way to deploy, manage, and upgrade the entire Milvus service stack on a target Kubernetes cluster. The Milvus service stack managed by the operator includes:</p>
 <ul>
-<li><p>основные компоненты Milvus</p></li>
-<li><p>Необходимые зависимости, такие как etcd, Pulsar и MinIO.</p></li>
+<li><p>Core Milvus components</p></li>
+<li><p>Required dependencies such as etcd, Pulsar, and MinIO</p></li>
 </ul>
-<p>Milvus Operator следует стандартному шаблону Kubernetes Operator. Он представляет Milvus Custom Resource (CR), который описывает желаемое состояние кластера Milvus, такое как его версия, топология и конфигурация.</p>
-<p>Контроллер постоянно следит за кластером и сверяет фактическое состояние с желаемым, определенным в CR. При внесении изменений (например, обновлении версии Milvus) оператор автоматически применяет их контролируемым и повторяющимся образом, обеспечивая автоматическое обновление и непрерывное управление жизненным циклом.</p>
-<h3 id="Milvus-Custom-Resource-CR-Example" class="common-anchor-header">Пример пользовательского ресурса (CR) Milvus</h3><pre><code translate="no">apiVersion: milvus.io/v1beta1
+<p>Milvus Operator follows the standard Kubernetes Operator pattern. It introduces a Milvus Custom Resource (CR) that describes the desired state of a Milvus cluster, such as its version, topology, and configuration.</p>
+<p>A controller continuously monitors the cluster and reconciles the actual state with the desired state defined in the CR. When changes are made—such as upgrading the Milvus version—the operator automatically applies them in a controlled and repeatable way, enabling automated upgrades and ongoing lifecycle management.</p>
+<h3 id="Milvus-Custom-Resource-CR-Example" class="common-anchor-header">Milvus Custom Resource (CR) Example</h3><pre><code translate="no">apiVersion: milvus.io/v1beta1
 kind: Milvus
 metadata:
   name: my-milvus-mansion    
@@ -209,21 +213,21 @@ spec:
     dataCoord:
       enableActiveStandby: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Rolling-Upgrades-from-Milvus-25-to-26-with-Milvus-Operator" class="common-anchor-header">Скользящее обновление с Milvus 2.5 до 2.6 с помощью Milvus Operator</h3><p>Milvus Operator обеспечивает встроенную поддержку <strong>скользящих обновлений с Milvus 2.5 до 2.6</strong> в кластерном режиме, адаптируя свое поведение для учета архитектурных изменений, представленных в 2.6.</p>
-<p><strong>1. Обнаружение сценариев обновления</strong></p>
-<p>Во время обновления Milvus Operator определяет целевую версию Milvus по спецификации кластера. Это делается либо путем:</p>
+<h3 id="Rolling-Upgrades-from-Milvus-25-to-26-with-Milvus-Operator" class="common-anchor-header">Rolling Upgrades from Milvus 2.5 to 2.6 with Milvus Operator</h3><p>Milvus Operator provides built-in support for <strong>rolling upgrades from Milvus 2.5 to 2.6</strong> in cluster mode, adapting its behavior to account for architectural changes introduced in 2.6.</p>
+<p><strong>1. Upgrade Scenario Detection</strong></p>
+<p>During an upgrade, Milvus Operator determines the target Milvus version from the cluster specification. This is done by either:</p>
 <ul>
-<li><p>Проверки тега изображения, определенного в <code translate="no">spec.components.image</code>, или</p></li>
-<li><p>чтения явной версии, указанной в <code translate="no">spec.components.version</code></p></li>
+<li><p>Inspecting the image tag defined in <code translate="no">spec.components.image</code>, or</p></li>
+<li><p>Reading the explicit version specified in <code translate="no">spec.components.version</code></p></li>
 </ul>
-<p>Затем оператор сравнивает желаемую версию с текущей версией, которая записана в <code translate="no">status.currentImage</code> или <code translate="no">status.currentVersion</code>. Если текущая версия - 2.5, а желаемая - 2.6, оператор идентифицирует обновление как сценарий обновления 2.5 → 2.6.</p>
-<p><strong>2. Порядок выполнения скользящего обновления</strong></p>
-<p>Когда обнаружено обновление 2.5 → 2.6 и режим обновления установлен на скользящее обновление (<code translate="no">spec.components.imageUpdateMode: rollingUpgrade</code>, которое используется по умолчанию), Milvus Operator автоматически выполняет обновление в заранее определенном порядке, согласованном с архитектурой Milvus 2.6:</p>
-<p>Запуск узла потоковой передачи → Обновление MixCoord → Обновление узла запросов → Обновление узла данных → Обновление прокси → Удаление индексного узла.</p>
-<p><strong>3. Автоматическая консолидация координаторов</strong></p>
-<p>В Milvus 2.6 несколько компонентов координатора заменяются одним MixCoord. Milvus Operator обрабатывает этот архитектурный переход автоматически.</p>
-<p>Когда <code translate="no">spec.components.mixCoord</code> настроен, оператор вызывает MixCoord и ждет, пока он будет готов. После того как MixCoord полностью готов к работе, оператор плавно отключает устаревшие компоненты координатора - RootCoord, QueryCoord и DataCoord, завершая переход без необходимости ручного вмешательства.</p>
-<h3 id="Upgrade-Steps-from-Milvus-25-to-26" class="common-anchor-header">Этапы перехода с Milvus 2.5 на 2.6</h3><p>1.Обновите Milvus Operator до последней версии (в данном руководстве мы используем <strong>версию 1.3.3</strong>, которая была последней на момент написания статьи).</p>
+<p>The operator then compares this desired version with the currently running version, which is recorded in <code translate="no">status.currentImage</code> or <code translate="no">status.currentVersion</code>. If the current version is 2.5 and the desired version is 2.6, the operator identifies the upgrade as a 2.5 → 2.6 upgrade scenario.</p>
+<p><strong>2. Rolling Upgrade Execution Order</strong></p>
+<p>When a 2.5 → 2.6 upgrade is detected and the upgrade mode is set to rolling upgrade (<code translate="no">spec.components.imageUpdateMode: rollingUpgrade</code>, which is the default), Milvus Operator automatically performs the upgrade in a predefined order aligned with the Milvus 2.6 architecture:</p>
+<p>Start the Streaming Node → Upgrade MixCoord → Upgrade the Query Node → Upgrade the Data Node → Upgrade the Proxy → Remove the Index Node</p>
+<p><strong>3. Automatic Coordinator Consolidation</strong></p>
+<p>Milvus 2.6 replaces multiple coordinator components with a single MixCoord. Milvus Operator handles this architectural transition automatically.</p>
+<p>When <code translate="no">spec.components.mixCoord</code> is configured, the operator brings up MixCoord and waits until it becomes ready. Once MixCoord is fully operational, the operator gracefully shuts down the legacy coordinator components—RootCoord, QueryCoord, and DataCoord—completing the migration without requiring any manual intervention.</p>
+<h3 id="Upgrade-Steps-from-Milvus-25-to-26" class="common-anchor-header">Upgrade Steps from Milvus 2.5 to 2.6</h3><p>1.Upgrade Milvus Operator to the latest version (In this guide, we use <strong>version 1.3.3</strong>, which was the latest release at the time of writing.)</p>
 <pre><code translate="no"><span class="hljs-comment"># Option 1: Using Helm</span>
 helm upgrade --install milvus-operator \
   -n milvus-operator --create-namespace \
@@ -231,7 +235,7 @@ helm upgrade --install milvus-operator \
  <span class="hljs-comment"># Option 2: Using kubectl &amp; raw manifests</span>
  kubectl apply -f https://raw.githubusercontent.com/zilliztech/milvus-operator/v1.3.3/deploy/manifests/deployment.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>2.Объедините компоненты координатора</p>
+<p>2.Merge coordinator components</p>
 <pre><code translate="no">kubectl patch milvus my-release -n demo-operator --<span class="hljs-built_in">type</span>=merge -p <span class="hljs-string">&#x27;
 {
   &quot;spec&quot;: {
@@ -243,7 +247,7 @@ helm upgrade --install milvus-operator \
   }
 }&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3.Убедитесь, что кластер работает под управлением Milvus 2.5.16 или более поздней версии.</p>
+<p>3.Ensure the cluster is running Milvus 2.5.16 or later</p>
 <pre><code translate="no">kubectl patch milvus my-release -n demo-operator --<span class="hljs-built_in">type</span>=merge -p <span class="hljs-string">&#x27;
 {
   &quot;spec&quot;: {
@@ -255,7 +259,7 @@ helm upgrade --install milvus-operator \
 <span class="hljs-comment"># wait till updated</span>
 kubectl <span class="hljs-built_in">wait</span> milvus my-release -n demo-operator --<span class="hljs-keyword">for</span>=condition=milvusupdated --<span class="hljs-built_in">timeout</span>=1h
 <button class="copy-code-btn"></button></code></pre>
-<p>4.Обновите Milvus до версии 2.6.</p>
+<p>4.Upgrade Milvus to version 2.6</p>
 <pre><code translate="no">kubectl patch milvus my-release -n demo-operator --<span class="hljs-built_in">type</span>=merge -p <span class="hljs-string">&#x27;
 {
   &quot;spec&quot;: {
@@ -267,7 +271,7 @@ kubectl <span class="hljs-built_in">wait</span> milvus my-release -n demo-operat
 <span class="hljs-comment"># wait till updated</span>
 kubectl <span class="hljs-built_in">wait</span> milvus my-release -n demo-operator --<span class="hljs-keyword">for</span>=condition=milvusupdated --<span class="hljs-built_in">timeout</span>=1h
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="How-to-Upgrade-to-Milvus-26-with-Helm" class="common-anchor-header">Как обновить Milvus до версии 2.6 с помощью Helm<button data-href="#How-to-Upgrade-to-Milvus-26-with-Helm" class="anchor-icon" translate="no">
+<h2 id="How-to-Upgrade-to-Milvus-26-with-Helm" class="common-anchor-header">How to Upgrade to Milvus 2.6 with Helm<button data-href="#How-to-Upgrade-to-Milvus-26-with-Helm" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -282,18 +286,18 @@ kubectl <span class="hljs-built_in">wait</span> milvus my-release -n demo-operat
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>При развертывании Milvus с помощью Helm все ресурсы Kubernetes <code translate="no">Deployment</code> обновляются параллельно, без гарантированного порядка выполнения. В результате Helm не обеспечивает строгого контроля над последовательностью обновления компонентов. Поэтому для производственных сред настоятельно рекомендуется использовать Milvus Operator.</p>
-<p>Milvus по-прежнему можно обновить с 2.5 до 2.6 с помощью Helm, выполнив следующие шаги.</p>
-<p>Системные требования</p>
+    </button></h2><p>When deploying Milvus using Helm, all Kubernetes <code translate="no">Deployment</code> resources are updated in parallel, without a guaranteed execution order. As a result, Helm does not provide strict control over rolling upgrade sequences across components. For production environments, using Milvus Operator is therefore strongly recommended.</p>
+<p>Milvus can still be upgraded from 2.5 to 2.6 using Helm by following the steps below.</p>
+<p>System Requirements</p>
 <ul>
-<li><p><strong>Версия Helm:</strong> ≥ 3.14.0</p></li>
-<li><p><strong>Версия Kubernetes:</strong> ≥ 1.20.0</p></li>
+<li><p><strong>Helm version:</strong> ≥ 3.14.0</p></li>
+<li><p><strong>Kubernetes version:</strong> ≥ 1.20.0</p></li>
 </ul>
-<p>1.Обновите таблицу Milvus Helm до последней версии. В этом руководстве мы используем <strong>версию 5.0.7</strong>, которая была последней на момент написания руководства.</p>
+<p>1.Upgrade the Milvus Helm chart to the latest version. In this guide, we use <strong>chart version 5.0.7</strong>, which was the latest at the time of writing.</p>
 <pre><code translate="no">helm repo <span class="hljs-keyword">add</span> zilliztech https:<span class="hljs-comment">//zilliztech.github.io/milvus-helm</span>
 helm repo update
 <button class="copy-code-btn"></button></code></pre>
-<p>2.Если кластер развернут с несколькими компонентами координаторов, сначала обновите Milvus до версии 2.5.16 или более поздней и включите MixCoord.</p>
+<p>2.If the cluster is deployed with multiple coordinator components, first upgrade Milvus to version 2.5.16 or later and enable MixCoord.</p>
 <pre><code translate="no">mixCoordinator
 。
 helm upgrade -i my-release zilliztech/milvus \
@@ -310,7 +314,7 @@ helm upgrade -i my-release zilliztech/milvus \
   --version=5.0.7 \
   --<span class="hljs-built_in">wait</span> --<span class="hljs-built_in">timeout</span> 1h
 <button class="copy-code-btn"></button></code></pre>
-<p>3.Обновите Milvus до версии 2.6.</p>
+<p>3.Upgrade Milvus to version 2.6</p>
 <pre><code translate="no">helm upgrade my-release zilliztech/milvus \
   --namespace=helm-demo \
   --<span class="hljs-built_in">set</span> image.all.tag=<span class="hljs-string">&quot;v2.6.5&quot;</span> \
@@ -320,7 +324,7 @@ helm upgrade -i my-release zilliztech/milvus \
   --version=5.0.7 \
   --<span class="hljs-built_in">wait</span> --<span class="hljs-built_in">timeout</span> 1h
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="FAQ-on-Milvus-26-Upgrade-and-Operations" class="common-anchor-header">Часто задаваемые вопросы по обновлению и работе Milvus 2.6<button data-href="#FAQ-on-Milvus-26-Upgrade-and-Operations" class="anchor-icon" translate="no">
+<h2 id="FAQ-on-Milvus-26-Upgrade-and-Operations" class="common-anchor-header">FAQ on Milvus 2.6 Upgrade and Operations<button data-href="#FAQ-on-Milvus-26-Upgrade-and-Operations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -335,35 +339,35 @@ helm upgrade -i my-release zilliztech/milvus \
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Q1-Milvus-Helm-vs-Milvus-Operator--which-one-should-I-use" class="common-anchor-header">Q1: Milvus Helm против Milvus Operator - какой из них мне использовать?</h3><p>Для производственных сред настоятельно рекомендуется использовать Milvus Operator.</p>
-<p>Подробности см. в официальном руководстве: <a href="https://github.com/zilliztech/milvus-operator?tab=readme-ov-file#milvus-operator-vs-helm">https://github.com/zilliztech/milvus-operator?tab=readme-ov-file#milvus-operator-vs-helm</a>.</p>
-<h3 id="Q2-How-should-I-choose-a-Message-Queue-MQ" class="common-anchor-header">Q2: Как выбрать очередь сообщений (MQ)?</h3><p>Рекомендуемый MQ зависит от режима развертывания и операционных требований:</p>
-<p><strong>1. Автономный режим:</strong> Для экономичных развертываний рекомендуется RocksMQ.</p>
-<p><strong>2. Кластерный режим</strong></p>
+    </button></h2><h3 id="Q1-Milvus-Helm-vs-Milvus-Operator--which-one-should-I-use" class="common-anchor-header">Q1: Milvus Helm vs. Milvus Operator — which one should I use?</h3><p>For production environments, Milvus Operator is strongly recommended.</p>
+<p>Refer to the official guide for details: <a href="https://github.com/zilliztech/milvus-operator?tab=readme-ov-file#milvus-operator-vs-helm">https://github.com/zilliztech/milvus-operator?tab=readme-ov-file#milvus-operator-vs-helm</a></p>
+<h3 id="Q2-How-should-I-choose-a-Message-Queue-MQ" class="common-anchor-header">Q2: How should I choose a Message Queue (MQ)?</h3><p>The recommended MQ depends on the deployment mode and operational requirements:</p>
+<p><strong>1. Standalone mode:</strong> For cost-sensitive deployments, RocksMQ is recommended.</p>
+<p><strong>2. Cluster mode</strong></p>
 <ul>
-<li><p><strong>Pulsar</strong> поддерживает многопользовательский режим, позволяет большим кластерам совместно использовать инфраструктуру и обеспечивает высокую горизонтальную масштабируемость.</p></li>
-<li><p><strong>Kafka</strong> имеет более развитую экосистему, с управляемыми SaaS-предложениями, доступными на большинстве основных облачных платформ.</p></li>
+<li><p><strong>Pulsar</strong> supports multi-tenancy, allows large clusters to share infrastructure, and offers strong horizontal scalability.</p></li>
+<li><p><strong>Kafka</strong> has a more mature ecosystem, with managed SaaS offerings available on most major cloud platforms.</p></li>
 </ul>
-<p><strong>3. Woodpecker (представлен в Milvus 2.6):</strong> Woodpecker устраняет необходимость во внешней очереди сообщений, снижая стоимость и эксплуатационную сложность.</p>
+<p><strong>3. Woodpecker (introduced in Milvus 2.6):</strong> Woodpecker removes the need for an external message queue, reducing cost and operational complexity.</p>
 <ul>
-<li><p>В настоящее время поддерживается только встроенный режим Woodpecker, который является легким и простым в управлении.</p></li>
-<li><p>Для автономных развертываний Milvus 2.6 рекомендуется использовать Woodpecker.</p></li>
-<li><p>Для развертывания производственных кластеров рекомендуется использовать будущий кластерный режим Woodpecker, как только он станет доступен.</p></li>
+<li><p>Currently, only the embedded Woodpecker mode is supported, which is lightweight and easy to operate.</p></li>
+<li><p>For Milvus 2.6 standalone deployments, Woodpecker is recommended.</p></li>
+<li><p>For production cluster deployments, it is recommended to use the upcoming Woodpecker cluster mode once it becomes available.</p></li>
 </ul>
-<h3 id="Q3-Can-the-Message-Queue-be-switched-during-an-upgrade" class="common-anchor-header">Вопрос 3: Можно ли переключать очередь сообщений во время обновления?</h3><p>Нет. Переключение очереди сообщений во время обновления в настоящее время не поддерживается. В будущих выпусках будут представлены API-интерфейсы управления для поддержки переключения между Pulsar, Kafka, Woodpecker и RocksMQ.</p>
-<h3 id="Q4-Do-rate-limiting-configurations-need-to-be-updated-for-Milvus-26" class="common-anchor-header">Вопрос 4: Нужно ли обновлять конфигурации ограничения скорости для Milvus 2.6?</h3><p>Нет. Существующие конфигурации ограничения скорости остаются в силе и также применяются к новому потоковому узлу. Никаких изменений не требуется.</p>
-<h3 id="Q5-After-the-coordinator-merge-do-monitoring-roles-or-configurations-change" class="common-anchor-header">Вопрос 5: Изменяются ли роли или конфигурации мониторинга после слияния координаторов?</h3><ul>
-<li><p>Роли мониторинга остаются неизменными (<code translate="no">RootCoord</code>, <code translate="no">QueryCoord</code>, <code translate="no">DataCoord</code>).</p></li>
-<li><p>Существующие параметры конфигурации продолжают работать как прежде.</p></li>
-<li><p>Вводится новый параметр конфигурации, <code translate="no">mixCoord.enableActiveStandby</code>, который будет возвращаться к <code translate="no">rootcoord.enableActiveStandby</code>, если он не задан явно.</p></li>
+<h3 id="Q3-Can-the-Message-Queue-be-switched-during-an-upgrade" class="common-anchor-header">Q3: Can the Message Queue be switched during an upgrade?</h3><p>No. Switching the Message Queue during an upgrade is not currently supported. Future releases will introduce management APIs to support switching between Pulsar, Kafka, Woodpecker, and RocksMQ.</p>
+<h3 id="Q4-Do-rate-limiting-configurations-need-to-be-updated-for-Milvus-26" class="common-anchor-header">Q4: Do rate-limiting configurations need to be updated for Milvus 2.6?</h3><p>No. Existing rate-limiting configurations remain effective and also apply to the new Streaming Node. No changes are required.</p>
+<h3 id="Q5-After-the-coordinator-merge-do-monitoring-roles-or-configurations-change" class="common-anchor-header">Q5: After the coordinator merge, do monitoring roles or configurations change?</h3><ul>
+<li><p>Monitoring roles remain unchanged (<code translate="no">RootCoord</code>, <code translate="no">QueryCoord</code>, <code translate="no">DataCoord</code>).</p></li>
+<li><p>Existing configuration options continue to work as before.</p></li>
+<li><p>A new configuration option, <code translate="no">mixCoord.enableActiveStandby</code>, is introduced and will fall back to <code translate="no">rootcoord.enableActiveStandby</code> if not explicitly set.</p></li>
 </ul>
-<h3 id="Q6-What-are-the-recommended-resource-settings-for-StreamingNode" class="common-anchor-header">Q6: Каковы рекомендуемые настройки ресурсов для StreamingNode?</h3><ul>
-<li><p>Для легкой обработки данных в реальном времени или периодической записи и запросов достаточно небольшой конфигурации, например, 2 ядра CPU и 8 ГБ памяти.</p></li>
-<li><p>При интенсивной обработке данных в реальном времени или постоянных нагрузках, связанных с записью и запросами, рекомендуется выделять ресурсы, сопоставимые с ресурсами узла Query Node.</p></li>
+<h3 id="Q6-What-are-the-recommended-resource-settings-for-StreamingNode" class="common-anchor-header">Q6: What are the recommended resource settings for StreamingNode?</h3><ul>
+<li><p>For light real-time ingestion or occasional write-and-query workloads, a smaller configuration, such as 2 CPU cores and 8 GB of memory, is sufficient.</p></li>
+<li><p>For heavy real-time ingestion or continuous write-and-query workloads, it is recommended to allocate resources comparable to those of the Query Node.</p></li>
 </ul>
-<h3 id="Q7-How-do-I-upgrade-a-standalone-deployment-using-Docker-Compose" class="common-anchor-header">Вопрос 7: Как обновить автономное развертывание с помощью Docker Compose?</h3><p>Для автономных развертываний на базе Docker Compose достаточно обновить тег образа Milvus в <code translate="no">docker-compose.yaml</code>.</p>
-<p>Подробности см. в официальном руководстве: <a href="https://milvus.io/docs/upgrade_milvus_standalone-docker.md">https://milvus.io/docs/upgrade_milvus_standalone-docker.md</a>.</p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="Q7-How-do-I-upgrade-a-standalone-deployment-using-Docker-Compose" class="common-anchor-header">Q7: How do I upgrade a standalone deployment using Docker Compose?</h3><p>For Docker Compose–based standalone deployments, simply update the Milvus image tag in <code translate="no">docker-compose.yaml</code>.</p>
+<p>Refer to the official guide for details: <a href="https://milvus.io/docs/upgrade_milvus_standalone-docker.md">https://milvus.io/docs/upgrade_milvus_standalone-docker.md</a></p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -378,11 +382,11 @@ helm upgrade -i my-release zilliztech/milvus \
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 знаменует собой значительное улучшение как архитектуры, так и операций. Разделив потоковую и пакетную обработку с помощью StreamingNode, объединив координаторы в MixCoord и упростив роли рабочих, Milvus 2.6 обеспечивает более стабильную, масштабируемую и простую в эксплуатации основу для крупномасштабных векторных рабочих нагрузок.</p>
-<p>Эти архитектурные изменения делают обновления - особенно с Milvus 2.5 - более чувствительными к порядку. Успешное обновление зависит от соблюдения зависимостей компонентов и временных ограничений доступности. Для производственных сред рекомендуется использовать Milvus Operator, поскольку он автоматизирует последовательность обновлений и снижает операционный риск, в то время как обновления на базе Helm лучше подходят для непроизводственных сред.</p>
-<p>Благодаря расширенным возможностям поиска, более богатым типам данных, многоуровневому хранению и улучшенным опциям очередей сообщений Milvus 2.6 имеет все шансы поддержать современные приложения искусственного интеллекта, требующие ввода данных в реальном времени, высокой производительности запросов и эффективных операций в масштабе.</p>
-<p>У вас есть вопросы или вы хотите получить подробную информацию о любой функции последней версии Milvus? Присоединяйтесь к нашему<a href="https://discord.com/invite/8uyFbECzPX"> каналу Discord</a> или создавайте проблемы на<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Вы также можете заказать 20-минутный индивидуальный сеанс, чтобы получить знания, рекомендации и ответы на свои вопросы в<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<h2 id="More-Resources-about-Milvus-26" class="common-anchor-header">Дополнительные ресурсы о Milvus 2.6<button data-href="#More-Resources-about-Milvus-26" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.6 marks a major improvement in both architecture and operations. By separating streaming and batch processing with the introduction of StreamingNode, consolidating coordinators into MixCoord, and simplifying worker roles, Milvus 2.6 provides a more stable, scalable, and easier-to-operate foundation for large-scale vector workloads.</p>
+<p>These architectural changes make upgrades—especially from Milvus 2.5—more order-sensitive. A successful upgrade depends on respecting component dependencies and temporary availability constraints. For production environments, Milvus Operator is the recommended approach, as it automates upgrade sequencing and reduces operational risk, while Helm-based upgrades are better suited for non-production use cases.</p>
+<p>With enhanced search capabilities, richer data types, tiered storage, and improved message queue options, Milvus 2.6 is well-positioned to support modern AI applications that require real-time ingestion, high query performance, and efficient operations at scale.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="More-Resources-about-Milvus-26" class="common-anchor-header">More Resources about Milvus 2.6<button data-href="#More-Resources-about-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -398,22 +402,22 @@ helm upgrade -i my-release zilliztech/milvus \
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/docs/release_notes.md">Заметки о выпуске Milvus 2.6</a></p></li>
-<li><p><a href="https://www.youtube.com/watch?v=Guct-UMK8lw&amp;t=157s">Запись вебинара по Milvus 2.6: Ускоренный поиск, снижение затрат и более разумное масштабирование</a></p></li>
-<li><p>Блоги о возможностях Milvus 2.6</p>
+<li><p><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 Release Notes</a></p></li>
+<li><p><a href="https://www.youtube.com/watch?v=Guct-UMK8lw&amp;t=157s">Milvus 2.6 Webinar Recording: Faster Search, Lower Cost, and Smarter Scaling</a></p></li>
+<li><p>Milvus 2.6 Feature Blogs</p>
 <ul>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Представляем функцию встраивания: Как Milvus 2.6 оптимизирует векторизацию и семантический поиск</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Измельчение JSON в Milvus: 88,9-кратное ускорение фильтрации JSON с гибкостью</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Разблокирование истинного поиска на уровне сущностей: Новые возможности Array-of-Structs и MAX_SIM в Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot%E2%80%93cold-data-loading.md">Перестаньте платить за холодные данные: 80-процентное сокращение расходов благодаря горячей и холодной загрузке данных по требованию в многоуровневом хранилище Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Представление AISAQ в Milvus: векторный поиск миллиардного масштаба стал на 3 200× дешевле в памяти</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Оптимизация NVIDIA CAGRA в Milvus: гибридный подход GPU-CPU к ускоренному индексированию и более дешевым запросам</a></p></li>
-<li><p><a href="https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md">Представляем индекс Milvus Ngram: Ускоренное сопоставление ключевых слов и LIKE-запросы для агентских рабочих нагрузок</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Объединение геопространственной фильтрации и векторного поиска с геометрическими полями и RTREE в Milvus 2.6</a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Векторный поиск в реальном мире: как эффективно фильтровать, не убивая запоминание</a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Векторное сжатие в экстремальных условиях: как Milvus обслуживает в 3 раза больше запросов с помощью RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Бенчмарки лгут - векторные БД заслуживают реальной проверки</a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Мы заменили Kafka/Pulsar на Woodpecker для Milvus - вот что получилось</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH в Milvus: секретное оружие для борьбы с дубликатами в обучающих данных LLM</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot%E2%80%93cold-data-loading.md">Stop Paying for Cold Data: 80% Cost Reduction with On-Demand Hot–Cold Data Loading in Milvus Tiered Storage</a></p></li>
+<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200× Cheaper on Memory</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster Indexing and Cheaper Queries</a></p></li>
+<li><p><a href="https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md">Introducing the Milvus Ngram Index: Faster Keyword Matching and LIKE Queries for Agent Workloads</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6</a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Vector Search in the Real World: How to Filter Efficiently Without Killing Recall</a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test</a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus—Here’s What Happened</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data</a></p></li>
 </ul></li>
 </ul>

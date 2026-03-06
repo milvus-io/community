@@ -1,27 +1,31 @@
 ---
 id: how-to-filter-efficiently-without-killing-recall.md
-title: 真实世界中的向量搜索：如何高效过滤而不扼杀回忆能力
+title: >-
+  Vector Search in the Real World: How to Filter Efficiently Without Killing
+  Recall
 author: Chris Gao and Patrick Xu
 date: 2025-05-12T00:00:00.000Z
-desc: 本博客探讨了向量搜索中流行的过滤技术，以及我们在 Milvus 和 Zilliz Cloud 中内置的创新优化技术。
+desc: >-
+  This blog explores popular filtering techniques in vector search, along with
+  the innovative optimizations we built into Milvus and Zilliz Cloud.
 cover: assets.zilliz.com/Filter_Efficiently_Without_Killing_Recall_1c355c229c.png
 tag: Engineering
 tags: 'Vector search, filtering vector search, vector search with filtering'
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md'
 ---
-<p>很多人认为，向量搜索就是简单地实施一个 ANN（近似近邻）算法，然后就可以了。但如果你在生产中运行过向量搜索，你就会知道真相：它很快就会变得复杂。</p>
-<p>想象一下，你正在构建一个产品搜索引擎。用户可能会问："<em>给我看与这张照片相似的鞋子，但只能是红色的，价格在 100 美元以下</em>。要满足这个查询要求，就需要对语义相似性搜索结果应用元数据过滤器。听起来就像在向量搜索返回后应用过滤器一样简单？其实不然。</p>
-<p>如果过滤条件具有高度选择性，会发生什么情况？你可能得不到足够的结果。而简单地增加向量搜索的<strong>topK</strong>参数可能会迅速降低性能，并在处理相同的搜索量时消耗更多的资源。</p>
+<p>Many people think vector search is simply about implementing an ANN (Approximate Nearest Neighbor) algorithm and calling it a day. But if you run vector search in production, you know the truth: it gets complicated fast.</p>
+<p>Imagine you’re building a product search engine. A user might ask, “<em>Show me shoes similar to this photo, but only in red and under $100</em>.” Serving this query requires applying a metadata filter to the semantic similarity search results. Sounds as simple as applying a filter after your vector search returns? Well, not quite.</p>
+<p>What happens when your filtering condition is highly selective? You might not return enough results. And simply increasing the vector search’s <strong>topK</strong> parameter may quickly degrade performance and consume significantly more resources to handle the same search volume.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Show_me_shoes_similar_to_this_photo_but_only_in_red_and_under_100_0862a41a60.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>在引擎盖下，高效的元数据过滤非常具有挑战性。你的向量数据库需要扫描图索引、应用元数据过滤器，并在严格的延迟预算（例如 20 毫秒）内做出响应。要在不破产的情况下每秒为数千次此类查询提供服务，需要深思熟虑的工程设计和精心的优化。</p>
-<p>本博客将探讨向量搜索中流行的过滤技术，以及我们在<a href="https://milvus.io/docs/overview.md">Milvus</a>向量数据库及其完全托管的云服务<a href="https://zilliz.com/cloud">（Zilliz Cloud</a>）中内置的创新优化技术。我们还将分享一个基准测试，展示完全托管的 Milvus 在 1000 美元云预算的情况下，比其他向量数据库的性能高出多少。</p>
-<h2 id="Graph-Index-Optimization" class="common-anchor-header">图索引优化<button data-href="#Graph-Index-Optimization" class="anchor-icon" translate="no">
+<p>Under the hood, efficient metadata filtering is pretty challenging. Your vector database needs to scan the graph index, apply metadata filters, and still respond within a tight latency budget, say, 20 milliseconds. Serving thousands of such queries per second without going bankrupt requires thoughtful engineering and careful optimization.</p>
+<p>This blog explores popular filtering techniques in vector search, along with the innovative optimizations we built into the <a href="https://milvus.io/docs/overview.md">Milvus</a> vector database and its fully managed cloud service (<a href="https://zilliz.com/cloud">Zilliz Cloud</a>). We’ll also share a benchmark test demonstrating how much more performance the fully-managed Milvus can achieve with a $1000 cloud budget over the other vector databases.</p>
+<h2 id="Graph-Index-Optimization" class="common-anchor-header">Graph Index Optimization<button data-href="#Graph-Index-Optimization" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,42 +40,42 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>向量数据库需要高效的索引方法来处理大型数据集。如果没有索引，数据库必须将您的查询与数据集中的每个向量进行比较（暴力扫描），随着数据的增长，速度会变得非常慢。</p>
-<p><strong>Milvus</strong>支持多种索引类型来解决这一性能难题。最常用的是基于图的索引类型：HNSW（完全在内存中运行）和 DiskANN（有效利用内存和固态硬盘）。这些索引将向量组织成一个网络结构，在这个结构中，向量的邻域在地图上相互连接，允许搜索快速导航到相关结果，同时只检查所有向量中的一小部分。全面管理的 Milvus 服务<strong>Zilliz Cloud</strong> 更进一步，引入了先进的专有向量搜索引擎 Cardinal，进一步增强了这些索引，使其性能更加出色。</p>
-<p>然而，当我们添加过滤要求（如 "只显示低于 100 美元的产品"）时，新的问题就出现了。标准方法是创建一个<em>比特集</em>--一个标记哪些向量符合筛选条件的列表。在搜索过程中，系统只考虑该比特集中标记为有效的向量。这种方法看似合乎逻辑，但却带来了一个严重的问题：<strong>连接中断</strong>。当许多向量被过滤掉时，我们图形索引中精心构建的路径就会被打乱。</p>
-<p>下面是这个问题的一个简单例子：在下图中，A 点与 B、C 和 D 相连，但 B、C 和 D 之间并不直接相连。如果我们的过滤器去掉了 A 点（可能是成本太高），那么即使 B、C 和 D 与我们的搜索相关，它们之间的路径也会中断。这就形成了连接断开的向量 "孤岛"，在搜索过程中变得无法到达，从而损害了搜索结果的质量（召回率）。</p>
+    </button></h2><p>Vector databases need efficient indexing methods to handle large datasets. Without indexes, a database must compare your query against every vector in the dataset (brute-force scanning), which becomes extremely slow as your data grows.</p>
+<p><strong>Milvus</strong> supports various index types to solve this performance challenge. The most popular ones are graph-based index types: HNSW (runs entirely in memory) and DiskANN (efficiently uses both memory and SSD). These indexes organize vectors into a network structure where neighborhoods of vectors are connected on a map, allowing searches to quickly navigate to relevant results while checking only a small fraction of all vectors. <strong>Zilliz Cloud</strong>, the fully-managed Milvus service, takes one step further by introducing Cardinal, an advanced proprietary vector search engine, further enhancing these indexes for even better performance.</p>
+<p>However, when we add filtering requirements (like “only show products less than $100”), a new problem emerges. The standard approach is creating a <em>bitset</em> - a list marking which vectors meet the filter criteria. During search, the system only considers vectors marked as valid in this bitset. This approach seems logical, but it creates a serious problem: <strong>broken connectivity</strong>. When many vectors get filtered out, the carefully constructed paths in our graph index get disrupted.</p>
+<p>Here’s a simple example of the problem: In the diagram below, Point A connects to B, C and D, but B, C, and D don’t directly connect to each other. If our filter removes point A (perhaps it’s too expensive), then even if B, C, and D are relevant to our search, the path between them is broken. This creates “islands” of disconnected vectors that become unreachable during search, hurting the quality of results (recall).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/simple_example_of_the_problem_0f09b36639.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>在图遍历过程中，有两种常见的过滤方法：一是事先排除所有过滤掉的点，二是包含所有点，然后再应用过滤。如下图所示，这两种方法都不理想。当过滤率接近 1 时，完全跳过过滤点会导致召回率崩溃（蓝线），而不管元数据如何，访问每个点都会使搜索空间变得臃肿，并大大降低性能（红线）。</p>
+<p>There are two common approaches to filtering during graph traversal: exclude all filtered-out points upfront, or include everything and apply the filter afterward. As illustrated in the diagram below, neither approach is ideal. Skipping filtered points entirely can cause recall to collapse as the filtering ratio nears 1 (blue line), while visiting every point regardless of its metadata bloats the search space and slows down performance significantly (red line).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Filtering_ratio_911e32783b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>研究人员提出了几种在召回率和性能之间取得平衡的方法：</p>
+<p>Researchers have proposed several approaches to strike a balance between recall and performance:</p>
 <ol>
-<li><strong>阿尔法策略：</strong>这引入了一种概率方法：即使某个向量与过滤器不匹配，我们仍可能在搜索过程中以某种概率访问它。这种概率（alpha）取决于过滤比率--过滤的严格程度。这有助于在不访问过多无关向量的情况下保持图中的基本连接。</li>
+<li><strong>Alpha Strategy:</strong> This introduces a probabilistic approach: even though a vector doesn’t match the filter, we might still visit it during search with some probability. This probability (alpha) depends on the filtering ratio - how strict the filter is. This helps maintain essential connections in the graph without visiting too many irrelevant vectors.</li>
 </ol>
 <ol start="2">
-<li><strong>ACORN 方法 [1]：</strong>在标准 HNSW 中，索引构建过程中会使用边剪枝来创建稀疏图并加快搜索速度。ACORN 方法有意跳过了这一剪枝步骤，以保留更多的边并加强连接性--这在过滤器可能排除许多节点的情况下至关重要。在某些情况下，ACORN 还会通过收集更多近似近邻来扩展每个节点的邻居列表，从而进一步强化图。此外，ACORN 的遍历算法会提前两步（即检查邻居的邻居），即使在高过滤率的情况下也能提高找到有效路径的几率。</li>
+<li><strong>ACORN Method [1]:</strong> In standard HNSW, edge pruning is used during index construction to create a sparse graph and speed up search. The ACORN method deliberately skips this pruning step to retain more edges and strengthen connectivity—crucial when filters might exclude many nodes. In some cases, ACORN also expands each node’s neighbor list by gathering additional approximate nearest neighbors, further reinforcing the graph. Moreover, its traversal algorithm looks two steps ahead (i.e., examines neighbors of neighbors), improving the chances of finding valid paths even under high filtering ratios.</li>
 </ol>
 <ol start="3">
-<li><strong>动态选择邻居：</strong>这是一种比阿尔法策略更先进的方法。这种方法不依赖概率跳转，而是在搜索过程中自适应地选择下一个节点。与阿尔法策略相比，它提供了更多的控制。</li>
+<li><strong>Dynamically Selected Neighbors:</strong> A method improves over Alpha Strategy. Instead of relying on probabilistic skipping, this approach adaptively selects the next nodes during search. It offers more control than Alpha Strategy.</li>
 </ol>
-<p>在 Milvus 中，我们将 Alpha 策略与其他优化技术一起实施。例如，在检测到选择性极强的筛选器时，它会动态切换策略：比如，当大约 99% 的数据与筛选表达式不匹配时，"包含全部 "策略会导致图遍历路径大大延长，从而造成性能下降和孤立的数据 "孤岛"。在这种情况下，Milvus 会自动退回到暴力扫描，完全绕过图索引以提高效率。在为全面管理的 Milvus（Zilliz Cloud）提供动力的向量搜索引擎 Cardinal 中，我们进一步实现了 "包含全部 "和 "排除全部 "遍历方法的动态组合，根据数据统计进行智能调整，以优化查询性能。</p>
-<p>我们使用 AWS r7gd.4xlarge 实例在 Cohere 1M 数据集（维度 = 768）上进行的实验证明了这种方法的有效性。在下图中，蓝线表示我们的动态组合策略，红线表示遍历图中所有过滤点的基线方法。</p>
+<p>In Milvus, we implemented the Alpha strategy alongside other optimization techniques. For example, it dynamically switches strategies when detecting extremely selective filters: when, say, approximately 99% of the data doesn’t match the filtering expression, the “include-all” strategy would cause graph traversal paths to lengthen significantly, resulting in performance degradation and isolated “islands” of data. In such cases, Milvus automatically falls back to a brute-force scan, bypassing the graph index entirely for better efficiency. In Cardinal, the vector search engine powering fully-managed Milvus (Zilliz Cloud), we’ve taken this further by implementing a dynamic combination of “include-all” and “exclude-all” traversal methods that intelligently adapts based on data statistics to optimize query performance.</p>
+<p>Our experiments on the Cohere 1M dataset (dimension = 768) using an AWS r7gd.4xlarge instance demonstrate the effectiveness of this approach. In the chart below, the blue line represents our dynamic combination strategy, while the red line illustrates the baseline approach that traverses all filtered points in the graph.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Graph_2_067a13500b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Metadata-Aware-Indexing" class="common-anchor-header">元数据感知索引<button data-href="#Metadata-Aware-Indexing" class="anchor-icon" translate="no">
+<h2 id="Metadata-Aware-Indexing" class="common-anchor-header">Metadata-Aware Indexing<button data-href="#Metadata-Aware-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,17 +90,17 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>另一个挑战来自元数据和向量 Embeddings 之间的关系。在大多数应用中，项目的元数据属性（如产品价格）与向量实际表示的内容（语义或视觉特征）之间的联系微乎其微。例如，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>90</mi><mn>dressanda90</mn></mrow><annotation encoding="application/x-tex">连衣裙和</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">90dressanda90</span></span></span></span>腰带的价位相同，但视觉特征却完全不同。这种脱节使得将过滤与向量搜索结合在一起本质上是低效的。</p>
-<p>为了解决这个问题，我们开发了<strong>元数据感知向量索引</strong>。它不是只为所有向量建立一个图，而是为不同的元数据值建立专门的 "子图"。例如，如果您的数据有 "颜色 "和 "形状 "字段，它就会为这些字段创建单独的图结构。</p>
-<p>当您使用 "颜色 = 蓝色 "这样的过滤器进行搜索时，它会使用特定于颜色的子图，而不是主图。这样速度会更快，因为子图已经围绕你要筛选的元数据进行了组织。</p>
-<p>在下图中，主图索引称为<strong>基础图</strong>，而为特定元数据字段构建的专用图称为<strong>列图</strong>。为了有效管理内存使用情况，它会限制每个点可以有多少个连接（外延度）。当搜索不包含任何元数据过滤器时，它默认使用基础图。当应用过滤器时，它会切换到相应的列图，从而提供显著的速度优势。</p>
+    </button></h2><p>Another challenge comes from how metadata and vector embeddings relate to each other. In most applications, an item’s metadata properties (e.g., a product’s price) have minimal connection to what the vector actually represents (the semantic meaning or visual features). For example, a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>90</mn><mi>d</mi><mi>r</mi><mi>e</mi><mi>s</mi><mi>s</mi><mi>a</mi><mi>n</mi><mi>d</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">90 dress and a</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord">90</span><span class="mord mathnormal">d</span><span class="mord mathnormal">ress</span><span class="mord mathnormal">an</span><span class="mord mathnormal">d</span><span class="mord mathnormal">a</span></span></span></span>90 belt share the same price point but exhibit completely different visual characteristics. This disconnect makes combining filtering with vector search inherently inefficient.</p>
+<p>To solve this problem, we’ve developed <strong>metadata-aware vector indexes</strong>. Instead of having just one graph for all vectors, it builds specialized “subgraphs” for different metadata values. For example, if your data has fields for “color” and “shape,” it creates separate graph structures for these fields.</p>
+<p>When you search with a filter like “color = blue,” it uses the color-specific subgraph rather than the main graph. This is much faster because the subgraph is already organized around the metadata you’re filtering by.</p>
+<p>In the figure below, the main graph index is called the <strong>base graph</strong>, while the specialized graphs built for specific metadata fields are called <strong>column graphs</strong>. To manage memory usage effectively, it limits how many connections each point can have (out-degree). When a search doesn’t include any metadata filters, it defaults to the base graph. When filters are applied, it switches to the appropriate column graph, offering a significant speed advantage.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Metadata_Aware_Indexing_7c3e0707d9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Iterative-Filtering" class="common-anchor-header">迭代过滤<button data-href="#Iterative-Filtering" class="anchor-icon" translate="no">
+<h2 id="Iterative-Filtering" class="common-anchor-header">Iterative Filtering<button data-href="#Iterative-Filtering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -111,14 +115,14 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>有时，过滤本身会成为瓶颈，而不是向量搜索。尤其是在使用 JSON 条件或详细的字符串比较等复杂过滤器时，这种情况更容易发生。传统的方法（先过滤，后搜索）可能会非常慢，因为系统甚至在开始向量搜索之前就必须对可能数以百万计的记录评估这些昂贵的过滤器。</p>
-<p>你可能会想："为什么不先进行向量搜索，然后再过滤最重要的结果呢？这种方法有时可行，但有一个很大的缺陷：如果您的过滤器很严格，能过滤掉大部分结果，那么过滤后的结果可能太少（或为零）。</p>
-<p>为了解决这一难题，我们受<a href="https://www.usenix.org/system/files/osdi23-zhang-qianxi_1.pdf"> VBase</a> 的启发，在 Milvus 和 Zilliz Cloud 中创建了<strong>迭代过滤法</strong>。迭代过滤不是全有或全无的方法，而是分批进行：</p>
+    </button></h2><p>Sometimes the filtering itself becomes the bottleneck, not the vector search. This happens especially with complex filters like JSON conditions or detailed string comparisons. The traditional approach (filter first, then search) can be extremely slow because the system has to evaluate these expensive filters on potentially millions of records before even starting the vector search.</p>
+<p>You might think: “Why not do vector search first, then filter the top results?” This approach works sometimes, but has a major flaw: if your filter is strict and filters out most results, you might end up with too few (or zero) results after filtering.</p>
+<p>To solve this dilemma, we created <strong>Iterative Filtering</strong> in Milvus and Zilliz Cloud, inspired by<a href="https://www.usenix.org/system/files/osdi23-zhang-qianxi_1.pdf"> VBase</a>. Instead of an all-or-nothing approach, Iterative Filtering works in batches:</p>
 <ol>
-<li><p>获取一批最匹配的向量</p></li>
-<li><p>对该批次应用过滤器</p></li>
-<li><p>如果没有足够的过滤结果，再获取一批</p></li>
-<li><p>重复上述步骤，直到我们得到所需的结果数量</p></li>
+<li><p>Get a batch of the closest vector matches</p></li>
+<li><p>Apply filters to this batch</p></li>
+<li><p>If we don’t have enough filtered results, get another batch</p></li>
+<li><p>Repeat until we have the required number of results</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -126,8 +130,8 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
     <span></span>
   </span>
 </p>
-<p>这种方法大大减少了我们需要执行的昂贵的过滤操作，同时还能确保我们获得足够多的高质量结果。有关启用迭代过滤的更多信息，请参阅此<a href="https://docs.zilliz.com/docs/filtered-search#iterative-filtering">迭代过滤文档页面</a>。</p>
-<h2 id="External-Filtering" class="common-anchor-header">外部过滤<button data-href="#External-Filtering" class="anchor-icon" translate="no">
+<p>This approach dramatically reduces how many expensive filter operations we need to perform while still ensuring we get enough high-quality results. For more information on enabling iterative filtering, please refer to this <a href="https://docs.zilliz.com/docs/filtered-search#iterative-filtering">iterative filtering doc page</a>.</p>
+<h2 id="External-Filtering" class="common-anchor-header">External Filtering<button data-href="#External-Filtering" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -142,22 +146,22 @@ canonicalUrl: 'https://milvus.io/blog/how-to-filter-efficiently-without-killing-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>现实世界中的许多应用都会将数据分割到不同的系统中--向量数据库中的向量和传统数据库中的元数据。例如，许多组织将产品描述和用户评论作为向量存储在 Milvus 中，用于语义搜索，同时将库存状态、定价和其他结构化数据保存在 PostgreSQL 或 MongoDB 等传统数据库中。</p>
-<p>这种分离在架构上是合理的，但却给过滤搜索带来了挑战。典型的工作流程是</p>
+    </button></h2><p>Many real-world applications split their data across different systems - vectors in a vector database and metadata in traditional databases. For example, many organizations store product descriptions and user reviews as vectors in Milvus for semantic search, while keeping inventory status, pricing, and other structured data in traditional databases like PostgreSQL or MongoDB.</p>
+<p>This separation makes sense architecturally but creates a challenge for filtered searches. The typical workflow becomes:</p>
 <ul>
-<li><p>查询关系数据库中与筛选条件（如 "50 美元以下的库存商品"）相匹配的记录</p></li>
-<li><p>获取匹配的 ID 并将其发送给 Milvus 以过滤向量搜索</p></li>
-<li><p>只对与这些 ID 匹配的向量执行语义搜索</p></li>
+<li><p>Query your relational database for records matching filter criteria (e.g., “in-stock items under $50”)</p></li>
+<li><p>Get the matching IDs and send them to Milvus to filter the vector search</p></li>
+<li><p>Perform semantic search only on vectors that match these IDs</p></li>
 </ul>
-<p>这听起来很简单，但当行数超过数百万时，就会成为瓶颈。传输大量 ID 列表会消耗网络带宽，而在 Milvus 中执行大量过滤表达式又会增加开销。</p>
-<p>为了解决这个问题，我们在 Milvus 中引入了<strong>外部过滤</strong>功能，这是一种轻量级的 SDK 级解决方案，它使用搜索迭代器 API 并颠覆了传统的工作流程。</p>
+<p>This sounds simple—but when the number of rows grows beyond millions, it becomes a bottleneck. Transferring large lists of IDs consumes network bandwidth, and executing massive filter expressions in Milvus adds overhead.</p>
+<p>To address this, we introduced <strong>External Filtering</strong> in Milvus, a lightweight SDK-level solution that uses the search iterator API and reverses the traditional workflow.</p>
 <ul>
-<li><p>首先执行向量搜索，检索一批语义最相关的候选对象</p></li>
-<li><p>在客户端对每个批次应用自定义过滤功能</p></li>
-<li><p>自动获取更多批次，直到有足够的过滤结果为止</p></li>
+<li><p>Performs vector search first, retrieving batches of the most semantically relevant candidates</p></li>
+<li><p>Applies your custom filter function to each batch on the client side</p></li>
+<li><p>Automatically fetches more batches until you have enough filtered results</p></li>
 </ul>
-<p>这种分批迭代的方法大大减少了网络流量和处理开销，因为您只需处理向量搜索中最有希望的候选结果。</p>
-<p>下面是一个如何在 pymilvus 中使用外部过滤的示例：</p>
+<p>This batched, iterative approach significantly reduces both network traffic and processing overhead, since you’re only working with the most promising candidates from the vector search.</p>
+<p>Here’s an example of how to use External Filtering in pymilvus:</p>
 <pre><code translate="no">vector_to_search = rng.random((<span class="hljs-number">1</span>, DIM), np.float32)
 expr = <span class="hljs-string">f&quot;10 &lt;= <span class="hljs-subst">{AGE}</span> &lt;= 25&quot;</span>
 valid_ids = [<span class="hljs-number">1</span>, <span class="hljs-number">12</span>, <span class="hljs-number">123</span>, <span class="hljs-number">1234</span>]
@@ -183,8 +187,8 @@ search_iterator = milvus_client.search_iterator(
     <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(res)):
         <span class="hljs-built_in">print</span>(res[i])
 <button class="copy-code-btn"></button></code></pre>
-<p>迭代过滤法在分段级迭代器上操作，与之不同的是，外部过滤法在全局查询级别上操作。这种设计最大限度地减少了元数据评估，避免了在 Milvus 内部执行大型过滤器，从而实现了更精简、更快速的端到端性能。</p>
-<h2 id="AutoIndex" class="common-anchor-header">自动索引<button data-href="#AutoIndex" class="anchor-icon" translate="no">
+<p>Unlike Iterative Filtering, which operates on segment-level iterators, External Filtering works at the global query level. This design minimizes metadata evaluation and avoids executing large filters within Milvus, resulting in leaner and faster end-to-end performance.</p>
+<h2 id="AutoIndex" class="common-anchor-header">AutoIndex<button data-href="#AutoIndex" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -199,18 +203,18 @@ search_iterator = milvus_client.search_iterator(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>向量搜索总是需要在准确性和速度之间做出权衡--检查的向量越多，结果就越好，但查询速度就越慢。如果添加过滤器，这种平衡就变得更加难以把握。</p>
-<p>在 Zilliz Cloud 中，我们创建了<strong>AutoIndex</strong>- 一种基于 ML 的优化器，可自动为您调整这种平衡。AutoIndex 不需要手动配置复杂的参数，而是利用机器学习来确定特定数据和查询模式的最佳设置。</p>
-<p>要了解其工作原理，最好先了解一下 Milvus 的架构，因为 Zilliz 是在 Milvus 的基础上构建的：查询分布在多个查询节点实例上。每个节点处理数据的一部分（段），执行搜索，然后将结果合并在一起。</p>
-<p>AutoIndex 会分析这些分段的统计数据，并做出智能调整。对于低过滤率，索引查询范围会扩大，以提高召回率。过滤率高时，则缩小查询范围，避免浪费精力在不可能的候选项上。这些决定都是在统计模型的指导下做出的，该模型可预测每个特定过滤情况下最有效的搜索策略。</p>
-<p>AutoIndex 不只是索引参数。它还能帮助选择最佳的过滤评估策略。通过解析过滤表达式和采样段数据，它可以估算评估成本。如果检测到评估成本较高，它会自动切换到迭代过滤等更高效的技术。这种动态调整可确保您始终为每个查询使用最合适的策略。</p>
+    </button></h2><p>Vector search always involves a tradeoff between accuracy and speed - the more vectors you check, the better your results but the slower your query. When you add filters, this balance becomes even trickier to get right.</p>
+<p>In Zilliz Cloud, we’ve created <strong>AutoIndex</strong> - an ML-based optimizer that automatically fine-tunes this balance for you. Instead of manually configuring complex parameters, AutoIndex uses machine learning to determine the optimal settings for your specific data and query patterns.</p>
+<p>To understand how this works, it helps to know a bit about Milvus’s architecture since Zilliz is built on top of Milvus: Queries are distributed across multiple QueryNode instances. Each node handles a portion of your data (a segment), performs its search, and then results are merged together.</p>
+<p>AutoIndex analyzes statistics from these segments and makes intelligent adjustments. For low filtering ratio, the index query range is widened to increase recall. For high filtering ratio, the query range is narrowed to avoid wasted effort on unlikely candidates. These decisions are guided by statistical models that predict the most effective search strategy for each specific filtering scenario.</p>
+<p>AutoIndex goes beyond indexing parameters. It also helps select the best filter evaluation strategy. By parsing filter expressions and sampling segment data, it can estimate evaluation cost. If it detects high evaluation costs, it automatically switches to more efficient techniques such as Iterative Filtering. This dynamic adjustment ensures you’re always using the best-fit strategy for each query.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Autoindex_3f37988d5c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Performance-on-a-1000-Budget" class="common-anchor-header">1,000 美元预算下的性能<button data-href="#Performance-on-a-1000-Budget" class="anchor-icon" translate="no">
+<h2 id="Performance-on-a-1000-Budget" class="common-anchor-header">Performance on a $1,000 Budget<button data-href="#Performance-on-a-1000-Budget" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -225,22 +229,22 @@ search_iterator = milvus_client.search_iterator(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>理论上的改进固然重要，但对于大多数开发人员来说，实际性能才是最重要的。我们想测试在实际预算限制下，这些优化如何转化为实际应用性能。</p>
-<p>我们以每月 1,000 美元的实际预算对几种向量数据库解决方案进行了基准测试，这是许多公司分配给向量搜索基础架构的合理金额。对于每个解决方案，我们都选择了在预算限制范围内性能最高的实例配置。</p>
-<p>我们的测试使用了</p>
+    </button></h2><p>While theoretical improvements are important, real-world performance is what matters to most developers. We wanted to test how these optimizations translate to actual application performance under realistic budget constraints.</p>
+<p>We benchmarked several vector database solutions with a practical $1,000 monthly budget - a reasonable amount that many companies would allocate to vector search infrastructure. For each solution, we selected the highest-performing instance configuration possible within this budget constraint.</p>
+<p>Our testing used:</p>
 <ul>
-<li><p>包含 100 万个 768 维向量的 Cohere 1M 数据集</p></li>
-<li><p>现实世界中过滤和非过滤搜索工作负载的混合体</p></li>
-<li><p>用于一致比较的开源 vdb-bench 基准工具</p></li>
+<li><p>The Cohere 1M dataset with 1 million 768-dimensional vectors</p></li>
+<li><p>A mix of real-world filtered and unfiltered search workloads</p></li>
+<li><p>The open-source vdb-bench benchmark tool for consistent comparisons</p></li>
 </ul>
-<p>竞争解决方案（匿名为 "VDB A"、"VDB B "和 "VDB C"）都在预算范围内进行了优化配置。结果显示，完全托管的 Milvus（Zilliz Cloud）在过滤和非过滤查询中始终保持最高吞吐量。在预算同样为 1000 美元的情况下，我们的优化技术以极具竞争力的召回率提供了最高的性能。</p>
+<p>The competing solutions (anonymized as “VDB A,” “VDB B,” and “VDB C”) were all configured optimally within the budget. The results showed that fully-managed Milvus (Zilliz Cloud) consistently achieved the highest throughput across both filtered and unfiltered queries. With the same $1000 budge, our optimization techniques deliver the most performance at competitive recall.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Performance_on_a_1_000_Budget_5ebefaec48.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -255,18 +259,18 @@ search_iterator = milvus_client.search_iterator(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>带有过滤功能的向量搜索表面上看起来很简单，只需在查询中添加一个过滤子句就可以了。但是，正如我们在本博客中所展示的那样，要在大规模范围内实现高性能和精确结果，需要复杂的工程解决方案。Milvus 和 Zilliz Cloud 通过几种创新方法来应对这些挑战：</p>
+    </button></h2><p>Vector search with filtering might look simple on the surface - just add a filter clause to your query and you’re done. However, as we’ve demonstrated in this blog, achieving both high performance and accurate results at scale requires sophisticated engineering solutions. Milvus and Zilliz Cloud address these challenges through several innovative approaches:</p>
 <ul>
-<li><p><strong>图索引优化</strong>：即使过滤器删除了连接节点，也会保留类似项目之间的路径，防止出现降低结果质量的 "孤岛 "问题。</p></li>
-<li><p><strong>元数据感知索引</strong>：为常见的过滤条件创建专门的路径，在不影响准确性的前提下显著加快过滤搜索的速度。</p></li>
-<li><p><strong>迭代过滤</strong>：成批处理结果，只对最有希望的候选结果而不是整个数据集应用复杂的筛选器。</p></li>
-<li><p><strong>自动索引</strong>：利用机器学习，根据数据和查询自动调整搜索参数，在速度和准确性之间取得平衡，无需手动配置。</p></li>
-<li><p><strong>外部过滤</strong>：将向量搜索与外部数据库有效衔接，消除网络瓶颈，同时保持结果质量。</p></li>
+<li><p><strong>Graph Index Optimization</strong>: Preserves paths between similar items even when filters remove connecting nodes, preventing the “islands” problem that reduces result quality.</p></li>
+<li><p><strong>Metadata-Aware Indexing</strong>: Creates specialized paths for common filter conditions, making filtered searches significantly faster without sacrificing accuracy.</p></li>
+<li><p><strong>Iterative Filtering</strong>: Processes results in batches, applying complex filters only to the most promising candidates instead of the entire dataset.</p></li>
+<li><p><strong>AutoIndex</strong>: Uses machine learning to automatically tune search parameters based on your data and queries, balancing speed and accuracy without manual configuration.</p></li>
+<li><p><strong>External Filtering</strong>: Bridges vector search with external databases efficiently, eliminating network bottlenecks while maintaining result quality.</p></li>
 </ul>
-<p>Milvus 和 Zilliz Cloud 不断发展新功能，进一步提高过滤搜索性能。<a href="https://docs.zilliz.com/docs/use-partition-key"> Partition Key</a>等功能可根据过滤模式实现更高效的数据组织，而先进的子图路由技术则进一步推动了性能极限。</p>
-<p>非结构化数据的数量和复杂性继续呈指数增长，给各地的搜索系统带来了新的挑战。我们的团队不断突破向量数据库的极限，以提供更快、更可扩展的人工智能搜索。</p>
-<p>如果您的应用程序在使用过滤向量搜索时遇到性能瓶颈，我们邀请您加入我们活跃的开发人员社区：<a href="https://milvus.io/community">milvus.io/community</a>--在这里您可以分享挑战、获得专家指导并发现新兴的最佳实践。</p>
-<h2 id="References" class="common-anchor-header">参考资料<button data-href="#References" class="anchor-icon" translate="no">
+<p>Milvus and Zilliz Cloud continue to evolve with new capabilities that further improve filtered search performance. Features like<a href="https://docs.zilliz.com/docs/use-partition-key"> Partition Key</a> allow for even more efficient data organization based on filtering patterns, and advanced subgraph routing techniques are pushing performance boundaries even further.</p>
+<p>The volume and complexity of unstructured data continue to grow exponentially, creating new challenges for search systems everywhere. Our team is constantly pushing the boundaries of what’s possible with vector databases to deliver faster, more scalable AI-powered search.</p>
+<p>If your applications are hitting performance bottlenecks with filtered vector search, we invite you to join our active developer community at <a href="https://milvus.io/community">milvus.io/community</a> - where you can share challenges, access expert guidance, and discover emerging best practices.</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

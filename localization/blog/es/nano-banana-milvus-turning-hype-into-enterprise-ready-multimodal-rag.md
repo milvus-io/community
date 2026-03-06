@@ -1,8 +1,7 @@
 ---
 id: nano-banana-milvus-turning-hype-into-enterprise-ready-multimodal-rag.md
-title: >-
-  Nano Banana + Milvus: convertir el bombo publicitario en un RAG multimodal
-  preparado para la empresa
+title: |
+  Nano Banana + Milvus: Turning Hype into Enterprise-Ready Multimodal RAG
 author: Lumina Wang
 date: 2025-09-04T00:00:00.000Z
 cover: assets.zilliz.com/me_with_a_dress_1_1_084defa237.png
@@ -14,34 +13,34 @@ meta_keywords: 'Vibe coding, nano banana, Milvus, model context protocol'
 meta_title: |
   Nano Banana + Milvus: Turning Hype into Enterprise-Ready Multimodal RAG
 desc: >-
-  explicaremos cómo combinar Nano Banana y Milvus para crear un sistema RAG
-  multimodal preparado para la empresa y por qué esta combinación abre la
-  próxima ola de aplicaciones de IA.
+  we’ll walk through how to combine Nano Banana and Milvus to build an
+  enterprise-ready multimodal RAG system—and why this pairing unlocks the next
+  wave of AI applications.
 origin: >-
   https://milvus.io/blog/nano-banana-milvus-turning-hype-into-enterprise-ready-multimodal-rag.md
 ---
-<p>Nano Banana se está convirtiendo en un fenómeno viral en las redes sociales, ¡y por una buena razón! Probablemente hayas visto las imágenes que genera o incluso lo hayas probado tú mismo. Se trata de un último modelo de generación de imágenes que convierte texto plano en fotos de figuritas de coleccionista con una precisión y velocidad asombrosas.</p>
-<p>Escribe algo como <em>"cambia el sombrero y la falda de Elon"</em> y, en unos 16 segundos, obtendrás un resultado fotorrealista: la camisa por dentro, los colores mezclados, los accesorios en su sitio... sin ediciones manuales. Sin retrasos.</p>
+<p>Nano Banana is going viral on social media right now and for a good reason! You’ve probably seen the images it generates or even tried it yourself. It’s a latest image generation model that turns plain text into collectible-grade figurine shots with startling precision and speed.</p>
+<p>Type in something like <em>“swap Elon’s hat and skirt,”</em> and in about 16 seconds, you’ll get a photoreal result: shirt tucked, colors blended, accessories in place—no manual edits. No lag.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/beach_side_668179b830.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Tampoco pude resistirme a probarlo. Mi pregunta era:</p>
-<p><em>"Utiliza el modelo Nano Banana para crear una figura comercializada a escala 1/7 del personaje de la ilustración, con un estilo y un entorno realistas. Coloca la figura sobre el escritorio de un ordenador, utilizando una base circular de acrílico transparente sin ningún texto. En la pantalla del ordenador, visualiza el proceso de modelado ZBrush de la figura. Junto a la pantalla, coloca una caja de embalaje de juguetes al estilo Bandai impresa con la ilustración original".</em></p>
+<p>I couldn’t resist testing it either. My prompt was:</p>
+<p><em>“Use the Nano Banana model to create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base without any text. On the computer screen, display the ZBrush modeling process of the figure. Next to the screen, place a Bandai-style toy packaging box printed with the original artwork.”</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/me_with_a_dress_506a0ebf39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>El resultado me dejó boquiabierto: parecía un prototipo de producción sacado directamente del stand de una convención.</p>
-<p>No es de extrañar que los equipos ya le estén sacando mucho partido. Uno de nuestros clientes, una plataforma de entretenimiento móvil que ofrece juegos de gacha y disfraces, está desarrollando una función que permite a los jugadores subir fotos y disfrazar al instante sus avatares con accesorios del juego. Las marcas de comercio electrónico están experimentando con el "dispara una vez, reutiliza para siempre": capturar una imagen de modelo base y luego generar infinitas variaciones de atuendo y peinado con IA, en lugar de volver a disparar 20 veces en el estudio.</p>
-<p>Pero aquí está el truco: la generación de imágenes por sí sola no resuelve todo el problema. Estos sistemas también necesitan <strong>una recuperación inteligente</strong>: la capacidad de encontrar al instante el vestuario, el atrezzo y los elementos visuales adecuados en bibliotecas de medios masivas y desestructuradas. Sin eso, el modelo generativo no hace más que adivinar en la oscuridad. Lo que realmente necesitan las empresas es un <strong>sistema RAG (recuperación-generación aumentada) multimodal, en el que</strong>Nano Banana se encargue de la creatividad y una potente base de datos vectorial del contexto.</p>
-<p>Ahí es donde entra <strong>Milvus</strong>. Como base de datos vectorial de código abierto, Milvus puede indexar y buscar entre miles de millones de incrustaciones: imágenes, texto, audio y mucho más. Combinado con Nano Banana, se convierte en la columna vertebral de un proceso RAG multimodal listo para la producción: buscar, combinar y generar a escala empresarial.</p>
-<p>En el resto de este blog, veremos cómo combinar Nano Banana y Milvus para crear un sistema RAG multimodal listo para la empresa y por qué esta combinación abre la próxima ola de aplicaciones de IA.</p>
-<h2 id="Building-a-Text-to-Image-Retrieval-Engine" class="common-anchor-header">Creación de un motor de recuperación de texto a imagen<button data-href="#Building-a-Text-to-Image-Retrieval-Engine" class="anchor-icon" translate="no">
+<p>The result blew me away—it looked like a production prototype straight from a convention booth.</p>
+<p>It’s no surprise that teams are already finding serious use cases for it. One of our customers, a mobile entertainment platform featuring gacha and dress-up gameplay, is developing a feature that allows players to upload photos and instantly dress up their avatars with in-game accessories. E-commerce brands are experimenting with “shoot once, reuse forever”: capturing a base model image and then generating endless outfit and hairstyle variations with AI, instead of re-shooting 20 times in the studio.</p>
+<p>But here’s the catch—image generation alone doesn’t solve the whole problem. These systems also need <strong>smart retrieval</strong>: the ability to instantly find the right outfits, props, and visual elements from massive, unstructured media libraries. Without that, the generative model is guessing in the dark. What companies really need is a <strong>multimodal RAG (retrieval-augmented generation) system</strong>—where Nano Banana handles the creativity, and a powerful vector database handles the context.</p>
+<p>That’s where <strong>Milvus</strong> comes in. As an open-source vector database, Milvus can index and search across billions of embeddings—images, text, audio, and beyond. Paired with Nano Banana, it becomes the backbone of a production-ready multimodal RAG pipeline: search, match, and generate at enterprise scale.</p>
+<p>In the rest of this blog, we’ll walk through how to combine Nano Banana and Milvus to build an enterprise-ready multimodal RAG system—and why this pairing unlocks the next wave of AI applications.</p>
+<h2 id="Building-a-Text-to-Image-Retrieval-Engine" class="common-anchor-header">Building a Text-to-Image Retrieval Engine<button data-href="#Building-a-Text-to-Image-Retrieval-Engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,18 +55,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para las marcas de bienes de consumo, los estudios de juegos y las empresas de medios de comunicación que se mueven con rapidez, el cuello de botella en la generación de imágenes de IA no es el modelo, sino el desorden.</p>
-<p>Sus archivos son una ciénaga de datos no estructurados, que incluyen fotos de productos, activos de personajes, vídeos promocionales y renders de trajes. Y cuando necesitas encontrar "la capa roja de la última temporada de Lunar", buena suerte: la búsqueda tradicional basada en palabras clave no es capaz de hacerlo.</p>
-<p>¿La solución? Crear un <strong>sistema de recuperación de texto a imagen</strong>.</p>
-<p>La jugada es la siguiente: utilice <a href="https://openai.com/research/clip?utm_source=chatgpt.com">CLIP</a> para incrustar datos de texto e imagen en vectores. Almacene esos vectores en <strong>Milvus</strong>, la base de datos vectorial de código abierto creada específicamente para la búsqueda por similitud. Entonces, cuando un usuario escribe una descripción ("capa de seda roja con ribetes dorados"), se accede a la base de datos y se obtienen las 3 imágenes semánticamente más similares.</p>
-<p>Es rápido. Es escalable. Y convierte tu desordenada biblioteca multimedia en un banco de activos estructurado y consultable.</p>
-<p>He aquí cómo construirlo:</p>
-<p>Instalar dependencias</p>
+    </button></h2><p>For fast-moving consumer goods brands, game studios, and media companies, the bottleneck in AI image generation isn’t the model—it’s the mess.</p>
+<p>Their archives are a swamp of unstructured data, including product shots, character assets, promotional videos, and outfit renders. And when you need to find “the red cape from last season’s Lunar drop,” good luck—traditional keyword-based search can’t handle that.</p>
+<p>The solution? Build a <strong>text-to-image retrieval system</strong>.</p>
+<p>Here’s the play: use <a href="https://openai.com/research/clip?utm_source=chatgpt.com">CLIP</a> to embed both text and image data into vectors. Store those vectors in <strong>Milvus</strong>, the open-source vector database purpose-built for similarity search. Then, when a user types a description (“red silk cape with gold trim”), you hit the DB and return the top 3 most semantically similar images.</p>
+<p>It’s fast. It’s scalable. And it turns your messy media library into a structured, queryable asset bank.</p>
+<p>Here’s how to build it:</p>
+<p>Install Dependencies</p>
 <pre><code translate="no"><span class="hljs-comment"># Install necessary packages</span>
 %pip install --upgrade pymilvus pillow matplotlib
 %pip install git+https://github.com/openai/CLIP.git
 <button class="copy-code-btn"></button></code></pre>
-<p>Importe las bibliotecas necesarias</p>
+<p>Import Necessary Libraries</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> clip
 <span class="hljs-keyword">import</span> torch
@@ -79,12 +78,12 @@ origin: >-
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;All libraries imported successfully!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Inicializar el cliente Milvus</p>
+<p>Initialize Milvus Client</p>
 <pre><code translate="no"><span class="hljs-comment"># Initialize Milvus client</span>
 milvus_client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>,token=<span class="hljs-string">&quot;root:Miluvs&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Milvus client initialized successfully!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Cargar modelo CLIP</p>
+<p>Load CLIP Model</p>
 <pre><code translate="no"><span class="hljs-comment"># Load CLIP model</span>
 model_name = <span class="hljs-string">&quot;ViT-B/32&quot;</span>
 device = <span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>
@@ -96,13 +95,13 @@ model.<span class="hljs-built_in">eval</span>()
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Context length: <span class="hljs-subst">{model.context_length}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Vocabulary size: <span class="hljs-subst">{model.vocab_size}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Resultado de salida:</p>
+<p>Output result:</p>
 <pre><code translate="no"><span class="hljs-variable constant_">CLIP</span> model <span class="hljs-string">`ViT-B/32`</span> loaded successfully, running <span class="hljs-attr">on</span>: cpu
  <span class="hljs-title class_">Model</span> input <span class="hljs-attr">resolution</span>: <span class="hljs-number">224</span>
  <span class="hljs-title class_">Context</span> <span class="hljs-attr">length</span>: <span class="hljs-number">77</span>
  <span class="hljs-title class_">Vocabulary</span> <span class="hljs-attr">size</span>: <span class="hljs-number">49</span>,<span class="hljs-number">408</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Definir funciones de extracción de características</p>
+<p>Define Feature Extraction Functions</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">encode_image</span>(<span class="hljs-params">image_path</span>):
     <span class="hljs-string">&quot;&quot;&quot;Encode image into normalized feature vector&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -128,7 +127,7 @@ model.<span class="hljs-built_in">eval</span>()
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Feature extraction functions defined successfully!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Crear colección Milvus</p>
+<p>Create Milvus Collection</p>
 <pre><code translate="no">collection_name = <span class="hljs-string">&quot;production_image_collection&quot;</span>
 <span class="hljs-comment"># If collection already exists, delete it</span>
 <span class="hljs-keyword">if</span> milvus_client.has_collection(collection_name):
@@ -147,12 +146,12 @@ milvus_client.create_collection(
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection &#x27;<span class="hljs-subst">{collection_name}</span>&#x27; created successfully!&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection info: <span class="hljs-subst">{milvus_client.describe_collection(collection_name)}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Resultado satisfactorio de la creación de la colección:</p>
+<p>Collection creation success output:</p>
 <pre><code translate="no">Existing collection deleted: production_image_collection
 Collection <span class="hljs-string">&#x27;production_image_collection&#x27;</span> created successfully!
 Collection info: {<span class="hljs-string">&#x27;collection_name&#x27;</span>: <span class="hljs-string">&#x27;production_image_collection&#x27;</span>, <span class="hljs-string">&#x27;auto_id&#x27;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&#x27;num_shards&#x27;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;fields&#x27;</span>: [{<span class="hljs-string">&#x27;field_id&#x27;</span>: <span class="hljs-number">100</span>, <span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.INT64: <span class="hljs-number">5</span>&gt;, <span class="hljs-string">&#x27;params&#x27;</span>: {}, <span class="hljs-string">&#x27;auto_id&#x27;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&#x27;is_primary&#x27;</span>: <span class="hljs-literal">True</span>}, {<span class="hljs-string">&#x27;field_id&#x27;</span>: <span class="hljs-number">101</span>, <span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;vector&#x27;</span>, <span class="hljs-string">&#x27;description&#x27;</span>: <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-string">&#x27;type&#x27;</span>: &lt;DataType.FLOAT_VECTOR: <span class="hljs-number">101</span>&gt;, <span class="hljs-string">&#x27;params&#x27;</span>: {<span class="hljs-string">&#x27;dim&#x27;</span>: <span class="hljs-number">512</span>}}, {<span class="hljs-string">&#x27;field_id&#x27;</span>: <span class="hljs-number">102</span>, <span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;function&#x27;</span>: [], <span class="hljs-string">&#x27;aliases&#x27;</span>: [], <span class="hljs-string">&#x27;collection_id&#x27;</span>: <span class="hljs-number">460508990706033544</span>, <span class="hljs-string">&#x27;consistency_level&#x27;</span>: <span class="hljs-number">2</span>, <span class="hljs-string">&#x27;properties&#x27;</span>: {}, <span class="hljs-string">&#x27;num_partitions&#x27;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;enable_dynamic_field&#x27;</span>: <span class="hljs-literal">True</span>, <span class="hljs-string">&#x27;created_timestamp&#x27;</span>: <span class="hljs-number">460511723827494913</span>, <span class="hljs-string">&#x27;updated_timestamp&#x27;</span>: <span class="hljs-number">460511723827494913</span>}
 <button class="copy-code-btn"></button></code></pre>
-<p>Procesar e insertar imágenes</p>
+<p>Process and Insert Images</p>
 <pre><code translate="no"><span class="hljs-comment"># Set image directory path</span>
 image_dir = <span class="hljs-string">&quot;./production_image&quot;</span>
 raw_data = []
@@ -183,7 +182,7 @@ successful_count = <span class="hljs-number">0</span>
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Successfully processed <span class="hljs-subst">{successful_count}</span> images&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Salida de progreso de procesamiento de imágenes:</p>
+<p>Image processing progress output:</p>
 <pre><code translate="no">Found 50 images <span class="hljs-keyword">in</span> ./production_image
 Processing progress: 1/50 - download (5).jpeg
 Processing progress: 2/50 - images (2).jpeg
@@ -201,7 +200,7 @@ Processing progress: 49/50 - download.png
 Processing progress: 50/50 - images.png
 Successfully processed 50 images
 <button class="copy-code-btn"></button></code></pre>
-<p>Insertar datos en Milvus</p>
+<p>Insert Data into Milvus</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert data into Milvus</span>
 <span class="hljs-keyword">if</span> raw_data:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Inserting data into Milvus...&quot;</span>)
@@ -212,7 +211,7 @@ Successfully processed 50 images
 <span class="hljs-keyword">else</span>:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;No successfully processed image data to insert&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Definir funciones de búsqueda y visualización</p>
+<p>Define Search and Visualization Functions</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">search_images_by_text</span>(<span class="hljs-params">query_text, top_k=<span class="hljs-number">3</span></span>):
     <span class="hljs-string">&quot;&quot;&quot;Search images based on text query&quot;&quot;&quot;</span>
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Search query: &#x27;<span class="hljs-subst">{query_text}</span>&#x27;&quot;</span>)
@@ -272,13 +271,13 @@ Successfully processed 50 images
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Search and visualization functions defined successfully!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Ejecutar búsqueda de texto a imagen</p>
+<p>Execute Text-to-Image Search</p>
 <pre><code translate="no"><span class="hljs-comment"># Example search 1</span>
 query1 = <span class="hljs-string">&quot;a golden watch&quot;</span>
 results1 = search_images_by_text(query1, top_k=<span class="hljs-number">3</span>)
 visualize_search_results(query1, results1)
 <button class="copy-code-btn"></button></code></pre>
-<p>Salida de la ejecución de la consulta de búsqueda:</p>
+<p>Search query execution output:</p>
 <pre><code translate="no"><span class="hljs-title class_">Search</span> <span class="hljs-attr">query</span>: <span class="hljs-string">&#x27;a golden watch&#x27;</span>
 <span class="hljs-number">1.</span> <span class="hljs-title class_">File</span>: <span class="hljs-title function_">images</span> (<span class="hljs-number">19</span>).<span class="hljs-property">jpeg</span>, <span class="hljs-title class_">Similarity</span> <span class="hljs-attr">score</span>: <span class="hljs-number">0.2934</span>
 <span class="hljs-number">2.</span> <span class="hljs-title class_">File</span>: <span class="hljs-title function_">download</span> (<span class="hljs-number">26</span>).<span class="hljs-property">jpeg</span>, <span class="hljs-title class_">Similarity</span> <span class="hljs-attr">score</span>: <span class="hljs-number">0.3073</span>
@@ -290,7 +289,7 @@ visualize_search_results(query1, results1)
     <span></span>
   </span>
 </p>
-<h2 id="Using-Nano-banana-to-Create-Brand-Promotional-Images" class="common-anchor-header">Uso de Nano-banana para crear imágenes promocionales de marca<button data-href="#Using-Nano-banana-to-Create-Brand-Promotional-Images" class="anchor-icon" translate="no">
+<h2 id="Using-Nano-banana-to-Create-Brand-Promotional-Images" class="common-anchor-header">Using Nano-banana to Create Brand Promotional Images<button data-href="#Using-Nano-banana-to-Create-Brand-Promotional-Images" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -305,19 +304,19 @@ visualize_search_results(query1, results1)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ahora que tenemos nuestro sistema de búsqueda de texto a imagen funcionando con Milvus, integremos Nano-banana para generar nuevo contenido promocional basado en los activos que recuperamos.</p>
-<p>Instalar Google SDK</p>
+    </button></h2><p>Now that we have our text-to-image search system working with Milvus, let’s integrate Nano-banana to generate new promotional content based on the assets we retrieve.</p>
+<p>Install Google SDK</p>
 <pre><code translate="no">%pip install google-generativeai
 %pip install requests
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Google Generative AI SDK installation complete!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Configurar Gemini API</p>
+<p>Configure Gemini API</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> google.<span class="hljs-property">generativeai</span> <span class="hljs-keyword">as</span> genai
 <span class="hljs-keyword">from</span> <span class="hljs-variable constant_">PIL</span> <span class="hljs-keyword">import</span> <span class="hljs-title class_">Image</span>
 <span class="hljs-keyword">from</span> io <span class="hljs-keyword">import</span> <span class="hljs-title class_">BytesIO</span>
 genai.<span class="hljs-title function_">configure</span>(api_key=<span class="hljs-string">&quot;&lt;your_api_key&gt;&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Generar nuevas imágenes</p>
+<p>Generate New Images</p>
 <pre><code translate="no">prompt = (
     <span class="hljs-string">&quot;An European male model wearing a suit, carrying a gold watch.&quot;</span>
 )
@@ -341,7 +340,7 @@ response = model.generate_content([prompt, image])
     <span></span>
   </span>
 </p>
-<h2 id="What-This-Means-for-Your-Development-Workflow" class="common-anchor-header">Qué significa esto para su flujo de trabajo de desarrollo<button data-href="#What-This-Means-for-Your-Development-Workflow" class="anchor-icon" translate="no">
+<h2 id="What-This-Means-for-Your-Development-Workflow" class="common-anchor-header">What This Means for Your Development Workflow<button data-href="#What-This-Means-for-Your-Development-Workflow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -356,32 +355,32 @@ response = model.generate_content([prompt, image])
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Como desarrollador, esta integración de Milvus + Nano-banana cambia fundamentalmente la forma en que puede abordar los proyectos de generación de contenidos. En lugar de gestionar bibliotecas de activos estáticos o depender de costosos equipos creativos, ahora dispone de un sistema dinámico que recupera y genera exactamente lo que su aplicación necesita en tiempo real.</p>
-<p>Consideremos el siguiente caso de un cliente reciente: una marca lanzó varios productos nuevos, pero optó por saltarse por completo el proceso tradicional de sesiones fotográficas. Gracias a nuestro sistema integrado, pudieron generar instantáneamente imágenes promocionales combinando su base de datos de productos existente con las capacidades de generación de Nano-banana.</p>
-<p><em>Pregunta: Una modelo lleva estos productos en la playa</em></p>
+    </button></h2><p>As a developer, this Milvus + Nano-banana integration fundamentally changes how you can approach content generation projects. Instead of managing static asset libraries or relying on expensive creative teams, you now have a dynamic system that retrieves and generates exactly what your application needs in real-time.</p>
+<p>Consider the following recent client scenario: a brand launched several new products but opted to skip the traditional photo shoot pipeline entirely. Using our integrated system, they could instantly generate promotional imagery by combining their existing product database with Nano-banana’s generation capabilities.</p>
+<p><em>Prompt: A model is wearing these products on the beach</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/model_5a2a042b46.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>La verdadera potencia se hace evidente cuando se necesita crear contenidos complejos y multivariantes que tradicionalmente requerirían una amplia coordinación entre fotógrafos, modelos y escenógrafos. Con Milvus gestionando la recuperación de activos y Nano-banana gestionando la generación, puede crear mediante programación escenas sofisticadas que se adapten a sus requisitos específicos:</p>
-<p><em>Prompt: Una modelo posa apoyada en un coche deportivo descapotable azul. Lleva un vestido con escote halter y los accesorios que lo acompañan. Está adornada con un collar de diamantes y un reloj azul, lleva tacones altos en los pies y sostiene un colgante labubu en la mano.</em></p>
+<p>The real power becomes apparent when you need to create complex, multi-variant content that would traditionally require extensive coordination between photographers, models, and set designers. With Milvus handling the asset retrieval and Nano-banana managing the generation, you can programmatically create sophisticated scenes that adapt to your specific requirements:</p>
+<p><em>Prompt: A model is posing and leaning against a blue convertible sports car. She is wearing a halter top dress and the accompanying accessories. She is adorned with a diamond necklace and a blue watch, wearing high heels on her feet and holding a labubu pendant in her hand.</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/shoes_98e1e4c70b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Para los desarrolladores que trabajan en el sector de los juegos o los coleccionables, este sistema abre posibilidades totalmente nuevas para la creación rápida de prototipos y la validación de conceptos. En lugar de invertir semanas en el modelado 3D antes de saber si un concepto funciona, ahora se pueden generar visualizaciones fotorrealistas del producto que incluyan el embalaje, el contexto ambiental e incluso los procesos de fabricación:</p>
-<p><em>Pregunta: Utiliza el modelo de nano-banana para crear una figura comercializada a escala 1/7 del personaje de la ilustración, con un estilo y un entorno realistas. Coloca la figura sobre el escritorio de un ordenador, utilizando una base circular de acrílico transparente sin ningún texto. En la pantalla del ordenador, visualiza el proceso de modelado ZBrush de la figura. Junto a la pantalla del ordenador, coloca una caja de embalaje de juguetes al estilo BANDAI impresa con la ilustración original.</em></p>
+<p>For developers working in gaming or collectibles, this system opens up entirely new possibilities for rapid prototyping and concept validation. Instead of investing weeks in 3D modeling before knowing if a concept works, you can now generate photorealistic product visualizations that include packaging, environmental context, and even manufacturing processes:</p>
+<p><em>Prompt: Use the nano-banana model to create a 1/7 scale commercialized figure of the character in the illustration, in a realistic style and environment. Place the figure on a computer desk, using a circular transparent acrylic base without any text. On the computer screen, display the ZBrush modeling process of the figure. Next to the computer screen, place a BANDAI-style toy packaging box printed with the original artwork.</em></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_3d_5189d53773.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -396,7 +395,7 @@ response = model.generate_content([prompt, image])
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Desde un punto de vista técnico, Nano Banana es más que una novedad: está preparado para la producción en aspectos importantes para los desarrolladores. Su punto fuerte es la coherencia y la capacidad de control, lo que se traduce en menos casos extremos que se cuelan en la lógica de tu aplicación. Y lo que es igual de importante, se ocupa de los detalles más sutiles que a menudo hacen descarrilar los procesos automatizados: mantener la coherencia de los colores de las marcas, generar una iluminación y unos reflejos físicamente plausibles y garantizar la coherencia visual en múltiples formatos de salida.</p>
-<p>La verdadera magia se produce cuando se combina con la base de datos vectorial Milvus. Una base de datos vectorial no se limita a almacenar incrustaciones, sino que se convierte en un gestor inteligente de activos que puede sacar a la superficie el contenido histórico más relevante para guiar a las nuevas generaciones. El resultado: tiempos de generación más rápidos (porque el modelo tiene mejor contexto), mayor coherencia en toda la aplicación y la posibilidad de aplicar directrices de marca o estilo automáticamente.</p>
-<p>En resumen, Milvus transforma Nano Banana de un juguete creativo en un sistema empresarial escalable.</p>
-<p>Por supuesto, ningún sistema es perfecto. Las instrucciones complejas de varios pasos pueden causar problemas, y la física de la iluminación a veces estira la realidad más de lo deseado. La solución más fiable que hemos visto es complementar las instrucciones de texto con imágenes de referencia almacenadas en Milvus, lo que proporciona al modelo una base más rica, resultados más predecibles y ciclos de iteración más cortos. Con esta configuración, no sólo está experimentando con RAG multimodal, sino que lo está ejecutando en producción con confianza.</p>
+    </button></h2><p>From a technical perspective, Nano Banana is more than a novelty—it’s production-ready in ways that matter to developers. Its biggest strength is consistency and controllability, which means fewer edge cases bleeding into your application logic. Just as importantly, it handles the subtle details that often derail automated pipelines: keeping brand colors consistent, generating physically plausible lighting and reflections, and ensuring visual coherence across multiple output formats.</p>
+<p>The real magic happens when you combine it with the Milvus vector database. A vector database doesn’t just store embeddings—it becomes an intelligent asset manager that can surface the most relevant historical content to guide new generations. The result: faster generation times (because the model has better context), higher consistency across your application, and the ability to enforce brand or style guidelines automatically.</p>
+<p>In short, Milvus transforms Nano Banana from a creative toy into a scalable enterprise system.</p>
+<p>Of course, no system is flawless. Complex, multi-step instructions can still cause hiccups, and lighting physics sometimes stretches reality more than you’d like. The most reliable solution we’ve seen is to supplement text prompts with reference images stored in Milvus, which gives the model richer grounding, more predictable results, and shorter iteration cycles. With this setup, you’re not just experimenting with multimodal RAG—you’re running it in production with confidence.</p>

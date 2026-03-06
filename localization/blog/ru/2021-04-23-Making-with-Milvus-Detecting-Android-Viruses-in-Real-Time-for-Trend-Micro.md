@@ -1,107 +1,110 @@
 ---
 id: Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro.md
-title: >-
-  Работа с Milvus по обнаружению вирусов для Android в режиме реального времени
-  для Trend Micro
+title: Making with Milvus Detecting Android Viruses in Real Time for Trend Micro
 author: milvus
 date: 2021-04-23T06:46:13.732Z
 desc: >-
-  Узнайте, как Milvus используется для снижения угроз для критически важных
-  данных и укрепления кибербезопасности благодаря обнаружению вирусов в режиме
-  реального времени.
+  Learn how Milvus is used to mitigate threats to critical data and strengthen
+  cybersecurity with real-time virus detection.
 cover: assets.zilliz.com/blog_Trend_Micro_5c8ba3e2ce.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/Making-with-Milvus-Detecting-Android-Viruses-in-Real-Time-for-Trend-Micro
 ---
-<custom-h1>Работа с Milvus: обнаружение вирусов для Android в режиме реального времени для Trend Micro</custom-h1><p>Кибербезопасность остается постоянной угрозой как для частных лиц, так и для предприятий: в 2020 году <a href="https://www.getapp.com/resources/annual-data-security-report/">86 % компаний</a> будут беспокоиться о конфиденциальности данных, и лишь <a href="https://merchants.fiserv.com/content/dam/firstdata/us/en/documents/pdf/digital-commerce-cybersecurity-ebook.pdf">23 % потребителей</a> считают, что их личные данные очень надежно защищены. Поскольку вредоносное ПО становится все более вездесущим и изощренным, проактивный подход к обнаружению угроз становится крайне важным. <a href="https://www.trendmicro.com/en_us/business.html">Trend Micro</a> - мировой лидер в области гибридной "облачной" безопасности, сетевой защиты, безопасности малого бизнеса и защиты конечных точек. Для защиты Android-устройств от вирусов компания создала Trend Micro Mobile Security - мобильное приложение, которое сравнивает APK (пакет приложений для Android) из магазина Google Play с базой данных известных вредоносных программ. Система обнаружения вирусов работает следующим образом:</p>
+<custom-h1>Making with Milvus: Detecting Android Viruses in Real Time for Trend Micro</custom-h1><p>Cybersecurity remains a persistent threat to both individuals and businesses, with data privacy concerns increasing for <a href="https://www.getapp.com/resources/annual-data-security-report/">86% of companies</a> in 2020 and just <a href="https://merchants.fiserv.com/content/dam/firstdata/us/en/documents/pdf/digital-commerce-cybersecurity-ebook.pdf">23% of consumers</a> believing their personal data is very secure. As malware becomes steadily more omnipresent and sophisticated, a proactive approach to threat detection has become essential. <a href="https://www.trendmicro.com/en_us/business.html">Trend Micro</a> is a global leader in hybrid cloud security, network defense, small business security, and endpoint security. To protect Android devices from viruses, the company built Trend Micro Mobile Security—a mobile app that compares APKs (Android Application Package) from the Google Play Store to a database of known malware. The virus detection system works as follows:</p>
 <ul>
-<li>Просматриваются внешние APK (пакеты приложений для Android) из Google Play Store.</li>
-<li>Известные вредоносные программы преобразуются в векторы и сохраняются в <a href="https://www.milvus.io/docs/v1.0.0/overview.md">Milvus</a>.</li>
-<li>Новые APK также преобразуются в векторы, а затем сравниваются с базой данных вредоносных программ с помощью поиска сходства.</li>
-<li>Если вектор APK похож на какой-либо из векторов вредоносного ПО, приложение предоставляет пользователям подробную информацию о вирусе и уровне его опасности.</li>
+<li>External APKs (Android application package) from the Google Play Store are crawled.</li>
+<li>Known malware is converted into vectors and stored in <a href="https://www.milvus.io/docs/v1.0.0/overview.md">Milvus</a>.</li>
+<li>New APKs are also converted into vectors, then compared to the malware database using similarity search.</li>
+<li>If an APK vector is similar to any of the malware vectors, the app provides users with detailed information about the virus and its threat level.</li>
 </ul>
-<p>Чтобы система работала, она должна выполнять высокоэффективный поиск сходства на огромных массивах векторных данных в режиме реального времени. Изначально Trend Micro использовала <a href="https://www.mysql.com/">MySQL</a>. Однако по мере расширения бизнеса компании росло и количество APK с вредоносным кодом, хранящихся в ее базе данных. Команда разработчиков алгоритмов компании начала искать альтернативные решения для векторного поиска сходства, быстро переросшие MySQL.</p>
+<p>To work, the system has to perform highly efficient similarity search on massive vector datasets in real time. Initially, Trend Micro used <a href="https://www.mysql.com/">MySQL</a>. However, as its business expanded so did the number of APKs with nefarious code stored in its database. The company’s algorithm team began searching for alternative vector similarity search solutions after quickly outgrowing MySQL.</p>
 <p><br/></p>
-<h3 id="Comparing-vector-similarity-search-solutions" class="common-anchor-header">Сравнение решений для поиска векторного сходства</h3><p>Существует множество решений для поиска векторного сходства, многие из которых имеют открытый исходный код. Хотя в разных проектах все зависит от обстоятельств, большинство пользователей выигрывают от использования векторной базы данных, созданной для обработки неструктурированных данных и аналитики, а не простой библиотеки, требующей обширной настройки. Ниже мы сравним несколько популярных решений для поиска векторного сходства и объясним, почему компания Trend Micro выбрала именно Milvus.</p>
-<h4 id="Faiss" class="common-anchor-header">Faiss</h4><p><a href="https://ai.facebook.com/tools/faiss/">Faiss</a> - это библиотека, разработанная Facebook AI Research, которая обеспечивает эффективный поиск сходства и кластеризацию плотных векторов. Содержащиеся в ней алгоритмы ищут векторы любого размера в наборах. Faiss написана на C++ с обертками для Python/numpy и поддерживает ряд индексов, включая IndexFlatL2, IndexFlatIP, HNSW и IVF.</p>
-<p>Хотя Faiss - невероятно полезный инструмент, у него есть ограничения. Он работает только как базовая библиотека алгоритмов, а не как база данных для управления векторными наборами данных. Кроме того, в нем нет распределенной версии, сервисов мониторинга, SDK и высокой доступности, которые являются ключевыми характеристиками большинства облачных сервисов.</p>
-<h4 id="Plug-ins-based-on-Faiss--other-ANN-search-libraries" class="common-anchor-header">Плагины на основе Faiss и других библиотек поиска ANN</h4><p>Существует несколько плагинов, созданных на основе Faiss, NMSLIB и других библиотек ANN-поиска, которые призваны расширить базовую функциональность базового инструмента, на котором они основаны. Elasticsearch (ES) - это поисковая система, основанная на библиотеке Lucene и имеющая ряд подобных плагинов. Ниже приведена схема архитектуры плагина для ES:</p>
+<h3 id="Comparing-vector-similarity-search-solutions" class="common-anchor-header">Comparing vector similarity search solutions</h3><p>There are a number of vector similarity search solutions available, many of which are open source. Although the circumstances vary from project to project, most users benefit from leveraging a vector database built for unstructured data processing and analytics rather than a simple library that requires extensive configuration. Below we compare some popular vector similarity search solutions and explain why Trend Micro chose Milvus.</p>
+<h4 id="Faiss" class="common-anchor-header">Faiss</h4><p><a href="https://ai.facebook.com/tools/faiss/">Faiss</a> is a library developed by Facebook AI Research that enables efficient similarity search and clustering of dense vectors. The algorithms it contains search vectors of any size in sets. Faiss is written in C++ with wrappers for Python/numpy, and supports a number of indexes including IndexFlatL2, IndexFlatIP, HNSW, and IVF.</p>
+<p>Although Faiss is an incredibly useful tool, it has limitations. It only works as a basic algorithm library, not a database for managing vector datasets. Additionally, it does not offer a distributed version, monitoring services, SDKs, or high availability, which are the key features of most cloud-based services.</p>
+<h4 id="Plug-ins-based-on-Faiss--other-ANN-search-libraries" class="common-anchor-header">Plug-ins based on Faiss &amp; other ANN search libraries</h4><p>There are several plug-ins built on top of Faiss, NMSLIB, and other ANN search libraries that are designed to enhance the basic functionality of the underlying tool that powers them. Elasticsearch (ES) is a search engine based on the Lucene library with a number of such plugins. Below is an architecture diagram of an ES plug-in:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_3ce4e516c3.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p>Встроенная поддержка распределенных систем - главное преимущество ES-решения. Это экономит время разработчиков и деньги компаний благодаря коду, который не нужно писать. ES-плагины технически совершенны и широко распространены. Elasticsearch предоставляет QueryDSL (язык, специфичный для домена), который определяет запросы на основе JSON и прост для восприятия. Полный набор сервисов ES позволяет одновременно вести векторный/текстовый поиск и фильтровать скалярные данные.</p>
-<p>Amazon, Alibaba и Netease - вот несколько крупных технологических компаний, которые в настоящее время используют плагины Elasticsearch для поиска векторного сходства. Основными недостатками этого решения являются большое потребление памяти и отсутствие поддержки настройки производительности. В отличие от них, компания <a href="http://jd.com/">JD.com</a> разработала собственное распределенное решение на основе Faiss под названием <a href="https://github.com/vearch/vearch">Vearch</a>. Однако Vearch все еще находится на стадии инкубации, а сообщество разработчиков с открытым исходным кодом относительно неактивно.</p>
-<h4 id="Milvus" class="common-anchor-header">Milvus</h4><p><a href="https://www.milvus.io/">Milvus</a> - это векторная база данных с открытым исходным кодом, созданная компанией <a href="https://zilliz.com">Zilliz</a>. Она отличается высокой гибкостью, надежностью и молниеносной скоростью. Инкапсулируя несколько широко распространенных библиотек индексов, таких как Faiss, NMSLIB и Annoy, Milvus предоставляет полный набор интуитивно понятных API, позволяя разработчикам выбрать идеальный тип индекса для своего сценария. Он также предоставляет распределенные решения и услуги мониторинга. Milvus имеет активное сообщество разработчиков с открытым исходным кодом и более 5,5 тыс. звезд на <a href="https://github.com/milvus-io/milvus">Github</a>.</p>
-<h4 id="Milvus-bests-the-competition" class="common-anchor-header">Milvus превосходит конкурентов</h4><p>Мы собрали результаты тестов различных решений для поиска векторного сходства, упомянутых выше. Как видно из следующей сравнительной таблицы, Milvus оказался значительно быстрее конкурентов, несмотря на то, что тестировался на наборе данных из 1 миллиарда 128-мерных векторов.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_3ce4e516c3.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>Built in support for distributed systems is a major advantage of an ES solution. This saves developers time and companies money thanks to code that doesn’t have to be written. ES plug-ins are technically advanced and prevalent. Elasticsearch provides a QueryDSL (domain-specific language), which defines queries based on JSON and is easy to grasp. A full set of ES services makes it possible to conduct vector/text search and filter scalar data simultaneously.</p>
+<p>Amazon, Alibaba, and Netease are a few large tech companies that currently rely on Elasticsearch plug-ins for vector similarity search. The primary downsides with this solution are high memory consumption and no support for performance tuning. In contrast, <a href="http://jd.com/">JD.com</a> has developed its own distributed solution based on Faiss called <a href="https://github.com/vearch/vearch">Vearch</a>. However, Vearch is still an incubation-stage project and its open-source community is relatively inactive.</p>
+<h4 id="Milvus" class="common-anchor-header">Milvus</h4><p><a href="https://www.milvus.io/">Milvus</a> is an open-source vector database created by <a href="https://zilliz.com">Zilliz</a>. It is highly flexible, reliable, and blazing fast. By encapsulating multiple widely adopted index libraries, such as Faiss, NMSLIB, and Annoy, Milvus provides a comprehensive set of intuitive APIs, allowing developers to choose the ideal index type for their scenario. It also provides distributed solutions and monitoring services. Milvus has a highly active open-source community and over 5.5K stars on <a href="https://github.com/milvus-io/milvus">Github</a>.</p>
+<h4 id="Milvus-bests-the-competition" class="common-anchor-header">Milvus bests the competition</h4><p>We compiled a number of different test results from the various vector similarity search solutions mentioned above. As we can see in the following comparison table, Milvus was significantly faster than the competition despite being tested on a dataset of 1 billion 128-dimensional vectors.</p>
 <table>
 <thead>
-<tr><th style="text-align:left"><strong>Движок</strong></th><th style="text-align:left"><strong>Производительность (мс)</strong></th><th style="text-align:left"><strong>Размер набора данных (млн)</strong></th></tr>
+<tr><th style="text-align:left"><strong>Engine</strong></th><th style="text-align:left"><strong>Performance (ms)</strong></th><th style="text-align:left"><strong>Dataset Size (million)</strong></th></tr>
 </thead>
 <tbody>
 <tr><td style="text-align:left">ES</td><td style="text-align:left">600</td><td style="text-align:left">1</td></tr>
 <tr><td style="text-align:left">ES + Alibaba Cloud</td><td style="text-align:left">900</td><td style="text-align:left">20</td></tr>
 <tr><td style="text-align:left">Milvus</td><td style="text-align:left">27</td><td style="text-align:left">1000+</td></tr>
-<tr><td style="text-align:left">SPTAG</td><td style="text-align:left">Не очень хорошо</td><td style="text-align:left"></td></tr>
+<tr><td style="text-align:left">SPTAG</td><td style="text-align:left">Not good</td><td style="text-align:left"></td></tr>
 <tr><td style="text-align:left">ES + nmslib, faiss</td><td style="text-align:left">90</td><td style="text-align:left">150</td></tr>
 </tbody>
 </table>
-<h6 id="A-comparison-of-vector-similarity-search-solutions" class="common-anchor-header"><em>Сравнение решений для поиска векторного сходства.</em></h6><p>Взвесив все "за" и "против" каждого решения, Trend Micro остановилась на Milvus для своей модели векторного поиска. Благодаря исключительной производительности при работе с массивными, миллиардными наборами данных очевидно, почему компания выбрала Milvus для службы мобильной безопасности, требующей поиска векторных сходств в режиме реального времени.</p>
+<h6 id="A-comparison-of-vector-similarity-search-solutions" class="common-anchor-header"><em>A comparison of vector similarity search solutions.</em></h6><p>After weighing the pros and cons of each solution, Trend Micro settled on Milvus for its vector retrieval model. With exceptional performance on massive, billion-scale datasets, it’s obvious why the company chose Milvus for a mobile security service that requires real-time vector similarity search.</p>
 <p><br/></p>
-<h3 id="Designing-a-system-for-real-time-virus-detection" class="common-anchor-header">Разработка системы для обнаружения вирусов в режиме реального времени</h3><p>В базе данных MySQL компании Trend Micro хранится более 10 миллионов вредоносных APK, и каждый день добавляется 100 тысяч новых APK. Система работает по принципу извлечения и вычисления значений Thash различных компонентов APK-файла, затем с помощью алгоритма Sha256 преобразует их в двоичные файлы и генерирует 256-битные значения Sha256, которые отличают APK от других. Поскольку значения Sha256 варьируются в APK-файлах, один APK может иметь одно комбинированное значение Thash и одно уникальное значение Sha256.</p>
-<p>Значения Sha256 используются только для различения APK, а значения Thash - для поиска векторного сходства. Похожие APK могут иметь одинаковые значения Thash, но разные значения Sha256.</p>
-<p>Для обнаружения APK с вредоносным кодом компания Trend Micro разработала собственную систему поиска схожих значений Thash и соответствующих им значений Sha256. Trend Micro выбрала Milvus для проведения мгновенного поиска векторного сходства в массивных векторных массивах данных, преобразованных из значений Thash. После выполнения поиска сходства соответствующие значения Sha256 запрашиваются в MySQL. В архитектуру также добавлен слой кэширования Redis для сопоставления значений Thash со значениями Sha256, что значительно сокращает время выполнения запросов.</p>
-<p>Ниже приведена схема архитектуры системы мобильной безопасности Trend Micro.</p>
+<h3 id="Designing-a-system-for-real-time-virus-detection" class="common-anchor-header">Designing a system for real-time virus detection</h3><p>Trend Micro has more than 10 million malicious APKs stored in its MySQL database, with 100k new APKs added each day. The system works by extracting and calculating Thash values of different components of an APK file, then uses the Sha256 algorithm to transform it into binary files and generate 256-bit Sha256 values that differentiate the APK from others. Since Sha256 values vary with APK files, one APK can have one combined Thash value and one unique Sha256 value.</p>
+<p>Sha256 values are only used to differentiate APKs, and Thash values are used for vector similarity retrieval. Similar APKs may have the same Thash values but different Sha256 values.</p>
+<p>To detect APKs with nefarious code, Trend Micro developed its own system for retrieving similar Thash values and corresponding Sha256 values. Trend Micro chose Milvus to conduct instantaneous vector similarity search on massive vector datasets converted from Thash values. After similarity search is run, the corresponding Sha256 values are queried in MySQL. A Redis caching layer is also added to the architecture to map Thash values to Sha256 values, significantly reducing query time.</p>
+<p>Below is the architecture diagram of Trend Micro’s mobile security system.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image_20210118_022039_ae824b663c.png" alt="image-20210118-022039.png" class="doc-image" id="image-20210118-022039.png" />
-   </span> <span class="img-wrapper"> <span>image-20210118-022039.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image_20210118_022039_ae824b663c.png" alt="image-20210118-022039.png" class="doc-image" id="image-20210118-022039.png" />
+    <span>image-20210118-022039.png</span>
+  </span>
+</p>
 <p><br/></p>
-<p>Выбор подходящей метрики расстояния помогает повысить производительность векторной классификации и кластеризации. В следующей таблице приведены <a href="https://www.milvus.io/docs/v1.0.0/metric.md#binary">метрики расстояния</a> и соответствующие индексы, работающие с двоичными векторами.</p>
+<p>Choosing an appropriate distance metric helps improve vector classification and clustering performance. The following table shows the <a href="https://www.milvus.io/docs/v1.0.0/metric.md#binary">distance metrics</a> and the corresponding indexes that work with binary vectors.</p>
 <table>
 <thead>
-<tr><th><strong>Метрика расстояния</strong></th><th><strong>Типы индексов</strong></th></tr>
+<tr><th><strong>Distance Metrics</strong></th><th><strong>Index Types</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>- Жаккард <br/> - Танимото <br/> - Хэмминг</td><td>- ПЛОСКИЙ <br/> - IVF_FLAT</td></tr>
-<tr><td>- Суперструктура <br/> - Субструктура</td><td>FLAT</td></tr>
+<tr><td>- Jaccard <br/> - Tanimoto <br/> - Hamming</td><td>- FLAT <br/> - IVF_FLAT</td></tr>
+<tr><td>- Superstructure <br/> - Substructure</td><td>FLAT</td></tr>
 </tbody>
 </table>
-<h6 id="Distance-metrics-and-indexes-for-binary-vectors" class="common-anchor-header"><em>Метрики расстояний и индексы для бинарных векторов.</em></h6><p><br/></p>
-<p>Trend Micro преобразует значения Thash в двоичные векторы и хранит их в Milvus. В данном сценарии Trend Micro использует расстояние Хэмминга для сравнения векторов.</p>
-<p>Вскоре Milvus будет поддерживать строковые идентификаторы векторов, и целочисленные идентификаторы не нужно будет сопоставлять с соответствующим именем в строковом формате. Это сделает ненужным слой кэширования Redis, а архитектуру системы - менее громоздкой.</p>
-<p>Trend Micro использует "облачное" решение и развертывает многие задачи на <a href="https://kubernetes.io/">Kubernetes</a>. Для обеспечения высокой доступности Trend Micro использует <a href="https://www.milvus.io/docs/v1.0.0/mishards.md">Mishards</a>, промежуточное ПО для шардинга кластеров Milvus, разработанное на языке Python.</p>
+<h6 id="Distance-metrics-and-indexes-for-binary-vectors" class="common-anchor-header"><em>Distance metrics and indexes for binary vectors.</em></h6><p><br/></p>
+<p>Trend Micro converts Thash values into binary vectors and stores them in Milvus. For this scenario, Trend Micro is using Hamming distance to compare vectors.</p>
+<p>Milvus will soon support string vector ID, and integer IDs won’t have to be mapped to the corresponding name in string format. This makes the Redis caching layer unnecessary and the system architecture less bulky.</p>
+<p>Trend Micro adopts a cloud-based solution and deploys many tasks on <a href="https://kubernetes.io/">Kubernetes</a>. To achieve high availability, Trend Micro uses <a href="https://www.milvus.io/docs/v1.0.0/mishards.md">Mishards</a>, a Milvus cluster sharding middleware developed in Python.</p>
 <p>![image-20210118-022104.png](https://assets.zilliz.com/image_20210118_022104_3001950ee8.png &quot;Mishards architecture in Milvus.)</p>
 <p><br/></p>
-<p>Trend Micro разделяет хранение и расчет расстояния, храня все векторы в файловой системе <a href="https://aws.amazon.com/efs/">EFS</a> (Elastic File System), предоставляемой <a href="https://aws.amazon.com/">AWS</a>. Такая практика является популярным трендом в отрасли. Kubernetes используется для запуска нескольких узлов чтения, а также для развития служб LoadBalancer на этих узлах чтения для обеспечения высокой доступности.</p>
-<p>Для поддержания согласованности данных Mishards поддерживает только один узел записи. Однако в ближайшие месяцы будет доступна распределенная версия Milvus с поддержкой нескольких узлов записи.</p>
+<p>Trend Micro separates storage and distance calculation by storing all vectors in the <a href="https://aws.amazon.com/efs/">EFS</a> (Elastic File System) provided by <a href="https://aws.amazon.com/">AWS</a>. This practice is a popular trend in the industry. Kubernetes is used to start multiple reading nodes, and develops LoadBalancer services on these reading nodes to ensure high availability.</p>
+<p>To maintain data consistency Mishards supports just one writing node. However, a distributed version of Milvus with support for multiple writing nodes will be available in the coming months.</p>
 <p><br/></p>
-<h3 id="Monitoring-and-Alert-Functions" class="common-anchor-header">Функции мониторинга и оповещения</h3><p>Milvus совместим с системами мониторинга, построенными на базе <a href="https://prometheus.io/">Prometheus</a>, и использует <a href="https://grafana.com/">Grafana</a>, платформу с открытым исходным кодом для аналитики временных рядов, для визуализации различных показателей производительности.</p>
-<p>Prometheus отслеживает и хранит следующие метрики:</p>
+<h3 id="Monitoring-and-Alert-Functions" class="common-anchor-header">Monitoring and Alert Functions</h3><p>Milvus is compatible with monitoring systems built on <a href="https://prometheus.io/">Prometheus</a>, and uses <a href="https://grafana.com/">Grafana</a>, an open-source platform for time-series analytics, to visualize various performance metrics.</p>
+<p>Prometheus monitors and stores the following metrics:</p>
 <ul>
-<li>Показатели производительности Milvus, включая скорость вставки, скорость запросов и время работы Milvus.</li>
-<li>Показатели производительности системы, включая использование CPU/GPU, сетевой трафик и скорость доступа к диску.</li>
-<li>Показатели аппаратного хранилища, включая размер данных и общее количество файлов.</li>
+<li>Milvus performance metrics including insertion speed, query speed, and Milvus uptime.</li>
+<li>System performance metrics including CPU/GPU usage, network traffic, and disk access speed.</li>
+<li>Hardware storage metrics including data size and total file number.</li>
 </ul>
-<p>Система мониторинга и оповещения работает следующим образом:</p>
+<p>The monitoring and alert system works as follows:</p>
 <ul>
-<li>Клиент Milvus передает настраиваемые данные метрик на Pushgateway.</li>
-<li>Pushgateway обеспечивает безопасную отправку недолговечных, эфемерных метрических данных в Prometheus.</li>
-<li>Prometheus продолжает получать данные из Pushgateway.</li>
-<li>Alertmanager устанавливает порог оповещения для различных метрик и поднимает тревогу с помощью электронной почты или сообщений.</li>
+<li>A Milvus client pushes customized metrics data to Pushgateway.</li>
+<li>The Pushgateway ensures short-lived, ephemeral metric data is safely sent to Prometheus.</li>
+<li>Prometheus keeps pulling data from Pushgateway.</li>
+<li>Alertmanager sets the alert threshold for different metrics and raises alarms through emails or messages.</li>
 </ul>
 <p><br/></p>
-<h3 id="System-Performance" class="common-anchor-header">Производительность системы</h3><p>Прошло несколько месяцев с момента запуска сервиса ThashSearch, построенного на Milvus. На графике ниже видно, что время ожидания сквозного запроса составляет менее 95 миллисекунд.</p>
+<h3 id="System-Performance" class="common-anchor-header">System Performance</h3><p>A couple months have passed since the ThashSearch service built on Milvus was first launched. The graph below shows that end-to-end query latency is less than 95 milliseconds.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image_20210118_022116_a0c735ce20.png" alt="image-20210118-022116.png" class="doc-image" id="image-20210118-022116.png" />
-   </span> <span class="img-wrapper"> <span>image-20210118-022116.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image_20210118_022116_a0c735ce20.png" alt="image-20210118-022116.png" class="doc-image" id="image-20210118-022116.png" />
+    <span>image-20210118-022116.png</span>
+  </span>
+</p>
 <p><br/></p>
-<p>Вставка также выполняется быстро. Для вставки 3 миллионов 192-мерных векторов требуется около 10 секунд. С помощью Milvus производительность системы удалось привести в соответствие с критериями производительности, установленными Trend Micro.</p>
+<p>Insertion is also fast. It takes around 10 seconds to insert 3 million 192-dimensional vectors. With help from Milvus, the system performance was able to meet the performance criteria set by Trend Micro.</p>
 <p><br/></p>
-<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Не будьте чужаком</h3><ul>
-<li>Найдите Milvus на <a href="https://github.com/milvus-io/milvus/">GitHub</a> и внесите в него свой вклад.</li>
-<li>Общайтесь с сообществом через <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Общайтесь с нами в <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Don’t be a stranger</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

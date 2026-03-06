@@ -1,15 +1,15 @@
 ---
 id: scheduling-query-tasks-milvus.md
-title: الخلفية
+title: Background
 author: milvus
 date: 2020-03-03T22:38:17.829Z
-desc: العمل خلف الكواليس
+desc: The work behind the scene
 cover: assets.zilliz.com/eric_rothermel_Fo_KO_4_Dp_Xam_Q_unsplash_469fe12aeb.jpg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
 ---
-<custom-h1>كيف يقوم ميلفوس بجدولة مهام الاستعلام</custom-h1><p>في هذه المقالة، سنناقش كيفية جدولة ميلفوس لمهام الاستعلام. سنتحدث أيضًا عن المشاكل والحلول والتوجهات المستقبلية لتنفيذ جدولة ميلفوس.</p>
-<h2 id="Background" class="common-anchor-header">الخلفية<button data-href="#Background" class="anchor-icon" translate="no">
+<custom-h1>How Does Milvus Schedule Query Tasks</custom-h1><p>n this article, we will discuss how Milvus schedules query tasks. We will also talk about problems, solutions, and future orientations for implementing Milvus scheduling.</p>
+<h2 id="Background" class="common-anchor-header">Background<button data-href="#Background" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,15 +24,17 @@ canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>نحن نعلم من إدارة البيانات في محرك البحث المتجه الضخم النطاق أن البحث عن التشابه المتجه يتم تنفيذه من خلال المسافة بين متجهين في الفضاء عالي الأبعاد. الهدف من البحث عن المتجهات هو إيجاد المتجهات K الأقرب إلى المتجه الهدف.</p>
-<p>هناك العديد من الطرق لقياس المسافة بين المتجهات، مثل المسافة الإقليدية:</p>
+    </button></h2><p>We know from Managing Data in Massive-Scale Vector Search Engine that vector similarity search is implemented by the distance between two vectors in high-dimensional space. The goal of vector search is to find K vectors that are closest to the target vector.</p>
+<p>There are many ways to measure vector distance, such as Euclidean distance:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_euclidean_distance_156037c939.png" alt="1-euclidean-distance.png" class="doc-image" id="1-euclidean-distance.png" />
-   </span> <span class="img-wrapper"> <span>1-euclidean-distance.png</span> </span></p>
-<p>حيث x و y متجهان. n هو بُعد المتجهات.</p>
-<p>للعثور على أقرب متجهات K في مجموعة البيانات، يجب حساب المسافة الإقليدية بين المتجه الهدف وجميع المتجهات في مجموعة البيانات المراد البحث عنها. بعد ذلك، يتم فرز المتجهات حسب المسافة للحصول على أقرب K من المتجهات. يتناسب العمل الحسابي تناسبًا طرديًا مع حجم مجموعة البيانات. كلما زاد حجم مجموعة البيانات، زاد العمل الحسابي الذي يتطلبه الاستعلام. تصادف أن وحدة معالجة الرسوم البيانية (GPU) المتخصصة في معالجة الرسوم البيانية تحتوي على الكثير من النوى لتوفير القدرة الحاسوبية المطلوبة. وبالتالي، يتم أيضًا أخذ دعم وحدات معالجة الرسومات المتعددة في الاعتبار أثناء تنفيذ Milvus.</p>
-<h2 id="Basic-concepts" class="common-anchor-header">المفاهيم الأساسية<button data-href="#Basic-concepts" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_euclidean_distance_156037c939.png" alt="1-euclidean-distance.png" class="doc-image" id="1-euclidean-distance.png" />
+    <span>1-euclidean-distance.png</span>
+  </span>
+</p>
+<p>where x and y are two vectors. n is the dimension of the vectors.</p>
+<p>In order to find K nearest vectors in a dataset, Euclidean distance needs to be computed between the target vector and all vectors in the dataset to be searched. Then, vectors are sorted by distance to acquire K nearest vectors. The computational work is in direct proportion to the size of the dataset. The larger the dataset, the more computational work a query requires. A GPU, specialized for graph processing, happens to have a lot of cores to provide the required computing power. Thus, multi-GPU support is also taken into consideration during Milvus implementation.</p>
+<h2 id="Basic-concepts" class="common-anchor-header">Basic concepts<button data-href="#Basic-concepts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,65 +49,81 @@ canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Data-blockTableFile" class="common-anchor-header">كتلة البيانات （ملف الجدول）</h3><p>لتحسين دعم البحث عن البيانات على نطاق واسع، قمنا بتحسين تخزين البيانات في Milvus. يقسم Milvus البيانات في جدول حسب الحجم إلى كتل بيانات متعددة. أثناء البحث المتجه، يبحث Milvus في المتجهات في كل كتلة بيانات ويدمج النتائج. تتكون عملية بحث متجه واحدة من عمليات بحث متجهية مستقلة N (N هو عدد كتل البيانات) وعمليات دمج النتائج N-1.</p>
-<h3 id="Task-queueTaskTable" class="common-anchor-header">قائمة انتظار المهام (جدول المهام)</h3><p>يحتوي كل مورد على مصفوفة مهام، والتي تسجل المهام التي تنتمي إلى المورد. لكل مهمة حالات مختلفة، بما في ذلك البدء والتحميل والتحميل والتحميل والتنفيذ والتنفيذ. يشترك المحمل والمنفذ في جهاز الحوسبة في نفس قائمة انتظار المهام.</p>
-<h3 id="Query-scheduling" class="common-anchor-header">جدولة الاستعلام</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_query_scheduling_5798178be2.png" alt="2-query-scheduling.png" class="doc-image" id="2-query-scheduling.png" />
-   </span> <span class="img-wrapper"> <span>2-جدولة الاستعلام.png</span> </span></p>
+    </button></h2><h3 id="Data-blockTableFile" class="common-anchor-header">Data block（TableFile）</h3><p>To improve support for massive-scale data search, we optimized the data storage of Milvus. Milvus splits the data in a table by size into multiple data blocks. During vector search, Milvus searches vectors in each data block and merges the results. One vector search operation consists of N independent vector search operations (N is the number of data blocks) and N-1 result merge operations.</p>
+<h3 id="Task-queueTaskTable" class="common-anchor-header">Task queue（TaskTable）</h3><p>Each Resource has a task array, which records tasks belonging to the Resource. Each task has different states, including Start, Loading, Loaded, Executing, and Executed. The Loader and Executor in a computing device share the same task queue.</p>
+<h3 id="Query-scheduling" class="common-anchor-header">Query scheduling</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_query_scheduling_5798178be2.png" alt="2-query-scheduling.png" class="doc-image" id="2-query-scheduling.png" />
+    <span>2-query-scheduling.png</span>
+  </span>
+</p>
 <ol>
-<li>عند بدء تشغيل خادم Milvus، يقوم Milvus بتشغيل GpuResource المقابل عبر المعلمات <code translate="no">gpu_resource_config</code> في ملف التكوين <code translate="no">server_config.yaml</code>. لا يزال يتعذر تحرير DiskResource و CpuResource في <code translate="no">server_config.yaml</code>. GpuResource هو مزيج من <code translate="no">search_resources</code> و <code translate="no">build_index_resources</code> ويشار إليه باسم <code translate="no">{gpu0, gpu1}</code> في المثال التالي:</li>
+<li>When the Milvus server starts, Milvus launches the corresponding GpuResource via the <code translate="no">gpu_resource_config</code> parameters in the <code translate="no">server_config.yaml</code> configuration file. DiskResource and CpuResource still cannot be edited in <code translate="no">server_config.yaml</code>. GpuResource is the combination of <code translate="no">search_resources</code> and <code translate="no">build_index_resources</code> and referred to as <code translate="no">{gpu0, gpu1}</code> in the following example:</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_sample_code_ffee1c290f.png" alt="3-sample-code.png" class="doc-image" id="3-sample-code.png" />
-   </span> <span class="img-wrapper"> <span>3-مثال الرمز.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_sample_code_ffee1c290f.png" alt="3-sample-code.png" class="doc-image" id="3-sample-code.png" />
+    <span>3-sample-code.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_example_0eeb85da71.png" alt="3-example.png" class="doc-image" id="3-example.png" />
-   </span> <span class="img-wrapper"> <span>3-مثال.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_example_0eeb85da71.png" alt="3-example.png" class="doc-image" id="3-example.png" />
+    <span>3-example.png</span>
+  </span>
+</p>
 <ol start="2">
-<li>يتلقى ميلفوس طلبًا. يتم تخزين البيانات الوصفية للجدول في قاعدة بيانات خارجية، وهي SQLite أو MySQl للمضيف الواحد و MySQL للموزع. بعد تلقي طلب البحث، يقوم Milvus بالتحقق من صحة ما إذا كان الجدول موجوداً والبُعد متناسقاً. بعد ذلك، يقوم Milvus بقراءة قائمة TableFile للجدول.</li>
+<li>Milvus receives a request. Table metadata is stored in an external database, which is SQLite or MySQl for single-host and MySQL for distributed. After receiving a search request, Milvus validates whether the table exists and the dimension is consistent. Then, Milvus reads the TableFile list of the table.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_milvus_reads_tablefile_list_1e9d851543.png" alt="4-milvus-reads-tablefile-list.png" class="doc-image" id="4-milvus-reads-tablefile-list.png" />
-   </span> <span class="img-wrapper"> <span>4-ميلفوس-قراءة-قائمة-ملف-جدول-قائمة-ملف-ملف.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_milvus_reads_tablefile_list_1e9d851543.png" alt="4-milvus-reads-tablefile-list.png" class="doc-image" id="4-milvus-reads-tablefile-list.png" />
+    <span>4-milvus-reads-tablefile-list.png</span>
+  </span>
+</p>
 <ol start="3">
-<li>ينشئ ميلفوس مهمة بحث. نظرًا لأن حساب كل TableFile يتم إجراؤه بشكل مستقل، يقوم Milvus بإنشاء مهمة بحث لكل TableFile. كوحدة أساسية لجدولة المهام، يحتوي SearchTask على المتجهات المستهدفة ومعلمات البحث وأسماء ملفات TableFile.</li>
+<li>Milvus creates a SearchTask. Because the computation of each TableFile is performed independently, Milvus creates a SearchTask for each TableFile. As the basic unit of task scheduling, a SearchTask contains the target vectors, search parameters, and the filenames of TableFile.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/5_table_file_list_task_creator_36262593e4.png" alt="5-table-file-list-task-creator.png" class="doc-image" id="5-table-file-list-task-creator.png" />
-   </span> <span class="img-wrapper"> <span>5-جدول-ملف-قائمة-ملف-مهمة-منشئ-ملف-بنج</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/5_table_file_list_task_creator_36262593e4.png" alt="5-table-file-list-task-creator.png" class="doc-image" id="5-table-file-list-task-creator.png" />
+    <span>5-table-file-list-task-creator.png</span>
+  </span>
+</p>
 <ol start="4">
-<li>يختار ميلفوس جهاز حوسبة. يعتمد الجهاز الذي ينفذ فيه SearchTask عملية الحوسبة على وقت <strong>الإكمال المقدر</strong> لكل جهاز. ويحدد وقت <strong>الإكمال</strong> المقدر الفاصل الزمني المقدر بين الوقت الحالي والوقت المقدر لاكتمال الحساب.</li>
+<li>Milvus chooses a computing device. The device that a SearchTask performs computation depends on the <strong>estimated completion</strong> time for each device. The <strong>estimated completion</strong> time specifies the estimated interval between the current time and the estimated time when the computation completes.</li>
 </ol>
-<p>على سبيل المثال، عندما يتم تحميل كتلة بيانات لمهمة بحث إلى ذاكرة وحدة المعالجة المركزية، تكون مهمة البحث التالية في انتظار قائمة انتظار مهام حساب وحدة المعالجة المركزية وتكون قائمة انتظار مهام حساب وحدة معالجة الرسومات خاملة. يساوي وقت <strong>الإكمال</strong> المقدر لوحدة المعالجة المركزية مجموع التكلفة الزمنية المقدرة لمهمة البحث السابقة ومهمة البحث الحالية. يساوي <strong>وقت الإكمال المقدر</strong> لوحدة معالجة الرسومات مجموع الوقت اللازم لتحميل كتل البيانات إلى وحدة معالجة الرسومات والتكلفة الزمنية المقدرة لمهمة البحث الحالية SearchTask. يساوي <strong>وقت</strong> الإكمال <strong>المقدر</strong> لمهمة بحث في مورد ما متوسط وقت التنفيذ لجميع مهام البحث في المورد. يختار Milvus بعد ذلك جهازًا بأقل <strong>وقت إكمال تقديري</strong> ويخصص مهمة البحث إلى الجهاز.</p>
-<p>نفترض هنا أن <strong>وقت</strong> الإكمال المقدر لوحدة معالجة الرسومات1 أقصر.</p>
+<p>For example, when a data block of a SearchTask is loaded to CPU memory, the next SearchTask is waiting in the CPU computation task queue and the GPU computation task queue is idle. The <strong>estimated completion time</strong> for CPU is equal to the sum of the estimated time cost of the previous SearchTask and the current SearchTask. The <strong>estimated completion time</strong> for a GPU is equal to the sum of the time for data blocks to be loaded to the GPU and the estimated time cost of the current SearchTask. The <strong>estimated completion time</strong> for a SearchTask in a Resource is equal to the average execution time of all SearchTasks in the Resource. Milvus then chooses a device with the least <strong>estimated completion time</strong> and assign SearchTask to the device.</p>
+<p>Here we assume that the <strong>estimated completion time</strong> for GPU1 is shorter.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/6_GPU_1_shorter_estimated_completion_time_42c7639b87.png" alt="6-GPU1-shorter-estimated-completion-time.png" class="doc-image" id="6-gpu1-shorter-estimated-completion-time.png" />
-   </span> <span class="img-wrapper"> <span>6-وحدة معالجة الرسوميات1-وقت الإكمال المقدر-الأقصر.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/6_GPU_1_shorter_estimated_completion_time_42c7639b87.png" alt="6-GPU1-shorter-estimated-completion-time.png" class="doc-image" id="6-gpu1-shorter-estimated-completion-time.png" />
+    <span>6-GPU1-shorter-estimated-completion-time.png</span>
+  </span>
+</p>
 <ol start="5">
-<li><p>يضيف Milvus مهمة البحث SearchTask إلى قائمة انتظار المهام في DiskResource.</p></li>
-<li><p>ينقل Milvus مهمة البحث إلى قائمة انتظار المهام في CpuResource. يقوم مؤشر ترابط التحميل في CpuResource بتحميل كل مهمة من قائمة انتظار المهام بالتتابع. يقوم CpuResource بقراءة كتل البيانات المقابلة إلى ذاكرة وحدة المعالجة المركزية.</p></li>
-<li><p>ينقل Milvus SearchTask إلى GpuResource. يقوم مؤشر ترابط التحميل في GpuResource بنسخ البيانات من ذاكرة وحدة المعالجة المركزية إلى ذاكرة وحدة معالجة الرسومات. يقوم GpuResource بقراءة كتل البيانات المقابلة إلى ذاكرة وحدة معالجة الرسومات.</p></li>
-<li><p>يقوم Milvus بتنفيذ SearchTask في GpuResource. نظرًا لأن نتيجة SearchTask صغيرة نسبيًا، يتم إرجاع النتيجة مباشرةً إلى ذاكرة وحدة المعالجة المركزية.</p></li>
+<li><p>Milvus adds SearchTask to the task queue of DiskResource.</p></li>
+<li><p>Milvus moves SearchTask to the task queue of CpuResource. The loading thread in CpuResource loads each task from the task queue sequentially. CpuResource reads the corresponding data blocks to CPU memory.</p></li>
+<li><p>Milvus moves SearchTask to GpuResource. The loading thread in GpuResource copies data from CPU memory to GPU memory. GpuResource reads the corresponding data blocks to GPU memory.</p></li>
+<li><p>Milvus executes SearchTask in GpuResource. Because the result of a SearchTask is relatively small, the result is directly returned to CPU memory.</p></li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/7_scheduler_53f1fbbaba.png" alt="7-scheduler.png" class="doc-image" id="7-scheduler.png" />
-   </span> <span class="img-wrapper"> <span>7-Scheduler.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/7_scheduler_53f1fbbaba.png" alt="7-scheduler.png" class="doc-image" id="7-scheduler.png" />
+    <span>7-scheduler.png</span>
+  </span>
+</p>
 <ol start="9">
-<li>يدمج Milvus نتيجة SearchTask في نتيجة البحث بأكملها.</li>
+<li>Milvus merges the result of SearchTask to the whole search result.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/8_milvus_merges_searchtast_result_9f3446e65a.png" alt="8-milvus-merges-searchtast-result.png" class="doc-image" id="8-milvus-merges-searchtast-result.png" />
-   </span> <span class="img-wrapper"> <span>8-ملفوس-يدمج-يدمج-نتيجة-مهمة-بحث-نتيجة-بحث.png</span> </span></p>
-<p>بعد اكتمال جميع مهام البحث، يقوم ميلفوس بإرجاع نتيجة البحث كاملة إلى العميل.</p>
-<h2 id="Index-building" class="common-anchor-header">بناء الفهرس<button data-href="#Index-building" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/8_milvus_merges_searchtast_result_9f3446e65a.png" alt="8-milvus-merges-searchtast-result.png" class="doc-image" id="8-milvus-merges-searchtast-result.png" />
+    <span>8-milvus-merges-searchtast-result.png</span>
+  </span>
+</p>
+<p>After all SearchTasks are complete, Milvus returns the whole search result to the client.</p>
+<h2 id="Index-building" class="common-anchor-header">Index building<button data-href="#Index-building" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -120,8 +138,8 @@ canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بناء الفهرس هو في الأساس نفس عملية البحث بدون عملية الدمج. لن نتحدث عن هذا بالتفصيل.</p>
-<h2 id="Performance-optimization" class="common-anchor-header">تحسين الأداء<button data-href="#Performance-optimization" class="anchor-icon" translate="no">
+    </button></h2><p>Index building is basically the same as the search process without the merging process. We will not talk about this in detail.</p>
+<h2 id="Performance-optimization" class="common-anchor-header">Performance optimization<button data-href="#Performance-optimization" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -136,14 +154,16 @@ canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Cache" class="common-anchor-header">التخزين المؤقت</h3><p>كما ذكرنا من قبل، يجب تحميل كتل البيانات إلى أجهزة التخزين المقابلة مثل ذاكرة وحدة المعالجة المركزية أو ذاكرة وحدة معالجة الرسومات قبل إجراء الحساب. لتجنب التحميل المتكرر للبيانات، يقدم Milvus ذاكرة التخزين المؤقت LRU (الأقل استخدامًا مؤخرًا). عندما تمتلئ ذاكرة التخزين المؤقت، تقوم كتل البيانات الجديدة بإبعاد كتل البيانات القديمة. يمكنك تخصيص حجم ذاكرة التخزين المؤقت بواسطة ملف التكوين بناءً على حجم الذاكرة الحالي. يوصى باستخدام ذاكرة تخزين مؤقت كبيرة لتخزين بيانات البحث لتوفير وقت تحميل البيانات بفعالية وتحسين أداء البحث.</p>
-<h3 id="Data-loading-and-computation-overlap" class="common-anchor-header">تداخل تحميل البيانات والحساب</h3><p>لا يمكن لذاكرة التخزين المؤقت تلبية احتياجاتنا لتحسين أداء البحث. يجب إعادة تحميل البيانات عندما تكون الذاكرة غير كافية أو عندما يكون حجم مجموعة البيانات كبيرًا جدًا. نحتاج إلى تقليل تأثير تحميل البيانات على أداء البحث. ينتمي تحميل البيانات، سواءً كان من القرص إلى ذاكرة وحدة المعالجة المركزية أو من ذاكرة وحدة المعالجة المركزية إلى ذاكرة وحدة معالجة الرسومات، إلى عمليات الإدخال والإخراج وبالكاد يحتاج إلى أي عمل حسابي من المعالجات. لذا، نأخذ بعين الاعتبار إجراء تحميل البيانات والحساب بالتوازي من أجل استخدام أفضل للموارد.</p>
-<p>نقوم بتقسيم الحوسبة على كتلة بيانات إلى 3 مراحل (التحميل من القرص إلى ذاكرة وحدة المعالجة المركزية، وحساب وحدة المعالجة المركزية، ودمج النتائج) أو 4 مراحل (التحميل من القرص إلى ذاكرة وحدة المعالجة المركزية، والتحميل من ذاكرة وحدة المعالجة المركزية إلى ذاكرة وحدة معالجة الرسومات، وحساب وحدة معالجة الرسومات، واسترجاع النتائج، ودمج النتائج). لنأخذ الحوسبة على 3 مراحل كمثال، يمكننا إطلاق 3 خيوط مسؤولة عن المراحل الثلاث لتعمل على شكل أنابيب تعليمات. نظرًا لأن مجموعات النتائج صغيرة في الغالب، فإن دمج النتائج لا يستغرق الكثير من الوقت. في بعض الحالات، يمكن أن يؤدي تداخل تحميل البيانات والحساب إلى تقليل وقت البحث بمقدار 1/2.</p>
+    </button></h2><h3 id="Cache" class="common-anchor-header">Cache</h3><p>As mentioned before, data blocks need to be loaded to corresponding storage devices such as CPU memory or GPU memory before computation. To avoid repetitive data loading, Milvus introduces LRU (Least Recently Used) cache. When the cache is full, new data blocks push away old data blocks. You can customize the cache size by the configuration file based on the current memory size. A large cache to store search data is recommended to effectively save data loading time and improve search performance.</p>
+<h3 id="Data-loading-and-computation-overlap" class="common-anchor-header">Data loading and computation overlap</h3><p>The cache cannot satisfy our needs for better search performance. Data needs to be reloaded when memory is insufficient or the size of the dataset is too large. We need to decrease the effect of data loading on search performance. Data loading, whether it be from disk to CPU memory or from CPU memory to GPU memory, belongs to IO operations and barely needs any computational work from processors. So, we consider performing data loading and computation in parallel for better resource usage.</p>
+<p>We split the computation on a data block into 3 stages (loading from disk to CPU memory, CPU computation, result merging) or 4 stages (loading from disk to CPU memory, loading from CPU memory to GPU memory, GPU computation and result retrieval, and result merging). Take 3-stage computation as an example, we can launch 3 threads responsible for the 3 stages to function as instruction pipelining. Because the results sets are mostly small, result merging does not take much time. In some cases, the overlap of data loading and computation can reduce the search time by 1/2.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/9_sequential_overlapping_load_milvus_1af809b29e.png" alt="9-sequential-overlapping-load-milvus.png" class="doc-image" id="9-sequential-overlapping-load-milvus.png" />
-   </span> <span class="img-wrapper"> <span>9-التحميل المتسلسل-التداخل-التحميل-ملفوس.png</span> </span></p>
-<h2 id="Problems-and-solutions" class="common-anchor-header">المشاكل والحلول<button data-href="#Problems-and-solutions" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/9_sequential_overlapping_load_milvus_1af809b29e.png" alt="9-sequential-overlapping-load-milvus.png" class="doc-image" id="9-sequential-overlapping-load-milvus.png" />
+    <span>9-sequential-overlapping-load-milvus.png</span>
+  </span>
+</p>
+<h2 id="Problems-and-solutions" class="common-anchor-header">Problems and solutions<button data-href="#Problems-and-solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -158,8 +178,8 @@ canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Different-transmission-speeds" class="common-anchor-header">سرعات نقل مختلفة</h3><p>في السابق، كان Milvus يستخدم استراتيجية Round Robin لجدولة المهام متعددة وحدات معالجة الرسومات. عملت هذه الاستراتيجية بشكل مثالي في خادمنا المكون من 4 وحدات معالجة GPU وكان أداء البحث أفضل 4 مرات. ومع ذلك، لم يكن الأداء أفضل بمرتين بالنسبة لمضيفي وحدة معالجة الجاذبية الثنائية لدينا. لقد أجرينا بعض التجارب واكتشفنا أن سرعة نسخ البيانات لوحدة معالجة الرسومات كانت 11 جيجابايت/ثانية. ومع ذلك، بالنسبة لوحدة معالجة رسومات أخرى، كانت 3 جيجابايت/ثانية. بعد الرجوع إلى وثائق اللوحة الرئيسية، تأكدنا من أن اللوحة الرئيسية كانت متصلة بوحدة معالجة رسومات واحدة عبر PCIe x16 ووحدة معالجة رسومات أخرى عبر PCIe x4. وهذا يعني أن وحدات معالجة الرسومات هذه لها سرعات نسخ مختلفة. في وقت لاحق، أضفنا وقت النسخ لقياس الجهاز الأمثل لكل مهمة بحث.</p>
-<h2 id="Future-work" class="common-anchor-header">العمل المستقبلي<button data-href="#Future-work" class="anchor-icon" translate="no">
+    </button></h2><h3 id="Different-transmission-speeds" class="common-anchor-header">Different transmission speeds</h3><p>Previously, Milvus uses the Round Robin strategy for multi-GPU task scheduling. This strategy worked perfectly in our 4-GPU server and the search performance was 4 times better. However, for our 2-GPU hosts, the performance was not 2 times better. We did some experiments and discovered that the data copy speed for a GPU was 11 GB/s. However, for another GPU, it was 3 GB/s. After referring to the mainboard documentation, we confirmed that the mainboard was connected to one GPU via PCIe x16 and another GPU via PCIe x4. That is to say, these GPUs have different copy speeds. Later, we added copy time to measure the optimal device for each SearchTask.</p>
+<h2 id="Future-work" class="common-anchor-header">Future work<button data-href="#Future-work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,6 +194,7 @@ canonicalUrl: 'https://zilliz.com/blog/scheduling-query-tasks-milvus'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Hardware-environment-with-increased-complexity" class="common-anchor-header">بيئة الأجهزة مع زيادة التعقيد</h3><p>في الظروف الحقيقية، قد تكون بيئة الأجهزة أكثر تعقيدًا. بالنسبة لبيئات الأجهزة التي تحتوي على وحدات معالجة مركزية متعددة، وذاكرة ذات بنية NUMA، و NVLink، و NVSwitch، فإن الاتصال عبر وحدات المعالجة المركزية/وحدات معالجة الرسومات يجلب الكثير من الفرص للتحسين.</p>
-<p>تحسين الاستعلام</p>
-<p>أثناء التجربة، اكتشفنا بعض الفرص لتحسين الأداء. على سبيل المثال، عندما يتلقى الخادم استعلامات متعددة لنفس الجدول، يمكن دمج الاستعلامات في ظل بعض الظروف. باستخدام محلية البيانات، يمكننا تحسين الأداء. سيتم تنفيذ هذه التحسينات في تطويرنا المستقبلي. الآن نحن نعرف بالفعل كيف تتم جدولة الاستعلامات وتنفيذها لسيناريو المضيف الواحد، وحدة معالجة رسومات متعددة. سنواصل تقديم المزيد من الآليات الداخلية لـ Milvus في المقالات القادمة.</p>
+    </button></h2><h3 id="Hardware-environment-with-increased-complexity" class="common-anchor-header">Hardware environment with increased complexity</h3><p>In real conditions, the hardware environment may be more complicated. For hardware environments with multiple CPUs, memory with NUMA architecture, NVLink, and NVSwitch, communication across CPUs/GPUs brings a lot of opportunities for optimization.</p>
+<p>Query optimization</p>
+<p>During experimentation, we discovered some opportunities for performance improvement. For example, when the server receives multiple queries for the same table, the queries can be merged under some conditions. By using data locality, we can improve the performance. These optimizations will be implemented in our future development.
+Now we already know how queries are scheduled and performed for the single-host, multi-GPU scenario. We will continue to introduce more inner mechanisms for Milvus in the upcoming articles.</p>

@@ -1,9 +1,11 @@
 ---
 id: how-to-migrate-data-to-milvus-seamlessly.md
-title: 如何将数据无缝迁移到 Milvus：综合指南
+title: 'How to Migrate Your Data to Milvus Seamlessly: A Comprehensive Guide'
 author: Wenhui Zhang
 date: 2023-12-01T00:00:00.000Z
-desc: 将数据从 Elasticsearch、FAISS 和旧版 Milvus 1.x 迁移到 Milvus 2.x 版本的全面指南。
+desc: >-
+  A comprehensive guide on migrating your data from Elasticsearch, FAISS, and
+  older Milvus 1.x to Milvus 2.x versions.
 cover: assets.zilliz.com/How_to_Migrate_Your_Data_to_Milvus_with_Ease_485dcb8b22.png
 tag: Engineering
 tags: >-
@@ -19,10 +21,10 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><a href="https://milvus.io/">Milvus</a>是一个强大的开源向量数据库，用于<a href="https://zilliz.com/learn/vector-similarity-search">相似性搜索</a>，可存储、处理和检索数十亿甚至数万亿向量数据，且延迟极低。它还具有高度可扩展性、可靠性、云原生性和丰富的功能。<a href="https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md">最新发布的 Milvus</a>引入了更多令人兴奋的功能和改进，包括<a href="https://zilliz.com/blog/getting-started-with-gpu-powered-milvus-unlocking-10x-higher-performance">支持 GPU</a>以提高 10 倍以上的性能，以及在单台机器上实现更大存储容量的 MMap。</p>
-<p>截至 2023 年 9 月，Milvus 在 GitHub 上获得了近 23000 个星，拥有数万名来自不同行业、需求各异的用户。随着<a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a>等生成式人工智能技术的普及，它正变得越来越受欢迎。它是各种人工智能堆栈的重要组成部分，尤其是<a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">检索增强生成</a>框架，可以解决大型语言模型的幻觉问题。</p>
-<p>为了满足希望迁移到 Milvus 的新用户和希望升级到最新 Milvus 版本的老用户日益增长的需求，我们开发了<a href="https://github.com/zilliztech/milvus-migration">Milvus 迁移</a>功能。在这篇博客中，我们将探讨 Milvus 迁移的功能，并指导你将数据从 Milvus 1.x、<a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a> 和<a href="https://zilliz.com/comparison/elastic-vs-milvus">Elasticsearch 7.0</a>及更高版本快速迁移到 Milvus。</p>
-<h2 id="Milvus-Migration-a-powerful-data-migration-tool" class="common-anchor-header">Milvus Migration，一个功能强大的数据迁移工具<button data-href="#Milvus-Migration-a-powerful-data-migration-tool" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus</a> is a robust open-source vector database for <a href="https://zilliz.com/learn/vector-similarity-search">similarity search</a> that can store, process, and retrieve billions and even trillions of vector data with minimal latency. It is also highly scalable, reliable, cloud-native, and feature-rich. <a href="https://milvus.io/blog/unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md">The newest release of Milvus</a> introduces even more exciting features and improvements, including <a href="https://zilliz.com/blog/getting-started-with-gpu-powered-milvus-unlocking-10x-higher-performance">GPU support</a> for over 10x faster performance and MMap for greater storage capacity on a single machine.</p>
+<p>As of September 2023, Milvus has earned almost 23,000 stars on GitHub and has tens of thousands of users from diverse industries with varying needs. It is becoming even more popular as Generative AI technology like <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> becomes more prevalent. It is an essential component of various AI stacks, especially the <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">retrieval augmented generation</a> framework, which addresses the hallucination problem of large language models.</p>
+<p>To meet the growing demand from new users who want to migrate to Milvus and existing users who wish to upgrade to the latest Milvus versions, we developed  <a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a>. In this blog, we’ll explore the features of Milvus Migration and guide you through quickly transitioning your data to Milvus from Milvus 1.x, <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a>, and <a href="https://zilliz.com/comparison/elastic-vs-milvus">Elasticsearch 7.0</a> and beyond.</p>
+<h2 id="Milvus-Migration-a-powerful-data-migration-tool" class="common-anchor-header">Milvus Migration, a powerful data migration tool<button data-href="#Milvus-Migration-a-powerful-data-migration-tool" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,58 +39,58 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a>是用 Go 语言编写的数据迁移工具。它能让用户将数据从旧版本的 Milvus（1.x）、FAISS 和 Elasticsearch 7.0 及更高版本无缝迁移到 Milvus 2.x 版本。</p>
-<p>下图展示了我们如何构建 Milvus 迁移及其工作原理。</p>
+    </button></h2><p><a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a> is a data migration tool written in Go. It enables users to move their data seamlessly from older versions of Milvus (1.x), FAISS, and Elasticsearch 7.0 and beyond to Milvus 2.x versions.</p>
+<p>The diagram below demonstrates how we built Milvus Migration and how it works.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_migration_architecture_144e22f499.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="How-Milvus-Migration-migrates-data" class="common-anchor-header">Milvus 迁移如何迁移数据</h3><h4 id="From-Milvus-1x-and-FAISS-to-Milvus-2x" class="common-anchor-header">从 Milvus 1.x 和 FAISS 迁移到 Milvus 2.x</h4><p>从 Milvus 1.x 和 FAISS 迁移数据涉及解析原始数据文件的内容，将其转换为 Milvus 2.x 的数据存储格式，并使用 Milvus SDK 的<code translate="no">bulkInsert</code> 写入数据。整个过程基于数据流，理论上仅受磁盘空间限制，数据文件存储在本地磁盘、S3、OSS、GCP 或 Minio 上。</p>
-<h4 id="From-Elasticsearch-to-Milvus-2x" class="common-anchor-header">从 Elasticsearch 到 Milvus 2.x</h4><p>在 Elasticsearch 数据迁移中，数据检索有所不同。数据不是从文件中获取，而是使用 Elasticsearch 的滚动 API 按顺序获取。然后将数据解析并转换为 Milvus 2.x 存储格式，接着使用<code translate="no">bulkInsert</code> 写入数据。除了迁移存储在Elasticsearch中的<code translate="no">dense_vector</code> 类型向量外，Milvus迁移还支持迁移其他字段类型，包括长、整数、短、布尔、关键字、文本和双。</p>
-<h3 id="Milvus-Migration-feature-set" class="common-anchor-header">Milvus 迁移功能集</h3><p>Milvus Migration通过其强大的功能集简化了迁移过程：</p>
+<h3 id="How-Milvus-Migration-migrates-data" class="common-anchor-header">How Milvus Migration migrates data</h3><h4 id="From-Milvus-1x-and-FAISS-to-Milvus-2x" class="common-anchor-header">From Milvus 1.x and FAISS to Milvus 2.x</h4><p>The data migration from Milvus 1.x and FAISS involves parsing the content of the original data files, transforming them into the data storage format of Milvus 2.x, and writing the data using Milvus SDK’s <code translate="no">bulkInsert</code>. This entire process is stream-based, theoretically limited only by disk space, and stores data files on your local disk, S3, OSS, GCP, or Minio.</p>
+<h4 id="From-Elasticsearch-to-Milvus-2x" class="common-anchor-header">From Elasticsearch to Milvus 2.x</h4><p>In the Elasticsearch data migration, data retrieval is different. Data is not obtained from files but sequentially fetched using Elasticsearch’s scroll API. The data is then parsed and transformed into Milvus 2.x storage format, followed by writing it using <code translate="no">bulkInsert</code>. Besides migrating <code translate="no">dense_vector</code> type vectors stored in Elasticsearch, Milvus Migration also supports migrating other field types, including long, integer, short, boolean, keyword, text, and double.</p>
+<h3 id="Milvus-Migration-feature-set" class="common-anchor-header">Milvus Migration feature set</h3><p>Milvus Migration simplifies the migration process through its robust feature set:</p>
 <ul>
-<li><p><strong>支持的数据源：</strong></p>
+<li><p><strong>Supported Data Sources:</strong></p>
 <ul>
-<li><p>Milvus 1.x 到 Milvus 2.x</p></li>
-<li><p>Elasticsearch 7.0 及以后版本到 Milvus 2.x</p></li>
-<li><p>FAISS 到 Milvus 2.x</p></li>
+<li><p>Milvus 1.x to Milvus 2.x</p></li>
+<li><p>Elasticsearch 7.0 and beyond to Milvus 2.x</p></li>
+<li><p>FAISS to Milvus 2.x</p></li>
 </ul></li>
 </ul>
 <ul>
-<li><p><strong>多种交互模式：</strong></p>
+<li><p><strong>Multiple Interaction Modes:</strong></p>
 <ul>
-<li><p>使用 Cobra 框架的命令行界面 (CLI)</p></li>
-<li><p>带有内置 Swagger UI 的有源 API</p></li>
-<li><p>作为 Go 模块集成到其他工具中</p></li>
+<li><p>Command-line interface (CLI) using the Cobra framework</p></li>
+<li><p>Restful API with a built-in Swagger UI</p></li>
+<li><p>Integration as a Go module in other tools</p></li>
 </ul></li>
 </ul>
 <ul>
-<li><p><strong>支持多种文件格式</strong></p>
+<li><p><strong>Versatile File Format Support:</strong></p>
 <ul>
-<li><p>本地文件</p></li>
-<li><p>亚马逊 S3</p></li>
-<li><p>对象存储服务（OSS）</p></li>
-<li><p>谷歌云平台（GCP）</p></li>
+<li><p>Local files</p></li>
+<li><p>Amazon S3</p></li>
+<li><p>Object Storage Service (OSS)</p></li>
+<li><p>Google Cloud Platform (GCP)</p></li>
 </ul></li>
 </ul>
 <ul>
-<li><p><strong>灵活的 Elasticsearch 集成：</strong></p>
+<li><p><strong>Flexible Elasticsearch Integration:</strong></p>
 <ul>
-<li><p>从 Elasticsearch 迁移<code translate="no">dense_vector</code> 类型向量</p></li>
-<li><p>支持迁移其他字段类型，如 long、integer、short、boolean、keyword、text 和 double</p></li>
+<li><p>Migration of <code translate="no">dense_vector</code> type vectors from Elasticsearch</p></li>
+<li><p>Support for migrating other field types such as long, integer, short, boolean, keyword, text, and double</p></li>
 </ul></li>
 </ul>
-<h3 id="Interface-definitions" class="common-anchor-header">接口定义</h3><p>Milvus 迁移提供以下关键接口：</p>
+<h3 id="Interface-definitions" class="common-anchor-header">Interface definitions</h3><p>Milvus Migration provides the following key interfaces:</p>
 <ul>
-<li><p><code translate="no">/start</code>:启动迁移任务（相当于转储和加载的组合，目前仅支持 ES 迁移）。</p></li>
-<li><p><code translate="no">/dump</code>:启动转储任务（将源数据写入目标存储介质）。</p></li>
-<li><p><code translate="no">/load</code>:启动加载任务（将数据从目标存储介质写入 Milvus 2.x）。</p></li>
-<li><p><code translate="no">/get_job</code>:允许用户查看任务执行结果。(更多详情，请参阅<a href="https://github.com/zilliztech/milvus-migration/blob/main/server/server.go">项目的 server.go</a>）<a href="https://github.com/zilliztech/milvus-migration/blob/main/server/server.go">。</a></p></li>
+<li><p><code translate="no">/start</code>: Initiates a migration job (equivalent to a combination of dump and load, currently only supports ES migration).</p></li>
+<li><p><code translate="no">/dump</code>: Initiates a dump job (writes source data into the target storage medium).</p></li>
+<li><p><code translate="no">/load</code>: Initiates a load job (writes data from the target storage medium into Milvus 2.x).</p></li>
+<li><p><code translate="no">/get_job</code>: Allows users to view job execution results. (For more details, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/server/server.go">the project’s server.go</a>)</p></li>
 </ul>
-<p>接下来，让我们用一些示例数据来探讨如何在本节中使用 Milvus 迁移。你可以<a href="https://github.com/zilliztech/milvus-migration#migration-examples-migrationyaml-details">在</a>GitHub 上找到这些示例。</p>
-<h2 id="Migration-from-Elasticsearch-to-Milvus-2x" class="common-anchor-header">从 Elasticsearch 迁移到 Milvus 2.x<button data-href="#Migration-from-Elasticsearch-to-Milvus-2x" class="anchor-icon" translate="no">
+<p>Next, let’s use some example data to explore how to use Milvus Migration in this section. You can find these examples <a href="https://github.com/zilliztech/milvus-migration#migration-examples-migrationyaml-details">here</a> on GitHub.</p>
+<h2 id="Migration-from-Elasticsearch-to-Milvus-2x" class="common-anchor-header">Migration from Elasticsearch to Milvus 2.x<button data-href="#Migration-from-Elasticsearch-to-Milvus-2x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -104,9 +106,9 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><ol>
-<li>准备 Elasticsearch 数据</li>
+<li>Prepare Elasticsearch Data</li>
 </ol>
-<p>要<a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">迁移 Elasticsearch</a>数据，你应该已经设置好自己的 Elasticsearch 服务器。你应该将向量数据存储在<code translate="no">dense_vector</code> 字段中，并用其他字段为它们建立索引。索引映射如下所示。</p>
+<p>To <a href="https://zilliz.com/blog/elasticsearch-cloud-vs-zilliz">migrate Elasticsearch</a> data, you should already set up your own Elasticsearch server. You should store vector data in the <code translate="no">dense_vector</code> field and index them with other fields. The index mappings are as shown below.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/migrate_elasticsearch_data_milvus_index_mappings_59370f9596.png" alt="" class="doc-image" id="" />
@@ -114,17 +116,17 @@ canonicalUrl: >-
   </span>
 </p>
 <ol start="2">
-<li>编译和构建</li>
+<li>Compile and Build</li>
 </ol>
-<p>首先，<a href="https://github.com/zilliztech/milvus-migration">从 GitHub</a> 下载 Milvus 迁移的<a href="https://github.com/zilliztech/milvus-migration">源代码</a>。然后，运行以下命令进行编译。</p>
+<p>First, download the Milvus Migration’s <a href="https://github.com/zilliztech/milvus-migration">source code from GitHub</a>. Then, run the following commands to compile it.</p>
 <pre><code translate="no"><span class="hljs-keyword">go</span> get
 <span class="hljs-keyword">go</span> build
 <button class="copy-code-btn"></button></code></pre>
-<p>这一步将生成一个名为<code translate="no">milvus-migration</code> 的可执行文件。</p>
+<p>This step will generate an executable file named <code translate="no">milvus-migration</code>.</p>
 <ol start="3">
-<li>配置<code translate="no">migration.yaml</code></li>
+<li>Configure <code translate="no">migration.yaml</code></li>
 </ol>
-<p>在开始迁移之前，你必须准备一个名为<code translate="no">migration.yaml</code> 的配置文件，其中包括数据源、目标和其他相关设置的信息。下面是一个配置示例：</p>
+<p>Before starting the migration, you must prepare a configuration file named <code translate="no">migration.yaml</code> that includes information about the data source, target, and other relevant settings. Here’s an example configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># Configuration for Elasticsearch to Milvus 2.x migration</span>
 
 
@@ -175,29 +177,31 @@ target:
     username: ******
     password: ******
 <button class="copy-code-btn"></button></code></pre>
-<p>有关配置文件的详细说明，请参阅 GitHub 上的<a href="https://github.com/zilliztech/milvus-migration/blob/main/README_ES.md#elasticsearch-to-milvus-2x-migrationyaml-example">此页面</a>。</p>
+<p>For a more detailed explanation of the configuration file, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_ES.md#elasticsearch-to-milvus-2x-migrationyaml-example">this page</a> on GitHub.</p>
 <ol start="4">
-<li>执行迁移任务</li>
+<li>Execute the migration job</li>
 </ol>
-<p>现在，你已经配置好了<code translate="no">migration.yaml</code> 文件，可以通过运行以下命令来启动迁移任务：</p>
+<p>Now that you have configured your <code translate="no">migration.yaml</code> file, you can start the migration task by running the following command:</p>
 <pre><code translate="no">./milvus-migration start --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>观察日志输出。当你看到类似下面的日志时，就说明迁移成功了。</p>
+<p>Observe the log output. When you see logs similar to the following, it means the migration was successful.</p>
 <pre><code translate="no">[task/load_base_task.go:94] [<span class="hljs-string">&quot;[LoadTasker] Dec Task Processing--------------&gt;&quot;</span>] [Count=0] [fileName=testfiles/output/zwh/migration/test_mul_field4/data_1_1.json] [taskId=442665677354739304][task/load_base_task.go:76] [<span class="hljs-string">&quot;[LoadTasker] Progress Task ---------------&gt;&quot;</span>] [fileName=testfiles/output/zwh/migration/test_mul_field4/data_1_1.json] [taskId=442665677354739304][dbclient/cus_field_milvus2x.go:86] [<span class="hljs-string">&quot;[Milvus2x] begin to ShowCollectionRows&quot;</span>][loader/cus_milvus2x_loader.go:66] [<span class="hljs-string">&quot;[Loader] Static: &quot;</span>] [collection=test_mul_field4_rename1] [beforeCount=50000] [afterCount=100000] [increase=50000][loader/cus_milvus2x_loader.go:66] [<span class="hljs-string">&quot;[Loader] Static Total&quot;</span>] [<span class="hljs-string">&quot;Total Collections&quot;</span>=1] [beforeTotalCount=50000] [afterTotalCount=100000] [totalIncrease=50000][migration/es_starter.go:25] [<span class="hljs-string">&quot;[Starter] migration ES to Milvus finish!!!&quot;</span>] [Cost=80.009174459][starter/starter.go:106] [<span class="hljs-string">&quot;[Starter] Migration Success!&quot;</span>] [Cost=80.00928425][cleaner/remote_cleaner.go:27] [<span class="hljs-string">&quot;[Remote Cleaner] Begin to clean files&quot;</span>] [bucket=a-bucket] [rootPath=testfiles/output/zwh/migration][cmd/start.go:32] [<span class="hljs-string">&quot;[Cleaner] clean file success!&quot;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>除了命令行方式外，Milvus迁移还支持使用Restful API进行迁移。</p>
-<p>要使用Restful API，请使用以下命令启动API服务器：</p>
+<p>In addition to the command-line approach, Milvus Migration also supports migration using Restful API.</p>
+<p>To use the Restful API, start the API server using the following command:</p>
 <pre><code translate="no">./milvus-migration server run -p 8080
 <button class="copy-code-btn"></button></code></pre>
-<p>服务运行后，就可以通过调用 API 来启动迁移。</p>
+<p>Once the service runs, you can initiate the migration by calling the API.</p>
 <pre><code translate="no">curl -XPOST http://localhost:8080/api/v1/start
 <button class="copy-code-btn"></button></code></pre>
-<p>迁移完成后，你可以使用一体化向量数据库管理工具<a href="https://zilliz.com/attu">Attu</a> 查看迁移成功的行总数，并执行其他与 Collection 相关的操作符。</p>
+<p>When the migration is complete, you can use <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool, to view the total number of successful rows migrated and perform other collection-related operations.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/attu_interface_vector_database_admin_4893a31f6d.png" alt="The Attu interface" class="doc-image" id="the-attu-interface" />
-   </span> <span class="img-wrapper"> <span>Attu 界面</span> </span></p>
-<h2 id="Migration-from-Milvus-1x-to-Milvus-2x" class="common-anchor-header">从 Milvus 1.x 迁移到 Milvus 2.x<button data-href="#Migration-from-Milvus-1x-to-Milvus-2x" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/attu_interface_vector_database_admin_4893a31f6d.png" alt="The Attu interface" class="doc-image" id="the-attu-interface" />
+    <span>The Attu interface</span>
+  </span>
+</p>
+<h2 id="Migration-from-Milvus-1x-to-Milvus-2x" class="common-anchor-header">Migration from Milvus 1.x to Milvus 2.x<button data-href="#Migration-from-Milvus-1x-to-Milvus-2x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -213,33 +217,33 @@ target:
         ></path>
       </svg>
     </button></h2><ol>
-<li>准备 Milvus 1.x 数据</li>
+<li>Prepare Milvus 1.x Data</li>
 </ol>
-<p>为了帮助你快速体验迁移过程，我们在 Milvus 迁移的源代码中放入了 10,000 条 Milvus 1.x<a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">测试数据</a>记录。不过，在实际情况下，你必须在开始迁移过程之前，从你的Milvus 1.x实例中导出自己的<code translate="no">meta.json</code> 文件。</p>
+<p>To help you quickly experience the migration process, we’ve put 10,000 Milvus 1.x <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">test data</a> records in the source code of Milvus Migration. However, in real cases, you must export your own <code translate="no">meta.json</code> file from your Milvus 1.x instance before starting the migration process.</p>
 <ul>
-<li>你可以使用以下命令导出数据。</li>
+<li>You can export the data with the following command.</li>
 </ul>
 <pre><code translate="no">./milvus-migration <span class="hljs-built_in">export</span> -m <span class="hljs-string">&quot;user:password@tcp(adderss)/milvus?charset=utf8mb4&amp;parseTime=True&amp;loc=Local&quot;</span> -o outputDir
 <button class="copy-code-btn"></button></code></pre>
-<p>请确保</p>
+<p>Make sure to:</p>
 <ul>
-<li><p>用实际的 MySQL 凭据替换占位符。</p></li>
-<li><p>在执行导出之前，停止 Milvus 1.x 服务器或停止数据写入。</p></li>
-<li><p>将 Milvus<code translate="no">tables</code> 文件夹和<code translate="no">meta.json</code> 文件复制到同一目录。</p></li>
+<li><p>Replace the placeholders with your actual MySQL credentials.</p></li>
+<li><p>Stop the Milvus 1.x server or halt data writes before performing this export.</p></li>
+<li><p>Copy the Milvus <code translate="no">tables</code> folder and the <code translate="no">meta.json</code> file to the same directory.</p></li>
 </ul>
-<p><strong>注意：</strong>如果您在<a href="https://zilliz.com/cloud">Zilliz Cloud</a>（Milvus 的完全托管服务）上使用 Milvus 2.x，您可以使用云控制台开始迁移。</p>
+<p><strong>Note:</strong> If you use Milvus 2.x on <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed service of Milvus), you can start the migration using Cloud Console.</p>
 <ol start="2">
-<li>编译和构建</li>
+<li>Compile and Build</li>
 </ol>
-<p>首先，<a href="https://github.com/zilliztech/milvus-migration">从 GitHub</a> 下载 Milvus 迁移的<a href="https://github.com/zilliztech/milvus-migration">源代码</a>。然后，运行以下命令进行编译。</p>
+<p>First, download the Milvus Migration’s <a href="https://github.com/zilliztech/milvus-migration">source code from GitHub</a>. Then, run the following commands to compile it.</p>
 <pre><code translate="no"><span class="hljs-keyword">go</span> get
 <span class="hljs-keyword">go</span> build
 <button class="copy-code-btn"></button></code></pre>
-<p>这一步将生成一个名为<code translate="no">milvus-migration</code> 的可执行文件。</p>
+<p>This step will generate an executable file named <code translate="no">milvus-migration</code>.</p>
 <ol start="3">
-<li>配置<code translate="no">migration.yaml</code></li>
+<li>Configure <code translate="no">migration.yaml</code></li>
 </ol>
-<p>准备一个<code translate="no">migration.yaml</code> 配置文件，指定源、目标和其他相关设置的详细信息。下面是一个配置示例：</p>
+<p>Prepare a <code translate="no">migration.yaml</code> configuration file, specifying details about the source, target, and other relevant settings. Here’s an example configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># Configuration for Milvus 1.x to Milvus 2.x migration</span>
 
 
@@ -283,20 +287,20 @@ target:
     username: xxxxx
     password: xxxxx
 <button class="copy-code-btn"></button></code></pre>
-<p>有关配置文件的详细说明，请参阅 GitHub 上的<a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">此页面</a>。</p>
+<p>For a more detailed explanation of the configuration file, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_1X.md">this page</a> on GitHub.</p>
 <ol start="4">
-<li>执行迁移任务</li>
+<li>Execute Migration Job</li>
 </ol>
-<p>你必须分别执行<code translate="no">dump</code> 和<code translate="no">load</code> 命令才能完成迁移。这些命令会转换数据并将其导入 Milvus 2.x。</p>
-<p><strong>注：</strong>我们将简化这一步骤，使用户很快就能只用一条命令完成迁移。敬请期待。</p>
-<p><strong>转储命令</strong></p>
+<p>You must execute the <code translate="no">dump</code> and <code translate="no">load</code> commands separately to finish the migration. These commands convert the data and import it into Milvus 2.x.</p>
+<p><strong>Note:</strong> We’ll simplify this step and enable users to finish migration using just one command shortly. Stay tuned.</p>
+<p><strong>Dump Command:</strong></p>
 <pre><code translate="no">./milvus-migration dump --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>加载命令</strong></p>
+<p><strong>Load Command:</strong></p>
 <pre><code translate="no">./milvus-migration load --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>迁移后，Milvus 2.x 中生成的 Collections 将包含两个字段：<code translate="no">id</code> 和<code translate="no">data</code> 。您可以使用一体化向量数据库管理工具<a href="https://zilliz.com/attu">Attu</a> 查看更多详情。</p>
-<h2 id="Migration-from-FAISS-to-Milvus-2x" class="common-anchor-header">从 FAISS 迁移到 Milvus 2.x<button data-href="#Migration-from-FAISS-to-Milvus-2x" class="anchor-icon" translate="no">
+<p>After the migration, the generated collection in Milvus 2.x will contain two fields: <code translate="no">id</code> and <code translate="no">data</code>. You can view more details using <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool.</p>
+<h2 id="Migration-from-FAISS-to-Milvus-2x" class="common-anchor-header">Migration from FAISS to Milvus 2.x<button data-href="#Migration-from-FAISS-to-Milvus-2x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -312,21 +316,21 @@ target:
         ></path>
       </svg>
     </button></h2><ol>
-<li>准备 FAISS 数据</li>
+<li>Prepare FAISS Data</li>
 </ol>
-<p>要迁移 Elasticsearch 数据，您应该准备好自己的 FAISS 数据。为了帮助你快速体验迁移过程，我们在 Milvus 迁移的源代码中放入了一些<a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">FAISS 测试数据</a>。</p>
+<p>To migrate Elasticsearch data, you should have your own FAISS data ready. To help you quickly experience the migration process, we’ve put some <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">FAISS test data</a> in the source code of Milvus Migration.</p>
 <ol start="2">
-<li>编译和构建</li>
+<li>Compile and Build</li>
 </ol>
-<p>首先，<a href="https://github.com/zilliztech/milvus-migration">从 GitHub</a> 下载 Milvus 迁移的<a href="https://github.com/zilliztech/milvus-migration">源代码</a>。然后，运行以下命令进行编译。</p>
+<p>First, download the Milvus Migration’s <a href="https://github.com/zilliztech/milvus-migration">source code from GitHub</a>. Then, run the following commands to compile it.</p>
 <pre><code translate="no"><span class="hljs-keyword">go</span> get
 <span class="hljs-keyword">go</span> build
 <button class="copy-code-btn"></button></code></pre>
-<p>这一步将生成一个名为<code translate="no">milvus-migration</code> 的可执行文件。</p>
+<p>This step will generate an executable file named <code translate="no">milvus-migration</code>.</p>
 <ol start="3">
-<li>配置<code translate="no">migration.yaml</code></li>
+<li>Configure <code translate="no">migration.yaml</code></li>
 </ol>
-<p>为 FAISS 迁移准备一个<code translate="no">migration.yaml</code> 配置文件，指定源、目标和其他相关设置的详细信息。下面是一个配置示例：</p>
+<p>Prepare a <code translate="no">migration.yaml</code> configuration file for FAISS migration, specifying details about the source, target, and other relevant settings. Here’s an example configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># Configuration for FAISS to Milvus 2.x migration</span>
 
 
@@ -371,20 +375,20 @@ target:
     username: xxxxx
     password: xxxxx
 <button class="copy-code-btn"></button></code></pre>
-<p>有关配置文件的详细说明，请参阅 GitHub 上的<a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">此页面</a>。</p>
+<p>For a more detailed explanation of the configuration file, refer to <a href="https://github.com/zilliztech/milvus-migration/blob/main/README_FAISS.md">this page</a> on GitHub.</p>
 <ol start="4">
-<li>执行迁移任务</li>
+<li>Execute Migration Job</li>
 </ol>
-<p>与 Milvus 1.x 向 Milvus 2.x 迁移一样，FAISS 迁移也需要同时执行<code translate="no">dump</code> 和<code translate="no">load</code> 命令。这些命令会转换数据并将其导入 Milvus 2.x。</p>
-<p><strong>注：</strong>我们将简化这一步骤，使用户只需使用一条命令即可完成迁移。敬请期待。</p>
-<p><strong>转储命令</strong></p>
+<p>Like Milvus 1.x to Milvus 2.x migration, FAISS migration requires executing both the <code translate="no">dump</code> and <code translate="no">load</code> commands. These commands convert the data and import it into Milvus 2.x.</p>
+<p><strong>Note:</strong> We’ll simplify this step and enable users to finish migration using just one command shortly. Stay tuned.</p>
+<p><strong>Dump Command:</strong></p>
 <pre><code translate="no">./milvus-migration dump --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>加载命令：</strong></p>
+<p><strong>Load Command:</strong></p>
 <pre><code translate="no">./milvus-migration load --config=/{YourConfigFilePath}/migration.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>您可以使用一体化向量数据库管理工具<a href="https://zilliz.com/attu">Attu</a> 查看更多详情。</p>
-<h2 id="Stay-tuned-for-future-migration-plans" class="common-anchor-header">敬请期待未来的迁移计划<button data-href="#Stay-tuned-for-future-migration-plans" class="anchor-icon" translate="no">
+<p>You can view more details using <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool.</p>
+<h2 id="Stay-tuned-for-future-migration-plans" class="common-anchor-header">Stay tuned for future migration plans<button data-href="#Stay-tuned-for-future-migration-plans" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -399,15 +403,15 @@ target:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>未来，我们将支持从更多数据源迁移，并添加更多迁移功能，包括</p>
+    </button></h2><p>In the future, we’ll support migration from more data sources and add more migration features, including:</p>
 <ul>
-<li><p>支持从 Redis 迁移到 Milvus。</p></li>
-<li><p>支持从 MongoDB 迁移到 Milvus。</p></li>
-<li><p>支持可恢复迁移。</p></li>
-<li><p>将转储和加载过程合二为一，简化迁移命令。</p></li>
-<li><p>支持从其他主流数据源迁移到 Milvus。</p></li>
+<li><p>Support migration from Redis to Milvus.</p></li>
+<li><p>Support migration from MongoDB to Milvus.</p></li>
+<li><p>Support resumable migration.</p></li>
+<li><p>Simplify migration commands by merging the dump and load processes into one.</p></li>
+<li><p>Support migration from other mainstream data sources to Milvus.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -422,5 +426,5 @@ target:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3 作为 Milvus 的最新版本，带来了令人振奋的新功能和性能改进，迎合了数据管理日益增长的需求。将数据迁移到 Milvus 2.x 可以释放这些优势，Milvus 迁移项目使迁移过程变得精简、轻松。试一试吧，你不会失望的。</p>
-<p><em><strong>注：</strong>本博客中的信息基于Milvus和<a href="https://github.com/zilliztech/milvus-migration">Milvus迁移</a>项目截至2023年9月的状态。请查阅<a href="https://milvus.io/docs">Milvus</a>官方<a href="https://milvus.io/docs">文档</a>，了解最新信息和说明。</em></p>
+    </button></h2><p>Milvus 2.3, the latest release of Milvus, brings exciting new features and performance improvements that cater to the growing needs of data management. Migrating your data to Milvus 2.x can unlock these benefits, and the Milvus Migration project makes the migration process streamlined and easy. Give it a try, and you won’t be disappointed.</p>
+<p><em><strong>Note:</strong> The information in this blog is based on the state of the Milvus and <a href="https://github.com/zilliztech/milvus-migration">Milvus Migration</a> projects as of September 2023. Check the official <a href="https://milvus.io/docs">Milvus documentation</a> for the most up-to-date information and instructions.</em></p>

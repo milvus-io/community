@@ -1,13 +1,13 @@
 ---
 id: 2019-12-27-meta-table.md
-title: Milvus 元数据管理 (2) 元数据表中的字段
+title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 date: 2019-12-27T00:00:00.000Z
-desc: 了解 Milvus 中元数据表中字段的详细信息。
+desc: Learn about the detail of the fields in metadata tables in Milvus.
 cover: null
 tag: Engineering
 ---
-<custom-h1>Milvus 元数据管理 (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">元数据表中的字段<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
+<custom-h1>Milvus Metadata Management (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">Fields in the Metadata Table<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -23,73 +23,79 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><blockquote>
-<p>作者：莫益华莫一华</p>
-<p>日期： 2019-12-27</p>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-12-27</p>
 </blockquote>
-<p>在上一篇博客中，我们提到了如何使用 MySQL 或 SQLite 查看元数据。本文主要详细介绍元数据表中的字段。</p>
-<h3 id="Fields-in-the-Tables-table" class="common-anchor-header"><code translate="no">Tables</code>&quot; 表中的字段</h3><p>以 SQLite 为例。以下结果来自 0.5.0 版。0.6.0 中添加了一些字段，稍后将对其进行介绍。<code translate="no">Tables</code> 中有一行指定了一个 512 维的向量表，其名称为<code translate="no">table_1</code> 。表创建时，<code translate="no">index_file_size</code> 为 1024 MB，<code translate="no">engine_type</code> 为 1 (FLAT)，<code translate="no">nlist</code> 为 16384，<code translate="no">metric_type</code> 为 1 (欧氏距离 L2)。<code translate="no">id</code> 为表的唯一标识符。<code translate="no">state</code> 为表的状态，0 表示正常状态。<code translate="no">created_on</code> 为创建时间。<code translate="no">flag</code> 为内部使用的保留标志。</p>
+<p>In the last blog, we mentioned how to view your metadata using MySQL or SQLite. This article mainly intends to introduce in detail the fields in the metadata tables.</p>
+<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">Fields in the &quot;<code translate="no">Tables</code>” table</h3><p>Take SQLite as an example. The following result comes from 0.5.0. Some fields are added to 0.6.0, which will be introduced later. There is a row in <code translate="no">Tables</code> specifying a 512-dimensional vector table with the name <code translate="no">table_1</code>. When the table is created, <code translate="no">index_file_size</code> is 1024 MB, <code translate="no">engine_type</code> is 1 (FLAT), <code translate="no">nlist</code> is 16384, <code translate="no">metric_type</code> is 1 (Euclidean distance L2). <code translate="no">id</code> is the unique identifier of the table. <code translate="no">state</code> is the state of the table with 0 indicating a normal state. <code translate="no">created_on</code> is the creation time. <code translate="no">flag</code> is the flag reserved for internal use.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
-   </span> <span class="img-wrapper"> <span>表格</span> </span></p>
-<p>下表列出了<code translate="no">Tables</code> 中的字段类型和说明。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
+    <span>tables</span>
+  </span>
+</p>
+<p>The following table shows field types and descriptions of the fields in <code translate="no">Tables</code>.</p>
 <table>
 <thead>
-<tr><th style="text-align:left">字段名称</th><th style="text-align:left">数据类型</th><th style="text-align:left">说明</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">向量表的唯一标识符。<code translate="no">id</code> 会自动递增。</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">字符串</td><td style="text-align:left">向量表的名称。<code translate="no">table_id</code> 必须由用户定义，并遵循 Linux 文件名指南。</td></tr>
-<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">向量表的状态。0 表示正常，1 表示已删除（软删除）。</td></tr>
-<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">向量表的向量维数。必须由用户定义。</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">从 1970 年 1 月 1 日到创建表格时的毫秒数。</td></tr>
-<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">内部使用的标志，例如向量 id 是否由用户定义。默认值为 0。</td></tr>
-<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">如果数据文件的大小达到<code translate="no">index_file_size</code> ，则该文件不会合并，而是用于建立索引。默认值为 1024 (MB)。</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">要为向量表建立的索引类型。默认值为 0，表示无效索引。1 表示 FLAT。2 表示 IVFLAT。4 指定 NSG。5 指定 IVFSQ8H。</td></tr>
-<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">建立索引时，每个数据文件中的向量所划分的簇数。默认值为 16384。</td></tr>
-<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">计算向量距离的方法。1 指定欧氏距离（L1），2 指定内积。</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of the vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table. <code translate="no">table_id</code> must be user-defined and follow Linux filename guidelines.</td></tr>
+<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">State of the vector table. 0 stands for normal and 1 stands for deleted (soft delete).</td></tr>
+<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">Vector dimension of the vector table. Must be user-defined.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">Flag for internal use, such as whether the vector id is user-defined. The default is 0.</td></tr>
+<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">If the size of a data file reaches <code translate="no">index_file_size</code>, the file is not combined and is used to build indexes. The default is 1024 (MB).</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">Number of clusters the vectors in each data file are divided into when the index is being built. The default is 16384.</td></tr>
+<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Method to compute vector distance. 1 specifies Euclidean distance (L1) and 2 specifies inner product.</td></tr>
 </tbody>
 </table>
-<p>0.6.0 中启用了表分区，并增加了一些新字段，包括<code translate="no">owner_table</code>，<code translate="no">partition_tag</code> 和<code translate="no">version</code> 。一个向量表<code translate="no">table_1</code> 有一个名为<code translate="no">table_1_p1</code> 的分区，它也是一个向量表。<code translate="no">partition_name</code> 对应于<code translate="no">table_id</code> 。分区表中的字段继承自所有者表，其中<code translate="no">owner table</code> 字段指定所有者表的名称，<code translate="no">partition_tag</code> 字段指定分区的标记。</p>
+<p>Table partitioning is enabled in 0.6.0 with a few new fields, including <code translate="no">owner_table</code>，<code translate="no">partition_tag</code> and <code translate="no">version</code>. A vector table, <code translate="no">table_1</code>, has a partition called <code translate="no">table_1_p1</code>, which is also a vector table. <code translate="no">partition_name</code> corresponds to <code translate="no">table_id</code>. Fields in a partition table are inherited from the owner table, with the <code translate="no">owner table</code> field specifying the name of the owner table and the <code translate="no">partition_tag</code> field specifying the tag of the partition.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
-   </span> <span class="img-wrapper"> <span>新建表</span> </span></p>
-<p>下表列出了 0.6.0 中的新字段：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
+    <span>tables_new</span>
+  </span>
+</p>
+<p>The following table shows new fields in 0.6.0:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">字段名称</th><th style="text-align:left">数据类型</th><th style="text-align:left">字段名称</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">字符串</td><td style="text-align:left">分区的父表。</td></tr>
-<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">字符串</td><td style="text-align:left">分区的标记。不得为空字符串。</td></tr>
-<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">字符串</td><td style="text-align:left">Milvus 版本。</td></tr>
+<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">string</td><td style="text-align:left">Parent table of the partition.</td></tr>
+<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">string</td><td style="text-align:left">Tag of the partition. Must not be an empty string.</td></tr>
+<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">string</td><td style="text-align:left">Milvus version.</td></tr>
 </tbody>
 </table>
-<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header"><code translate="no">TableFiles&quot;</code> 表中的字段</h3><p>下面的示例包含两个文件，它们都属于<code translate="no">table_1</code> 向量表。第一个文件的索引类型 (<code translate="no">engine_type</code>) 是 1 (FLAT)；文件状态 (<code translate="no">file_type</code>) 是 7（原始文件的备份）；<code translate="no">file_size</code> 是 411200113 字节；向量行数是 200000。第二个文件的索引类型是 2 (IVFLAT)；文件状态是 3（索引文件）。第二个文件实际上是第一个文件的索引。我们将在以后的文章中介绍更多信息。</p>
+<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">Fields in the “<code translate="no">TableFiles&quot;</code> table</h3><p>The following example contains two files, which both belong to the <code translate="no">table_1</code> vector table. The index type (<code translate="no">engine_type</code>) of the first file is 1 (FLAT); file status (<code translate="no">file_type</code>) is 7 (backup of the original file); <code translate="no">file_size</code> is 411200113 bytes; number of vector rows is 200,000. The index type of the second file is 2 (IVFLAT); file status is 3 (index file). The second file is actually the index of the first file. We will introduce more information in upcoming articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
-   </span> <span class="img-wrapper"> <span>表文件</span> </span></p>
-<p>下表列出了<code translate="no">TableFiles</code> 的字段和说明：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
+    <span>tablefiles</span>
+  </span>
+</p>
+<p>The following table shows fields and descriptions of <code translate="no">TableFiles</code>:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">字段名称</th><th style="text-align:left">数据类型</th><th style="text-align:left">说明</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">向量表的唯一标识符。<code translate="no">id</code> 会自动递增。</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">字符串</td><td style="text-align:left">向量表的名称。</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">要为向量表建立的索引类型。默认值为 0，表示无效索引。1 表示 FLAT，2 表示 IVFLAT，3 表示 IVFSQ8，4 表示 NSG。4 指定 NSG。5 指定 IVFSQ8H。</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">字符串</td><td style="text-align:left">根据文件创建时间生成的文件名。等于 1000 乘以从 1970 年 1 月 1 日到创建表格时的毫秒数。</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">文件状态。0 表示新生成的原始向量数据文件。1 表示原始向量数据文件。2 表示将为文件建立索引。3 表示该文件是一个索引文件。4 表示将删除该文件（软删除）。5 表示该文件是新生成的，用于存储组合数据。6 表示该文件是新生成的，用于存储索引数据。7 指定原始向量数据文件的备份状态。</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">文件大小（字节）。</td></tr>
-<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">文件中的向量个数。</td></tr>
-<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">最新更新时间的时间戳，指定从 1970 年 1 月 1 日到创建表格时的毫秒数。</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">从 1970 年 1 月 1 日到创建表格时的毫秒数。</td></tr>
-<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">创建表格的日期。由于历史原因，此处仍保留此参数，并将在未来版本中删除。</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of a vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table.</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Filename generated from file creation time. Equals 1000 multiplied by the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">File status. 0 specifies a newly generated raw vector data file. 1 specifies raw vector data file. 2 specifies that index will be built for the file. 3 specifies that the file is an index file. 4 specifies that the file will be deleted (soft delete). 5 specifies that the file is newly-generated and used to store combination data. 6 specifies that the file is newly-generated and used to store index data. 7 specifies the backup status of the raw vector data file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">File size in bytes.</td></tr>
+<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of vectors in a file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">Timestamp for the latest update time, which specifies the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">Date when the table is created. It is still here for historical reasons and will be removed in future versions.</td></tr>
 </tbody>
 </table>
-<h2 id="Related-blogs" class="common-anchor-header">相关博客<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,6 +111,6 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">在大规模向量搜索引擎中管理数据</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus 元数据管理（1）：如何查看元数据</a></li>
+<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Managing Data in Massive Scale Vector Search Engine</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus Metadata Management (1): How to View Metadata</a></li>
 </ul>

@@ -1,15 +1,17 @@
 ---
 id: optimizing-billion-scale-image-search-milvus-part-2.md
-title: 第二代逐圖搜尋系統
+title: The second-generation search-by-image system
 author: Rife Wang
 date: 2020-08-11T22:20:27.855Z
-desc: 利用 Milvus 建立真實商業世界圖像相似性搜尋系統的使用者案例。
+desc: >-
+  A user case of leveraging Milvus to build an image similarity search system
+  for real-world business.
 cover: assets.zilliz.com/header_c73631b1e7.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-2'
 ---
-<custom-h1>億萬級圖片搜尋優化之旅 (2/2)</custom-h1><p>本文是<strong>UPYUN 撰寫的 The Journey to Optimizing Billion-scale Image Search 的</strong>第二部分。如果您錯過了第一篇，請點選<a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">這裡</a>。</p>
-<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">第二代逐圖搜尋系統<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
+<custom-h1>The Journey to Optimizing Billion-scale Image Search (2/2)</custom-h1><p>This article is the second part of <strong>The Journey to Optimizing Billion-scale Image Search by UPYUN</strong>. If you miss the first one, click <a href="https://zilliz.com/blog/optimizing-billion-scale-image-search-milvus-part-1">here</a>.</p>
+<h2 id="The-second-generation-search-by-image-system" class="common-anchor-header">The second-generation search-by-image system<button data-href="#The-second-generation-search-by-image-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,8 +26,8 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>第二代逐圖搜尋系統在技術上選擇 CNN + Milvus 解決方案。該系統基於特徵向量，並提供更好的技術支援。</p>
-<h2 id="Feature-extraction" class="common-anchor-header">特徵萃取<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
+    </button></h2><p>The second-generation search-by-image system technically chooses the CNN + Milvus solution. The system is based on feature vectors and provides better technical support.</p>
+<h2 id="Feature-extraction" class="common-anchor-header">Feature extraction<button data-href="#Feature-extraction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,21 +42,23 @@ canonicalUrl: 'https://zilliz.com/blog/optimizing-billion-scale-image-search-mil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在電腦視覺領域，人工智慧的運用已成為主流。同樣地，第二代逐圖搜尋系統的特徵萃取也使用卷積神經網路 (CNN) 作為底層技術</p>
-<p>CNN 這個詞很難理解。在此，我們集中回答兩個問題：</p>
+    </button></h2><p>In the field of computer vision, the use of artificial intelligence has become the mainstream. Similarly, the feature extraction of the second-generation search-by-image system uses convolutional neural network (CNN) as the underlying technology</p>
+<p>The term CNN is difficult to understand. Here we focus on answering two questions:</p>
 <ul>
-<li>CNN 能做什麼？</li>
-<li>為什麼可以使用 CNN 進行影像搜尋？</li>
+<li>What can CNN do?</li>
+<li>Why can I use CNN for an image search?</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
-   </span> <span class="img-wrapper"> <span>1-meme.jpg</span> </span></p>
-<p>AI 領域有許多競賽，而影像分類是其中最重要的一項。圖像分類的工作是判斷圖片內容是關於一隻貓、一隻狗、一個蘋果、一個梨或其他類型的物件。</p>
-<p>CNN 能做什麼？它可以提取特徵並識別物件。它能從多個維度擷取特徵，並衡量圖片的特徵與貓或狗的特徵有多接近。我們可以選擇最接近的作為我們的識別結果，這表明特定圖像的內容是關於貓、狗還是其他東西。</p>
-<p>CNN 的物件識別功能與圖像搜尋有何關聯？我們要的不是最終的識別結果，而是從多個維度抽取出來的特徵向量。內容相似的兩張圖片的特徵向量必須接近。</p>
-<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">我應該使用哪種 CNN 模型？</h3><p>答案是 VGG16。為什麼選擇它？首先，VGG16 具備良好的泛化能力，也就是說，它的用途非常廣泛。第二，VGG16 擷取的特徵向量有 512 個維度。如果維度太少，可能會影響精確度。如果維度太多，則儲存和計算這些特徵向量的成本相對較高。</p>
-<p>使用 CNN 來擷取影像特徵是一個主流的解決方案。我們可以使用 VGG16 作為模型，Keras + TensorFlow 作為技術實作。以下是 Keras 的官方範例：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_meme_649be6dfe8.jpg" alt="1-meme.jpg" class="doc-image" id="1-meme.jpg" />
+    <span>1-meme.jpg</span>
+  </span>
+</p>
+<p>There are many competitions in the AI field and image classification is one of the most important. The job of image classification is to determine whether the content of the picture is about a cat, a dog, an apple, a pear, or other types of objects.</p>
+<p>What can CNN do? It can extract features and recognize objects. It extracts features from multiple dimensions and measures how close the features of an image are to the features of cats or dogs. We can choose the closest ones as our identification result which indicates whether the content of a specific image is about a cat, a dog, or something else.</p>
+<p>What is the connection between the object identification function of CNN and search by image? What we want is not the final identification result, but the feature vector extracted from multiple dimensions. The feature vectors of two images with similar content must be close.</p>
+<h3 id="Which-CNN-model-should-I-use" class="common-anchor-header">Which CNN model should I use?</h3><p>The answer is VGG16. Why choose it? First, VGG16 has good generalization capability, that is, it is very versatile. Second, the feature vectors extracted by VGG16 have 512 dimensions. If there are very few dimensions, the accuracy may be affected. If there are too many dimensions, the cost of storing and calculating these feature vectors is relatively high.</p>
+<p>Using CNN to extract image features is a mainstream solution. We can use VGG16 as the model and Keras + TensorFlow for technical implementation. Here is the official example of Keras:</p>
 <pre><code translate="no">from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input
@@ -67,16 +71,16 @@ x = np.expand_dims(x, axis=0)
 x = preprocess_input(x)
 features = model.predict(x)
 </code></pre>
-<p>這裡萃取的特徵是特徵向量。</p>
-<h3 id="1-Normalization" class="common-anchor-header">1.歸一化</h3><p>為了方便後續操作，我們通常會將特徵歸一化：</p>
-<p>後續使用的也是規範化後的<code translate="no">norm_feat</code> 。</p>
-<h3 id="2-Image-description" class="common-anchor-header">2.影像描述</h3><p>圖像使用<code translate="no">image.load_img</code> 方法載入<code translate="no">keras.preprocessing</code> ：</p>
+<p>The features extracted here are feature vectors.</p>
+<h3 id="1-Normalization" class="common-anchor-header">1. Normalization</h3><p>To facilitate subsequent operations, we often normalize feature:</p>
+<p>What is used subsequently is also the normalized <code translate="no">norm_feat</code>.</p>
+<h3 id="2-Image-description" class="common-anchor-header">2. Image description</h3><p>The image is loaded using the <code translate="no">image.load_img</code> method of <code translate="no">keras.preprocessing</code>:</p>
 <pre><code translate="no">from keras.preprocessing import image
 img_path = 'elephant.jpg'
 img = image.load_img(img_path, target_size=(224, 224))
 </code></pre>
-<p>事實上，這是 Keras 所呼叫的 TensorFlow 方法。詳情請參閱 TensorFlow 文件。最終的圖像物件實際上是 PIL 圖像實例（TensorFlow 使用的 PIL）。</p>
-<h3 id="3-Bytes-conversion" class="common-anchor-header">3.位元組轉換</h3><p>在實際應用中，圖像內容通常會透過網路傳輸。因此，與其從路徑載入圖像，我們更喜歡直接將 bytes 資料轉換為圖像物件，也就是 PIL Images：</p>
+<p>In fact, it is the TensorFlow method called by Keras. For details, see the TensorFlow documentation. The final image object is actually a PIL Image instance (the PIL used by TensorFlow).</p>
+<h3 id="3-Bytes-conversion" class="common-anchor-header">3. Bytes conversion</h3><p>In practical terms, image content is often transmitted through the network. Therefore, instead of loading images from path, we prefer converting bytes data directly into image objects, that is, PIL Images:</p>
 <pre><code translate="no">import io
 from PIL import Image
 
@@ -86,14 +90,14 @@ img = img.convert('RGB')
 
 img = img.resize((224, 224), Image.NEAREST)
 </code></pre>
-<p>上面的 img 與 image.load_img 方法得到的結果相同。有兩點要注意</p>
+<p>The above img is the same as the result obtained by the image.load_img method. There are two things to pay attention to:</p>
 <ul>
-<li>您必須進行 RGB 轉換。</li>
-<li>必須調整大小 (resize 是<code translate="no">load_img method</code> 的第二個參數 )。</li>
+<li>You must do RGB conversion.</li>
+<li>You must resize (resize is the second parameter of the <code translate="no">load_img method</code>).</li>
 </ul>
-<h3 id="4-Black-border-processing" class="common-anchor-header">4.黑邊處理</h3><p>圖片（例如螢幕截圖）偶爾會有不少黑邊。這些黑邊沒有實用價值，而且會造成許多干擾。因此，移除黑邊也是一種常見的做法。</p>
-<p>黑色邊框基本上是指所有像素都是（0，0，0）（RGB 圖像）的一行或一列像素。移除黑邊就是找出這些行或列並刪除它們。這其實是 NumPy 中的三維矩陣乘法。</p>
-<p>移除水平黑邊的範例：</p>
+<h3 id="4-Black-border-processing" class="common-anchor-header">4. Black border processing</h3><p>Images, such as screenshots, may occasionally have quite a few black borders. These black borders have no practical value and cause much interference. For this reason, removing black borders is also a common practice.</p>
+<p>A black border is essentially a row or column of pixels where all pixels are (0, 0, 0) (RGB image). To remove the black border is to find these rows or columns and delete them. This is actually a 3-D matrix multiplication in NumPy.</p>
+<p>An example of removing horizontal black borders:</p>
 <pre><code translate="no"># -*- coding: utf-8 -*-
 import numpy as np
 from keras.preprocessing import image
@@ -109,8 +113,8 @@ Returns:
    img = image.array_to_img(img_without_black)
 return img
 </code></pre>
-<p>這幾乎就是我想談的使用 CNN 來擷取影像特徵並實作其他影像處理。現在讓我們來看看向量搜尋引擎。</p>
-<h2 id="Vector-search-engine" class="common-anchor-header">向量搜尋引擎<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
+<p>This is pretty much what I want to talk about using CNN to extract image features and implement other image processing. Now let’s take a look at vector search engines.</p>
+<h2 id="Vector-search-engine" class="common-anchor-header">Vector search engine<button data-href="#Vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,16 +129,19 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>從影像擷取特徵向量的問題已經解決。那麼剩下的問題就是</p>
+    </button></h2><p>The problem of extracting feature vectors from images has been solved. Then the remaining problems are:</p>
 <ul>
-<li>如何儲存特徵向量？</li>
-<li>如何計算特徵向量的相似度，也就是如何搜尋？ 開源向量搜尋引擎 Milvus 可以解決這兩個問題。到目前為止，它在我們的生產環境中運行良好。</li>
+<li>How to store feature vectors?</li>
+<li>How to calculate the similarity of feature vectors, that is, how to search?
+The open-source vector search engine Milvus can solve these two problems. So far, it has been running well in our production environment.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
-   </span> <span class="img-wrapper"> <span>3-milvus-logo.png</span> </span></p>
-<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">向量搜尋引擎 Milvus<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_milvus_logo_3a7411f2c8.png" alt="3-milvus-logo.png" class="doc-image" id="3-milvus-logo.png" />
+    <span>3-milvus-logo.png</span>
+  </span>
+</p>
+<h2 id="Milvus-the-vector-search-engine" class="common-anchor-header">Milvus, the vector search engine<button data-href="#Milvus-the-vector-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -149,70 +156,70 @@ return img
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>從影像中萃取特徵向量是遠遠不夠的。我們還需要動態管理這些特徵向量 (新增、刪除和更新)、計算向量的相似度，以及回傳最近鄰範圍內的向量資料。開放原始碼向量搜尋引擎 Milvus 能夠很好地執行這些任務。</p>
-<p>本文其餘部分將介紹具體的作法及注意事項。</p>
-<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1.對 CPU 的要求</h3><p>要使用 Milvus，您的 CPU 必須支援 avx2 指令集。對於 Linux 系統，使用下列指令檢查您的 CPU 支援哪些指令集：</p>
+    </button></h2><p>Extracting feature vectors from an image is far from enough. We also need to dynamically manage these feature vectors (addition, deletion, and update), calculate the similarity of the vectors, and return the vector data in the nearest neighbor range. The open-source vector search engine Milvus performs these tasks quite well.</p>
+<p>The rest of this article will describe specific practices and points to be noted.</p>
+<h3 id="1-Requirements-for-CPU" class="common-anchor-header">1. Requirements for CPU</h3><p>To use Milvus, your CPU must support the avx2 instruction set. For Linux systems, use the following command to check which instruction sets your CPU supports:</p>
 <p><code translate="no">cat /proc/cpuinfo | grep flags</code></p>
-<p>然後就會得到類似的結果：</p>
+<p>Then you get something like:</p>
 <pre><code translate="no">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush dts acpi mmx fxsr sse sse2 ss ht tm pbe syscall nx pdpe1gb         rdtscp lm constant_tsc arch_perfmon pebs bts rep_good nopl xtopology nonstop_tsc cpuid aperfmperf pni pclmulqdq dtes64 monitor ds_cpl vmx smx est tm2     ssse3 sdbg fma cx16 xtpr pdcm pcid dca sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm abm cpuid_fault epb invpcid_single pti intel_ppin tpr_shadow vnmi flexpriority ept vpid ept_ad fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid cqm xsaveopt cqm_llc cqm_occup_llc dtherm ida arat pln pts
 </code></pre>
-<p>接下來的 flags 就是您的 CPU 所支援的指令集。當然，這些遠遠超過我的需要。我只想看看是否支援特定的指令集，例如 avx2。只要加上 grep 篩選就可以了：</p>
+<p>What follows flags is the instruction sets your CPU supports. Of course, these are much more than I need. I just want to see if a specific instruction set, such as avx2, is supported. Just add a grep to filter it:</p>
 <pre><code translate="no">cat /proc/cpuinfo | grep flags | grep avx2
 </code></pre>
-<p>如果沒有返回結果，就表示不支援這個特定的指令集。那您需要更換您的機器。</p>
-<h3 id="2-Capacity-planning" class="common-anchor-header">2.容量規劃</h3><p>容量規劃是我們設計系統時首先要考慮的問題。我們需要儲存多少資料？資料需要多少記憶體和磁碟空間？</p>
-<p>讓我們來做一些快速的計算。向量的每個維度都是 float32。一個 float32 類型佔 4 Bytes。那麼一個 512 維的向量需要 2 KB 的儲存空間。同理：</p>
+<p>If no result is returned, it means that this specific instruction set is not supported. You need to change your machine then.</p>
+<h3 id="2-Capacity-planning" class="common-anchor-header">2. Capacity planning</h3><p>Capacity planning is our first consideration when we design a system. How much data do we need to store? How much memory and disk space does the data require?</p>
+<p>Let’s do some quick maths. Each dimension of a vector is float32. A float32 type takes up 4 Bytes. Then a vector of 512 dimensions requires 2 KB of storage. By the same token:</p>
 <ul>
-<li>一千個 512 維向量需要 2 MB 的儲存空間。</li>
-<li>一百萬個 512 維向量需要 2 GB 的儲存空間。</li>
-<li>一千萬個 512 維向量需要 20 GB 儲存空間。</li>
-<li>一億個 512 維向量需要 200 GB 儲存空間。</li>
-<li>十億個 512 維向量需要 2 TB 的儲存空間。</li>
+<li>One thousand 512-dimensional vectors require 2 MB of storage.</li>
+<li>One million 512-dimensional vectors require 2 GB of storage.</li>
+<li>10 million 512-dimensional vectors require 20 GB of storage.</li>
+<li>100 million 512-dimensional vectors require 200 GB of storage.</li>
+<li>One billion 512-dimensional vectors require 2 TB of storage.</li>
 </ul>
-<p>如果我們要將所有資料儲存在記憶體中，那麼系統至少需要相應的記憶體容量。</p>
-<p>建議您使用官方的大小計算工具：Milvus 大小計算工具。</p>
-<p>事實上我們的記憶體可能沒有那麼大。（記憶體不夠大也沒有什麼關係。Milvus 會自動將資料刷新到磁碟上)。除了原始向量資料之外，我們還要考慮其他資料的儲存，例如日誌。</p>
-<h3 id="3-System-configuration" class="common-anchor-header">3.系統組態</h3><p>關於系統配置的詳細資訊，請參閱 Milvus 文件：</p>
+<p>If we want to store all the data in the memory, then the system needs at least the corresponding memory capacity.</p>
+<p>It is recommended that you use the official size calculation tool: Milvus sizing tool.</p>
+<p>Actually our memory may not be that big. (It doesn’t really matter if you don’t have enough memory. Milvus automatically flushes data onto the disk.) In addition to the original vector data, we also need to consider the storage of other data such as logs.</p>
+<h3 id="3-System-configuration" class="common-anchor-header">3. System configuration</h3><p>For more information about the system configuration, see the Milvus documentation:</p>
 <ul>
-<li>Milvus 伺服器配置：https://milvus.io/docs/v0.10.1/milvus_config.md</li>
+<li>Milvus server configuration: https://milvus.io/docs/v0.10.1/milvus_config.md</li>
 </ul>
-<h3 id="4-Database-design" class="common-anchor-header">4.資料庫設計</h3><p><strong>集合與分區</strong></p>
+<h3 id="4-Database-design" class="common-anchor-header">4. Database design</h3><p><strong>Collection &amp; Partition</strong></p>
 <ul>
-<li>Collection 也稱為 table。</li>
-<li>分區指的是集合內的分區。</li>
+<li>Collection is also known as table.</li>
+<li>Partition refers to the partitions inside a collection.</li>
 </ul>
-<p>分區的基本實作與集合的實作其實是一樣的，只是分區在集合之下。但是有了分區，資料的組織變得更有彈性。我們也可以查詢集合中的特定分區，以獲得更好的查詢結果。</p>
-<p>我們可以有多少個集合和分區？集合和分區的基本資訊在 Metadata 中。Milvus 使用 SQLite (Milvus 內部整合) 或 MySQL (需要外部連線) 來管理內部元資料。如果預設使用 SQLite 來管理 Metadata，當集合和分割區的數量過大時，會造成嚴重的效能損失。因此，集合和分區的總數不應超過 50,000 個（Milvus 0.8.0 會將此數限制為 4,096 個）。如果您需要設定更大的數目，建議您透過外部連線使用 MySQL。</p>
-<p>Milvus 的 collection 和 partition 所支援的資料結構非常簡單，就是<code translate="no">ID + vector</code> 。換句話說，表中只有兩列：ID 和向量資料。</p>
-<p><strong>請注意</strong></p>
+<p>The underlying implementation of partition is actually the same with that of collection, except that a partition is under a collection. But with partitions, the organization of data becomes more flexible. We can also query a specific partition in a collection to achieve better query results.</p>
+<p>How many collections and partitions can we have? The basic information on collection and partition is in Metadata. Milvus uses either SQLite (Milvus internal integration) or MySQL (requires external connection) for internal metadata management. If you use SQLite by default to manage Metadata, you will suffer severe performance loss when the numbers of collections and partitions are too large. Therefore, the total number of collections and partitions should not exceed 50,000 (Milvus 0.8.0 will limit this number to 4,096). If you need to set a larger number, it is recommended that you use MySQL via an external connection.</p>
+<p>The data structure supported by Milvus’ collection and partition is very simple, that is, <code translate="no">ID + vector</code>. In other words, there are only two columns in the table: ID and vector data.</p>
+<p><strong>Note:</strong></p>
 <ul>
-<li>ID 應該是整數。</li>
-<li>我們需要確保 ID 在集合中是唯一的，而不是在分割區中。</li>
+<li>ID should be integers.</li>
+<li>We need to ensure that the ID is unique within a collection instead of within a partition.</li>
 </ul>
-<p><strong>條件過濾</strong></p>
-<p>當我們使用傳統資料庫時，我們可以指定欄位值作為過濾條件。雖然 Milvus 的過濾方式不完全相同，但我們可以使用集合和分區實現簡單的條件過濾。例如，我們有大量的圖像資料，而這些資料屬於特定的使用者。那麼我們就可以將資料依使用者分成不同的分區。因此，使用使用者作為篩選條件，其實就是指定分割區。</p>
-<p><strong>結構化資料與向量映射</strong></p>
-<p>Milvus 只支援 ID + 向量的資料結構。但在業務場景中，我們需要的是有業務意義的結構化資料。換句話說，我們需要透過向量找到結構化的資料。因此，我們需要透過 ID 來維護結構化資料與向量之間的映射關係。</p>
+<p><strong>Conditional filtering</strong></p>
+<p>When we use traditional databases, we can specify field values as filtering conditions. Though Milvus does not filter exactly the same way, we can implement simple conditional filtering using collections and partitions. For example, we have a large amount of image data and the data belongs to specific users. Then we can divide the data into partitions by user. Therefore, using the user as the filter condition is actually specifying the partition.</p>
+<p><strong>Structured data and vector mapping</strong></p>
+<p>Milvus only supports the ID + vector data structure. But in business scenarios, what we need is structured data-bearing business meaning. In other words, we need to find structured data through vectors. Accordingly, we need to maintain the mapping relations between structured data and vectors through ID.</p>
 <pre><code translate="no">structured data ID &lt;--&gt; mapping table &lt;--&gt; Milvus ID
 </code></pre>
-<p><strong>選擇索引</strong></p>
-<p>您可以參考以下文章：</p>
+<p><strong>Selecting index</strong></p>
+<p>You can refer to the following articles:</p>
 <ul>
-<li>索引的種類: https://www.milvus.io/docs/v0.10.1/index.md</li>
-<li>如何選擇索引：https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212</li>
+<li>Types of index: https://www.milvus.io/docs/v0.10.1/index.md</li>
+<li>How to select index: https://medium.com/@milvusio/how-to-choose-an-index-in-milvus-4f3d15259212</li>
 </ul>
-<h3 id="5-Processing-search-results" class="common-anchor-header">5.處理搜尋結果</h3><p>Milvus 的搜尋結果是 ID + 距離的集合：</p>
+<h3 id="5-Processing-search-results" class="common-anchor-header">5. Processing search results</h3><p>The search results of Milvus are a collection of ID + distance:</p>
 <ul>
-<li>ID：集合中的 ID。</li>
-<li>距離：距離值 0 ~ 1 表示相似程度，值越小，表示兩個向量越相似。</li>
+<li>ID: the ID in a collection.</li>
+<li>Distance: a distance value of 0 ~ 1 indicates similarity level; the smaller the value, the more similar the two vectors.</li>
 </ul>
-<p><strong>篩選 ID 為 -1 的資料</strong></p>
-<p>當集合數量太少時，搜尋結果可能會包含 ID 為 -1 的資料。我們需要自行過濾掉。</p>
-<p><strong>分頁</strong></p>
-<p>向量的搜尋方式相當不同。查詢結果會以相似度降序排序，並選取最相似 (topK) 的結果 (topK 由使用者在查詢時指定)。</p>
-<p>Milvus 不支援分頁。如果我們有業務上的需要，我們需要自行實作分頁功能。舉例來說，如果我們每頁有十個結果，但只想顯示第三頁，我們就需要指定 topK = 30，並只傳回最後的十個結果。</p>
-<p><strong>業務的相似性臨界值</strong></p>
-<p>兩張圖片向量之間的距離介乎 0 和 1 之間，如果我們要在特定的商業情境中判斷兩張圖片是否相似，就需要在這個範圍內指定一個臨界值。如果距離小於臨界值，則兩個影像相似；如果距離大於臨界值，則兩個影像差異很大。您需要根據自己的業務需求調整臨界值。</p>
+<p><strong>Filtering data whose ID is -1</strong></p>
+<p>When the number of collections is too small, the search results may contain data whose ID is -1. We need to filter it out by ourselves.</p>
+<p><strong>Pagination</strong></p>
+<p>The search for vectors is quite different. The query results are sorted in descending order of similarity, and the most similar (topK) of results are selected (topK is specified by the user at the time of query).</p>
+<p>Milvus does not support pagination. We need to implement the pagination function by ourselves if we need it for business. For example, if we have ten results on each page and only want to display the third page, we need to specify that topK = 30 and only return the last ten results.</p>
+<p><strong>Similarity threshold for business</strong></p>
+<p>The distance between the vectors of two images is between 0 and 1. If we want to decide whether two images are similar in a specific business scenario, we need to specify a threshold within this range. The two images are similar if the distance is smaller than the threshold, or they are quite different from each other if the distance is larger than the threshold. You need to adjust the threshold to meet your own business needs.</p>
 <blockquote>
-<p>本文作者 rifewang，Milvus 用戶，UPYUN 軟體工程師。如果您喜歡這篇文章，歡迎來 @ https://github.com/rifewang 打個招呼。</p>
+<p>This article is written by rifewang, Milvus user and software engineer of UPYUN. If you like this article, welcome to come say hi @ https://github.com/rifewang.</p>
 </blockquote>

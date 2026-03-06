@@ -1,9 +1,9 @@
 ---
 id: >-
   keeping-ai-agents-grounded-context-engineering-strategies-that-prevent-context-rot-using-milvus.md
-title: >-
-  Удержание ИИ-агентов на поверхности: Стратегии контекстной инженерии,
-  предотвращающие гниение контекста с помощью Milvus
+title: >
+  Keeping AI Agents Grounded: Context Engineering Strategies that Prevent
+  Context Rot Using Milvus 
 author: Min Yin
 date: 2025-12-23T00:00:00.000Z
 cover: assets.zilliz.com/context_rot_cover_804387e7c9.png
@@ -15,19 +15,18 @@ meta_keywords: 'context engineering, context rot, vector database, Milvus, vecto
 meta_title: |
   Context Engineering Strategies to Prevent LLM Context Rot with Milvus
 desc: >-
-  Узнайте, почему в длительных рабочих процессах LLM происходит разложение
-  контекста и как контекстная инженерия, стратегии поиска и векторный поиск
-  Milvus помогают обеспечить точность, целенаправленность и надежность работы
-  агентов ИИ при выполнении сложных многоэтапных задач.
+  Learn why context rot happens in long-running LLM workflows and how context
+  engineering, retrieval strategies, and Milvus vector search help keep AI
+  agents accurate, focused, and reliable across complex multi-step tasks.
 origin: >-
   https://milvus.io/blog/keeping-ai-agents-grounded-context-engineering-strategies-that-prevent-context-rot-using-milvus.md
 ---
-<p>Если вам приходилось работать с длинными дискуссиями на LLM, вы наверняка сталкивались с таким неприятным моментом: на полпути длинной темы модель начинает дрейфовать. Ответы становятся расплывчатыми, аргументация ослабевает, а ключевые детали таинственным образом исчезают. Но если вы бросите точно такую же подсказку в новый чат, модель вдруг поведет себя сфокусированно, точно, обоснованно.</p>
-<p>Это не модель "устает" - это <strong>гниение контекста</strong>. По мере развития беседы модель вынуждена жонглировать большим количеством информации, и ее способность расставлять приоритеты постепенно снижается. <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Исследования Antropic</a> показывают, что при расширении контекстных окон с 8 до 128 тысяч лексем точность поиска может упасть на 15-30 %. У модели все еще есть место, но она теряет представление о том, что важно. Большие контекстные окна помогают отсрочить проблему, но не устранить ее.</p>
-<p>Именно здесь на помощь приходит <strong>контекстная инженерия</strong>. Вместо того чтобы передавать модели все и сразу, мы формируем то, что она видит: извлекаем только те части, которые имеют значение, сжимаем то, что больше не нужно, и сохраняем подсказки и инструменты достаточно чистыми, чтобы модель могла рассуждать. Цель проста: сделать важную информацию доступной в нужный момент, а остальное игнорировать.</p>
-<p>Поиск информации играет здесь центральную роль, особенно для долго работающих агентов. Векторные базы данных, такие как <a href="https://milvus.io/"><strong>Milvus</strong></a>, обеспечивают основу для эффективного извлечения релевантных знаний обратно в контекст, позволяя системе оставаться на месте, даже когда задачи становятся все глубже и сложнее.</p>
-<p>В этом блоге мы рассмотрим, как происходит ротация контекста, какие стратегии используют команды для борьбы с ней, а также архитектурные паттерны - от поиска до разработки подсказок - которые позволяют агентам ИИ сохранять четкость в длительных многоэтапных рабочих процессах.</p>
-<h2 id="Why-Context-Rot-Happens" class="common-anchor-header">Почему происходит гниение контекста<button data-href="#Why-Context-Rot-Happens" class="anchor-icon" translate="no">
+<p>If you’ve worked with long-running LLM conversations, you’ve probably had this frustrating moment: halfway through a long thread, the model starts drifting. Answers get vague, reasoning weakens, and key details mysteriously vanish. But if you drop the exact same prompt into a new chat, suddenly the model behaves—focused, accurate, grounded.</p>
+<p>This isn’t the model “getting tired” — it’s <strong>context rot</strong>. As a conversation grows, the model has to juggle more information, and its ability to prioritize slowly declines. <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents">Antropic studies</a> show that as context windows stretch from around 8K tokens to 128K, retrieval accuracy can drop by 15–30%. The model still has room, but it loses track of what matters. Bigger context windows help delay the problem, but they don’t eliminate it.</p>
+<p>This is where <strong>context engineering</strong> comes in. Instead of handing the model everything at once, we shape what it sees: retrieving only the pieces that matter, compressing what no longer needs to be verbose, and keeping prompts and tools clean enough for the model to reason over. The goal is simple: make important information available at the right moment, and ignore the rest.</p>
+<p>Retrieval plays a central role here, especially for long-running agents. Vector databases like <a href="https://milvus.io/"><strong>Milvus</strong></a> provide the foundation for efficiently pulling relevant knowledge back into context, letting the system stay grounded even as tasks grow in depth and complexity.</p>
+<p>In this blog, we’ll look at how context rot happens, the strategies teams use to manage it, and the architectural patterns — from retrieval to prompt design — that keep AI agents sharp across long, multi-step workflows.</p>
+<h2 id="Why-Context-Rot-Happens" class="common-anchor-header">Why Context Rot Happens<button data-href="#Why-Context-Rot-Happens" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,19 +41,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Люди часто полагают, что если дать модели ИИ больше контекста, то это естественным образом приведет к лучшим ответам. Но на самом деле это не так. Люди тоже с трудом справляются с длинными данными: по данным когнитивной науки, наша рабочая память вмещает примерно <strong>7±2 фрагментов</strong> информации. Если превысить этот показатель, мы начинаем забывать, размывать или неверно интерпретировать детали.</p>
-<p>LLM демонстрируют схожее поведение - только в гораздо больших масштабах и с более драматичными режимами отказа.</p>
-<p>Корень проблемы кроется в самой <a href="https://zilliz.com/learn/decoding-transformer-models-a-study-of-their-architecture-and-underlying-principles">архитектуре трансформера</a>. Каждый маркер должен сравнивать себя с каждым другим маркером, формируя парное внимание по всей последовательности. Это означает, что вычисления растут <strong>O(n²)</strong> с длиной контекста. Расширение подсказки с 1 тыс. токенов до 100 тыс. не заставляет модель "работать усерднее" - оно умножает количество взаимодействий с токенами на <strong>10 000×</strong>.</p>
+    </button></h2><p>People often assume that giving an AI model more context naturally leads to better answers. But that’s not actually true. Humans struggle with long inputs too: cognitive science suggests our working memory holds roughly <strong>7±2 chunks</strong> of information. Push beyond that, and we start to forget, blur, or misinterpret details.</p>
+<p>LLMs show similar behavior—just at a much larger scale and with more dramatic failure modes.</p>
+<p>The root issue comes from the <a href="https://zilliz.com/learn/decoding-transformer-models-a-study-of-their-architecture-and-underlying-principles">Transformer architecture</a> itself. Every token must compare itself against every other token, forming pairwise attention across the entire sequence. That means computation grows <strong>O(n²)</strong> with context length. Expanding your prompt from 1K tokens to 100K doesn’t make the model “work harder”—it multiplies the number of token interactions by <strong>10,000×</strong>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/contextual_dilution_622033db72.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Кроме того, существует проблема с обучающими данными.</strong> Модели видят гораздо больше коротких последовательностей, чем длинных. Поэтому, когда вы просите LLM работать с очень большими контекстами, вы загоняете ее в режим, к которому она не была сильно подготовлена. На практике рассуждения с длинными контекстами часто оказываются <strong>не</strong> под силу большинству моделей.</p>
-<p>Несмотря на эти ограничения, длинный контекст теперь неизбежен. Ранние приложения LLM были в основном однооборотными задачами - классификацией, обобщением или простой генерацией. Сегодня более 70 % корпоративных систем ИИ используют агентов, которые остаются активными в течение многих раундов взаимодействия, часто часами, управляя разветвленными, многоступенчатыми рабочими процессами. Долгоживущие сессии перешли из разряда исключений в разряд стандартных.</p>
-<p>Тогда возникает следующий вопрос: <strong>как удержать внимание модели, не перегружая ее?</strong></p>
-<h2 id="Context-Retrieval-Approaches-to-Solving-Context-Rot" class="common-anchor-header">Контекстно-поисковые подходы к решению проблемы контекстной гнили<button data-href="#Context-Retrieval-Approaches-to-Solving-Context-Rot" class="anchor-icon" translate="no">
+<p><strong>Then there’s the problem with the training data.</strong> Models see far more short sequences than long ones. So when you ask an LLM to operate across extremely large contexts, you’re pushing it into a regime it wasn’t heavily trained for. In practice, very long-context reasoning is often <strong>out of distribution</strong> for most models.</p>
+<p>Despite these limits, long context is now unavoidable. Early LLM applications were mostly single-turn tasks—classification, summarization, or simple generation. Today, more than 70% of enterprise AI systems rely on agents that stay active across many rounds of interaction, often for hours, managing branching, multi-step workflows. Long-lived sessions have moved from exception to default.</p>
+<p>Then the next question is: <strong>how do we keep the model’s attention sharp without overwhelming it?</strong></p>
+<h2 id="Context-Retrieval-Approaches-to-Solving-Context-Rot" class="common-anchor-header">Context Retrieval Approaches to Solving Context Rot<button data-href="#Context-Retrieval-Approaches-to-Solving-Context-Rot" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,71 +68,71 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Поиск - один из самых эффективных рычагов борьбы с гниением контекста, и на практике он, как правило, проявляется в виде взаимодополняющих паттернов, которые решают проблему гниения контекста с разных сторон.</p>
-<h3 id="1-Just-in-Time-Retrieval-Reducing-Unnecessary-Context" class="common-anchor-header">1. Поиск "точно в срок": Сокращение ненужного контекста</h3><p>Одной из основных причин гниения контекста является <em>перегрузка</em> модели информацией, которая ей пока не нужна. Claude Code-Anthropic - помощник по кодированию - решает эту проблему с помощью <strong>Just-in-Time (JIT) retrieval</strong>- стратегии, при которой модель получает информацию только тогда, когда она становится актуальной.</p>
-<p>Вместо того чтобы запихивать в свой контекст целые кодовые базы или наборы данных (что значительно увеличивает вероятность дрейфа и забывания), Claude Code ведет крошечный индекс: пути к файлам, команды и ссылки на документацию. Когда модели нужен какой-то фрагмент информации, она извлекает его и вставляет в контекст <strong>в тот момент, когда это важно - не</strong>раньше.</p>
-<p>Например, если вы попросите Claude Code проанализировать базу данных объемом 10 ГБ, он никогда не попытается загрузить ее целиком. Он работает скорее как инженер:</p>
+    </button></h2><p>Retrieval is one of the most effective levers we have to combat context rot, and in practice it tends to show up in complementary patterns that address context rot from different angles.</p>
+<h3 id="1-Just-in-Time-Retrieval-Reducing-Unnecessary-Context" class="common-anchor-header">1. Just-in-Time Retrieval: Reducing Unnecessary Context</h3><p>One major cause of context rot is <em>overloading</em> the model with information it doesn’t need yet. Claude Code—Anthropic’s coding assistant—solves this issue with <strong>Just-in-Time (JIT) retrieval</strong>, a strategy where the model fetches information only when it becomes relevant.</p>
+<p>Instead of stuffing entire codebases or datasets into its context (which greatly increases the chance of drift and forgetting), Claude Code maintains a tiny index: file paths, commands, and documentation links. When the model needs a piece of information, it retrieves that specific item and inserts it into context <strong>at the moment it matters</strong>—not before.</p>
+<p>For example, if you ask Claude Code to analyze a 10GB database, it never tries to load the whole thing. It works more like an engineer:</p>
 <ol>
-<li><p>Выполняет SQL-запрос, чтобы получить высокоуровневые сводки набора данных.</p></li>
-<li><p>Использует такие команды, как <code translate="no">head</code> и <code translate="no">tail</code>, чтобы просмотреть примеры данных и понять их структуру.</p></li>
-<li><p>Сохраняет в контексте только самую важную информацию - например, ключевые статистические данные или строки выборки.</p></li>
+<li><p>Runs a SQL query to pull high-level summaries of the dataset.</p></li>
+<li><p>Uses commands like <code translate="no">head</code> and <code translate="no">tail</code> to view sample data and understand its structure.</p></li>
+<li><p>Retains only the most important information—such as key statistics or sample rows—within the context.</p></li>
 </ol>
-<p>Минимизируя количество информации, хранящейся в контексте, JIT-поиск предотвращает накопление нерелевантных лексем, которые вызывают гниение. Модель остается сфокусированной, поскольку видит только ту информацию, которая необходима для текущего шага рассуждений.</p>
-<h3 id="2-Pre-retrieval-Vector-Search-Preventing-Context-Drift-Before-It-Starts" class="common-anchor-header">2. Предварительный поиск (векторный поиск): Предотвращение дрейфа контекста до того, как он начался</h3><p>Иногда модель не может "запрашивать" информацию динамически - системы поддержки клиентов, вопросы-ответы и рабочие процессы агентов часто требуют наличия нужных знаний <em>до</em> начала генерации. В этом случае критически важным становится <strong>предварительный поиск</strong>.</p>
-<p>Контекстная гниль часто происходит потому, что модели передают большую кучу необработанного текста и ожидают, что она сама отберет то, что важно. Предварительный поиск меняет ситуацию: векторная база данных (например, <a href="https://milvus.io/">Milvus</a> и <a href="https://zilliz.com/cloud">Zilliz Cloud</a>) определяет наиболее релевантные фрагменты <em>перед</em> выводом, гарантируя, что только ценный контекст попадет в модель.</p>
-<p>В типичной системе RAG:</p>
+<p>By minimizing what’s kept in context, JIT retrieval prevents the buildup of irrelevant tokens that cause rot. The model stays focused because it only ever sees the information required for the current reasoning step.</p>
+<h3 id="2-Pre-retrieval-Vector-Search-Preventing-Context-Drift-Before-It-Starts" class="common-anchor-header">2. Pre-retrieval (Vector Search): Preventing Context Drift Before It Starts</h3><p>Sometimes the model can’t “ask” for information dynamically—customer support, Q&amp;A systems, and agent workflows often need the right knowledge available <em>before</em> generation begins. This is where <strong>pre-retrieval</strong> becomes critical.</p>
+<p>Context rot often happens because the model is handed a large pile of raw text and expected to sort out what matters. Pre-retrieval flips that: a vector database (like <a href="https://milvus.io/">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a>) identifies the most relevant pieces <em>before</em> inference, ensuring only high-value context reaches the model.</p>
+<p>In a typical RAG setup:</p>
 <ul>
-<li><p>Документы встраиваются и хранятся в векторной базе данных, такой как Milvus.</p></li>
-<li><p>Во время запроса система извлекает небольшой набор высоко релевантных фрагментов путем поиска по сходству.</p></li>
-<li><p>Только эти фрагменты попадают в контекст модели.</p></li>
+<li><p>Documents are embedded and stored in a vector database, such as Milvus.</p></li>
+<li><p>At query time, the system retrieves a small set of highly relevant chunks through similarity searches.</p></li>
+<li><p>Only those chunks go into the model’s context.</p></li>
 </ul>
-<p>Это предотвращает гниение двумя способами:</p>
+<p>This prevents rot in two ways:</p>
 <ul>
-<li><p><strong>Уменьшение шума:</strong> нерелевантный или слабо связанный текст никогда не попадает в контекст.</p></li>
-<li><p><strong>Эффективность:</strong> модели обрабатывают гораздо меньше лексем, что снижает вероятность упустить важные детали.</p></li>
+<li><p><strong>Noise reduction:</strong> irrelevant or weakly related text never enters the context in the first place.</p></li>
+<li><p><strong>Efficiency:</strong> models process far fewer tokens, reducing the chance of losing track of essential details.</p></li>
 </ul>
-<p>Milvus может искать миллионы документов за миллисекунды, что делает этот подход идеальным для живых систем, где задержка имеет значение.</p>
-<h3 id="3-Hybrid-JIT-and-Vector-Retrieval" class="common-anchor-header">3. Гибридный JIT и векторный поиск</h3><p>Предварительный поиск на основе векторного поиска решает значительную часть проблемы гниения контекста, обеспечивая начало работы модели с высокосигнальной информацией, а не с необработанным, избыточным текстом. Однако Anthropic выделяет две реальные проблемы, которые команды часто упускают из виду:</p>
+<p>Milvus can search millions of documents in milliseconds, making this approach ideal for live systems where latency matters.</p>
+<h3 id="3-Hybrid-JIT-and-Vector-Retrieval" class="common-anchor-header">3. Hybrid JIT and Vector Retrieval</h3><p>Vector search-based pre-retrieval addresses a significant part of context rot by ensuring the model starts with high-signal information rather than raw, oversized text. But Anthropic highlights two real challenges that teams often overlook:</p>
 <ul>
-<li><p><strong>Своевременность:</strong> Если база знаний обновляется быстрее, чем перестраивается векторный индекс, модель может опираться на устаревшую информацию.</p></li>
-<li><p><strong>Точность:</strong> до начала выполнения задачи трудно точно предсказать, что понадобится модели, особенно в многоэтапных или исследовательских рабочих процессах.</p></li>
+<li><p><strong>Timeliness:</strong> If the knowledge base updates faster than the vector index is rebuilt, the model may rely on stale information.</p></li>
+<li><p><strong>Accuracy:</strong> Before a task begins, it’s hard to predict precisely what the model will need—especially for multi-step or exploratory workflows.</p></li>
 </ul>
-<p>Поэтому в реальных рабочих нагрузках оптимальным решением является гибридная система.</p>
+<p>So in real world workloads, a hybrid appaorch is the optimal solution.</p>
 <ul>
-<li><p>Векторный поиск стабильных, высокодостоверных знаний</p></li>
-<li><p>JIT-исследование на основе агентов для информации, которая меняется или становится актуальной только в середине задачи.</p></li>
+<li><p>Vector search for stable, high-confidence knowledge</p></li>
+<li><p>Agent-driven JIT exploration for information that evolves or only becomes relevant mid-task</p></li>
 </ul>
-<p>Смешивая эти два подхода, вы получаете скорость и эффективность векторного поиска для известной информации и гибкость модели для обнаружения и загрузки новых данных, когда они становятся актуальными.</p>
-<p>Давайте посмотрим, как это работает в реальной системе. Возьмем, к примеру, помощника по работе с производственной документацией. Большинство команд в конечном итоге останавливаются на двухступенчатом конвейере: векторный поиск на базе Milvus + JIT-поиск на базе агентов.</p>
-<p><strong>1. Векторный поиск с использованием Milvus (предварительное извлечение)</strong></p>
+<p>By blending these two approaches, you get the speed and efficiency of vector retrieval for known information, and the flexibility for the model to discover and load new data whenever it becomes relevant.</p>
+<p>Let’s look at how this works in a real system. Take a production documentation assistant, for example. Most teams eventually settle on a two-stage pipeline: Milvus-powered vector search + agent-based JIT retrieval.</p>
+<p><strong>1. Milvus Powered Vector Search (Pre-retrieval)</strong></p>
 <ul>
-<li><p>Преобразуйте документацию, ссылки на API, журналы изменений и известные проблемы во вкрапления.</p></li>
-<li><p>Храните их в базе данных Milvus Vector Database с такими метаданными, как область продукта, версия и время обновления.</p></li>
-<li><p>Когда пользователь задает вопрос, запустите семантический поиск, чтобы получить топ-K релевантных сегментов.</p></li>
+<li><p>Convert your documentation, API references, changelogs, and known issues into embeddings.</p></li>
+<li><p>Store them in the Milvus Vector Database with metadata like product area, version, and update time.</p></li>
+<li><p>When a user asks a question, run a semantic search to grab the top-K relevant segments.</p></li>
 </ul>
-<p>Это позволяет решить около 80 % рутинных запросов менее чем за 500 мс, обеспечивая модель сильной, устойчивой к контексту отправной точкой.</p>
-<p><strong>2. Исследование на основе агентов</strong></p>
-<p>Когда первоначального поиска недостаточно - например, когда пользователь запрашивает что-то очень специфическое или чувствительное ко времени - агент может обратиться к инструментам для получения новой информации:</p>
+<p>This resolves roughly 80% of routine queries in under 500 ms, giving the model a strong, context-rot-resistant starting point.</p>
+<p><strong>2. Agent-Based Exploration</strong></p>
+<p>When the initial retrieval isn’t sufficient—e.g., when the user asks for something highly specific or time-sensitive—the agent can call tools to fetch new information:</p>
 <ul>
-<li><p>Используйте <code translate="no">search_code</code> для поиска определенных функций или файлов в кодовой базе.</p></li>
-<li><p>Используйте <code translate="no">run_query</code> для получения данных из базы данных в режиме реального времени</p></li>
-<li><p>Используйте <code translate="no">fetch_api</code> для получения последней информации о состоянии системы.</p></li>
+<li><p>Use <code translate="no">search_code</code> to locate specific functions or files in the codebase</p></li>
+<li><p>Use <code translate="no">run_query</code> to pull real-time data from the database</p></li>
+<li><p>Use <code translate="no">fetch_api</code> to obtain the latest system status</p></li>
 </ul>
-<p>Эти вызовы обычно занимают <strong>3-5 секунд</strong>, но они гарантируют, что модель всегда работает со свежими, точными и актуальными данными - даже для вопросов, которые система не могла предугадать заранее.</p>
-<p>Такая гибридная структура обеспечивает своевременность, корректность и специфичность контекста, значительно снижая риск гниения контекста в длительных рабочих процессах агентов.</p>
-<p>Milvus особенно эффективен в этих гибридных сценариях, поскольку поддерживает:</p>
+<p>These calls typically take <strong>3–5 seconds</strong>, but they ensure the model always works with fresh, accurate, and relevant data—even for questions the system couldn’t anticipate beforehand.</p>
+<p>This hybrid structure ensures context remains timely, correct, and task-specific, dramatically reducing the risk of context rot in long-running agent workflows.</p>
+<p>Milvus is especially effective in these hybrid scenarios because it supports:</p>
 <ul>
-<li><p><strong>Векторный поиск + скалярная фильтрация</strong>, сочетающая семантическую релевантность со структурированными ограничениями</p></li>
-<li><p><strong>Инкрементные обновления</strong>, позволяющие обновлять вкрапления без простоев.</p></li>
+<li><p><strong>Vector search + scalar filtering</strong>, combining semantic relevance with structured constraints</p></li>
+<li><p><strong>Incremental updates</strong>, allowing embeddings to be refreshed without downtime</p></li>
 </ul>
-<p>Это делает Milvus идеальной основой для систем, которым требуется как семантическое понимание, так и точный контроль над получаемыми данными.</p>
+<p>This makes Milvus an ideal backbone for systems that need both semantic understanding and precise control over what gets retrieved.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_in_hybrid_architecture_7d4e391aa4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Например, вы можете выполнить такой запрос:</p>
+<p>For example, you might run a query like:</p>
 <pre><code translate="no"><span class="hljs-comment"># You can combine queries like this in Milvus</span>
 collection.search(
     data=[query_embedding],  <span class="hljs-comment"># Semantic similarity</span>
@@ -143,7 +142,7 @@ collection.search(
     limit=<span class="hljs-number">5</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="How-to-Choose-the-Right-Approach-for-Dealing-With-Context-Rot" class="common-anchor-header">Как выбрать правильный подход для работы с контекстным ротором<button data-href="#How-to-Choose-the-Right-Approach-for-Dealing-With-Context-Rot" class="anchor-icon" translate="no">
+<h2 id="How-to-Choose-the-Right-Approach-for-Dealing-With-Context-Rot" class="common-anchor-header">How to Choose the Right Approach for Dealing With Context Rot<button data-href="#How-to-Choose-the-Right-Approach-for-Dealing-With-Context-Rot" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -158,20 +157,20 @@ collection.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Поскольку существуют векторно-поисковый предварительный поиск, поиск "точно в срок" и гибридный поиск, возникает естественный вопрос: <strong>какой из них следует использовать?</strong></p>
-<p>Вот простой, но практичный способ выбора, основанный на том, насколько <em>стабильны</em> ваши знания и насколько <em>предсказуемы</em> информационные потребности модели.</p>
-<h3 id="1-Vector-Search-→-Best-for-Stable-Domains" class="common-anchor-header">1. Векторный поиск → Лучше всего подходит для стабильных областей.</h3><p>Если домен меняется медленно, но требует точности - финансы, юридическая работа, соответствие нормативным требованиям, медицинская документация, - то база знаний на базе Milvus с <strong>предварительным поиском</strong> обычно подходит.</p>
-<p>Информация четко определена, обновления происходят нечасто, и на большинство вопросов можно ответить, предварительно найдя семантически релевантные документы.</p>
-<p><strong>Предсказуемые задачи + стабильные знания → предварительный поиск.</strong></p>
-<h3 id="2-Just-in-Time-Retrieval-→-Best-for-Dynamic-Exploratory-Workflows" class="common-anchor-header">2. Поиск "точно в срок" → Лучше всего подходит для динамичных, исследовательских рабочих процессов.</h3><p>В таких областях, как разработка программного обеспечения, отладка, аналитика и наука о данных, среда быстро меняется: новые файлы, новые данные, новые состояния развертывания. Модель не может предсказать, что ей понадобится до начала выполнения задачи.</p>
-<p><strong>Непредсказуемые задачи + быстро меняющиеся знания → поиск "точно в срок".</strong></p>
-<h3 id="3-Hybrid-Approach-→-When-Both-Conditions-Are-True" class="common-anchor-header">3. Гибридный подход → Когда оба условия верны</h3><p>Многие реальные системы не являются ни чисто стабильными, ни чисто динамичными. Например, документация разработчика меняется медленно, в то время как состояние производственной среды меняется минута за минутой. Гибридный подход позволяет вам:</p>
+    </button></h2><p>With vector-search pre-retrieval, Just-in-Time retrieval, and hybrid retrieval all available, the natural question is: <strong>which one should you use?</strong></p>
+<p>Here is a simple but practical way to choose—based on how <em>stable</em> your knowledge is and how <em>predictable</em> the model’s information needs are.</p>
+<h3 id="1-Vector-Search-→-Best-for-Stable-Domains" class="common-anchor-header">1. Vector Search → Best for Stable Domains</h3><p>If the domain changes slowly but demands precision—finance, legal work, compliance, medical documentation—then a Milvus-powered knowledge base with <strong>pre-retrieval</strong> is usually the right fit.</p>
+<p>The information is well-defined, updates are infrequent, and most questions can be answered by retrieving semantically relevant documents upfront.</p>
+<p><strong>Predictable tasks + stable knowledge → Pre-retrieval.</strong></p>
+<h3 id="2-Just-in-Time-Retrieval-→-Best-for-Dynamic-Exploratory-Workflows" class="common-anchor-header">2. Just-in-Time Retrieval → Best for Dynamic, Exploratory Workflows</h3><p>Fields like software engineering, debugging, analytics, and data science involve rapidly changing environments: new files, new data, new deployment states. The model can’t predict what it will need before the task starts.</p>
+<p><strong>Unpredictable tasks + fast-changing knowledge → Just-in-Time retrieval.</strong></p>
+<h3 id="3-Hybrid-Approach-→-When-Both-Conditions-Are-True" class="common-anchor-header">3. Hybrid Approach → When Both Conditions Are True</h3><p>Many real systems aren’t purely stable or purely dynamic. For example, developer documentation changes slowly, whereas the state of a production environment changes minute by minute. A hybrid approach lets you:</p>
 <ul>
-<li><p>Загружать известные, стабильные знания с помощью векторного поиска (быстро, с малым временем ожидания).</p></li>
-<li><p>Получать динамическую информацию с помощью агентских инструментов по запросу (точная, актуальная).</p></li>
+<li><p>Load known, stable knowledge using vector search (fast, low-latency)</p></li>
+<li><p>Fetch dynamic information with agent tools on demand (accurate, up-to-date)</p></li>
 </ul>
-<p><strong>Смешанные знания + смешанная структура задач → гибридный подход к поиску.</strong></p>
-<h2 id="What-if-the-Context-Window-Still-Isn’t-Enough" class="common-anchor-header">Что делать, если контекстного окна все еще недостаточно<button data-href="#What-if-the-Context-Window-Still-Isn’t-Enough" class="anchor-icon" translate="no">
+<p><strong>Mixed knowledge + mixed task structure → Hybrid retrieval approach.</strong></p>
+<h2 id="What-if-the-Context-Window-Still-Isn’t-Enough" class="common-anchor-header">What if the Context Window Still Isn’t Enough<button data-href="#What-if-the-Context-Window-Still-Isn’t-Enough" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -186,42 +185,42 @@ collection.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Контекстная инженерия помогает снизить перегрузку, но иногда проблема более фундаментальна: <strong>задача просто не помещается</strong>, даже при тщательной обрезке.</p>
-<p>Некоторые рабочие процессы, такие как миграция большой кодовой базы, обзор архитектур с несколькими хранилищами или создание отчетов о глубоких исследованиях, могут превысить 200K+ контекстных окон, прежде чем модель достигнет конца задачи. Даже если векторный поиск выполняет большую работу, некоторые задачи требуют более постоянной, структурированной памяти.</p>
-<p>Недавно Anthropic предложил три практические стратегии.</p>
-<h3 id="1-Compression-Preserve-Signal-Drop-Noise" class="common-anchor-header">1. Сжатие: Сохранить сигнал, отбросить шум</h3><p>Когда контекстное окно приближается к своему пределу, модель может <strong>сжать предыдущие взаимодействия</strong> в краткие резюме. Хорошее сжатие сохраняет</p>
+    </button></h2><p>Context engineering helps reduce overload, but sometimes the problem is more fundamental: <strong>the task simply won’t fit</strong>, even with careful trimming.</p>
+<p>Certain workflows—like migrating a large codebase, reviewing multi-repository architectures, or generating deep research reports—can exceed 200K+ context windows before the model reaches the end of the task. Even with vector search doing heavy lifting, some tasks require more persistent, structured memory.</p>
+<p>Recently, Anthropic has offered three practical strategies.</p>
+<h3 id="1-Compression-Preserve-Signal-Drop-Noise" class="common-anchor-header">1. Compression: Preserve Signal, Drop Noise</h3><p>When the context window approaches its limit, the model can <strong>compress earlier interactions</strong> into concise summaries. Good compression keeps</p>
 <ul>
-<li><p>Ключевые решения</p></li>
-<li><p>Ограничения и требования</p></li>
-<li><p>Остающиеся вопросы</p></li>
-<li><p>Соответствующие образцы или примеры</p></li>
+<li><p>Key decisions</p></li>
+<li><p>Constraints and requirements</p></li>
+<li><p>Outstanding issues</p></li>
+<li><p>Relevant samples or examples</p></li>
 </ul>
-<p>И удаляет:</p>
+<p>And removes:</p>
 <ul>
-<li><p>Многословные выходные данные инструмента</p></li>
-<li><p>Нерелевантные журналы</p></li>
-<li><p>лишние шаги</p></li>
+<li><p>Verbose tool outputs</p></li>
+<li><p>Irrelevant logs</p></li>
+<li><p>Redundant steps</p></li>
 </ul>
-<p>Проблема заключается в балансе. Если сжимать слишком сильно, модель потеряет важную информацию; если сжимать слишком слабо, места останется мало. Эффективное сжатие позволяет сохранить "почему" и "что", отбросив при этом "как мы сюда попали".</p>
-<h3 id="2-Structured-Note-Taking-Move-Stable-Information-Outside-Context" class="common-anchor-header">2. Структурированное ведение заметок: Перемещение стабильной информации за пределы контекста</h3><p>Вместо того чтобы держать все в окне модели, система может хранить важные факты во <strong>внешней памяти -</strong>отдельной базе данных или структурированном хранилище, к которому агент может обращаться по мере необходимости.</p>
-<p>Например, прототип покемона-агента Клода хранит такие долговременные факты, как:</p>
+<p>The challenge is balance. Compress too aggressively, and the model loses critical information; compress too lightly, and you gain little space. Effective compression keeps the “why” and “what” while discarding the “how we got here.”</p>
+<h3 id="2-Structured-Note-Taking-Move-Stable-Information-Outside-Context" class="common-anchor-header">2. Structured Note-Taking: Move Stable Information Outside Context</h3><p>Instead of keeping everything inside the model’s window, the system can store important facts in <strong>external memory</strong>—a separate database or a structured store that the agent can query as needed.</p>
+<p>For example, Claude’s Pokémon-agent prototype stores durable facts like:</p>
 <ul>
 <li><p><code translate="no">Pikachu leveled up to 8</code></p></li>
 <li><p><code translate="no">Trained 1234 steps on Route 1</code></p></li>
 <li><p><code translate="no">Goal: reach level 10</code></p></li>
 </ul>
-<p>Между тем, преходящие детали - журналы сражений, длинные результаты работы инструментов - остаются вне активного контекста. Это отражает то, как люди используют блокноты: мы не храним каждую деталь в рабочей памяти; мы храним опорные точки снаружи и просматриваем их, когда это необходимо.</p>
-<p>Структурированное ведение заметок предотвращает размывание контекста, вызванное повторением ненужных деталей, и в то же время дает модели надежный источник истины.</p>
-<h3 id="3-Sub-Agent-Architecture-Divide-and-Conquer-Large-Tasks" class="common-anchor-header">3. Субагентная архитектура: Разделяй и властвуй над большими задачами</h3><p>Для сложных задач можно разработать многоагентную архитектуру, в которой ведущий агент контролирует общую работу, а несколько специализированных субагентов занимаются конкретными аспектами задачи. Эти субагенты погружаются в большие объемы данных, относящихся к их подзадачам, но возвращают только краткие и важные результаты. Такой подход обычно используется в таких сценариях, как исследовательские отчеты или анализ данных.</p>
+<p>Meanwhile, transient details—battle logs, long tool outputs—stay outside the active context. This mirrors how humans use notebooks: we don’t keep every detail in our working memory; we store reference points externally and look them up when needed.</p>
+<p>Structured note-taking prevents context rot caused by repeated, unnecessary details while giving the model a reliable source of truth.</p>
+<h3 id="3-Sub-Agent-Architecture-Divide-and-Conquer-Large-Tasks" class="common-anchor-header">3. Sub-Agent Architecture: Divide and Conquer Large Tasks</h3><p>For complex tasks, a multi-agent architecture can be designed where a lead agent oversees the overall work, while several specialized sub-agents handle specific aspects of the task. These sub-agents dive deep into large amounts of data related to their sub-tasks but only return the concise, essential results. This approach is commonly used in scenarios like research reports or data analysis.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/longduration_task_cbbc07b9ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>На практике лучше всего начинать с использования одного агента в сочетании со сжатием данных для решения задач. Внешние хранилища следует использовать только в тех случаях, когда необходимо сохранить память в течение нескольких сессий. Многоагентная архитектура должна быть зарезервирована для задач, которые действительно требуют параллельной обработки сложных, специализированных подзадач.</p>
-<p>Каждый подход расширяет эффективную "рабочую память" системы, не закрывая контекстное окно и не вызывая гниения контекста.</p>
-<h2 id="Best-Practices-for-Designing-Context-That-Actually-Works" class="common-anchor-header">Лучшие практики разработки контекста, который действительно работает<button data-href="#Best-Practices-for-Designing-Context-That-Actually-Works" class="anchor-icon" translate="no">
+<p>In practice, it’s best to start by using a single agent combined with compression to handle the task. External storage should only be introduced when there’s a need to retain memory across sessions. The multi-agent architecture should be reserved for tasks that genuinely require parallel processing of complex, specialized sub-tasks.</p>
+<p>Each approach extends the system’s effective “working memory” without blowing the context window—and without triggering context rot.</p>
+<h2 id="Best-Practices-for-Designing-Context-That-Actually-Works" class="common-anchor-header">Best Practices for Designing Context That Actually Works<button data-href="#Best-Practices-for-Designing-Context-That-Actually-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -236,17 +235,17 @@ collection.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После борьбы с переполнением контекста есть еще одна не менее важная часть: как контекст создается в первую очередь. Даже при наличии сжатия, внешних заметок и субагентов система будет работать с трудом, если подсказки и инструменты не рассчитаны на поддержку длинных и сложных рассуждений.</p>
+    </button></h2><p>After handling context overflow, there’s another equally important piece: how the context is built in the first place. Even with compression, external notes, and sub-agents, the system will struggle if the prompt and tools themselves aren’t designed to support long, complex reasoning.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/System_Prompts_cf655dcd0d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Anthropic предлагает полезный способ подумать об этом - не как об одном упражнении по написанию подсказки, а как о построении контекста на трех уровнях.</p>
-<h3 id="System-Prompts-Find-the-Goldilocks-Zone" class="common-anchor-header"><strong>Системные подсказки: Найдите зону Златовласки</strong></h3><p>Большинство системных подсказок терпят неудачу в крайностях. Слишком много деталей - списки правил, вложенные условия, жестко закодированные исключения - делают подсказку хрупкой и сложной в обслуживании. Слишком слабая структура заставляет модель гадать, что делать.</p>
-<p>Лучшие подсказки находятся посередине: достаточно структурированные, чтобы направлять поведение, и достаточно гибкие, чтобы модель могла рассуждать. На практике это означает предоставление модели четкой роли, общего рабочего процесса и легкого инструментального руководства - не больше и не меньше.</p>
-<p>Например:</p>
+<p>Anthropic offers a helpful way to think about this—less as a single prompt-writing exercise, and more as constructing context across three layers.</p>
+<h3 id="System-Prompts-Find-the-Goldilocks-Zone" class="common-anchor-header"><strong>System Prompts: Find the Goldilocks Zone</strong></h3><p>Most system prompts fail at the extremes. Too much detail—lists of rules, nested conditions, hard-coded exceptions—makes the prompt brittle and difficult to maintain. Too little structure leaves the model guessing what to do.</p>
+<p>The best prompts sit in the middle: structured enough to guide behavior, flexible enough for the model to reason. In practice, this means giving the model a clear role, a general workflow, and light tool guidance—nothing more, nothing less.</p>
+<p>For example:</p>
 <pre><code translate="no">You are a technical documentation assistant serving developers.
 <span class="hljs-number">1.</span> Start <span class="hljs-keyword">by</span> retrieving relevant documents <span class="hljs-keyword">from</span> the Milvus knowledge <span class="hljs-keyword">base</span>.  
 <span class="hljs-number">2.</span> If the retrieval results are insufficient, use the `search_code` tool to perform a deeper search <span class="hljs-keyword">in</span> the codebase.  
@@ -257,24 +256,24 @@ collection.search(
 - search_code: Used <span class="hljs-keyword">for</span> precise lookup <span class="hljs-keyword">in</span> the codebase, best <span class="hljs-keyword">for</span> implementation-detail questions.  
 …
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта подсказка задает направление, не перегружая модель и не заставляя ее жонглировать динамической информацией, которой здесь не место.</p>
-<h3 id="Tool-Design-Less-Is-More" class="common-anchor-header">Дизайн инструментов: Меньше - значит больше</h3><p>После того как системная подсказка задает высокоуровневое поведение, инструменты выполняют фактическую операционную логику. Удивительно распространенный способ отказа в системах с инструментальным дополнением - это просто наличие слишком большого количества инструментов или инструментов, назначение которых дублируется.</p>
-<p>Хорошее эмпирическое правило:</p>
+<p>This prompt sets direction without overwhelming the model or forcing it to juggle dynamic information that doesn’t belong here.</p>
+<h3 id="Tool-Design-Less-Is-More" class="common-anchor-header">Tool Design: Less Is More</h3><p>Once the system prompt sets the high-level behavior, tools carry the actual operational logic. A surprisingly common failure mode in tool-augmented systems is simply having too many tools—or having tools whose purposes overlap.</p>
+<p>A good rule of thumb:</p>
 <ul>
-<li><p><strong>Один инструмент, одна цель</strong></p></li>
-<li><p><strong>Явные, недвусмысленные параметры</strong></p></li>
-<li><p><strong>Никаких пересекающихся обязанностей</strong></p></li>
+<li><p><strong>One tool, one purpose</strong></p></li>
+<li><p><strong>Explicit, unambiguous parameters</strong></p></li>
+<li><p><strong>No overlapping responsibilities</strong></p></li>
 </ul>
-<p>Если человек-инженер будет колебаться, какой инструмент использовать, то и модель будет колебаться. Чистый дизайн инструментов уменьшает двусмысленность, снижает когнитивную нагрузку и предотвращает загромождение контекста ненужными попытками использования инструментов.</p>
+<p>If a human engineer would hesitate about which tool to use, the model will too. Clean tool design reduces ambiguity, lowers cognitive load, and prevents context from being cluttered with unnecessary tool attempts.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/tooling_complexity_7d2bb60c54.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Dynamic-Information-Should-Be-Retrieved-Not-Hardcoded" class="common-anchor-header">Динамическая информация должна быть получена, а не закодирована</h3><p>Последний слой легче всего упустить из виду. Динамическая или чувствительная ко времени информация - например, значения статуса, последние обновления или состояние конкретного пользователя - вообще не должна отображаться в системной подсказке. Встраивание ее в подсказку гарантирует, что она станет несвежей, раздутой или противоречивой при длительном выполнении задач.</p>
-<p>Вместо этого такая информация должна извлекаться только при необходимости, либо через поиск, либо с помощью инструментов агента. Сохранение динамического содержимого вне системной подсказки предотвращает гниение контекста и сохраняет пространство рассуждений модели чистым.</p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="Dynamic-Information-Should-Be-Retrieved-Not-Hardcoded" class="common-anchor-header">Dynamic Information Should Be Retrieved, Not Hardcoded</h3><p>The final layer is the easiest to overlook. Dynamic or time-sensitive information—such as status values, recent updates, or user-specific state—should not appear in the system prompt at all. Baking it into the prompt guarantees it will become stale, bloated, or contradictory over long tasks.</p>
+<p>Instead, this information should be fetched only when needed, either through retrieval or via agent tools. Keeping dynamic content out of the system prompt prevents context rot and keeps the model’s reasoning space clean.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -289,10 +288,10 @@ collection.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>По мере внедрения агентов искусственного интеллекта в производственные среды в различных отраслях им приходится выполнять более длительные рабочие процессы и более сложные задачи, чем когда-либо прежде. В таких условиях управление контекстом становится практической необходимостью.</p>
-<p><strong>Однако увеличение контекстного окна не приводит к автоматическому улучшению результатов</strong>; во многих случаях это приводит к обратному. Когда модель перегружена, ей скармливают устаревшую информацию или навязывают массивные подсказки, точность незаметно снижается. Это медленное, незаметное снижение мы теперь называем <strong>"гниением контекста</strong>".</p>
-<p>Такие методы, как JIT-поиск, предварительный поиск, гибридные конвейеры и семантический поиск на основе векторных баз данных, направлены на достижение одной цели: <strong>убедиться, что модель видит нужную информацию в нужный момент - не больше и не меньше, - чтобы она могла оставаться на месте и давать надежные ответы.</strong></p>
-<p><a href="https://milvus.io/"><strong>Milvus</strong></a>, высокопроизводительная векторная база данных с открытым исходным кодом, лежит в основе этого рабочего процесса. Она обеспечивает инфраструктуру для эффективного хранения знаний и извлечения наиболее важных фрагментов с низкой задержкой. В сочетании с JIT-поиском и другими дополнительными стратегиями Milvus помогает агентам ИИ сохранять точность по мере того, как их задачи становятся все более глубокими и динамичными.</p>
-<p>Но поиск - это только одна часть головоломки. Хороший дизайн подсказок, чистый и минимальный набор инструментов, а также разумные стратегии переполнения - сжатие, структурированные заметки или субагенты - все это вместе помогает модели оставаться сфокусированной в течение длительных сессий. Именно так выглядит настоящая контекстная инженерия: не умные хаки, а продуманная архитектура.</p>
-<p>Если вы хотите, чтобы агенты ИИ оставались точными в течение нескольких часов, дней или всего рабочего процесса, контекст заслуживает такого же внимания, какое вы уделили бы любой другой ключевой части вашего стека.</p>
-<p>У вас есть вопросы или вы хотите получить подробную информацию о какой-либо функции? Присоединяйтесь к нашему<a href="https://discord.com/invite/8uyFbECzPX"> каналу Discord</a> или создавайте проблемы на<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Вы также можете записаться на 20-минутную индивидуальную сессию, чтобы получить понимание, рекомендации и ответы на свои вопросы через<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+    </button></h2><p>As AI agents move into production environments across different industries, they’re taking on longer workflows and more complex tasks than ever before. In these settings, managing context becomes a practical necessity.</p>
+<p><strong>However, a bigger context window doesn’t automatically produce better results</strong>; in many cases, it does the opposite. When a model is overloaded, fed stale information, or forced through massive prompts, accuracy quietly drifts. That slow, subtle decline is what we now call <strong>context rot</strong>.</p>
+<p>Techniques like JIT retrieval, pre-retrieval, hybrid pipelines, and vector-database-powered semantic search all aim at the same goal: <strong>making sure the model sees the right information at the right moment — no more, no less — so it can stay grounded and produce reliable answers.</strong></p>
+<p>As an open-source, high-performance vector database, <a href="https://milvus.io/"><strong>Milvus</strong></a> sits at the core of this workflow. It provides the infrastructure for storing knowledge efficiently and retrieving the most relevant pieces with low latency. Paired with JIT retrieval and other complementary strategies, Milvus helps AI agents remain accurate as their tasks become deeper and more dynamic.</p>
+<p>But retrieval is only one piece of the puzzle. Good prompt design, a clean and minimal toolset, and sensible overflow strategies — whether compression, structured notes, or sub-agents — all work together to keep the model focused across long-running sessions. This is what real context engineering looks like: not clever hacks, but thoughtful architecture.</p>
+<p>If you want AI agents that stay accurate over hours, days, or entire workflows, context deserves the same attention you’d give to any other core part of your stack.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

@@ -1,10 +1,14 @@
 ---
 id: >-
   is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md
-title: 现在，像 Claude Cowork 这样的长线 Agents 正在崛起，RAG 是否已经过时？
+title: >
+  Is RAG Becoming Outdated Now That Long-Running Agents Like Claude Cowork Are
+  Emerging?
 author: Min Yin
 date: 2026-1-27
-desc: 深入分析克劳德-考沃克（Claude Cowork）的长期记忆、可写代理记忆、RAG 权衡，以及为什么向量数据库仍然重要。
+desc: >-
+  An in-depth analysis of Claude Cowork’s long-term memory, writable agent
+  memory, RAG trade-offs, and why vector databases still matter.
 cover: assets.zilliz.com/RAG_vs_Long_Running_Agents_fc67810cf8.png
 tag: Engineering
 recommend: false
@@ -18,15 +22,15 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md
 ---
-<p><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork">Claude Cowork</a>是 Claude Desktop 应用程序中的一项新 Agents 功能。从开发者的角度来看，它基本上是一个包裹在模型周围的自动任务运行程序：它可以读取、修改和生成本地文件，还可以规划多步骤任务，而无需手动提示每一步。你可以把它想象成克劳德代码背后的那个循环，只不过是暴露在桌面上，而不是终端上。</p>
-<p>Cowork 的关键能力在于它能长时间运行而不丢失状态。它不会遇到通常的对话超时或上下文重置。它可以继续工作，跟踪中间结果，并在不同会话中重复使用以前的信息。这给人一种 "长期记忆 "的感觉，尽管其基本机制更像是持久任务状态+上下文延续。无论如何，这种体验都不同于传统的聊天模型，在传统的聊天模型中，除非建立自己的记忆层，否则一切都会重置。</p>
-<p>这给开发人员带来了两个实际问题：</p>
+<p><a href="https://support.claude.com/en/articles/13345190-getting-started-with-cowork">Claude Cowork</a> is a new agent feature in the Claude Desktop app. From a developer’s point of view, it’s basically an automated task runner wrapped around the model: it can read, modify, and generate local files, and it can plan multi-step tasks without you having to manually prompt for each step. Think of it as the same loop behind Claude Code, but exposed to the desktop instead of the terminal.</p>
+<p>Cowork’s key capability is its ability to run for extended periods without losing state. It doesn’t hit the usual conversation timeout or context reset. It can keep working, track intermediate results, and reuse previous information across sessions. That gives the impression of “long-term memory,” even though the underlying mechanics are more like persistent task state + contextual carryover. Either way, the experience is different from the traditional chat model, where everything resets unless you build your own memory layer.</p>
+<p>This brings up two practical questions for developers:</p>
 <ol>
-<li><p><strong>如果模型已经可以记忆过去的信息，那么 RAG 或代理 RAG 还能在哪里发挥作用？RAG 是否会被取代？</strong></p></li>
-<li><p><strong>如果我们想要一个本地的、Cowork 式的 Agents，我们该如何自己实现长期记忆？</strong></p></li>
+<li><p><strong>If the model can already remember past information, where does RAG or agentic RAG still fit in? Will RAG be replaced?</strong></p></li>
+<li><p><strong>If we want a local, Cowork-style agent, how do we implement long-term memory ourselves?</strong></p></li>
 </ol>
-<p>本文其余部分将详细讨论这些问题，并解释向量数据库如何融入这一新的 "模型记忆 "版图。</p>
-<h2 id="Claude-Cowork-vs-RAG-What’s-the-Difference" class="common-anchor-header">Claude Cowork 与 RAG：区别何在？<button data-href="#Claude-Cowork-vs-RAG-What’s-the-Difference" class="anchor-icon" translate="no">
+<p>The rest of this article addresses these questions in detail and explains how vector databases fit into this new “model memory” landscape.</p>
+<h2 id="Claude-Cowork-vs-RAG-What’s-the-Difference" class="common-anchor-header">Claude Cowork vs. RAG: What’s the Difference?<button data-href="#Claude-Cowork-vs-RAG-What’s-the-Difference" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,18 +45,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>正如我之前提到的，Claude Cowork 是 Claude Desktop 中的一种代理模式，它可以读写本地文件，将任务分解成更小的步骤，并在不丢失状态的情况下继续工作。它能保持自己的工作环境，因此多小时的任务不会像普通聊天会话那样重置。</p>
-<p><strong>RAG</strong>（检索-增强生成）解决的是另一个问题：让模型访问外部知识。您将数据索引到一个向量数据库中，为每次查询检索相关的大块数据，然后将它们输入到模型中。它之所以被广泛使用，是因为它为 LLM 应用程序提供了一种 "长期记忆 "形式，可用于文档、日志、产品数据等。</p>
-<p>如果这两种系统都能帮助模型 "记忆"，那么它们之间到底有什么区别呢？</p>
-<h3 id="How-Cowork-Handles-Memory" class="common-anchor-header">Cowork 如何处理内存</h3><p>Cowork 的内存是读写式的。Agents 会决定当前任务或对话中哪些信息是相关的，并将其存储为记忆条目，之后随着任务的进展进行检索。这样，Cowork 就能在长期运行的工作流中保持连续性，尤其是那些在运行过程中会产生新的中间状态的工作流。</p>
-<h3 id="How-RAG-and-Agentic-RAG-Handle-Memory" class="common-anchor-header">RAG 和 Agents RAG 如何处理内存</h3><p>标准的 RAG 是查询驱动型检索：用户提出问题，系统获取相关文档，然后模型使用这些文档进行回答。检索语料库保持稳定和版本化，开发人员可以准确控制进入语料库的内容。</p>
-<p>现代 Agents RAG 扩展了这种模式。该模型可以决定何时检索信息、检索什么以及在规划或执行工作流期间如何使用这些信息。这些系统可以运行长任务并调用工具，类似于 Cowork。但即使是 Agents RAG，检索层仍然是以知识为导向，而不是以状态为导向。Agents 只检索权威事实，而不会将其不断变化的任务状态写回语料库。</p>
-<p>换个角度看问题：</p>
+    </button></h2><p>As I mentioned previously, Claude Cowork is an agent mode inside Claude Desktop that can read and write local files, break tasks into smaller steps, and keep working without losing state. It maintains its own working context, so multi-hour tasks don’t reset like a normal chat session.</p>
+<p><strong>RAG</strong> (Retrieval-Augmented Generation) solves a different problem: giving a model access to external knowledge. You index your data into a vector database, retrieve relevant chunks for each query, and feed them into the model. It’s widely used because it provides LLM applications with a form of “long-term memory” for documents, logs, product data, and more.</p>
+<p>If both systems help a model “remember,” what’s the actual difference?</p>
+<h3 id="How-Cowork-Handles-Memory" class="common-anchor-header">How Cowork Handles Memory</h3><p>Cowork’s memory is read-write. The agent decides which information from the current task or conversation is relevant, stores it as memory entries, and retrieves it later as the task progresses. This allows Cowork to maintain continuity across long-running workflows — especially ones that produce new intermediate state as they progress.</p>
+<h3 id="How-RAG-and-Agentic-RAG-Handle-Memory" class="common-anchor-header">How RAG and Agentic RAG Handle Memory</h3><p>Standard RAG is query-driven retrieval: the user asks something, the system fetches relevant documents, and the model uses them to answer. The retrieval corpus stays stable and versioned, and developers control exactly what enters it.</p>
+<p>Modern agentic RAG extends this pattern. The model can decide when to retrieve information, what to retrieve, and how to use it during the planning or execution of a workflow. These systems can run long tasks and call tools, similar to Cowork. But even with agentic RAG, the retrieval layer remains knowledge-oriented rather than state-oriented. The agent retrieves authoritative facts; it doesn’t write its evolving task state back into the corpus.</p>
+<p>Another way to look at it:</p>
 <ul>
-<li><p><strong>Cowork 的记忆是任务驱动的：</strong>代理会写入并读取自己不断变化的状态。</p></li>
-<li><p><strong>而 RAG 是知识驱动型的：</strong>系统会检索模型应该依赖的既定信息。</p></li>
+<li><p><strong>Cowork’s memory is task-driven:</strong> the agent writes and reads its own evolving state.</p></li>
+<li><p><strong>RAG is knowledge-driven:</strong> the system retrieves established information that the model should rely on.</p></li>
 </ul>
-<h2 id="Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="common-anchor-header">反向工程克劳德-科沃克（Claude Cowork）：如何建立长期运行的 Agents 记忆<button data-href="#Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="anchor-icon" translate="no">
+<h2 id="Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="common-anchor-header">Reverse-Engineering Claude Cowork: How It Builds Long-Running Agent Memory<button data-href="#Reverse-Engineering-Claude-Cowork-How-It-Builds-Long-Running-Agent-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,76 +71,76 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>克劳德-科沃克（Claude Cowork）之所以受到热捧，是因为它在处理多步骤任务时不会经常忘记自己在做什么。从开发者的角度来看，我很想知道<strong>它是如何在如此长的会话中保持状态的？</strong>Anthropic 还没有公布内部结构，但根据早前对克劳德记忆模块的开发实验，我们可以拼凑出一个像样的心理模型。</p>
-<p>克劳德似乎依赖于一种混合设置：<strong>持久的长期记忆层加上按需检索工具。</strong>克劳德不会在每次请求中都塞入完整的对话内容，而是在认为相关时才有选择性地调入过去的上下文。这样，该模型就能保持较高的准确性，而不会每次都耗尽令牌。</p>
-<p>如果对请求结构进行细分，它大致是这样的：</p>
+    </button></h2><p>Cowork gets a lot of hype because it handles multi-step tasks without constantly forgetting what it was doing. From a developer’s perspective, I am wondering <strong>how it keeps state across such long sessions?</strong> Anthropic hasn’t published the internals, but based on earlier dev experiments with Claude’s memory module, we can piece together a decent mental model.</p>
+<p>Claude seems to rely on a hybrid setup: <strong>a persistent long-term memory layer plus on-demand retrieval tools.</strong> Instead of stuffing the full conversation into every request, Claude selectively pulls in past context only when it decides it’s relevant. This lets the model keep accuracy high without blowing through tokens every turn.</p>
+<p>If you break down the request structure, it roughly looks like this:</p>
 <pre><code translate="no">[<span class="hljs-meta">0</span>] Static system instructions
 [<span class="hljs-meta">1</span>] <span class="hljs-function">User <span class="hljs-title">memory</span> (<span class="hljs-params"><span class="hljs-built_in">long</span>-term</span>)
 [2] Retrieved / pruned conversation history
 [3] Current user message
 </span><button class="copy-code-btn"></button></code></pre>
-<p>有趣的行为不是结构本身，而是模型如何决定更新内容和何时运行检索。</p>
-<h3 id="User-Memory-The-Persistent-Layer" class="common-anchor-header">用户内存：持久层</h3><p>Claude 保存了一个随时间更新的长期记忆库。与 ChatGPT 更可预测的内存系统不同，克劳德的内存系统感觉更 "活 "一些。它将记忆存储在类似 XML 的块中，并通过两种方式进行更新：</p>
+<p>The interesting behavior isn’t the structure itself — it’s how the model decides what to update and when to run retrieval.</p>
+<h3 id="User-Memory-The-Persistent-Layer" class="common-anchor-header">User Memory: The Persistent Layer</h3><p>Claude keeps a long-term memory store that updates over time. And unlike ChatGPT’s more predictable memory system, Claude’s feels a bit more “alive.” It stores memories in XML-ish blocks and updates them in two ways:</p>
 <ul>
-<li><p><strong>隐式更新：</strong>有时，模型会认为某些东西是稳定的偏好或事实，并悄悄地将其写入内存。这些更新并不是瞬时的；它们会在几个回合后显示出来，而且如果相关对话消失，旧的记忆也会逐渐消失。</p></li>
-<li><p><strong>明确更新：</strong>用户可以使用<code translate="no">memory_user_edits</code> 工具直接修改记忆（"记住 X"、"忘记 Y"）。这些写入是即时的，行为更像 CRUD 操作。</p></li>
+<li><p><strong>Implicit updates:</strong> Sometimes the model just decides something is a stable preference or fact and quietly writes it to memory. These updates aren’t instantaneous; they show up after a few turns, and older memories can fade out if the related conversation disappears.</p></li>
+<li><p><strong>Explicit updates:</strong> Users can directly modify memory with the <code translate="no">memory_user_edits</code> tool (“remember X,” “forget Y”). These writes are immediate and behave more like a CRUD operation.</p></li>
 </ul>
-<p>Claude 正在后台运行启发式方法，以决定哪些内容值得持久化，而不是等待明确的指令。</p>
-<h3 id="Conversation-Retrieval-The-On-Demand-Part" class="common-anchor-header">对话检索：按需部分</h3><p>克劳德<em>不像</em>许多 LLM 系统那样保存滚动摘要。相反，它有一个检索函数工具箱，只要认为缺少上下文，就可以调用。这些检索调用并不是每次都会发生--模型会根据自己的内部判断来触发它们。</p>
-<p>其中最突出的是<code translate="no">conversation_search</code> 。当用户说出 "上个月的那个项目 "这样含糊不清的话时，克劳德就会经常调用这个工具来挖掘相关内容。值得注意的是，当措辞含糊不清或使用不同语言时，它仍能发挥作用。这显然意味着</p>
+<p>Claude is running background heuristics to decide what’s worth persisting, and it’s not waiting for explicit instructions.</p>
+<h3 id="Conversation-Retrieval-The-On-Demand-Part" class="common-anchor-header">Conversation Retrieval: The On-Demand Part</h3><p>Claude does <em>not</em> keep a rolling summary like many LLM systems. Instead, it has a toolbox of retrieval functions it can call whenever it thinks it’s missing context. These retrieval calls don’t happen every turn — the model triggers them based on its own internal judgment.</p>
+<p>The standout is <code translate="no">conversation_search</code>. When the user says something vague like “that project from last month,” Claude often fires this tool to dig up relevant turns. What’s notable is that it still works when the phrasing is ambiguous or in a different language. That pretty clearly implies:</p>
 <ul>
-<li><p>某种语义匹配（Embeddings）</p></li>
-<li><p>可能与规范化或轻量级翻译相结合</p></li>
-<li><p>为提高精确度而加入关键词搜索</p></li>
+<li><p>Some kind of semantic matching (embeddings)</p></li>
+<li><p>Probably combined with normalization or lightweight translation</p></li>
+<li><p>Keyword search layered in for precision</p></li>
 </ul>
-<p>从根本上说，这看起来很像一个捆绑在模型工具集中的微型 RAG 系统。</p>
-<h3 id="How-Claude’s-Retrieval-Behavior-Differs-From-Basic-History-Buffers" class="common-anchor-header">克劳德的检索行为与基本历史缓冲区有何不同</h3><p>从测试和日志来看，有几种模式比较突出：</p>
+<p>Basically, this looks a lot like a miniature RAG system bundled inside the model’s toolset.</p>
+<h3 id="How-Claude’s-Retrieval-Behavior-Differs-From-Basic-History-Buffers" class="common-anchor-header">How Claude’s Retrieval Behavior Differs From Basic History Buffers</h3><p>From testing and logs, a few patterns stand out:</p>
 <ul>
-<li><p><strong>检索不是自动的。</strong>模型会选择何时调用。如果它认为已经有了足够的上下文，它甚至不会去打扰。</p></li>
-<li><p><strong>检索到的</strong> <strong>信息</strong><strong>块</strong> <em>既</em><strong>包括</strong> <strong>用户信息，也</strong><strong>包括</strong> <strong>助手信息。</strong>这很有用，因为它比只包含用户信息的摘要能保留更多细微差别。</p></li>
-<li><p><strong>令牌使用保持正常。</strong>由于历史记录不是每次都会注入，因此长时间的会话不会出现不可预知的膨胀。</p></li>
+<li><p><strong>Retrieval isn’t automatic.</strong> The model chooses when to call it. If it thinks it already has enough context, it won’t even bother.</p></li>
+<li><p><strong>Retrieved chunks include</strong> <em>both</em> <strong>user and assistant messages.</strong> That’s useful — it keeps more nuance than user-only summaries.</p></li>
+<li><p><strong>Token usage stays sane.</strong> Because history isn’t injected every turn, long sessions don’t balloon unpredictably.</p></li>
 </ul>
-<p>总的来说，它给人的感觉就像一个检索增强型 LLM，只不过检索是模型自身推理循环的一部分。</p>
-<p>这种架构很聪明，但并不自由：</p>
+<p>Overall, it feels like a retrieval-augmented LLM, except the retrieval happens as part of the model’s own reasoning loop.</p>
+<p>This architecture is clever, but not free:</p>
 <ul>
-<li><p>检索增加了延迟和更多的 "移动部件"（索引、排序、重新排序）。</p></li>
-<li><p>模型偶尔会误判是否需要上下文，这意味着即使数据可用，你<em>也</em>会看到典型的 "LLM 遗忘"。</p></li>
-<li><p>调试变得更加棘手，因为模型行为依赖于不可见的工具触发，而不仅仅是提示输入。</p></li>
+<li><p>Retrieval adds latency and more “moving parts” (indexing, ranking, re-ranking).</p></li>
+<li><p>The model occasionally misjudges whether it needs context, which means you see the classic “LLM forgetfulness” even though the data <em>was</em> available.</p></li>
+<li><p>Debugging becomes trickier because model behavior depends on invisible tool triggers, not just prompt input.</p></li>
 </ul>
-<h3 id="Claude-Cowork-vs-Claude-Codex-in-handling-long-term-memory" class="common-anchor-header">克劳德 Cowork 与克劳德 Codex 在处理长期记忆方面的对比</h3><p>与克劳德重检索的设置相比，ChatGPT 处理记忆的方式更加结构化和可预测。ChatGPT 不做语义查找，也不把旧对话当作迷你向量存储，而是通过以下分层组件将记忆直接注入每个会话：</p>
+<h3 id="Claude-Cowork-vs-Claude-Codex-in-handling-long-term-memory" class="common-anchor-header">Claude Cowork vs Claude Codex in handling long-term memory</h3><p>In contrast to Claude’s retrieval-heavy setup, ChatGPT handles memory in a much more structured and predictable way. Instead of doing semantic lookups or treating old conversations like a mini vector store, ChatGPT injects memory directly into each session through the following layered components:</p>
 <ul>
-<li><p>用户内存</p></li>
-<li><p>会话元数据</p></li>
-<li><p>当前会话信息</p></li>
+<li><p>User memory</p></li>
+<li><p>Session metadata</p></li>
+<li><p>Current session messages</p></li>
 </ul>
-<p><strong>用户内存</strong></p>
-<p>用户记忆是主要的长期存储层--跨会话持续存在的部分，用户可以对其进行编辑。它存储的内容非常标准：姓名、背景、正在进行的项目、学习偏好等。每次新对话都会在开始时注入这个区块，因此模型总是以一致的用户视图开始。</p>
-<p>ChatGPT 通过两种方式更新这一层：</p>
+<p><strong>User Memory</strong></p>
+<p>User Memory is the main long-term storage layer—the part that persists across sessions and can be edited by the user. It stores pretty standard things: name, background, ongoing projects, learning preferences, that kind of stuff. Every new conversation gets this block injected at the start, so the model always starts with a consistent view of the user.</p>
+<p>ChatGPT updates this layer in two ways:</p>
 <ul>
-<li><p><strong>显式更新：</strong>用户可以告诉模型 "记住这个 "或 "忘记那个"，这样内存就会立即发生变化。这基本上是模型通过自然语言公开的 CRUD API。</p></li>
-<li><p><strong>隐式更新：</strong>如果模型发现了符合 OpenAI 长期记忆规则的信息，比如工作职位或偏好，而用户又没有禁用记忆功能，那么它就会自己悄悄地添加这些信息。</p></li>
+<li><p><strong>Explicit updates:</strong> Users can tell the model to “remember this” or “forget that,” and the memory changes immediately. This is basically a CRUD API that the model exposes through natural language.</p></li>
+<li><p><strong>Implicit updates:</strong> If the model spots information that fits OpenAI’s rules for long-term memory—like a job title or a preference—and the user hasn’t disabled memory, it will quietly add it on its own.</p></li>
 </ul>
-<p>从开发人员的角度来看，这一层非常简单、确定，而且易于推理。不需要 Embeddings 查找，也不需要启发式获取。</p>
-<p><strong>会话元数据</strong></p>
-<p>会话元数据与之截然相反。它会话元数据是短暂的、非持久的，而且只在会话开始时注入一次。可以将其视为会话的环境变量。其中包括以下内容</p>
+<p>From a developer angle, this layer is simple, deterministic, and easy to reason about. No embedding lookups, no heuristics about what to fetch.</p>
+<p><strong>Session Metadata</strong></p>
+<p>Session Metadata sits at the opposite end of the spectrum. It’s short-lived, non-persistent, and only injected once at the start of a session. Think of it as environment variables for the conversation. This includes things like:</p>
 <ul>
-<li><p>您使用的设备</p></li>
-<li><p>账户/订阅状态</p></li>
-<li><p>粗略的使用模式（活跃天数、模型分布、平均会话长度）</p></li>
+<li><p>what device you’re on</p></li>
+<li><p>account/subscription state</p></li>
+<li><p>rough usage patterns (active days, model distribution, average conversation length)</p></li>
 </ul>
-<p>这些元数据可以帮助模型根据当前环境塑造回复，例如，在移动设备上编写更简短的答案，而不会污染长期记忆。</p>
-<p><strong>当前会话信息</strong></p>
-<p>这是标准的滑动窗口历史记录：当前会话中的所有信息，直到达到标记限制为止。当窗口过大时，较旧的信息会自动删除。</p>
-<p>最重要的是，这种删除<strong>不会</strong>影响用户记忆或跨会话摘要。只有本地对话历史会缩小。</p>
-<p>ChatGPT 与克劳德最大的不同之处在于如何处理 "最近但非当前 "的会话。如果克劳德认为过去的上下文是相关的，它就会调用搜索工具来检索。ChatGPT 不会这么做。</p>
-<p>相反，ChatGPT 会保留一个非常轻量级的<strong>跨会话摘要</strong>，并注入到每次对话中。关于这一层的几个关键细节</p>
+<p>This metadata helps the model shape responses for the current environment—e.g., writing shorter answers on mobile—without polluting long-term memory.</p>
+<p><strong>Current Session Messages</strong></p>
+<p>This is the standard sliding-window history: all messages in the current conversation until the token limit is reached. When the window gets too large, older turns drop off automatically.</p>
+<p>Crucially, this eviction <strong>does not</strong> touch User Memory or cross-session summaries. Only the local conversation history shrinks.</p>
+<p>The biggest divergence from Claude appears in how ChatGPT handles “recent but not current” conversations. Claude will call a search tool to retrieve past context if it thinks it’s relevant. ChatGPT does not do that.</p>
+<p>Instead, ChatGPT keeps a very lightweight <strong>cross-session summary</strong> that gets injected into every conversation. A few key details about this layer:</p>
 <ul>
-<li><p>它<strong>只</strong>汇总<strong>用户信息</strong>，不汇总助手信息。</p></li>
-<li><p>它只存储很小的项目集--大约 15 个--足以捕捉稳定的主题或兴趣。</p></li>
-<li><p>它<strong>不</strong>进行<strong>嵌入计算、相似性排序和检索调用</strong>。它基本上是预先咀嚼的上下文，而不是动态查找。</p></li>
+<li><p>It summarizes <strong>only user messages</strong>, not assistant messages.</p></li>
+<li><p>It stores a very small set of items—roughly 15—just enough to capture stable themes or interests.</p></li>
+<li><p>It does <strong>no embedding computation, no similarity ranking, and no retrieval calls</strong>. It’s basically pre-chewed context, not dynamic lookup.</p></li>
 </ul>
-<p>从工程角度来看，这种方法以灵活性换取了可预测性。这样就不会出现奇怪的检索失败，推理延迟也会保持稳定，因为没有任何东西是动态配置的。缺点是，除非 ChatGPT 的摘要层中有六个月前的随机消息，否则它不会被调入。</p>
-<h2 id="Challenges-to-Making-Agent-Memory-Writable" class="common-anchor-header">让 Agents 内存可写的挑战<button data-href="#Challenges-to-Making-Agent-Memory-Writable" class="anchor-icon" translate="no">
+<p>From an engineering perspective, this approach trades flexibility for predictability. There’s no chance of a weird retrieval failure, and inference latency stays stable because nothing is being fetched on the fly. The downside is that ChatGPT won’t pull in some random message from six months ago unless it made it into the summary layer.</p>
+<h2 id="Challenges-to-Making-Agent-Memory-Writable" class="common-anchor-header">Challenges to Making Agent Memory Writable<button data-href="#Challenges-to-Making-Agent-Memory-Writable" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -151,46 +155,46 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>当 Agents 从<strong>只读存储器</strong>（典型的 RAG）转移到<strong>可写存储器</strong>（可记录用户操作、决策和偏好）时，复杂性会迅速飙升。你不再只是检索文档，而是要维护模型所依赖的不断增长的状态。</p>
-<p>可写内存系统必须解决三个实际问题：</p>
+    </button></h2><p>When an agent moves from <strong>read-only memory</strong> (typical RAG) to <strong>writable memory</strong>—where it can log user actions, decisions, and preferences—the complexity jumps quickly. You’re no longer just retrieving documents; you’re maintaining a growing state on which the model depends.</p>
+<p>A writable memory system has to solve three real problems:</p>
 <ol>
-<li><p><strong>记住什么：</strong>代理需要一些规则来决定哪些事件、偏好或观察结果值得保留。如果不这样做，内存要么爆炸式增长，要么充满噪音。</p></li>
-<li><p><strong>如何存储和分层记忆：</strong>并非所有记忆都是一样的。近期项目、长期事实和短暂笔记都需要不同的存储层、保留策略和索引策略。</p></li>
-<li><p><strong>如何在不影响检索的情况下快速写入：</strong>内存必须持续写入，但如果系统不是为高吞吐量插入而设计，频繁更新可能会降低索引质量或减慢查询速度。</p></li>
+<li><p><strong>What to remember:</strong> The agent needs rules for deciding which events, preferences, or observations are worth keeping. Without this, memory either explodes in size or fills with noise.</p></li>
+<li><p><strong>How to store and tier memory:</strong> Not all memory is equal. Recent items, long-term facts, and ephemeral notes all need different storage layers, retention policies, and indexing strategies.</p></li>
+<li><p><strong>How to write fast without breaking retrieval:</strong> Memory must be written continuously, but frequent updates can degrade index quality or slow queries if the system isn’t designed for high-throughput inserts.</p></li>
 </ol>
-<h3 id="Challenge-1-What-Is-Worth-Remembering" class="common-anchor-header">挑战 1：什么值得记住？</h3><p>并非用户所做的所有事情都应在长期内存中结束。如果有人创建了一个临时文件，五分钟后又将其删除，那么永远记录下来对任何人都没有帮助。这就是核心难点：<strong>系统如何决定什么才是真正重要的？</strong></p>
-<p><strong>(1) 判断重要性的常见方法</strong></p>
-<p>团队通常采用多种启发式方法：</p>
+<h3 id="Challenge-1-What-Is-Worth-Remembering" class="common-anchor-header">Challenge 1: What Is Worth Remembering?</h3><p>Not everything a user does should end up in long-term memory. If someone creates a temp file and deletes it five minutes later, recording that forever doesn’t help anyone. This is the core difficulty: <strong>how does the system decide what actually matters?</strong></p>
+<p><strong>(1) Common ways to judge importance</strong></p>
+<p>Teams usually rely on a mix of heuristics:</p>
 <ul>
-<li><p><strong>基于时间</strong>：最近的操作比以前的更重要</p></li>
-<li><p><strong>基于频率</strong>：重复访问的文件或操作更重要</p></li>
-<li><p><strong>基于类型</strong>：某些对象本质上更重要（例如，项目配置文件与缓存文件）。</p></li>
+<li><p><strong>Time-based</strong>: recent actions matter more than old ones</p></li>
+<li><p><strong>Frequency-based</strong>: files or actions accessed repeatedly are more important</p></li>
+<li><p><strong>Type-based</strong>: some objects are inherently more important (for example, project config files vs. cache files)</p></li>
 </ul>
-<p><strong>(2) 当规则发生冲突时</strong></p>
-<p>这些信号经常会发生冲突。上周创建的文件，今天却被大量编辑--是时间重要还是活动重要？没有唯一的 "正确 "答案，这就是为什么重要性评分往往会迅速变得混乱的原因。</p>
-<p><strong>(3) 向量数据库如何提供帮助</strong></p>
-<p>向量数据库提供了无需手动清理即可执行重要性规则的机制：</p>
+<p><strong>(2) When rules conflict</strong></p>
+<p>These signals often conflict. A file created last week but edited heavily today—should age or activity win? There’s no single “correct” answer, which is why importance scoring tends to get messy fast.</p>
+<p><strong>(3) How vector databases help</strong></p>
+<p>Vector databases give you mechanisms to enforce importance rules without manual cleanup:</p>
 <ul>
-<li><p><strong>TTL：</strong>Milvus 可以在设定时间后自动删除数据</p></li>
-<li><p><strong>衰减：</strong>可以对较旧的向量进行降权，使其自然从检索中消失</p></li>
+<li><p><strong>TTL:</strong> Milvus can automatically remove data after a set time</p></li>
+<li><p><strong>Decay:</strong> older vectors can be down-weighted so they naturally fade from retrieval</p></li>
 </ul>
-<h3 id="Challenge-2-Memory-Tiering-in-Practice" class="common-anchor-header">挑战 2：实践中的内存分层</h3><p>Agents 运行时间越长，内存就越大。将所有内容都保存在快速存储器中是不可持续的，因此系统需要一种方法将内存分成<strong>热层</strong>（频繁访问）和<strong>冷</strong>层（很少访问）。</p>
-<p><strong>(1) 决定内存何时变冷</strong></p>
-<p>在这个模型中，<em>热内存</em>指的是保留在 RAM 中以实现低延迟访问的数据，而<em>冷内存</em>指的是转移到磁盘或对象存储中以降低成本的数据。</p>
-<p>决定内存何时变为冷内存的方法多种多样。有些系统使用轻量级模型，根据动作或文件的含义和最近的使用情况来估计其语义重要性。其他系统则依赖于简单、基于规则的逻辑，例如移动 30 天内未被访问或一周内未出现在检索结果中的内存。用户还可以将某些文件或操作明确标记为重要文件或操作，确保它们始终保持热状态。</p>
-<p><strong>(2) 热内存和冷内存的存储位置</strong></p>
-<p>一旦分类，热内存和冷内存的存储方式是不同的。热内存保留在 RAM 中，用于存储经常访问的内容，如活动任务上下文或最近的用户操作。冷内存则被转移到磁盘或 S3 等对象存储系统中，虽然访问速度较慢，但存储成本却低得多。这种权衡方式效果很好，因为冷内存很少需要，通常只在长期参考时才会被访问。</p>
-<p><strong>(3) 向量数据库如何提供帮助</strong></p>
-<p><strong>Milvus 和 Zilliz Cloud</strong>支持这种模式，启用冷热分层存储，同时保持单一查询界面，因此经常访问的向量留在内存中，而较旧的数据则自动转移到成本较低的存储中。</p>
-<h3 id="Challenge-3-How-Fast-Should-Memory-Be-Written" class="common-anchor-header">挑战 3：内存的写入速度应该有多快？</h3><p>传统的 RAG 系统通常分批写入数据。索引在离线状态下重建--通常是在一夜之间，然后才能进行搜索。这种方法适用于静态知识库，但不适合 Agents 内存。</p>
-<p><strong>(1) 为什么代理记忆库需要实时写入？</strong></p>
-<p>Agents 内存必须在用户行为发生时捕捉到它们。如果不立即记录某个操作，下一次对话可能会缺少关键的上下文。因此，可写内存系统需要实时写入，而不是延迟的离线更新。</p>
-<p><strong>(2) 写入速度与检索质量之间的矛盾</strong></p>
-<p>实时存储器要求极低的写入延迟。同时，高质量的检索依赖于完善的索引，而索引的构建需要时间。每次写入都重建索引成本太高，但延迟建立索引意味着新写入的数据暂时无法检索。这种权衡正是可写入内存设计的核心所在。</p>
-<p><strong>(3) 向量数据库的帮助</strong></p>
-<p>向量数据库通过将写入与索引解耦来解决这一问题。一种常见的解决方案是流式写入并执行增量索引构建。以<strong>Milvus</strong>为例，新数据首先被写入内存缓冲区，这样系统就能高效处理高频写入。即使在建立完整索引之前，也可以通过动态合并或近似搜索在几秒钟内查询缓冲区数据。</p>
-<p>当缓冲区达到预定义阈值时，系统会分批建立索引并持久化。这样既能提高长期检索性能，又不会阻碍实时写入。通过将快速摄取与较慢的索引构建分离开来，Milvus 在写入速度和搜索质量之间实现了切实可行的平衡，对 Agents 内存来说效果很好。</p>
-<h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="Challenge-2-Memory-Tiering-in-Practice" class="common-anchor-header">Challenge 2: Memory Tiering in Practice</h3><p>As agents run longer, memory piles up. Keeping everything in fast storage isn’t sustainable, so the system needs a way to split memory into <strong>hot</strong> (frequently accessed) and <strong>cold</strong> (rarely accessed) tiers.</p>
+<p><strong>(1) Deciding When Memory Becomes Cold</strong></p>
+<p>In this model, <em>hot memory</em> refers to data kept in RAM for low-latency access, while <em>cold memory</em> refers to data moved to disk or object storage to reduce cost.</p>
+<p>Deciding when memory becomes cold can be handled in different ways. Some systems use lightweight models to estimate the semantic importance of an action or file based on its meaning and recent usage. Others rely on simple, rule-based logic, such as moving memory that has not been accessed for 30 days or has not appeared in retrieval results for a week. Users may also explicitly mark certain files or actions as important, ensuring they always remain hot.</p>
+<p><strong>(2) Where Hot and Cold Memory Are Stored</strong></p>
+<p>Once classified, hot and cold memories are stored differently. Hot memory stays in RAM and is used for frequently accessed content, such as active task context or recent user actions. Cold memory is moved to disk or object storage systems like S3, where access is slower but storage costs are much lower. This trade-off works well because cold memory is rarely needed and is typically accessed only for long-term reference.</p>
+<p><strong>(3) How Vector Databases Help</strong></p>
+<p><strong>Milvus and Zilliz Cloud</strong> support this pattern by enabling hot–cold tiered storage while maintaining a single query interface, so frequently accessed vectors stay in memory and older data moves to lower-cost storage automatically.</p>
+<h3 id="Challenge-3-How-Fast-Should-Memory-Be-Written" class="common-anchor-header">Challenge 3: How Fast Should Memory Be Written?</h3><p>Traditional RAG systems usually write data in batches. Indexes are rebuilt offline—often overnight—and only become searchable later. This approach works for static knowledge bases, but it does not fit agent memory.</p>
+<p><strong>(1) Why Agent Memory Needs Real-Time Writes</strong></p>
+<p>Agent memory must capture user actions as they happen. If an action is not recorded immediately, the next conversation turn may lack critical context. For this reason, writable memory systems require real-time writes rather than delayed, offline updates.</p>
+<p><strong>(2) The Tension Between Write Speed and Retrieval Quality</strong></p>
+<p>Real-time memory demands very low write latency. At the same time, high-quality retrieval depends on well-built indexes, and index construction takes time. Rebuilding an index for every write is too expensive, but delaying indexing means newly written data remains temporarily invisible to retrieval. This trade-off sits at the center of writable memory design.</p>
+<p><strong>(3) How Vector Databases Help</strong></p>
+<p>Vector databases address this problem by decoupling writing from indexing. A common solution is to stream writes and perform incremental index builds. Using <strong>Milvus</strong> as an example, new data is first written to an in-memory buffer, allowing the system to handle high-frequency writes efficiently. Even before a full index is built, buffered data can be queried within seconds through dynamic merging or approximate search.</p>
+<p>When the buffer reaches a predefined threshold, the system builds indexes in batches and persists them. This improves long-term retrieval performance without blocking real-time writes. By separating fast ingestion from slower index construction, Milvus achieves a practical balance between write speed and search quality that works well for agent memory.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -205,7 +209,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Cowork 让我们看到了一类新的 Agents--持久的、有状态的，并能在长时间轴上携带上下文。不过，它也让我们明白了另外一点：长期记忆只是成功的一半。要建立既自主又可靠的可投入生产的 Agents，我们仍然需要对不断发展的大型知识库进行结构化检索。</p>
-<p>RAG 处理世界上的事实；可写内存处理 Agents 的内部状态。而向量数据库则位于两者的交汇处，提供索引、混合搜索和可扩展存储功能，使这两个层次能够协同工作。</p>
-<p>随着长期运行的 Agents 不断成熟，它们的架构很可能会向这种混合设计靠拢。Cowork 是一个强烈的信号，表明了事物的发展方向--不是走向一个没有 RAG 的世界，而是走向由向量数据库驱动的、拥有更丰富内存堆栈的 Agents。</p>
-<p>如果你想探索这些想法或在自己的设置中获得帮助，请<strong>加入我们的</strong> <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack 频道</a>与 Milvus 工程师聊天。如果想获得更多实践指导，您可以随时<strong>预约</strong> <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours 会议</strong></a> <strong>。</strong></p>
+    </button></h2><p>Cowork gives us a glimpse of a new class of agents—persistent, stateful, and able to carry context across long timelines. But it also makes something else clear: long-term memory is only half of the picture. To build production-ready agents that are both autonomous and reliable, we still need structured retrieval over large, evolving knowledge bases.</p>
+<p>RAG handles the world’s facts; writable memory handles the agent’s internal state. And vector databases sit at the intersection, providing indexing, hybrid search, and scalable storage that enable both layers to work together.</p>
+<p>As long-running agents continue to mature, their architectures will likely converge on this hybrid design. Cowork is a strong signal of where things are heading—not toward a world without RAG, but toward agents with richer memory stacks powered by vector databases underneath.</p>
+<p>If you want to explore these ideas or get help with your own setup, <strong>join our</strong> <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a> to chat with Milvus engineers. And for more hands-on guidance, you can always <strong>book a</strong> <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> <strong>session.</strong></p>

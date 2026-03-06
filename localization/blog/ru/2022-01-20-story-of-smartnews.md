@@ -1,18 +1,18 @@
 ---
 id: 2022-01-20-story-of-smartnews.md
-title: История SmartNews - от пользователя Milvus до активного участника
+title: The Story of SmartNews - from a Milvus User to an Active Contributor
 author: Milvus
 date: 2022-01-20T00:00:00.000Z
-desc: Узнайте историю SmartNews - пользователя и спонсора Milvus.
+desc: 'Learn about the story of SmartNews, both a Milvus user and contributor.'
 cover: assets.zilliz.com/Smartnews_user_to_contributor_f219e6e008.png
 tag: Scenarios
 ---
-<p>Перевод этой статьи выполнен <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Анжелой Ни</a>.</p>
-<p>Информация повсюду в нашей жизни. Meta (ранее известная как Facebook), Instagram, Twitter и другие платформы социальных сетей делают информационные потоки все более вездесущими. Поэтому механизмы, работающие с такими информационными потоками, стали обязательным элементом архитектуры большинства систем. Однако если вы являетесь пользователем социальных сетей и соответствующих приложений, то наверняка сталкивались с проблемой дублирования статей, новостей, мемов и прочего. Дублирование контента затрудняет процесс поиска информации и приводит к ухудшению пользовательского опыта.</p>
-<p>Для продукта, работающего с информационными потоками, разработчикам необходимо найти гибкий процессор данных, который можно было бы легко интегрировать в архитектуру системы для дедублирования одинаковых новостей или рекламных объявлений.</p>
-<p><a href="https://www.smartnews.com/en/">SmartNews</a>, оцениваемая в <a href="https://techcrunch.com/2021/09/15/news-aggregator-smartnews-raises-230-million-valuing-its-business-at-2-billion/">2 миллиарда долларов США</a>, является самой высокооцененной компанией в сфере новостных приложений в США. Примечательно, что раньше она была пользователем Milvus, векторной базы данных с открытым исходным кодом, но затем превратилась в активного участника проекта Milvus.</p>
-<p>В этой статье рассказывается об истории SmartNews и о том, почему она решила внести свой вклад в проект Milvus.</p>
-<h2 id="An-overview-of-SmartNews" class="common-anchor-header">Обзор SmartNews<button data-href="#An-overview-of-SmartNews" class="anchor-icon" translate="no">
+<p>This article is translated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>Information is everywhere in our lives. Meta (formerly known as Facebook), Instagram, Twitter, and other social media platforms make information streams all the more ubiquitous. Therefore, engines dealing with such information streams have become a must-have in most system architecture. However, as a user of social media platforms and relevant apps, I bet you must have been bothered by duplicate articles, news, memes, and more. Exposure to duplicate content hampers the process of information retrieval and leads to bad user experience.</p>
+<p>For a product dealing with information streams, it is a high priority for the developers to find a flexible data processor that can be integrated seamlessly into the system architecture to deduplicate identical news or advertisements.</p>
+<p><a href="https://www.smartnews.com/en/">SmartNews</a>, valued at <a href="https://techcrunch.com/2021/09/15/news-aggregator-smartnews-raises-230-million-valuing-its-business-at-2-billion/">2 billion US dollars</a>, is the most highly-valued news app company in the US. Noticeably, it used to be a user of Milvus, an open-source vector database, but later transformed into an active contributor to the Milvus project.</p>
+<p>This article shares the story of SmartNews and tells why it decided to make contributions to the Milvus project.</p>
+<h2 id="An-overview-of-SmartNews" class="common-anchor-header">An overview of SmartNews<button data-href="#An-overview-of-SmartNews" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,10 +27,10 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Компания SmartNews, основанная в 2012 году, имеет штаб-квартиру в Токио, Япония. Новостное приложение, разработанное компанией SmartNews, всегда занимало <a href="https://www.businessinsider.com/guides/smartnews-free-news-app-2018-9">первые места</a> на японском рынке. SmartNews является <a href="https://about.smartnews.com/en/2019/06/12/smartnews-builds-global-momentum-with-over-500-us-growth-new-executives-and-three-new-offices/">самым быстрорастущим</a> новостным приложением, а также может похвастаться <a href="https://about.smartnews.com/en/2018/07/21/smartnews-reaches-more-than-10-million-monthly-active-users-in-the-united-states-and-japan/">высокой пользовательской</a> популярностью на рынке США. Согласно статистике <a href="https://www.appannie.com/en/">APP Annie</a>, по итогам июля 2021 года SmartNews занял первое место по среднемесячной продолжительности сеанса среди всех новостных приложений, превысив по этому показателю AppleNews и Google News.</p>
-<p>В связи с быстрым ростом пользовательской базы и ее плотности SmartNews приходится сталкиваться с новыми вызовами в плане рекомендательного механизма и алгоритма искусственного интеллекта. Среди таких задач - использование массивных дискретных признаков в крупномасштабном машинном обучении (ML), ускорение запросов к неструктурированным данным с помощью векторного поиска по сходству и другие.</p>
-<p>В начале 2021 года команда динамических рекламных алгоритмов SmartNews отправила запрос команде инфраструктуры искусственного интеллекта о необходимости оптимизации функций отзыва и запроса рекламных объявлений. После двух месяцев исследований инженер инфраструктуры искусственного интеллекта Шу решил использовать Milvus, векторную базу данных с открытым исходным кодом, поддерживающую множество индексов и метрик сходства, а также онлайн-обновление данных. Milvus доверяют более тысячи организаций по всему миру.</p>
-<h2 id="Advertisement-recommendation-powered-by-vector-similarity-search" class="common-anchor-header">Рекомендация рекламы на основе поиска векторного сходства<button data-href="#Advertisement-recommendation-powered-by-vector-similarity-search" class="anchor-icon" translate="no">
+    </button></h2><p>SmartNews, founded in 2012, is headquartered in Tokyo, Japan. The news app developed by SmartNews has always been <a href="https://www.businessinsider.com/guides/smartnews-free-news-app-2018-9">top-rated</a> in the Japanese market. SmartNews is the <a href="https://about.smartnews.com/en/2019/06/12/smartnews-builds-global-momentum-with-over-500-us-growth-new-executives-and-three-new-offices/">fastest growing</a> news app and also boasts <a href="https://about.smartnews.com/en/2018/07/21/smartnews-reaches-more-than-10-million-monthly-active-users-in-the-united-states-and-japan/">high user viscosity</a> in the US market. According to the statistics from <a href="https://www.appannie.com/en/">APP Annie</a>, the monthly average session duration of SmartNews ranked first among all news apps by the end of July, 2021, greater than the accumulated session duration of AppleNews and Google News.</p>
+<p>With the rapid growth of user base and viscosity, SmartNews has to face more challenges in terms of recommendation mechanism and AI algorithm. Such challenges include utilizing massive discrete features in large-scale machine learning (ML), accelerating unstructured data query with vector similarity search, and more.</p>
+<p>At the beginning of 2021, the dynamic Ad algorithm team at SmartNews sent a request to AI infrastructure team that the functions of recalling and querying advertisements need to be optimized. After two months of research, AI infrastructure engineer Shu decided to use Milvus, an open-source vector database that supports multiple indexes and similarity metrics and online data updates. Milvus is trusted by more than a thousand organizations worldwide.</p>
+<h2 id="Advertisement-recommendation-powered-by-vector-similarity-search" class="common-anchor-header">Advertisement recommendation powered by vector similarity search<button data-href="#Advertisement-recommendation-powered-by-vector-similarity-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,15 +45,17 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Векторная база данных Milvus с открытым исходным кодом используется в рекламной системе SmartNews для подбора и рекомендации динамических объявлений из 10-миллионного набора данных своим пользователям. Таким образом, SmartNews может создать связь между двумя ранее не сопоставимыми наборами данных - данными о пользователях и рекламными данными. Во втором квартале 2021 года компании Shu удалось развернуть Milvus 1.0 на Kubernetes. Узнайте больше о том, как <a href="https://milvus.io/docs">развернуть Milvus</a>.</p>
+    </button></h2><p>The open-source vector database Milvus is adopted in the SmartNews Ad system to match and recommend dynamic ads from a 10-milllion-scale dataset to its users. By doing so, SmartNews can create a mapping relationship between two previously unmatchable datasets - user data and advertisement data. In the second quarter of 2021, Shu managed to deploy Milvus 1.0 on Kubernetes. Learn more about how to <a href="https://milvus.io/docs">deploy Milvus</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image1_2a88ed162f.png" alt="img" class="doc-image" id="img" />
-   </span> <span class="img-wrapper"> <span>img</span> </span></p>
-<p>После успешного развертывания Milvus 1.0 первым проектом, в котором использовался Milvus, стал проект по отзыву рекламы, инициированный командой Ad в SmartNews. На начальном этапе набор данных рекламы был миллионного масштаба. При этом задержка P99 строго контролировалась в пределах менее 10 миллисекунд.</p>
-<p>В июне 2021 года Шу и его коллеги из команды алгоритмов применили Milvus к большему количеству бизнес-сценариев и попытались агрегировать данные и обновлять данные/индекс в режиме реального времени.</p>
-<p>К настоящему времени векторная база данных Milvus с открытым исходным кодом используется в различных бизнес-сценариях SmartNews, включая рекомендацию рекламы.</p>
-<h2 id="From-a-user-to-an-active-contributor" class="common-anchor-header"><strong>От пользователя к активному участнику</strong><button data-href="#From-a-user-to-an-active-contributor" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image1_2a88ed162f.png" alt="img" class="doc-image" id="img" />
+    <span>img</span>
+  </span>
+</p>
+<p>After the successful deployment of Milvus 1.0, the first project to use Milvus was the advertisement recall project initiated by the Ad team at SmartNews. During the initial stage, the advertisement dataset was on a million scale. Meanwhile, the P99 latency was strictly controlled within less than 10 milliseconds.</p>
+<p>In June, 2021, Shu and his colleagues in the algorithm team applied Milvus to more business scenarios and attempted data aggregation and online data/index update in real time.</p>
+<p>By now, Milvus, the open-source vector database has been used in various business scenarios at SmartNews, including ad recommendation.</p>
+<h2 id="From-a-user-to-an-active-contributor" class="common-anchor-header"><strong>From a user to an active contributor</strong><button data-href="#From-a-user-to-an-active-contributor" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,27 +70,29 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В процессе интеграции Milvus в архитектуру продукта Smartnews Шу и другие разработчики обратились с запросами на такие функции, как горячая перезагрузка, TTL (time-to-live) элементов, обновление/замена элементов и другие. Эти функции также хотели получить многие пользователи в сообществе Milvus. Поэтому Деннис Чжао, руководитель группы инфраструктуры искусственного интеллекта в SmartNews, решил разработать и предоставить сообществу функцию горячей перезагрузки. Деннис считает, что "команда SmartNews получает пользу от сообщества Milvus, поэтому мы более чем готовы внести свой вклад, если нам есть чем поделиться с сообществом".</p>
-<p>Перезагрузка данных поддерживает редактирование кода во время его выполнения. С помощью data reload разработчикам больше не нужно останавливаться на точке останова или перезапускать приложение. Вместо этого они могут редактировать код напрямую и видеть результат в режиме реального времени.</p>
-<p>В конце июля Юсуп, инженер SmartNews, предложил идею использования <a href="https://milvus.io/docs/v2.0.x/collection_alias.md#Collection-Alias">псевдонимов коллекций</a> для достижения горячей перезагрузки.</p>
-<p>Создание псевдонима коллекции подразумевает указание имен псевдонимов для коллекции. Коллекция может иметь несколько псевдонимов. Однако один псевдоним соответствует максимум одной коллекции. Проведите аналогию между коллекцией и шкафчиком. Шкафчик, как и коллекция, имеет свой номер и позицию, которые всегда остаются неизменными. Однако вы всегда можете класть и доставать из шкафчика разные вещи. Аналогично, имя коллекции фиксировано, но данные в ней динамичны. Вы всегда можете вставлять или удалять векторы в коллекции, так как удаление данных поддерживается в Milvus <a href="https://milvus.io/docs/v2.0.x/release_notes.md#v200-PreGA">pre-GA версии</a>.</p>
-<p>В случае с рекламным бизнесом SmartNews почти 100 миллионов векторов вставляются или обновляются по мере генерации новых динамических рекламных векторов. Существует несколько решений этой проблемы:</p>
+    </button></h2><p>While integrating Milvus into the Smartnews product architecture, Shu and other developers came up with requests of functions such as hot reload, item TTL (time-to-live), item update/replace, and more. These are also functions desired by many users in the Milvus community. Therefore, Dennis Zhao, head of the AI infrastructure team at SmartNews decided to develop and contribute the hot reload function to the community. Dennis believed that “SmartNews team has been benefiting from the Milvus community, therefore, we are more than willing to contribute if we have something to share with the community.”</p>
+<p>Data reload supports code editing while running the code. With the help of data reload, developers no longer need to stop at a breakpoint or restart the application. Instead, they can edit the code directly and see the result in real time.</p>
+<p>In late July, Yusup, engineer at SmartNews proposed an idea of using <a href="https://milvus.io/docs/v2.0.x/collection_alias.md#Collection-Alias">collection alias</a> to achieve hot reload.</p>
+<p>Creating collection alias refers to specifying alias names for a collection. A collection can have multiple aliases. However, an alias corresponds to a maximum of one collection. Simply draw an analogy between a collection and a locker. A locker, like a collection, has its own number and position, which will always remain unchanged. However, you can always put in and draw out different things from the locker. Similarly, the name of the collection is fixed but the data in the collection is dynamic. You can always insert or delete vectors in a collection, as data deletion is supported in the Milvus <a href="https://milvus.io/docs/v2.0.x/release_notes.md#v200-PreGA">pre-GA version</a>.</p>
+<p>In the case of SmartNews advertisement business, nearly 100 million vectors are inserted or updated as new dynamic ad vectors are generated. There are several solutions to this:</p>
 <ul>
-<li>Решение 1: сначала удалить старые данные и вставить новые.</li>
-<li>Решение 2: создать новую коллекцию для новых данных.</li>
-<li>Решение 3: использовать псевдоним коллекции.</li>
+<li>Solution 1: delete old data first and insert new ones.</li>
+<li>Solution 2: create a new collection for new data.</li>
+<li>Solution 3: use collection alias.</li>
 </ul>
-<p>Для решения 1 одним из наиболее очевидных недостатков является то, что оно занимает очень много времени, особенно если набор данных, который необходимо обновить, огромен. Как правило, обновление набора данных масштаба 100 миллионов занимает несколько часов.</p>
-<p>Что касается решения 2, то проблема заключается в том, что новая коллекция не сразу становится доступной для поиска. Иными словами, коллекция не доступна для поиска во время загрузки. Кроме того, Milvus не позволяет двум коллекциям использовать одно и то же имя коллекции. Переключение на новую коллекцию всегда требует от пользователей ручной модификации кода на стороне клиента. Иными словами, пользователям придется пересматривать значение параметра <code translate="no">collection_name</code> каждый раз, когда им понадобится переключиться между коллекциями.</p>
-<p>Решение 3 - это серебряная пуля. Достаточно вставить новые данные в новую коллекцию и использовать псевдоним коллекции. Таким образом, вам нужно будет менять псевдоним коллекции каждый раз, когда вам нужно будет переключить коллекцию для выполнения поиска. Вам не нужно прилагать дополнительные усилия для пересмотра кода. Это решение избавляет вас от проблем, упомянутых в двух предыдущих решениях.</p>
-<p>Юсуп начал с этого запроса и помог всей команде SmartNews понять архитектуру Milvus. Через полтора месяца проект Milvus получил от Юсупа PR о горячей перезагрузке. А позже эта функция стала официально доступна вместе с релизом Milvus 2.0.0-RC7.</p>
-<p>В настоящее время команда инфраструктуры искусственного интеллекта занимается развертыванием Milvus 2.0 и постепенной миграцией всех данных с Milvus 1.0 на 2.0.</p>
+<p>For solution 1, one of the most straightforward shortcoming is that it is extremely time-consuming, especially when the dataset to be updated is tremendous. It generally takes hours to update a dataset on a 100-million-scale.</p>
+<p>As for solution 2, the problem is that the new collection is not immediately available for search. That is to say, a collection is not searchable during load. Plus, Milvus does not allow two collections to use the same collection name. Switching to a new collection would always require users to manually modify the client side code. That is to say, users have to revise the value of the parameter <code translate="no">collection_name</code> every time they need to switch between collections.</p>
+<p>Solution 3 would be the silver bullet. You only need to insert the new data in a new collection and use collection alias. By doing so, you only need to swap the collection alias every time you need to switch the collection to conduct the search. You do not need extra efforts to revise the code. This solution saves you the troubles mentioned in the previous two solutions.</p>
+<p>Yusup started from this request and helped the whole SmartNews team understand the Milvus architecture. After one and half months, the Milvus project received a PR about hot reload from Yusup. And later, this function is officially available along with the release of Milvus 2.0.0-RC7.</p>
+<p>Currently, the AI infrastructure team is taking the lead to deploy Milvus 2.0 and migrate all data gradually from Milvus 1.0 to 2.0.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image2_96c064a627.png" alt="img_collection alias" class="doc-image" id="img_collection-alias" />
-   </span> <span class="img-wrapper"> <span>Псевдоним img_collection</span> </span></p>
-<p>Поддержка псевдонима коллекции может значительно улучшить работу пользователей, особенно для крупных интернет-компаний с большим количеством пользовательских запросов. Ченглонг Ли, инженер по обработке данных из сообщества Milvus, который помог построить мост между Milvus и Smartnews, сказал: "Функция псевдонима коллекции возникла в результате реального бизнес-запроса SmartNews, пользователя Milvus. А SmartNews предоставил код сообществу Milvus. Этот акт взаимности - отличный пример духа открытого исходного кода: от сообщества и для сообщества. Мы надеемся увидеть больше таких участников, как SmartNews, и совместно построить более процветающее сообщество Milvus".</p>
-<p>"В настоящее время часть рекламного бизнеса использует Milvus в качестве оффлайновой векторной базы данных. Официальный релиз Mivus 2.0 приближается, и мы надеемся, что сможем использовать Milvus для создания более надежных систем и предоставления услуг в режиме реального времени для большего количества бизнес-сценариев", - сказал Деннис.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image2_96c064a627.png" alt="img_collection alias" class="doc-image" id="img_collection-alias" />
+    <span>img_collection alias</span>
+  </span>
+</p>
+<p>Support for collection alias can greatly improve user experience, especially for those large Internet companies with great volumes of user requests. Chenglong Li, data engineer from the Milvus community, who helped build the bridge between Milvus and Smartnews, said, “The collection alias function arises from the real business request of SmartNews, a Milvus user. And SmartNews contributed the code to the Milvus community. This act of reciprocity is a great example of the open-source spirit: from the community and for the community. We hope to see more contributors like SmartNews and jointly build a more prosperous Milvus community.”</p>
+<p>“Currently, part of the ad business is adopting Milvus as the offline vector database. The official release of Mivus 2.0 is approaching, and we hope that we can use Milvus to build more reliable systems and provide real-time services for more business scenarios.” said Dennis.</p>
 <blockquote>
-<p>Обновление: Milvus 2.0 стал общедоступным! <a href="/blog/ru/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">Узнать больше</a></p>
+<p>Update: Milvus 2.0 is now general available! <a href="/blog/ru/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">Learn more</a></p>
 </blockquote>

@@ -1,20 +1,20 @@
 ---
 id: How-we-used-semantic-search-to-make-our-search-10-x-smarter.md
-title: البحث القائم على الكلمات الرئيسية
+title: Keyword-based search
 author: Rahul Yadav
 date: 2021-02-05T06:27:15.076Z
 desc: >-
-  استخدمت Tokopedia شركة Milvus لبناء نظام بحث أكثر ذكاءً بمقدار 10 أضعاف، مما
-  أدى إلى تحسين تجربة المستخدم بشكل كبير.
+  Tokopedia used Milvus to build a 10x smarter search system that has
+  dramatically enhanced the user experience.
 cover: >-
   assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_1_a7bac91379.jpeg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/How-we-used-semantic-search-to-make-our-search-10-x-smarter
 ---
-<custom-h1>كيف استخدمنا البحث الدلالي لجعل بحثنا أكثر ذكاءً 10 مرات</custom-h1><p>ندرك في Tokopedia أن القيمة في مجموعة منتجاتنا لا تتحقق إلا عندما يتمكن المشترون من العثور على المنتجات ذات الصلة بهم، لذلك نسعى جاهدين لتحسين ملاءمة نتائج البحث.</p>
-<p>ولتعزيز هذا الجهد، نقدم <strong>بحث التشابه</strong> على Tokopedia. إذا انتقلت إلى صفحة نتائج البحث على الأجهزة المحمولة، ستجد زر "..." الذي يعرض قائمة تمنحك خيار البحث عن منتجات مشابهة للمنتج.</p>
-<h2 id="Keyword-based-search" class="common-anchor-header">البحث القائم على الكلمات الرئيسية<button data-href="#Keyword-based-search" class="anchor-icon" translate="no">
+<custom-h1>How we used semantic search to make our search 10x smarter</custom-h1><p>At Tokopedia, we understand that the value in our product corpus is only unlocked when our buyers can find products that are relevant to them, so we strive to improve the relevance of search results.</p>
+<p>To further that effort, we are introducing <strong>similarity search</strong> on Tokopedia. If you go to the search result page on mobile devices, you will find a “…” button that exposes a menu that gives you the option to search for products similar to the product.</p>
+<h2 id="Keyword-based-search" class="common-anchor-header">Keyword-based search<button data-href="#Keyword-based-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,8 +29,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يستخدم Tokopedia Search <strong>Elasticsearch</strong> للبحث عن المنتجات وترتيبها. لكل طلب بحث، نقوم أولاً بالاستعلام من Elasticsearch، الذي يقوم بترتيب المنتجات وفقًا لاستعلام البحث. يقوم ElasticSearch بتخزين كل كلمة كسلسلة من الأرقام التي تمثل رموز <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> (أو UTF) لكل حرف. ينشئ <a href="https://en.wikipedia.org/wiki/Inverted_index">فهرسًا مقلوبًا</a> لاكتشاف المستندات التي تحتوي على كلمات من استعلام المستخدم بسرعة، ثم يعثر على أفضل تطابق بينها باستخدام خوارزميات تسجيل درجات مختلفة. لا تولي خوارزميات تسجيل الدرجات هذه اهتمامًا كبيرًا لما تعنيه الكلمات، بل لمدى تكرار ورودها في المستند، ومدى قربها من بعضها البعض، وما إلى ذلك. من الواضح أن تمثيل ASCII يحتوي على معلومات كافية لنقل الدلالات (ففي النهاية نحن البشر يمكننا فهمها). لسوء الحظ، لا توجد خوارزمية جيدة للكمبيوتر لمقارنة الكلمات المشفرة بترميز ASCII حسب معناها.</p>
-<h2 id="Vector-representation" class="common-anchor-header">تمثيل المتجهات<button data-href="#Vector-representation" class="anchor-icon" translate="no">
+    </button></h2><p>Tokopedia Search uses <strong>Elasticsearch</strong> for the search and ranking of products. For each search request, we first query Elasticsearch, which ranks products according to the search query. ElasticSearch stores each word as a sequence of numbers representing <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> (or UTF) codes for each letter. It builds an <a href="https://en.wikipedia.org/wiki/Inverted_index">inverted-index</a> to quickly find out, which documents contain words from the user query, and then finds the best match among them using various scoring algorithms. These scoring algorithms pay little attention to what the words mean, but rather to how frequently they occur in the document, how close they are to each other, etc. ASCII representation obviously contains enough information to convey the semantics (after all we, humans, can understand it). Unfortunately, there’s no good algorithm for the computer to compare ASCII-encoded words by their meaning.</p>
+<h2 id="Vector-representation" class="common-anchor-header">Vector representation<button data-href="#Vector-representation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,12 +45,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قد يكون أحد الحلول لهذه المشكلة هو التوصل إلى تمثيل بديل، لا يخبرنا فقط عن الحروف التي تحتويها الكلمة بل يخبرنا أيضًا بشيء عن معناها. على سبيل المثال، يمكننا ترميز <em>الكلمات الأخرى التي تُستخدم معها الكلمة بشكل متكرر</em> (ممثلة بالسياق المحتمل). ثم نفترض بعد ذلك أن السياقات المتشابهة تمثل أشياء متشابهة، ونحاول المقارنة بينها باستخدام طرق رياضية. يمكننا حتى أن نجد طريقة لترميز جمل كاملة حسب معناها.</p>
+    </button></h2><p>One solution to this would be to come up with an alternative representation, which tells us not only about the letters contained in the word but also something about its meaning. For example, we could encode <em>which other words our word is frequently used together with</em> (represent by the probable context). We’d then assume that similar contexts represent similar things, and try to compare them using mathematical methods. We could even find a way to encode whole sentences by their meaning.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_2_776af567a8.png" alt="Blog_How we used semantic search to make our search 10x smarter_2.png" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_2.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_كيف استخدمنا البحث الدلالي لجعل بحثنا أكثر ذكاءً 10 مرات_2.png</span> </span></p>
-<h2 id="Select-an-embedding-similarity-search-engine" class="common-anchor-header">حدد محرك بحث تشابه التضمين<button data-href="#Select-an-embedding-similarity-search-engine" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_2_776af567a8.png" alt="Blog_How we used semantic search to make our search 10x smarter_2.png" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_2.png" />
+    <span>Blog_How we used semantic search to make our search 10x smarter_2.png</span>
+  </span>
+</p>
+<h2 id="Select-an-embedding-similarity-search-engine" class="common-anchor-header">Select an embedding similarity search engine<button data-href="#Select-an-embedding-similarity-search-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,14 +67,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>الآن بعد أن أصبح لدينا متجهات الميزات، فإن المشكلة المتبقية هي كيفية استرداد المتجهات المتشابهة مع المتجه الهدف من الحجم الكبير من المتجهات. عندما يتعلق الأمر بمحرك البحث عن التضمينات، جربنا POC على عدة محركات متاحة على Github، بعضها مثل FAISS وVearch وMilvus.</p>
-<p>نحن نفضل Milvus على المحركات الأخرى بناءً على نتائج اختبار التحميل. من ناحية، لقد استخدمنا FAISS من قبل على فرق أخرى وبالتالي نود تجربة شيء جديد. مقارنةً بـ Milvus، فإن FAISS هو أكثر من مكتبة أساسية، وبالتالي ليس مناسبًا تمامًا للاستخدام. عندما تعلمنا المزيد عن ميلفوس، قررنا أخيرًا اعتماد ميلفوس لميزتيه الرئيسيتين:</p>
+    </button></h2><p>Now that we have feature vectors, the remaining issue is how to retrieve from the large volume of vectors the ones that are similar to the target vector. When it comes to the embeddings search engine, we tried POC on several engines available on Github some of them are FAISS, Vearch, Milvus.</p>
+<p>We prefer Milvus to other engines based on load test results. On the one hand, we have used FAISS before on other teams and hence would like to try something new. Compared to Milvus, FAISS is more of an underlying library, therefore not quite convenient to use. As we learned more about Milvus, we finally decided to adopt Milvus for its two main features:</p>
 <ul>
-<li><p>ميلفوس سهل الاستخدام للغاية. كل ما عليك فعله هو سحب صورة Docker الخاصة به وتحديث المعلمات بناءً على السيناريو الخاص بك.</p></li>
-<li><p>يدعم المزيد من الفهارس ولديه وثائق داعمة مفصلة.</p></li>
+<li><p>Milvus is very easy to use. All you need to do is to pull its Docker image and update the parameters based on your own scenario.</p></li>
+<li><p>It supports more indexes and has detailed supporting documentation.</p></li>
 </ul>
-<p>وباختصار، فإن Milvus ودود جدًا للمستخدمين والوثائق مفصلة تمامًا. إذا واجهتك أي مشكلة، فيمكنك عادةً العثور على حلول في الوثائق؛ وإلا يمكنك دائمًا الحصول على الدعم من مجتمع Milvus.</p>
-<h2 id="Milvus-cluster-service" class="common-anchor-header">خدمة مجموعة ميلفوس العنقودية<button data-href="#Milvus-cluster-service" class="anchor-icon" translate="no">
+<p>In a nutshell, Milvus is very friendly to users and the documentation is quite detailed. If you come across any problem, you can usually find solutions in the documentation; otherwise, you can always get support from the Milvus community.</p>
+<h2 id="Milvus-cluster-service" class="common-anchor-header">Milvus cluster service<button data-href="#Milvus-cluster-service" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -87,16 +89,24 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بعد أن قررنا استخدام Milvus كمحرك بحث ناقل للميزات، قررنا استخدام Milvus في إحدى حالات استخدام خدمة الإعلانات حيث أردنا مطابقة الكلمات المفتاحية ذات <a href="https://www.tradegecko.com/blog/wholesale-management/what-is-fill-rate-and-why-does-it-matter-for-wholesalers">معدل التعبئة المنخفض</a> مع الكلمات المفتاحية ذات معدل التعبئة المرتفع. قمنا بتهيئة عقدة مستقلة في بيئة التطوير (DEV) وبدأنا العرض، وكانت تعمل بشكل جيد لبضعة أيام، وأعطتنا مقاييس محسنة لنسبة النقر إلى الظهور/العائد الافتراضي. إذا تعطلت عقدة مستقلة في الإنتاج، فستصبح الخدمة بأكملها غير متاحة. وبالتالي، نحن بحاجة إلى نشر خدمة بحث متاحة بشكل كبير.</p>
-<p>يوفر Milvus كلاً من Mishards، وهو برنامج وسيط لتجزئة المجموعة، و Milvus-Helm للتكوين. في Tokopedia نستخدم كتب تشغيل Ansible لإعداد البنية التحتية، لذا أنشأنا كتاب تشغيل لتنسيق البنية التحتية. يوضح الرسم البياني أدناه من وثائق ميلفوس كيف يعمل ميشاردز:</p>
+    </button></h2><p>After deciding to use Milvus as the feature vector search engine, we decided to use Milvus for one of our Ads service use-case where we wanted to match <a href="https://www.tradegecko.com/blog/wholesale-management/what-is-fill-rate-and-why-does-it-matter-for-wholesalers">low fill rate</a> keywords with high fill rate keywords. We configured a standalone node in a development (DEV) environment and started serving, it had been running well for a few days, and giving us improved CTR/CVR metrics. If a standalone node crashed in production, the entire service would become unavailable. Thus, we need to deploy a highly available search service.</p>
+<p>Milvus provides both Mishards, a cluster sharding middleware, and Milvus-Helm for configuration. In Tokopedia we use Ansible playbooks for infrastructure setup so we created a playbook for infra orchestration. The diagram below from Milvus’ documentation shows how Mishards works:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_3_4fa0c8a1a1.png" alt="Blog_How we used semantic search to make our search 10x smarter_3.png" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_3.png" />
-   </span> <span class="img-wrapper"> <span>مدونة_كيف استخدمنا البحث الدلالي لجعل بحثنا أكثر ذكاءً 10 مرات_3.png</span> </span></p>
-<p>تقوم Mishards بتتابع الطلب من المنبع إلى وحداته الفرعية التي تقسم طلب المنبع، ثم تجمع نتائج الخدمات الفرعية وتعيدها إلى المنبع. البنية الشاملة للحل العنقودي القائم على Mishards موضحة أدناه: <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_4_724618be4e.jpeg" alt="Blog_How we used semantic search to make our search 10x smarter_4.jpeg" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_4.jpeg" /><span>مدونة_كيف استخدمنا البحث الدلالي لجعل بحثنا أذكى 10 مرات_4.jpeg</span> </span></p>
-<p>توفر الوثائق الرسمية مقدمة واضحة لـ Mishards. يمكنك الرجوع إلى <a href="https://milvus.io/cn/docs/v0.10.2/mishards.md">Mishards</a> إذا كنت مهتمًا.</p>
-<p>في خدمة الكلمات الرئيسية إلى الكلمات الرئيسية الخاصة بنا، قمنا بنشر عقدة واحدة قابلة للكتابة، وعقدتين للقراءة فقط، ومثيل واحد من Mishards للبرامج الوسيطة في GCP، باستخدام Milvus ansible. لقد كانت مستقرة حتى الآن. إن أحد المكونات الضخمة التي تجعل من الممكن الاستعلام بكفاءة عن مجموعات البيانات التي يبلغ عددها مليون أو مليار أو حتى تريليون متجه التي تعتمد عليها محركات البحث عن التشابه هو <a href="https://milvus.io/docs/v0.10.5/index.md">الفهرسة،</a> وهي عملية تنظيم البيانات التي تسرّع البحث عن البيانات الضخمة بشكل كبير.</p>
-<h2 id="How-does-vector-indexing-accelerate-similarity-search" class="common-anchor-header">كيف تعمل فهرسة المتجهات على تسريع البحث عن التشابه؟<button data-href="#How-does-vector-indexing-accelerate-similarity-search" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_3_4fa0c8a1a1.png" alt="Blog_How we used semantic search to make our search 10x smarter_3.png" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_3.png" />
+    <span>Blog_How we used semantic search to make our search 10x smarter_3.png</span>
+  </span>
+</p>
+<p>Mishards cascade a request from upstream down to its sub-modules splitting the upstream request, and then collects and returns the results of the sub-services to upstream. The overall architecture of the Mishards-based cluster solution is shown below:
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_4_724618be4e.jpeg" alt="Blog_How we used semantic search to make our search 10x smarter_4.jpeg" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_4.jpeg" />
+    <span>Blog_How we used semantic search to make our search 10x smarter_4.jpeg</span>
+  </span>
+</p>
+<p>The official documentation provides a clear introduction of Mishards. You can refer to <a href="https://milvus.io/cn/docs/v0.10.2/mishards.md">Mishards</a> if you are interested.</p>
+<p>In our keyword-to-keyword service, we deployed one writable node, two read-only nodes, and one Mishards middleware instance in GCP, using Milvus ansible. It has been stable so far. A huge component of what makes it possible to efficiently query the million-, billion-, or even trillion-vector datasets that similarity search engines rely on is <a href="https://milvus.io/docs/v0.10.5/index.md">indexing</a>, a process of organizing data that drastically accelerates big data search.</p>
+<h2 id="How-does-vector-indexing-accelerate-similarity-search" class="common-anchor-header">How does vector indexing accelerate similarity search?<button data-href="#How-does-vector-indexing-accelerate-similarity-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -111,9 +121,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تعمل محركات البحث عن التشابه من خلال مقارنة المدخلات بقاعدة بيانات للعثور على العناصر الأكثر تشابهًا مع المدخلات. الفهرسة هي عملية تنظيم البيانات بكفاءة، وتلعب دورًا رئيسيًا في جعل البحث عن التشابه مفيدًا من خلال تسريع الاستعلامات التي تستغرق وقتًا طويلاً على مجموعات البيانات الضخمة بشكل كبير. بعد فهرسة مجموعة بيانات متجهة ضخمة، يمكن توجيه الاستعلامات إلى مجموعات أو مجموعات فرعية من البيانات التي من المرجح أن تحتوي على متجهات مشابهة لاستعلام الإدخال. من الناحية العملية، يعني هذا عمليًا التضحية بدرجة معينة من الدقة لتسريع الاستعلامات على البيانات المتجهة الضخمة حقًا.</p>
-<p>يمكن تشبيه ذلك بقاموس، حيث يتم فرز الكلمات أبجديًا. عند البحث عن كلمة ما، من الممكن الانتقال بسرعة إلى قسم يحتوي فقط على كلمات تحمل نفس الحرف الأول من الكلمة - مما يسرّع بشكل كبير من عملية البحث عن تعريف الكلمة المدخلة.</p>
-<h2 id="What-next-you-ask" class="common-anchor-header">ماذا بعد ذلك؟<button data-href="#What-next-you-ask" class="anchor-icon" translate="no">
+    </button></h2><p>Similarity search engines work by comparing input to a database to find objects that are most similar to the input. Indexing is the process of efficiently organizing data, and it plays a major role in making similarity search useful by dramatically accelerating time-consuming queries on large datasets. After a massive vector dataset is indexed, queries can be routed to clusters, or subsets of data, that are most likely to contain vectors similar to an input query. In practice, this means a certain degree of accuracy is sacrificed to speed up queries on really big vector data.</p>
+<p>An analogy can be drawn to a dictionary, where words are sorted alphabetically. When looking up a word, it is possible to quickly navigate to a section that only contains words with the same initial — drastically accelerating the search for the input word’s definition.</p>
+<h2 id="What-next-you-ask" class="common-anchor-header">What next, you ask?<button data-href="#What-next-you-ask" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -129,13 +139,15 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_5_035480c8af.jpeg" alt="Blog_How we used semantic search to make our search 10x smarter_5.jpeg" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_5.jpeg" />
-   </span> <span class="img-wrapper"> <span>مدونة_كيف استخدمنا البحث الدلالي لجعل بحثنا أذكى 10 مرات_5.jpeg</span> </span></p>
-<p>كما هو موضح أعلاه، لا يوجد حل يناسب الجميع، فنحن نريد دائمًا تحسين أداء النموذج المستخدم للحصول على التضمينات.</p>
-<p>أيضًا، من وجهة نظر تقنية، نريد تشغيل نماذج تعلم متعددة في نفس الوقت ومقارنة النتائج من التجارب المختلفة. شاهد هذه المساحة لمزيد من المعلومات عن تجاربنا مثل البحث عن الصور والبحث عن الفيديو.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_How_we_used_semantic_search_to_make_our_search_10x_smarter_5_035480c8af.jpeg" alt="Blog_How we used semantic search to make our search 10x smarter_5.jpeg" class="doc-image" id="blog_how-we-used-semantic-search-to-make-our-search-10x-smarter_5.jpeg" />
+    <span>Blog_How we used semantic search to make our search 10x smarter_5.jpeg</span>
+  </span>
+</p>
+<p>As shown above, there is no solution that fits all, we always want to improve the model’s performance used for getting the embeddings.</p>
+<p>Also, from a technical point of view, we want to run multiple learning models at the same time and compare the results from the various experiments. Watch this space for more information on our experiments like image search, video search.</p>
 <p><br/></p>
-<h2 id="References" class="common-anchor-header">المراجع:<button data-href="#References" class="anchor-icon" translate="no">
+<h2 id="References" class="common-anchor-header">References:<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -151,10 +163,10 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li>مستندات ميشاردز ：https://milvus.io/docs/v0.10.2/mishards.md</li>
-<li>ميشاردز: https://github.com/milvus-io/milvus/tree/master/shards</li>
-<li>ميلفوس-هيلم: https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus</li>
+<li>Mishards Docs：https://milvus.io/docs/v0.10.2/mishards.md</li>
+<li>Mishards: https://github.com/milvus-io/milvus/tree/master/shards</li>
+<li>Milvus-Helm: https://github.com/milvus-io/milvus-helm/tree/master/charts/milvus</li>
 </ul>
 <p><br/></p>
-<p><em>تمت إعادة نشر مقالة المدونة هذه من: https://medium.com/tokopedia-engineering/how-we-used-semantic-search-to-make-our-search-10x-smarter-bd9c7f601821</em></p>
-<p>اقرأ <a href="https://zilliz.com/user-stories">قصص المستخدمين</a> الآخرين لمعرفة المزيد عن صنع الأشياء باستخدام ميلفوس.</p>
+<p><em>This blog article is reposted from: https://medium.com/tokopedia-engineering/how-we-used-semantic-search-to-make-our-search-10x-smarter-bd9c7f601821</em></p>
+<p>Read other <a href="https://zilliz.com/user-stories">user stories</a> to learn more about making things with Milvus.</p>

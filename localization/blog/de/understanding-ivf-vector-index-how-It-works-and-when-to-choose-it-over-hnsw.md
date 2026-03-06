@@ -1,8 +1,7 @@
 ---
 id: understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md
-title: >-
-  IVF-Vektor-Index verstehen: Wie er funktioniert und wann man ihn dem HNSW
-  vorziehen sollte
+title: |
+  Understanding IVF Vector Index: How It Works and When to Choose It Over HNSW
 author: Jack Li
 date: 2025-10-27T00:00:00.000Z
 cover: assets.zilliz.com/ivf_1bbe0e9f85.png
@@ -13,16 +12,15 @@ tags: 'Milvus, vector database'
 meta_keywords: 'IVF, ANN, HNSW, vector index, vector database'
 meta_title: How to Choose Between IVF and HNSW for ANN Vector Search
 desc: >-
-  Erfahren Sie, wie der IVF-Vektorindex funktioniert, wie er die ANN-Suche
-  beschleunigt und wann er HNSW in Bezug auf Geschwindigkeit, Speicher und
-  Filtereffizienz übertrifft.
+  Learn how the IVF vector index works, how it accelerates ANN search, and when
+  it outperforms HNSW in speed, memory, and filtering efficiency.
 origin: >-
   https://milvus.io/blog/understanding-ivf-vector-index-how-It-works-and-when-to-choose-it-over-hnsw.md
 ---
-<p>In einer Vektordatenbank müssen wir oft schnell die ähnlichsten Ergebnisse in riesigen Sammlungen hochdimensionaler Vektoren finden, z. B. Bildmerkmale, Texteinbettungen oder Audiodarstellungen. Ohne einen Index besteht die einzige Möglichkeit darin, den Abfragevektor mit jedem einzelnen Vektor des Datensatzes zu vergleichen. Diese <strong>brachiale Suche</strong> mag bei einigen Tausend Vektoren funktionieren, aber sobald es um Dutzende oder Hunderte von Millionen geht, wird sie unerträglich langsam und rechenintensiv.</p>
-<p>An dieser Stelle kommt die <strong>ANN-Suche (Approximate Nearest Neighbor)</strong> ins Spiel. Stellen Sie sich vor, Sie suchen in einer riesigen Bibliothek nach einem bestimmten Buch. Anstatt jedes Buch einzeln zu prüfen, beginnen Sie damit, die Abschnitte zu durchsuchen, in denen das Buch am ehesten zu finden ist. Sie erhalten vielleicht nicht <em>genau</em> die gleichen Ergebnisse wie bei einer vollständigen Suche, aber Sie kommen dem Ergebnis sehr nahe - und das in einem Bruchteil der Zeit. Kurz gesagt, ANN tauscht einen leichten Verlust an Genauigkeit gegen einen erheblichen Gewinn an Geschwindigkeit und Skalierbarkeit.</p>
-<p>Unter den vielen Möglichkeiten, die ANN-Suche zu implementieren, sind <strong>IVF (Inverted File)</strong> und <strong>HNSW (Hierarchical Navigable Small World)</strong> zwei der am häufigsten verwendeten. IVF zeichnet sich jedoch durch seine Effizienz und Anpassungsfähigkeit bei der Vektorsuche in großem Maßstab aus. In diesem Artikel erläutern wir Ihnen, wie IVF funktioniert und wie es im Vergleich zu HNSW abschneidet, damit Sie die Vorteile der beiden Verfahren verstehen und das für Ihre Arbeitslast am besten geeignete auswählen können.</p>
-<h2 id="What-is-an-IVF-Vector-Index" class="common-anchor-header">Was ist ein IVF-Vektorindex?<button data-href="#What-is-an-IVF-Vector-Index" class="anchor-icon" translate="no">
+<p>In a vector database, we often need to quickly find the most similar results among vast collections of high-dimensional vectors—such as image features, text embeddings, or audio representations. Without an index, the only option is to compare the query vector against every single vector in the dataset. This <strong>brute-force search</strong> might work when you have a few thousand vectors, but once you’re dealing with tens or hundreds of millions, it becomes unbearably slow and computationally expensive.</p>
+<p>That’s where <strong>Approximate Nearest Neighbor (ANN)</strong> search comes in. Think of it like looking for a specific book in a massive library. Instead of checking every book one by one, you start by browsing the sections most likely to contain it. You might not get the <em>exact</em> same results as a full search, but you’ll get very close—and in a fraction of the time. In short, ANN trades a slight loss in accuracy for a significant boost in speed and scalability.</p>
+<p>Among the many ways to implement ANN search, <strong>IVF (Inverted File)</strong> and <strong>HNSW (Hierarchical Navigable Small World)</strong> are two of the most widely used. But IVF stands out for its efficiency and adaptability in large-scale vector search. In this article, we’ll walk you through how IVF works and how it compares with HNSW—so you can understand their trade-offs and choose the one that best fits your workload.</p>
+<h2 id="What-is-an-IVF-Vector-Index" class="common-anchor-header">What is an IVF Vector Index?<button data-href="#What-is-an-IVF-Vector-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,13 +35,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>IVF (Inverted File)</strong> ist einer der am häufigsten verwendeten Algorithmen für ANN. Seine Kernidee ist dem "invertierten Index" entlehnt, der in Textsuchsystemen verwendet wird - nur dass wir es diesmal nicht mit Wörtern und Dokumenten, sondern mit Vektoren in einem hochdimensionalen Raum zu tun haben.</p>
-<p>Stellen Sie sich das so vor, als würden Sie eine riesige Bibliothek organisieren. Wenn man alle Bücher (Vektoren) auf einen riesigen Stapel werfen würde, würde es ewig dauern, das zu finden, was man braucht. IVF löst dieses Problem, indem es zunächst alle Vektoren in Gruppen ( <em>Buckets</em>) <strong>zusammenfasst</strong>. Jeder Bereich stellt eine "Kategorie" ähnlicher Vektoren dar, die durch einen <strong>Schwerpunkt</strong>definiert ist <strong>- eine</strong>Art Zusammenfassung oder "Etikett" für alles in diesem Cluster.</p>
-<p>Wenn eine Abfrage eingeht, erfolgt die Suche in zwei Schritten:</p>
-<p><strong>1. Suche nach den nächstgelegenen Clustern.</strong> Das System sucht nach den wenigen Clustern, deren Zentroide dem Abfragevektor am nächsten liegen - so als ob man sich direkt zu den zwei oder drei Bibliotheksabteilungen begibt, die das gesuchte Buch am wahrscheinlichsten haben.</p>
-<p><strong>2. Suchen Sie in diesen Clustern.</strong> Sobald Sie sich in den richtigen Abteilungen befinden, müssen Sie nur noch eine kleine Gruppe von Büchern durchsuchen und nicht mehr die gesamte Bibliothek.</p>
-<p>Auf diese Weise lässt sich der Berechnungsaufwand um Größenordnungen reduzieren. Sie erhalten immer noch hochpräzise Ergebnisse - aber viel schneller.</p>
-<h2 id="How-to-Build-an-IVF-Vector-Index" class="common-anchor-header">Aufbau eines IVF-Vektorindex<button data-href="#How-to-Build-an-IVF-Vector-Index" class="anchor-icon" translate="no">
+    </button></h2><p><strong>IVF (Inverted File)</strong> is one of the most widely used algorithms for ANN. It borrows its core idea from the “inverted index” used in text retrieval systems—only this time, instead of words and documents, we’re dealing with vectors in a high-dimensional space.</p>
+<p>Think of it like organizing a massive library. If you dumped every book (vector) into one giant pile, finding what you need would take forever. IVF solves this by first <strong>clustering</strong> all vectors into groups, or <em>buckets</em>. Each bucket represents a “category” of similar vectors, defined by a <strong>centroid</strong>—a kind of summary or “label” for everything inside that cluster.</p>
+<p>When a query comes in, the search happens in two steps:</p>
+<p><strong>1. Find the nearest clusters.</strong> The system looks for the few buckets whose centroids are closest to the query vector—just like heading straight to the two or three library sections most likely to have your book.</p>
+<p><strong>2. Search within those clusters.</strong> Once you’re in the right sections, you only need to look through a small set of books instead of the entire library.</p>
+<p>This approach cuts down the amount of computation by orders of magnitude. You still get highly accurate results—but much faster.</p>
+<h2 id="How-to-Build-an-IVF-Vector-Index" class="common-anchor-header">How to Build an IVF Vector Index<button data-href="#How-to-Build-an-IVF-Vector-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -58,35 +56,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Aufbau eines IVF-Vektorindexes umfasst drei Hauptschritte: K-means Clustering, Vektorzuordnung und Kompressionskodierung (optional). Der vollständige Prozess sieht wie folgt aus:</p>
+    </button></h2><p>The process of building an IVF vector index involves three main steps: K-means Clustering, Vector Assignment, and Compression Encoding (Optional). The full process looks like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ivf_building_process_90c2966975.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Schritt 1: K-means Clustering</h3><p>Zunächst wird das K-Means-Clustering auf den Datensatz X angewendet, um den hochdimensionalen Vektorraum in n Listencluster zu unterteilen. Jeder Cluster wird durch einen Zentroid repräsentiert, der in der Zentroid-Tabelle C gespeichert wird. Die Anzahl der Zentroide, nlist, ist ein wichtiger Hyperparameter, der bestimmt, wie feinkörnig das Clustering sein wird.</p>
-<p>So funktioniert k-means unter der Haube:</p>
+<h3 id="Step-1-K-means-Clustering" class="common-anchor-header">Step 1: K-means Clustering</h3><p>First, run k-means clustering on the dataset X to divide the high-dimensional vector space into nlist clusters. Each cluster is represented by a centroid, which is stored in the centroid table C. The number of centroids, nlist, is a key hyperparameter that determines how fine-grained the clustering will be.</p>
+<p>Here’s how k-means works under the hood:</p>
 <ul>
-<li><p><strong>Initialisierung:</strong> Zufällige Auswahl von <em>nlist</em> Vektoren als anfängliche Zentroide.</p></li>
-<li><p><strong>Zuweisung:</strong> Berechnen Sie für jeden Vektor den Abstand zu allen Zentren und ordnen Sie ihn dem nächstgelegenen zu.</p></li>
-<li><p><strong>Aktualisieren:</strong> Berechnen Sie für jeden Cluster den Durchschnitt seiner Vektoren und legen Sie diesen als neuen Schwerpunkt fest.</p></li>
-<li><p><strong>Iteration und Konvergenz:</strong> Wiederholen Sie die Zuweisung und Aktualisierung, bis sich die Schwerpunkte nicht mehr signifikant ändern oder eine maximale Anzahl von Iterationen erreicht ist.</p></li>
+<li><p><strong>Initialization:</strong> Randomly select <em>nlist</em> vectors as the initial centroids.</p></li>
+<li><p><strong>Assignment:</strong> For each vector, compute its distance to all centroids and assign it to the nearest one.</p></li>
+<li><p><strong>Update:</strong> For each cluster, calculate the average of its vectors and set that as the new centroid.</p></li>
+<li><p><strong>Iteration and convergence:</strong> Repeat assignment and update until centroids stop changing significantly or a maximum number of iterations is reached.</p></li>
 </ul>
-<p>Sobald k-means konvergiert, bilden die resultierenden n-Listen-Schwerpunkte das "Indexverzeichnis" von IVF. Sie legen fest, wie der Datensatz grob partitioniert ist, so dass Abfragen den Suchraum später schnell eingrenzen können.</p>
-<p>Denken Sie an die Analogie zur Bibliothek: Das Training von Zentroiden ist wie die Entscheidung, wie man Bücher nach Themen gruppiert:</p>
+<p>Once k-means converges, the resulting nlist centroids form the “index directory” of IVF. They define how the dataset is coarsely partitioned, allowing queries to quickly narrow down the search space later on.</p>
+<p>Think back to the library analogy: training centroids is like deciding how to group books by topic:</p>
 <ul>
-<li><p>Eine größere nListe bedeutet mehr Abschnitte mit jeweils weniger, spezifischeren Büchern.</p></li>
-<li><p>Eine kleinere nListe bedeutet weniger Abschnitte, die jeweils ein breiteres, gemischtes Themenspektrum abdecken.</p></li>
+<li><p>A larger nlist means more sections, each with fewer, more specific books.</p></li>
+<li><p>A smaller nlist means fewer sections, each covering a broader, more mixed range of topics.</p></li>
 </ul>
-<h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Schritt 2: Vektorzuordnung</h3><p>Als Nächstes wird jeder Vektor dem Cluster zugeordnet, dessen Schwerpunkt ihm am nächsten liegt, wobei invertierte Listen (List_i) gebildet werden. Jede invertierte Liste speichert die IDs und Speicherinformationen aller Vektoren, die zu diesem Cluster gehören.</p>
-<p>Dieser Schritt ist vergleichbar mit der Einordnung der Bücher in die jeweiligen Abteilungen. Wenn Sie später nach einem Titel suchen, brauchen Sie nur die wenigen Abteilungen zu überprüfen, in denen der Titel am ehesten zu finden ist, anstatt die gesamte Bibliothek zu durchforsten.</p>
-<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Schritt 3: Komprimierungskodierung (optional)</h3><p>Um Speicherplatz zu sparen und die Berechnungen zu beschleunigen, können die Vektoren innerhalb jedes Clusters einer Kompressionskodierung unterzogen werden. Es gibt zwei gängige Ansätze:</p>
+<h3 id="Step-2-Vector-Assignment" class="common-anchor-header">Step 2: Vector Assignment</h3><p>Next, each vector is assigned to the cluster whose centroid it’s closest to, forming inverted lists (List_i). Each inverted list stores the IDs and storage information of all vectors that belong to that cluster.</p>
+<p>You can think of this step like shelving the books into their respective sections. When you’re looking for a title later, you only need to check the few sections that are most likely to have it, instead of wandering the whole library.</p>
+<h3 id="Step-3-Compression-Encoding-Optional" class="common-anchor-header">Step 3: Compression Encoding (Optional)</h3><p>To save memory and speed up computation, vectors within each cluster can go through compression encoding. There are two common approaches:</p>
 <ul>
-<li><p><strong>SQ8 (Skalarquantisierung):</strong> Bei dieser Methode wird jede Dimension eines Vektors in 8 Bits quantisiert. Bei einem Standardvektor <code translate="no">float32</code> nimmt jede Dimension normalerweise 4 Byte ein. Mit SQ8 wird sie auf nur 1 Byte reduziert, wodurch ein Kompressionsverhältnis von 4:1 erreicht wird, während die Geometrie des Vektors weitgehend erhalten bleibt.</p></li>
-<li><p><strong>PQ (Produktquantisierung):</strong> Hierbei wird ein hochdimensionaler Vektor in mehrere Unterräume aufgeteilt. Zum Beispiel kann ein 128-dimensionaler Vektor in 8 Untervektoren mit je 16 Dimensionen unterteilt werden. In jedem Unterraum wird ein kleines Codebuch (typischerweise mit 256 Einträgen) trainiert, und jeder Untervektor wird durch einen 8-Bit-Index dargestellt, der auf den nächstgelegenen Codebucheintrag verweist. Das bedeutet, dass der ursprüngliche 128-D-Vektor <code translate="no">float32</code> (der 512 Bytes benötigt) mit nur 8 Bytes (8 Unterräume × je 1 Byte) dargestellt werden kann, wodurch ein Kompressionsverhältnis von 64:1 erreicht wird.</p></li>
+<li><p><strong>SQ8 (Scalar Quantization):</strong> This method quantizes each dimension of a vector into 8 bits. For a standard <code translate="no">float32</code> vector, each dimension typically takes up 4 bytes. With SQ8, it’s reduced to just 1 byte—achieving a 4:1 compression ratio while keeping the vector’s geometry largely intact.</p></li>
+<li><p><strong>PQ (Product Quantization):</strong> It splits a high-dimensional vector into several subspaces. For example, a 128-dimensional vector can be divided into 8 sub-vectors of 16 dimensions each. In each subspace, a small codebook (typically with 256 entries) is pre-trained, and each sub-vector is represented by an 8-bit index pointing to its nearest codebook entry. This means the original 128-D <code translate="no">float32</code> vector (which requires 512 bytes) can be represented using only 8 bytes (8 subspaces × 1 byte each), achieving a 64:1 compression ratio.</p></li>
 </ul>
-<h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">Verwendung des IVF-Vektorindex für die Suche<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
+<h2 id="How-to-Use-the-IVF-Vector-Index-for-Search" class="common-anchor-header">How to Use the IVF Vector Index for Search<button data-href="#How-to-Use-the-IVF-Vector-Index-for-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,29 +99,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sobald die Schwerpunkttabelle, die invertierten Listen, der Kompressionscodierer und die Codebücher (optional) erstellt sind, kann der IVF-Index zur Beschleunigung der Ähnlichkeitssuche verwendet werden. Der Prozess besteht in der Regel aus drei Hauptschritten, wie unten dargestellt:</p>
+    </button></h2><p>Once the centroid table, inverted lists, and the compression encoder and codebooks (optional) are built, the IVF index can be used to accelerate similarity search. The process typically has three main steps, as shown below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ivf_search_process_025d3f444f.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Schritt 1: Berechnung der Entfernungen zwischen dem Abfragevektor und allen Zentroiden</h3><p>Wenn ein Abfragevektor q eintrifft, bestimmt das System zunächst, zu welchen Clustern er höchstwahrscheinlich gehören wird. Dann berechnet es den Abstand zwischen q und jedem Schwerpunkt in der Schwerpunkttabelle C - in der Regel unter Verwendung des euklidischen Abstands oder des inneren Produkts als Ähnlichkeitsmetrik. Die Zentroide werden dann nach ihrem Abstand zum Abfragevektor sortiert, so dass eine geordnete Liste vom nächsten bis zum entferntesten entsteht.</p>
-<p>Wie in der Abbildung dargestellt, lautet die Reihenfolge zum Beispiel: C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5.</p>
-<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Schritt 2: Auswahl der nächstgelegenen nprobe-Cluster</h3><p>Um zu vermeiden, dass der gesamte Datensatz gescannt wird, sucht IVF nur in den obersten <em>nprobe-Clustern</em>, die dem Abfragevektor am nächsten sind.</p>
-<p>Der Parameter nprobe definiert den Suchbereich und wirkt sich direkt auf das Gleichgewicht zwischen Geschwindigkeit und Wiedererkennungswert aus:</p>
+<h3 id="Step-1-Calculate-distances-from-the-query-vector-to-all-centroids" class="common-anchor-header">Step 1: Calculate distances from the query vector to all centroids</h3><p>When a query vector q arrives, the system first determines which clusters it is most likely to belong to. Then, it computes the distance between q and every centroid in the centroid table C—usually using Euclidean distance or inner product as the similarity metric. The centroids are then sorted by their distance to the query vector, producing an ordered list from nearest to farthest.</p>
+<p>For example, as shown in the illustration, the order is: C4 &lt; C2 &lt; C1 &lt; C3 &lt; C5.</p>
+<h3 id="Step-2-Select-the-nearest-nprobe-clusters" class="common-anchor-header">Step 2: Select the nearest nprobe clusters</h3><p>To avoid scanning the entire dataset, IVF only searches within the top <em>nprobe</em> clusters that are closest to the query vector.</p>
+<p>The parameter nprobe defines the search scope and directly affects the balance between speed and recall:</p>
 <ul>
-<li><p>Eine kleinere nprobe führt zu schnelleren Abfragen, kann aber die Trefferquote verringern.</p></li>
-<li><p>Eine größere nprobe verbessert die Trefferquote, erhöht aber die Latenzzeit.</p></li>
+<li><p>A smaller nprobe leads to faster queries but may reduce recall.</p></li>
+<li><p>A larger nprobe improves recall but increases latency.</p></li>
 </ul>
-<p>In realen Systemen kann nprobe dynamisch auf der Grundlage des Latenzbudgets oder der Genauigkeitsanforderungen eingestellt werden. Wenn im obigen Beispiel nprobe = 2 ist, sucht das System nur in Cluster 2 und Cluster 4 - den beiden nächstgelegenen Clustern.</p>
-<h3 id="Step-3-Search-the-nearest-neighbor-in-the-selected-clusters" class="common-anchor-header">Schritt 3: Suche nach dem nächstgelegenen Nachbarn in den ausgewählten Clustern</h3><p>Sobald die Kandidatencluster ausgewählt sind, vergleicht das System den Abfragevektor q mit den darin gespeicherten Vektoren. Es gibt zwei Hauptvergleichsmodi:</p>
+<p>In real-world systems, nprobe can be dynamically tuned based on the latency budget or accuracy requirements.
+In the example above, if nprobe = 2, the system will only search within Cluster 2 and Cluster 4—the two nearest clusters.</p>
+<h3 id="Step-3-Search-the-nearest-neighbor-in-the-selected-clusters" class="common-anchor-header">Step 3: Search the nearest neighbor in the selected clusters</h3><p>Once the candidate clusters are selected, the system compares the query vector q with the vectors stored inside them.
+ There are two main modes of comparison:</p>
 <ul>
-<li><p><strong>Exakter Vergleich (IVF_FLAT)</strong>: Das System ruft die ursprünglichen Vektoren aus den ausgewählten Clustern ab und berechnet ihre Abstände zu q direkt, was die genauesten Ergebnisse liefert.</p></li>
-<li><p><strong>Näherungsweiser Vergleich (IVF_PQ / IVF_SQ8)</strong>: Bei PQ- oder SQ8-Komprimierung verwendet das System eine <strong>Nachschlagetabellenmethode</strong>, um die Abstandsberechnung zu beschleunigen. Bevor die Suche beginnt, berechnet es die Abstände zwischen dem Abfragevektor und jedem Codebucheintrag. Dann kann es für jeden Vektor diese vorberechneten Abstände einfach "nachschlagen und summieren", um die Ähnlichkeit zu schätzen.</p></li>
+<li><p><strong>Exact Comparison (IVF_FLAT)</strong>: The system retrieves the original vectors from the selected clusters and computes their distances to q directly, returning the most accurate results.</p></li>
+<li><p><strong>Approximate Comparison (IVF_PQ / IVF_SQ8)</strong>: When PQ or SQ8 compression is used, the system employs a <strong>lookup table method</strong> to accelerate distance computation. Before the search begins, it precomputes the distances between the query vector and each codebook entry. Then, for each vector, it can simply “look up and sum” these precomputed distances to estimate similarity.</p></li>
 </ul>
-<p>Schließlich werden die Kandidatenergebnisse aus allen durchsuchten Clustern zusammengeführt und neu geordnet, so dass die Top-k-Vektoren mit der größten Ähnlichkeit die endgültige Ausgabe bilden.</p>
-<h2 id="IVF-In-Practice" class="common-anchor-header">IVF in der Praxis<button data-href="#IVF-In-Practice" class="anchor-icon" translate="no">
+<p>Finally, the candidate results from all searched clusters are merged and re-ranked, producing the Top-k most similar vectors as the final output.</p>
+<h2 id="IVF-In-Practice" class="common-anchor-header">IVF In-Practice<button data-href="#IVF-In-Practice" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,36 +138,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wenn Sie einmal verstanden haben, wie IVF-Vektorindizes <strong>erstellt</strong> und <strong>durchsucht werden</strong>, besteht der nächste Schritt darin, sie für reale Arbeitslasten anzuwenden. In der Praxis müssen Sie oft ein Gleichgewicht zwischen <strong>Leistung</strong>, <strong>Genauigkeit</strong> und <strong>Speichernutzung</strong> finden. Im Folgenden finden Sie einige praktische Richtlinien, die aus der Erfahrung der Ingenieure stammen.</p>
-<h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">Wie man die richtige nlist auswählt</h3><p>Wie bereits erwähnt, bestimmt der Parameter nlist die Anzahl der Cluster, in die der Datensatz beim Aufbau eines IVF-Index unterteilt wird.</p>
+    </button></h2><p>Once you understand how IVF vector indexes are <strong>built</strong> and <strong>searched</strong>, the next step is to apply them for real-world workloads. In practice, you’ll often need to balance <strong>performance</strong>, <strong>accuracy</strong>, and <strong>memory usage</strong>. Below are some practical guidelines drawn from engineering experience.</p>
+<h3 id="How-to-Choose-the-Right-nlist" class="common-anchor-header">How to Choose the Right nlist</h3><p>As mentioned earlier, the parameter nlist determines the number of clusters into which the dataset is divided when building an IVF index.</p>
 <ul>
-<li><p><strong>Größere nlist</strong>: Erzeugt feinere Cluster, d. h. jeder Cluster enthält weniger Vektoren. Dies reduziert die Anzahl der Vektoren, die während der Suche gescannt werden, und führt im Allgemeinen zu schnelleren Abfragen. Der Aufbau des Index dauert jedoch länger, und die Schwerpunkttabelle verbraucht mehr Speicher.</p></li>
-<li><p><strong>Kleinere nlist</strong>: Beschleunigt den Indexaufbau und reduziert den Speicherverbrauch, aber jeder Cluster wird "überfüllt". Jede Abfrage muss mehr Vektoren innerhalb eines Clusters scannen, was zu Leistungsengpässen führen kann.</p></li>
+<li><p><strong>Larger nlist</strong>: Creates finer-grained clusters, meaning each cluster contains fewer vectors. This reduces the number of vectors scanned during search and generally results in faster queries. But building the index takes longer, and the centroid table consumes more memory.</p></li>
+<li><p><strong>Smaller nlist</strong>: Speeds up index construction and reduces memory usage, but each cluster becomes more “crowded.” Each query must scan more vectors within a cluster, which can lead to performance bottlenecks.</p></li>
 </ul>
-<p>Auf der Grundlage dieser Kompromisse gibt es eine praktische Faustregel:</p>
-<p>Für Datensätze im <strong>Millionenbereich</strong> ist ein guter Ausgangspunkt <strong>nlist ≈ √n</strong> (n ist die Anzahl der Vektoren in dem zu indizierenden Datenshard).</p>
-<p>Wenn Sie zum Beispiel 1 Million Vektoren haben, versuchen Sie nlist = 1.000. Bei größeren Datensätzen - zehn oder hundert Millionen - schichten die meisten Vektordatenbanken die Daten so auf, dass jede Scherbe etwa eine Million Vektoren enthält, so dass diese Regel praktikabel bleibt.</p>
-<p>Da nlist bei der Indexerstellung festgelegt wird, bedeutet eine spätere Änderung, dass der gesamte Index neu erstellt werden muss. Daher ist es am besten, frühzeitig zu experimentieren. Testen Sie mehrere Werte - idealerweise in Zweierpotenzen (z. B. 1024, 2048) -, um den Sweet Spot zu finden, der Geschwindigkeit, Genauigkeit und Speicherplatz für Ihre Arbeitslast ausgleicht.</p>
-<h3 id="How-to-Tune-nprobe" class="common-anchor-header">Abstimmen von nprobe</h3><p>Der Parameter nprobe steuert die Anzahl der Cluster, die während der Abfragezeit durchsucht werden. Er wirkt sich direkt auf den Kompromiss zwischen Abruf und Latenzzeit aus.</p>
+<p>Based on these trade-offs, here’s a practical rule of thumb:</p>
+<p>For datasets at the <strong>million scale</strong>, a good starting point is <strong>nlist ≈ √n</strong> (n is the number of vectors in the data shard being indexed).</p>
+<p>For example, if you have 1 million vectors, try nlist = 1,000. For larger datasets—tens or hundreds of millions—most vector databases shard the data so that each shard contains around one million vectors, keeping this rule practical.</p>
+<p>Because nlist is fixed at index creation, changing it later means rebuilding the entire index. So it’s best to experiment early. Test several values—ideally in powers of two (e.g., 1024, 2048)—to find the sweet spot that balances speed, accuracy, and memory for your workload.</p>
+<h3 id="How-to-Tune-nprobe" class="common-anchor-header">How to Tune nprobe</h3><p>The parameter nprobe controls the number of clusters searched during query time. It directly affects the trade-off between recall and latency.</p>
 <ul>
-<li><p><strong>Größere nprobe</strong>: Deckt mehr Cluster ab, was zu einer höheren Auffindbarkeit, aber auch zu einer höheren Latenz führt. Die Verzögerung steigt im Allgemeinen linear mit der Anzahl der durchsuchten Cluster.</p></li>
-<li><p><strong>Kleinere nprobe</strong>: Durchsucht weniger Cluster, was zu geringeren Latenzzeiten und schnelleren Abfragen führt. Es können jedoch einige echte nächste Nachbarn übersehen werden, was zu einer geringfügigen Verringerung der Auffindbarkeit und der Ergebnisgenauigkeit führt.</p></li>
+<li><p><strong>Larger nprobe</strong>: Covers more clusters, leading to higher recall but also higher latency. The delay generally increases linearly with the number of clusters searched.</p></li>
+<li><p><strong>Smaller nprobe</strong>: Searches fewer clusters, resulting in lower latency and faster queries. However, it may miss some true nearest neighbors, slightly lowering recall and result accuracy.</p></li>
 </ul>
-<p>Wenn Ihre Anwendung nicht extrem latenzempfindlich ist, empfiehlt es sich, mit nprobe dynamisch zu experimentieren, z. B. durch Testen von Werten zwischen 1 und 16, um zu beobachten, wie sich Recall und Latenz verändern. Ziel ist es, den Sweet Spot zu finden, bei dem der Rückruf akzeptabel ist und die Latenz innerhalb des Zielbereichs bleibt.</p>
-<p>Da es sich bei nprobe um einen Laufzeit-Suchparameter handelt, kann er im laufenden Betrieb angepasst werden, ohne dass der Index neu erstellt werden muss. Dies ermöglicht ein schnelles, kostengünstiges und äußerst flexibles Tuning für verschiedene Workloads oder Abfrageszenarien.</p>
-<h3 id="Common-Variants-of-the-IVF-Index" class="common-anchor-header">Übliche Varianten des IVF-Index</h3><p>Bei der Erstellung eines IVF-Index müssen Sie entscheiden, ob Sie eine Kompressionskodierung für die Vektoren in den einzelnen Clustern verwenden wollen - und wenn ja, mit welcher Methode.</p>
-<p>Daraus ergeben sich drei gängige IVF-Indexvarianten:</p>
+<p>If your application is not extremely sensitive to latency, it’s a good idea to experiment with nprobe dynamically—for example, testing values from 1 to 16 to observe how recall and latency change. The goal is to find the sweet spot where recall is acceptable and latency remains within your target range.</p>
+<p>Since nprobe is a runtime search parameter, it can be adjusted on the fly without requiring the index to be rebuilt. This enables fast, low-cost, and highly flexible tuning across different workloads or query scenarios.</p>
+<h3 id="Common-Variants-of-the-IVF-Index" class="common-anchor-header">Common Variants of the IVF Index</h3><p>When building an IVF index, you’ll need to decide whether to use compression encoding for the vectors in each cluster—and if so, which method to use.</p>
+<p>This results in three common IVF index variants:</p>
 <table>
 <thead>
-<tr><th><strong>IVF-Variante</strong></th><th><strong>Wesentliche Merkmale</strong></th><th><strong>Anwendungsfälle</strong></th></tr>
+<tr><th><strong>IVF Variant</strong></th><th><strong>Key Features</strong></th><th><strong>Use Cases</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>IVF_FLAT</strong></td><td>Speichert rohe Vektoren innerhalb jedes Clusters ohne Komprimierung. Bietet die höchste Genauigkeit, verbraucht aber auch den meisten Speicher.</td><td>Ideal für mittelgroße Datensätze (bis zu Hunderten von Millionen von Vektoren), bei denen eine hohe Wiederauffindbarkeit (95 %+) erforderlich ist.</td></tr>
-<tr><td><strong>IVF_PQ</strong></td><td>Wendet Produktquantisierung (PQ) an, um Vektoren innerhalb von Clustern zu komprimieren. Durch Anpassung des Komprimierungsverhältnisses kann die Speichernutzung erheblich reduziert werden.</td><td>Geeignet für umfangreiche Vektorsuchen (Hunderte von Millionen oder mehr), bei denen ein gewisser Genauigkeitsverlust akzeptabel ist. Bei einem Komprimierungsverhältnis von 64:1 liegt die Wiederauffindbarkeit typischerweise bei etwa 70 %, kann aber durch Verringerung des Komprimierungsverhältnisses 90 % oder mehr erreichen.</td></tr>
-<tr><td><strong>IVF_SQ8</strong></td><td>Verwendet Skalarquantisierung (SQ8) zur Quantisierung von Vektoren. Der Speicherverbrauch liegt zwischen IVF_FLAT und IVF_PQ.</td><td>Ideal für groß angelegte Vektorsuchen, bei denen Sie eine relativ hohe Trefferquote (90 %+) beibehalten und gleichzeitig die Effizienz verbessern müssen.</td></tr>
+<tr><td><strong>IVF_FLAT</strong></td><td>Stores raw vectors within each cluster without compression. Offers the highest accuracy, but also consumes the most memory.</td><td>Ideal for medium-scale datasets (up to hundreds of millions of vectors) where high recall (95%+) is required.</td></tr>
+<tr><td><strong>IVF_PQ</strong></td><td>Applies Product Quantization (PQ) to compress vectors within clusters. By adjusting the compression ratio, memory usage can be significantly reduced.</td><td>Suitable for large-scale vector search (hundreds of millions or more) where some accuracy loss is acceptable. With a 64:1 compression ratio, recall is typically around 70%, but can reach 90% or higher by lowering the compression ratio.</td></tr>
+<tr><td><strong>IVF_SQ8</strong></td><td>Uses Scalar Quantization (SQ8) to quantize vectors. Memory usage sits between IVF_FLAT and IVF_PQ.</td><td>Ideal for large-scale vector search where you need to maintain relatively high recall (90%+) while improving efficiency.</td></tr>
 </tbody>
 </table>
-<h2 id="IVF-vs-HNSW-Pick-What-Fits" class="common-anchor-header">IVF vs. HNSW: Wählen Sie das Passende<button data-href="#IVF-vs-HNSW-Pick-What-Fits" class="anchor-icon" translate="no">
+<h2 id="IVF-vs-HNSW-Pick-What-Fits" class="common-anchor-header">IVF vs HNSW: Pick What Fits<button data-href="#IVF-vs-HNSW-Pick-What-Fits" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -182,32 +182,32 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Neben IVF ist <strong>HNSW (Hierarchical Navigable Small World)</strong> ein weiterer häufig verwendeter In-Memory-Vektorindex. Die folgende Tabelle zeigt die wichtigsten Unterschiede zwischen den beiden.</p>
+    </button></h2><p>Besides IVF, <strong>HNSW (Hierarchical Navigable Small World)</strong> is another widely used in-memory vector index. The table below highlights the key differences between the two.</p>
 <table>
 <thead>
 <tr><th></th><th><strong>IVF</strong></th><th><strong>HNSW</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Algorithmus Konzept</strong></td><td>Clustering und Bucketing</td><td>Mehrschichtige Graphnavigation</td></tr>
-<tr><td><strong>Speicherverbrauch</strong></td><td>Relativ niedrig</td><td>Relativ hoch</td></tr>
-<tr><td><strong>Geschwindigkeit des Indexaufbaus</strong></td><td>Schnell (erfordert nur Clustering)</td><td>Langsam (erfordert mehrschichtigen Graphenaufbau)</td></tr>
-<tr><td><strong>Abfragegeschwindigkeit (keine Filterung)</strong></td><td>Schnell, hängt von <em>nprobe</em> ab</td><td>Extrem schnell, aber mit logarithmischer Komplexität</td></tr>
-<tr><td><strong>Abfragegeschwindigkeit (mit Filterung)</strong></td><td>Stabil - führt eine grobe Filterung auf der Ebene des Schwerpunkts durch, um die Kandidaten einzugrenzen</td><td>Instabil - vor allem bei einem hohen Filterungsgrad (90 % und mehr) wird der Graph fragmentiert und kann zu einer fast vollständigen Durchquerung des Graphen degradieren, was sogar langsamer ist als die Brute-Force-Suche</td></tr>
-<tr><td><strong>Wiederfindungsrate</strong></td><td>Hängt davon ab, ob Kompression verwendet wird; ohne Quantisierung kann die Wiederfindungsrate <strong>95%+</strong> erreichen</td><td>Normalerweise höher, etwa <strong>98%+</strong></td></tr>
-<tr><td><strong>Wichtige Parameter</strong></td><td><em>nliste</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_construction</em>, <em>ef_search</em></td></tr>
-<tr><td><strong>Anwendungsfälle</strong></td><td>Wenn der Speicher begrenzt ist, aber eine hohe Abfrageleistung und ein hoher Abruf erforderlich sind; gut geeignet für Suchvorgänge mit Filterungsbedingungen</td><td>Wenn ausreichend Speicher vorhanden ist und das Ziel eine extrem hohe Auffindbarkeit und Abfrageleistung ist, aber keine Filterung benötigt wird oder die Filterungsrate gering ist</td></tr>
+<tr><td><strong>Algorithm Concept</strong></td><td>Clustering and bucketing</td><td>Multi-layer graph navigation</td></tr>
+<tr><td><strong>Memory Usage</strong></td><td>Relatively low</td><td>Relatively high</td></tr>
+<tr><td><strong>Index Build Speed</strong></td><td>Fast (only requires clustering)</td><td>Slow (needs multi-layer graph construction)</td></tr>
+<tr><td><strong>Query Speed (No Filtering)</strong></td><td>Fast, depends on <em>nprobe</em></td><td>Extremely fast, but with logarithmic complexity</td></tr>
+<tr><td><strong>Query Speed (With Filtering)</strong></td><td>Stable — performs coarse filtering at the centroid level to narrow down candidates</td><td>Unstable — especially when the filtering ratio is high (90%+), the graph becomes fragmented and may degrade to near full-graph traversal, even slower than brute-force search</td></tr>
+<tr><td><strong>Recall Rate</strong></td><td>Depends on whether compression is used; without quantization, recall can reach <strong>95%+</strong></td><td>Usually higher, around <strong>98%+</strong></td></tr>
+<tr><td><strong>Key Parameters</strong></td><td><em>nlist</em>, <em>nprobe</em></td><td><em>m</em>, <em>ef_construction</em>, <em>ef_search</em></td></tr>
+<tr><td><strong>Use Cases</strong></td><td>When memory is limited, but high query performance and recall are required; well-suited for searches with filtering conditions</td><td>When memory is sufficient and the goal is extremely high recall and query performance, but filtering is not needed, or the filtering ratio is low</td></tr>
 </tbody>
 </table>
-<p>In realen Anwendungen ist es sehr üblich, Filterbedingungen einzubeziehen, z. B. "nur Vektoren von einem bestimmten Benutzer suchen" oder "Ergebnisse auf einen bestimmten Zeitraum beschränken". Aufgrund der Unterschiede in den zugrundeliegenden Algorithmen kann die IVF gefilterte Suchen im Allgemeinen effizienter handhaben als die HNSW.</p>
-<p>Die Stärke der IVF liegt in ihrem zweistufigen Filterungsprozess. Es kann zunächst einen grobkörnigen Filter auf der Ebene der Zentroide (Cluster) durchführen, um die Kandidatengruppe schnell einzugrenzen, und dann feinkörnige Abstandsberechnungen innerhalb der ausgewählten Cluster durchführen. Dadurch bleibt die Leistung stabil und vorhersehbar, auch wenn ein großer Teil der Daten herausgefiltert wird.</p>
-<p>Im Gegensatz dazu basiert HNSW auf der Durchquerung von Graphen. Aufgrund seiner Struktur kann es die Filterbedingungen während der Durchquerung nicht direkt nutzen. Wenn der Filterungsgrad niedrig ist, verursacht dies keine größeren Probleme. Wenn der Filterungsgrad jedoch hoch ist (z. B. wenn mehr als 90 % der Daten herausgefiltert werden), wird der verbleibende Graph oft fragmentiert und bildet viele "isolierte Knoten". In solchen Fällen kann die Suche zu einer fast vollständigen Durchquerung des Graphen degradieren - manchmal sogar schlechter als eine Brute-Force-Suche.</p>
-<p>In der Praxis kommen IVF-Indizes bereits in vielen wichtigen Anwendungsfällen in verschiedenen Bereichen zum Einsatz:</p>
+<p>In real-world applications, it’s very common to include filtering conditions—for example, “only search vectors from a specific user” or “limit results to a certain time range.” Due to differences in their underlying algorithms, IVF generally handles filtered searches more efficiently than HNSW.</p>
+<p>The strength of IVF lies in its two-level filtering process. It can first perform a coarse-grained filter at the centroid (cluster) level to quickly narrow down the candidate set, and then conduct fine-grained distance calculations within the selected clusters. This maintains stable and predictable performance, even when a large portion of the data is filtered out.</p>
+<p>In contrast, HNSW is based on graph traversal. Because of its structure, it cannot directly leverage filtering conditions during traversal. When the filtering ratio is low, this doesn’t cause major issues. However, when the filtering ratio is high (e.g., more than 90% of data is filtered out), the remaining graph often becomes fragmented, forming many “isolated nodes.” In such cases, the search may degrade into a near full-graph traversal—sometimes even worse than a brute-force search.</p>
+<p>In practice, IVF indexes are already powering many high-impact use cases across different domains:</p>
 <ul>
-<li><p><strong>E-Commerce-Suche:</strong> Ein Benutzer kann ein Produktbild hochladen und sofort visuell ähnliche Artikel aus Millionen von Angeboten finden.</p></li>
-<li><p><strong>Patentrecherche:</strong> Anhand einer kurzen Beschreibung kann das System die semantisch am meisten verwandten Patente aus einer riesigen Datenbank heraussuchen - weitaus effizienter als die herkömmliche Stichwortsuche.</p></li>
-<li><p><strong>RAG-Wissensdatenbanken:</strong> IVF hilft bei der Suche nach dem relevantesten Kontext aus Millionen von Mieterdokumenten und sorgt dafür, dass KI-Modelle genauere und fundiertere Antworten generieren.</p></li>
+<li><p><strong>E-commerce search:</strong> A user can upload a product image and instantly find visually similar items from millions of listings.</p></li>
+<li><p><strong>Patent retrieval:</strong> Given a short description, the system can locate the most semantically related patents from a massive database—far more efficient than traditional keyword search.</p></li>
+<li><p><strong>RAG knowledge bases:</strong> IVF helps retrieve the most relevant context from millions of tenant documents, ensuring AI models generate more accurate and grounded responses.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -222,6 +222,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bei der Wahl des richtigen Index kommt es auf Ihren spezifischen Anwendungsfall an. Wenn Sie mit großen Datensätzen arbeiten oder eine gefilterte Suche unterstützen müssen, kann IVF die bessere Wahl sein. Im Vergleich zu graphenbasierten Indizes wie HNSW bietet IVF einen schnelleren Indexaufbau, eine geringere Speichernutzung und ein gutes Gleichgewicht zwischen Geschwindigkeit und Genauigkeit.</p>
-<p><a href="https://milvus.io/">Milvus</a>, die beliebteste Open-Source-Vektordatenbank, bietet vollständige Unterstützung für die gesamte IVF-Familie, einschließlich IVF_FLAT, IVF_PQ und IVF_SQ8. Sie können ganz einfach mit diesen Indextypen experimentieren und die Konfiguration finden, die Ihren Leistungs- und Speicheranforderungen am besten entspricht. Eine vollständige Liste der von Milvus unterstützten Indizes finden Sie auf der <a href="https://milvus.io/docs/index-explained.md">Milvus Index-Dokumentationsseite</a>.</p>
-<p>Wenn Sie eine Bildsuche, ein Empfehlungssystem oder eine RAG-Wissensdatenbank entwickeln, sollten Sie die IVF-Indizierung in Milvus ausprobieren und sehen, wie sich eine effiziente, groß angelegte Vektorsuche in der Praxis anfühlt.</p>
+    </button></h2><p>To choose the right index, it all comes down to your specific use case. If you’re working with large-scale datasets or need to support filtered searches, IVF can be the better fit. Compared with graph-based indexes like HNSW, IVF delivers faster index builds, lower memory usage, and a strong balance between speed and accuracy.</p>
+<p><a href="https://milvus.io/">Milvus</a>, the most popular open-source vector database, provides full support for the entire IVF family, including IVF_FLAT, IVF_PQ, and IVF_SQ8. You can easily experiment with these index types and find the setup that best fits your performance and memory needs. For a complete list of indexes Milvus supports, check out this <a href="https://milvus.io/docs/index-explained.md">Milvus Index doc page</a>.</p>
+<p>If you’re building image search, recommendation systems, or RAG knowledge bases, give IVF indexing in Milvus a try—and see how efficient, large-scale vector search feels in action.</p>
