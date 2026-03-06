@@ -362,7 +362,7 @@ On tradeoffs:
 On what to try next:
 
 -   **Swap in a different multimodal LLM.** This tutorial uses Qwen3.5 via OpenRouter, but the retrieval pipeline is model-agnostic. You could point the generation step at GPT-4o, Gemini, or any multimodal model that accepts image inputs.
--   **Scale up** **[Milvus](http://milvus.io)****.** Milvus Lite runs as a local file, which is great for prototyping. For production workloads, Milvus on Docker/Kubernetes or Zilliz Cloud (fully managed Milvus) handles larger corpora without you managing infrastructure.
+-   **Scale up [Milvus](http://milvus.io).** Milvus Lite runs as a local file, which is great for prototyping. For production workloads, Milvus on Docker/Kubernetes or Zilliz Cloud (fully managed Milvus) handles larger corpora without you managing infrastructure.
 -   **Experiment with different document types.** The pipeline here uses a comparison PDF, but it works the same way on scanned contracts, engineering drawings, financial statements, or research papers with dense figures.
 
 To get started, install [Milvus Lite](https://github.com/milvus-io/milvus-lite) with pip install pymilvus and grab the ColQwen2 weights from HuggingFace.
