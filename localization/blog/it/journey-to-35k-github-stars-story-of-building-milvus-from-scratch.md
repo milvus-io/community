@@ -1,8 +1,8 @@
 ---
 id: journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md
-title: >-
-  Il nostro viaggio verso le oltre 35.000 stelle di GitHub: La vera storia della
-  costruzione di Milvus da zero
+title: >
+  Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from
+  Scratch
 author: Zilliz
 date: 2025-06-27T00:00:00.000Z
 cover: assets.zilliz.com/Github_star_30_K_2_f329467096.png
@@ -14,17 +14,17 @@ meta_keywords: 'Milvus, vector database, vector search, AI search, Zilliz Cloud'
 meta_title: |
   Our Journey to 35K+ GitHub Stars: Building Milvus from Scratch
 desc: >-
-  Unitevi a noi per celebrare Milvus, il database vettoriale che ha raggiunto le
-  35,5K stelle su GitHub. Scoprite la nostra storia e come stiamo semplificando
-  le soluzioni di intelligenza artificiale per gli sviluppatori.
+  Join us in celebrating Milvus, the vector database that hit 35.5K stars on
+  GitHub. Discover our story and how we’re making AI solutions easier for
+  developers.
 origin: >-
   https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md
 ---
-<p>Negli ultimi anni ci siamo concentrati su una cosa: costruire un database vettoriale pronto per l'impresa per l'era dell'intelligenza artificiale. La parte difficile non è costruire <em>un</em> database, ma costruirne uno che sia scalabile, facile da usare e che risolva effettivamente problemi reali in produzione.</p>
-<p>A giugno abbiamo raggiunto un nuovo traguardo: Milvus ha raggiunto le <a href="https://github.com/milvus-io/milvus">35.000 stelle su GitHub</a> (ora ha più di 35,5K stelle al momento in cui scriviamo). Non faremo finta che si tratti di un numero qualsiasi: per noi significa molto.</p>
-<p>Ogni stella rappresenta uno sviluppatore che si è preso il tempo di guardare ciò che abbiamo costruito, lo ha trovato abbastanza utile da metterlo tra i preferiti e, in molti casi, ha deciso di usarlo. Alcuni di voi si sono spinti oltre: hanno segnalato problemi, contribuito al codice, risposto alle domande nei nostri forum e aiutato altri sviluppatori quando si sono bloccati.</p>
-<p>Volevamo condividere con voi la nostra storia, quella vera, con tutte le parti più complicate.</p>
-<h2 id="We-Started-Building-Milvus-Because-Nothing-Else-Worked" class="common-anchor-header">Abbiamo iniziato a costruire Milvus perché non c'era nient'altro che funzionasse<button data-href="#We-Started-Building-Milvus-Because-Nothing-Else-Worked" class="anchor-icon" translate="no">
+<p>For the past few years, we’ve been focused on one thing: building an enterprise-ready vector database for the AI era. The hard part isn’t building <em>a</em> database—it’s building one that’s scalable, easy to use, and actually solves real problems in production.</p>
+<p>This June, we reached a new milestone: Milvus hit <a href="https://github.com/milvus-io/milvus">35,000 stars on GitHub</a> (now it has 35.5K+ stars at the time of writing). We’re not going to pretend this is just another number—it means a lot to us.</p>
+<p>Each star represents a developer who took the time to look at what we’ve built, found it useful enough to bookmark, and in many cases, decided to use it. Some of you have gone further: filing issues, contributing code, answering questions in our forums, and helping other developers when they get stuck.</p>
+<p>We wanted to take a moment to share our story—the real one, with all the messy parts included.</p>
+<h2 id="We-Started-Building-Milvus-Because-Nothing-Else-Worked" class="common-anchor-header">We Started Building Milvus Because Nothing Else Worked<button data-href="#We-Started-Building-Milvus-Because-Nothing-Else-Worked" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,12 +39,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nel 2017 siamo partiti da una semplice domanda: Mentre le applicazioni di intelligenza artificiale iniziavano ad emergere e i dati non strutturati stavano esplodendo, come si potevano archiviare e cercare in modo efficiente le incorporazioni vettoriali che alimentano la comprensione semantica?</p>
-<p>I database tradizionali non sono stati costruiti per questo. Sono ottimizzati per righe e colonne, non per vettori ad alta dimensionalità. Le tecnologie e gli strumenti esistenti erano impossibili o dolorosamente lenti per le nostre esigenze.</p>
-<p>Abbiamo provato tutto ciò che era disponibile. Abbiamo messo insieme soluzioni con Elasticsearch. Abbiamo costruito indici personalizzati su MySQL. Abbiamo persino sperimentato FAISS, ma era stato progettato come biblioteca di ricerca, non come infrastruttura di database di produzione. Nulla forniva la soluzione completa che avevamo immaginato per i carichi di lavoro aziendali di intelligenza artificiale.</p>
-<p><strong>Così abbiamo iniziato a costruirne una nostra.</strong> Non perché pensassimo che sarebbe stato facile - i database sono notoriamente difficili da ottenere - ma perché vedevamo dove l'IA stava andando e sapevamo che aveva bisogno di un'infrastruttura costruita ad hoc per arrivarci.</p>
-<p>Nel 2018 eravamo già impegnati nello sviluppo di quello che sarebbe diventato <a href="https://milvus.io/">Milvus</a>. Il termine &quot;<strong>database vettoriale</strong>&quot; non esisteva ancora. Stavamo essenzialmente creando una nuova categoria di software infrastrutturale, il che era eccitante e terrificante allo stesso tempo.</p>
-<h2 id="Open-Sourcing-Milvus-Building-in-Public" class="common-anchor-header">Open-Sourcing di Milvus: costruire in pubblico<button data-href="#Open-Sourcing-Milvus-Building-in-Public" class="anchor-icon" translate="no">
+    </button></h2><p>Back in 2017, we started with a simple question: As AI applications were starting to emerge and unstructured data was exploding, how do you efficiently store and search the vector embeddings that power semantic understanding?</p>
+<p>Traditional databases weren’t built for this. They’re optimized for rows and columns, not high-dimensional vectors. The existing technologies and tools were either impossible or painfully slow for what we needed.</p>
+<p>We tried everything available. Hacked together solutions with Elasticsearch. Built custom indexes on top of MySQL. Even experimented with FAISS, but it was designed as a research library, not a production database infrastructure. Nothing provided the complete solution we envisioned for enterprise AI workloads.</p>
+<p><strong>So we started building our own.</strong> Not because we thought it would be easy—databases are notoriously hard to get right—but because we could see where AI was heading and knew it needed purpose-built infrastructure to get there.</p>
+<p>By 2018, we were deep into developing what would become <a href="https://milvus.io/">Milvus</a>. The term &quot;<strong>vector database</strong>&quot; didn’t even exist yet. We were essentially creating a new category of infrastructure software, which was both exciting and terrifying.</p>
+<h2 id="Open-Sourcing-Milvus-Building-in-Public" class="common-anchor-header">Open-Sourcing Milvus: Building in Public<button data-href="#Open-Sourcing-Milvus-Building-in-Public" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -59,12 +59,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nel novembre 2019 abbiamo deciso di rendere open-source la versione 0.10 di Milvus.</p>
-<p>Open-sourcing significa esporre al mondo tutti i propri difetti. Ogni hack, ogni commento TODO, ogni decisione progettuale di cui non si è del tutto sicuri. Ma eravamo convinti che se i database vettoriali dovevano diventare un'infrastruttura critica per l'intelligenza artificiale, dovevano essere aperti e accessibili a tutti.</p>
-<p>La risposta è stata travolgente. Gli sviluppatori non si sono limitati a usare Milvus, ma lo hanno migliorato. Hanno trovato bug che ci erano sfuggiti, suggerito funzionalità che non avevamo considerato e posto domande che ci hanno fatto riflettere sulle nostre scelte progettuali.</p>
-<p>Nel 2020 ci siamo uniti alla <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>. Non si trattava solo di credibilità: ci ha insegnato come mantenere un progetto open-source sostenibile. Come gestire la governance, la retrocompatibilità e costruire un software che duri anni, non mesi.</p>
-<p>Nel 2021 abbiamo rilasciato Milvus 1.0 e ci siamo <a href="https://lfaidata.foundation/projects/milvus/">laureati presso la LF AI &amp; Data Foundation</a>. Nello stesso anno abbiamo vinto la <a href="https://big-ann-benchmarks.com/neurips21.html">sfida globale BigANN</a> per la ricerca vettoriale su scala miliardaria. Questa vittoria ci ha fatto sentire bene, ma soprattutto ci ha dato la conferma che stavamo risolvendo problemi reali nel modo giusto.</p>
-<h2 id="The-Hardest-Decision-Starting-Over" class="common-anchor-header">La decisione più difficile: Ricominciare da capo<button data-href="#The-Hardest-Decision-Starting-Over" class="anchor-icon" translate="no">
+    </button></h2><p>In November 2019, we decided to open-source Milvus version 0.10.</p>
+<p>Open-sourcing means exposing all your flaws to the world. Every hack, every TODO comment, every design decision you’re not entirely sure about. But we believed that if vector databases were going to become critical infrastructure for AI, they needed to be open and accessible to everyone.</p>
+<p>The response was overwhelming. Developers didn’t just use Milvus—they improved it. They found bugs we’d missed, suggested features we hadn’t considered, and asked questions that made us think harder about our design choices.</p>
+<p>In 2020, we joined the <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>. This wasn’t just for credibility—it taught us how to maintain a sustainable open-source project. How to handle governance, backward compatibility, and building software that lasts years, not months.</p>
+<p>By 2021, we released Milvus 1.0 and <a href="https://lfaidata.foundation/projects/milvus/">graduated from LF AI &amp; Data Foundation</a>. That same year, we won the <a href="https://big-ann-benchmarks.com/neurips21.html">BigANN global challenge</a> for billion-scale vector search. That win felt good, but more importantly, it validated that we were solving real problems the right way.</p>
+<h2 id="The-Hardest-Decision-Starting-Over" class="common-anchor-header">The Hardest Decision: Starting Over<button data-href="#The-Hardest-Decision-Starting-Over" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -79,11 +79,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>È qui che le cose si complicano. Nel 2021, Milvus 1.0 funzionava bene per molti casi d'uso, ma i clienti aziendali continuavano a chiedere le stesse cose: una migliore architettura cloud-native, una scalabilità orizzontale più facile, una maggiore semplicità operativa.</p>
-<p>Avevamo una scelta: fare una patch per andare avanti o ricostruire da zero. Abbiamo scelto di ricostruire.</p>
-<p>Milvus 2.0 è stato essenzialmente una riscrittura completa. Abbiamo introdotto un'architettura storage-compute completamente disaccoppiata con scalabilità dinamica. Ci sono voluti due anni e sinceramente è stato uno dei periodi più stressanti della storia della nostra azienda. Stavamo buttando via un sistema funzionante che migliaia di persone utilizzavano per costruire qualcosa di non collaudato.</p>
-<p><strong>Ma quando nel 2022 abbiamo rilasciato Milvus 2.0, abbiamo trasformato Milvus da un potente database vettoriale a un'infrastruttura pronta per la produzione, in grado di scalare i carichi di lavoro aziendali.</strong> Nello stesso anno abbiamo anche completato un <a href="https://zilliz.com/news/vector-database-company-zilliz-series-b-extension">round di finanziamento di Serie B+, non</a>per bruciare soldi, ma per raddoppiare la qualità del prodotto e il supporto ai clienti globali. Sapevamo che questo percorso avrebbe richiesto tempo, ma ogni passo doveva essere costruito su basi solide.</p>
-<h2 id="When-Everything-Accelerated-with-AI" class="common-anchor-header">Quando tutto si è accelerato con l'intelligenza artificiale<button data-href="#When-Everything-Accelerated-with-AI" class="anchor-icon" translate="no">
+    </button></h2><p>Here’s where things get complicated. By 2021, Milvus 1.0 was working well for many use cases, but enterprise customers kept asking for the same things: better cloud-native architecture, easier horizontal scaling, more operational simplicity.</p>
+<p>We had a choice: patch our way forward or rebuild from the ground up. We chose to rebuild.</p>
+<p>Milvus 2.0 was essentially a complete rewrite. We introduced a fully decoupled storage-compute architecture with dynamic scalability. It took us two years and was honestly one of the most stressful periods in our company’s history. We were throwing away a working system that thousands of people were using to build something unproven.</p>
+<p><strong>But when we released Milvus 2.0 in 2022, it transformed Milvus from a powerful vector database into production-ready infrastructure that could scale to enterprise workloads.</strong> That same year, we also completed a <a href="https://zilliz.com/news/vector-database-company-zilliz-series-b-extension">Series B+ funding round</a>—not to burn money, but to double down on product quality and support for global customers. We knew this path would take time, but every step had to be built on a solid foundation.</p>
+<h2 id="When-Everything-Accelerated-with-AI" class="common-anchor-header">When Everything Accelerated with AI<button data-href="#When-Everything-Accelerated-with-AI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,12 +98,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Il 2023 è stato l'anno della <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> (retrieval-augmented generation). Improvvisamente, la ricerca semantica è passata da un'interessante tecnica di AI a un'infrastruttura essenziale per chatbot, sistemi di domande e risposte sui documenti e agenti di AI.</p>
-<p>Le stelle di Milvus su GitHub hanno avuto un'impennata. Le richieste di assistenza si sono moltiplicate. Gli sviluppatori che non avevano mai sentito parlare di database vettoriali improvvisamente facevano domande sofisticate sulle strategie di indicizzazione e sull'ottimizzazione delle query.</p>
-<p>Questa crescita è stata entusiasmante ma anche travolgente. Ci siamo resi conto che dovevamo scalare non solo la nostra tecnologia, ma anche il nostro intero approccio al supporto della comunità. Abbiamo assunto un maggior numero di sostenitori degli sviluppatori, abbiamo riscritto completamente la nostra documentazione e abbiamo iniziato a creare contenuti didattici per gli sviluppatori alle prime armi con i database vettoriali.</p>
-<p>Abbiamo anche lanciato <a href="https://zilliz.com/cloud">Zilliz Cloud, la nostra</a>versione completamente gestita di Milvus. Alcuni ci hanno chiesto perché stavamo "commercializzando" il nostro progetto open-source. La risposta onesta è che mantenere un'infrastruttura di livello aziendale è costoso e complesso. Zilliz Cloud ci permette di sostenere e accelerare lo sviluppo di Milvus mantenendo il nucleo del progetto completamente open source.</p>
-<p>Poi è arrivato il 2024. <a href="https://zilliz.com/blog/zilliz-named-a-leader-in-the-forrester-wave-vector-database-report"><strong>Forrester ci ha nominato leader</strong></a> <strong>nella categoria dei database vettoriali.</strong> Milvus ha superato le 30.000 stelle di GitHub. <strong>E ci rendemmo conto che la strada che avevamo tracciato per sette anni era finalmente diventata un'autostrada.</strong> Man mano che un numero sempre maggiore di aziende adottava i database vettoriali come infrastruttura critica, la nostra crescita aziendale ha subito una rapida accelerazione, confermando che le fondamenta che avevamo costruito potevano essere scalate sia dal punto di vista tecnico che commerciale.</p>
-<h2 id="The-Team-Behind-Milvus-Zilliz" class="common-anchor-header">Il team dietro Milvus: Zilliz<button data-href="#The-Team-Behind-Milvus-Zilliz" class="anchor-icon" translate="no">
+    </button></h2><p>2023 was the year of <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> (retrieval-augmented generation). Suddenly, semantic search went from an interesting AI technique to essential infrastructure for chatbots, document Q&amp;A systems, and AI agents.</p>
+<p>The GitHub stars of Milvus spiked. Support requests multiplied. Developers who had never heard of vector databases were suddenly asking sophisticated questions about indexing strategies and query optimization.</p>
+<p>This growth was exciting but also overwhelming. We realized we needed to scale not just our technology, but our entire approach to community support. We hired more developer advocates, completely rewrote our documentation, and started creating educational content for developers new to vector databases.</p>
+<p>We also launched <a href="https://zilliz.com/cloud">Zilliz Cloud</a>—our fully managed version of Milvus. Some people asked why we were “commercializing” our open-source project. The honest answer is that maintaining enterprise-grade infrastructure is expensive and complex. Zilliz Cloud allows us to sustain and accelerate Milvus development while keeping the core project completely open source.</p>
+<p>Then came 2024. <a href="https://zilliz.com/blog/zilliz-named-a-leader-in-the-forrester-wave-vector-database-report"><strong>Forrester named us a leader</strong></a> <strong>in the vector database category.</strong> Milvus passed 30,000 GitHub stars. <strong>And we realized: the road we’d been paving for seven years had finally become the highway.</strong> As more enterprises adopted vector databases as critical infrastructure, our business growth accelerated rapidly—validating that the foundation we’d built could scale both technically and commercially.</p>
+<h2 id="The-Team-Behind-Milvus-Zilliz" class="common-anchor-header">The Team Behind Milvus: Zilliz<button data-href="#The-Team-Behind-Milvus-Zilliz" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,13 +118,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ecco una cosa interessante: molte persone conoscono Milvus ma non Zilliz. A noi va bene così. <a href="https://zilliz.com/"><strong>Zilliz</strong></a> <strong>è il team che sta dietro a Milvus: lo costruiamo, lo manteniamo e lo supportiamo.</strong></p>
-<p>Ciò che ci sta più a cuore sono gli aspetti poco appariscenti che fanno la differenza tra una bella demo e un'infrastruttura pronta per la produzione: le ottimizzazioni delle prestazioni, le patch di sicurezza, la documentazione che aiuta davvero i principianti e la risposta ponderata ai problemi di GitHub.</p>
-<p>Abbiamo creato un team di assistenza globale 24 ore su 24, 7 giorni su 7, negli Stati Uniti, in Europa e in Asia, perché gli sviluppatori hanno bisogno di aiuto nei loro fusi orari, non nei nostri. Abbiamo collaboratori della comunità che chiamiamo &quot;<a href="https://docs.google.com/forms/d/e/1FAIpQLSfkVTYObayOaND8M1ci9eF_YWvoKDb-xQjLJYZ-LhbCdLAt2Q/viewform">Ambasciatori Milvus</a>&quot;, che organizzano eventi, rispondono alle domande dei forum e spesso spiegano i concetti meglio di noi.</p>
-<p>Abbiamo anche accolto con favore le integrazioni con AWS, GCP e altri fornitori di cloud, anche quando offrono le loro versioni gestite di Milvus. Più opzioni di distribuzione sono positive per gli utenti. Abbiamo notato che quando i team si trovano di fronte a sfide tecniche complesse, spesso finiscono per rivolgersi direttamente a noi, perché conosciamo il sistema nel profondo.</p>
-<p>Molti pensano che l'open source sia solo una &quot;cassetta degli attrezzi&quot;, ma in realtà è un &quot;processo evolutivo&quot;, uno sforzo collettivo di innumerevoli persone che lo amano e ci credono. Solo chi comprende veramente l'architettura può fornire il "perché" delle correzioni dei bug, dell'analisi dei colli di bottiglia delle prestazioni, dell'integrazione dei sistemi di dati e delle modifiche architetturali.</p>
-<p><strong>Quindi, se state utilizzando Milvus open-source o se state considerando i database vettoriali come componente centrale del vostro sistema di intelligenza artificiale, vi invitiamo a contattarci direttamente per ottenere un supporto professionale e tempestivo.</strong></p>
-<h2 id="Real-Impact-in-Production-The-Trust-from-Users" class="common-anchor-header">Impatto reale nella produzione: La fiducia degli utenti<button data-href="#Real-Impact-in-Production-The-Trust-from-Users" class="anchor-icon" translate="no">
+    </button></h2><p>Here’s something interesting: many people know Milvus but not Zilliz. We’re actually fine with that. <a href="https://zilliz.com/"><strong>Zilliz</strong></a> <strong>is the team behind Milvus—we build it, maintain it, and support it.</strong></p>
+<p>What we care about most are the unglamorous things that make the difference between a cool demo and production-ready infrastructure: performance optimizations, security patches, documentation that actually helps beginners, and responding thoughtfully to GitHub issues.</p>
+<p>We’ve built a 24/7 global support team across the U.S., Europe, and Asia, because developers need help in their time zones, not ours. We have community contributors we call &quot;<a href="https://docs.google.com/forms/d/e/1FAIpQLSfkVTYObayOaND8M1ci9eF_YWvoKDb-xQjLJYZ-LhbCdLAt2Q/viewform">Milvus Ambassadors</a>&quot; who organize events, answer forum questions, and often explain concepts better than we do.</p>
+<p>We’ve also welcomed integrations with AWS, GCP, and other cloud providers—even when they offer their own managed versions of Milvus. More deployment options are good for users. Though we’ve noticed that when teams hit complex technical challenges, they often end up reaching out to us directly because we understand the system at the deepest level.</p>
+<p>Many people think open source is just a “toolbox,” but it’s actually an &quot;evolutionary process&quot;—a collective effort by countless people who love and believe in it. Only those who truly understand the architecture can provide the “why” behind bug fixes, performance bottleneck analysis, data system integration, and architectural adjustments.</p>
+<p><strong>So if you’re using open-source Milvus, or considering vector databases as a core component of your AI system, we encourage you to reach out to us directly for the most professional and timely support.</strong></p>
+<h2 id="Real-Impact-in-Production-The-Trust-from-Users" class="common-anchor-header">Real Impact in Production: The Trust from Users<button data-href="#Real-Impact-in-Production-The-Trust-from-Users" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,18 +139,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>I casi d'uso di Milvus sono cresciuti oltre le nostre aspettative iniziali. Stiamo alimentando le infrastrutture di intelligenza artificiale di alcune delle aziende più esigenti del mondo, in tutti i settori.</p>
+    </button></h2><p>The use cases for Milvus have grown beyond what we initially imagined. We’re powering AI infrastructure for some of the world’s most demanding enterprises across every industry.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
-   </span> <span class="img-wrapper"> <span>clienti di zilliz.png</span> </span></p>
-<p><a href="https://zilliz.com/customers/bosch"><strong>Bosch</strong></a>, leader mondiale della tecnologia automobilistica e pioniere della guida autonoma, ha rivoluzionato l'analisi dei dati con Milvus, ottenendo una riduzione dell'80% dei costi di raccolta dei dati e un risparmio annuo di 1,4 milioni di dollari, ricercando miliardi di scenari di guida in millisecondi per individuare casi critici.</p>
-<p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a>, una delle aziende di AI per la produttività in più rapida crescita che serve milioni di utenti attivi mensilmente, utilizza Milvus per ottenere una latenza di recupero inferiore a 20-50 ms su miliardi di record e una velocità di 5 volte superiore nella ricerca agenziale. Il loro CTO afferma: "Milvus funge da repository centrale e alimenta il nostro reperimento di informazioni tra miliardi di record".</p>
-<p><a href="https://zilliz.com/customers/global-fintech-leader"><strong>Un leader globale del settore fintech</strong></a>, una delle più grandi piattaforme di pagamento digitale al mondo che elabora decine di miliardi di transazioni in oltre 200 Paesi e 25 valute, ha scelto Milvus per un'ingestione di batch 5-10 volte più veloce rispetto ai concorrenti, completando in meno di un'ora lavori che ad altri richiedevano oltre 8 ore.</p>
-<p><a href="https://zilliz.com/customers/filevine"><strong>Filevine</strong></a>, la principale piattaforma di lavoro legale a cui si affidano migliaia di studi legali in tutti gli Stati Uniti, gestisce 3 miliardi di vettori in milioni di documenti legali, facendo risparmiare agli avvocati il 60-80% del tempo nell'analisi dei documenti e ottenendo una "vera consapevolezza dei dati" per la gestione dei casi legali.</p>
-<p>Stiamo supportando anche <strong>NVIDIA, OpenAI, Microsoft, Salesforce, Walmart</strong> e molti altri in quasi tutti i settori. Oltre 10.000 organizzazioni hanno scelto Milvus o Zilliz Cloud come database vettoriale.</p>
-<p>Non si tratta solo di storie di successo tecnico, ma di esempi di come i database vettoriali stiano silenziosamente diventando un'infrastruttura critica che alimenta le applicazioni di intelligenza artificiale utilizzate ogni giorno.</p>
-<h2 id="Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="common-anchor-header">Perché abbiamo costruito Zilliz Cloud: Database vettoriali di livello aziendale come servizio<button data-href="#Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/zilliz_customers_e7340d5dd4.png" alt="zilliz customers.png" class="doc-image" id="zilliz-customers.png" />
+    <span>zilliz customers.png</span>
+  </span>
+</p>
+<p><a href="https://zilliz.com/customers/bosch"><strong>Bosch</strong></a>, the global automotive technology leader and pioneer in autonomous driving, revolutionized their data analysis with Milvus achieving 80% reduction in data collection costs and $1.4M annual savings while searching billions of driving scenarios in milliseconds for critical edge cases.</p>
+<p><a href="https://zilliz.com/customers/read-ai"><strong>Read AI</strong></a>, one of the fastest-growing productivity AI companies serving millions of monthly active users, uses Milvus to achieve sub-20-50ms retrieval latency across billions of records and 5× speedup in agentic search. Their CTO says, “Milvus serves as the central repository and powers our information retrieval among billions of records.”</p>
+<p><a href="https://zilliz.com/customers/global-fintech-leader"><strong>A global fintech leader</strong></a>, one of the world’s largest digital payment platforms processing tens of billions of transactions across 200+ countries and 25+ currencies, chose Milvus for 5-10× faster batch ingestion than competitors, completing jobs in under 1 hour that took others 8+ hours.</p>
+<p><a href="https://zilliz.com/customers/filevine"><strong>Filevine</strong></a>, the leading legal work platform trusted by thousands of law firms across the United States, manages 3 billion vectors across millions of legal documents, saving attorneys 60-80% of time in document analysis and achieving “true consciousness of data” for legal case management.</p>
+<p>We’re also supporting <strong>NVIDIA, OpenAI, Microsoft, Salesforce, Walmart,</strong> and many others in almost every industry. Over 10,000 organizations have made Milvus or Zilliz Cloud their vector database of choice.</p>
+<p>These aren’t just technical success stories—they’re examples of how vector databases are quietly becoming critical infrastructure that powers the AI applications people use every day.</p>
+<h2 id="Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="common-anchor-header">Why We Built Zilliz Cloud: Enterprise-Grade Vector Database as a Service<button data-href="#Why-We-Built-Zilliz-Cloud-Enterprise-Grade-Vector-Database-as-a-Service" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -165,17 +167,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus è open-source e gratuito. Ma il buon funzionamento di Milvus su scala aziendale richiede competenze approfondite e risorse significative. Selezione degli indici, gestione della memoria, strategie di scalabilità, configurazioni di sicurezza: non sono decisioni banali. Molti team vogliono la potenza di Milvus senza la complessità operativa e con un supporto aziendale, garanzie SLA, ecc.</p>
-<p>Ecco perché abbiamo creato <a href="https://zilliz.com/cloud">Zilliz Cloud, una</a>versione completamente gestita di Milvus distribuita in 25 regioni globali e in 5 cloud principali, tra cui AWS, GCP e Azure, progettata specificamente per carichi di lavoro AI su scala aziendale che richiedono prestazioni, sicurezza e affidabilità.</p>
-<p>Ecco cosa rende Zilliz Cloud diverso:</p>
+    </button></h2><p>Milvus is open-source and free to use. But running Milvus well at enterprise scale requires deep expertise and significant resources. Index selection, memory management, scaling strategies, security configurations—these aren’t trivial decisions. Many teams want the power of Milvus without the operational complexity and with enterprise support, SLA guarantees, etc.</p>
+<p>That’s why we built <a href="https://zilliz.com/cloud">Zilliz Cloud</a>—a fully managed version of Milvus deployed across 25 global regions and 5 major clouds, including AWS, GCP, and Azure, designed specifically for enterprise-scale AI workloads that demand performance, security, and reliability.</p>
+<p>Here’s what makes Zilliz Cloud different:</p>
 <ul>
-<li><p><strong>Scala massiccia con prestazioni elevate:</strong> Il nostro motore proprietario AutoIndex, alimentato dall'intelligenza artificiale, offre una velocità di interrogazione 3-5 volte superiore a quella di Milvus open-source, senza bisogno di sintonizzare gli indici. L'architettura cloud-native supporta miliardi di vettori e decine di migliaia di query simultanee, mantenendo tempi di risposta inferiori al secondo.</p></li>
-<li><p><a href="https://zilliz.com/trust-center"><strong>Sicurezza e conformità integrate</strong></a><strong>:</strong> Crittografia a riposo e in transito, RBAC a grana fine, registrazione completa degli audit, integrazione SAML/OAuth2.0 e implementazioni <a href="https://zilliz.com/bring-your-own-cloud">BYOC</a> (bring your own cloud). Siamo conformi a GDPR, HIPAA e ad altri standard globali di cui le aziende hanno bisogno.</p></li>
-<li><p><strong>Ottimizzato per l'efficienza dei costi:</strong> Lo storage dei dati caldo/freddo a livelli, lo scaling elastico che risponde ai carichi di lavoro reali e i prezzi pay-as-you-go possono ridurre il costo totale di proprietà del 50% o più rispetto alle implementazioni autogestite.</p></li>
-<li><p><strong>Veramente cloud-agnostico senza vendor lock-in:</strong> Distribuzione su AWS, Azure, GCP, Alibaba Cloud o Tencent Cloud senza vendor lock-in. Garantiamo coerenza e scalabilità a livello globale, indipendentemente dal luogo di esecuzione.</p></li>
+<li><p><strong>Massive Scale with High Performance:</strong> Our proprietary AI-powered AutoIndex engine delivers 3-5× faster query speeds than open-source Milvus, with zero index tuning required. The cloud-native architecture supports billions of vectors and tens of thousands of concurrent queries while maintaining sub-second response times.</p></li>
+<li><p><a href="https://zilliz.com/trust-center"><strong>Built-in Security &amp; Compliance</strong></a><strong>:</strong> Encryption at rest and in transit, fine-grained RBAC, comprehensive audit logging, SAML/OAuth2.0 integration, and <a href="https://zilliz.com/bring-your-own-cloud">BYOC</a> (bring your own cloud) deployments. We’re compliant with GDPR, HIPAA, and other global standards that enterprises actually need.</p></li>
+<li><p><strong>Optimized for Cost-Efficiency:</strong> Tiered hot/cold data storage, elastic scaling that responds to real workloads, and pay-as-you-go pricing can reduce total cost of ownership by 50% or more compared to self-managed deployments.</p></li>
+<li><p><strong>Truly Cloud-Agnostic without vendor lock-in:</strong> Deploy on AWS, Azure, GCP, Alibaba Cloud, or Tencent Cloud without vendor lock-in. We ensure global consistency and scalability regardless of where you run.</p></li>
 </ul>
-<p>Queste funzionalità potrebbero non sembrare appariscenti, ma risolvono problemi reali e quotidiani che i team aziendali devono affrontare quando costruiscono applicazioni AI su scala. E soprattutto: sotto il cofano c'è ancora Milvus, quindi non ci sono problemi di compatibilità o di lock-in proprietario.</p>
-<h2 id="Whats-Next-Vector-Data-Lake" class="common-anchor-header">Il prossimo passo: Lago di dati vettoriale<button data-href="#Whats-Next-Vector-Data-Lake" class="anchor-icon" translate="no">
+<p>These capabilities might not sound flashy, but they solve real, daily problems that enterprise teams face when building AI applications at scale. And most importantly: it’s still Milvus under the hood, so there’s no proprietary lock-in or compatibility issues.</p>
+<h2 id="Whats-Next-Vector-Data-Lake" class="common-anchor-header">What’s Next: Vector Data Lake<button data-href="#Whats-Next-Vector-Data-Lake" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,19 +192,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Abbiamo coniato il termine &quot;<a href="https://zilliz.com/learn/what-is-vector-database">database vettoriale</a>&quot; e siamo stati i primi a costruirne uno, ma non ci fermiamo qui. Ora stiamo costruendo la prossima evoluzione: <strong>Vector Data Lake.</strong></p>
-<p><strong>Ecco il problema che stiamo risolvendo: non tutte le ricerche vettoriali hanno bisogno di una latenza di millisecondi.</strong> Molte aziende dispongono di enormi set di dati che vengono interrogati occasionalmente, ad esempio per l'analisi storica dei documenti, per i calcoli di similarità in batch e per l'analisi delle tendenze a lungo termine. Per questi casi d'uso, un database vettoriale tradizionale in tempo reale è eccessivo e costoso.</p>
-<p>Vector Data Lake utilizza un'architettura separata storage-compute ottimizzata specificamente per vettori su larga scala e ad accesso non frequente, mantenendo i costi nettamente inferiori rispetto ai sistemi in tempo reale.</p>
-<p><strong>Le funzionalità principali includono:</strong></p>
+    </button></h2><p>We coined the term &quot;<a href="https://zilliz.com/learn/what-is-vector-database">vector database</a>&quot; and were the first to build one, but we’re not stopping there. We’re now building the next evolution: <strong>Vector Data Lake.</strong></p>
+<p><strong>Here’s the problem we’re solving: not every vector search needs millisecond latency.</strong> Many enterprises have massive datasets that are queried occasionally, including historical document analysis, batch similarity computations, and long-term trend analysis. For these use cases, a traditional real-time vector database is both overkill and expensive.</p>
+<p>Vector Data Lake uses a storage-compute separated architecture specifically optimized for massive-scale, infrequently accessed vectors while keeping costs dramatically lower than real-time systems.</p>
+<p><strong>Core capabilities include:</strong></p>
 <ul>
-<li><p><strong>Stack di dati unificato:</strong> Collega senza soluzione di continuità i livelli di dati online e offline con formati coerenti e archiviazione efficiente, in modo da poter spostare i dati tra i livelli caldi e freddi senza riformattazioni o migrazioni complesse.</p></li>
-<li><p><strong>Ecosistema di calcolo compatibile:</strong> Funziona in modo nativo con framework come Spark e Ray, supportando tutto, dalla ricerca vettoriale all'ETL e all'analisi tradizionali. Ciò significa che i team di dati esistenti possono lavorare con i dati vettoriali utilizzando gli strumenti che già conoscono.</p></li>
-<li><p><strong>Architettura ottimizzata per i costi:</strong> I dati caldi rimangono su SSD o NVMe per un accesso veloce; i dati freddi passano automaticamente allo storage a oggetti come S3. Le strategie di indicizzazione e archiviazione intelligenti consentono di mantenere l'I/O veloce quando serve, rendendo i costi di archiviazione prevedibili e accessibili.</p></li>
+<li><p><strong>Unified Data Stack:</strong> Seamlessly connects online and offline data layers with consistent formats and efficient storage, so you can move data between hot and cold tiers without reformatting or complex migrations.</p></li>
+<li><p><strong>Compatible Compute Ecosystem:</strong> Works natively with frameworks like Spark and Ray, supporting everything from vector search to traditional ETL and analytics. This means your existing data teams can work with vector data using tools they already know.</p></li>
+<li><p><strong>Cost-Optimized Architecture:</strong> Hot data stays on SSD or NVMe for fast access; cold data automatically moves to object storage like S3. Smart indexing and storage strategies keep I/O fast when you need it while making storage costs predictable and affordable.</p></li>
 </ul>
-<p>Non si tratta di sostituire i database vettoriali, ma di fornire alle aziende lo strumento giusto per ogni carico di lavoro. Ricerca in tempo reale per le applicazioni rivolte all'utente, data lake vettoriali convenienti per l'analisi e l'elaborazione storica.</p>
-<p>Crediamo ancora nella logica della Legge di Moore e del Paradosso di Jevons: quando il costo unitario dell'informatica diminuisce, l'adozione cresce. Lo stesso vale per l'infrastruttura vettoriale.</p>
-<p>Migliorando gli indici, le strutture di archiviazione, il caching e i modelli di implementazione, giorno dopo giorno, speriamo di rendere l'infrastruttura di IA più accessibile e conveniente per tutti e di contribuire a portare i dati non strutturati nel futuro dell'IA.</p>
-<h2 id="A-Big-Thanks-to-You-All" class="common-anchor-header">Un grande ringraziamento a tutti voi!<button data-href="#A-Big-Thanks-to-You-All" class="anchor-icon" translate="no">
+<p>This isn’t about replacing vector databases—it’s about giving enterprises the right tool for each workload. Real-time search for user-facing applications, cost-effective vector data lakes for analytics and historical processing.</p>
+<p>We still believe in the logic behind Moore’s Law and Jevons Paradox: as the unit cost of computing drops, adoption scales. The same applies to vector infrastructure.</p>
+<p>By improving indexes, storage structures, caching, and deployment models—day in, day out—we hope to make AI infrastructure more accessible and affordable for everyone, and to help bring unstructured data into the AI-native future.</p>
+<h2 id="A-Big-Thanks-to-You-All" class="common-anchor-header">A Big Thanks to You All!<button data-href="#A-Big-Thanks-to-You-All" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -217,18 +219,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le oltre 35.000 stelle rappresentano qualcosa di cui siamo veramente orgogliosi: una comunità di sviluppatori che trova Milvus abbastanza utile da consigliarlo e contribuirvi.</p>
-<p>Ma non abbiamo finito. Milvus ha bug da correggere, miglioramenti delle prestazioni da apportare e funzioni richieste dalla nostra comunità. La nostra tabella di marcia è pubblica e vogliamo davvero il vostro contributo su quali siano le priorità.</p>
-<p>Non è il numero in sé che conta, ma la fiducia che quelle stelle rappresentano. La fiducia nel fatto che continueremo a costruire all'aperto, ad ascoltare i commenti e a migliorare Milvus.</p>
+    </button></h2><p>Those 35K+ stars represent something we’re genuinely proud of: a community of developers who find Milvus useful enough to recommend and contribute to.</p>
+<p>But we’re not done. Milvus has bugs to fix, performance improvements to make, and features our community has been asking for. Our roadmap is public, and we genuinely want your input on what to prioritize.</p>
+<p>The number itself isn’t what matters—it’s the trust those stars represent. Trust that we’ll keep building in the open, keep listening to feedback, and keep making Milvus better.</p>
 <ul>
-<li><p><strong>Ai nostri collaboratori:</strong> i vostri PR, le segnalazioni di bug e i miglioramenti della documentazione rendono Milvus migliore ogni giorno. Grazie di cuore.</p></li>
-<li><p><strong>Ai nostri utenti:</strong> grazie per averci affidato i vostri carichi di lavoro di produzione e per il feedback che ci mantiene onesti.</p></li>
-<li><p><strong>Alla nostra comunità:</strong> grazie per rispondere alle domande, organizzare eventi e aiutare i nuovi arrivati a iniziare.</p></li>
+<li><p><strong>To our contributors:</strong> your PRs, bug reports, and documentation improvements make Milvus better every day. Thank you so much.</p></li>
+<li><p><strong>To our users:</strong> thank you for trusting us with your production workloads and for the feedback that keeps us honest.</p></li>
+<li><p><strong>To our community:</strong> thank you for answering questions, organizing events, and helping newcomers get started.</p></li>
 </ul>
-<p>Se siete nuovi ai database vettoriali, saremo lieti di aiutarvi a iniziare. Se state già utilizzando Milvus o Zilliz Cloud, ci piacerebbe <a href="https://zilliz.com/share-your-story">conoscere la vostra esperienza</a>. E se siete semplicemente curiosi di sapere cosa stiamo costruendo, i canali della nostra comunità sono sempre aperti.</p>
-<p>Continuiamo a costruire insieme l'infrastruttura che rende possibili le applicazioni AI.</p>
+<p>If you’re new to vector databases, we’d love to help you get started. If you’re already using Milvus or Zilliz Cloud, we’d love to <a href="https://zilliz.com/share-your-story">hear about your experience</a>. And if you’re just curious about what we’re building, our community channels are always open.</p>
+<p>Let’s keep building the infrastructure that makes AI applications possible—together.</p>
 <hr>
-<p>Trovateci qui: <a href="https://github.com/milvus-io/milvus">Milvus su GitHub</a> |<a href="https://zilliz.com/"> Zilliz Cloud</a> |<a href="https://discuss.milvus.io/"> Discord</a> | <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> | <a href="https://x.com/zilliz_universe">X</a> | <a href="https://www.youtube.com/@MilvusVectorDatabase/featured">YouTube</a></p>
+<p>Find us here: <a href="https://github.com/milvus-io/milvus">Milvus on GitHub</a> |<a href="https://zilliz.com/"> Zilliz Cloud</a> |<a href="https://discuss.milvus.io/"> Discord</a> | <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> | <a href="https://x.com/zilliz_universe">X</a> | <a href="https://www.youtube.com/@MilvusVectorDatabase/featured">YouTube</a></p>
 <p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1751017913702.1751029841530.667&amp;__hssc=175614333.3.1751029841530&amp;__hsfp=3554976067">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/office_hour_4fb9130a9b.png" alt="" class="doc-image" id="" />

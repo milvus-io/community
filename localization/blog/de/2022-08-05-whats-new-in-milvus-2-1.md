@@ -1,22 +1,33 @@
 ---
 id: 2022-08-05-whats-new-in-milvus-2-1.md
-title: Was ist neu in Milvus 2.1 - Mehr Einfachheit und Geschwindigkeit
+title: What's new in Milvus 2.1 - Towards simplicity and speed
 author: Xiaofan Luan
 date: 2022-08-05T00:00:00.000Z
 desc: >-
-  Milvus, die Open-Source-Vektordatenbank, bietet jetzt Verbesserungen in Bezug
-  auf Leistung und Benutzerfreundlichkeit, auf die die Benutzer schon lange
-  gewartet haben.
+  Milvus, the open-source vector database, now has performance and usability
+  improvements that users have long been anticipating.
 cover: assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png
 tag: News
 canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png" alt="What's new in Milvus 2.1 - Towards simplicity and speed" class="doc-image" id="what's-new-in-milvus-2.1---towards-simplicity-and-speed" />
-   </span> <span class="img-wrapper"> <span>Was ist neu in Milvus 2.1 - In Richtung Einfachheit und Geschwindigkeit</span> </span></p>
-<p>Wir freuen uns sehr, die<a href="https://milvus.io/docs/v2.1.x/release_notes.md">Veröffentlichung</a> von Milvus 2.1 nach sechs Monaten harter Arbeit aller Mitarbeiter der Milvus-Community bekannt geben zu können. Diese große Iteration der beliebten Vektordatenbank legt den Schwerpunkt auf <strong>Leistung</strong> und <strong>Benutzerfreundlichkeit</strong>, zwei der wichtigsten Schlüsselwörter unseres Fokus. Wir haben Unterstützung für Strings, Kafka Message Queue und eingebettetes Milvus hinzugefügt, sowie eine Reihe von Verbesserungen in Bezug auf Leistung, Skalierbarkeit, Sicherheit und Beobachtbarkeit. Milvus 2.1 ist ein aufregendes Update, das die "letzte Meile" vom Laptop des Algorithmus-Ingenieurs zu den produktiven Vektorähnlichkeitssuchdiensten überbrückt.</p>
-<custom-h1>Leistung - Mehr als eine 3,2-fache Steigerung</custom-h1><h2 id="5ms-level-latency" class="common-anchor-header">Latenzzeit auf 5ms-Niveau<button data-href="#5ms-level-latency" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/What_s_New_in_2_1_2_a0660df2a5.png" alt="What's new in Milvus 2.1 - Towards simplicity and speed" class="doc-image" id="what's-new-in-milvus-2.1---towards-simplicity-and-speed" />
+    <span>What's new in Milvus 2.1 - Towards simplicity and speed</span>
+  </span>
+</p>
+<p>We are very glad to announce the
+<a href="https://milvus.io/docs/v2.1.x/release_notes.md">release</a> of Milvus 2.1
+is now live after six months of hard work by all of our Milvus community
+contributors. This major iteration of the popular vector database
+emphasizes <strong>performance</strong> and <strong>usability</strong>, two most important
+keywords of our focus. We added support for strings, Kafka message
+queue, and embedded Milvus, as well as a number of improvements in
+performance, scalability, security, and observability. Milvus 2.1 is an
+exciting update that will bridge the “last mile” from the algorithm
+engineer’s laptop to production-level vector similarity search
+services.</p>
+<custom-h1>Performance - More than a 3.2x boost</custom-h1><h2 id="5ms-level-latency" class="common-anchor-header">5ms-level latency<button data-href="#5ms-level-latency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -31,9 +42,16 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus unterstützt bereits die ANN-Suche (Approximate Nearest Neighbour), was einen erheblichen Sprung gegenüber der traditionellen KNN-Methode darstellt. Allerdings stellen Durchsatz- und Latenzprobleme nach wie vor eine Herausforderung für Benutzer dar, die Vektordaten in Milliardenhöhe abrufen müssen.</p>
-<p>In Milvus 2.1 gibt es ein neues Routing-Protokoll, das sich nicht mehr auf Nachrichtenwarteschlangen in der Abrufverbindung stützt, wodurch die Abruflatenz für kleine Datensätze erheblich reduziert wird. Unsere Testergebnisse zeigen, dass Milvus seine Latenzzeit jetzt auf 5 ms senkt, was den Anforderungen kritischer Online-Verbindungen wie Ähnlichkeitssuche und Empfehlung entspricht.</p>
-<h2 id="Concurrency-control" class="common-anchor-header">Gleichzeitigkeitskontrolle<button data-href="#Concurrency-control" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus already supports approximate nearest neighbor (ANN) search, a
+substantial leap from the traditional KNN method. However, problems of
+throughput and latency continue to challenge users who need to deal with
+billion-scale vector data retrieval scenarios.</p>
+<p>In Milvus 2.1, there is a new routing protocol that no longer relies on
+message queues in the retrieval link, significantly reducing retrieval
+latency for small datasets. Our test results show that Milvus now brings
+its latency level down to 5ms, which meets the requirements of critical
+online links such as similarity search and recommendation.</p>
+<h2 id="Concurrency-control" class="common-anchor-header">Concurrency control<button data-href="#Concurrency-control" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,8 +66,15 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 verfeinert sein Gleichzeitigkeitsmodell durch die Einführung eines neuen Kostenbewertungsmodells und eines Gleichzeitigkeitsplaners. Es bietet nun eine Gleichzeitigkeitskontrolle, die sicherstellt, dass weder eine große Anzahl gleichzeitiger Anfragen um CPU- und Cache-Ressourcen konkurriert, noch die CPU zu wenig ausgelastet wird, weil es nicht genügend Anfragen gibt. Die neue, intelligente Scheduler-Schicht in Milvus 2.1 führt auch Small-nq-Abfragen mit konsistenten Abfrageparametern zusammen und sorgt so für eine erstaunliche 3,2-fache Leistungssteigerung in Szenarien mit Small-nq und hoher Gleichzeitigkeit der Abfragen.</p>
-<h2 id="In-memory-replicas" class="common-anchor-header">In-Memory-Replikate<button data-href="#In-memory-replicas" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.1 fine-tunes its concurrency model by introducing a new cost
+evaluation model and concurrency scheduler. It now provides concurrency
+control, which ensures that there will not be a large number of
+concurrent requests competing for CPU and cache resources, nor will the
+CPU be under-utilized because there are not enough requests. The new,
+intelligent scheduler layer in Milvus 2.1 also merges small-nq queries
+that have consistent request parameters, delivering an amazing 3.2x
+performance boost in scenarios with small-nq and high query concurrency.</p>
+<h2 id="In-memory-replicas" class="common-anchor-header">In-memory replicas<button data-href="#In-memory-replicas" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,13 +89,27 @@ canonicalUrl: 'https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 bietet In-Memory-Replikate, die die Skalierbarkeit und Verfügbarkeit für kleine Datensätze verbessern. Ähnlich wie die Nur-Lese-Replikate in herkömmlichen Datenbanken können die In-Memory-Replikate horizontal skaliert werden, indem Maschinen hinzugefügt werden, wenn die Lese-QPS hoch ist. Beim Vektor-Retrieval für kleine Datenmengen muss ein Empfehlungssystem oft eine QPS bieten, die die Leistungsgrenze eines einzelnen Rechners überschreitet. In diesen Szenarien kann der Durchsatz des Systems durch das Laden mehrerer Replikate in den Speicher erheblich verbessert werden. In Zukunft werden wir auch einen abgesicherten Lesemechanismus einführen, der auf speicherinternen Replikaten basiert und der schnell andere funktionale Kopien anfordert, falls das System sich von Ausfällen erholen muss, und der die Speicherredundanz vollständig nutzt, um die Gesamtverfügbarkeit des Systems zu verbessern.</p>
+    </button></h2><p>Milvus 2.1 brings in-memory replicas that improve scalability and
+availability for small datasets. Similar to the read-only replicas in
+traditional databases, in-memory replicas can scale horizontally by
+adding machines when the read QPS is high. In vector retrieval for small
+datasets, a recommendation system often needs to provide QPS that
+exceeds the performance limit of a single machine. Now in these
+scenarios, the system’s throughput can be significantly improved by
+loading multiple replicas in the memory. In the future, we will also
+introduce a hedged read mechanism based on in-memory replicas, which
+will quickly request other functional copies in case the system needs to
+recover from failures and makes full use of memory redundancy to improve
+the system’s overall availability.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/What_s_New_in_Milvus_2_1_Figure_1_excalidraw_1f7fe3c998.png" alt="In-memory replicas allow query services to be based on separate
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/What_s_New_in_Milvus_2_1_Figure_1_excalidraw_1f7fe3c998.png" alt="In-memory replicas allow query services to be based on separate
 copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-services-to-be-based-on-separate-copies-of-the-same-data." />
-   </span> <span class="img-wrapper"> <span>In-Memory-Replikate ermöglichen Abfragedienste, die auf separaten Kopien derselben Daten basieren</span>. </span></p>
-<h2 id="Faster-data-loading" class="common-anchor-header">Schnelleres Laden von Daten<button data-href="#Faster-data-loading" class="anchor-icon" translate="no">
+    <span>In-memory replicas allow query services to be based on separate
+copies of the same data.</span>
+  </span>
+</p>
+<h2 id="Faster-data-loading" class="common-anchor-header">Faster data loading<button data-href="#Faster-data-loading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -85,9 +124,17 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die letzte Leistungssteigerung betrifft das Laden von Daten. Milvus 2.1 komprimiert nun <a href="https://milvus.io/docs/v2.1.x/glossary.md#Log-snapshot">Binärprotokolle</a> mit Zstandard (zstd), was die Datengröße in den Objekt- und Nachrichtenspeichern sowie den Netzwerk-Overhead während des Datenladens erheblich reduziert. Darüber hinaus wurden Goroutine-Pools eingeführt, so dass Milvus Segmente gleichzeitig laden kann, wobei der Speicherbedarf kontrolliert wird und die Zeit für die Wiederherstellung nach Fehlern und das Laden von Daten minimiert wird.</p>
-<p>Die vollständigen Benchmark-Ergebnisse von Milvus 2.1 werden demnächst auf unserer Website veröffentlicht. Bleiben Sie dran.</p>
-<h2 id="String-and-scalar-index-support" class="common-anchor-header">Unterstützung von String- und Skalar-Indizes<button data-href="#String-and-scalar-index-support" class="anchor-icon" translate="no">
+    </button></h2><p>The last performance boost comes from data loading. Milvus 2.1 now
+compresses <a href="https://milvus.io/docs/v2.1.x/glossary.md#Log-snapshot">binary
+logs</a> with
+Zstandard (zstd), which significantly reduces data size in the object
+and message stores as well as network overhead during data loading. In
+addition, goroutine pools are now introduced so that Milvus can load
+segments concurrently with memory footprints controlled and minimize the
+time required to recover from failures and to load data.</p>
+<p>The complete benchmark results of Milvus 2.1 will be released on our
+website soon. Stay tuned.</p>
+<h2 id="String-and-scalar-index-support" class="common-anchor-header">String and scalar index support<button data-href="#String-and-scalar-index-support" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,14 +149,35 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mit der Version 2.1 unterstützt Milvus nun Strings mit variabler Länge (VARCHAR) als skalaren Datentyp. VARCHAR kann als Primärschlüssel verwendet werden, der als Ausgabe zurückgegeben werden kann, und kann auch als Attributfilter dienen. Das <a href="https://milvus.io/docs/v2.1.x/hybridsearch.md">Filtern von Attributen</a> ist eine der beliebtesten Funktionen, die Milvus-Benutzer benötigen. Wenn Sie oft nach &quot;Produkten suchen, die einem Benutzer in einer Preisspanne <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>von</mn><mo>200-200</mo></mrow><annotation encoding="application/x-tex">-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">200-300</span></span></span></span>am ähnlichsten sind&quot;, oder &quot;Artikel finden, die das Schlüsselwort 'Vektordatenbank' enthalten und mit cloud-nativen Themen in Verbindung stehen&quot;, werden Sie Milvus 2.1 lieben.</p>
-<p>Milvus 2.1 unterstützt auch den skalaren invertierten Index, um die Filtergeschwindigkeit auf der Grundlage der<a href="https://www.cs.le.ac.uk/people/ond1/XMLcomp/confersWEA06_LOUDS.pdf">prägnanten</a><a href="https://github.com/s-yata/marisa-trie">MARISA-Tries</a> als Datenstruktur zu verbessern. Alle Daten können nun mit einem sehr geringen Platzbedarf in den Speicher geladen werden, was einen viel schnelleren Vergleich, eine schnellere Filterung und ein schnelleres Präfix-Matching bei Zeichenketten ermöglicht. Unsere Testergebnisse zeigen, dass der Speicherbedarf von MARISA-trie nur 10% des Speicherbedarfs von Python-Wörterbüchern beträgt, um alle Daten in den Speicher zu laden und Abfragefunktionen bereitzustellen.</p>
+    </button></h2><p>With 2.1, Milvus now supports variable-length string (VARCHAR) as a
+scalar data type. VARCHAR can be used as the primary key that can be
+returned as output, and can also act as attribute filters. <a href="https://milvus.io/docs/v2.1.x/hybridsearch.md">Attribute
+filtering</a> is one of the
+most popular functions Milvus users need. If you often find yourself
+wanting to &quot;find products most similar to a user in a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>200</mn><mo>−</mo></mrow><annotation encoding="application/x-tex">200 -</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">200</span><span class="mord">−</span></span></span></span>300
+price range&quot;, or &quot;find articles that have the keyword ‘vector
+database’ and are related to cloud-native topics&quot;, you’ll love Milvus
+2.1.</p>
+<p>Milvus 2.1 also supports scalar inverted index to improve filtering
+speed based on
+<a href="https://www.cs.le.ac.uk/people/ond1/XMLcomp/confersWEA06_LOUDS.pdf">succinct</a>
+<a href="https://github.com/s-yata/marisa-trie">MARISA-Tries</a> as the data
+structure. All the data can now be loaded into memory with a very low
+footprint, which allows much quicker comparison, filtering and prefix
+matching on strings. Our test results show that the memory requirement
+of MARISA-trie is only 10% of that of Python dictionaries to load all
+the data into memory and provide query capabilities.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 combines MARISA-Trie with inverted index to significantly improve filtering speed." class="doc-image" id="milvus-2.1-combines-marisa-trie-with-inverted-index-to-significantly-improve-filtering-speed." />
-   </span> <span class="img-wrapper"> <span>Milvus 2.1 kombiniert MARISA-Trie mit einem invertierten Index, um die Filtergeschwindigkeit erheblich zu verbessern.</span> </span></p>
-<p>In Zukunft wird sich Milvus weiterhin auf Entwicklungen im Zusammenhang mit skalaren Abfragen konzentrieren, mehr skalare Indextypen und Abfrageoperatoren unterstützen und plattenbasierte skalare Abfragefunktionen bereitstellen, alles als Teil der laufenden Bemühungen, die Speicher- und Nutzungskosten skalarer Daten zu reduzieren.</p>
-<custom-h1>Verbesserungen der Benutzerfreundlichkeit</custom-h1><h2 id="Kafka-support" class="common-anchor-header">Kafka-Unterstützung<button data-href="#Kafka-support" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/What_s_new_in_Milvus_Figure_2_excalidraw_a1149aca96.png" alt="Milvus 2.1 combines MARISA-Trie with inverted index to significantly improve filtering speed." class="doc-image" id="milvus-2.1-combines-marisa-trie-with-inverted-index-to-significantly-improve-filtering-speed." />
+    <span>Milvus 2.1 combines MARISA-Trie with inverted index to significantly improve filtering speed.</span>
+  </span>
+</p>
+<p>In the future, Milvus will continue focusing on scalar query-related
+developments, support more scalar index types and query operators, and
+provide disk-based scalar query capabilities, all as part of an ongoing
+effort to reduce storage and usage cost of scalar data.</p>
+<custom-h1>Usability improvements</custom-h1><h2 id="Kafka-support" class="common-anchor-header">Kafka support<button data-href="#Kafka-support" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,8 +192,15 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 bietet Ihnen nun die Möglichkeit,<a href="https://pulsar.apache.org">Pulsar</a> oder <a href="https://kafka.apache.org">Kafka</a> als <a href="https://milvus.io/docs/v2.1.x/deploy_pulsar.md">Nachrichtenspeicher</a> zu verwenden, je nach Konfiguration des Benutzers, dank der Abstraktion und Kapselung von Milvus und dem Go Kafka SDK von Confluent.</p>
-<h2 id="Production-ready-Java-SDK" class="common-anchor-header">Produktionsfähiges Java-SDK<button data-href="#Production-ready-Java-SDK" class="anchor-icon" translate="no">
+    </button></h2><p>Our community has long been requesting support for <a href="https://kafka.apache.org">Apache
+Kafka</a> as the <a href="https://milvus.io/docs/v2.1.x/deploy_pulsar.md">message
+storage</a> in Milvus.
+Milvus 2.1 now offers you the option to use
+<a href="https://pulsar.apache.org">Pulsar</a> or Kafka as the message storage
+based on user configurations, thanks to the abstraction and
+encapsulation design of Milvus and the Go Kafka SDK contributed by
+Confluent.</p>
+<h2 id="Production-ready-Java-SDK" class="common-anchor-header">Production-ready Java SDK<button data-href="#Production-ready-Java-SDK" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -140,8 +215,14 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mit Milvus 2.1 ist unser <a href="https://github.com/milvus-io/milvus-sdk-java">Java SDK</a> nun offiziell freigegeben. Das Java-SDK verfügt über genau dieselben Funktionen wie das Python-SDK, mit einer noch besseren Gleichzeitigkeitsleistung. Im nächsten Schritt werden unsere Community-Mitarbeiter schrittweise die Dokumentation und die Anwendungsfälle für das Java-SDK verbessern und dazu beitragen, dass auch die Go- und RESTful-SDKs in die Produktionsreife gebracht werden.</p>
-<h2 id="Observability-and-maintainability" class="common-anchor-header">Beobachtbarkeit und Wartbarkeit<button data-href="#Observability-and-maintainability" class="anchor-icon" translate="no">
+    </button></h2><p>With Milvus 2.1, our <a href="https://github.com/milvus-io/milvus-sdk-java">Java
+SDK</a> is now officially
+released. The Java SDK has the exact same capabilities as the Python
+SDK, with even better concurrency performance. In the next step, our
+community contributors will gradually improve documentation and use
+cases for the Java SDK, and help push Go and RESTful SDKs into the
+production-ready stage, too.</p>
+<h2 id="Observability-and-maintainability" class="common-anchor-header">Observability and maintainability<button data-href="#Observability-and-maintainability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -156,8 +237,13 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 fügt wichtige<a href="https://milvus.io/docs/v2.1.x/metrics_dashboard.md">Überwachungsmetriken</a> hinzu, wie z. B. die Anzahl der Vektoreinfügungen, Suchlatenz/Durchsatz, Knotenspeicher-Overhead und CPU-Overhead. Außerdem optimiert die neue Version die Protokollierung erheblich, indem sie die Protokollebenen anpasst und unnötige Protokolldrucke reduziert.</p>
-<h2 id="Embedded-Milvus" class="common-anchor-header">Eingebettetes Milvus<button data-href="#Embedded-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.1 adds important monitoring
+<a href="https://milvus.io/docs/v2.1.x/metrics_dashboard.md">metrics</a> such as
+vector insertion counts, search latency/throughput, node memory
+overhead, and CPU overhead. Plus, the new version also significantly
+optimizes log keeping by adjusting log levels and reducing useless log
+printing.</p>
+<h2 id="Embedded-Milvus" class="common-anchor-header">Embedded Milvus<button data-href="#Embedded-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,9 +258,20 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus hat die Bereitstellung von groß angelegten massiven Vektordatensuchdiensten erheblich vereinfacht, aber für Wissenschaftler, die Algorithmen in kleinerem Maßstab validieren wollen, ist Docker oder K8s immer noch zu kompliziert. Mit der Einführung von <a href="https://github.com/milvus-io/embd-milvus">Embedded Milvus</a> können Sie Milvus jetzt mit pip installieren, genau wie Pyrocksb und Pysqlite. Embedded Milvus unterstützt alle Funktionalitäten der Cluster- und der Standalone-Version, so dass Sie problemlos von Ihrem Laptop zu einer verteilten Produktionsumgebung wechseln können, ohne eine einzige Zeile Code zu ändern. Algorithmus-Ingenieure werden bei der Erstellung eines Prototyps mit Milvus eine viel bessere Erfahrung machen.</p>
-<custom-h1>Testen Sie jetzt die sofort einsatzbereite Vektorsuche</custom-h1><p>Darüber hinaus bietet Milvus 2.1 auch einige große Verbesserungen in Bezug auf Stabilität und Skalierbarkeit, und wir freuen uns auf Ihre Nutzung und Ihr Feedback.</p>
-<h2 id="Whats-next" class="common-anchor-header">Was kommt als nächstes?<button data-href="#Whats-next" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus has greatly simplified the deployment of large-scale massive
+vector data retrieval services, but for scientists who want to validate
+algorithms on a smaller scale, Docker or K8s is still too unnecessarily
+complicated. With the introduction of <a href="https://github.com/milvus-io/embd-milvus">embedded
+Milvus</a>, you can now install
+Milvus using pip, just like with Pyrocksb and Pysqlite. Embedded Milvus
+supports all the functionalities of both the cluster and standalone
+versions, allowing you to easily switch from your laptop to a
+distributed production environment without changing a single line of
+code. Algorithm engineers will have a much better experience when
+building a prototype with Milvus.</p>
+<custom-h1>Try out-of-the-box vector search now</custom-h1><p>Moreover, Milvus 2.1 also has some great improvements in stability and
+scalability, and we look forward to your use and feedbacks.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,11 +287,17 @@ copies of the same data." class="doc-image" id="in-memory-replicas-allow-query-s
         ></path>
       </svg>
     </button></h2><ul>
-<li>Lesen Sie die detaillierten <a href="https://milvus.io/docs/v2.1.x/release_notes.md">Release Notes</a> für alle Änderungen in Milvus 2.1</li>
-<li><a href="https://milvus.io/docs/v2.1.x/install_standalone-docker.md">Installieren</a>Sie Milvus 2.1 und probieren Sie die neuen Funktionen aus</li>
-<li>Treten Sie unserer <a href="https://slack.milvus.io/">Slack-Community</a> bei und diskutieren Sie die neuen Funktionen mit Tausenden von Milvus-Nutzern auf der ganzen Welt</li>
-<li>Folgen Sie uns auf <a href="https://twitter.com/milvusio">Twitter</a> und<a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a>, um Updates zu erhalten, sobald unsere Blogs zu bestimmten neuen Funktionen veröffentlicht werden</li>
+<li>See the detailed <a href="https://milvus.io/docs/v2.1.x/release_notes.md">Release
+Notes</a> for all the
+changes in Milvus 2.1</li>
+<li><a href="https://milvus.io/docs/v2.1.x/install_standalone-docker.md">Install</a>
+Milvus 2.1 and try out the new features</li>
+<li>Join our <a href="https://slack.milvus.io/">Slack community</a> and discuss the
+new features with thousands of Milvus users around the world</li>
+<li>Follow us on <a href="https://twitter.com/milvusio">Twitter</a> and
+<a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a> to
+get updates once our blogs on specific new features are out</li>
 </ul>
 <blockquote>
-<p>Bearbeitet von <a href="https://github.com/songxianj">Songxian Jiang</a></p>
+<p>Edited by <a href="https://github.com/songxianj">Songxian Jiang</a></p>
 </blockquote>

@@ -1,14 +1,13 @@
 ---
 id: >-
   stop-your-ai-assistant-from-writing-outdated-code-with-milvus-sdk-code-helper.md
-title: >-
-  Запретите своему помощнику по искусственному интеллекту писать устаревший код
-  с помощью Milvus SDK Code Helper
+title: |
+  Stop Your AI Assistant from Writing Outdated Code with Milvus SDK Code Helper
 author: 'Cheney Zhang, Stacy Li'
 date: 2025-08-22T00:00:00.000Z
 desc: >-
-  Пошаговое руководство по настройке Milvus SDK Code Helper для предотвращения
-  генерации устаревшего кода ассистентами ИИ и обеспечения лучших практик.
+  Step-by-step tutorial on setting up the Milvus SDK Code Helper to stop AI
+  assistants from generating outdated code and ensure best practices.
 cover: >-
   assets.zilliz.com/stop_your_ai_assistant_from_writing_outdated_code_with_milvus_sdk_code_helper_min_64fa8d3396.png
 tag: Tutorials
@@ -21,7 +20,7 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/stop-your-ai-assistant-from-writing-outdated-code-with-milvus-sdk-code-helper.md
 ---
-<h2 id="Introduction" class="common-anchor-header">Введение<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,35 +35,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vibe Coding меняет то, как мы пишем программное обеспечение. Такие инструменты, как Cursor и Windsurf, делают разработку легкой и интуитивно понятной - спросите функцию и получите сниппет, нужно быстро вызвать API, и он будет создан еще до того, как вы закончите печатать. Обещается плавная, бесшовная разработка, когда ваш помощник ИИ предугадывает ваши потребности и предоставляет именно то, что вы хотите.</p>
-<p>Но есть один критический недостаток, нарушающий этот прекрасный поток: ИИ-ассистенты часто генерируют устаревший код, который ломается в процессе эксплуатации.</p>
-<p>Рассмотрим этот пример: Я попросил Cursor сгенерировать код подключения Milvus, и он выдал следующее:</p>
+    </button></h2><p>Vibe Coding is transforming how we write software. Tools like Cursor and Windsurf are making development feel effortless and intuitive—ask for a function and get a snippet, need a quick API call, and it’s generated before you finish typing. The promise is smooth, seamless development where your AI assistant anticipates your needs and delivers exactly what you want.</p>
+<p>But there’s a critical flaw breaking this beautiful flow: AI assistants frequently generate outdated code that breaks in production.</p>
+<p>Consider this example: I asked Cursor to generate Milvus connection code, and it produced this:</p>
 <pre><code translate="no">connections.<span class="hljs-title function_">connect</span>(<span class="hljs-string">&quot;default&quot;</span>, host=<span class="hljs-string">&quot;localhost&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Раньше это работало отлично, но текущий pymilvus SDK рекомендует использовать <code translate="no">MilvusClient</code> для всех соединений и операций. Старый метод больше не считается лучшей практикой, однако ИИ-помощники продолжают использовать его, поскольку их обучающие данные часто устарели на месяцы или годы.</p>
-<p>Несмотря на весь прогресс инструментов Vibe Coding, разработчики по-прежнему тратят значительное время на преодоление "последней мили" между сгенерированным кодом и готовыми к производству решениями. Вибрация есть, а точности нет.</p>
-<h3 id="What-is-the-Milvus-SDK-Code-Helper" class="common-anchor-header">Что такое Milvus SDK Code Helper?</h3><p><strong>Milvus SDK Code Helper</strong> - это решение, ориентированное на разработчиков, которое решает проблему <em>"последней мили"</em> в Vibe Coding - сокращает разрыв между кодированием с помощью искусственного интеллекта и готовыми к производству приложениями Milvus.</p>
-<p>По своей сути это <strong>сервер Model Context Protocol (MCP)</strong>, который подключает вашу IDE с поддержкой ИИ непосредственно к последней официальной документации Milvus. В сочетании с технологией Retrieval-Augmented Generation (RAG) он гарантирует, что код, который генерирует ваш помощник, всегда точен, актуален и соответствует лучшим практикам Milvus.</p>
-<p>Вместо устаревших фрагментов или догадок вы получаете контекстно-ориентированные, соответствующие стандартам предложения по коду прямо в рабочем процессе разработки.</p>
-<p><strong>Ключевые преимущества:</strong></p>
+<p>This used to work perfectly, but the current pymilvus SDK recommends using <code translate="no">MilvusClient</code> for all connections and operations. The old method is no longer considered best practice, yet AI assistants continue to suggest it because their training data is often months or years out of date.</p>
+<p>Despite all the progress in Vibe Coding tools, developers still spend significant time bridging the “last mile” between generated code and production-ready solutions. The vibe is there, but the accuracy isn’t.</p>
+<h3 id="What-is-the-Milvus-SDK-Code-Helper" class="common-anchor-header">What is the Milvus SDK Code Helper?</h3><p>The <strong>Milvus SDK Code Helper</strong> is a developer-focused solution that solves the <em>“last mile”</em> problem in Vibe Coding—bridging the gap between AI-assisted coding and production-ready Milvus applications.</p>
+<p>At its core, it’s a <strong>Model Context Protocol (MCP) server</strong> that connects your AI-powered IDE directly to the latest official Milvus documentation. Combined with Retrieval-Augmented Generation (RAG), it ensures the code your assistant generates is always accurate, up-to-date, and aligned with the Milvus best practices.</p>
+<p>Instead of outdated snippets or guesswork, you get context-aware, standards-compliant code suggestions—right inside your development workflow.</p>
+<p><strong>Key Benefits:</strong></p>
 <ul>
-<li><p>⚡ <strong>Настройте один раз, повысьте эффективность навсегда</strong>: Настройте один раз и наслаждайтесь постоянно обновляемой генерацией кода</p></li>
-<li><p><strong>🎯 Всегда актуально</strong>: Доступ к последней официальной документации Milvus SDK</p></li>
-<li><p>📈 <strong>Улучшенное качество кода</strong>: Генерируйте код в соответствии с лучшими современными практиками</p></li>
-<li><p>🌊 <strong>Восстановленный поток</strong>: Сохраняйте плавность и непрерывность работы с Vibe Coding.</p></li>
+<li><p>⚡ <strong>Configure once, boost efficiency forever</strong>: Set it up once and enjoy consistently updated code generation</p></li>
+<li><p>🎯 <strong>Always current</strong>: Access to the latest official Milvus SDK documentation</p></li>
+<li><p>📈 <strong>Improved code quality</strong>: Generate code that follows current best practices</p></li>
+<li><p>🌊 <strong>Restored flow</strong>: Keep your Vibe Coding experience smooth and uninterrupted</p></li>
 </ul>
-<p><strong>Три инструмента в одном</strong></p>
+<p><strong>Three Tools in One</strong></p>
 <ol>
-<li><p><code translate="no">pymilvus-code-generator</code> → Быстрое написание кода на языке Python для общих задач Milvus (например, создание коллекций, вставка данных, векторный поиск).</p></li>
-<li><p><code translate="no">orm-client-code-converter</code> → Модернизируйте устаревший код на Python, заменив устаревшие шаблоны ORM на новейший синтаксис <code translate="no">MilvusClient</code>.</p></li>
-<li><p><code translate="no">language-translator</code> → Бесшовное преобразование кода Milvus SDK между языками (например, Python ↔ TypeScript).</p></li>
+<li><p><code translate="no">pymilvus-code-generator</code> → Quickly write Python code for common Milvus tasks (e.g., creating collections, inserting data, running vector searches).</p></li>
+<li><p><code translate="no">orm-client-code-converter</code> → Modernize legacy Python code by replacing outdated ORM patterns with the latest <code translate="no">MilvusClient</code> syntax.</p></li>
+<li><p><code translate="no">language-translator</code> → Seamlessly convert Milvus SDK code between languages (e.g., Python ↔ TypeScript).</p></li>
 </ol>
-<p>Более подробную информацию можно найти на ресурсах ниже:</p>
+<p>Check the resources below for more details:</p>
 <ul>
-<li><p>Блог: <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">Почему ваш Vibe-кодинг генерирует устаревший код и как это исправить с помощью Milvus MCP </a></p></li>
+<li><p>Blog: <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">Why Your Vibe Coding Generates Outdated Code and How to Fix It with Milvus MCP </a></p></li>
 <li><p>Doc: <a href="https://milvus.io/docs/milvus-sdk-helper-mcp.md#Quickstart">Milvus SDK Code Helper Guide | Milvus Documentation</a></p></li>
 </ul>
-<h3 id="Before-You-Begin" class="common-anchor-header">Прежде чем начать</h3><p>Прежде чем приступить к процессу настройки, давайте рассмотрим, как сильно отличается Code Helper на практике. Приведенное ниже сравнение показывает, как один и тот же запрос на создание коллекции Milvus приводит к совершенно разным результатам:</p>
+<h3 id="Before-You-Begin" class="common-anchor-header">Before You Begin</h3><p>Before diving into the setup process, let’s examine the dramatic difference the Code Helper makes in practice. The comparison below shows how the same request for creating a Milvus collection produces completely different results:</p>
 <table>
 <thead>
 <tr><th><strong>MCP Code Helper Enabled:</strong></th><th><strong>MCP Code Helper Disabled:</strong></th></tr>
@@ -83,15 +82,15 @@ origin: >-
 </td></tr>
 </tbody>
 </table>
-<p>Это прекрасно иллюстрирует суть проблемы: без Code Helper даже самые продвинутые помощники ИИ генерируют код, используя устаревшие шаблоны ORM SDK, которые больше не рекомендуются. Code Helper гарантирует, что вы каждый раз будете получать самую актуальную, эффективную и официально одобренную реализацию.</p>
-<p><strong>Разница на практике:</strong></p>
+<p>This perfectly illustrates the core problem: without the Code Helper, even the most advanced AI assistants generate code using outdated ORM SDK patterns that are no longer recommended. The Code Helper ensures you get the most current, efficient, and officially endorsed implementation every time.</p>
+<p><strong>The Difference in Practice:</strong></p>
 <ul>
-<li><p><strong>Современный подход</strong>: Чистый, поддерживаемый код, использующий лучшие современные практики.</p></li>
-<li><p><strong>Устаревший подход</strong>: Код, который работает, но следует устаревшим шаблонам</p></li>
-<li><p><strong>Влияние на производство</strong>: Текущий код более эффективен, его легче поддерживать, и он защищен от будущего.</p></li>
+<li><p><strong>Modern approach</strong>: Clean, maintainable code using current best practices</p></li>
+<li><p><strong>Deprecated approach</strong>: Code that works but follows outdated patterns</p></li>
+<li><p><strong>Production impact</strong>: Current code is more efficient, easier to maintain, and future-proof</p></li>
 </ul>
-<p>Это руководство поможет вам настроить Milvus SDK Code Helper в различных IDE и средах разработки ИИ. Процесс настройки прост и обычно занимает всего несколько минут для каждой IDE.</p>
-<h2 id="Setting-Up-the-Milvus-SDK-Code-Helper" class="common-anchor-header">Настройка Milvus SDK Code Helper<button data-href="#Setting-Up-the-Milvus-SDK-Code-Helper" class="anchor-icon" translate="no">
+<p>This guide will walk you through setting up the Milvus SDK Code Helper across multiple AI IDEs and development environments. The setup process is straightforward and typically takes just a few minutes per IDE.</p>
+<h2 id="Setting-Up-the-Milvus-SDK-Code-Helper" class="common-anchor-header">Setting Up the Milvus SDK Code Helper<button data-href="#Setting-Up-the-Milvus-SDK-Code-Helper" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,20 +105,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В следующих разделах приведены подробные инструкции по настройке для каждой поддерживаемой IDE и среды разработки. Выберите раздел, который соответствует предпочитаемой вами среде разработки.</p>
-<h3 id="Cursor-IDE-Setup" class="common-anchor-header">Настройка среды разработки Cursor</h3><p>Cursor обеспечивает бесшовную интеграцию с серверами MCP благодаря встроенной системе настроек.</p>
-<p><strong>Шаг 1: Доступ к настройкам MCP</strong></p>
-<p>Перейдите в: Настройки → Настройки Cursor → Инструменты и интеграции → Добавить новый глобальный MCP-сервер</p>
+    </button></h2><p>The following sections provide detailed setup instructions for each supported IDE and development environment. Choose the section that corresponds to your preferred development setup.</p>
+<h3 id="Cursor-IDE-Setup" class="common-anchor-header">Cursor IDE Setup</h3><p>Cursor offers seamless integration with MCP servers through its built-in configuration system.</p>
+<p><strong>Step 1: Access MCP Settings</strong></p>
+<p>Navigate to: Settings → Cursor Settings → Tools &amp; Integrations → Add new global MCP server</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/cursor_mcp_configuration_interface_9ff0b7dcb7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
- <em>Интерфейс конфигурации MCP в Курсоре</em></p>
-<p><strong>Шаг 2: Настройте MCP-сервер</strong></p>
-<p>У вас есть два варианта конфигурации:</p>
-<p><strong>Вариант A: Глобальная конфигурация (рекомендуется)</strong></p>
-<p>Добавьте следующую конфигурацию в файл Cursor <code translate="no">~/.cursor/mcp.json</code>:</p>
+ <em>Cursor MCP configuration interface</em></p>
+<p><strong>Step 2: Configure the MCP Server</strong></p>
+<p>You have two options for configuration:</p>
+<p><strong>Option A: Global Configuration (Recommended)</strong></p>
+<p>Add the following configuration to your Cursor <code translate="no">~/.cursor/mcp.json</code> file:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -131,12 +130,12 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Вариант B: Конфигурация для конкретного проекта</strong></p>
-<p>Создайте файл <code translate="no">.cursor/mcp.json</code> в папке проекта с такой же конфигурацией, как указано выше.</p>
-<p>Дополнительные параметры конфигурации и способы устранения неполадок см. в<a href="https://docs.cursor.com/context/model-context-protocol"> документации по Cursor MCP</a>.</p>
-<h3 id="Claude-Desktop-Setup" class="common-anchor-header">Настройка Claude Desktop</h3><p>Claude Desktop обеспечивает простую интеграцию MCP с помощью своей системы конфигурации.</p>
-<p><strong>Шаг 1: Найдите файл конфигурации</strong></p>
-<p>Добавьте следующую конфигурацию в файл конфигурации Claude Desktop:</p>
+<p><strong>Option B: Project-Specific Configuration</strong></p>
+<p>Create a <code translate="no">.cursor/mcp.json</code> file in your project folder with the same configuration above.</p>
+<p>For additional configuration options and troubleshooting, refer to the<a href="https://docs.cursor.com/context/model-context-protocol"> Cursor MCP documentation</a>.</p>
+<h3 id="Claude-Desktop-Setup" class="common-anchor-header">Claude Desktop Setup</h3><p>Claude Desktop provides straightforward MCP integration through its configuration system.</p>
+<p><strong>Step 1: Locate Configuration File</strong></p>
+<p>Add the following configuration to your Claude Desktop configuration file:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -148,11 +147,11 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Шаг 2: Перезапустите Claude Desktop</strong></p>
-<p>После сохранения конфигурации перезапустите Claude Desktop, чтобы активировать новый MCP-сервер.</p>
-<h3 id="Claude-Code-Setup" class="common-anchor-header">Настройка Claude Code</h3><p>Claude Code предлагает настройку MCP-серверов через командную строку, что делает его идеальным для разработчиков, предпочитающих настройку через терминал.</p>
-<p><strong>Шаг 1: Добавление MCP-сервера через командную строку</strong></p>
-<p>Выполните следующую команду в терминале:</p>
+<p><strong>Step 2: Restart Claude Desktop</strong></p>
+<p>After saving the configuration, restart Claude Desktop to activate the new MCP server.</p>
+<h3 id="Claude-Code-Setup" class="common-anchor-header">Claude Code Setup</h3><p>Claude Code offers command-line configuration for MCP servers, making it ideal for developers who prefer terminal-based setup.</p>
+<p><strong>Step 1: Add MCP Server via Command Line</strong></p>
+<p>Execute the following command in your terminal:</p>
 <pre><code translate="no">claude mcp add-json sdk-code-helper --json &#x27;{
   &quot;url&quot;: &quot;https://sdk.milvus.io/mcp/&quot;,
   &quot;headers&quot;: {
@@ -160,11 +159,11 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Шаг 2: Проверка установки</strong></p>
-<p>Сразу после выполнения команды MCP-сервер будет автоматически настроен и готов к работе.</p>
-<h3 id="Windsurf-IDE-Setup" class="common-anchor-header">Настройка IDE Windsurf</h3><p>Windsurf поддерживает настройку MCP через свою систему настроек на основе JSON.</p>
-<p><strong>Шаг 1: Доступ к настройкам MCP</strong></p>
-<p>Добавьте следующую конфигурацию в файл настроек Windsurf MCP:</p>
+<p><strong>Step 2: Verify Installation</strong></p>
+<p>The MCP server will be automatically configured and ready for use immediately after running the command.</p>
+<h3 id="Windsurf-IDE-Setup" class="common-anchor-header">Windsurf IDE Setup</h3><p>Windsurf supports MCP configuration through its JSON-based settings system.</p>
+<p><strong>Step 1: Access MCP Settings</strong></p>
+<p>Add the following configuration to your Windsurf MCP settings file:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -176,13 +175,13 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Шаг 2: Применить конфигурацию</strong></p>
-<p>Сохраните файл настроек и перезапустите Windsurf, чтобы активировать MCP-сервер.</p>
-<h3 id="VS-Code-Setup" class="common-anchor-header">Настройка VS Code</h3><p>Для правильной работы интеграции VS Code требуется MCP-совместимое расширение.</p>
-<p><strong>Шаг 1: Установите расширение MCP</strong></p>
-<p>Убедитесь, что в VS Code установлено MCP-совместимое расширение.</p>
-<p><strong>Шаг 2: Настройте MCP-сервер</strong></p>
-<p>Добавьте следующую конфигурацию в настройки MCP в VS Code:</p>
+<p><strong>Step 2: Apply Configuration</strong></p>
+<p>Save the settings file and restart Windsurf to activate the MCP server.</p>
+<h3 id="VS-Code-Setup" class="common-anchor-header">VS Code Setup</h3><p>VS Code integration requires an MCP-compatible extension to function properly.</p>
+<p><strong>Step 1: Install MCP Extension</strong></p>
+<p>Ensure you have an MCP-compatible extension installed in VS Code.</p>
+<p><strong>Step 2: Configure MCP Server</strong></p>
+<p>Add the following configuration to your VS Code MCP settings:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -194,34 +193,34 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Cherry-Studio-Setup" class="common-anchor-header">Настройка Cherry Studio</h3><p>Cherry Studio предоставляет удобный графический интерфейс для настройки MCP-сервера, что делает его доступным для разработчиков, предпочитающих визуальные процессы настройки.</p>
-<p><strong>Шаг 1: Доступ к настройкам MCP-сервера</strong></p>
-<p>Перейдите в раздел Настройки → Серверы MCP → Добавить сервер через интерфейс Cherry Studio.</p>
-<p><strong>Шаг 2: Настройка сведений о сервере</strong></p>
-<p>Заполните форму конфигурации сервера следующей информацией:</p>
+<h3 id="Cherry-Studio-Setup" class="common-anchor-header">Cherry Studio Setup</h3><p>Cherry Studio provides a user-friendly graphical interface for MCP server configuration, making it accessible for developers who prefer visual setup processes.</p>
+<p><strong>Step 1: Access MCP Server Settings</strong></p>
+<p>Navigate to Settings → MCP Servers → Add Server through the Cherry Studio interface.</p>
+<p><strong>Step 2: Configure Server Details</strong></p>
+<p>Fill in the server configuration form with the following information:</p>
 <ul>
-<li><p><strong>Имя</strong>: <code translate="no">sdk code helper</code></p></li>
-<li><p><strong>Тип</strong>: <code translate="no">Streamable HTTP</code></p></li>
+<li><p><strong>Name</strong>: <code translate="no">sdk code helper</code></p></li>
+<li><p><strong>Type</strong>: <code translate="no">Streamable HTTP</code></p></li>
 <li><p><strong>URL</strong>: <code translate="no">https://sdk.milvus.io/mcp/</code></p></li>
-<li><p><strong>Заголовки</strong>: <code translate="no">&quot;Accept&quot;: &quot;text/event-stream&quot;</code></p></li>
+<li><p><strong>Headers</strong>: <code translate="no">&quot;Accept&quot;: &quot;text/event-stream&quot;</code></p></li>
 </ul>
-<p><strong>Шаг 3: Сохранить и активировать</strong></p>
-<p>Нажмите Сохранить, чтобы активировать конфигурацию сервера.</p>
+<p><strong>Step 3: Save and Activate</strong></p>
+<p>Click Save to activate the server configuration.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/cherry_studio_mcp_configuration_interface_b7dce8b26d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Интерфейс конфигурации Cherry Studio MCP</em></p>
-<h3 id="Cline-Setup" class="common-anchor-header">Настройка Cline</h3><p>В Cline используется система настройки на основе JSON, доступная через интерфейс.</p>
-<p><strong>Шаг 1: Доступ к настройкам MCP</strong></p>
+<p><em>Cherry Studio MCP configuration interface</em></p>
+<h3 id="Cline-Setup" class="common-anchor-header">Cline Setup</h3><p>Cline uses a JSON-based configuration system accessible through its interface.</p>
+<p><strong>Step 1: Access MCP Settings</strong></p>
 <ol>
-<li><p>Откройте Cline и нажмите на значок MCP Servers в верхней навигационной панели.</p></li>
-<li><p>Выберите вкладку Установленные</p></li>
-<li><p>Нажмите Advanced MCP Settings (Дополнительные настройки MCP)</p></li>
+<li><p>Open Cline and click on the MCP Servers icon in the top navigation bar</p></li>
+<li><p>Select the Installed tab</p></li>
+<li><p>Click Advanced MCP Settings</p></li>
 </ol>
-<p><strong>Шаг 2: Редактирование файла конфигурации</strong> В файле <code translate="no">cline_mcp_settings.json</code> добавьте следующую конфигурацию:</p>
+<p><strong>Step 2: Edit Configuration File</strong> In the <code translate="no">cline_mcp_settings.json</code> file, add the following configuration:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -233,17 +232,17 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Шаг 3: Сохранить и перезапустить</strong></p>
-<p>Сохраните файл конфигурации и перезапустите Cline, чтобы применить изменения.</p>
-<h3 id="Augment-Setup" class="common-anchor-header">Настройка Augment</h3><p>Augment предоставляет доступ к конфигурации MCP через панель расширенных настроек.</p>
-<p><strong>Шаг 1: Доступ к настройкам</strong></p>
+<p><strong>Step 3: Save and Restart</strong></p>
+<p>Save the configuration file and restart Cline to apply the changes.</p>
+<h3 id="Augment-Setup" class="common-anchor-header">Augment Setup</h3><p>Augment provides access to MCP configuration through its advanced settings panel.</p>
+<p><strong>Step 1: Access Settings</strong></p>
 <ol>
-<li><p>Нажмите Cmd/Ctrl + Shift + P или перейдите в гамбургер-меню на панели Augment.</p></li>
-<li><p>Выберите Редактировать настройки</p></li>
-<li><p>В разделе Дополнительно нажмите Редактировать в файле settings.json</p></li>
+<li><p>Press Cmd/Ctrl + Shift + P or navigate to the hamburger menu in the Augment panel</p></li>
+<li><p>Select Edit Settings</p></li>
+<li><p>Under Advanced, click Edit in settings.json</p></li>
 </ol>
-<p><strong>Шаг 2: Добавьте конфигурацию сервера</strong></p>
-<p>Добавьте конфигурацию сервера в массив <code translate="no">mcpServers</code> в объект <code translate="no">augment.advanced</code>:</p>
+<p><strong>Step 2: Add Server Configuration</strong></p>
+<p>Add the server configuration to the <code translate="no">mcpServers</code> array in the <code translate="no">augment.advanced</code> object:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -255,11 +254,11 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Gemini-CLI-Setup" class="common-anchor-header">Настройка Gemini CLI</h3><p>Gemini CLI требует ручной настройки через файл настроек JSON.</p>
-<p><strong>Шаг 1: Создайте или отредактируйте файл настроек</strong></p>
-<p>Создайте или отредактируйте файл <code translate="no">~/.gemini/settings.json</code> в вашей системе.</p>
-<p><strong>Шаг 2: Добавьте конфигурацию</strong></p>
-<p>Вставьте следующую конфигурацию в файл настроек:</p>
+<h3 id="Gemini-CLI-Setup" class="common-anchor-header">Gemini CLI Setup</h3><p>Gemini CLI requires manual configuration through a JSON settings file.</p>
+<p><strong>Step 1: Create or Edit Settings File</strong></p>
+<p>Create or edit the <code translate="no">~/.gemini/settings.json</code> file on your system.</p>
+<p><strong>Step 2: Add Configuration</strong></p>
+<p>Insert the following configuration into the settings file:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -271,16 +270,16 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Шаг 3: Применить изменения</strong></p>
-<p>Сохраните файл и перезапустите Gemini CLI, чтобы применить изменения конфигурации.</p>
-<h3 id="Roo-Code-Setup" class="common-anchor-header">Настройка Roo Code</h3><p>Roo Code использует централизованный JSON файл конфигурации для управления MCP серверами.</p>
-<p><strong>Шаг 1: Доступ к глобальной конфигурации</strong></p>
+<p><strong>Step 3: Apply Changes</strong></p>
+<p>Save the file and restart Gemini CLI to apply the configuration changes.</p>
+<h3 id="Roo-Code-Setup" class="common-anchor-header">Roo Code Setup</h3><p>Roo Code utilizes a centralized JSON configuration file for managing MCP servers.</p>
+<p><strong>Step 1: Access Global Configuration</strong></p>
 <ol>
-<li><p>Откройте Roo Code</p></li>
-<li><p>Перейдите в раздел Настройки → Серверы MCP → Редактировать глобальную конфигурацию</p></li>
+<li><p>Open Roo Code</p></li>
+<li><p>Navigate to Settings → MCP Servers → Edit Global Config</p></li>
 </ol>
-<p><strong>Шаг 2: Редактирование файла конфигурации</strong></p>
-<p>В файле <code translate="no">mcp_settings.json</code> добавьте следующую конфигурацию:</p>
+<p><strong>Step 2: Edit Configuration File</strong></p>
+<p>In the <code translate="no">mcp_settings.json</code> file, add the following configuration:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;sdk-code-helper&quot;</span>: {
@@ -292,15 +291,15 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Шаг 3: Активировать сервер</strong></p>
-<p>Сохраните файл, чтобы автоматически активировать MCP-сервер.</p>
-<h3 id="Verification-and-Testing" class="common-anchor-header">Проверка и тестирование</h3><p>После завершения настройки для выбранной вами IDE вы можете проверить правильность работы Milvus SDK Code Helper:</p>
+<p><strong>Step 3: Activate Server</strong></p>
+<p>Save the file to automatically activate the MCP server.</p>
+<h3 id="Verification-and-Testing" class="common-anchor-header">Verification and Testing</h3><p>After completing the setup for your chosen IDE, you can verify that the Milvus SDK Code Helper is working correctly by:</p>
 <ol>
-<li><p><strong>Проверка генерации кода</strong>: Попросите своего помощника по искусственному интеллекту сгенерировать код, связанный с Milvus, и проследите, использует ли он текущие лучшие практики.</p></li>
-<li><p><strong>Проверки доступа к документации</strong>: Запросите информацию о конкретных функциях Milvus, чтобы убедиться, что помощник предоставляет актуальные ответы.</p></li>
-<li><p><strong>Сравнение результатов</strong>: Сгенерируйте один и тот же запрос кода с помощником и без него, чтобы увидеть разницу в качестве и актуальности.</p></li>
+<li><p><strong>Testing Code Generation</strong>: Ask your AI assistant to generate Milvus-related code and observe whether it uses current best practices</p></li>
+<li><p><strong>Checking Documentation Access</strong>: Request information about specific Milvus features to ensure the helper is providing up-to-date responses</p></li>
+<li><p><strong>Comparing Results</strong>: Generate the same code request with and without the helper to see the difference in quality and currentness</p></li>
 </ol>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -315,5 +314,5 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Установив Milvus SDK Code Helper, вы сделали важный шаг к будущему разработки, в котором помощники ИИ будут генерировать не просто быстрый, а <strong>точный и актуальный</strong> код. Вместо того чтобы полагаться на статичные обучающие данные, которые устаревают, мы переходим к динамичным системам знаний в реальном времени, которые развиваются вместе с технологиями, которые они поддерживают.</p>
-<p>По мере того как помощники по кодированию с помощью ИИ становятся все более сложными, разрыв между инструментами, обладающими актуальными знаниями, и теми, кто их не имеет, будет только увеличиваться. Milvus SDK Code Helper - это только начало, ожидайте появления подобных специализированных серверов знаний для других основных технологий и фреймворков. Будущее за разработчиками, которые могут использовать скорость ИИ, обеспечивая при этом точность и актуальность. Теперь у вас есть все необходимое.</p>
+    </button></h2><p>By setting up the Milvus SDK Code Helper, you’ve taken a crucial step toward the future of development—where AI assistants generate not just fast code, but <strong>accurate, current code</strong>. Instead of relying on static training data that becomes obsolete, we’re moving toward dynamic, real-time knowledge systems that evolve with the technologies they support.</p>
+<p>As AI coding assistants become more sophisticated, the gap between tools with current knowledge and those without will only widen. The Milvus SDK Code Helper is just the beginning—expect to see similar specialized knowledge servers for other major technologies and frameworks. The future belongs to developers who can harness AI’s speed while ensuring accuracy and currentness. You’re now equipped with both.</p>

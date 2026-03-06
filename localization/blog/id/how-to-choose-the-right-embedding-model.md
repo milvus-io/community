@@ -1,11 +1,12 @@
 ---
 id: how-to-choose-the-right-embedding-model.md
-title: Bagaimana Cara Memilih Model Penyematan yang Tepat?
+title: |
+  How to Choose the Right Embedding Model?
 author: Lumina Wang
 date: 2025-04-09T00:00:00.000Z
 desc: >-
-  Jelajahi faktor penting dan praktik terbaik untuk memilih model penyematan
-  yang tepat untuk representasi data yang efektif dan kinerja yang lebih baik.
+  Explore essential factors and best practices to choose the right embedding
+  model for effective data representation and improved performance.
 cover: assets.zilliz.com/Complete_Workflow_31b4ac825c.gif
 tag: Engineering
 tags: >-
@@ -13,15 +14,15 @@ tags: >-
   Optimization
 canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md'
 ---
-<p>Memilih <a href="https://zilliz.com/ai-models">model penyematan</a> yang tepat adalah keputusan penting ketika membangun sistem yang memahami dan bekerja dengan <a href="https://zilliz.com/learn/introduction-to-unstructured-data">data yang tidak terstruktur</a> seperti teks, gambar, atau audio. Model-model ini mengubah input mentah menjadi vektor ukuran tetap dan berdimensi tinggi yang menangkap makna semantik, sehingga memungkinkan aplikasi yang kuat dalam pencarian kemiripan, rekomendasi, klasifikasi, dan banyak lagi.</p>
-<p>Tetapi tidak semua model penyematan dibuat sama. Dengan begitu banyak pilihan yang tersedia, bagaimana Anda memilih yang tepat? Pilihan yang salah dapat menyebabkan akurasi yang tidak optimal, kemacetan kinerja, atau biaya yang tidak perlu. Panduan ini memberikan kerangka kerja praktis untuk membantu Anda mengevaluasi dan memilih model penyematan terbaik untuk kebutuhan spesifik Anda.</p>
+<p>Selecting the right <a href="https://zilliz.com/ai-models">embedding model</a> is a critical decision when building systems that understand and work with <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> like text, images, or audio. These models transform raw input into fixed-size, high-dimensional vectors that capture semantic meaning, enabling powerful applications in similarity search, recommendations, classification, and more.</p>
+<p>But not all embedding models are created equal. With so many options available, how do you choose the right one? The wrong choice can lead to suboptimal accuracy, performance bottlenecks, or unnecessary costs. This guide provides a practical framework to help you evaluate and select the best embedding model for your specific requirements.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Complete_Workflow_31b4ac825c.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="1-Define-Your-Task-and-Business-Requirements" class="common-anchor-header">1. Tentukan Tugas dan Persyaratan Bisnis Anda<button data-href="#1-Define-Your-Task-and-Business-Requirements" class="anchor-icon" translate="no">
+<h2 id="1-Define-Your-Task-and-Business-Requirements" class="common-anchor-header">1. Define Your Task and Business Requirements<button data-href="#1-Define-Your-Task-and-Business-Requirements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,11 +37,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelum memilih model penyematan, mulailah dengan memperjelas tujuan utama Anda:</p>
+    </button></h2><p>Before choosing an embedding model, start by clarifying your core objectives:</p>
 <ul>
-<li><strong>Jenis Tugas:</strong> Mulailah dengan mengidentifikasi aplikasi inti yang Anda buat-pencarian semantik, sistem pemberi rekomendasi, pipeline klasifikasi, atau yang lainnya. Setiap kasus penggunaan memiliki persyaratan yang berbeda tentang bagaimana penyematan harus merepresentasikan dan mengatur informasi. Misalnya, jika Anda membangun mesin pencari semantik, Anda memerlukan model seperti Sentence-BERT yang menangkap makna semantik yang bernuansa antara kueri dan dokumen, memastikan bahwa konsep yang serupa dekat dalam ruang vektor. Untuk tugas klasifikasi, penyematan harus mencerminkan struktur khusus kategori, sehingga input dari kelas yang sama ditempatkan berdekatan dalam ruang vektor. Hal ini memudahkan pengklasifikasi hilir untuk membedakan antar kelas. Model seperti DistilBERT, dan RoBERTa biasanya digunakan. Dalam sistem pemberi rekomendasi, tujuannya adalah untuk menemukan penyematan yang mencerminkan hubungan atau preferensi pengguna. Untuk itu, Anda dapat menggunakan model yang secara khusus dilatih pada data umpan balik implisit seperti Neural Collaborative Filtering (NCF).</li>
-<li><strong>Penilaian ROI:</strong> Menyeimbangkan kinerja dengan biaya berdasarkan konteks bisnis spesifik Anda. Aplikasi yang sangat penting (seperti diagnostik kesehatan) dapat membenarkan model premium dengan akurasi yang lebih tinggi karena ini bisa jadi masalah suka atau tidak suka, sementara aplikasi yang sensitif terhadap biaya dengan volume tinggi membutuhkan analisis biaya-manfaat yang cermat. Kuncinya adalah menentukan apakah peningkatan kinerja sebesar 2-3% saja sudah cukup untuk membenarkan kenaikan biaya yang signifikan dalam skenario khusus Anda.</li>
-<li><strong>Kendala Lainnya:</strong> Pertimbangkan persyaratan teknis Anda saat mempersempit pilihan. Jika Anda membutuhkan dukungan multibahasa, banyak model umum yang kesulitan dengan konten non-Inggris, sehingga model multibahasa khusus mungkin diperlukan. Jika Anda bekerja di domain khusus (medis/hukum), penyematan tujuan umum sering kali melewatkan jargon khusus domain-misalnya, mereka mungkin tidak memahami bahwa <em>"stat"</em> dalam konteks medis berarti <em>"segera"</em>, atau <em>"pertimbangan"</em> dalam dokumen hukum mengacu pada sesuatu yang bernilai yang dipertukarkan dalam kontrak. Demikian pula, keterbatasan perangkat keras dan persyaratan latensi akan secara langsung memengaruhi model mana yang layak untuk lingkungan penerapan Anda.</li>
+<li><strong>Task Type:</strong> Start by identifying the core application you’re building—semantic search, a recommender system, a classification pipeline, or something else entirely. Each use case has different requirements for how embeddings should represent and organize information. For example, if you are building a semantic search engine, you need models like Sentence-BERT that capture nuanced semantic meaning between queries and documents, ensuring that similar concepts are close in vector space. For classification tasks, embeddings must reflect category-specific structure, so that inputs from the same class are placed close together in the vector space. This makes it easier for downstream classifiers to distinguish between classes. Models like DistilBERT, and RoBERTa are commonly used. In recommender systems, the goal is to find embeddings that reflect user-item relationships or preferences. For this, you might use models that are specifically trained on implicit feedback data like Neural Collaborative Filtering (NCF).</li>
+<li><strong>ROI Assessment:</strong> Balance performance against costs based on your specific business context. Mission-critical applications (like healthcare diagnostics) may justify premium models with higher accuracy since it could be a matter of like and death, while cost-sensitive applications with high volume need careful cost-benefit analysis. The key is determining whether a mere 2-3% performance improvement justifies potentially significant cost increases in your particular scenario.</li>
+<li><strong>Other Constraints:</strong> Consider your technical requirements when narrowing down options. If you need multilingual support, many general models struggle with non-English content, so specialized multilingual models may be necessary. If you’re working in specialized domains (medical/legal), general-purpose embeddings often miss domain-specific jargon—for example, they might not understand that <em>“stat”</em> in a medical context means <em>“immediately”</em>, or that <em>“consideration”</em> in legal documents refers to something of value exchanged in a contract. Similarly, hardware limitations and latency requirements will directly impact which models are feasible for your deployment environment.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -48,7 +49,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="2-Evaluate-Your-Data" class="common-anchor-header">2. Mengevaluasi Data Anda<button data-href="#2-Evaluate-Your-Data" class="anchor-icon" translate="no">
+<h2 id="2-Evaluate-Your-Data" class="common-anchor-header">2. Evaluate Your Data<button data-href="#2-Evaluate-Your-Data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,11 +64,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sifat data Anda secara signifikan memengaruhi pilihan model penyematan. Pertimbangan utama meliputi:</p>
+    </button></h2><p>The nature of your data significantly influences the choice of embedding model. Key considerations include:</p>
 <ul>
-<li><strong>Modalitas Data:</strong> Apakah data Anda bersifat tekstual, visual, atau multimodal? Sesuaikan model Anda dengan jenis data Anda. Gunakan model berbasis transformer seperti <a href="https://zilliz.com/learn/what-is-bert">BERT</a> atau <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence-BERT</a> untuk teks, <a href="https://zilliz.com/glossary/convolutional-neural-network">arsitektur CNN</a> atau Vision Transformers<a href="https://zilliz.com/learn/understanding-vision-transformers-vit">(ViT)</a> untuk gambar, model khusus untuk audio, dan model multimodal seperti <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a> dan MagicLens untuk aplikasi multimodal.</li>
-<li><strong>Kekhususan Domain:</strong> Pertimbangkan apakah model umum sudah cukup, atau apakah Anda memerlukan model khusus domain yang memahami pengetahuan khusus. Model umum yang dilatih pada dataset yang beragam (seperti <a href="https://zilliz.com/ai-models/text-embedding-3-large">model penyematan teks OpenAI</a>) bekerja dengan baik untuk topik umum tetapi sering kali melewatkan perbedaan halus dalam bidang khusus. Namun, di bidang seperti layanan kesehatan atau hukum, mereka sering kali kehilangan perbedaan yang tidak kentara - jadi penyematan khusus domain seperti <a href="https://arxiv.org/abs/1901.08746">BioBERT</a> atau <a href="https://arxiv.org/abs/2010.02559">LegalBERT</a> mungkin lebih cocok.</li>
-<li><strong>Jenis Penyematan:</strong> Penyematan <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">yang jarang</a> unggul dalam pencocokan kata kunci, membuatnya ideal untuk katalog produk atau dokumentasi teknis. Penyematan yang padat menangkap hubungan semantik dengan lebih baik, sehingga cocok untuk kueri bahasa alami dan pemahaman maksud. Banyak sistem produksi seperti sistem pemberi rekomendasi e-commerce mendapat manfaat dari pendekatan hibrida yang memanfaatkan kedua jenis tersebut - misalnya, menggunakan <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> (jarang) untuk pencocokan kata kunci sambil menambahkan BERT (sematan padat) untuk menangkap kemiripan semantik.</li>
+<li><strong>Data Modality:</strong> Is your data textual, visual, or multimodal in nature? Match your model to your data type. Use transformer-based models like <a href="https://zilliz.com/learn/what-is-bert">BERT</a> or <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence-BERT</a>  for text, <a href="https://zilliz.com/glossary/convolutional-neural-network">CNN architectures</a> or Vision Transformers (<a href="https://zilliz.com/learn/understanding-vision-transformers-vit">ViT</a>) for images, specialized models for audio, and multimodal models like <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a> and MagicLens for multimodal applications.</li>
+<li><strong>Domain Specificity:</strong> Consider whether general models are sufficient, or if you need domain-specific models that understand specialized knowledge. General models trained on diverse datasets (like <a href="https://zilliz.com/ai-models/text-embedding-3-large">OpenAI text embedding models</a>) work well for common topics but often miss subtle distinctions in specialized fields. However, in fields like healthcare or legal services, they often miss subtle distinctions—so domain-specific embeddings like <a href="https://arxiv.org/abs/1901.08746">BioBERT</a> or <a href="https://arxiv.org/abs/2010.02559">LegalBERT</a> may be more suitable.</li>
+<li><strong>Embedding Type:</strong> <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">Sparse embeddings</a> excel at keyword matching, making them ideal for product catalogs or technical documentation. Dense embeddings capture semantic relationships better, making them suitable for natural language queries and intent understanding. Many production systems like e-commerce recommender systems benefit from a hybrid approach that leverages both types—for example, using <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> (sparse) for keyword matching while adding BERT (dense embeddings) to capture semantic similarity.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -75,7 +76,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="3-Research-Available-Models" class="common-anchor-header">3. Meneliti Model yang Tersedia<button data-href="#3-Research-Available-Models" class="anchor-icon" translate="no">
+<h2 id="3-Research-Available-Models" class="common-anchor-header">3. Research Available Models<button data-href="#3-Research-Available-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -90,15 +91,15 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah memahami tugas dan data Anda, sekarang saatnya untuk meneliti model penyematan yang tersedia. Berikut adalah cara yang dapat Anda lakukan:</p>
+    </button></h2><p>After understanding your task and data, it’s time to research available embedding models. Here’s how you can approach this:</p>
 <ul>
-<li><p><strong>Popularitas:</strong> Prioritaskan model dengan komunitas yang aktif dan adopsi yang luas. Model-model ini biasanya mendapat manfaat dari dokumentasi yang lebih baik, dukungan komunitas yang lebih luas, dan pembaruan rutin. Hal ini dapat mengurangi kesulitan implementasi secara signifikan. Biasakan diri Anda dengan model-model terkemuka di domain Anda. Sebagai contoh:</p>
+<li><p><strong>Popularity:</strong> Prioritize models with active communities and widespread adoption. These models usually benefit from better documentation, broader community support, and regular updates. This can significantly reduce implementation difficulties. Familiarize yourself with leading models in your domain. For example:</p>
 <ul>
-<li>Untuk Teks: pertimbangkan penyematan OpenAI, varian Sentence-BERT, atau model E5/BGE.</li>
-<li>Untuk gambar: lihat ViT dan ResNet, atau CLIP dan SigLIP untuk penyelarasan teks-gambar.</li>
-<li>Untuk Audio: lihat PNN, CLAP, atau <a href="https://zilliz.com/learn/top-10-most-used-embedding-models-for-audio-data">model populer lainnya</a>.</li>
+<li>For Text: consider OpenAI embeddings, Sentence-BERT variants, or E5/BGE models.</li>
+<li>For image: look at ViT and ResNet, or CLIP and SigLIP for text-image alignment.</li>
+<li>For Audio: check PNNs, CLAP or <a href="https://zilliz.com/learn/top-10-most-used-embedding-models-for-audio-data">other popular models</a>.</li>
 </ul></li>
-<li><p><strong>Hak Cipta dan Lisensi</strong>: Evaluasi dengan hati-hati implikasi lisensi karena secara langsung mempengaruhi biaya jangka pendek dan jangka panjang. Model sumber terbuka (seperti MIT, Apache 2.0, atau lisensi serupa) memberikan fleksibilitas untuk modifikasi dan penggunaan komersial, memberikan Anda kendali penuh atas penerapan tetapi membutuhkan keahlian infrastruktur. Model berpemilik yang diakses melalui API menawarkan kenyamanan dan kesederhanaan tetapi memiliki biaya yang terus menerus dan potensi masalah privasi data. Keputusan ini sangat penting untuk aplikasi dalam industri yang diatur di mana kedaulatan data atau persyaratan kepatuhan dapat membuat self-hosting diperlukan meskipun investasi awal yang lebih tinggi.</p></li>
+<li><p><strong>Copyright and Licensing</strong>: Carefully evaluate the licensing implications as they directly affect both short and long-term costs. Open-source models (like MIT, Apache 2.0, or similar licenses) provide flexibility for modification and commercial use, giving you full control over deployment but requiring infrastructure expertise. Proprietary models accessed via APIs offer convenience and simplicity but come with ongoing costs and potential data privacy concerns. This decision is especially critical for applications in regulated industries where data sovereignty or compliance requirements may make self-hosting necessary despite the higher initial investment.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -106,7 +107,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="4-Evaluate-Candidate-Models" class="common-anchor-header">4. Mengevaluasi Model Kandidat<button data-href="#4-Evaluate-Candidate-Models" class="anchor-icon" translate="no">
+<h2 id="4-Evaluate-Candidate-Models" class="common-anchor-header">4. Evaluate Candidate Models<button data-href="#4-Evaluate-Candidate-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,11 +122,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah Anda memilih beberapa model, saatnya untuk mengujinya dengan data sampel Anda. Berikut ini adalah faktor-faktor kunci yang harus Anda pertimbangkan:</p>
+    </button></h2><p>Once you’ve shortlisted a few models, it’s time to test them with your sample data. Here are key factors you should consider:</p>
 <ul>
-<li><strong>Evaluasi:</strong> Saat mengevaluasi kualitas penyematan-terutama dalam retrieval augmented generation (RAG) atau aplikasi pencarian-penting untuk mengukur <em>seberapa akurat, relevan, dan lengkap</em> hasil yang dikembalikan. Metrik utama termasuk kesetiaan, relevansi jawaban, ketepatan konteks, dan penarikan kembali. Kerangka kerja seperti Ragas, DeepEval, Phoenix, dan TruLens-Eval menyederhanakan proses evaluasi ini dengan menyediakan metodologi terstruktur untuk menilai berbagai aspek kualitas penyematan. Dataset juga sama pentingnya untuk evaluasi yang bermakna. Dataset ini dapat dibuat sendiri untuk mewakili kasus penggunaan nyata, dibuat secara sintetis oleh LLM untuk menguji kemampuan tertentu, atau dibuat menggunakan alat bantu seperti Ragas dan FiddleCube untuk menargetkan aspek pengujian tertentu. Kombinasi yang tepat antara dataset dan kerangka kerja bergantung pada aplikasi spesifik Anda dan tingkat perincian evaluasi yang Anda perlukan untuk membuat keputusan yang tepat.</li>
-<li><strong>Kinerja Tolok Ukur:</strong> Mengevaluasi model pada tolok ukur khusus tugas (misalnya, MTEB untuk pengambilan). Ingatlah bahwa peringkat sangat bervariasi berdasarkan skenario (pencarian vs. klasifikasi), dataset (umum vs. spesifik domain seperti BioASQ), dan metrik (akurasi, kecepatan). Meskipun kinerja benchmark memberikan wawasan yang berharga, namun tidak selalu dapat diterjemahkan dengan sempurna ke dalam aplikasi dunia nyata. Periksa ulang performa terbaik yang selaras dengan jenis data dan tujuan Anda, tetapi selalu validasi dengan kasus pengujian khusus Anda sendiri untuk mengidentifikasi model yang mungkin terlalu sesuai dengan tolok ukur tetapi berkinerja buruk dalam kondisi dunia nyata dengan pola data spesifik Anda.</li>
-<li><strong>Pengujian Beban:</strong> Untuk model yang dihosting sendiri, simulasikan beban produksi yang realistis untuk mengevaluasi kinerja dalam kondisi dunia nyata. Mengukur throughput serta pemanfaatan GPU dan konsumsi memori selama inferensi untuk mengidentifikasi potensi kemacetan. Model yang berkinerja baik secara terpisah dapat menjadi masalah ketika menangani permintaan bersamaan atau input yang kompleks. Jika model terlalu boros sumber daya, model ini mungkin tidak cocok untuk aplikasi skala besar atau real-time, terlepas dari keakuratannya dalam metrik tolok ukur.</li>
+<li><strong>Evaluation:</strong> When evaluating embedding quality—especially in retrieval augmented generation (RAG) or search application—it’s important to measure <em>how accurate, relevant, and complete</em> the returned results are. Key metrics include faithfulness, answer relevancy, context precision, and recall. Frameworks like Ragas, DeepEval, Phoenix, and TruLens-Eval streamline this evaluation process by providing structured methodologies for assessing different aspects of embedding quality. Datasets are equally important for meaningful evaluation. They can be hand-crafted to represent real use cases, synthetically generated by LLMs to test specific capabilities, or created using tools like Ragas and FiddleCube to target particular testing aspects. The right combination of dataset and framework depends on your specific application and the level of evaluation granularity you need to make confident decisions.</li>
+<li><strong>Benchmark Performance:</strong> Evaluate models on task-specific benchmarks (e.g., MTEB for retrieval). Remember that rankings vary significantly by scenario (search vs. classification), datasets (general vs. domain-specific like BioASQ), and metrics (accuracy, speed). While benchmark performance provide valuable insights, it doesn’t always translate perfectly to real-world applications. Cross-check top performers that align with your data type and goals, but always validate with your own custom test cases to identify models that might overfit to benchmarks but underperform in real-world conditions with your specific data patterns.</li>
+<li><strong>Load Testing:</strong> For self-hosted models, simulate realistic production loads to evaluate performance under real-world conditions. Measure throughput as well as GPU utilization and memory consumption during inference to identify potential bottlenecks. A model that performs well in isolation may become problematic when handling concurrent requests or complex inputs. If the model is too resource-intensive, it may not be suitable for large-scale or real-time applications regardless of its accuracy on benchmark metrics.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -133,7 +134,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="5-Model-Integration" class="common-anchor-header">5. Integrasi Model<button data-href="#5-Model-Integration" class="anchor-icon" translate="no">
+<h2 id="5-Model-Integration" class="common-anchor-header">5. Model Integration<button data-href="#5-Model-Integration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,11 +149,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah memilih model, sekarang saatnya merencanakan pendekatan integrasi Anda.</p>
+    </button></h2><p>After selecting a model, now it is time to plan your integration approach.</p>
 <ul>
-<li><strong>Pemilihan Bobot:</strong> Tentukan antara menggunakan bobot yang telah dilatih sebelumnya untuk penerapan cepat atau menyempurnakan data spesifik domain untuk meningkatkan kinerja. Ingatlah bahwa fine-tuning dapat meningkatkan kinerja namun membutuhkan sumber daya yang besar. Pertimbangkan apakah peningkatan performa sesuai dengan kompleksitas tambahan.</li>
-<li><strong>Hosting Sendiri vs Layanan Inferensi Pihak Ketiga:</strong> Pilih pendekatan penerapan berdasarkan kemampuan dan persyaratan infrastruktur Anda. Self-hosting memberi Anda kendali penuh atas model dan aliran data, sehingga berpotensi mengurangi biaya per permintaan dalam skala besar dan memastikan privasi data. Namun, hal ini membutuhkan keahlian infrastruktur dan pemeliharaan berkelanjutan. Layanan inferensi pihak ketiga menawarkan penerapan yang cepat dengan pengaturan minimal, namun menimbulkan latensi jaringan, potensi batas penggunaan, dan biaya berkelanjutan yang dapat menjadi signifikan dalam skala besar.</li>
-<li><strong>Desain Integrasi:</strong> Rencanakan desain API Anda, strategi caching, pendekatan pemrosesan batch, dan pemilihan <a href="https://milvus.io/blog/what-is-a-vector-database.md">basis data vektor</a> untuk menyimpan dan melakukan kueri penyematan secara efisien.</li>
+<li><strong>Weights Selection:</strong> Decide between using pre-trained weights for quick deployment or fine-tuning on domain-specific data for improved performance. Remember fine-tuning can improve performance but is resource heavy. Consider whether performance gains justify the additional complexity.</li>
+<li><strong>Self-Hosting vs. Third-party Inference Service:</strong> Choose your deployment approach based on your infrastructure capabilities and requirements. Self-hosting gives you complete control over the model and data flow, potentially reducing per-request costs at scale and ensuring data privacy. However, it requires infrastructure expertise and ongoing maintenance. Third-party inference services offer rapid deployment with minimal setup but introduce network latency, potential usage caps, and continuous costs that can become significant at scale.</li>
+<li><strong>Integration Design:</strong> Plan your API design, caching strategies, batch processing approach, and <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector database</a> selection for storing and querying embeddings efficiently.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -160,7 +161,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="6-End-to-End-Testing" class="common-anchor-header">6. Pengujian dari Ujung ke Ujung<button data-href="#6-End-to-End-Testing" class="anchor-icon" translate="no">
+<h2 id="6-End-to-End-Testing" class="common-anchor-header">6. End-to-End Testing<button data-href="#6-End-to-End-Testing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,10 +176,10 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelum penerapan penuh, jalankan pengujian end-to-end untuk memastikan model berfungsi seperti yang diharapkan:</p>
+    </button></h2><p>Before full deployment, run end-to-end tests to ensure the model works as expected:</p>
 <ul>
-<li><strong>Kinerja</strong>: Selalu evaluasi model pada dataset Anda sendiri untuk memastikan model bekerja dengan baik dalam kasus penggunaan spesifik Anda. Pertimbangkan metrik seperti MRR, MAP, dan NDCG untuk kualitas pengambilan, presisi, recall, dan F1 untuk akurasi, serta persentil throughput dan latensi untuk kinerja operasional.</li>
-<li><strong>Kekokohan</strong>: Menguji model dalam berbagai kondisi, termasuk kasus-kasus yang tidak biasa dan input data yang beragam, untuk memverifikasi bahwa model tersebut bekerja secara konsisten dan akurat.</li>
+<li><strong>Performance</strong>: Always evaluate the model on your own dataset to ensure they perform well in your specific use case. Consider metrics like MRR, MAP and NDCG for retrieval quality, precision, recall and F1 for accuracy, and throughput and latency percentiles for operational performance.</li>
+<li><strong>Robustness</strong>: Test the model under different conditions, including edge cases and diverse data inputs, to verify that it performs consistently and accurately.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -186,7 +187,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="Summary" class="common-anchor-header">Ringkasan<button data-href="#Summary" class="anchor-icon" translate="no">
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,14 +202,14 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Seperti yang telah kita lihat di sepanjang panduan ini, memilih model embedding yang tepat memerlukan enam langkah penting berikut ini:</p>
+    </button></h2><p>As we’ve seen throughout this guide, selecting the right embedding model requires following these six critical steps:</p>
 <ol>
-<li>Tentukan persyaratan bisnis dan jenis tugas Anda</li>
-<li>Menganalisis karakteristik data dan kekhususan domain Anda</li>
-<li>Meneliti model yang tersedia dan persyaratan lisensinya</li>
-<li>Mengevaluasi kandidat secara ketat terhadap tolok ukur yang relevan dan set data uji</li>
-<li>Rencanakan pendekatan integrasi Anda dengan mempertimbangkan opsi penerapan</li>
-<li>Melakukan pengujian menyeluruh dari ujung ke ujung sebelum penerapan produksi</li>
+<li>Define your business requirements and task type</li>
+<li>Analyze your data characteristics and domain specificity</li>
+<li>Research available models and their licensing terms</li>
+<li>Rigorously evaluate candidates against relevant benchmarks and test datasets</li>
+<li>Plan your integration approach considering deployment options</li>
+<li>Conduct comprehensive end-to-end testing before production deployment</li>
 </ol>
-<p>Dengan mengikuti kerangka kerja ini, Anda dapat membuat keputusan yang tepat yang menyeimbangkan antara kinerja, biaya, dan kendala teknis untuk kasus penggunaan spesifik Anda. Ingatlah bahwa model yang "terbaik" belum tentu model yang memiliki nilai tolok ukur tertinggi, tetapi model yang paling memenuhi persyaratan khusus Anda dalam batasan operasional Anda.</p>
-<p>Dengan model penyematan yang berkembang dengan cepat, Anda juga perlu menilai kembali pilihan Anda secara berkala karena ada pilihan baru yang mungkin menawarkan peningkatan signifikan untuk aplikasi Anda.</p>
+<p>By following this framework, you can make an informed decision that balances performance, cost, and technical constraints for your specific use case. Remember that the “best” model isn’t necessarily the one with the highest benchmark scores—it’s the one that best meets your particular requirements within your operational constraints.</p>
+<p>With embedding models evolving rapidly, it’s also worth periodically reassessing your choice as new options emerge that might offer significant improvements for your application.</p>

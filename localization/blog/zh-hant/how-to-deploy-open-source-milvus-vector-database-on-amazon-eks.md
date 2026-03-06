@@ -1,9 +1,11 @@
 ---
 id: how-to-deploy-open-source-milvus-vector-database-on-amazon-eks.md
-title: 如何在 Amazon EKS 上部署開放原始碼 Milvus 向量資料庫
+title: How to Deploy the Open-Source Milvus Vector Database on Amazon EKS
 author: AWS
 date: 2024-08-09T00:00:00.000Z
-desc: 使用 Amazon EKS、S3、MSK 和 ELB 等管理服務在 AWS 上部署 Milvus 向量資料庫的逐步指南。
+desc: >-
+  A step-by-step guide on deploying the Milvus vector database on AWS using
+  managed services such as Amazon EKS, S3, MSK, and ELB.
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
 tag: Engineering
 tags: 'Milvus, Vector Database, Amazon EKS, RAG'
@@ -11,8 +13,8 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/how-to-deploy-open-source-milvus-vector-database-on-amazon-eks.md
 ---
-<p><em>本篇文章最初發表於<a href="https://aws.amazon.com/cn/blogs/china/build-open-source-vector-database-milvus-based-on-amazon-eks/"><em>AWS 網站</em></a>，經過翻譯、編輯，並經授權轉貼於此。</em></p>
-<h2 id="An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="common-anchor-header">向量嵌入與向量資料庫概述<button data-href="#An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="anchor-icon" translate="no">
+<p><em>This post was originally published on the <a href="https://aws.amazon.com/cn/blogs/china/build-open-source-vector-database-milvus-based-on-amazon-eks/"><em>AWS website</em></a> and is translated, edited, and reposted here with permission.</em></p>
+<h2 id="An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="common-anchor-header">An Overview of Vector Embeddings and Vector Databases<button data-href="#An-Overview-of-Vector-Embeddings-and-Vector-Databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,18 +29,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://zilliz.com/learn/generative-ai">生成式人工智能 (GenAI)</a> 的興起，尤其是大型語言模型<a href="https://zilliz.com/glossary/large-language-models-(llms)">(LLM</a>) 的興起，大幅提升了<a href="https://zilliz.com/learn/what-is-vector-database">向量資料庫</a>的興趣，使其成為 GenAI 生態系統中不可或缺的元件。因此，向量資料庫正被越來越多的<a href="https://milvus.io/use-cases">使用案例所</a>採用。</p>
-<p><a href="https://venturebeat.com/data-infrastructure/report-80-of-global-datasphere-will-be-unstructured-by-2025/">IDC 報告</a>預測，到 2025 年，將有超過 80% 的商業資料是非結構化的，以文字、影像、音訊和視訊等格式存在。要理解、處理、儲存和查詢這些大量的<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非結構化資料</a>，是一項重大的挑戰。GenAI 和深度學習的常見做法是將非結構化資料轉換為向量嵌入，並儲存和索引至向量資料庫，例如<a href="https://milvus.io/intro">Milvus</a>或<a href="https://zilliz.com/cloud">Zilliz Cloud</a>(完全管理的 Milvus)，以進行向量<a href="https://zilliz.com/learn/vector-similarity-search">相似性</a>或語意相似性搜尋。</p>
-<p>但<a href="https://zilliz.com/glossary/vector-embeddings">向量嵌入</a>到底是什麼？簡單來說，它們是浮點數在高維空間中的數值表示。<a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">兩個向量之間的距離</a>表示它們的相關性：<a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">兩</a>者越接近，彼此的相關性就越高，反之亦然。這表示相似向量對應相似的原始資料，這與傳統的關鍵字或精確搜尋不同。</p>
+    </button></h2><p>The rise of <a href="https://zilliz.com/learn/generative-ai">Generative AI (GenAI)</a>, particularly large language models (<a href="https://zilliz.com/glossary/large-language-models-(llms)">LLMs</a>), has significantly boosted interest in <a href="https://zilliz.com/learn/what-is-vector-database">vector databases</a>, establishing them as an essential component within the GenAI ecosystem. As a result, vector databases are being adopted in increasing <a href="https://milvus.io/use-cases">use cases</a>.</p>
+<p>An <a href="https://venturebeat.com/data-infrastructure/report-80-of-global-datasphere-will-be-unstructured-by-2025/">IDC Report</a> predicts that by 2025, over 80% of business data will be unstructured, existing in formats such as text, images, audio, and videos. Understanding, processing, storing, and querying this vast amount of <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> at scale presents a significant challenge. The common practice in GenAI and deep learning is to transform unstructured data into vector embeddings, store, and index them in a vector database like <a href="https://milvus.io/intro">Milvus</a> or <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed Milvus) for <a href="https://zilliz.com/learn/vector-similarity-search">vector similarity</a> or semantic similarity searches.</p>
+<p>But what exactly are <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a>? Simply put, they are numerical representations of floating-point numbers in a high-dimensional space. The <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">distance between two vectors</a> indicates their relevance: the closer they are, the more relevant they are to each other, and vice versa. This means that similar vectors correspond to similar original data, which differs from traditional keyword or exact searches.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_2_How_to_perform_a_vector_search_f38e8533a2.png" alt="How to perform a vector similarity search" class="doc-image" id="how-to-perform-a-vector-similarity-search" />
-   </span> <span class="img-wrapper"> <span>如何執行向量相似性搜尋</span> </span></p>
-<p><em>圖 1：如何執行向量相似性搜尋</em></p>
-<p>向量嵌入的儲存、索引和搜尋能力是向量資料庫的核心功能。目前，主流的向量資料庫分為兩大類。第一類是擴充現有的關聯式資料庫產品，例如 Amazon OpenSearch Service 的<a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">KNN</a>外掛，以及 Amazon RDS for<a href="https://zilliz.com/comparison/milvus-vs-pgvector">PostgreSQL</a>的 pgvector 擴充。第二類是專門的向量資料庫產品，包括 Milvus、Zilliz Cloud (完全管理的 Milvus)、<a href="https://zilliz.com/comparison/pinecone-vs-zilliz-vs-milvus">Pinecone</a>、<a href="https://zilliz.com/comparison/milvus-vs-weaviate">Weaviate</a>、<a href="https://zilliz.com/comparison/milvus-vs-qdrant">Qdrant</a> 和<a href="https://zilliz.com/blog/milvus-vs-chroma">Chroma</a> 等知名案例。</p>
-<p>嵌入技術和向量資料庫在各種<a href="https://zilliz.com/vector-database-use-cases">人工智能驅動的用例</a>中都有廣泛的應用，包括影像相似性搜尋、視訊重複資料刪除與分析、自然語言處理、推薦系統、目標廣告、個人化搜尋、智慧型客戶服務和詐欺偵測。</p>
-<p><a href="https://milvus.io/docs/quickstart.md">Milvus</a>是眾多向量資料庫中最受歡迎的開源選項之一。本篇文章將介紹 Milvus，並探討在 AWS EKS 上部署 Milvus 的實作。</p>
-<h2 id="What-is-Milvus" class="common-anchor-header">Milvus 是什麼？<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_2_How_to_perform_a_vector_search_f38e8533a2.png" alt="How to perform a vector similarity search" class="doc-image" id="how-to-perform-a-vector-similarity-search" />
+    <span>How to perform a vector similarity search</span>
+  </span>
+</p>
+<p><em>Figure 1:  How to perform a vector similarity search</em></p>
+<p>The ability to store, index, and search vector embeddings is the core functionality of vector databases. Currently, mainstream vector databases fall into two categories. The first category extends existing relational database products, such as Amazon OpenSearch Service with the <a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">KNN</a> plugin and Amazon RDS for <a href="https://zilliz.com/comparison/milvus-vs-pgvector">PostgreSQL</a> with the pgvector extension. The second category comprises specialized vector database products, including well-known examples like Milvus, Zilliz Cloud (the fully managed Milvus), <a href="https://zilliz.com/comparison/pinecone-vs-zilliz-vs-milvus">Pinecone</a>, <a href="https://zilliz.com/comparison/milvus-vs-weaviate">Weaviate</a>, <a href="https://zilliz.com/comparison/milvus-vs-qdrant">Qdrant</a>, and <a href="https://zilliz.com/blog/milvus-vs-chroma">Chroma</a>.</p>
+<p>Embedding techniques and vector databases have broad applications across various <a href="https://zilliz.com/vector-database-use-cases">AI-driven use cases</a>, including image similarity search, video deduplication and analysis, natural language processing, recommendation systems, targeted advertising, personalized search, intelligent customer service, and fraud detection.</p>
+<p><a href="https://milvus.io/docs/quickstart.md">Milvus</a> is one of the most popular open-source options among the numerous vector databases. This post introduces Milvus and explores the practice of deploying Milvus on AWS EKS.</p>
+<h2 id="What-is-Milvus" class="common-anchor-header">What is Milvus?<button data-href="#What-is-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -53,36 +57,38 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/intro">Milvus</a>是一個高度靈活、可靠、快速的雲原生開源向量資料庫。它為向量相似性搜尋與 AI 應用程式提供動力，並致力於讓每個組織都能存取向量資料庫。Milvus 可以儲存、索引和管理由深度神經網路和其他機器學習 (ML) 模型所產生的十億以上向量嵌入。</p>
-<p>Milvus 於 2019 年 10 月以<a href="https://github.com/milvus-io/milvus/blob/master/LICENSE">開源 Apache License 2.0</a>發布。它目前是<a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a> 下的畢業專案。在撰寫這篇部落格時，Milvus 的<a href="https://hub.docker.com/r/milvusdb/milvus">Docker pull</a>下載量已超過<a href="https://hub.docker.com/r/milvusdb/milvus">5000 萬次</a>，並被<a href="https://milvus.io/">許多客戶</a>使用，例如 NVIDIA、AT&amp;T、IBM、eBay、Shopee 和 Walmart。</p>
-<h3 id="Milvus-Key-Features" class="common-anchor-header">Milvus 主要功能</h3><p>身為雲端原生向量資料庫，Milvus 擁有以下主要功能：</p>
+    </button></h2><p><a href="https://milvus.io/intro">Milvus</a> is a highly flexible, reliable, and blazing-fast cloud-native, open-source vector database. It powers vector similarity search and AI applications and strives to make vector databases accessible to every organization. Milvus can store, index, and manage a billion+ vector embeddings generated by deep neural networks and other machine learning (ML) models.</p>
+<p>Milvus was released under the <a href="https://github.com/milvus-io/milvus/blob/master/LICENSE">open-source Apache License 2.0</a> in October 2019. It is currently a graduate project under <a href="https://lfaidata.foundation/">LF AI &amp; Data Foundation</a>. At the time of writing this blog, Milvus had reached more than <a href="https://hub.docker.com/r/milvusdb/milvus">50 million Docker pull</a> downloads and was used by <a href="https://milvus.io/">many customers</a>, such as NVIDIA, AT&amp;T, IBM, eBay, Shopee, and Walmart.</p>
+<h3 id="Milvus-Key-Features" class="common-anchor-header">Milvus Key Features</h3><p>As a cloud-native vector database, Milvus boasts the following key features:</p>
 <ul>
-<li><p>十億級向量資料集的高效能與毫秒搜尋。</p></li>
-<li><p>多語言支援與工具鏈。</p></li>
-<li><p>橫向擴充能力和高可靠性，即使在系統中斷的情況下也是如此。</p></li>
-<li><p><a href="https://zilliz.com/blog/a-review-of-hybrid-search-in-milvus">混合搜尋</a>，透過搭配標量篩選與向量相似性搜尋來達成。</p></li>
+<li><p>High performance and millisecond search on billion-scale vector datasets.</p></li>
+<li><p>Multi-language support and toolchain.</p></li>
+<li><p>Horizontal scalability and high reliability even in the event of a disruption.</p></li>
+<li><p><a href="https://zilliz.com/blog/a-review-of-hybrid-search-in-milvus">Hybrid search</a>, achieved by pairing scalar filtering with vector similarity search.</p></li>
 </ul>
-<h3 id="Milvus-Architecture" class="common-anchor-header">Milvus 架構</h3><p>Milvus 遵循資料流與控制流分離的原則。系統分為四個層級，如圖所示：</p>
+<h3 id="Milvus-Architecture" class="common-anchor-header">Milvus Architecture</h3><p>Milvus follows the principle of separating data flow and control flow. The system breaks down into four levels, as shown in the diagram:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_Overview_fd10aeffb8.png" alt="Milvus Architecture" class="doc-image" id="milvus-architecture" />
-   </span> <span class="img-wrapper"> <span>Milvus 架構</span> </span></p>
-<p><em>圖 2 Milvus 架構</em></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_Architecture_Overview_fd10aeffb8.png" alt="Milvus Architecture" class="doc-image" id="milvus-architecture" />
+    <span>Milvus Architecture</span>
+  </span>
+</p>
+<p><em>Figure 2 Milvus Architecture</em></p>
 <ul>
-<li><p><strong>存取層：</strong>存取層由一組無狀態代理組成，是系統的前端層，也是使用者的終端。</p></li>
-<li><p><strong>協調服務：</strong>協調服務會指派任務給工作節點。</p></li>
-<li><p><strong>工作節點：</strong>工作節點是遵循協調器服務指示並執行使用者觸發的 DML/DDL 指令的蠢執行器。</p></li>
-<li><p><strong>儲存：</strong>儲存設備負責資料持久化。它包括元儲存、日誌中介及物件儲存。</p></li>
+<li><p><strong>Access layer:</strong> The access layer is composed of a group of stateless proxies and serves as the system’s front layer and endpoint to users.</p></li>
+<li><p><strong>Coordinator service:</strong> The coordinator service assigns tasks to the worker nodes.</p></li>
+<li><p><strong>Worker nodes:</strong> The worker nodes are dumb executors that follow instructions from the coordinator service and execute user-triggered DML/DDL commands.</p></li>
+<li><p><strong>Storage:</strong> Storage is responsible for data persistence. It comprises a meta storage, log broker, and object storage.</p></li>
 </ul>
-<h3 id="Milvus-Deployment-Options" class="common-anchor-header">Milvus 部署選項</h3><p>Milvus 支援三種執行模式：<a href="https://milvus.io/docs/install-overview.md">Milvus Lite、Standalone 和 Distributed</a>。</p>
+<h3 id="Milvus-Deployment-Options" class="common-anchor-header">Milvus Deployment Options</h3><p>Milvus supports three running modes: <a href="https://milvus.io/docs/install-overview.md">Milvus Lite, Standalone, and Distributed</a>.</p>
 <ul>
-<li><p><strong>Milvus Lite</strong>是一個 Python 函式庫，可以匯入本機應用程式。作為 Milvus 的輕量級版本，它非常適合在 Jupyter Notebook 或資源有限的智慧型裝置上執行快速原型。</p></li>
-<li><p><strong>Milvus Standalone 是</strong>單機伺服器部署。如果您有生產工作負載，但又不想使用 Kubernetes，在有足夠記憶體的單機上執行 Milvus Standalone 是個不錯的選擇。</p></li>
-<li><p><strong>Milvus Distributed</strong>可以部署在 Kubernetes 集群上。它支援更大的資料集、更高的可用性和擴充性，更適合生產環境。</p></li>
+<li><p><strong>Milvus Lite</strong> is a Python library that can be imported into local applications. As a lightweight version of Milvus, it is ideal for quick prototyping in Jupyter Notebooks or running on smart devices with limited resources.</p></li>
+<li><p><strong>Milvus Standalone i</strong>s a single-machine server deployment. If you have a production workload but prefer not to use Kubernetes, running Milvus Standalone on a single machine with sufficient memory is a good option.</p></li>
+<li><p><strong>Milvus Distributed</strong> can be deployed on Kubernetes clusters. It supports larger datasets, higher availability, and scalability, and is more suitable for production environments.</p></li>
 </ul>
-<p>Milvus 從一開始就是為了支援 Kubernetes 而設計，可以輕鬆部署在 AWS 上。我們可以使用 Amazon Elastic Kubernetes Service (Amazon EKS) 作為管理的 Kubernetes、Amazon S3 作為物件儲存、Amazon Managed Streaming for Apache Kafka (Amazon MSK) 作為訊息儲存，以及 Amazon Elastic Load Balancing (Amazon ELB) 作為負載平衡器，來建立一個可靠、彈性的 Milvus 資料庫叢集。</p>
-<p>接下來，我們會提供使用 EKS 和其他服務部署 Milvus 叢集的逐步指導。</p>
-<h2 id="Deploying-Milvus-on-AWS-EKS" class="common-anchor-header">在 AWS EKS 上部署 Milvus<button data-href="#Deploying-Milvus-on-AWS-EKS" class="anchor-icon" translate="no">
+<p>Milvus is designed from the start to support Kubernetes, and can be easily deployed on AWS. We can use Amazon Elastic Kubernetes Service (Amazon EKS) as the managed Kubernetes, Amazon S3 as the Object Storage, Amazon Managed Streaming for Apache Kafka (Amazon MSK) as the Message storage, and Amazon Elastic Load Balancing (Amazon ELB) as the Load Balancer to build a reliable, elastic Milvus database cluster.</p>
+<p>Next, we’ll provide step-by-step guidance on deploying a Milvus cluster using EKS and other services.</p>
+<h2 id="Deploying-Milvus-on-AWS-EKS" class="common-anchor-header">Deploying Milvus on AWS EKS<button data-href="#Deploying-Milvus-on-AWS-EKS" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -97,35 +103,38 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">先決條件</h3><p>我們將使用 AWS CLI 建立 EKS 叢集並部署 Milvus 資料庫。需要以下先決條件：</p>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>We’ll use AWS CLI to create an EKS cluster and deploy a Milvus database. The following prerequisites are required:</p>
 <ul>
-<li><p>已安裝<a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"> AWS CLI</a>並配置適當權限的 PC/Mac 或 Amazon EC2 實例。如果您使用 Amazon Linux 2 或 Amazon Linux 2023，則預設會安裝 AWS CLI 工具。</p></li>
-<li><p><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">已安裝 EKS 工具</a>，包括 Helm、Kubectl、eksctl 等。</p></li>
-<li><p>一個 Amazon S3 儲存桶。</p></li>
-<li><p>一個 Amazon MSK 實例。</p></li>
+<li><p>A PC/Mac or Amazon EC2 instance with<a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html"> AWS CLI</a> installed and configured with appropriate permissions. The AWS CLI tools are installed by default if you use Amazon Linux 2 or Amazon Linux 2023.</p></li>
+<li><p><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">EKS tools installed</a>, including Helm, Kubectl, eksctl, etc.</p></li>
+<li><p>An Amazon S3 bucket.</p></li>
+<li><p>An Amazon MSK instance.</p></li>
 </ul>
-<h3 id="Considerations-when-creating-MSK" class="common-anchor-header">建立 MSK 時的注意事項</h3><ul>
-<li>Milvus 的最新穩定版本 (v2.3.13) 依賴於 Kafka 的<code translate="no">autoCreateTopics</code> 功能。因此在建立 MSK 時，我們需要使用自訂配置，並將<code translate="no">auto.create.topics.enable</code> 屬性從預設的<code translate="no">false</code> 改為<code translate="no">true</code> 。此外，為了增加 MSK 的訊息吞吐量，建議增加<code translate="no">message.max.bytes</code> 和<code translate="no">replica.fetch.max.bytes</code> 的值。詳情請參閱<a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html">自訂 MSK 配置</a>。</li>
+<h3 id="Considerations-when-creating-MSK" class="common-anchor-header">Considerations when creating MSK</h3><ul>
+<li>The latest stable version of Milvus (v2.3.13) depends on Kafka’s <code translate="no">autoCreateTopics</code> feature. So when creating MSK, we need to use a custom configuration and change the <code translate="no">auto.create.topics.enable</code> property from the default <code translate="no">false</code> to <code translate="no">true</code>. In addition, to increase the message throughput of MSK, it is recommended that the values of <code translate="no">message.max.bytes</code> and <code translate="no">replica.fetch.max.bytes</code> be increased. See <a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-configuration-properties.html">Custom MSK configurations</a> for details.</li>
 </ul>
 <pre><code translate="no">auto.create.topics.enable=true
 message.<span class="hljs-built_in">max</span>.<span class="hljs-built_in">bytes</span>=<span class="hljs-number">10485880</span>
 replica.fetch.<span class="hljs-built_in">max</span>.<span class="hljs-built_in">bytes</span>=<span class="hljs-number">20971760</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>Milvus 不支援 MSK 的 IAM 角色認證。因此，在建立 MSK 時，請在安全設定中啟用<code translate="no">SASL/SCRAM authentication</code> 選項，並在 AWS Secrets Manager 中設定<code translate="no">username</code> 和<code translate="no">password</code> 。詳情請參閱<a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-password.html">使用 AWS Secrets Manager 進行登入憑證認證</a>。</li>
+<li>Milvus does not support MSK’s IAM role-based authentication. So, when creating MSK, enable <code translate="no">SASL/SCRAM authentication</code> option in the security configuration, and configure <code translate="no">username</code> and <code translate="no">password</code> in the AWS Secrets Manager. See <a href="https://docs.aws.amazon.com/msk/latest/developerguide/msk-password.html">Sign-in credentials authentication with AWS Secrets Manager</a> for details.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_3_Security_settings_enable_SASL_SCRAM_authentication_9cf7cdde00.png" alt="Figure 3 Security settings enable SASL SCRAM authentication.png" class="doc-image" id="figure-3-security-settings-enable-sasl-scram-authentication.png" />
-   </span> <span class="img-wrapper"> <span>圖 3 安全設定 啟用 SASL SCRAM 驗證.png</span> </span></p>
-<p><em>圖 3：安全性設定：啟用 SASL/SCRAM 驗證</em></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_3_Security_settings_enable_SASL_SCRAM_authentication_9cf7cdde00.png" alt="Figure 3 Security settings enable SASL SCRAM authentication.png" class="doc-image" id="figure-3-security-settings-enable-sasl-scram-authentication.png" />
+    <span>Figure 3 Security settings enable SASL SCRAM authentication.png</span>
+  </span>
+</p>
+<p><em>Figure 3: Security settings: enable SASL/SCRAM authentication</em></p>
 <ul>
-<li>我們需要啟用從 EKS 叢集的安全群組或 IP 位址範圍存取 MSK 安全群組。</li>
+<li>We need to enable access to the MSK security group from the EKS cluster’s security group or IP address range.</li>
 </ul>
-<h3 id="Creating-an-EKS-Cluster" class="common-anchor-header">建立 EKS 叢集</h3><p>创建 EKS 群集的方法有很多，例如通过控制台、CloudFormation、eksctl 等。本文章將介紹如何使用 eksctl 建立 EKS 叢集。</p>
-<p><code translate="no">eksctl</code> 是一個簡單的命令列工具，用於在 Amazon EKS 上建立和管理 Kubernetes 叢集。它提供了最快、最簡單的方式為 Amazon EKS 建立一個有節點的新群集。更多資訊請參閱 eksctl<a href="https://eksctl.io/">網站</a>。</p>
+<h3 id="Creating-an-EKS-Cluster" class="common-anchor-header">Creating an EKS Cluster</h3><p>There are many ways to create an EKS cluster, such as via the console, CloudFormation, eksctl, etc. This post will show how to create an EKS cluster using eksctl.</p>
+<p><code translate="no">eksctl</code> is a simple command-line tool for creating and managing Kubernetes clusters on Amazon EKS. It provides the fastest and easiest way to create a new cluster with nodes for Amazon EKS. See eksctl’s <a href="https://eksctl.io/">website</a> for more information.</p>
 <ol>
-<li>首先，使用下列程式碼片段建立<code translate="no">eks_cluster.yaml</code> 檔案。將<code translate="no">cluster-name</code> 改為您的群集名稱，將<code translate="no">region-code</code> 改為您要建立群集的 AWS 區域，將<code translate="no">private-subnet-idx</code> 改為您的私有子網路。 注意：此組態檔會透過指定私有子網路，在現有的 VPC 中建立 EKS 群集。如果您要建立新的 VPC，請移除 VPC 和子網路設定，然後<code translate="no">eksctl</code> 會自動建立新的 VPC。</li>
+<li>First, create an <code translate="no">eks_cluster.yaml</code> file with the following code snippet. Replace <code translate="no">cluster-name</code> with your cluster name, replace <code translate="no">region-code</code> with the AWS region where you want to create the cluster and replace <code translate="no">private-subnet-idx</code> with your private subnets.
+Note: This configuration file creates an EKS cluster in an existing VPC by specifying private subnets. If you want to create a new VPC, remove the VPC and subnets configuration, and then the <code translate="no">eksctl</code> will automatically create a new one.</li>
 </ol>
 <pre><code translate="no">apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
@@ -182,28 +191,28 @@ addons:
    ebsCSIController: true
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>然後，執行<code translate="no">eksctl</code> 指令來建立 EKS 群集。</li>
+<li>Then, run the <code translate="no">eksctl</code> command to create the EKS cluster.</li>
 </ol>
 <pre><code translate="no">eksctl create cluster -f eks_cluster.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>此指令會建立下列資源：</p>
+<p>This command will create the following resources:</p>
 <ul>
-<li><p>具有指定版本的 EKS 群集。</p></li>
-<li><p>一個包含三個 m6i.2xlarge EC2 實體的受管節點群組。</p></li>
-<li><p>一個<a href="https://docs.aws.amazon.com/en_us/eks/latest/userguide/enable-iam-roles-for-service-accounts.html">IAM OIDC 身份提供者</a>和一個名為<code translate="no">aws-load-balancer-controller</code> 的 ServiceAccount，我們稍後安裝<strong>AWS Load Balancer Controller</strong> 時會用到。</p></li>
-<li><p>一個命名空間<code translate="no">milvus</code> ，以及此命名空間中的一個 ServiceAccount<code translate="no">milvus-s3-access-sa</code> 。稍後配置 S3 作為 Milvus 的物件儲存時將使用此命名空間。</p>
-<p>注意：為了簡單起見，這裡的<code translate="no">milvus-s3-access-sa</code> 被授予完整的 S3 存取權限。在生產部署中，建議遵循最小權限原則，僅授予用於 Milvus 的特定 S3 存儲桶的存取權限。</p></li>
-<li><p>多個附加元件，其中<code translate="no">vpc-cni</code>,<code translate="no">coredns</code>,<code translate="no">kube-proxy</code> 是 EKS 所需的核心附加元件。<code translate="no">aws-ebs-csi-driver</code> 是 AWS EBS CSI 驅動程式，可讓 EKS 叢集管理 Amazon EBS 卷冊的生命週期。</p></li>
+<li><p>An EKS cluster with the specified version.</p></li>
+<li><p>A managed node group with three m6i.2xlarge EC2 instances.</p></li>
+<li><p>An <a href="https://docs.aws.amazon.com/en_us/eks/latest/userguide/enable-iam-roles-for-service-accounts.html">IAM OIDC identity provider</a> and a ServiceAccount called <code translate="no">aws-load-balancer-controller</code>, which we will use later when installing the <strong>AWS Load Balancer Controller</strong>.</p></li>
+<li><p>A namespace <code translate="no">milvus</code> and a ServiceAccount <code translate="no">milvus-s3-access-sa</code> within this namespace. This namespace will be used later when configuring S3 as the object storage for Milvus.</p>
+<p>Note: For simplicity, the <code translate="no">milvus-s3-access-sa</code> here is granted full S3 access permissions. In production deployments, it’s recommended to follow the principle of least privilege and only grant access to the specific S3 bucket used for Milvus.</p></li>
+<li><p>Multiple add-ons, where <code translate="no">vpc-cni</code>, <code translate="no">coredns</code>, <code translate="no">kube-proxy</code> are core add-ons required by EKS. <code translate="no">aws-ebs-csi-driver</code> is the AWS EBS CSI driver that allows EKS clusters to manage the lifecycle of Amazon EBS volumes.</p></li>
 </ul>
-<p>現在，我們只需等待群集建立完成。</p>
-<p>等待叢集建立完成。在群集建立過程中，<code translate="no">kubeconfig</code> 檔案會自動建立或更新。您也可以執行下列指令手動更新。確保將<code translate="no">region-code</code> 替換為正在建立群集的 AWS 區域，並將<code translate="no">cluster-name</code> 替換為群集的名稱。</p>
+<p>Now, we just need to wait for the cluster creation to complete.</p>
+<p>Wait for the cluster creation to complete. During the cluster creation process, the <code translate="no">kubeconfig</code> file will be automatically created or updated. You can also manually update it by running the following command. Make sure to replace <code translate="no">region-code</code> with the AWS region where your cluster is being created, and replace <code translate="no">cluster-name</code> with the name of your cluster.</p>
 <pre><code translate="no">aws eks update-kubeconfig --region &lt;region-code&gt; --name &lt;cluster-name&gt;
 <button class="copy-code-btn"></button></code></pre>
-<p>群集建立後，您可以執行下列指令檢視節點：</p>
+<p>Once the cluster is created, you can view nodes by running:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> nodes -A -o wide
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>建立<code translate="no">ebs-sc</code> StorageClass，設定 GP3 為儲存類型，並將其設定為預設 StorageClass。Milvus 使用 etcd 作為其 Meta Storage，並需要此 StorageClass 來建立和管理 PVC。</li>
+<li>Create a <code translate="no">ebs-sc</code> StorageClass configured with GP3 as the storage type, and set it as the default StorageClass. Milvus uses etcd as its Meta Storage and needs this StorageClass to create and manage PVCs.</li>
 </ol>
 <pre><code translate="no">cat &lt;&lt;EOF | kubectl apply -f -
 apiVersion: storage.k8s.io/v1
@@ -218,20 +227,20 @@ parameters:
  <span class="hljs-built_in">type</span>: gp3
 EOF
 <button class="copy-code-btn"></button></code></pre>
-<p>然後將原本的<code translate="no">gp2</code> StorageClass 設定為非預設：</p>
+<p>Then, set the original <code translate="no">gp2</code> StorageClass to non-default:</p>
 <pre><code translate="no">kubectl patch storage<span class="hljs-keyword">class</span> <span class="hljs-title class_">gp2</span> -p <span class="hljs-string">&#x27;{&quot;metadata&quot;: {&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;false&quot;}}}&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>安裝 AWS Load Balancer Controller。我們稍後會在 Milvus 服務和 Attu Ingress 中使用此控制器，因此讓我們事先安裝。</li>
+<li>Install the AWS Load Balancer Controller. We will use this controller later for the Milvus Service and Attu Ingress, so let’s install it beforehand.</li>
 </ol>
 <ul>
-<li>首先，新增<code translate="no">eks-charts</code> repo 並更新。</li>
+<li>First, add the <code translate="no">eks-charts</code> repo and update it.</li>
 </ul>
 <pre><code translate="no">helm repo <span class="hljs-keyword">add</span> eks https:<span class="hljs-comment">//aws.github.io/eks-charts</span>
 helm repo update
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>接著，安裝 AWS Load Balancer Controller。將<code translate="no">cluster-name</code> 改為您的群集名稱。命名為<code translate="no">aws-load-balancer-controller</code> 的 ServiceAccount 已經在之前的步驟中建立 EKS 叢集時建立。</li>
+<li>Next, install the AWS Load Balancer Controller. Replace <code translate="no">cluster-name</code> with your cluster name. The ServiceAccount named <code translate="no">aws-load-balancer-controller</code> was already created when we created the EKS cluster in previous steps.</li>
 </ul>
 <pre><code translate="no">helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
  -n kube-system \
@@ -240,26 +249,26 @@ helm repo update
  --<span class="hljs-built_in">set</span> serviceAccount.name=aws-load-balancer-controller
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>驗證控制器是否安裝成功。</li>
+<li>Verify if the controller was installed successfully.</li>
 </ul>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment -n kube-system aws-load-balancer-controller
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>輸出應該如下所示：</li>
+<li>The output should look like:</li>
 </ul>
 <pre><code translate="no">NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
 aws-load-balancer-controller   2/2     2            2           12m
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Deploying-a-Milvus-Cluster" class="common-anchor-header">部署 Milvus 群集</h3><p>Milvus 支援多種部署方法，例如 Operator 和 Helm。Operator 比較簡單，但 Helm 更直接、更靈活。在這個範例中，我們會使用 Helm 來部署 Milvus。</p>
-<p>使用 Helm 部署 Milvus 時，您可以透過<code translate="no">values.yaml</code> 檔案自訂配置。按一下<a href="https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml">values.yaml</a>檢視所有選項。預設情況下，Milvus 會在集群內建立 minio 和 pulsar，分別作為物件儲存空間和訊息儲存空間。我們將做一些設定變更，使其更適合生產。</p>
+<h3 id="Deploying-a-Milvus-Cluster" class="common-anchor-header">Deploying a Milvus Cluster</h3><p>Milvus supports multiple deployment methods, such as Operator and Helm. Operator is simpler, but Helm is more direct and flexible. We’ll use Helm to deploy Milvus in this example.</p>
+<p>When deploying Milvus with Helm, you can customize the configuration via the <code translate="no">values.yaml</code> file. Click <a href="https://raw.githubusercontent.com/milvus-io/milvus-helm/master/charts/milvus/values.yaml">values.yaml</a> to view all the options. By default, Milvus creates in-cluster minio and pulsar as the Object Storage and Message Storage, respectively. We will make some configuration changes to make it more suitable for production.</p>
 <ol>
-<li>首先，新增 Milvus Helm repo 並更新它。</li>
+<li>First, add the Milvus Helm repo and update it.</li>
 </ol>
 <pre><code translate="no">helm repo <span class="hljs-keyword">add</span> milvus https:<span class="hljs-comment">//zilliztech.github.io/milvus-helm/</span>
 helm repo update
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>使用下列程式碼片段建立<code translate="no">milvus_cluster.yaml</code> 檔案。此程式碼片段可自訂 Milvus 的設定，例如設定 Amazon S3 為物件儲存空間、Amazon MSK 為訊息佇列。我們稍後會提供詳細的說明和設定指引。</li>
+<li>Create a <code translate="no">milvus_cluster.yaml</code> file with the following code snippet. This code snippet customizes Milvus’s configuration, such as configuring Amazon S3 as the object storage and Amazon MSK as the message queue. We’ll provide detailed explanations and configuration guidance later.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment">#####################################</span>
 <span class="hljs-comment"># Section 1</span>
@@ -412,30 +421,32 @@ indexNode:
       cpu: <span class="hljs-number">4</span>
       memory: 8Gi
 <button class="copy-code-btn"></button></code></pre>
-<p>程式碼包含六個部分。請依照下列指示變更相對應的設定。</p>
-<p><strong>第 1 節</strong>：配置 S3 為物件儲存空間。serviceAccount 授權 Milvus 存取 S3 (在本例中，它是<code translate="no">milvus-s3-access-sa</code> ，這是我們建立 EKS 叢集時所建立的)。確保將<code translate="no">&lt;region-code&gt;</code> 改為群集所在的 AWS 區域。將<code translate="no">&lt;bucket-name&gt;</code> 改為 S3 儲存桶的名稱，將<code translate="no">&lt;root-path&gt;</code> 改為 S3 儲存桶的前綴（此欄位可留空）。</p>
-<p><strong>第 2 節</strong>：將 MSK 設定為訊息儲存空間。以 MSK 的 SASL/SCRAM 認證類型對應的端點位址取代<code translate="no">&lt;broker-list&gt;</code> 。將<code translate="no">&lt;username&gt;</code> 和<code translate="no">&lt;password&gt;</code> 改為 MSK 帳戶的使用者名稱和密碼。您可以從 MSK 客戶端資訊取得<code translate="no">&lt;broker-list&gt;</code> ，如下圖所示。</p>
+<p>The code contains six sections. Follow the following instructions to change the corresponding configurations.</p>
+<p><strong>Section 1</strong>: Configure S3 as Object Storage. The serviceAccount grants Milvus access to S3 (in this case, it is <code translate="no">milvus-s3-access-sa</code>, which was created when we created the EKS cluster). Make sure to replace <code translate="no">&lt;region-code&gt;</code> with the AWS region where your cluster is located. Replace <code translate="no">&lt;bucket-name&gt;</code> with the name of your S3 bucket and <code translate="no">&lt;root-path&gt;</code> with the prefix for the S3 bucket (this field can be left empty).</p>
+<p><strong>Section 2</strong>: Configure MSK as Message Storage. Replace <code translate="no">&lt;broker-list&gt;</code> with the endpoint addresses corresponding to the SASL/SCRAM authentication type of MSK. Replace <code translate="no">&lt;username&gt;</code> and <code translate="no">&lt;password&gt;</code> with the MSK account username and password. You can get the <code translate="no">&lt;broker-list&gt;</code> from MSK client information, as shown in the image below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_4_Configure_MSK_as_the_Message_Storage_of_Milvus_a9e602e0b9.png" alt="Figure 4 Configure MSK as the Message Storage of Milvus.png" class="doc-image" id="figure-4-configure-msk-as-the-message-storage-of-milvus.png" />
-   </span> <span class="img-wrapper"> <span>圖 4 設定 MSK 為 Milvus 的訊息儲存空間.png</span> </span></p>
-<p><em>圖 4: 設定 MSK 為 Milvus 的訊息儲存空間</em></p>
-<p><strong>第 3 節：</strong>開放 Milvus 服務，並啟用群集外部的存取。Milvus 端點預設使用 ClusterIP 類型的服務，只能在 EKS 集群內存取。如果需要，您可以將其變更為 LoadBalancer 類型，以允許從 EKS 集群外部訪問。LoadBalancer 類型服務使用 Amazon NLB 作為負載平衡器。根據安全最佳實務，<code translate="no">aws-load-balancer-scheme</code> 在此預設設定為內部模式，這表示只允許內部網路存取 Milvus。點擊<a href="https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html">查看 NLB 配置說明</a>。</p>
-<p><strong>第 4 節：</strong>安裝並配置開放原始碼的 Milvus 管理工具<a href="https://github.com/zilliztech/attu">Attu</a>。它有直觀的圖形使用者介面，讓您輕鬆與 Milvus 互動。我們啟用 Attu，使用 AWS ALB 設定入口，並將其設定為<code translate="no">internet-facing</code> 類型，以便可以透過網際網路存取 Attu。<a href="https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html">點選此文件</a>取得 ALB 設定指南。</p>
-<p><strong>第 5 節：</strong>啟用 Milvus 核心元件的 HA 部署。Milvus 包含多個獨立且解耦的元件。例如，協調器服務作為控制層，處理 Root、Query、Data 和 Index 元件的協調。存取層中的 Proxy 則作為資料庫存取端點。這些元件預設只有 1 個 pod 複製本。為了提高 Milvus 的可用性，部署這些服務元件的多個複本是特別必要的。</p>
-<p><strong>注意：</strong>Root、Query、Data 和 Index 協調器元件的多重複製部署需要啟用<code translate="no">activeStandby</code> 選項。</p>
-<p><strong>第 6 節：</strong>調整 Milvus 元件的資源分配，以滿足工作負載的需求。Milvus 網站也提供一個<a href="https://milvus.io/tools/sizing/">大小工具</a>，可根據資料量、向量尺寸、索引類型等產生配置建議。它還可以一鍵生成 Helm 配置文件。以下配置是該工具針對 100 萬 1024 維向量和 HNSW 索引類型提出的建議。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_4_Configure_MSK_as_the_Message_Storage_of_Milvus_a9e602e0b9.png" alt="Figure 4 Configure MSK as the Message Storage of Milvus.png" class="doc-image" id="figure-4-configure-msk-as-the-message-storage-of-milvus.png" />
+    <span>Figure 4 Configure MSK as the Message Storage of Milvus.png</span>
+  </span>
+</p>
+<p><em>Figure 4: Configure MSK as the Message Storage of Milvus</em></p>
+<p><strong>Section 3:</strong> Expose Milvus service and enable access from outside the cluster. Milvus endpoint used ClusterIP type service by default, which is only accessible within the EKS cluster. If needed, you can change it to LoadBalancer type to allow access from outside the EKS cluster. The LoadBalancer type Service uses Amazon NLB as the load balancer. According to security best practices, <code translate="no">aws-load-balancer-scheme</code> is configured as internal mode by default here, which means only intranet access to Milvus is allowed. Click to <a href="https://docs.aws.amazon.com/eks/latest/userguide/network-load-balancing.html">view the NLB configuration instructions</a>.</p>
+<p><strong>Section 4:</strong> Install and configure <a href="https://github.com/zilliztech/attu">Attu</a>, an open-source milvus administration tool. It has an intuitive GUI that allows you to easily interact with Milvus. We enable Attu, configure ingress using AWS ALB, and set it to <code translate="no">internet-facing</code> type so that Attu can be accessed via the Internet. Click <a href="https://docs.aws.amazon.com/eks/latest/userguide/alb-ingress.html">this document</a> for the guide to ALB configuration.</p>
+<p><strong>Section 5:</strong> Enable HA deployment of Milvus Core Components. Milvus contains multiple independent and decoupled components. For example, the coordinator service acts as the control layer, handling coordination for the Root, Query, Data, and Index components. The Proxy in the access layer serves as the database access endpoint. These components default to only 1 pod replica. Deploying multiple replicas of these service components is especially necessary to improve Milvus availability.</p>
+<p><strong>Note:</strong> The multi-replica deployment of the Root, Query, Data, and Index coordinator components requires the <code translate="no">activeStandby</code> option enabled.</p>
+<p><strong>Section 6:</strong> Adjust resource allocation for Milvus components to meet your workloads’ requirements. The Milvus website also provides a <a href="https://milvus.io/tools/sizing/">sizing tool</a> to generate configuration suggestions based on data volume, vector dimensions, index types, etc. It can also generate a Helm configuration file with just one click. The following configuration is the suggestion given by the tool for 1 million 1024 dimensions vectors and HNSW index type.</p>
 <ol>
-<li>使用 Helm 建立 Milvus (部署在命名空間<code translate="no">milvus</code>)。注意：您可以使用自訂名稱取代<code translate="no">&lt;demo&gt;</code> 。</li>
+<li>Use Helm to create Milvus (deployed in namespace <code translate="no">milvus</code>). Note: You can replace <code translate="no">&lt;demo&gt;</code> with a custom name.</li>
 </ol>
 <pre><code translate="no">helm install &lt;demo&gt; milvus/milvus -n milvus -f milvus_cluster.yaml
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>執行下列指令檢查部署狀態。</li>
+<li>Run the following command to check the deployment status.</li>
 </ol>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> deployment -n milvus
 <button class="copy-code-btn"></button></code></pre>
-<p>以下輸出顯示 Milvus 元件都是 AVAILABLE，且協調元件已啟用多重複製。</p>
+<p>The following output shows that Milvus components are all AVAILABLE, and coordination components have multiple replicas enabled.</p>
 <pre><code translate="no">NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
 demo-milvus-attu         1/1     1            1           5m27s
 demo-milvus-datacoord    2/2     2            2           5m27s
@@ -447,16 +458,16 @@ demo-milvus-querycoord   2/2     2            2           5m27s
 demo-milvus-querynode    1/1     1            1           5m27s
 demo-milvus-rootcoord    2/2     2            2           5m27s
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Accessing-and-Managing-Milvus" class="common-anchor-header">存取與管理 Milvus</h3><p>到目前為止，我們已成功部署 Milvus 向量資料庫。現在，我們可以透過端點存取 Milvus。Milvus 透過 Kubernetes 服務揭露端點。Attu 透過 Kubernetes Ingress 開啟端點。</p>
-<h4 id="Accessing-Milvus-endpoints" class="common-anchor-header"><strong>存取 Milvus 端點</strong></h4><p>執行下列指令取得服務端點：</p>
+<h3 id="Accessing-and-Managing-Milvus" class="common-anchor-header">Accessing and Managing Milvus</h3><p>So far, we have successfully deployed the Milvus vector database. Now, we can access Milvus through endpoints. Milvus exposes endpoints via Kubernetes services. Attu exposes endpoints via Kubernetes Ingress.</p>
+<h4 id="Accessing-Milvus-endpoints" class="common-anchor-header"><strong>Accessing Milvus endpoints</strong></h4><p>Run the following command to get service endpoints:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> svc -n milvus
 <button class="copy-code-btn"></button></code></pre>
-<p>您可以檢視數個服務。Milvus 支援兩個連接埠，連接埠<code translate="no">19530</code> 和連接埠<code translate="no">9091</code> ：</p>
+<p>You can view several services. Milvus supports two ports, port <code translate="no">19530</code> and port <code translate="no">9091</code>:</p>
 <ul>
-<li>連接埠<code translate="no">19530</code> 用於 gRPC 和 RESTful API。當您使用不同的 Milvus SDK 或 HTTP 用戶端連接到 Milvus 伺服器時，它是預設的連接埠。</li>
-<li>連接埠<code translate="no">9091</code> 是 Kubernetes 內的指標收集、pprof 剖析和健康探測的管理連接埠。</li>
+<li>Port <code translate="no">19530</code> is for gRPC and RESTful API. It is the default port when you connect to a Milvus server with different Milvus SDKs or HTTP clients.</li>
+<li>Port <code translate="no">9091</code> is a management port for metrics collection, pprof profiling, and health probes within Kubernetes.</li>
 </ul>
-<p><code translate="no">demo-milvus</code> 服務提供資料庫存取端點，用來從用戶端建立連線。它使用 NLB 作為服務負載平衡器。您可以從<code translate="no">EXTERNAL-IP</code> 列取得服務端點。</p>
+<p>The <code translate="no">demo-milvus</code> service provides a database access endpoint, which is used to establish a connection from clients. It uses NLB as the service load balancer. You can get the service endpoint from the <code translate="no">EXTERNAL-IP</code> column.</p>
 <pre><code translate="no">NAME                     TYPE           CLUSTER-IP       EXTERNAL-IP                                               PORT(S)                          AGE
 demo-etcd                ClusterIP      <span class="hljs-number">172.20</span><span class="hljs-number">.103</span><span class="hljs-number">.138</span>   &lt;none&gt;                                                    <span class="hljs-number">2379</span>/TCP,<span class="hljs-number">2380</span>/TCP                62m
 demo-etcd-headless       ClusterIP      <span class="hljs-literal">None</span>             &lt;none&gt;                                                    <span class="hljs-number">2379</span>/TCP,<span class="hljs-number">2380</span>/TCP                62m
@@ -469,26 +480,30 @@ demo-milvus-querycoord   ClusterIP      <span class="hljs-number">172.20</span><
 demo-milvus-querynode    ClusterIP      <span class="hljs-literal">None</span>             &lt;none&gt;                                                    <span class="hljs-number">9091</span>/TCP                         62m
 demo-milvus-rootcoord    ClusterIP      <span class="hljs-number">172.20</span><span class="hljs-number">.173</span><span class="hljs-number">.98</span>    &lt;none&gt;                                                    <span class="hljs-number">53100</span>/TCP,<span class="hljs-number">9091</span>/TCP               62m
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Managing-Milvus-using-Attu" class="common-anchor-header"><strong>使用 Attu 管理 Milvus</strong></h4><p>如前所述，我們已安裝 Attu 來管理 Milvus。執行下列指令來取得端點：</p>
+<h4 id="Managing-Milvus-using-Attu" class="common-anchor-header"><strong>Managing Milvus using Attu</strong></h4><p>As described before, we have installed Attu to manage Milvus. Run the following command to get the endpoint:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> ingress -n milvus
 <button class="copy-code-btn"></button></code></pre>
-<p>您可以看到一個名為<code translate="no">demo-milvus-attu</code> 的 Ingress ，其中<code translate="no">ADDRESS</code> 欄是存取 URL。</p>
+<p>You can see an Ingress called <code translate="no">demo-milvus-attu</code>, where the <code translate="no">ADDRESS</code> column is the access URL.</p>
 <pre><code translate="no">NAME            CLASS   HOSTS   ADDRESS                                     PORTS   AGE
 demo-milvus-attu   &lt;none&gt;   *       k8s-attu-xxxx.us-west-2.elb.amazonaws.com   80      27s
 <button class="copy-code-btn"></button></code></pre>
-<p>在瀏覽器中打開 Ingress 位址，看到以下頁面。按一下<strong>Connect</strong>進行登入。</p>
+<p>Open the Ingress address in a browser and see the following page. Click <strong>Connect</strong> to log in.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_5_Log_in_to_your_Attu_account_bde25a6da5.png" alt="Figure 5 Log in to your Attu account.png" class="doc-image" id="figure-5-log-in-to-your-attu-account.png" />
-   </span> <span class="img-wrapper"> <span>圖 5 登入您的 Attu 帳戶.png</span> </span></p>
-<p><em>圖 5：登入您的 Attu 帳戶</em></p>
-<p>登入後，您可以透過 Attu 管理 Milvus 資料庫。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_5_Log_in_to_your_Attu_account_bde25a6da5.png" alt="Figure 5 Log in to your Attu account.png" class="doc-image" id="figure-5-log-in-to-your-attu-account.png" />
+    <span>Figure 5 Log in to your Attu account.png</span>
+  </span>
+</p>
+<p><em>Figure 5: Log in to your Attu account</em></p>
+<p>After logging in, you can manage Milvus databases through Attu.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Figure_6_The_Attu_interface_3e818e6833.png" alt="Figure 6 The Attu interface.png" class="doc-image" id="figure-6-the-attu-interface.png" />
-   </span> <span class="img-wrapper"> <span>圖 6 Attu 介面.png</span> </span></p>
-<p>圖 6: Attu 介面</p>
-<h2 id="Testing-the-Milvus-vector-database" class="common-anchor-header">測試 Milvus 向量資料庫<button data-href="#Testing-the-Milvus-vector-database" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Figure_6_The_Attu_interface_3e818e6833.png" alt="Figure 6 The Attu interface.png" class="doc-image" id="figure-6-the-attu-interface.png" />
+    <span>Figure 6 The Attu interface.png</span>
+  </span>
+</p>
+<p>Figure 6: The Attu interface</p>
+<h2 id="Testing-the-Milvus-vector-database" class="common-anchor-header">Testing the Milvus vector database<button data-href="#Testing-the-Milvus-vector-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -503,17 +518,17 @@ demo-milvus-attu   &lt;none&gt;   *       k8s-attu-xxxx.us-west-2.elb.amazonaws.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我們將使用Milvus<a href="https://milvus.io/docs/example_code.md">範例程式碼來</a>測試Milvus資料庫是否正常運作。首先，使用下列指令下載<code translate="no">hello_milvus.py</code> 範例程式碼：</p>
+    </button></h2><p>We will use the Milvus <a href="https://milvus.io/docs/example_code.md">example code</a> to test if the Milvus database is working properly. First, download the <code translate="no">hello_milvus.py</code> example code using the following command:</p>
 <pre><code translate="no">wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/pymilvus/master/examples/hello_milvus.py</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>修改範例程式碼中的 host 為 Milvus 服務端點。</p>
+<p>Modify the host in the example code to the Milvus service endpoint.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(fmt.<span class="hljs-built_in">format</span>(<span class="hljs-string">&quot;start connecting to Milvus&quot;</span>))
 connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<span class="hljs-string">&quot;milvus-nlb-xxx.elb.us-west-2.amazonaws.com&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>執行程式碼：</p>
+<p>Run the code:</p>
 <pre><code translate="no">python3 hello_milvus.py
 <button class="copy-code-btn"></button></code></pre>
-<p>如果系統返回以下結果，則表示 Milvus 運行正常。</p>
+<p>If the system returns the following result, then it indicates that Milvus is running normally.</p>
 <pre><code translate="no">=== start connecting to <span class="hljs-title class_">Milvus</span>     ===
 <span class="hljs-title class_">Does</span> collection hello_milvus exist <span class="hljs-keyword">in</span> <span class="hljs-title class_">Milvus</span>: <span class="hljs-title class_">False</span>
 === <span class="hljs-title class_">Create</span> collection <span class="hljs-string">`hello_milvus`</span> ===
@@ -522,7 +537,7 @@ connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<
 === <span class="hljs-title class_">Start</span> <span class="hljs-title class_">Creating</span> index <span class="hljs-variable constant_">IVF_FLAT</span>  ===
 === <span class="hljs-title class_">Start</span> loading                  ===
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -537,9 +552,9 @@ connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>這篇文章介紹了最受歡迎的開源向量資料庫之一<a href="https://milvus.io/intro">Milvus</a>，並提供在 AWS 上部署 Milvus 的指南，使用 Amazon EKS、S3、MSK 和 ELB 等管理服務來達到更高的彈性和可靠性。</p>
-<p>作為各種 GenAI 系統的核心元件，特別是 Retrieval Augmented Generation (RAG)，Milvus 支援並整合各種主流 GenAI 模型和框架，包括 Amazon Sagemaker、PyTorch、HuggingFace、LlamaIndex 和 LangChain。立即使用 Milvus 開始您的 GenAI 創新之旅！</p>
-<h2 id="References" class="common-anchor-header">參考資料<button data-href="#References" class="anchor-icon" translate="no">
+    </button></h2><p>This post introduces <a href="https://milvus.io/intro">Milvus</a>, one of the most popular open-source vector databases, and provides a guide on deploying Milvus on AWS using managed services such as Amazon EKS, S3, MSK, and ELB to achieve greater elasticity and reliability.</p>
+<p>As a core component of various GenAI systems, particularly Retrieval Augmented Generation (RAG), Milvus supports and integrates with a variety of mainstream GenAI models and frameworks, including Amazon Sagemaker, PyTorch, HuggingFace, LlamaIndex, and LangChain. Start your GenAI innovation journey with Milvus today!</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -555,8 +570,8 @@ connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">亞馬遜 EKS 使用指南</a></li>
-<li><a href="https://milvus.io/">Milvus 官方網站</a></li>
-<li><a href="https://github.com/milvus-io/milvus">Milvus GitHub 儲存庫</a></li>
-<li><a href="https://eksctl.io/">eksctl 官方網站</a></li>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html">Amazon EKS User Guide</a></li>
+<li><a href="https://milvus.io/">Milvus Official Website</a></li>
+<li><a href="https://github.com/milvus-io/milvus">Milvus GitHub Repository</a></li>
+<li><a href="https://eksctl.io/">eksctl Official Website</a></li>
 </ul>

@@ -1,8 +1,8 @@
 ---
 id: semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
-title: >-
-  Как мы построили модель семантического выделения для обрезки контекста RAG и
-  сохранения токенов
+title: >
+  How We Built a Semantic Highlighting Model for RAG Context Pruning and Token
+  Saving
 author: 'Cheney Zhang, Jiang Chen'
 date: 2026-1-19
 cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
@@ -16,14 +16,13 @@ meta_keywords: >-
 meta_title: |
   Semantic Highlighting for RAG Context Pruning and Token Saving
 desc: >-
-  Узнайте, как компания Zilliz создала модель семантического выделения для
-  фильтрации шума RAG, обрезки контекста и сохранения лексем с помощью
-  архитектур, основанных только на кодировщике, рассуждений LLM и масштабных
-  двуязычных обучающих данных.
+  Learn how Zilliz built a semantic highlighting model for RAG noise filtering,
+  context pruning, and token saving using encoder-only architectures, LLM
+  reasoning, and large-scale bilingual training data.
 origin: >-
   https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md
 ---
-<h2 id="The-Problem-RAG-Noise-and-Token-Waste" class="common-anchor-header">Проблема: Шум RAG и пустая трата жетонов<button data-href="#The-Problem-RAG-Noise-and-Token-Waste" class="anchor-icon" translate="no">
+<h2 id="The-Problem-RAG-Noise-and-Token-Waste" class="common-anchor-header">The Problem: RAG Noise and Token Waste<button data-href="#The-Problem-RAG-Noise-and-Token-Waste" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,11 +37,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Векторный поиск</strong> - надежная основа для систем RAG - корпоративных ассистентов, агентов искусственного интеллекта, ботов для поддержки клиентов и других. Он надежно находит документы, которые имеют значение. Но сам по себе поиск не решает проблему контекста. Даже хорошо настроенные индексы возвращают фрагменты, которые в целом релевантны, в то время как лишь небольшая часть предложений внутри этих фрагментов действительно отвечает на запрос.</p>
-<p>В производственных системах этот пробел проявляется сразу. Один запрос может содержать десятки документов, каждый из которых состоит из тысяч лексем. Только несколько предложений содержат реальный сигнал; остальное - контекст, который увеличивает количество лексем, замедляет вывод и часто отвлекает LLM. Проблема становится еще более очевидной в агентских рабочих процессах, где сами запросы являются результатом многоэтапных рассуждений и соответствуют лишь небольшим частям полученного текста.</p>
-<p>Это создает явную потребность в модели, которая может <em><strong>идентифицировать и выделять</strong></em> <em>полезные предложения и игнорировать остальные - по сути,</em>фильтрация релевантности на уровне предложений, или то, что многие команды называют <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>контекстной обрезкой</strong></a>. Цель проста: сохранить те части, которые имеют значение, и отбросить шум еще до того, как он достигнет LLM.</p>
-<p>Традиционное выделение на основе ключевых слов не может решить эту проблему. Например, если пользователь спрашивает: "Как повысить эффективность выполнения кода Python?", выделитель ключевых слов выделит слова "Python" и "эффективность", но пропустит предложение, которое действительно отвечает на вопрос - "Использовать векторные операции NumPy вместо циклов" - потому что в нем нет общих ключевых слов с запросом. Вместо этого нам нужно семантическое понимание, а не сопоставление строк.</p>
-<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">Модель семантического выделения для фильтрации шумов и обрезки контекста в RAG<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Vector search</strong> is a solid foundation for RAG systems—enterprise assistants, AI agents, customer support bots, and more. It reliably finds the documents that matter. But retrieval alone doesn’t solve the context problem. Even well-tuned indexes return chunks that are broadly relevant, while only a small fraction of the sentences inside those chunks actually answer the query.</p>
+<p>In production systems, this gap shows up immediately. A single query may pull in dozens of documents, each thousands of tokens long. Only a handful of sentences contain the actual signal; the rest is context that bloats token usage, slows inference, and often distracts the LLM. The problem becomes even more obvious in agent workflows, where the queries themselves are the output of multi-step reasoning and only match small parts of the retrieved text.</p>
+<p>This creates a clear need for a model that can <em><strong>identify and highlight</strong></em> <em>the useful sentences and ignore the rest</em>—essentially, sentence-level relevance filtering, or what many teams refer to as <a href="https://milvus.io/blog/llm-context-pruning-a-developers-guide-to-better-rag-and-agentic-ai-results.md"><strong>context pruning</strong></a>. The goal is simple: keep the parts that matter and drop the noise before it ever reaches the LLM.</p>
+<p>Traditional keyword-based highlighting can’t solve this problem. For example, if a user asks, “How do I improve Python code execution efficiency?”, a keyword highlighter will pick out “Python” and “efficiency,” but miss the sentence that actually answers the question—“Use NumPy vectorized operations instead of loops”—because it shares no keywords with the query. What we need instead is semantic understanding, not string matching.</p>
+<h2 id="A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="common-anchor-header">A Semantic Highlighting Model for RAG Noise Filtering and Context Pruning<button data-href="#A-Semantic-Highlighting-Model-for-RAG-Noise-Filtering-and-Context-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,35 +56,35 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Чтобы облегчить задачу разработчикам RAG, мы обучили и выложили в открытый доступ <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>модель семантического выделения</strong></a>, которая определяет и выделяет предложения в найденных документах, которые более семантически соответствуют запросу. В настоящее время модель демонстрирует передовые результаты на английском и китайском языках и предназначена для прямого включения в существующие конвейеры RAG.</p>
+    </button></h2><p>To make this easy for RAG builders, we trained and open-sourced a <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1"><strong>Semantic Highlighting model</strong></a> that identifies and highlights the sentences in retrieved documents that are more semantically aligned with the query. The model currently delivers the state-of-the-art performance on both English and Chinese and is designed to slot directly into existing RAG pipelines.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/context_pruning_80f7b16280.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Детали модели</strong></p>
+<p><strong>Model Details</strong></p>
 <ul>
 <li><p><strong>HuggingFace:</strong> <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p><strong>Лицензия:</strong> MIT (коммерческая)</p></li>
-<li><p><strong>Архитектура:</strong> 0.6B только кодирующая модель, основанная на BGE-M3 Reranker v2</p></li>
-<li><p><strong>Контекстное окно:</strong> 8192 лексемы</p></li>
-<li><p><strong>Поддерживаемые языки:</strong> Английский и китайский</p></li>
+<li><p><strong>License:</strong> MIT (commercial-friendly)</p></li>
+<li><p><strong>Architecture:</strong> 0.6B encoder-only model based on BGE-M3 Reranker v2</p></li>
+<li><p><strong>Context Window:</strong> 8192 tokens</p></li>
+<li><p><strong>Supported Languages:</strong> English and Chinese</p></li>
 </ul>
-<p>Семантическое выделение обеспечивает сигналы релевантности, необходимые для выбора только полезных частей длинных найденных документов. На практике эта модель позволяет:</p>
+<p>Semantic Highlighting provides the relevance signals needed to select only the useful parts of long retrieved documents. In practice, this model enables:</p>
 <ul>
-<li><p><strong>Улучшенная интерпретируемость</strong>, показывающая, какие части документа действительно имеют значение</p></li>
-<li><p><strong>Снижение стоимости токенов на 70-80 %</strong> за счет отправки в LLM только выделенных предложений</p></li>
-<li><p><strong>Повышение качества ответов</strong>, поскольку модель видит меньше нерелевантного контекста</p></li>
-<li><p><strong>Более простая отладка</strong>, поскольку инженеры могут напрямую проверять совпадения на уровне предложений.</p></li>
+<li><p><strong>Improved interpretability</strong>, showing which parts of a document actually matter</p></li>
+<li><p><strong>70–80% reduction in token cost</strong> by sending only highlighted sentences to the LLM</p></li>
+<li><p><strong>Better answer quality</strong>, since the model sees less irrelevant context</p></li>
+<li><p><strong>Easier debugging</strong>, because engineers can inspect sentence-level matches directly</p></li>
 </ul>
-<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">Результаты оценки: Достижение производительности SOTA</h3><p>Мы оценили нашу модель семантического выделения на нескольких наборах данных, охватывающих английский и китайский языки, как в условиях домена, так и вне домена.</p>
-<p>В число эталонных наборов вошли:</p>
+<h3 id="Evaluation-Results-Achieving-SOTA-Performance" class="common-anchor-header">Evaluation Results: Achieving SOTA Performance</h3><p>We evaluated our Semantic Highlighting model across multiple datasets spanning both English and Chinese, in both in-domain and out-of-domain conditions.</p>
+<p>The benchmark suites include:</p>
 <ul>
-<li><p><strong>английский многопространственный QA:</strong> multispanqa</p></li>
-<li><p><strong>Английская внедоменная Википедия:</strong> wikitext2</p></li>
-<li><p><strong>Китайская многопространственная QA:</strong> multispanqa_zh</p></li>
-<li><p><strong>Китайская внедоменная Википедия:</strong> wikitext2_zh</p></li>
+<li><p><strong>English multi-span QA:</strong> multispanqa</p></li>
+<li><p><strong>English out-of-domain Wikipedia:</strong> wikitext2</p></li>
+<li><p><strong>Chinese multi-span QA:</strong> multispanqa_zh</p></li>
+<li><p><strong>Chinese out-of-domain Wikipedia:</strong> wikitext2_zh</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -93,15 +92,15 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Оцененные модели включают:</p>
+<p>Evaluated models include:</p>
 <ul>
-<li><p>серия Open Provence</p></li>
-<li><p>Серия "Прованс/XProvence" от Naver</p></li>
-<li><p>Семантический хайлайтер OpenSearch</p></li>
-<li><p>Наша обученная двуязычная модель: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p>Open Provence series</p></li>
+<li><p>Naver’s Provence/XProvence series</p></li>
+<li><p>OpenSearch’s semantic-highlighter</p></li>
+<li><p>Our trained bilingual model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
 </ul>
-<p>Во всех четырех наборах данных наша модель занимает первое место. Что еще более важно, это <em>единственная</em> модель, которая показывает стабильно высокие результаты как на английском, так и на китайском языках. Конкурирующие модели либо ориентированы исключительно на английский язык, либо демонстрируют явное падение производительности при работе с китайским текстом.</p>
-<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">Как мы построили эту модель семантического выделения<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Across all four datasets, our model achieves the top ranking. More importantly, it is the <em>only</em> model that performs consistently well on both English and Chinese. Competing models either focus exclusively on English or show clear performance drops on Chinese text.</p>
+<h2 id="How-We-Built-This-Semantic-Highlighting-Model" class="common-anchor-header">How We Built This Semantic Highlighting Model<button data-href="#How-We-Built-This-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,21 +115,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Обучение модели для этой задачи - не самая сложная часть; обучение <em>хорошей</em> модели, которая справляется с предыдущими проблемами и обеспечивает производительность, близкую к уровню SOTA, - вот где настоящая работа. Наш подход был сосредоточен на двух вещах:</p>
+    </button></h2><p>Training a model for this task isn’t the hard part; training a <em>good</em> model that handles the earlier problems and delivers near-SOTA performance is where the real work happens. Our approach focused on two things:</p>
 <ul>
-<li><p><strong>Архитектура модели:</strong> использование только кодировщика для быстрого вывода.</p></li>
-<li><p><strong>Обучающие данные:</strong> генерировать высококачественные метки релевантности с помощью LLM, способных к рассуждениям, и масштабировать генерацию данных с помощью локальных механизмов вывода.</p></li>
+<li><p><strong>Model architecture:</strong> use an encoder-only design for fast inference.</p></li>
+<li><p><strong>Training data:</strong> generate high-quality relevance labels using reasoning-capable LLMs and scale data generation with local inference frameworks.</p></li>
 </ul>
-<h3 id="Model-Architecture" class="common-anchor-header">Архитектура модели</h3><p>Мы построили модель в виде легкой сети, работающей <strong>только с кодировщиком</strong>, которая рассматривает обрезку контекста как <strong>задачу оценки релевантности на уровне токенов</strong>. Этот дизайн вдохновлен <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, подходом к обрезке контекста, представленным компанией Naver на ICLR 2025, который пересматривает обрезку с "выбора правильного куска" на "оценку каждого токена". Такая постановка вопроса естественным образом сочетается с семантическим выделением, где важны тонкие сигналы.</p>
-<p>Модели, работающие только с кодировщиком, - не самая новая архитектура, но в данном случае они чрезвычайно практичны: они быстры, легко масштабируются и могут параллельно выдавать оценки релевантности для всех позиций лексем. Для промышленной системы RAG это преимущество в скорости гораздо важнее, чем использование более крупной модели декодера.</p>
-<p>Вычислив оценки релевантности на уровне лексем, мы объединяем их в оценки <strong>на уровне предложений</strong>. Этот шаг превращает шумные сигналы токенов в стабильную, интерпретируемую метрику релевантности. Предложения, превышающие настраиваемый порог, выделяются; все остальное отфильтровывается. Таким образом, создается простой и надежный механизм для отбора предложений, которые действительно имеют значение для запроса.</p>
-<h3 id="Inference-Process" class="common-anchor-header">Процесс вывода</h3><p>Во время работы наша модель семантического выделения следует простой схеме:</p>
+<h3 id="Model-Architecture" class="common-anchor-header">Model Architecture</h3><p>We built the model as a lightweight <strong>encoder-only</strong> network that treats context pruning as a <strong>token-level relevance scoring task</strong>. This design is inspired by <a href="https://arxiv.org/html/2501.16214v1">Provence</a>, a context-pruning approach introduced by Naver at ICLR 2025, which reframes pruning from “choose the right chunk” to “score every token.” That framing aligns naturally with semantic highlighting, where fine-grained signals are essential.</p>
+<p>Encoder-only models aren’t the newest architecture, but they remain extremely practical here: they’re fast, easy to scale, and can produce relevance scores for all token positions in parallel. For a production RAG system, that speed advantage matters far more than using a larger decoder model.</p>
+<p>Once we compute token-level relevance scores, we aggregate them into <strong>sentence-level</strong> scores. This step turns noisy token signals into a stable, interpretable relevance metric. Sentences above a configurable threshold are highlighted; everything else is filtered out. This produces a simple and reliable mechanism for selecting the sentences that actually matter to the query.</p>
+<h3 id="Inference-Process" class="common-anchor-header">Inference Process</h3><p>At runtime, our semantic highlighting model follows a simple pipeline:</p>
 <ol>
-<li><p><strong>Вход -</strong> процесс начинается с запроса пользователя. Полученные документы рассматриваются как контекст-кандидат для оценки релевантности.</p></li>
-<li><p><strong>Обработка модели -</strong> Запрос и контекст объединяются в одну последовательность: [BOS] + запрос + контекст</p></li>
-<li><p><strong>Оценка токенов -</strong> каждому токену в контексте присваивается балл релевантности от 0 до 1, отражающий степень его связи с запросом.</p></li>
-<li><p><strong>Агрегирование предложений -</strong> оценки токенов агрегируются на уровне предложений, обычно путем усреднения, чтобы получить оценку релевантности для каждого предложения.</p></li>
-<li><p><strong>Пороговая фильтрация -</strong> предложения с оценками выше настраиваемого порога выделяются и сохраняются, а предложения с низкими оценками отфильтровываются перед передачей в последующую систему LLM.</p></li>
+<li><p><strong>Input—</strong> The process starts with a user query. Retrieved documents are treated as candidate context for relevance evaluation.</p></li>
+<li><p><strong>Model Processing—</strong> The query and context are concatenated into a single sequence: [BOS] + Query + Context</p></li>
+<li><p><strong>Token Scoring—</strong> Each token in the context is assigned a relevance score between 0 and 1, reflecting how strongly it is related to the query.</p></li>
+<li><p><strong>Sentence Aggregation—</strong> Token scores are aggregated at the sentence level, typically by averaging, to produce a relevance score for each sentence.</p></li>
+<li><p><strong>Threshold Filtering—</strong> Sentences with scores above a configurable threshold are highlighted and retained, while low-scoring sentences are filtered out before being passed to the downstream LLM.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -138,16 +137,16 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">Базовая модель: BGE-M3 Reranker v2</h3><p>Мы выбрали BGE-M3 Reranker v2 в качестве базовой модели по нескольким причинам:</p>
+<h3 id="Base-Model-BGE-M3-Reranker-v2" class="common-anchor-header">Base Model: BGE-M3 Reranker v2</h3><p>We selected BGE-M3 Reranker v2 as our base model for several reasons:</p>
 <ol>
-<li><p>В ней используется архитектура кодировщика, подходящая для оценки токенов и предложений.</p></li>
-<li><p>Поддерживает несколько языков с оптимизацией для английского и китайского</p></li>
-<li><p>Обеспечивает контекстное окно на 8192 токена, подходящее для длинных документов RAG</p></li>
-<li><p>Поддерживает 0.6B параметров - достаточно сильных, но не требующих больших вычислительных затрат</p></li>
-<li><p>Обеспечивает достаточное знание мира в базовой модели</p></li>
-<li><p>Обучена для повторного ранжирования, что тесно связано с задачами оценки релевантности</p></li>
+<li><p>It employs an Encoder architecture suitable for token and sentence scoring</p></li>
+<li><p>Supports multiple languages with optimization for both English and Chinese</p></li>
+<li><p>Provides an 8192-token context window appropriate for longer RAG documents</p></li>
+<li><p>Maintains 0.6B parameters—strong enough without being computationally heavy</p></li>
+<li><p>Ensures sufficient world knowledge in the base model</p></li>
+<li><p>Trained for reranking, which closely aligns with relevance judgment tasks</p></li>
 </ol>
-<h2 id="Training-Data-LLM-Annotation-with-Reasoning" class="common-anchor-header">Обучающие данные: Аннотация LLM с рассуждениями<button data-href="#Training-Data-LLM-Annotation-with-Reasoning" class="anchor-icon" translate="no">
+<h2 id="Training-Data-LLM-Annotation-with-Reasoning" class="common-anchor-header">Training Data: LLM Annotation with Reasoning<button data-href="#Training-Data-LLM-Annotation-with-Reasoning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -162,41 +161,41 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После того как мы окончательно определились с архитектурой модели, следующей задачей стало создание набора данных, на котором можно было бы обучить надежную модель. Для начала мы посмотрели, как с этим справляется Open Provence. Их подход использует публичные наборы данных QA и небольшой LLM для определения релевантности предложений. Он хорошо масштабируется и легко автоматизируется, что сделало его хорошим базовым вариантом для нас.</p>
-<p>Но мы быстро столкнулись с той же проблемой, которую они описывают: если попросить LLM напрямую выводить метки на уровне предложений, результаты не всегда будут стабильными. Одни метки правильные, другие сомнительные, и впоследствии их сложно вычистить. Полностью ручное аннотирование также было невозможным - нам требовалось гораздо больше данных, чем мы могли бы пометить вручную.</p>
-<p>Чтобы повысить стабильность без ущерба для масштабируемости, мы внесли одно изменение: LLM должен предоставлять короткий фрагмент обоснования для каждой метки, которую он выводит. Каждый учебный пример включает в себя запрос, документ, фрагменты предложений и краткое объяснение того, почему предложение является релевантным или нерелевантным. Эта небольшая корректировка сделала аннотации более последовательными и дала нам что-то конкретное, на что можно ссылаться при проверке или отладке набора данных.</p>
-<p>Включение обоснования оказалось удивительно ценным:</p>
+    </button></h2><p>Once we finalized the model architecture, the next challenge was building a dataset that would actually train a reliable model. We started by looking at how Open Provence handles this. Their approach uses public QA datasets and a small LLM to label which sentences are relevant. It scales well and is easy to automate, which made it a good baseline for us.</p>
+<p>But we quickly ran into the same issue they describe: if you ask an LLM to output sentence-level labels directly, the results aren’t always stable. Some labels are correct, others are questionable, and it’s hard to clean things up afterward. Fully manual annotation wasn’t an option either—we needed far more data than we could ever label by hand.</p>
+<p>To improve stability without sacrificing scalability, we made one change: the LLM must provide a short reasoning snippet for every label it outputs. Each training example includes the query, the document, the sentence spans, and a brief explanation of why a sentence is relevant or irrelevant. This small adjustment made the annotations much more consistent and gave us something concrete to reference when validating or debugging the dataset.</p>
+<p>Including the reasoning turned out to be surprisingly valuable:</p>
 <ul>
-<li><p><strong>Более высокое качество аннотаций:</strong> Запись обоснования работает как самопроверка, что уменьшает количество случайных или непоследовательных пометок.</p></li>
-<li><p><strong>Лучшая наблюдаемость:</strong> Мы можем видеть <em>, почему</em> было выбрано то или иное предложение, вместо того чтобы рассматривать метку как "черный ящик".</p></li>
-<li><p><strong>Более простая отладка:</strong> Если что-то кажется неправильным, обоснование позволяет легко определить, в чем проблема - в подсказке, домене или логике аннотации.</p></li>
-<li><p><strong>Многократно используемые данные:</strong> Даже если в будущем мы перейдем на другую модель маркировки, следы рассуждений останутся полезными для повторной маркировки или аудита.</p></li>
+<li><p><strong>Higher annotation quality:</strong> Writing out the reasoning works as a self-check, which reduces random or inconsistent labels.</p></li>
+<li><p><strong>Better observability:</strong> We can see <em>why</em> a sentence was selected instead of treating the label as a black box.</p></li>
+<li><p><strong>Easier debugging:</strong> When something looks wrong, the reasoning makes it easy to spot whether the issue is the prompt, the domain, or the annotation logic.</p></li>
+<li><p><strong>Reusable data:</strong> Even if we switch to a different labeling model in the future, the reasoning traces remain useful for re-labeling or auditing.</p></li>
 </ul>
-<p>Рабочий процесс аннотирования выглядит следующим образом:</p>
+<p>The annotation workflow looks like this:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/annotation_data_generation_ff93eb18f4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B для аннотации</h3><p>Для аннотирования мы выбрали Qwen3 8B, потому что она поддерживает "режим мышления" через выходы, что значительно упрощает извлечение последовательных следов рассуждений. Маленькие модели не давали нам стабильных меток, а большие модели были медленнее и неоправданно дорогими для такого рода конвейера. В Qwen3 8B найден правильный баланс между качеством, скоростью и стоимостью.</p>
-<p>Мы выполняли все аннотации, используя <strong>локальный сервис vLLM</strong>, а не облачные API. Это обеспечило нам высокую пропускную способность, предсказуемую производительность и гораздо меньшую стоимость - по сути, мы обменяли время работы на GPU на плату за токены API, что является более выгодным предложением при генерации миллионов образцов.</p>
-<h3 id="Dataset-Scale" class="common-anchor-header">Масштабность набора данных</h3><p>В общей сложности мы создали <strong>более 5 миллионов двуязычных обучающих образцов</strong>, разделив их примерно поровну между английским и китайским языками.</p>
+<h3 id="Qwen3-8B-for-Annotation" class="common-anchor-header">Qwen3 8B for Annotation</h3><p>For annotation, we chose Qwen3 8B because it natively supports a “thinking mode” via outputs, making it much easier to extract consistent reasoning traces. Smaller models didn’t give us stable labels, and larger models were slower and unnecessarily expensive for this kind of pipeline. Qwen3 8B hit the right balance between quality, speed, and cost.</p>
+<p>We ran all annotations using a <strong>local vLLM service</strong> instead of cloud APIs. This gave us high throughput, predictable performance, and much lower cost—essentially trading GPU time for API token fees, which is the better deal when generating millions of samples.</p>
+<h3 id="Dataset-Scale" class="common-anchor-header">Dataset Scale</h3><p>In total, we built <strong>over 5 million bilingual training samples</strong>, split roughly evenly between English and Chinese.</p>
 <ul>
-<li><p><strong>Английские источники:</strong> MS MARCO, Natural Questions, GooAQ.</p></li>
-<li><p><strong>Китайские источники:</strong> DuReader, китайская Википедия, mmarco_chinese.</p></li>
+<li><p><strong>English sources:</strong> MS MARCO, Natural Questions, GooAQ</p></li>
+<li><p><strong>Chinese sources:</strong> DuReader, Chinese Wikipedia, mmarco_chinese</p></li>
 </ul>
-<p>Часть набора данных получена в результате повторного аннотирования существующих данных, используемых в таких проектах, как Open Provence. Остальная часть была сгенерирована из необработанных корпораций путем создания пар запрос-контекст и последующей маркировки их с помощью нашего конвейера, основанного на рассуждениях.</p>
-<p>Все аннотированные обучающие данные также доступны на HuggingFace для развития сообщества и использования в обучении: <a href="https://huggingface.co/zilliz/datasets">Наборы данных Zilliz</a></p>
+<p>Part of the dataset comes from re-annotating existing data used by projects like Open Provence. The rest was generated from raw corpora by first creating query–context pairs and then labeling them with our reasoning-based pipeline.</p>
+<p>All annotated training data is also available on HuggingFace for community development and training reference: <a href="https://huggingface.co/zilliz/datasets">Zilliz Datasets</a></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zilliz_datasets_dd91330d4d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Training-Method" class="common-anchor-header">Метод обучения</h3><p>После того как архитектура модели и набор данных были готовы, мы провели обучение модели на <strong>8× A100 GPU</strong> в течение трех эпох, что заняло примерно <strong>9 часов</strong>.</p>
-<p><strong>Примечание:</strong> обучение было направлено только на <strong>головку обрезки</strong>, которая отвечает за задачу семантического выделения. Мы не обучали <strong>Rerank Head</strong>, поскольку концентрация только на задаче обрезки дала лучшие результаты при оценке релевантности на уровне предложений.</p>
-<h2 id="Real-World-Case-Study" class="common-anchor-header">Пример из реального мира<button data-href="#Real-World-Case-Study" class="anchor-icon" translate="no">
+<h3 id="Training-Method" class="common-anchor-header">Training Method</h3><p>Once the model architecture and dataset were ready, we trained the model on <strong>8× A100 GPUs</strong> for three epochs, which took roughly <strong>9 hours</strong> end-to-end.</p>
+<p><strong>Note:</strong> The training only targeted the <strong>Pruning Head</strong>, which is responsible for the semantic highlighting task. We did not train the <strong>Rerank Head</strong>, since focusing solely on the pruning objective yielded better results for sentence-level relevance scoring.</p>
+<h2 id="Real-World-Case-Study" class="common-anchor-header">Real-World Case Study<button data-href="#Real-World-Case-Study" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -211,9 +210,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Бенчмарки рассказывают только часть истории, поэтому вот реальный пример, который показывает, как модель ведет себя в распространенном случае: когда найденный текст содержит как правильный ответ, так и очень заманчивый дистрактор.</p>
-<p><strong>Запрос:</strong> <em>Кто написал "Убийство священного оленя"?</em></p>
-<p><strong>Контекст (5 предложений):</strong></p>
+    </button></h2><p>Benchmarks only tell part of the story, so here’s a real example that shows how the model behaves on a common edge case: when the retrieved text contains both the correct answer and a very tempting distractor.</p>
+<p><strong>Query:</strong> <em>Who wrote The Killing of a Sacred Deer?</em></p>
+<p><strong>Context (5 sentences):</strong></p>
 <pre><code translate="no">1\. The Killing of a Sacred Deer is a 2017 psychological horror film directed by Yorgos Lanthimos,
 
    with a screenplay by Lanthimos and Efthymis Filippou.
@@ -230,42 +229,42 @@ origin: >-
 
 5\. He introduces the boy to his family, who then mysteriously fall ill.
 <button class="copy-code-btn"></button></code></pre>
-<p>Правильный ответ: Предложение 1 (прямо указано "сценарий Лантимоса и Эфтимиса Филиппу").</p>
-<p>В этом примере есть ловушка: в предложении 3 упоминается, что "Еврипид" написал оригинальную пьесу. Но в вопросе спрашивается, "кто написал фильм "Убийство священного оленя"", и отвечать следует сценаристам фильма, а не греческому драматургу тысячелетней давности.</p>
-<h3 id="Model-results" class="common-anchor-header">Результаты моделирования</h3><table>
+<p>Correct answer: Sentence 1 (explicitly states “screenplay by Lanthimos and Efthymis Filippou”)</p>
+<p>This example has a trap: Sentence 3 mentions that “Euripides” wrote the original play. But the question asks “who wrote the film The Killing of a Sacred Deer,” and the answer should be the film’s screenwriters, not the Greek playwright from thousands of years ago.</p>
+<h3 id="Model-results" class="common-anchor-header">Model results</h3><table>
 <thead>
-<tr><th>Модель</th><th>Находит правильный ответ?</th><th>Предсказание</th></tr>
+<tr><th>Model</th><th>Finds correct answer?</th><th>Prediction</th></tr>
 </thead>
 <tbody>
-<tr><td>Наша модель</td><td>✓</td><td>Выбраны предложения 1 (правильное) и 3</td></tr>
-<tr><td>XProvence v1</td><td>✗</td><td>Выбрал только предложение 3, пропустил правильный ответ</td></tr>
-<tr><td>XProvence v2</td><td>✗</td><td>Выбрано только предложение 3, пропущен правильный ответ</td></tr>
+<tr><td>Our Model</td><td>✓</td><td>Selected sentences 1 (correct) and 3</td></tr>
+<tr><td>XProvence v1</td><td>✗</td><td>Only selected sentence 3, missed correct answer</td></tr>
+<tr><td>XProvence v2</td><td>✗</td><td>Only selected sentence 3, missed correct answer</td></tr>
 </tbody>
 </table>
-<p><strong>Сравнение ключевых баллов предложений:</strong></p>
+<p><strong>Key Sentence Score Comparison:</strong></p>
 <table>
 <thead>
-<tr><th>Предложение</th><th>Наша модель</th><th>XProvence v1</th><th>XProvence v2</th></tr>
+<tr><th>Sentence</th><th>Our Model</th><th>XProvence v1</th><th>XProvence v2</th></tr>
 </thead>
 <tbody>
-<tr><td>Предложение 1 (сценарий фильма, правильный ответ)</td><td>0.915</td><td>0.133</td><td>0.081</td></tr>
-<tr><td>Предложение 3 (оригинальная пьеса, дистрактор)</td><td>0.719</td><td>0.947</td><td>0.802</td></tr>
+<tr><td>Sentence 1 (film screenplay, correct answer)</td><td>0.915</td><td>0.133</td><td>0.081</td></tr>
+<tr><td>Sentence 3 (original play, distractor)</td><td>0.719</td><td>0.947</td><td>0.802</td></tr>
 </tbody>
 </table>
-<p>Модели XProvence:</p>
+<p>XProvence models:</p>
 <ul>
-<li><p>Сильно привлекает "Еврипид" и "пьеса", давая предложению 3 почти идеальные оценки (0,947 и 0,802)</p></li>
-<li><p>Полностью игнорирует фактический ответ (предложение 1), давая крайне низкие оценки (0,133 и 0,081)</p></li>
-<li><p>Даже при снижении порога с 0,5 до 0,2 он все равно не может найти правильный ответ.</p></li>
+<li><p>Strongly attracted to “Euripides” and “play,” giving sentence 3 near-perfect scores (0.947 and 0.802)</p></li>
+<li><p>Completely ignores the actual answer (sentence 1), giving extremely low scores (0.133 and 0.081)</p></li>
+<li><p>Even when lowering the threshold from 0.5 to 0.2, it still can’t find the correct answer</p></li>
 </ul>
-<p>Наша модель:</p>
+<p>Our model:</p>
 <ul>
-<li><p>Правильно присваивает предложению 1 наивысший балл (0,915)</p></li>
-<li><p>Присваивает предложению 3 некоторую значимость (0,719), поскольку оно связано с фоном.</p></li>
-<li><p>Четко разделяет эти два предложения с отрывом ~0,2 балла.</p></li>
+<li><p>Correctly gives sentence 1 the highest score (0.915)</p></li>
+<li><p>Still assigns sentence 3 some relevance (0.719) because it’s related to the background</p></li>
+<li><p>Clearly separates the two with a ~0.2 margin</p></li>
 </ul>
-<p>Этот пример демонстрирует основную сильную сторону модели: понимание <strong>смысла запроса</strong>, а не просто соответствие ключевым словам на уровне поверхности. В данном контексте "Кто написал <em>"Убийство священного оленя</em>"" относится к фильму, а не к древнегреческой пьесе. Наша модель улавливает это, в то время как другие отвлекаются на сильные лексические подсказки.</p>
-<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Попробуйте и скажите нам, что вы думаете<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
+<p>This example shows the model’s core strength: understanding <strong>query intent</strong> rather than just matching surface-level keywords. In this context, “Who wrote <em>The Killing of a Sacred Deer</em>” refers to the film, not the ancient Greek play. Our model picks up on that, while others get distracted by strong lexical cues.</p>
+<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Try It Out and Tell Us What You Think<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -280,16 +279,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Наша модель <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a> теперь полностью открыта под лицензией MIT и готова к использованию. Вы можете подключить ее к своему конвейеру RAG, доработать ее для своего домена или создать на ее основе новые инструменты. Мы также приветствуем вклад и обратную связь от сообщества.</p>
+    </button></h2><p>Our <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a> model is now fully open-sourced under the MIT license and ready for production use. You can plug it into your RAG pipeline, fine-tune it for your own domain, or build new tools on top of it. We also welcome contributions and feedback from the community.</p>
 <ul>
-<li><p><strong>Скачать с HuggingFace</strong>: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p><strong>Все аннотированные обучающие данные:</strong> <a href="https://huggingface.co/zilliz/datasets">https://huggingface.co/zilliz/datasets</a>.</p></li>
+<li><p><strong>Download from HuggingFace</strong>: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p><strong>All annotated training data</strong>: <a href="https://huggingface.co/zilliz/datasets">https://huggingface.co/zilliz/datasets</a></p></li>
 </ul>
-<h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Семантическое выделение доступно в Milvus и Zilliz Cloud</h3><p>Семантическое выделение также встроено непосредственно в <a href="https://milvus.io/">Milvus</a> и <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (полностью управляемый Milvus), что дает пользователям четкое представление о том <em>, почему</em> был извлечен каждый документ. Вместо того чтобы сканировать целые фрагменты, вы сразу видите конкретные предложения, которые относятся к вашему запросу - даже если формулировки не совсем совпадают. Это делает поиск более понятным и ускоряет отладку. Для конвейеров RAG это также проясняет, на чем должен сосредоточиться последующий LLM, что помогает в разработке и проверке качества.</p>
-<p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>Попробуйте семантическое выделение в полностью управляемом облаке Zilliz Cloud бесплатно.</strong></a></p>
-<p>Мы будем рады услышать, как это работает для вас - отчеты об ошибках, идеи по улучшению или все, что вы обнаружите, интегрируя это в свой рабочий процесс.</p>
-<p>Если вы хотите обсудить что-то более подробно, присоединяйтесь к нашему <a href="https://discord.com/invite/8uyFbECzPX">каналу Discord</a> или запишитесь на 20-минутную сессию <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>. Мы всегда рады пообщаться с другими разработчиками и обменяться замечаниями.</p>
-<h2 id="Acknowledgements" class="common-anchor-header">Благодарности<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
+<h3 id="Semantic-Highlighting-Available-in-Milvus-and-Zilliz-Cloud" class="common-anchor-header">Semantic Highlighting Available in Milvus and Zilliz Cloud</h3><p>Semantic highlighting is also built directly into <a href="https://milvus.io/">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed Milvus), giving users a clear view of <em>why</em> each document was retrieved. Instead of scanning entire chunks, you immediately see the specific sentences that relate to your query — even when the wording doesn’t match exactly. This makes retrieval easier to understand and much faster to debug. For RAG pipelines, it also clarifies what the downstream LLM is expected to focus on, which helps with prompt design and quality checks.</p>
+<p><a href="https://cloud.zilliz.com/signup?utm_source=milvusio&amp;utm_page=semantic-highlighting-blog"><strong>Try Semantic Highlighting in a fully managed Zilliz Cloud for free</strong></a></p>
+<p>We’d love to hear how it works for you—bug reports, improvement ideas, or anything you discover while integrating it into your workflow.</p>
+<p>If you want to talk through anything in more detail, feel free to join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session. We’re always happy to chat with other builders and swap notes.</p>
+<h2 id="Acknowledgements" class="common-anchor-header">Acknowledgements<button data-href="#Acknowledgements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -304,16 +303,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Эта работа основана на множестве замечательных идей и вкладов с открытым исходным кодом, и мы хотим выделить проекты, которые сделали эту модель возможной.</p>
+    </button></h2><p>This work builds on a lot of great ideas and open-source contributions, and we want to highlight the projects that made this model possible.</p>
 <ul>
-<li><p><strong>Provence</strong> представил чистый и практичный фреймворк для обрезки контекста с использованием легких моделей кодеров.</p></li>
-<li><p><strong>Open Provence</strong> предоставил надежную, хорошо продуманную кодовую базу - конвейеры обучения, обработку данных и головы моделей - под разрешительной лицензией. Это дало нам сильную отправную точку для экспериментов.</p></li>
+<li><p><strong>Provence</strong> introduced a clean and practical framing for context pruning using lightweight encoder models.</p></li>
+<li><p><strong>Open Provence</strong> provided a solid, well-engineered codebase—training pipelines, data processing, and model heads—under a permissive license. It gave us a strong starting point for experimentation.</p></li>
 </ul>
-<p>Поверх этой основы мы добавили несколько собственных разработок:</p>
+<p>On top of that foundation, we added several contributions of our own:</p>
 <ul>
-<li><p>Использование <strong>LLM-рассуждений</strong> для генерации более качественных меток релевантности</p></li>
-<li><p>Создание <strong>почти 5 миллионов</strong> двуязычных обучающих образцов, согласованных с реальными рабочими нагрузками RAG</p></li>
-<li><p>Выбор базовой модели, лучше подходящей для оценки релевантности в длинном контексте<strong>(BGE-M3 Reranker v2</strong>)</p></li>
-<li><p>Обучение только <strong>головки обрезки</strong> для специализации модели для семантического выделения</p></li>
+<li><p>Using <strong>LLM reasoning</strong> to generate higher-quality relevance labels</p></li>
+<li><p>Creating <strong>nearly 5 million</strong> bilingual training samples aligned with real RAG workloads</p></li>
+<li><p>Choosing a base model better suited for long-context relevance scoring (<strong>BGE-M3 Reranker v2</strong>)</p></li>
+<li><p>Training only the <strong>Pruning Head</strong> to specialize the model for semantic highlighting</p></li>
 </ul>
-<p>Мы благодарны командам Provence и Open Provence за открытую публикацию своих работ. Их вклад значительно ускорил наше развитие и сделал этот проект возможным.</p>
+<p>We’re grateful to the Provence and Open Provence teams for publishing their work openly. Their contributions significantly accelerated our development and made this project possible.</p>

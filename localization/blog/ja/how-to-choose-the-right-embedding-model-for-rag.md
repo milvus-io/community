@@ -1,9 +1,12 @@
 ---
 id: how-to-choose-the-right-embedding-model-for-rag.md
-title: Word2VecからLLM2Vecへ：RAGに適した埋め込みモデルの選び方
+title: |
+  From Word2Vec to LLM2Vec: How to Choose the Right Embedding Model for RAG
 author: Rachel Liu
 date: 2025-10-03T00:00:00.000Z
-desc: このブログでは、RAGシステムに最適なエンベッディングを選択できるように、エンベッディングを実際に評価する方法を説明します。
+desc: >-
+  This blog will walk you through how to evaluate embeddings in practice, so you
+  can choose the best fit for your RAG system.
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_3_2025_05_07_11_PM_36b1ba77eb.png
 tag: Tutorials
 recommend: false
@@ -14,10 +17,10 @@ meta_title: |
   How to Choose the Right Embedding Model for RAG
 origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.md'
 ---
-<p>大規模な言語モデルは強力だが、幻覚というよく知られた弱点がある。<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">検索補強型生成（RAG</a>）は、この問題に取り組む最も効果的な方法の一つである。RAGは、モデルの記憶だけに頼るのではなく、外部ソースから関連知識を検索し、それをプロンプトに組み込むことで、回答が実際のデータに基づいたものになるようにする。</p>
-<p>RAGシステムは通常、LLM本体、情報を保存・検索するための<a href="https://milvus.io/">Milvusの</a>ような<a href="https://zilliz.com/learn/what-is-vector-database">ベクトルデータベース</a>、埋め込みモデルの3つの主要コンポーネントで構成される。エンベッディング・モデルは、人間の言葉を機械が読み取り可能なベクトルに変換するものです。自然言語とデータベースの間の翻訳機と考えてください。この翻訳者の質が、検索されたコンテキストの関連性を決定する。それを正しく行えば、ユーザーは正確で役に立つ答えを見ることができる。それを誤ると、どんなに優れたインフラでも、ノイズやエラー、無駄な計算が発生する。</p>
-<p>だからこそ、エンベッディング・モデルを理解することが重要なのです。Word2Vecのような初期の手法から、OpenAIのテキスト埋め込みファミリーのような最新のLLMベースのモデルまで、多くの中から選ぶことができます。それぞれにトレードオフと強みがある。このガイドでは、乱雑さを切り抜け、実際にエンベッディングを評価する方法を示しますので、あなたのRAGシステムに最適なものを選ぶことができます。</p>
-<h2 id="What-Are-Embeddings-and-Why-Do-They-Matter" class="common-anchor-header">エンベッディングとは何か？<button data-href="#What-Are-Embeddings-and-Why-Do-They-Matter" class="anchor-icon" translate="no">
+<p>Large language models are powerful, but they have a well-known weakness: hallucinations. <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval-Augmented Generation (RAG)</a> is one of the most effective ways to tackle this problem. Instead of relying solely on the model’s memory, RAG retrieves relevant knowledge from an external source and incorporates it into the prompt, ensuring answers are grounded in real data.</p>
+<p>A RAG system typically consists of three main components: the LLM itself, a <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> such as <a href="https://milvus.io/">Milvus</a> for storing and searching information, and an embedding model. The embedding model is what converts human language into machine-readable vectors. Think of it as the translator between natural language and the database. The quality of this translator determines the relevance of the retrieved context. Get it right, and users see accurate, helpful answers. Get it wrong, and even the best infrastructure produces noise, errors, and wasted compute.</p>
+<p>That’s why understanding embedding models is so important. There are many to choose from—ranging from early methods like Word2Vec to modern LLM-based models such as OpenAI’s text-embedding family. Each has its own trade-offs and strengths. This guide will cut through the clutter and show you how to evaluate embeddings in practice, so you can choose the best fit for your RAG system.</p>
+<h2 id="What-Are-Embeddings-and-Why-Do-They-Matter" class="common-anchor-header">What Are Embeddings and Why Do They Matter?<button data-href="#What-Are-Embeddings-and-Why-Do-They-Matter" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -32,15 +35,15 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最も単純なレベルでは、エンベッディングは人間の言葉を機械が理解できる数値に変えます。すべての単語、文章、文書は高次元のベクトル空間にマッピングされ、ベクトル間の距離はそれらの間の関係を捉えます。似たような意味を持つテキストは一緒に集まり、関係のないコンテンツは離れていく傾向がある。これがセマンティック検索を可能にするものであり、キーワードのマッチングだけでなく、意味の検索を可能にする。</p>
-<p>埋め込みモデルは、すべてが同じように機能するわけではない。一般的に3つのカテゴリーに分類され、それぞれに長所とトレードオフがある：</p>
+    </button></h2><p>At the simplest level, embeddings turn human language into numbers that machines can understand. Every word, sentence, or document is mapped into a high-dimensional vector space, where the distance between vectors captures the relationships between them. Texts with similar meanings tend to cluster together, while unrelated content tends to drift farther apart. This is what makes semantic search possible—finding meaning, not just matching keywords.</p>
+<p>Embedding models don’t all work the same way. They generally fall into three categories, each with strengths and trade-offs:</p>
 <ul>
-<li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>スパースベクトル</strong></a>（BM25のような）はキーワードの頻度と文書の長さに注目します。スパース・ベクトル（BM25のような）は、キーワードの頻度とドキュメントの長さに重点を置くもので、明示的なマッチングには適しているが、同義語や文脈には不向きである。</p></li>
-<li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>密なベクトル</strong></a>（BERTによって生成されるような）は、より深い意味性を捉える。BERTは、共有キーワードがなくても、"Apple releases new phone "が "iPhone product launch "に関連していることを見抜くことができる。欠点は、計算コストが高く、解釈可能性が低いことである。</p></li>
-<li><p><strong>ハイブリッドモデル</strong>（BGE-M3など）は、この2つを組み合わせている。BGE-M3は、スパース、デンス、マルチベクトル表現を同時に生成することができ、キーワード検索の精度を保ちながら、意味的なニュアンスも捉えることができる。</p></li>
+<li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Sparse vectors</strong></a> (like BM25) focus on keyword frequency and document length. They’re great for explicit matches but blind to synonyms and context—“AI” and “artificial intelligence” would look unrelated.</p></li>
+<li><p><a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Dense vectors</strong></a> (like those produced by BERT) capture deeper semantics. They can see that “Apple releases new phone” is related to “iPhone product launch,” even without shared keywords. The downside is higher computational cost and less interpretability.</p></li>
+<li><p><strong>Hybrid models</strong> (such as BGE-M3) combine the two. They can generate sparse, dense, or multi-vector representations simultaneously—preserving the precision of keyword search while also capturing semantic nuances.</p></li>
 </ul>
-<p>実際には、スピードと透明性を求めるならスパースベクトル、より豊かな意味を求めるならデンスベクトル、両方の長所を求めるならハイブリッドといった具合に、使用するケースによって選択することになる。</p>
-<h2 id="Eight-Key-Factors-for-Evaluating-Embedding-Models" class="common-anchor-header">埋め込みモデルを評価するための8つのキーファクター<button data-href="#Eight-Key-Factors-for-Evaluating-Embedding-Models" class="anchor-icon" translate="no">
+<p>In practice, the choice depends on your use case: sparse vectors for speed and transparency, dense for richer meaning, and hybrid when you want the best of both worlds.</p>
+<h2 id="Eight-Key-Factors-for-Evaluating-Embedding-Models" class="common-anchor-header">Eight Key Factors for Evaluating Embedding Models<button data-href="#Eight-Key-Factors-for-Evaluating-Embedding-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,41 +58,41 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Context-Window" class="common-anchor-header"><strong>#1位 コンテキストウィンドウ</strong></h3><p><a href="https://zilliz.com/glossary/context-window"><strong>コンテキスト・ウィンドウは</strong></a>、モデルが一度に処理できるテキストの量を決定する。1トークンはおよそ0.75ワードであるため、この数値は埋め込みを作成する際にモデルが「見る」ことができる文章の長さを直接制限します。大きなウィンドウを使えば、モデルは長い文書の全体の意味を捉えることができます。小さなウィンドウでは、テキストを細かく切り刻まざるを得ず、意味のある文脈が失われる危険があります。</p>
-<p>例えば、OpenAIの<a href="https://zilliz.com/ai-models/text-embedding-ada-002"><em>text-embedding-ada-002は</em></a>最大8,192トークンをサポートしており、これは抄録、方法、結論を含む研究論文全体をカバーするのに十分な量です。対照的に、（<em>m3e-baseの</em>ような）512トークンしかないモデルでは、頻繁に切り捨てる必要があり、その結果、重要な詳細が失われる可能性があります。</p>
-<p>要点：法的文書や学術論文のような長い文書を使用する場合は、8K以上のトークン・ウィンドウを持つモデルを選択します。カスタマーサポートのチャットのような短いテキストの場合は、2Kトークンウィンドウで十分かもしれません。</p>
-<h3 id="2-Tokenization-Unit" class="common-anchor-header"><strong>#2</strong>トークン化ユニット</h3><p>エンベッディングが生成される前に、テキストは<strong>トークンと</strong>呼ばれる小さな塊に分解されなければなりません。このトークン化がどのように行われるかは、モデルが希少語や専門用語、特殊なドメインをどの程度扱えるかに影響します。</p>
+    </button></h2><h3 id="1-Context-Window" class="common-anchor-header"><strong>#1 Context Window</strong></h3><p>The <a href="https://zilliz.com/glossary/context-window"><strong>context window</strong></a> determines the amount of text a model can process at once. Since one token is roughly 0.75 words, this number directly limits how long a passage the model can “see” when creating embeddings. A large window allows the model to capture the whole meaning of longer documents; a small one forces you to chop the text into smaller pieces, risking the loss of meaningful context.</p>
+<p>For example, OpenAI’s <a href="https://zilliz.com/ai-models/text-embedding-ada-002"><em>text-embedding-ada-002</em></a> supports up to 8,192 tokens—enough to cover an entire research paper, including abstract, methods, and conclusion. By contrast, models with only 512-token windows (such as <em>m3e-base</em>) require frequent truncation, which can result in the loss of key details.</p>
+<p>The takeaway: if your use case involves long documents, such as legal filings or academic papers, choose a model with an 8K+ token window. For shorter text, such as customer support chats, a 2K token window may be sufficient.</p>
+<h3 id="2-Tokenization-Unit" class="common-anchor-header"><strong>#2</strong> Tokenization Unit</h3><p>Before embeddings are generated, text must be broken down into smaller chunks called <strong>tokens</strong>. How this tokenization happens affects how well the model handles rare words, professional terms, and specialized domains.</p>
 <ul>
-<li><p><strong>サブワード・トークナイゼーション（BPE）：</strong>単語をより小さな部分に分割する（例："unhappiness" → "un" + "happiness"）。これはGPTやLLaMAのような最新のLLMのデフォルトであり、語彙のない単語に効果的である。</p></li>
-<li><p><strong>WordPiece：</strong>BERTで使用されているBPEの改良版で、語彙のカバー率と効率のバランスをより良くするように設計されている。</p></li>
-<li><p><strong>単語レベルのトークン化：</strong>単語全体によってのみ分割する。シンプルだが、希少用語や複雑な専門用語に苦戦するため、技術分野には不向き。</p></li>
+<li><p><strong>Subword tokenization (BPE):</strong> Splits words into smaller parts (e.g., “unhappiness” → “un” + “happiness”). This is the default in modern LLMs like GPT and LLaMA, and it works well for out-of-vocabulary words.</p></li>
+<li><p><strong>WordPiece:</strong> A refinement of BPE used by BERT, designed to better balance vocabulary coverage with efficiency.</p></li>
+<li><p><strong>Word-level tokenization:</strong> Splits only by whole words. It’s simple but struggles with rare or complex terminology, making it unsuitable for technical fields.</p></li>
 </ul>
-<p>医学や法律のような専門的な分野では、一般的にサブワードベースのモデルが最適である-<em>心筋梗塞や</em> <em>代位弁済の</em>ような用語を正しく処理できる。<strong>NV-Embedの</strong>ような最新のモデルの中には、潜在的な注目レイヤーのような機能拡張を追加することで、トークン化が複雑でドメイン固有の語彙をどのように捉えるかを強化したものもあります。</p>
-<h3 id="3-Dimensionality" class="common-anchor-header">#3次元性</h3><p><a href="https://zilliz.com/glossary/dimensionality-reduction"><strong>ベクトル次元とは</strong></a>、埋め込みベクトルの長さのことで、モデルがどれだけ詳細な意味を捉えることができるかを決定する。高い次元（例えば1,536以上）は、概念間の細かい区別を可能にするが、ストレージの増加、クエリの速度低下、および計算要件の増加という代償を伴う。より低い次元（768次元など）は、より高速で安価ですが、微妙な意味が失われる危険性があります。</p>
-<p>重要なのはバランスである。ほとんどの汎用アプリケーションでは、768-1,536次元が効率と精度の適切なミックスになります。学術的、科学的な検索など、高い精度が要求される作業では、2,000次元を超えることは価値があります。一方、リソースに制約のあるシステム（エッジ展開など）では、検索品質が検証されていれば、512次元を効果的に使用することができる。軽量なレコメンデーションやパーソナライゼーション・システムでは、より小さな次元でも十分な場合がある。</p>
-<h3 id="4-Vocabulary-Size" class="common-anchor-header">#語彙サイズ</h3><p>モデルの<strong>語彙サイズとは</strong>、そのトークナイザーが認識できるユニークなトークンの数を指します。これは、異なる言語やドメイン特有の用語を扱う能力に直接影響します。単語や文字が語彙にない場合、<code translate="no">[UNK]</code> としてマークされ、意味が失われる可能性があります。</p>
-<p>要件はユースケースによって異なる。<a href="https://zilliz.com/ai-models/bge-m3"><em>BGE-M3の</em></a>ように、多言語シナリオでは一般に5万語以上の語彙が必要です。ドメインに特化したアプリケーションでは、専門用語をカバーすることが最も重要です。例えば、法律モデルは<em>「時効</em>」や「<em>善意取得</em>」といった用語をネイティブにサポートする必要がありますが、中国語モデルは何千もの文字や独特の句読点を考慮する必要があります。十分な語彙をカバーしなければ、埋め込み精度はすぐに落ちてしまいます。</p>
-<h3 id="-5-Training-Data" class="common-anchor-header"># その5 トレーニングデータ</h3><p><strong>トレーニングデータは</strong>、エンベッディングモデルが "知っている "ことの境界を定義します。例えば、<em>text-embedding-ada-002の</em>ように、ウェブページ、書籍、Wikipediaをミックスしたような、広範で汎用的なデータで学習したモデルは、様々なドメインで良い結果を出す傾向があります。しかし、専門的な分野で精度が必要な場合は、ドメインで訓練されたモデルが勝つことが多い。例えば、<em>LegalBERTと</em> <em>BioBERTは</em>、汎化能力を多少失うものの、法律と生物医学のテキストでは一般的なモデルよりも優れている。</p>
-<p>経験則では</p>
+<p>For specialized domains like medicine or law, subword-based models are generally best—they can correctly handle terms like <em>myocardial infarction</em> or <em>subrogation</em>. Some modern models, such as <strong>NV-Embed</strong>, go further by adding enhancements like latent attention layers, which enhance how tokenization captures complex, domain-specific vocabulary.</p>
+<h3 id="3-Dimensionality" class="common-anchor-header">#3 Dimensionality</h3><p><a href="https://zilliz.com/glossary/dimensionality-reduction"><strong>Vector dimensionality</strong></a> refers to the length of the embedding vector, which determines how much semantic detail a model can capture. Higher dimensions (for example, 1,536 or more) allow for finer distinctions between concepts, but come at the cost of increased storage, slower queries, and higher compute requirements. Lower dimensions (such as 768) are faster and cheaper, but risk losing subtle meaning.</p>
+<p>The key is balance. For most general-purpose applications, 768–1,536 dimensions strike the right mix of efficiency and accuracy. For tasks that demand high precision—such as academic or scientific searches—going beyond 2,000 dimensions can be worthwhile. On the other hand, resource-constrained systems (such as edge deployments) may use 512 dimensions effectively, provided retrieval quality is validated. In some lightweight recommendation or personalization systems, even smaller dimensions may be enough.</p>
+<h3 id="4-Vocabulary-Size" class="common-anchor-header">#4 Vocabulary Size</h3><p>A model’s <strong>vocabulary size</strong> refers to the number of unique tokens its tokenizer can recognize. This directly impacts its ability to handle different languages and domain-specific terminology. If a word or character isn’t in the vocabulary, it’s marked as <code translate="no">[UNK]</code>, which can cause meaning to be lost.</p>
+<p>The requirements vary by use case. Multilingual scenarios generally need larger vocabularies—on the order of 50k+ tokens, as in the case of <a href="https://zilliz.com/ai-models/bge-m3"><em>BGE-M3</em></a>. For domain-specific applications, coverage of specialized terms is most important. For example, a legal model should natively support terms like <em>“statute of limitations”</em> or <em>&quot;bona fide acquisition</em>,&quot; while a Chinese model must account for thousands of characters and unique punctuation. Without sufficient vocabulary coverage, embedding accuracy quickly breaks down.</p>
+<h3 id="-5-Training-Data" class="common-anchor-header"># 5 Training Data</h3><p>The <strong>training data</strong> defines the boundaries of what an embedding model “knows.” Models trained on broad, general-purpose data—such as <em>text-embedding-ada-002</em>, which utilizes a mix of web pages, books, and Wikipedia—tend to perform well across various domains. But when you need precision in specialized fields, domain-trained models often win. For example, <em>LegalBERT</em> and <em>BioBERT</em> outperform general models on legal and biomedical texts, though they lose some generalization ability.</p>
+<p>The rule of thumb:</p>
 <ul>
-<li><p><strong>一般的なシナリオ</strong>→ 幅広いデータセットで訓練されたモデルを使用するが、ターゲット言語をカバーしていることを確認する。例えば、中国語アプリケーションには、豊富な中国語コーパスで学習したモデルが必要。</p></li>
-<li><p><strong>垂直的なドメイン</strong>→ 精度を高めるために、ドメイン固有のモデルを選択する。</p></li>
-<li><p><strong>NV-Embedの</strong>ような新しいモデルは、一般的なデータとドメインに特化したデータの両方を用いて2段階で学習させることで、汎化<em>精度と</em>ドメイン精度の向上が期待できる。</p></li>
+<li><p><strong>General scenarios</strong> → use models trained on broad datasets, but make sure they cover your target language(s). For example, Chinese applications need models trained on rich Chinese corpora.</p></li>
+<li><p><strong>Vertical domains</strong> → choose domain-specific models for best accuracy.</p></li>
+<li><p><strong>Best of both worlds</strong> → newer models like <strong>NV-Embed</strong>, trained in two stages with both general and domain-specific data, show promising gains in generalization <em>and</em> domain precision.</p></li>
 </ul>
-<h3 id="-6-Cost" class="common-anchor-header"># その6 コスト</h3><p>コストとはAPIの価格設定だけではない。<strong>経済コストと</strong> <strong>計算コストの</strong>両方である。OpenAIのようなホスティング型APIモデルは利用ベースである。そのため、ラピッドプロトタイピングやパイロットプロジェクト、小規模から中規模のワークロードに最適だ。</p>
-<p><em>BGEや</em> <em>Sentence-BERTの</em>ようなオープンソースのオプションは、使用は無料ですが、自己管理インフラ（通常はGPUまたはTPUクラスタ）が必要です。これらは、長期的な節約と柔軟性が一時的なセットアップとメンテナンスのコストを相殺する、大規模生産に向いている。</p>
-<p>実用的な要点：<strong>APIモデルは迅速なイテレーションに理想的</strong>である一方、<strong>オープンソースモデルは</strong>、総所有コスト（TCO）を考慮すると、<strong>大規模な生産で勝利することが多い</strong>。正しい道を選ぶには、市場投入までのスピードが必要なのか、それとも長期的なコントロールが必要なのかによる。</p>
-<h3 id="-7-MTEB-Score" class="common-anchor-header"># 7位 MTEBスコア</h3><p><a href="https://zilliz.com/glossary/massive-text-embedding-benchmark-(mteb)"><strong>Massive Text Embedding Benchmark (MTEB)</strong></a>は、エンベッディングモデルを比較するための最も広く使われている基準です。MTEBは、意味検索、分類、クラスタリングなど、さまざまなタスクのパフォーマンスを評価します。一般的にスコアが高いほど、そのモデルは異なる種類のタスクに対してより強い汎用性を持っていることを意味します。</p>
-<p>とはいえ、MTEBは特効薬ではありません。全体的に高いスコアを持つモデルでも、特定のユースケースではまだ性能が劣るかもしれません。例えば、主に英語でトレーニングされたモデルは、MTEBベンチマークでは良い結果を出しても、専門的な医学テキストや英語以外のデータでは苦戦するかもしれません。安全なアプローチは、MTEBを出発点として使用し、コミットする前に<strong>独自のデータセットで</strong>検証することです。</p>
-<h3 id="-8-Domain-Specificity" class="common-anchor-header"># その8 ドメイン固有性</h3><p>モデルの中には特定のシナリオのために作られたものがあり、一般的なモデルでは不十分な場合に威力を発揮します：</p>
+<h3 id="-6-Cost" class="common-anchor-header"># 6 Cost</h3><p>Cost isn’t just about API pricing—it’s both <strong>economic cost</strong> and <strong>computational cost</strong>. Hosted API models, like those from OpenAI, are usage-based: you pay per call, but don’t worry about infrastructure. This makes them perfect for rapid prototyping, pilot projects, or small to medium-scale workloads.</p>
+<p>Open-source options, such as <em>BGE</em> or <em>Sentence-BERT</em>, are free to use but require self-managed infrastructure, typically GPU or TPU clusters. They’re better suited for large-scale production, where long-term savings and flexibility offset the one-time setup and maintenance costs.</p>
+<p>The practical takeaway: <strong>API models are ideal for fast iteration</strong>, while <strong>open-source models often win in large-scale production</strong> once you factor in the total cost of ownership (TCO). Choosing the right path depends on whether you need speed to market or long-term control.</p>
+<h3 id="-7-MTEB-Score" class="common-anchor-header"># 7 MTEB Score</h3><p>The <a href="https://zilliz.com/glossary/massive-text-embedding-benchmark-(mteb)"><strong>Massive Text Embedding Benchmark (MTEB)</strong></a> is the most widely used standard for comparing embedding models. It evaluates performance across various tasks, including semantic search, classification, clustering, and others. A higher score generally means the model has stronger generalizability across different types of tasks.</p>
+<p>That said, MTEB is not a silver bullet. A model that scores high overall might still underperform in your specific use case. For example, a model trained primarily on English may perform well on MTEB benchmarks but struggle with specialized medical texts or non-English data. The safe approach is to use MTEB as a starting point and then validate it with <strong>your own datasets</strong> before committing.</p>
+<h3 id="-8-Domain-Specificity" class="common-anchor-header"># 8 Domain Specificity</h3><p>Some models are purpose-built for specific scenarios, and they shine where general models fall short:</p>
 <ul>
-<li><p><strong>それは法律である：</strong> <em>法務：LegalBERT は</em>、<em>弁護</em>対<em>裁判管轄など</em>、細かい法律用語を区別できる。</p></li>
-<li><p><strong>生物医学：</strong> <em>BioBERT は</em>、<em>mRNA</em>や<em>標的治療などの</em>技術的な語句を正確に処理します。</p></li>
-<li><p><strong>多言語：</strong> <em>BGE-M3は</em>100以上の言語をサポートしており、英語、中国語、その他の言語の橋渡しを必要とするグローバルなアプリケーションに適しています。</p></li>
-<li><p><strong>コード検索：</strong> <em>Qwen3-Embeddingは</em>、プログラミング関連のクエリに最適化された<em>MTEB-Codeで</em>トップレベルのスコア（81.0+）を達成しています。</p></li>
+<li><p><strong>Legal:</strong> <em>LegalBERT</em> can distinguish fine-grained legal terms, such as <em>defense</em> versus <em>jurisdiction</em>.</p></li>
+<li><p><strong>Biomedical:</strong> <em>BioBERT</em> accurately handles technical phrases like <em>mRNA</em> or <em>targeted therapy</em>.</p></li>
+<li><p><strong>Multilingual:</strong> <em>BGE-M3</em> supports over 100 languages, making it well-suited for global applications that require bridging English, Chinese, and other languages.</p></li>
+<li><p><strong>Code retrieval:</strong> <em>Qwen3-Embedding</em> achieves top-tier scores (81.0+) on <em>MTEB-Code</em>, optimized for programming-related queries.</p></li>
 </ul>
-<p>ユースケースがこれらのドメインのいずれかに該当する場合、ドメインに最適化されたモデルは検索精度を大幅に向上させることができます。しかし、より広範な用途の場合は、テストがそうでないことを示さない限り、汎用モデルにこだわってください。</p>
-<h2 id="Additional-Perspectives-for-Evaluating-Embeddings" class="common-anchor-header">エンベッディングを評価するためのその他の視点<button data-href="#Additional-Perspectives-for-Evaluating-Embeddings" class="anchor-icon" translate="no">
+<p>If your use case falls within one of these domains, domain-optimized models can significantly improve retrieval accuracy. But for broader applications, stick with general-purpose models unless your tests show otherwise.</p>
+<h2 id="Additional-Perspectives-for-Evaluating-Embeddings" class="common-anchor-header">Additional Perspectives for Evaluating Embeddings<button data-href="#Additional-Perspectives-for-Evaluating-Embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -104,14 +107,14 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>核となる8つの要素以外にも、より深い評価を望むのであれば、検討する価値のある視点がいくつかあります：</p>
+    </button></h2><p>Beyond the core eight factors, there are a few other angles worth considering if you want a deeper evaluation:</p>
 <ul>
-<li><p><strong>多言語アライメント</strong>：多言語モデルの場合、単に多くの言語をサポートするだけでは十分ではありません。真のテストは、ベクトル空間が整列しているかどうかである。言い換えれば、意味的に同じ単語、例えば英語の "cat "とスペイン語の "gato "が、ベクトル空間において近接してマッピングされているかどうかということだ。強力なアライメントによって、一貫した言語横断検索が保証される。</p></li>
-<li><p><strong>敵対的テスト</strong>：良い埋め込みモデルは、小さな入力の変化に対しても安定であるべきです。ほぼ同じ文（例えば "The cat sat on the mat "と "The cat sat on a mat"）を入力することで、結果のベクトルが適度にシフトするか、大きく変動するかをテストすることができます。揺らぎが大きいと、ロバスト性が弱いことが多い。</p></li>
-<li><p><strong>局所的な意味的一貫性とは</strong>、意味的に類似した単語が局所的な近傍に緊密に集まっているかどうかをテストする現象を指します。例えば、"bank "のような単語がある場合、モデルは関連する単語（"riverbank "や "financial institution "など）を適切にグループ化し、関連しない単語は距離を置く。このような近傍に「侵入的」または無関係な単語が入り込む頻度を測定することは、モデルの品質を比較するのに役立つ。</p></li>
+<li><p><strong>Multilingual alignment</strong>: For multilingual models, it’s not enough to simply support many languages. The real test is whether the vector spaces are aligned. In other words, do semantically identical words—say “cat” in English and “gato” in Spanish—map close together in the vector space? Strong alignment ensures consistent cross-language retrieval.</p></li>
+<li><p><strong>Adversarial testing</strong>: A good embedding model should be stable under small input changes. By feeding in nearly identical sentences (e.g., “The cat sat on the mat” vs. “The cat sat on a mat”), you can test whether the resulting vectors shift reasonably or fluctuate wildly. Large swings often point to weak robustness.</p></li>
+<li><p><strong>Local semantic coherence</strong> refers to the phenomenon of testing whether semantically similar words cluster tightly in local neighborhoods. For example, given a word like “bank,” the model should group related terms (such as “riverbank” and “financial institution”) appropriately while keeping unrelated terms at a distance. Measuring how often “intrusive” or irrelevant words creep into these neighborhoods helps compare model quality.</p></li>
 </ul>
-<p>このような視点は日常業務では必ずしも必要ではありませんが、多言語、高精度、または敵対的な安定性が本当に重要な本番システムでエンベッディングをストレステストする際には役に立ちます。</p>
-<h2 id="Common-Embedding-Models-A-Brief-History" class="common-anchor-header">一般的なエンベッディングモデル簡単な歴史<button data-href="#Common-Embedding-Models-A-Brief-History" class="anchor-icon" translate="no">
+<p>These perspectives aren’t always required for day-to-day work, but they’re helpful for stress-testing embeddings in production systems where multilingual, high-precision, or adversarial stability really matters.</p>
+<h2 id="Common-Embedding-Models-A-Brief-History" class="common-anchor-header">Common Embedding Models: A Brief History<button data-href="#Common-Embedding-Models-A-Brief-History" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -126,53 +129,53 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>エンベッディング・モデルの歴史は、機械がどのように言語をより深く理解することを学んできたかという歴史でもあります。静的な単語表現から、ニュアンスに富んだ文脈を捉えることのできる今日の大規模言語モデル（LLM）の埋め込みへと、各世代はその前の世代の限界を超えてきました。</p>
-<h3 id="Word2Vec-The-Starting-Point-2013" class="common-anchor-header">Word2Vec：出発点（2013年）</h3><p><a href="https://zilliz.com/glossary/word2vec">GoogleのWord2Vecは</a>、埋め込みを広く実用化した最初のブレークスルーでした。これは言語学における<em>分布仮説</em>（同じような文脈に現れる単語は意味を共有することが多いという考え方）に基づいている。大量のテキストを分析することで、Word2Vecは単語をベクトル空間にマッピングした。例えば、"puma "と "leopard "は、生息地や狩猟の特徴を共有しているため、近くに集まった。</p>
-<p>Word2Vecには2種類あった：</p>
+    </button></h2><p>The story of embedding models is really the story of how machines have learned to understand language more deeply over time. Each generation has pushed past the limits of the one before it—moving from static word representations to today’s large language model (LLM) embeddings that can capture nuanced context.</p>
+<h3 id="Word2Vec-The-Starting-Point-2013" class="common-anchor-header">Word2Vec: The Starting Point (2013)</h3><p><a href="https://zilliz.com/glossary/word2vec">Google’s Word2Vec</a> was the first breakthrough that made embeddings widely practical. It was based on the <em>distributional hypothesis</em> in linguistics—the idea that words appearing in similar contexts often share meaning. By analyzing massive amounts of text, Word2Vec mapped words into a vector space where related terms sat close together. For example, “puma” and “leopard” clustered nearby thanks to their shared habitats and hunting traits.</p>
+<p>Word2Vec came in two flavors:</p>
 <ul>
-<li><p><strong>CBOW（Continuous Bag of Words）：</strong>周囲の文脈から欠落している単語を予測する。</p></li>
-<li><p><strong>Skip-Gram：</strong>ターゲット単語から周囲の単語を予測する。</p></li>
+<li><p><strong>CBOW (Continuous Bag of Words):</strong> predicts a missing word from its surrounding context.</p></li>
+<li><p><strong>Skip-Gram:</strong> does the reverse—predicting surrounding words from a target word.</p></li>
 </ul>
-<p>このシンプルだが強力なアプローチにより、次のようなエレガントな類推が可能になった：</p>
+<p>This simple but powerful approach allowed for elegant analogies like:</p>
 <pre><code translate="no">king - man + woman = queen
 <button class="copy-code-btn"></button></code></pre>
-<p>当時としては、Word2Vecは革命的だった。しかし、2つの重大な制限があった。第一に、<strong>静的であっ</strong>た。各単語は1つのベクトルしか持たなかったので、"bank "は "money "の近くにあっても "river "の近くにあっても同じ意味であった。第二に、<strong>単語レベルでしか</strong>機能しないため、文や文書がその範囲から外れてしまう。</p>
-<h3 id="BERT-The-Transformer-Revolution-2018" class="common-anchor-header">BERT：トランスフォーマー革命（2018年）</h3><p>Word2Vecが私たちに意味の最初の地図を与えたとすれば、<a href="https://zilliz.com/learn/what-is-bert"><strong>BERT（Bidirectional Encoder Representations from Transformers）は</strong></a>それをはるかに詳細に描き直した。2018年にGoogleによってリリースされたBERTは、エンベッディングにTransformerアーキテクチャを導入することで、<em>深い意味</em>理解の時代の幕開けを告げた。以前のLSTMとは異なり、Transformerはシーケンス内のすべての単語を同時に、両方向から調べることができ、はるかに豊かな文脈を可能にする。</p>
-<p>BERTの魔法は、2つの巧妙な事前学習タスクから生まれた：</p>
+<p>For its time, Word2Vec was revolutionary. But it had two significant limitations. First, it was <strong>static</strong>: each word had only one vector, so “bank” meant the same thing whether it was near “money” or “river.” Second, it only worked at the <strong>word level</strong>, leaving sentences and documents outside its reach.</p>
+<h3 id="BERT-The-Transformer-Revolution-2018" class="common-anchor-header">BERT: The Transformer Revolution (2018)</h3><p>If Word2Vec gave us the first map of meaning, <a href="https://zilliz.com/learn/what-is-bert"><strong>BERT (Bidirectional Encoder Representations from Transformers)</strong></a> redrew it with far greater detail. Released by Google in 2018, BERT marked the beginning of the era of <em>deep semantic understanding</em> by introducing the Transformer architecture into embeddings. Unlike earlier LSTMs, Transformers can examine all words in a sequence simultaneously and in both directions, enabling a far richer context.</p>
+<p>BERT’s magic came from two clever pre-training tasks:</p>
 <ul>
-<li><p><strong>マスク言語モデリング（MLM）：</strong>文中の単語をランダムに隠し、モデルに予測させることで、文脈から意味を推測させる。</p></li>
-<li><p><strong>Next Sentence Prediction（NSP）：</strong>2つの文が互いに続いているかどうかを判断するようモデルを訓練し、文全体の関係を学習させる。</p></li>
+<li><p><strong>Masked Language Modeling (MLM):</strong> Randomly hides words in a sentence and forces the model to predict them, teaching it to infer meaning from context.</p></li>
+<li><p><strong>Next Sentence Prediction (NSP):</strong> Trains the model to decide if two sentences follow one another, helping it learn relationships across sentences.</p></li>
 </ul>
-<p>BERTの入力ベクトルは、トークン埋め込み（単語そのもの）、セグメント埋め込み（どの文に属するか）、位置埋め込み（シーケンスのどこに位置するか）の3つの要素を組み合わせている。これらを組み合わせることで、BERT は<strong>文と</strong> <strong>文書の</strong>両方のレベルで複雑な意味的関係を捉える能力を得た。この飛躍により、BERTは質問応答や意味検索のようなタスクにおいて最先端のものとなった。</p>
-<p>もちろん、BERTは完璧ではなかった。初期のバージョンは<strong>512トークンのウィンドウに</strong>制限されていたため、長い文書は切り刻まれなければならず、時には意味を失うこともあった。また、密なベクトルは解釈性に欠け、2つのテキストが一致することはわかるが、その理由を説明できるとは限らなかった。<strong>RoBERTaの</strong>ような後の改良型は、強力なMLMトレーニングはそのままに、NSPタスクの利点がほとんどないことが研究で明らかになったため、NSPタスクを削除した。</p>
-<h3 id="BGE-M3-Fusing-Sparse-and-Dense-2023" class="common-anchor-header">BGE-M3：スパースとデンスの融合（2023年）</h3><p>2023年までには、この分野は十分に成熟し、単一の埋め込み手法ですべてを達成することはできないと認識されるようになっていた。<a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3（BAAI</a>General Embedding-M3）は、検索タスクのために設計されたハイブリッドモデルである。密なベクトル、疎なベクトル、複数のベクトルを一度に生成し、それぞれの長所を組み合わせる。</p>
+<p>Under the hood, BERT’s input vectors combined three elements: token embeddings (the word itself), segment embeddings (which sentence it belongs to), and position embeddings (where it sits in the sequence). Together, these gave BERT the ability to capture complex semantic relationships at both the <strong>sentence</strong> and <strong>document</strong> level. This leap made BERT state-of-the-art for tasks like question answering and semantic search.</p>
+<p>Of course, BERT wasn’t perfect. Its early versions were limited to a <strong>512-token window</strong>, meaning long documents had to be chopped up and sometimes lost meaning. Its dense vectors also lacked interpretability—you could see two texts match, but not always explain why. Later variants, such as <strong>RoBERTa</strong>, dropped the NSP task after research showed it added little benefit, while retaining the powerful MLM training.</p>
+<h3 id="BGE-M3-Fusing-Sparse-and-Dense-2023" class="common-anchor-header">BGE-M3: Fusing Sparse and Dense (2023)</h3><p>By 2023, the field had matured enough to recognize that no single embedding method could accomplish everything. Enter <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3</a> (BAAI General Embedding-M3), a hybrid model explicitly designed for retrieval tasks. Its key innovation is that it doesn’t just produce one type of vector—it generates dense vectors, sparse vectors, and multi-vectors all at once, combining their strengths.</p>
 <ul>
-<li><p><strong>密なベクトルは</strong>、同義語や言い換え（例えば、「iPhone発売」、≒「アップルが新型携帯を発売」）を処理し、深い意味を捉えます。</p></li>
-<li><p><strong>スパース・ベクトルは</strong>、明示的な単語の重みを割り当てます。例えば、"iPhoneの新製品 "を "Apple Inc. "や "スマートフォン "と関連付けることができます。</p></li>
-<li><p><strong>マルチベクターは</strong>、各トークンが独自のインタラクションスコアに貢献できるようにすることで、密な埋め込みをさらに洗練させます。</p></li>
+<li><p><strong>Dense vectors</strong> capture deep semantics, handling synonyms and paraphrases (e.g., “iPhone launch”, ≈ “Apple releases new phone”).</p></li>
+<li><p><strong>Sparse vectors</strong> assign explicit term weights. Even if a keyword doesn’t appear, the model can infer relevance—for example, linking “iPhone new product” with “Apple Inc.” and “smartphone.”</p></li>
+<li><p><strong>Multi-vectors</strong> refine dense embeddings further by allowing each token to contribute its own interaction score, which is helpful for fine-grained retrieval.</p></li>
 </ul>
-<p>BGE-M3の学習パイプラインは、この洗練された機能を反映している：</p>
+<p>BGE-M3’s training pipeline reflects this sophistication:</p>
 <ol>
-<li><p><em>RetroMAE</em>（マスクエンコーダ＋再構成デコーダ）による大量のラベルなしデータでの<strong>事前学習により</strong>、一般的な意味理解を構築。</p></li>
-<li><p>100Mのテキストペアで対照学習を用いた<strong>一般的な微調整を</strong>行い、検索性能を研ぎ澄ます。</p></li>
-<li><p>シナリオに特化した最適化のための命令チューニングと複雑なネガティブサンプリングによる<strong>タスク微調整</strong>。</p></li>
+<li><p><strong>Pre-training</strong> on massive unlabeled data with <em>RetroMAE</em> (masked encoder + reconstruction decoder) to build general semantic understanding.</p></li>
+<li><p><strong>General fine-tuning</strong> using contrastive learning on 100M text pairs, sharpening its retrieval performance.</p></li>
+<li><p><strong>Task fine-tuning</strong> with instruction tuning and complex negative sampling for scenario-specific optimization.</p></li>
 </ol>
-<p>その結果は印象的である：BGE-M3は複数の粒度（単語レベルから文書レベルまで）を処理し、強力な多言語性能（特に中国語）を実現し、精度と効率性のバランスを同業他社よりも優れています。実際には、大規模検索において強力かつ実用的な埋め込みモデルを構築する上で、大きな前進となる。</p>
-<h3 id="LLMs-as-Embedding-Models-2023–Present" class="common-anchor-header">埋め込みモデルとしてのLLM（2023年～現在）</h3><p>何年もの間、GPTのようなデコーダのみの大規模言語モデル（LLM）は埋め込みには適さないというのが通説でした。その因果的な注意（前のトークンにしか注目しない）は、深い意味理解を制限すると考えられていたからだ。しかし最近の研究では、その仮定が覆された。適切な調整を加えることで、LLMは専用モデルに匹敵し、時にはそれを凌駕する埋め込みデータを生成することができる。2つの顕著な例は、LLM2VecとNV-Embedである。</p>
-<p><strong>LLM2Vecは</strong>、デコーダのみのLLMに3つの重要な変更を加えたものです：</p>
+<p>The results are impressive: BGE-M3 handles multiple granularities (from word-level to document-level), delivers strong multilingual performance—especially in Chinese—and balances accuracy with efficiency better than most of its peers. In practice, it represents a major step forward in building embedding models that are both powerful and practical for large-scale retrieval.</p>
+<h3 id="LLMs-as-Embedding-Models-2023–Present" class="common-anchor-header">LLMs as Embedding Models (2023–Present)</h3><p>For years, the prevailing wisdom was that decoder-only large language models (LLMs), such as GPT, weren’t suitable for embeddings. Their causal attention—which only looks at previous tokens—was thought to limit deep semantic understanding. But recent research has flipped that assumption. With the right tweaks, LLMs can generate embeddings that rival, and sometimes surpass, purpose-built models. Two notable examples are LLM2Vec and NV-Embed.</p>
+<p><strong>LLM2Vec</strong> adapts decoder-only LLMs with three key changes:</p>
 <ul>
-<li><p><strong>双方向アテンション変換</strong>：各トークンが全シーケンスにアテンションできるように、因果マスクを置き換える。</p></li>
-<li><p><strong>マスクされた次のトークン予測（MNTP）：</strong>双方向の理解を促す新しい学習目的。</p></li>
-<li><p><strong>教師なし対照学習：</strong>SimCSEにインスパイアされ、意味的に類似した文をベクトル空間上で近づける。</p></li>
+<li><p><strong>Bidirectional attention conversion</strong>: replacing causal masks so each token can attend to the full sequence.</p></li>
+<li><p><strong>Masked next token prediction (MNTP):</strong> a new training objective that encourages bidirectional understanding.</p></li>
+<li><p><strong>Unsupervised contrastive learning:</strong> inspired by SimCSE, it pulls semantically similar sentences closer together in vector space.</p></li>
 </ul>
-<p>一方、<strong>NV-Embedは</strong>より合理的なアプローチをとる：</p>
+<p><strong>NV-Embed</strong>, meanwhile, takes a more streamlined approach:</p>
 <ul>
-<li><p><strong>潜在的な注目層：</strong>訓練可能な「潜在的な配列」を追加し、シーケンスプーリングを改善する。</p></li>
-<li><p><strong>直接双方向学習：</strong>単純に因果関係のあるマスクを取り除き、対比学習で微調整。</p></li>
-<li><p><strong>ミーンプーリングの最適化：</strong>トークン間の加重平均を使用し、"ラストトークンバイアス "を回避。</p></li>
+<li><p><strong>Latent attention layers:</strong> add trainable “latent arrays” to improve sequence pooling.</p></li>
+<li><p><strong>Direct bidirectional training:</strong> simply remove causal masks and fine-tune with contrastive learning.</p></li>
+<li><p><strong>Mean pooling optimization:</strong> uses weighted averages across tokens to avoid “last-token bias.”</p></li>
 </ul>
-<p>その結果、最新のLLMベースの埋め込みは、<strong>深い意味</strong>理解と<strong>スケーラビリティを兼ね備えて</strong>いる。<strong>非常に長いコンテキストウィンドウ（8K-32Kトークン）を</strong>扱うことができるため、研究、法律、企業検索などのドキュメントを多用するタスクに特に強い。また、同じLLMバックボーンを再利用しているため、より制約の多い環境でも高品質な埋め込みを実現できる場合がある。</p>
-<h2 id="Conclusion-Turning-Theory-into-Practice" class="common-anchor-header">結論理論を実践へ<button data-href="#Conclusion-Turning-Theory-into-Practice" class="anchor-icon" translate="no">
+<p>The result is that modern LLM-based embeddings combine <strong>deep semantic understanding</strong> with <strong>scalability</strong>. They can handle <strong>very long context windows (8K–32K tokens)</strong>, making them especially strong for document-heavy tasks in research, law, or enterprise search. And because they reuse the same LLM backbone, they can sometimes deliver high-quality embeddings even in more constrained environments.</p>
+<h2 id="Conclusion-Turning-Theory-into-Practice" class="common-anchor-header">Conclusion: Turning Theory into Practice<button data-href="#Conclusion-Turning-Theory-into-Practice" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -187,12 +190,12 @@ origin: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model-for-rag.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>エンベッディング・モデルを選択するとき、理論だけではうまくいきません。本当のテストは、<em>あなたの</em>システムで、<em>あなたの</em>データに対して、どれだけうまく機能するかということです。いくつかの実践的なステップを踏むことで、紙の上ではよく見えるモデルでも、本番で実際に機能するモデルとの違いを生み出すことができます：</p>
+    </button></h2><p>When it comes to choosing an embedding model, theory only gets you so far. The real test is how well it performs in <em>your</em> system with <em>your</em> data. A few practical steps can make the difference between a model that looks good on paper and one that actually works in production:</p>
 <ul>
-<li><p><strong>MTEBサブセットでスクリーニングする。</strong>ベンチマーク、特に検索タスクを使用して、候補の最初のショートリストを作成する。</p></li>
-<li><p><strong>実際のビジネスデータでテストする。</strong>自社の文書から評価セットを作成し、実環境下でのリコール、精度、レイテンシを測定する。</p></li>
-<li><p><strong>データベースの互換性をチェックする。</strong>疎なベクトルには逆インデックスのサポートが必要ですが、高次元の密なベクトルにはより多くのストレージと計算が必要です。ベクトル・データベースがあなたの選択に対応できることを確認してください。</p></li>
-<li><p><strong>長い文書をスマートに扱う。</strong>効率化のためにスライディングウィンドウなどのセグメンテーション戦略を利用し、意味を保持するために大きなコンテキストウィンドウモデルと組み合わせます。</p></li>
+<li><p><strong>Screen with MTEB subsets.</strong> Use benchmarks, especially retrieval tasks, to build an initial shortlist of candidates.</p></li>
+<li><p><strong>Test with real business data.</strong> Create evaluation sets from your own documents to measure recall, precision, and latency under real-world conditions.</p></li>
+<li><p><strong>Check database compatibility.</strong> Sparse vectors require inverted index support, while high-dimensional dense vectors demand more storage and computation. Ensure your vector database can accommodate your choice.</p></li>
+<li><p><strong>Handle long documents smartly.</strong> Utilize segmentation strategies, such as sliding windows, for efficiency, and pair them with large context window models to preserve meaning.</p></li>
 </ul>
-<p>Word2Vecのシンプルな静的ベクトルから、32Kのコンテキストを持つLLMを搭載したエンベッディングまで、機械が言語を理解する方法は大きく進歩している。しかし、すべての開発者が最終的に学ぶ教訓がここにある：<em>最もスコアの高い</em>モデルが、ユースケースに<em>最適な</em>モデルとは限らない。</p>
-<p>結局のところ、ユーザーはMTEBのリーダーボードやベンチマークチャートなど気にしていません。精度、コスト、そしてシステムとの互換性のバランスが取れたモデルを選択することで、理論上だけでなく、実世界で真に機能するものを構築することができるのです。</p>
+<p>From Word2Vec’s simple static vectors to LLM-powered embeddings with 32K contexts, we’ve seen huge strides in how machines understand language. But here’s the lesson every developer eventually learns: the <em>highest-scoring</em> model isn’t always the <em>best</em> model for your use case.</p>
+<p>At the end of the day, users don’t care about MTEB leaderboards or benchmark charts—they just want to find the right information, fast. Choose the model that balances accuracy, cost, and compatibility with your system, and you’ll have built something that doesn’t just impress in theory, but truly works in the real world.</p>

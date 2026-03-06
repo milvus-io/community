@@ -1,6 +1,7 @@
 ---
 id: how-to-debug-slow-requests-in-milvus.md
-title: 如何调试 Milvus 中缓慢的搜索请求
+title: |
+  How to Debug Slow Search Requests in Milvus
 author: Jael Gu
 date: 2025-10-02T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_2_2025_10_52_33_AM_min_fdb227d8c6.png
@@ -11,13 +12,16 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, vector database, slow requests, debug Milvus'
 meta_title: |
   How to Debug Slow Search Requests in Milvus
-desc: 在这篇文章中，我们将分享如何在 Milvus 中分流缓慢的请求，并分享您可以采取的实际步骤，以保持延迟的可预测性、稳定性和持续低延迟。
+desc: >-
+  In this post, we’ll share how to triage slow requests in Milvus and share
+  practical steps you can take to keep latency predictable, stable, and
+  consistently low.
 origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
-<p>性能是 Milvus 的核心。在正常情况下，Milvus 的搜索请求只需几毫秒即可完成。但如果集群速度减慢，搜索延迟延长到整秒，会发生什么情况？</p>
-<p>缓慢的搜索并不经常发生，但在大规模或复杂的工作负载下可能会出现。一旦出现这种情况，就会很严重：它们会破坏用户体验、影响应用程序性能，而且往往会暴露出设置中隐藏的低效问题。</p>
-<p>在这篇文章中，我们将介绍如何在 Milvus 中分流慢速请求，并分享您可以采取的实用步骤，以保持可预测、稳定和持续的低延迟。</p>
-<h2 id="Identifying-Slow-Searches" class="common-anchor-header">识别慢速搜索<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
+<p>Performance is at the heart of Milvus. Under normal conditions, a search request within Milvus completes in just milliseconds. But what happens when your cluster slows down—when search latency stretches into whole seconds instead?</p>
+<p>Slow searches don’t happen often, but they can surface at scale or under complex workloads. And when they do, they matter: they disrupt user experience, skew application performance, and often expose hidden inefficiencies in your setup.</p>
+<p>In this post, we’ll walk through how to triage slow requests in Milvus and share practical steps you can take to keep latency predictable, stable, and consistently low.</p>
+<h2 id="Identifying-Slow-Searches" class="common-anchor-header">Identifying Slow Searches<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -32,8 +36,8 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>诊断慢速请求需要从两个问题入手：慢速请求<strong>发生的频率以及时间流向？</strong>Milvus 通过指标和日志为您提供这两个答案。</p>
-<h3 id="Milvus-Metrics" class="common-anchor-header">Milvus 指标</h3><p>Milvus 会导出详细的指标，您可以在 Grafana 面板中进行监控。</p>
+    </button></h2><p>Diagnosing a slow request starts with two questions: <strong>how often does it happen, and where is the time going?</strong> Milvus gives you both answers through metrics and logs.</p>
+<h3 id="Milvus-Metrics" class="common-anchor-header">Milvus Metrics</h3><p>Milvus exports detailed metrics you can monitor in Grafana dashboards.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_2_64a5881bf2.png" alt="" class="doc-image" id="" />
@@ -46,23 +50,23 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
     <span></span>
   </span>
 </p>
-<p>主要面板包括</p>
+<p>Key panels include:</p>
 <ul>
-<li><p><strong>服务质量 → 查询速度慢</strong>：标记任何超过 proxy.slowQuerySpanInSeconds （默认：5 秒）的请求。这些也会在 Prometheus 中标记。</p></li>
-<li><p><strong>服务质量 → 搜索延迟</strong>：显示总体延迟分布。如果看起来正常，但最终用户仍看到延迟，则问题可能出在 Milvus 外部--网络或应用层。</p></li>
-<li><p><strong>查询节点 → 按阶段搜索延迟</strong>：将延迟分为队列、查询和缩减阶段。对于更深入的归因，<em>标量</em> <em>过滤延迟</em>、<em>向量搜索延迟</em>和<em>等待安全延迟等</em>面板可显示哪个阶段占主导地位。</p></li>
+<li><p><strong>Service Quality → Slow Query</strong>: Flags any request exceeding proxy.slowQuerySpanInSeconds (default: 5s). These are also marked in Prometheus.</p></li>
+<li><p><strong>Service Quality → Search Latency</strong>: Shows overall latency distribution. If this looks normal, but end users still see delays, the problem is likely outside Milvus—in the network or application layer.</p></li>
+<li><p><strong>Query Node → Search Latency by Phase</strong>: Breaks latency into queue, query, and reduce stages. For deeper attribution, panels such as <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em>, and <em>Wait tSafe Latency</em> reveal which stage dominates.</p></li>
 </ul>
-<h3 id="Milvus-Logs" class="common-anchor-header">Milvus 日志</h3><p>Milvus 还记录任何持续时间超过 1 秒的请求，并标注[搜索速度慢]等标记。这些日志显示了<em>哪些</em>查询速度较慢，补充了度量指标的洞察力。经验法则是</p>
+<h3 id="Milvus-Logs" class="common-anchor-header">Milvus Logs</h3><p>Milvus also logs any request lasting more than one second, tagged with markers like [Search slow]. These logs show <em>which</em> queries are slow, complementing the <em>where</em> insights from metrics. As a rule of thumb:</p>
 <ul>
-<li><p><strong>&lt; 30 毫秒</strong>→大多数情况下搜索延迟正常</p></li>
-<li><p><strong>&gt; 100 毫秒</strong>→ 值得研究</p></li>
-<li><p><strong>&gt; 1 秒</strong>→ 绝对缓慢，需要注意</p></li>
+<li><p><strong>&lt; 30 ms</strong> → healthy search latency in most scenarios</p></li>
+<li><p><strong>&gt; 100 ms</strong> → worth investigating</p></li>
+<li><p><strong>&gt; 1 s</strong> → definitely slow and requires attention</p></li>
 </ul>
-<p>日志示例：</p>
+<p>Example log:</p>
 <pre><code translate="no">[<span class="hljs-number">2025</span>/<span class="hljs-number">08</span>/<span class="hljs-number">23</span> <span class="hljs-number">19</span>:<span class="hljs-number">22</span>:<span class="hljs-number">19.900</span> +<span class="hljs-number">00</span>:<span class="hljs-number">00</span>] [INFO] [proxy/impl.<span class="hljs-keyword">go</span>:<span class="hljs-number">3141</span>] [<span class="hljs-string">&quot;Search slow&quot;</span>] [traceID=<span class="hljs-number">9100</span>b3092108604716f1472e4c7d54e4] [role=proxy] [db=<span class="hljs-keyword">default</span>] [collection=my_repos] [partitions=<span class="hljs-string">&quot;[]&quot;</span>] [dsl=<span class="hljs-string">&quot;user == \&quot;milvus-io\&quot; &amp;&amp; repo == \&quot;proxy.slowQuerySpanInSeconds\&quot;&quot;</span>] [<span class="hljs-built_in">len</span>(PlaceholderGroup)=<span class="hljs-number">8204</span>] [OutputFields=<span class="hljs-string">&quot;[user,repo,path,descripion]&quot;</span>] [search_params=<span class="hljs-string">&quot;[{\&quot;key\&quot;:\&quot;topk\&quot;,\&quot;value\&quot;:\&quot;10\&quot;},{\&quot;key\&quot;:\&quot;metric_type\&quot;,\&quot;value\&quot;:\&quot;COSINE\&quot;},{\&quot;key\&quot;:\&quot;anns_field\&quot;,\&quot;value\&quot;:\&quot;vector\&quot;},{\&quot;key\&quot;:\&quot;params\&quot;,\&quot;value\&quot;:\&quot;{\\\&quot;nprobe\\\&quot;:256,\\\&quot;metric_type\\\&quot;:\\\&quot;COSINE\\\&quot;}\&quot;}]&quot;</span>] [ConsistencyLevel=Strong] [useDefaultConsistency=<span class="hljs-literal">true</span>] [guarantee_timestamp=<span class="hljs-number">460318735832711168</span>] [nq=<span class="hljs-number">1</span>] [duration=<span class="hljs-number">5</span>m12<span class="hljs-number">.002784545</span>s] [durationPerNq=<span class="hljs-number">5</span>m12<span class="hljs-number">.002784545</span>s]
 <button class="copy-code-btn"></button></code></pre>
-<p>简而言之，<strong>指标会告诉你时间的去向；日志会告诉你哪些查询被命中。</strong></p>
-<h2 id="Analyzing-Root-Cause" class="common-anchor-header">分析根本原因<button data-href="#Analyzing-Root-Cause" class="anchor-icon" translate="no">
+<p>In short, <strong>metrics tell you where the time is going; logs tell you which queries are hit.</strong></p>
+<h2 id="Analyzing-Root-Cause" class="common-anchor-header">Analyzing Root Cause<button data-href="#Analyzing-Root-Cause" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,103 +81,103 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Heavy-Workload" class="common-anchor-header">工作量大</h3><p>请求速度慢的一个常见原因是工作量过大。当一个请求的<strong>NQ</strong>（每个请求的查询次数）非常大时，它就会长期运行并垄断查询节点资源。其他请求会堆积在它后面，导致队列延迟上升。即使每个请求的 NQ 较小，但由于 Milvus 可能会在内部合并并发的搜索请求，因此非常高的总体吞吐量（QPS）仍会造成同样的影响。</p>
+    </button></h2><h3 id="Heavy-Workload" class="common-anchor-header">Heavy Workload</h3><p>A common cause of slow requests is an excessive workload. When a request has a very large <strong>NQ</strong> (number of queries per request), it can run for an extended period and monopolize query node resources. Other requests stack up behind it, resulting in rising queue latency. Even if each request has a small NQ, a very high overall throughput (QPS) can still cause the same effect, as Milvus may merge concurrent search requests internally.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/high_workload_cf9c75e24c.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>需要注意的信号：</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>所有查询都显示意外的高延迟。</p></li>
-<li><p>查询节点指标报告高<strong>队列延迟</strong>。</p></li>
-<li><p>日志显示一个请求的 NQ 较大，总持续时间较长，但每个 NQ 的持续时间相对较小，这表明一个超大请求正在支配资源。</p></li>
+<li><p>All queries show unexpectedly high latency.</p></li>
+<li><p>Query Node metrics report high <strong>in-queue latency</strong>.</p></li>
+<li><p>Logs show a request with a large NQ and a long total duration, but a relatively small durationPerNQ—indicating that one oversized request is dominating resources.</p></li>
 </ul>
-<p><strong>如何解决</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><p><strong>批量查询</strong>：保持适度的 NQ，避免单个请求超载。</p></li>
-<li><p><strong>缩小查询节点的规模</strong>：如果高并发是工作负载的常规组成部分，则应增加查询节点，以分散负载并保持低延迟。</p></li>
+<li><p><strong>Batch queries</strong>: Keep NQ modest to avoid overloading a single request.</p></li>
+<li><p><strong>Scale out query nodes</strong>: If high concurrency is a regular part of your workload, add query nodes to spread the load and maintain low latency.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">低效过滤</h3><p>另一个常见瓶颈来自效率低下的过滤器。如果过滤器表达式不佳或字段缺乏标量索引，Milvus 可能会退回到<strong>全扫描</strong>，而不是扫描目标明确的小范围子集。JSON 过滤器和严格的一致性设置会进一步增加开销。</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Inefficient Filtering</h3><p>Another common bottleneck comes from inefficient filters. If filter expressions are poorly conducted or fields lack scalar indexes, Milvus may fall back to a <strong>full scan</strong> instead of scanning a small, targeted subset. JSON filters and strict consistency settings can further increase overhead.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>需要注意的信号</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>查询节点指标中的高<strong>标量过滤器延迟</strong>。</p></li>
-<li><p>只有在应用过滤器时才会出现明显的延迟峰值。</p></li>
-<li><p>如果启用了严格一致性，则<strong>等待 tSafe 延迟较长</strong>。</p></li>
+<li><p>High <strong>Scalar Filter Latency</strong> in Query Node metrics.</p></li>
+<li><p>Noticeable latency spikes only when filters are applied.</p></li>
+<li><p>Long <strong>Wait tSafe Latency</strong> if strict consistency is enabled.</p></li>
 </ul>
-<p><strong>如何解决</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><strong>简化过滤器表达式</strong>：通过优化筛选器降低查询计划的复杂性。例如，用 IN 表达式替换长 OR 链：</li>
+<li><strong>Simplify filter expressions</strong>: Reduce query plan complexity by optimizing filters. For example, replace long OR chains with an IN expression:</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Replace chains of OR conditions with IN</span>
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p>Milvus 还引入了过滤器表达式模板化机制，旨在通过减少解析复杂表达式的时间来提高效率。详情请参见<a href="https://milvus.io/docs/filtering-templating.md">本文档</a>。</p></li>
-<li><p><strong>添加适当的索引</strong>：通过为过滤器中使用的字段创建标量索引来避免全扫描。</p></li>
-<li><p><strong>高效处理 JSON</strong>：Milvus 2.6 为 JSON 字段引入了路径和平面索引，从而实现了对 JSON 数据的高效处理。为了进一步提高性能，我们还<a href="https://milvus.io/docs/roadmap.md">将</a>对 JSON 进行粉碎处理。有关更多信息，请参阅<a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">JSON 字段文档</a>。</p></li>
-<li><p><strong>调整一致性级别</strong>：在不需要严格保证时，使用 "<em>有界</em> <em>"</em>或<em>"最终</em>"一致性读取，减少<em>tSafe</em>等待时间。</p></li>
+<li><p>Milvus also introduces a filter expression templating mechanism designed to improve efficiency by reducing the time spent parsing complex expressions. See <a href="https://milvus.io/docs/filtering-templating.md">this document</a> for more details.</p></li>
+<li><p><strong>Add proper indexes</strong>: Avoid full scans by creating scalar indexes on fields used in filters.</p></li>
+<li><p><strong>Handle JSON efficiently</strong>: Milvus 2.6 introduced path and flat indexes for JSON fields, enabling efficient handling of JSON data. JSON shredding is also on <a href="https://milvus.io/docs/roadmap.md">the roadmap</a> to further improve performance. Refer to <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">the JSON field document</a> for additional information.</p></li>
+<li><p><strong>Tune consistency level</strong>: Use <em>Bounded</em> or <em>Eventually</em> consistent reads when strict guarantees are not required, reducing <em>tSafe</em> wait time.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">向量索引选择不当</h3><p><a href="https://milvus.io/docs/index-explained.md">向量索引</a>不是万能的。选择错误的索引会严重影响延迟。内存索引能提供最快的性能，但会消耗更多内存，而磁盘索引则以速度为代价节省内存。二进制向量也需要专门的索引策略。</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Improper Choice of Vector Index</h3><p><a href="https://milvus.io/docs/index-explained.md">Vector indexes</a> are not one-size-fits-all. Selecting the wrong index can significantly impact latency. In-memory indexes deliver the fastest performance but consume more memory, while on-disk indexes save memory at the cost of speed. Binary vectors also require specialized indexing strategies.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>需要注意的信号：</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>查询节点指标中的向量搜索延迟过高。</p></li>
-<li><p>使用 DiskANN 或 MMAP 时磁盘 I/O 饱和。</p></li>
-<li><p>缓存冷启动导致重启后查询速度变慢。</p></li>
+<li><p>High Vector Search Latency in Query Node metrics.</p></li>
+<li><p>Disk I/O saturation when using DiskANN or MMAP.</p></li>
+<li><p>Slower queries immediately after restart due to cache cold start.</p></li>
 </ul>
-<p><strong>如何解决</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><p><strong>将索引与工作负载相匹配（浮动向量）：</strong></p>
+<li><p><strong>Match index to workload (float vectors):</strong></p>
 <ul>
-<li><p><strong>HNSW</strong>- 最适合高召回率和低延迟的内存用例。</p></li>
-<li><p><strong>IVF 系列</strong>--在召回率和速度之间灵活权衡。</p></li>
-<li><p><strong>DiskANN</strong>- 支持十亿规模的数据集，但需要强大的磁盘带宽。</p></li>
+<li><p><strong>HNSW</strong> — best for in-memory use cases with high recall and low latency.</p></li>
+<li><p><strong>IVF family</strong> — flexible trade-offs between recall and speed.</p></li>
+<li><p><strong>DiskANN</strong> — supports billion-scale datasets, but requires strong disk bandwidth.</p></li>
 </ul></li>
-<li><p><strong>对于二进制向量：</strong>使用<a href="https://milvus.io/docs/minhash-lsh.md">MINHASH_LSH 索引</a>（Milvus 2.6 中引入）与 MHJACCARD 度量，有效地近似雅卡德相似性。</p></li>
-<li><p><strong>启用</strong> <a href="https://milvus.io/docs/mmap.md"><strong>MMAP</strong></a>：将索引文件映射到内存中，而不是完全驻留在内存中，以便在延迟和内存使用率之间取得平衡。</p></li>
-<li><p><strong>调整索引/搜索参数</strong>：调整设置，以平衡工作负载的检索和延迟。</p></li>
-<li><p><strong>减少冷启动</strong>：对重启后频繁访问的数据段进行预热，以避免初始查询速度变慢。</p></li>
+<li><p><strong>For binary vectors:</strong> Use the <a href="https://milvus.io/docs/minhash-lsh.md">MINHASH_LSH index</a> (introduced in Milvus 2.6) with the MHJACCARD metric to efficiently approximate Jaccard similarity.</p></li>
+<li><p><strong>Enable</strong> <a href="https://milvus.io/docs/mmap.md"><strong>MMAP</strong></a>: Map index files into memory instead of keeping them fully resident to strike a balance between latency and memory usage.</p></li>
+<li><p><strong>Tune index/search parameters</strong>: Adjust settings to balance recall and latency for your workload.</p></li>
+<li><p><strong>Mitigate cold starts</strong>: Warm up frequently accessed segments after a restart to avoid initial query slowness.</p></li>
 </ul>
-<h3 id="Runtime--Environment-Conditions" class="common-anchor-header">运行时间和环境条件</h3><p>并非所有缓慢的查询都是由查询本身造成的。查询节点通常会与压缩、数据迁移或索引构建等后台作业共享资源。频繁的上载会产生许多未编入索引的小片段，从而迫使搜索扫描原始数据。在某些情况下，特定版本的低效率也会带来延迟，直到打上补丁。</p>
+<h3 id="Runtime--Environment-Conditions" class="common-anchor-header">Runtime &amp; Environment Conditions</h3><p>Not all slow queries are caused by the query itself. Query nodes often share resources with background jobs, such as compaction, data migration, or index building. Frequent upserts can generate many small, unindexed segments, forcing searches to scan raw data. In some cases, version-specific inefficiencies can also introduce latency until patched.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/img_v3_02q5_4dd2e545_93dc_4c58_b609_d76d50c2013g_aad0a89208.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>需要注意的信号</strong></p>
+<p><strong>Signals to watch for:</strong></p>
 <ul>
-<li><p>后台工作（压缩、迁移、索引构建）期间 CPU 使用率激增。</p></li>
-<li><p>影响查询性能的磁盘 I/O 饱和。</p></li>
-<li><p>重启后缓存预热非常缓慢。</p></li>
-<li><p>大量未编入索引的小数据段（频繁插入造成）。</p></li>
-<li><p>与特定 Milvus 版本相关的延迟回归。</p></li>
+<li><p>CPU usage spikes during background jobs (compaction, migration, index builds).</p></li>
+<li><p>Disk I/O saturation affecting query performance.</p></li>
+<li><p>Very slow cache warm-up after a restart.</p></li>
+<li><p>Large numbers of small, unindexed segments (from frequent upserts).</p></li>
+<li><p>Latency regressions tied to specific Milvus versions.</p></li>
 </ul>
-<p><strong>如何解决</strong></p>
+<p><strong>How to fix it:</strong></p>
 <ul>
-<li><p>将<strong>后台任务</strong>（如压缩）<strong>重新安排</strong>到非高峰时段。</p></li>
-<li><p><strong>释放未使用的 Collections</strong>以释放内存。</p></li>
-<li><p><strong>考虑</strong>重启后的<strong>预热时间</strong>；必要时预热缓存。</p></li>
-<li><p><strong>批量上载</strong>，减少创建微小数据段，让压缩跟上。</p></li>
-<li><p><strong>保持最新</strong>：升级到较新的 Milvus 版本，以获得错误修复和优化。</p></li>
-<li><p><strong>配置资源</strong>：为对延迟敏感的工作负载分配额外的 CPU/内存。</p></li>
+<li><p><strong>Reschedule background tasks</strong> (e.g., compaction) to off-peak hours.</p></li>
+<li><p><strong>Release unused collections</strong> to free memory.</p></li>
+<li><p><strong>Account for warm-up time</strong> after restarts; pre-warm caches if needed.</p></li>
+<li><p><strong>Batch upserts</strong> to reduce the creation of tiny segments and let compaction keep up.</p></li>
+<li><p><strong>Stay current</strong>: upgrade to newer Milvus versions for bug fixes and optimizations.</p></li>
+<li><p><strong>Provision resources</strong>: dedicate extra CPU/memory to latency-sensitive workloads.</p></li>
 </ul>
-<p>通过将每个信号与正确的操作相匹配，可以快速、可预测地解决大多数缓慢查询。</p>
-<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">防止缓慢搜索的最佳实践<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
+<p>By matching each signal with the right action, most slow queries can be resolved quickly and predictably.</p>
+<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">Best Practices to Prevent Slow Searches<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -188,17 +192,17 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最好的调试会话是永远不需要运行的会话。根据我们的经验，在 Milvus 中，一些简单的习惯对防止缓慢查询有很大帮助：</p>
+    </button></h2><p>The best debugging session is the one you never need to run. In our experience, a few simple habits go a long way toward preventing slow queries in Milvus:</p>
 <ul>
-<li><p><strong>规划资源分配</strong>，避免 CPU 和磁盘争用。</p></li>
-<li><p>为故障和延迟峰值<strong>设置主动警报</strong>。</p></li>
-<li><p><strong>保持过滤表达式</strong>简短、高效。</p></li>
-<li><p><strong>批量上载</strong>并将 NQ/QPS 保持在可持续水平。</p></li>
-<li><p>为过滤器中使用的<strong>所有字段建立索引</strong>。</p></li>
+<li><p><strong>Plan resource allocation</strong> to avoid CPU and disk contention.</p></li>
+<li><p><strong>Set proactive alerts</strong> for both failures and latency spikes.</p></li>
+<li><p><strong>Keep filter expressions</strong> short, simple, and efficient.</p></li>
+<li><p><strong>Batch upserts</strong> and keep NQ/QPS at sustainable levels.</p></li>
+<li><p><strong>Index all fields</strong> that are used in filters.</p></li>
 </ul>
-<p>Milvus 中很少出现查询速度慢的情况，即使出现，通常也有明确的、可诊断的原因。利用指标、日志和结构化方法，您可以快速识别并解决问题。我们的支持团队每天都在使用这本指南，现在您也可以使用了。</p>
-<p>我们希望本指南不仅能提供故障排除框架，还能让您有信心保持 Milvus 工作负载平稳高效地运行。</p>
-<h2 id="💡-Want-to-dive-deeper" class="common-anchor-header">想要深入了解？<button data-href="#💡-Want-to-dive-deeper" class="anchor-icon" translate="no">
+<p>Slow queries in Milvus are rare, and when they do appear, they usually have clear, diagnosable causes. With metrics, logs, and a structured approach, you can quickly identify and resolve issues. This is the same playbook our support team uses every day — and now it’s yours too.</p>
+<p>We hope this guide provides not only a troubleshooting framework but also the confidence to keep your Milvus workloads running smoothly and efficiently.</p>
+<h2 id="💡-Want-to-dive-deeper" class="common-anchor-header">💡 Want to dive deeper?<button data-href="#💡-Want-to-dive-deeper" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -214,6 +218,6 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>加入<a href="https://discord.com/invite/8uyFbECzPX"><strong>Milvus Discord</strong></a>，提问、分享经验并向社区学习。</p></li>
-<li><p>注册参加我们的<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus 办公时间</strong></a>，与团队直接对话，在工作负载方面获得实际帮助。</p></li>
+<li><p>Join the <a href="https://discord.com/invite/8uyFbECzPX"><strong>Milvus Discord</strong></a> to ask questions, share experiences, and learn from the community.</p></li>
+<li><p>Sign up for our <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> to speak directly with the team and receive hands-on assistance with your workloads.</p></li>
 </ul>

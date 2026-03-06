@@ -1,65 +1,66 @@
 ---
 id: Whats-Inside-Milvus-1.0.md
-title: Que contient Milvus 1.0 ?
+title: What's Inside Milvus 1.0?
 author: milvus
 date: 2021-04-29T08:46:04.019Z
 desc: >-
-  Milvus v1.0 est disponible dès maintenant. Découvrez les principes
-  fondamentaux de Milvus ainsi que les principales fonctionnalités de Milvus
-  v1.0.
+  Milvus v1.0 is available now. Learn about the Milvus fundamentals as well as
+  key features of Milvus v1.0.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Whats-Inside-Milvus-1.0'
 ---
-<custom-h1>Que contient Milvus 1.0 ?</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
-   </span> <span class="img-wrapper"> <span>Milvus.jpeg</span> </span></p>
-<p>Milvus est une base de données vectorielles open-source conçue pour gérer des ensembles massifs de données vectorielles de l'ordre du million, du milliard, voire du trillion. Milvus a de vastes applications couvrant la découverte de nouveaux médicaments, la vision par ordinateur, la conduite autonome, les moteurs de recommandation, les chatbots, et bien plus encore.</p>
-<p>En mars 2021, Zilliz, la société à l'origine de Milvus, a publié la première version de support à long terme de la plateforme, Milvus v1.0. Après des mois de tests approfondis, une version stable et prête à la production de la base de données vectorielles la plus populaire au monde est prête pour le prime time. Cet article de blog couvre quelques principes fondamentaux de Milvus ainsi que les principales caractéristiques de la version 1.0.</p>
+<custom-h1>What’s Inside Milvus 1.0?</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
+    <span>Milvus.jpeg</span>
+  </span>
+</p>
+<p>Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more.</p>
+<p>In March, 2021 Zilliz, the company behind Milvus, released the platform’s first long-term support version—Milvus v1.0. After months of extensive testing, a stable, production ready version of the world’s most popular vector database is ready for prime time. This blog article covers some Milvus fundamentals as well as key features of v1.0.</p>
 <p><br/></p>
-<h3 id="Milvus-distributions" class="common-anchor-header">Distributions de Milvus</h3><p>Milvus est disponible en distributions CPU-only et GPU-enabled. La première s'appuie exclusivement sur le CPU pour la construction d'index et la recherche ; la seconde permet une recherche et une construction d'index hybrides CPU et GPU qui accélèrent encore plus Milvus. Par exemple, avec la distribution hybride, le CPU peut être utilisé pour la recherche et le GPU pour la construction de l'index, ce qui améliore encore l'efficacité des requêtes.</p>
-<p>Les deux distributions Milvus sont disponibles dans Docker. Vous pouvez soit compiler Milvus à partir de Docker (si votre système d'exploitation le prend en charge), soit compiler Milvus à partir du code source sous Linux (les autres systèmes d'exploitation ne sont pas pris en charge).</p>
+<h3 id="Milvus-distributions" class="common-anchor-header">Milvus distributions</h3><p>Milvus is available in CPU-only and GPU-enabled distributions. The former relies exclusively on CPU for index building and search; the latter enables CPU and GPU hybrid search and index building that further accelerates Milvus. For example, using the hybrid distribution, CPU can be used for search and GPU for index building, further improving query efficiency.</p>
+<p>Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported).</p>
 <p><br/></p>
-<h3 id="Embedding-vectors" class="common-anchor-header">Intégration de vecteurs</h3><p>Les vecteurs sont stockés dans Milvus en tant qu'entités. Chaque entité possède un champ d'identification de vecteur et un champ de vecteur. Milvus v1.0 ne prend en charge que les ID de vecteurs entiers. Lors de la création d'une collection dans Milvus, les ID de vecteur peuvent être générés automatiquement ou définis manuellement. Milvus garantit que les ID de vecteur générés automatiquement sont uniques, mais les ID définis manuellement peuvent être dupliqués dans Milvus. En cas de définition manuelle des identifiants, les utilisateurs sont tenus de s'assurer que tous les identifiants sont uniques.</p>
+<h3 id="Embedding-vectors" class="common-anchor-header">Embedding vectors</h3><p>Vectors are stored in Milvus as entities. Each entity has one vector ID field and one vector field. Milvus v1.0 supports integer vector IDs only. When creating a collection within Milvus, vector IDs can be automatically generated or manually defined. Milvus ensures auto-generated vector IDs are unique however, manually defined IDs can be duplicated within Milvus. If manually defining IDs, users are responsible for making sure all IDs are unique.</p>
 <p><br/></p>
-<h3 id="Partitions" class="common-anchor-header">Partitions</h3><p>Milvus permet de créer des partitions dans une collection. Dans les situations où les données sont insérées régulièrement et où les données historiques ne sont pas significatives (par exemple, les données en continu), les partitions peuvent être utilisées pour accélérer la recherche de similarités vectorielles. Une collection peut comporter jusqu'à 4 096 partitions. La spécification d'une recherche vectorielle dans une partition spécifique restreint la recherche et peut réduire de manière significative le temps d'interrogation, en particulier pour les collections qui contiennent plus d'un trillion de vecteurs.</p>
+<h3 id="Partitions" class="common-anchor-header">Partitions</h3><p>Milvus supports creating partitions in a collection. In situations where data is inserted regularly and historical data isn’t significant (e.g., streaming data), partitions can be used to accelerate vector similarity search. One collection can have up to 4,096 partitions. Specifying a vector search within a specific partition narrows the search and may significantly reduce query time, particularly for collections that contain more than a trillion vectors.</p>
 <p><br/></p>
-<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Optimisation des algorithmes d'indexation</h3><p>Milvus est construit au-dessus de plusieurs bibliothèques d'index largement adoptées, notamment Faiss, NMSLIB et Annoy. Milvus est bien plus qu'une simple enveloppe pour ces bibliothèques d'index. Voici quelques-unes des principales améliorations apportées aux bibliothèques sous-jacentes :</p>
+<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Index algorithm optimizations</h3><p>Milvus is built on top of multiple widely-adopted index libraries, including Faiss, NMSLIB, and Annoy. Milvus is far more than a basic wrapper for these index libraries. Here are some of the major enhancements that have been made to the underlying libraries:</p>
 <ul>
-<li>Optimisation des performances de l'index IVF à l'aide de l'algorithme Elkan k-means.</li>
-<li>Optimisations de la recherche FLAT.</li>
-<li>Prise en charge de l'index hybride IVF_SQ8H, qui peut réduire la taille des fichiers d'index jusqu'à 75 % sans sacrifier la précision des données. IVF_SQ8H est basé sur IVF_SQ8, avec un rappel identique mais une vitesse d'interrogation beaucoup plus rapide. Il a été conçu spécifiquement pour Milvus afin d'exploiter la capacité de traitement parallèle des GPU et le potentiel de synergie entre le co-traitement CPU/GPU.</li>
-<li>Compatibilité dynamique du jeu d'instructions.</li>
+<li>IVF index performance optimizations using the Elkan k-means algorithm.</li>
+<li>FLAT search optimizations.</li>
+<li>IVF_SQ8H hybrid index support, which can reduce index file sizes by up to 75% without sacrificing data accuracy. IVF_SQ8H is built upon IVF_SQ8, with identical recall but much faster query speed. It was designed specifically for Milvus to harnesses the parallel processing capacity of GPUs, and the potential for synergy between CPU/GPU co-processing.</li>
+<li>Dynamic instruction set compatibility.</li>
 </ul>
 <p><br/></p>
-<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Recherche, construction d'index et autres optimisations de Milvus</h3><p>Les optimisations suivantes ont été apportées à Milvus pour améliorer les performances de recherche et de construction d'index.</p>
+<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Search, index building, and other Milvus optimizations</h3><p>The following optimizations have been made to Milvus to improve search and index building performance.</p>
 <ul>
-<li>Les performances de recherche sont optimisées lorsque le nombre de requêtes (nq) est inférieur au nombre de threads de l'unité centrale.</li>
-<li>Milvus combine les demandes de recherche d'un client qui utilisent le même topK et les mêmes paramètres de recherche.</li>
-<li>La construction de l'index est suspendue lorsque les demandes de recherche arrivent.</li>
-<li>Milvus précharge automatiquement les collections en mémoire au démarrage.</li>
-<li>Plusieurs dispositifs GPU peuvent être affectés à l'accélération de la recherche de similarités vectorielles.</li>
+<li>Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads.</li>
+<li>Milvus combines search requests from a client that take the same topK and search parameters.</li>
+<li>Index building is suspended when search requests come in.</li>
+<li>Milvus automatically preloads collections to memory at start.</li>
+<li>Multiple GPU devices can be assigned to accelerate vector similarity search.</li>
 </ul>
 <p><br/></p>
-<h3 id="Distance-metrics" class="common-anchor-header">Mesures de distance</h3><p>Milvus est une base de données vectorielle conçue pour permettre la recherche de similarités vectorielles. La plateforme a été conçue pour les MLOps et les applications d'IA de niveau de production. Milvus prend en charge un large éventail de mesures de distance pour calculer la similarité, telles que la distance euclidienne (L2), le produit intérieur (IP), la distance de Jaccard, la distance de Tanimoto, la distance de Hamming, la superstructure et la sous-structure. Les deux dernières mesures sont couramment utilisées dans la recherche moléculaire et la découverte de nouveaux médicaments assistée par l'IA.</p>
+<h3 id="Distance-metrics" class="common-anchor-header">Distance metrics</h3><p>Milvus is a vector database built to power vector similarity search. The platform was built with MLOps and production level AI applications in mind. Milvus supports a wide range of distance metrics for calculating similarity, such as Euclidean distance (L2), inner product (IP), Jaccard distance, Tanimoto, Hamming distance, superstructure, and substructure. The last two metrics are commonly used in molecular search and AI-powered new drug discovery.</p>
 <p><br/></p>
-<h3 id="Logging" class="common-anchor-header">Logging</h3><p>Milvus prend en charge la rotation des journaux. Dans le fichier de configuration du système, milvus.yaml, vous pouvez définir la taille d'un seul fichier journal, le nombre de fichiers journaux et la sortie du journal vers stdout.</p>
+<h3 id="Logging" class="common-anchor-header">Logging</h3><p>Milvus supports log rotation. In the system configuration file, milvus.yaml, you can set the size of a single log file, the number of log files, and log output to stdout.</p>
 <p><br/></p>
-<h3 id="Distributed-solution" class="common-anchor-header">Solution distribuée</h3><p>Avec un nœud d'écriture et un nombre illimité de nœuds de lecture, Mishards libère le potentiel de calcul de la grappe de serveurs. Ses fonctionnalités incluent le transfert de requêtes, le fractionnement lecture/écriture, la mise à l'échelle dynamique/horizontale, et bien d'autres encore.</p>
+<h3 id="Distributed-solution" class="common-anchor-header">Distributed solution</h3><p>Mishards, a Milvus sharding middleware, is the distributed solution for Milvus With one write node and an unlimited number of read nodes, Mishards unleashes the computational potential of server cluster. Its features include request forwarding, read/write splitting, dynamic/horizontal scaling, and more.</p>
 <p><br/></p>
-<h3 id="Monitoring" class="common-anchor-header">Surveillance</h3><p>Milvus est compatible avec Prometheus, une boîte à outils open-source de surveillance des systèmes et d'alertes. Milvus ajoute la prise en charge de Pushgateway dans Prometheus, ce qui permet à Prometheus d'acquérir des mesures par lots de courte durée. Le système de surveillance et d'alerte fonctionne comme suit :</p>
+<h3 id="Monitoring" class="common-anchor-header">Monitoring</h3><p>Milvus is compatible with Prometheus, an open-source system monitoring and alerts toolkit. Milvus adds support for Pushgateway in Prometheus, making it possible for Prometheus to acquire short-lived batch metrics. The monitoring and alerts system works as follows:</p>
 <ul>
-<li>Le serveur Milvus envoie des données métriques personnalisées à Pushgateway.</li>
-<li>Pushgateway veille à ce que les données de mesure éphémères soient envoyées en toute sécurité à Prometheus.</li>
-<li>Prometheus continue d'extraire des données de Pushgateway.</li>
-<li>Alertmanager permet de définir le seuil d'alerte pour différents indicateurs et d'envoyer des alertes par courrier électronique ou par message.</li>
+<li>The Milvus server pushes customized metrics data to Pushgateway.</li>
+<li>Pushgateway ensures ephemeral metric data is safely sent to Prometheus.</li>
+<li>Prometheus continues pulling data from Pushgateway.</li>
+<li>Alertmanager is used to set the alert threshold for different indicators and send alerts via email or message.</li>
 </ul>
 <p><br/></p>
-<h3 id="Metadata-management" class="common-anchor-header">Gestion des métadonnées</h3><p>Milvus utilise par défaut SQLite pour la gestion des métadonnées. SQLite est implémenté dans Milvus et ne nécessite pas de configuration. Dans un environnement de production, il est recommandé d'utiliser MySQL pour la gestion des métadonnées.</p>
+<h3 id="Metadata-management" class="common-anchor-header">Metadata management</h3><p>Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management.</p>
 <p><br/></p>
-<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Participez à notre communauté open-source :</h3><ul>
-<li>Trouvez ou contribuez à Milvus sur <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>Interagissez avec la communauté via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Connectez-vous avec nous sur <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

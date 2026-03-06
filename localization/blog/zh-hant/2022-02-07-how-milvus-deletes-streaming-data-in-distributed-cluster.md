@@ -1,15 +1,17 @@
 ---
 id: 2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md
-title: 使用方法
+title: Usage
 author: Lichen Wang
 date: 2022-02-07T00:00:00.000Z
-desc: 世界上最先進的向量資料庫 Milvus 2.0 中的刪除功能背後的主要設計。
+desc: >-
+  The cardinal design behind the deletion function in Milvus 2.0, the world's
+  most advanced vector database.
 cover: assets.zilliz.com/Delete_9f40bbfa94.png
 tag: Engineering
 ---
-<custom-h1>Milvus 如何在分散式集群中刪除串流資料</custom-h1><p>Milvus 2.0 擁有統一的批次和流處理以及雲原生架構，在 DELETE 功能的開發過程中，Milvus 2.0 比其前身面臨更大的挑戰。得益於先進的儲存-計算分解設計和靈活的發布/訂閱機制，我們很自豪地宣佈我們實現了這一目標。在 Milvus 2.0 中，您可以使用主鍵刪除指定集合中的實體，這樣被刪除的實體就不會再被列在搜尋或查詢的結果中。</p>
-<p>請注意，Milvus 中的 DELETE 操作指的是邏輯刪除，而實體資料清理發生在資料壓縮期間。邏輯刪除不僅大大提升了受限於 I/O 速度的搜尋效能，也方便了資料復原。邏輯刪除的資料仍可在時間旅行功能的協助下復原。</p>
-<h2 id="Usage" class="common-anchor-header">使用方法<button data-href="#Usage" class="anchor-icon" translate="no">
+<custom-h1>How Milvus Deletes Streaming Data in a Distributed Cluster</custom-h1><p>Featuring unified batch-and-stream processing and cloud-native architecture, Milvus 2.0 poses a greater challenge than its predecessor did during the development of the DELETE function. Thanks to its advanced storage-computation disaggregation design and the flexible publication/subscription mechanism, we are proud to announce that we made it happen. In Milvus 2.0, you can delete an entity in a given collection with its primary key so that the deleted entity will no longer be listed in the result of a search or a query.</p>
+<p>Please note that the DELETE operation in Milvus refers to logical deletion, whereas physical data cleanup occurs during the Data Compaction. Logical deletion not only greatly boosts the search performance constrained by the I/O speed, but also facilitates data recovery. Logically deleted data can still be retrieved with the help of the Time Travel function.</p>
+<h2 id="Usage" class="common-anchor-header">Usage<button data-href="#Usage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,7 +26,7 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>讓我們先試試 Milvus 2.0 中的 DELETE 函式。(以下範例在 Milvus 2.0.0 上使用 PyMilvus 2.0.0)。</p>
+    </button></h2><p>Let’s try out the DELETE function in Milvus 2.0 first. (The following example uses PyMilvus 2.0.0 on Milvus 2.0.0).</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, utility, Collection, DataType, FieldSchema, CollectionSchema
 <span class="hljs-comment"># Connect to Milvus</span>
 connections.connect(
@@ -79,7 +81,7 @@ post_del_res = collection.query(
 )
 <span class="hljs-built_in">print</span>(post_del_res)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Implementation" class="common-anchor-header">執行<button data-href="#Implementation" class="anchor-icon" translate="no">
+<h2 id="Implementation" class="common-anchor-header">Implementation<button data-href="#Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,28 +96,32 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在 Milvus 實例中，資料節點主要負責將串流資料 (log broker 中的日誌) 封裝成歷史資料 (日誌快照)，並自動將它們沖洗到物件儲存空間。查詢節點在完整資料（即串流資料和歷史資料）上執行搜尋請求。</p>
-<p>為了充分利用集群中平行節點的資料寫入能力，Milvus 採用基於主索引鍵雜湊的分片策略，將寫入作業平均分配到不同的工作節點。也就是說，proxy 會將實體的資料處理語言 (Data Manipulation Language, DML) 訊息 (即請求) 路由到相同的資料節點和查詢節點。這些訊息透過 DML 通道發佈，並由資料節點和查詢節點分別消耗，以共同提供搜尋和查詢服務。</p>
-<h3 id="Data-node" class="common-anchor-header">資料節點</h3><p>接收到資料 INSERT 訊息後，資料節點會將資料插入一個成長中的區段，這個區段是為了接收記憶體中的串流資料而建立的新區段。如果資料行數或成長區段的持續時間達到臨界值，資料節點就會封鎖它，以防止任何資料進入。然後，資料節點會將封閉區段 (包含歷史資料) 沖洗至物件儲存區。同時，資料節點根據新資料的主鍵產生 Bloom filter，並將其與封存的區段一起沖洗到物件儲存區，將 Bloom filter 儲存為統計二進位日誌 (binlog) 的一部分，其中包含區段的統計資訊。</p>
+    </button></h2><p>In a Milvus instance, a data node is mainly responsible for packing streaming data (logs in log broker) as historical data (log snapshots) and automatically flushing them to object storage. A query node executes search requests on full data, i.e. both streaming data and historical data.</p>
+<p>To make the most of the data writing capacity of parallel nodes in a cluster, Milvus adopts a sharding strategy based on primary key hashing to distribute writing operations evenly to different worker nodes. That is to say, proxy will route the Data Manipulation Language (DML) messages (i.e. requests) of an entity to the same data node and query node. These messages are published through the DML-Channel and consumed by the data node and query node separately to provide search and query services together.</p>
+<h3 id="Data-node" class="common-anchor-header">Data node</h3><p>Having received data INSERT messages, the data node inserts the data in a growing segment, which is a new segment created to receive streaming data in memory. If either the data row count or the duration of the growing segment reaches the threshold, the data node seals it to prevent any incoming data. The data node then flushes the sealed segment, which contains the historical data, to the object storage. Meanwhile, the data node generates a bloom filter based on the primary keys of the new data, and flushed it to the object storage together with the sealed segment, saving the bloom filter as a part of the statistics binary log (binlog), which contains the statistical information of the segment.</p>
 <blockquote>
-<p>bloom filter 是一種概率資料結構，由一個長的二進位向量和一系列隨機映射函數所組成。它可以用來測試某個元素是否為某個集合的成員，但可能會回傳假陽性的匹配結果。           -- 維基百科</p>
+<p>A bloom filter is a probabilistic data structure that consists of a long binary vector and a series of random mapping functions. It can be used to test whether an element is a member of a set, but might return false positive matches.           —— Wikipedia</p>
 </blockquote>
-<p>當資料 DELETE 訊息傳入時，資料節點會緩衝相應分片中的所有 Bloom 過濾器，並將它們與訊息中提供的主索引鍵比對，以擷取可能包含要刪除實體的所有區段 (從成長中和封存中)。找出對應的區段後，資料節點會將區段緩衝到記憶體中，以產生 Delta binlog 來記錄刪除作業，然後將這些 binlog 連同區段一起沖回物件儲存空間。</p>
+<p>When data DELETE messages come in, data node buffers all bloom filters in the corresponding shard, and matches them with the primary keys provided in the messages to retrieve all segments (from both growing and sealed ones) that possibly include the entities to delete. Having pinpointed the corresponding segments, data node buffers them in memory to generate the Delta binlogs to record the delete operations, and then flushes those binlogs together with the segments back to the object storage.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
-   </span> <span class="img-wrapper"> <span>資料節點</span> </span></p>
-<p>由於一個分片只指定一個 DML-Channel，額外加入群集的查詢節點無法訂閱 DML-Channel。為了確保所有查詢節點都能收到 DELETE 訊息，資料節點會過濾 DML-Channel 的 DELETE 訊息，並將訊息轉送至 Delta-Channel，以通知所有查詢節點刪除作業。</p>
-<h3 id="Query-node" class="common-anchor-header">查詢節點</h3><p>從物件儲存空間載入集合時，查詢節點會先取得每個分片的檢查點 (checkpoint)，該檢查點會標記自上次刷新 (flush) 作業後的 DML 作業。根據檢查點，查詢節點會載入所有封存區段及其 Delta binlog 和 Bloom 過濾器。所有資料載入後，查詢節點會訂閱 DML-Channel、Delta-Channel 和 Query-Channel。</p>
-<p>如果在資料集載入到記憶體之後，有更多的資料 INSERT 訊息傳來，查詢節點會先根據這些訊息找出成長中的區段，並更新記憶體中對應的 Bloom 過濾器，僅供查詢之用。這些查詢專用的 Bloom 過濾器在查詢完成後，不會被刷新到物件儲存空間。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
+    <span>Data Node</span>
+  </span>
+</p>
+<p>Since one shard is only assigned with one DML-Channel, extra query nodes added to the cluster will not be able to subscribe to the DML-Channel. To ensure that all query nodes can receive the DELETE messages, data nodes filter the DELETE messages from the DML-Channel, and forward them to Delta-Channel to notify all query nodes of the delete operations.</p>
+<h3 id="Query-node" class="common-anchor-header">Query node</h3><p>When loading a collection from object storage, the query node first obtains each shard’s checkpoint, which marks the DML operations since the last flush operation. Based on the checkpoint, the query node loads all sealed segments together with their Delta binlog and bloom filters. With all data loaded, the query node then subscribes to DML-Channel, Delta-Channel, and Query-Channel.</p>
+<p>If more data INSERT messages come after the collection is loaded to memory, query node first pinpoints the growing segments according to the messages, and updates corresponding bloom filters in memory for query purposes only. Those query-dedicated bloom filters will not be flushed to object storage after the query is finished.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
-   </span> <span class="img-wrapper"> <span>查詢節點</span> </span></p>
-<p>如上所述，只有一定數量的查詢節點可以從 DML-Channel 接收 DELETE 訊息，也就是只有它們可以執行成長中的 DELETE 請求。對於那些訂閱了 DML 通道的查詢節點，它們會先過濾成長區段中的 DELETE 訊息，透過所提供的主索引鍵與成長區段中的查詢專用 Bloom 過濾器進行比對來找出實體，然後在對應的區段中記錄刪除作業。</p>
-<p>不能訂閱 DML-Channel 的查詢節點，因為只能訂閱 Delta-Channel，所以只能處理封存區段上的搜尋或查詢請求，並接收資料節點轉寄的 DELETE 訊息。查詢節點從 Delta-Channel 收集到封存區段中的所有 DELETE 訊息後，透過提供的主鍵與封存區段的 Bloom 過濾器進行比對，找出實體，然後在對應的區段中記錄刪除作業。</p>
-<p>最後，在搜尋或查詢中，查詢節點會根據刪除記錄產生一個位元集，以省略刪除的實體，並在所有區段中的剩餘實體中進行搜尋，而不受區段狀態的限制。最後，一致性等級會影響刪除資料的可見性。在強一致性層級下（如之前的程式碼範例所示），刪除的實體在刪除後立即不見。如果採用 Bounded Consistency Level，則會有幾秒鐘的延遲，刪除的實體才會變成不可見。</p>
-<h2 id="Whats-next" class="common-anchor-header">下一步是什麼？<button data-href="#Whats-next" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
+    <span>Query Node</span>
+  </span>
+</p>
+<p>As mentioned above, only a certain number of query nodes can receive DELETE messages from the DML-Channel, meaning only they can execute the DELETE requests in growing segments. For those query nodes which have subscribed to the DML-Channel, they first filter the DELETE messages in the growing segments, locate the entities by matching the provided primary keys with those query-dedicated bloom filters of the growing segments, and then record the delete operations in the corresponding segments.</p>
+<p>Query nodes that cannot subscribe to the DML-Channel are only allowed to process search or query requests on sealed segments because they can only subscribe to the Delta-Channel, and receive the DELETE messages forwarded by data nodes. Having collected all DELETE messages in the sealed segments from Delta-Channel, the query nodes locate the entities by matching the provided primary keys with the bloom filters of the sealed segments, and then record the delete operations in the corresponding segments.</p>
+<p>Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there will be several seconds of latency before the deleted entities become invisible.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next?<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,10 +136,10 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在 2.0 新功能系列部落格中，我們的目標是解釋新功能的設計。閱讀此系列部落格的更多內容！</p>
+    </button></h2><p>In the 2.0 new feature series blog, we aim to explain the design of the new features. Read more in this blog series!</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">Milvus 如何在分散式集群中刪除串流資料</a></li>
-<li><a href="https://milvus.io/blog/2022-2-21-compact.md">Milvus 如何壓縮資料？</a></li>
-<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">Milvus 如何平衡節點間的查詢負載？</a></li>
-<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">Bitset 如何實現向量相似性搜尋的多樣性</a></li>
+<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">How Milvus Deletes Streaming Data in a Distributed Cluster</a></li>
+<li><a href="https://milvus.io/blog/2022-2-21-compact.md">How to Compact Data in Milvus?</a></li>
+<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">How Milvus Balances Query Load across Nodes?</a></li>
+<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">How Bitset Enables the Versatility of Vector Similarity Search</a></li>
 </ul>

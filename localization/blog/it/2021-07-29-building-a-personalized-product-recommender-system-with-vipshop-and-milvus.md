@@ -1,28 +1,28 @@
 ---
 id: building-a-personalized-product-recommender-system-with-vipshop-and-milvus.md
-title: Architettura complessiva
+title: Overall Architecture
 author: milvus
 date: 2021-07-29T08:46:39.920Z
 desc: >-
-  Milvus semplifica la fornitura di servizi di raccomandazione personalizzati
-  agli utenti.
+  Milvus makes it easy to provide the personalized recommendation service to
+  users.
 cover: assets.zilliz.com/blog_shopping_27fba2c990.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/building-a-personalized-product-recommender-system-with-vipshop-and-milvus
 ---
-<custom-h1>Creare un sistema di raccomandazione dei prodotti personalizzato con Vipshop e Milvus</custom-h1><p>Con la crescita esplosiva della scala dei dati di Internet, da un lato aumentano la quantità e la categoria dei prodotti nell'attuale piattaforma di e-commerce mainstream, dall'altro aumenta la difficoltà per gli utenti di trovare i prodotti di cui hanno bisogno.</p>
-<p><a href="https://www.vip.com/">Vipshop</a> è uno dei principali rivenditori online di marchi scontati in Cina. L'azienda offre ai consumatori di tutta la Cina prodotti di marca di alta qualità e popolari a prezzi notevolmente scontati rispetto ai prezzi al dettaglio. Per ottimizzare l'esperienza di acquisto dei propri clienti, l'azienda ha deciso di costruire un sistema di raccomandazione di ricerca personalizzato basato sulle parole chiave della query dell'utente e sui suoi ritratti.</p>
-<p>La funzione principale del sistema di raccomandazione della ricerca nell'e-commerce è quella di recuperare i prodotti adatti da un gran numero di prodotti e di mostrarli agli utenti in base alle loro intenzioni e preferenze di ricerca. In questo processo, il sistema deve calcolare la somiglianza tra i prodotti e le intenzioni e le preferenze di ricerca degli utenti e consigliare agli utenti i prodotti TopK con la maggiore somiglianza.</p>
-<p>Dati come le informazioni sui prodotti, le intenzioni di ricerca degli utenti e le loro preferenze sono tutti dati non strutturati. Abbiamo provato a calcolare la somiglianza di tali dati utilizzando CosineSimilarity(7.x) del motore di ricerca Elasticsearch (ES), ma questo approccio presenta i seguenti svantaggi.</p>
+<custom-h1>Building a Personalized Product Recommender System with Vipshop and Milvus</custom-h1><p>With the explosive growth of Internet data scale, the product quantity as well as category in the current mainstream e-commerce platform increase on the one hand, the difficulty for users to find the products they need surges on the other hand.</p>
+<p><a href="https://www.vip.com/">Vipshop</a> is a leading online discount retailer for brands in China. The Company offers high-quality and popular branded products to consumers throughout China at a significant discount from retail prices. To optimize the shopping experience for their customers, the company decided to build a personalized search recommendation system based on user query keywords and user portraits.</p>
+<p>The core function of the e-commerce search recommendation system is to retrieve suitable products from a large number of products and display them to users according to their search intent and preference. In this process, the system needs to calculate the similarity between products and users’ search intent &amp; preference, and recommends the TopK products with the highest similarity to users.</p>
+<p>Data such as product information, user search intent, and user preferences are all unstructured data. We tried to calculate the similarity of such data using CosineSimilarity(7.x) of the search engine Elasticsearch (ES), but this approach has the following drawbacks.</p>
 <ul>
-<li><p>Tempi di risposta lunghi: la latenza media per recuperare i risultati TopK da milioni di elementi è di circa 300 ms.</p></li>
-<li><p>Elevati costi di manutenzione degli indici di ES: lo stesso set di indici viene utilizzato sia per i vettori di caratteristiche delle materie prime sia per altri dati correlati, il che non facilita affatto la costruzione degli indici, ma produce un'enorme quantità di dati.</p></li>
+<li><p>Long computational response time - the average latency to retrieve TopK results from millions of items is around 300 ms.</p></li>
+<li><p>High maintenance cost of ES indexes - the same set of indexes is used for both commodity feature vectors and other related data, which hardly facilitates the index construction, but produces a massive amount of data.</p></li>
 </ul>
-<p>Abbiamo provato a sviluppare un nostro plug-in di hash localmente sensibile per accelerare il calcolo della somiglianza del coseno di ES. Sebbene le prestazioni e il throughput siano migliorati in modo significativo dopo l'accelerazione, la latenza di oltre 100 ms era ancora difficile da soddisfare per il reperimento dei prodotti online.</p>
-<p>Dopo un'accurata ricerca, abbiamo deciso di utilizzare Milvus, un database vettoriale open source che, rispetto al comune Faiss standalone, ha il vantaggio di supportare la distribuzione distribuita, gli SDK multilingue, la separazione lettura/scrittura, ecc.</p>
-<p>Utilizzando diversi modelli di deep learning, convertiamo dati massicci non strutturati in vettori di caratteristiche e importiamo i vettori in Milvus. Grazie alle eccellenti prestazioni di Milvus, il nostro sistema di raccomandazione per la ricerca di e-commerce può interrogare in modo efficiente i vettori TopK che sono simili ai vettori di destinazione.</p>
-<h2 id="Overall-Architecture" class="common-anchor-header">Architettura complessiva<button data-href="#Overall-Architecture" class="anchor-icon" translate="no">
+<p>We tried to develop our own locally sensitive hash plug-in to accelerate the CosineSimilarity calculation of ES. Although the performance and throughput were significantly improved after the acceleration, the latency of 100+ ms was still difficult to meet the actual online product retrieval requirements.</p>
+<p>After a thorough research, we decided to use Milvus, an open source vector database, which is advantaged with the support for distributed deployment, multi-language SDKs, read/write separation, etc. compared to the commonly used standalone Faiss.</p>
+<p>Using various deep learning models, we convert massive unstructured data into feature vectors, and import the vectors into Milvus. With the excellent performance of Milvus, our e-commerce search recommendation system can efficiently query the TopK vectors that are similar to the target vectors.</p>
+<h2 id="Overall-Architecture" class="common-anchor-header">Overall Architecture<button data-href="#Overall-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,16 +37,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Come mostrato nel diagramma, l'architettura generale del sistema è composta da due parti principali.</p>
+    </button></h2><p>![Architecture](https://assets.zilliz.com/1_01551e7b2b.jpg &quot;Architecture.)
+As shown in the diagram, the system overall architecture consists of two main parts.</p>
 <ul>
-<li><p>Processo di scrittura: i vettori delle caratteristiche degli articoli (di seguito denominati vettori degli articoli) generati dal modello di apprendimento profondo vengono normalizzati e scritti in MySQL. MySQL legge quindi i vettori delle caratteristiche degli articoli elaborati utilizzando lo strumento di sincronizzazione dei dati (ETL) e li importa nel database vettoriale Milvus.</p></li>
-<li><p>Processo di lettura: Il servizio di ricerca ottiene i vettori delle caratteristiche delle preferenze dell'utente (di seguito denominati vettori utente) in base alle parole chiave e ai ritratti dell'utente, interroga i vettori simili in Milvus e richiama i vettori degli articoli TopK.</p></li>
+<li><p>Write process: the item feature vectors (hereinafter referred to as item vectors) generated by the deep learning model are normalized and written into MySQL. MySQL then reads the processed item feature vectors using the data synchronization tool (ETL) and import them into the vector database Milvus.</p></li>
+<li><p>Read process: The search service obtains user preference feature vectors (hereinafter referred to as user vectors) based on user query keywords and user portraits, queries similar vectors in Milvus and recalls TopK item vectors.</p></li>
 </ul>
-<p>Milvus supporta sia l'aggiornamento incrementale dei dati che l'aggiornamento dell'intero database. Ogni aggiornamento incrementale deve cancellare il vettore di elementi esistente e inserire un nuovo vettore di elementi, il che significa che ogni collezione appena aggiornata sarà reindicizzata. Questa soluzione si adatta meglio allo scenario con più letture e meno scritture. Pertanto, scegliamo il metodo di aggiornamento dei dati completi. Inoltre, la scrittura di tutti i dati in batch di più partizioni richiede solo pochi minuti, il che equivale a un aggiornamento quasi in tempo reale.</p>
-<p>I nodi di scrittura Milvus eseguono tutte le operazioni di scrittura, compresa la creazione di raccolte di dati, la costruzione di indici, l'inserimento di vettori, ecc. I nodi di lettura Milvus eseguono tutte le operazioni di lettura e forniscono servizi al pubblico con nomi di dominio di sola lettura.</p>
-<p>Mentre la versione attuale di Milvus non supporta il cambio di alias di raccolta, noi introduciamo Redis per cambiare alias senza problemi tra più raccolte di dati intere.</p>
-<p>Il nodo di lettura deve solo leggere le informazioni esistenti sui metadati e i dati vettoriali o gli indici da MySQL, Milvus e il file system distribuito GlusterFS, quindi la capacità di lettura può essere estesa orizzontalmente distribuendo più istanze.</p>
-<h2 id="Implementation-Details" class="common-anchor-header">Dettagli di implementazione<button data-href="#Implementation-Details" class="anchor-icon" translate="no">
+<p>Milvus supports both incremental data update and entire data update. Each incremental update has to delete the existing item vector and insert a new item vector, meaning that every newly updated collection will be re-indexed. It better suits the scenario with more reads and fewer writes. Therefore, we choose the entire data update method. Moreover, it takes only a few minutes to write the entire data in batches of multiple partitions, which is equivalent to near real-time updates.</p>
+<p>Milvus write nodes perform all write operations, including creating data collections, building indexes, inserting vectors, etc., and provide services to the public with write domain names. Milvus read nodes perform all read operations and provide services to the public with read-only domain names.</p>
+<p>Whereas the current version of Milvus does not support switching collection aliases, we introduce Redis to seamlessly switch aliases between multiple entire data collections.</p>
+<p>The read node only needs to read existing metadata information and vector data or indexes from MySQL, Milvus, and GlusterFS distributed file system, so the read capability can be horizontally extended by deploying multiple instances.</p>
+<h2 id="Implementation-Details" class="common-anchor-header">Implementation Details<button data-href="#Implementation-Details" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,36 +62,49 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Data-Update" class="common-anchor-header">Aggiornamento dei dati</h3><p>Il servizio di aggiornamento dei dati comprende non solo la scrittura dei dati vettoriali, ma anche il rilevamento del volume dei dati dei vettori, la costruzione degli indici, il precaricamento degli indici, il controllo degli alias, ecc. Il processo complessivo è il seguente. <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_6052b01334.jpg" alt="Process" class="doc-image" id="process" /><span>Processo</span> </span></p>
+    </button></h2><h3 id="Data-Update" class="common-anchor-header">Data Update</h3><p>The data update service includes not only writing vector data, but also data volume detection of vectors, index construction, index pre-loading, alias control, etc. The overall process is as follows.
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_6052b01334.jpg" alt="Process" class="doc-image" id="process" />
+    <span>Process</span>
+  </span>
+</p>
 <ol>
-<li><p>Si supponga che prima di costruire i dati completi, CollectionA fornisca il servizio dati al pubblico e che i dati completi utilizzati siano diretti a CollectionA (<code translate="no">redis key1 = CollectionA</code>). Lo scopo della costruzione dei dati completi è quello di creare una nuova raccolta CollectionB.</p></li>
-<li><p>Controllo dei dati delle materie prime - verifica il numero di articolo dei dati delle materie prime nella tabella MySQL, confronta i dati delle materie prime con i dati esistenti in CollectionA. L'avviso può essere impostato in base alla quantità o alla percentuale. Se la quantità (percentuale) impostata non viene raggiunta, l'intero dato non verrà costruito e verrà considerato come un fallimento di questa operazione di costruzione, facendo scattare l'avviso; una volta raggiunta la quantità (percentuale) impostata, il processo di costruzione dell'intero dato viene avviato.</p></li>
-<li><p>Avviare la costruzione dell'intero dato - inizializzare l'alias dell'intero dato in costruzione e aggiornare Redis. Dopo l'aggiornamento, l'alias dell'intero dato in costruzione viene indirizzato a CollectionB (<code translate="no">redis key2 = CollectionB</code>).</p></li>
-<li><p>Creare una nuova collezione intera - determinare se CollectionB esiste. Se esiste, eliminarla prima di crearne una nuova.</p></li>
-<li><p>Scrittura in batch dei dati - calcolare l'ID della partizione di ciascun dato della commodity con il proprio ID utilizzando l'operazione modulo e scrivere i dati in più partizioni nella raccolta appena creata in batch.</p></li>
-<li><p>Creare e precaricare l'indice - Creare l'indice (<code translate="no">createIndex()</code>) per la nuova raccolta. Il file dell'indice viene memorizzato nel server di archiviazione distribuito GlusterFS. Il sistema simula automaticamente una query sulla nuova raccolta e precarica l'indice per il riscaldamento della query.</p></li>
-<li><p>Controllo dei dati della raccolta: controlla il numero di elementi dei dati nella nuova raccolta, confronta i dati con la raccolta esistente e imposta gli allarmi in base alla quantità e alla percentuale. Se il numero (percentuale) impostato non viene raggiunto, la raccolta non verrà commutata e il processo di costruzione verrà considerato un fallimento, attivando l'allarme.</p></li>
-<li><p>Commutazione della raccolta - Controllo dell'alias. Dopo l'aggiornamento di Redis, l'intero alias dei dati utilizzati viene indirizzato a CollectionB (<code translate="no">redis key1 = CollectionB</code>), la chiave Redis originale2 viene cancellata e il processo di costruzione è completato.</p></li>
+<li><p>Assume that before building the entire data, CollectionA provides data service to the public, and the entire data being used is directed to CollectionA (<code translate="no">redis key1 = CollectionA</code>). The purpose of constructing entire data is to create a new collection CollectionB.</p></li>
+<li><p>Commodity data check - check the item number of commodity data in the MySQL table, compare the commodity data with the existing data in CollectionA. Alert can be set in accordance with quantity or percentage. If the set quantity (percentage) is not reached, the entire data will not be built, and it will be regarded as the failure of this building operation, triggering the alert; once the set quantity (percentage) is reached, the entire data building process starts.</p></li>
+<li><p>Start building the entire data - initialize the alias of the entire data being built, and update Redis. After updating, the alias of the entire data being built is directed to CollectionB (<code translate="no">redis key2 = CollectionB</code>).</p></li>
+<li><p>Create a new entire collection - determine if CollectionB exists. If it does, delete it before creating a new one.</p></li>
+<li><p>Data batch write-in - calculate the partition ID of each commodity data with its own ID using modulo operation, and write the data to multiple partitions to the newly created collection in batches.</p></li>
+<li><p>Build and pre-load index - Create index (<code translate="no">createIndex()</code>) for the new collection. The index file is stored in distributed storage server GlusterFS. The system automatically simulates query on the new collection and pre-load the index for query warm-up.</p></li>
+<li><p>Collection data check - check the item number of data in the new collection, compare the data with the existing collection, and set alarms based on the quantity and percentage. If the set number (percentage) is not reached, the collection will not be switched and the building process will be regarded as a failure, triggering the alert.</p></li>
+<li><p>Switching collection - Alias control. After updating Redis, the entire data alias being used is directed to CollectionB (<code translate="no">redis key1 = CollectionB</code>), the original Redis key2 is deleted, and the building process is completed.</p></li>
 </ol>
-<h3 id="Data-Recall" class="common-anchor-header">Richiamo dei dati</h3><p>I dati della partizione Milvus vengono richiamati più volte per calcolare la somiglianza tra i vettori utente, ottenuti in base alle parole chiave della query dell'utente e al ritratto dell'utente, e i vettori articolo TopK, che vengono restituiti dopo la fusione. Il flusso di lavoro complessivo è il seguente: <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_93518602b1.jpg" alt="workflow" class="doc-image" id="workflow" /><span>flusso di lavoro</span>La </span>tabella seguente elenca i principali servizi coinvolti in questo processo. Si può notare che la latenza media per il richiamo dei vettori TopK è di circa 30 ms.</p>
+<h3 id="Data-Recall" class="common-anchor-header">Data Recall</h3><p>The Milvus partition data is called several times to calculate the similarity between user vectors, obtained based on user query keywords and user portrait, and item vector, and the TopK item vectors are returned after merging. The overall workflow schematic is as follow:
+
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_93518602b1.jpg" alt="workflow" class="doc-image" id="workflow" />
+    <span>workflow</span>
+  </span>
+
+The following table lists the main services involved in this process. It can be seen that the average latency for recalling TopK vectors is about 30 ms.</p>
 <table>
 <thead>
-<tr><th><strong>Servizio</strong></th><th><strong>Ruolo</strong></th><th><strong>Parametri di ingresso</strong></th><th><strong>Parametri di uscita</strong></th><th><strong>Latenza di risposta</strong></th></tr>
+<tr><th><strong>Service</strong></th><th><strong>Role</strong></th><th><strong>Input Parameters</strong></th><th><strong>Output parameters</strong></th><th><strong>Response latency</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Acquisizione vettori utente</td><td>Ottenere il vettore utente</td><td>info utente + interrogazione</td><td>vettore utente</td><td>10 ms</td></tr>
-<tr><td>Ricerca Milvus</td><td>Calcola la somiglianza del vettore e restituisce i risultati TopK</td><td>vettore utente</td><td>vettore elemento</td><td>10 ms</td></tr>
-<tr><td>Logica di programmazione</td><td>Richiamo e fusione simultanea dei risultati</td><td>Vettori di elementi richiamati da più canali e punteggio di somiglianza</td><td>Elementi TopK</td><td>10 ms</td></tr>
+<tr><td>User vectors acquisition</td><td>Obtain user vector</td><td>user info + query</td><td>user vector</td><td>10 ms</td></tr>
+<tr><td>Milvus Search</td><td>Calculate the vector similarity and return TopK results</td><td>user vector</td><td>item vector</td><td>10 ms</td></tr>
+<tr><td>Scheduling Logic</td><td>Concurrent result recalling and merging</td><td>Multi-channel recalled item vectors and the similarity score</td><td>TopK items</td><td>10 ms</td></tr>
 </tbody>
 </table>
-<p><strong>Processo di implementazione:</strong></p>
+<p><strong>Implementation process:</strong></p>
 <ol>
-<li>In base alle parole chiave della query dell'utente e al ritratto dell'utente, il vettore utente viene calcolato dal modello di deep learning.</li>
-<li>Ottenere l'alias della raccolta di tutti i dati utilizzati da Redis currentInUseKeyRef e ottenere Milvus CollectionName. Questo processo è un servizio di sincronizzazione dei dati, ossia il passaggio dell'alias a Redis dopo l'aggiornamento di tutti i dati.</li>
-<li>Milvus viene chiamato in modo simultaneo e asincrono con il vettore utente per ottenere i dati da diverse partizioni della stessa collezione; Milvus calcola la somiglianza tra il vettore utente e il vettore elemento e restituisce i TopK vettori elemento simili in ogni partizione.</li>
-<li>Unisce i TopK item vectors restituiti da ogni partizione e classifica i risultati in ordine inverso rispetto alla distanza di somiglianza, che viene calcolata utilizzando il prodotto interno IP (maggiore è la distanza tra i vettori, più sono simili). Vengono restituiti i vettori di elementi TopK finali.</li>
+<li>Based on the user query keywords and user portrait, the user vector is calculated by the deep learning model.</li>
+<li>Obtain the collection alias of the entire data being used from Redis currentInUseKeyRef and get Milvus CollectionName. This process is data synchronization service, i.e. switching alias to Redis after entire data update.</li>
+<li>Milvus is called concurrently and asynchronously with the user vector to obtain data from different partitions of the same collection, and Milvus calculates the similarity between the user vector and the item vector, and returns the TopK similar item vectors in each partition.</li>
+<li>Merge the TopK item vectors returned from each partition, and rank the results in the reverse order of similarity distance, which are calculated using the IP inner product (the greater the distance between the vectors, the more similar they are). The final TopK item vectors are returned.</li>
 </ol>
-<h2 id="Looking-Ahead" class="common-anchor-header">Guardare avanti<button data-href="#Looking-Ahead" class="anchor-icon" translate="no">
+<h2 id="Looking-Ahead" class="common-anchor-header">Looking Ahead<button data-href="#Looking-Ahead" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,15 +119,15 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attualmente, la ricerca vettoriale basata su Milvus può essere utilizzata stabilmente nella ricerca di scenari di raccomandazione, e le sue elevate prestazioni ci danno più spazio per giocare sulla dimensionalità del modello e sulla selezione dell'algoritmo.</p>
-<p>Milvus svolgerà un ruolo cruciale come middleware per un numero maggiore di scenari, tra cui il richiamo della ricerca del sito principale e le raccomandazioni per tutti gli scenari.</p>
-<p>Le tre caratteristiche più attese di Milvus in futuro sono le seguenti.</p>
+    </button></h2><p>At present, Milvus-based vector search can be used steadily in the search of recommendation scenarios, and its high performance gives us more room to play in the dimensionality of the model and algorithm selection.</p>
+<p>Milvus will play a crucial role as the middleware for more scenarios, including recall of main site search and all-scenario recommendations.</p>
+<p>The three most anticipated features of Milvus in the future are as follows.</p>
 <ul>
-<li>Logica per la commutazione degli alias delle collezioni: coordinare la commutazione tra le collezioni senza componenti esterni.</li>
-<li>Meccanismo di filtraggio - Milvus v0.11.0 supporta solo il meccanismo di filtraggio ES DSL nella versione standalone. La nuova versione di Milvus 2.0 supporta il filtraggio scalare e la separazione lettura/scrittura.</li>
-<li>Supporto dello storage per Hadoop Distributed File System (HDFS) - Milvus v0.10.6 supporta solo l'interfaccia file POSIX e abbiamo implementato GlusterFS con supporto FUSE come backend di storage. Tuttavia, HDFS è una scelta migliore in termini di prestazioni e facilità di scalabilità.</li>
+<li>Logic for collection alias switching - coordinate the switching across collections without external conponents.</li>
+<li>Filtering mechanism - Milvus v0.11.0 only supports ES DSL filtering mechanism in standalone version. The newly released Milvus 2.0 supports scalar filtering, and read/write separation.</li>
+<li>Storage support for Hadoop Distributed File System (HDFS) - The Milvus v0.10.6 we are using only supports POSIX file interface, and we have deployed GlusterFS with FUSE support as the storage backend. However, HDFS is a better choice in terms of performance and ease of scaling.</li>
 </ul>
-<h2 id="Lessons-Learned-and-Best-Practices" class="common-anchor-header">Lezioni apprese e buone pratiche<button data-href="#Lessons-Learned-and-Best-Practices" class="anchor-icon" translate="no">
+<h2 id="Lessons-Learned-and-Best-Practices" class="common-anchor-header">Lessons Learned and Best Practices<button data-href="#Lessons-Learned-and-Best-Practices" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -129,9 +143,9 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><ol>
-<li>Per le applicazioni in cui le operazioni di lettura sono l'obiettivo principale, un'implementazione di separazione lettura-scrittura può aumentare significativamente la potenza di elaborazione e migliorare le prestazioni.</li>
-<li>Il client Milvus Java non dispone di un meccanismo di riconnessione perché il client Milvus utilizzato dal servizio di richiamo è residente in memoria. Dobbiamo costruire il nostro pool di connessioni per garantire la disponibilità della connessione tra il client Java e il server attraverso il test heartbeat.</li>
-<li>Occasionalmente si verificano query lente su Milvus. Ciò è dovuto a un riscaldamento insufficiente della nuova collezione. Simulando la query sulla nuova collezione, il file dell'indice viene caricato in memoria per ottenere il riscaldamento dell'indice.</li>
-<li>nlist è il parametro di costruzione dell'indice e nprobe è il parametro della query. È necessario ottenere un valore di soglia ragionevole in base allo scenario aziendale attraverso esperimenti di pressure test per bilanciare le prestazioni di recupero e l'accuratezza.</li>
-<li>Per uno scenario di dati statici, è più efficiente importare prima tutti i dati nella raccolta e costruire gli indici in un secondo momento.</li>
+<li>For applications where read operations are the primary focus, a read-write separation deployment can significantly increase the processing power and improve performance.</li>
+<li>The Milvus Java client lacks a reconnection mechanism because the Milvus client used by the recall service is resident in memory. We have to build our own connection pool to ensure the availability of the connection between the Java client and the server through heartbeat test.</li>
+<li>Slow queries occur occasionally on Milvus. This is due to insufficient warm-up of the new collection. By simulating the query on the new collection, the index file is loaded into the memory to achieve the  index warm-up.</li>
+<li>nlist is the index building parameter and nprobe is the query parameter. You need to get a reasonable threshold value according to your business scenario through pressure testing experiments to balance the retrieval performance and accuracy.</li>
+<li>For static data scenario, it is more efficient to import all data into the collection first and build indexes later.</li>
 </ol>

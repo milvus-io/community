@@ -1,59 +1,67 @@
 ---
 id: Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search.md
-title: الاستفادة من "ميلفوس" المطعمة بالذكاء الاصطناعي في البحث عن العقارات المخصصة
+title: Making With Milvus AI-Infused Proptech for Personalized Real Estate Search
 author: milvus
 date: 2021-03-18T03:53:54.736Z
 desc: >-
-  يُحدث الذكاء الاصطناعي تحولاً في قطاع العقارات، اكتشف كيف تُسرّع تقنية الذكاء
-  الاصطناعي من عملية البحث عن المنازل وشرائها.
+  AI is transforming the real estate industry, discover how intelligent proptech
+  accelerates the home search and purchase process.
 cover: assets.zilliz.com/blog_realistate_search_da4e8ee01d.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/Making-With-Milvus-AI-Infused-Proptech-for-Personalized-Real-Estate-Search
 ---
-<custom-h1>صنع مع ميلفوس: تقنية الذكاء الاصطناعي للبحث المخصص عن العقارات</custom-h1><p>يتمتع الذكاء الاصطناعي (AI) <a href="https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#d62b">بتطبيقات قوية</a> في مجال العقارات تعمل على تغيير عملية البحث عن منزل. يستفيد المتخصصون في مجال العقارات البارعون في مجال التكنولوجيا من الذكاء الاصطناعي منذ سنوات، مدركين قدرته على مساعدة العملاء في العثور على المنزل المناسب بشكل أسرع وتبسيط عملية شراء العقارات. وقد أدت جائحة فيروس كورونا إلى <a href="https://www.pwc.com/ca/en/industries/real-estate/emerging-trends-in-real-estate-2021/shifting-landscape-proptech.html">تسريع</a> الاهتمام بتكنولوجيا العقارات (أو proptech) واعتمادها والاستثمار فيها في جميع أنحاء العالم، مما يشير إلى أنها ستلعب دوراً أكبر بشكل متزايد في صناعة العقارات في المستقبل.</p>
-<p>تستكشف هذه المقالة كيف استخدمت <a href="https://bj.ke.com/">شركة Beike</a> البحث عن التشابه المتجه لبناء منصة للبحث عن المنازل توفر نتائج مخصصة وتوصي بقوائم في الوقت الفعلي تقريباً.</p>
-<h3 id="What-is-vector-similarity-search" class="common-anchor-header">ما هو بحث التشابه المتجه؟</h3><p><a href="https://medium.com/unstructured-data-service/vector-similarity-search-hides-in-plain-view-654f8152f8ab">البحث عن التشابه</a> المتجهي له تطبيقات تشمل مجموعة واسعة من تطبيقات الذكاء الاصطناعي والتعلم العميق وسيناريوهات حساب المتجهات التقليدية. ويُعزى انتشار تكنولوجيا الذكاء الاصطناعي جزئيًا إلى البحث المتجه وقدرته على فهم البيانات غير المهيكلة، والتي تشمل أشياء مثل الصور والفيديو والصوت وبيانات السلوك والمستندات وغير ذلك الكثير.</p>
-<p>تشكل البيانات غير المهيكلة ما يقدر بنحو 80-90% من جميع البيانات، وسرعان ما أصبح استخراج الرؤى منها مطلبًا للشركات التي ترغب في الحفاظ على قدرتها التنافسية في عالم دائم التغير. وقد أدى الطلب المتزايد على تحليلات البيانات غير المهيكلة، وارتفاع قوة الحوسبة، وانخفاض تكاليف الحوسبة إلى جعل البحث المتجه المدعوم بالذكاء الاصطناعي أكثر سهولة من أي وقت مضى.</p>
+<custom-h1>Making With Milvus: AI-Infused Proptech for Personalized Real Estate Search</custom-h1><p>Artificial intelligence (AI) has <a href="https://medium.com/unstructured-data-service/the-easiest-way-to-search-among-1-billion-image-vectors-d6faf72e361f#d62b">powerful applications</a> in real estate that are transforming the home search process. Tech savvy real estate professionals have been taking advantage of AI for years, recognizing its ability to help clients find the right home faster and simplify the process of purchasing property. The coronavirus pandemic has <a href="https://www.pwc.com/ca/en/industries/real-estate/emerging-trends-in-real-estate-2021/shifting-landscape-proptech.html">accelerated</a> interest, adoption, and investement in property technology (or proptech) worldwide, suggesting it will play an increasingly greater role in the real estate industry moving forward.</p>
+<p>This article explores how <a href="https://bj.ke.com/">Beike</a> used vector similarity search to build a house hunting platform that provides personalized results and recommends listings in near real-time.</p>
+<h3 id="What-is-vector-similarity-search" class="common-anchor-header">What is vector similarity search?</h3><p><a href="https://medium.com/unstructured-data-service/vector-similarity-search-hides-in-plain-view-654f8152f8ab">Vector similarity search</a> has applications spanning a wide variety of artificial intelligence, deep learning, and traditional vector calculation scenarios. The proliferation of AI technology is in part attributed to vector search and its ability to make sense of unstructured data, which includes things like images, video, audio, behavior data, documents, and much more.</p>
+<p>Unstructured data makes up an estimated 80-90% of all data, and extracting insights from it is quickly becoming a requrement for businesses that want to remain competitive in an ever-changing world. Increasing demand for unstructured data analytics, rising compute power, and declining compute costs have made AI-enabled vector search more accessible than ever.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/beike_blog_img1_2dc95cac08.jpg" alt="beike-blog-img1.jpg" class="doc-image" id="beike-blog-img1.jpg" />
-   </span> <span class="img-wrapper"> <span>beike-blog-img1.jpg</span> </span></p>
-<p>تقليدياً، كانت البيانات غير المهيكلة تمثل تحدياً في معالجتها وتحليلها على نطاق واسع لأنها لا تتبع نموذجاً أو هيكلاً تنظيمياً محدداً مسبقاً. تتيح الشبكات العصبية (مثل CNN وRNN وRNN وBERT) إمكانية تحويل البيانات غير المنظمة إلى متجهات مميزة، وهي صيغة بيانات رقمية يمكن تفسيرها بسهولة بواسطة أجهزة الكمبيوتر. ثم تُستخدم الخوارزميات لحساب التشابه بين المتجهات باستخدام مقاييس مثل تشابه جيب التمام أو المسافة الإقليدية.</p>
-<p>في النهاية، البحث عن التشابه المتجه هو مصطلح واسع يصف تقنيات تحديد الأشياء المتشابهة في مجموعات البيانات الضخمة. يستخدم Beike هذه التقنية لتشغيل محرك بحث منزلي ذكي يوصي تلقائياً بقوائم العقارات بناءً على تفضيلات المستخدم الفردية وسجل البحث ومعايير الملكية - مما يسرّع عملية البحث عن العقارات والشراء. Milvus عبارة عن قاعدة بيانات متجهة مفتوحة المصدر تربط المعلومات بالخوارزميات، مما يمكّن Beike من تطوير وإدارة منصتها العقارية القائمة على الذكاء الاصطناعي.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/beike_blog_img1_2dc95cac08.jpg" alt="beike-blog-img1.jpg" class="doc-image" id="beike-blog-img1.jpg" />
+    <span>beike-blog-img1.jpg</span>
+  </span>
+</p>
+<p>Traditionally, unstructured data has been a challenge to process and analyze at scale because it doesn’t follow a predefined model or organizational structure. Neural networks (e.g., CNN, RNN, and BERT) make it possible to convert unstructured data into feature vectors, a numerical data format that can be easily interpreted by computers. Algorithms are then used to calculate similarity between vectors using metrics like cosine similarity or Euclidean distance.</p>
+<p>Ultimately, vector similarity search is a broad term that desribes techniques for identifying similar things in massive datasets. Beike uses this technology to power an intelligent home search engine that automatically recommends listings based on individual user preferences, search history, and property criteria—accelerating the real estate search and purchase process. Milvus is an open-source vector database that connects information with algorithms, enabling Beike to develop and manage its AI real estate platform.</p>
 <p><br/></p>
-<h3 id="How-does-Milvus-manage-vector-data" class="common-anchor-header">كيف تدير ميلفوس البيانات المتجهة؟</h3><p>صُممت Milvus خصيصًا لإدارة البيانات المتجهة على نطاق واسع، ولها تطبيقات تشمل البحث عن الصور والفيديو، وتحليل التشابه الكيميائي، وأنظمة التوصيات المخصصة، والذكاء الاصطناعي التخاطبي، وغير ذلك الكثير. يمكن الاستعلام عن مجموعات البيانات المتجهة المخزنة في Milvus بكفاءة، حيث تتبع معظم التطبيقات هذه العملية العامة:</p>
+<h3 id="How-does-Milvus-manage-vector-data" class="common-anchor-header">How does Milvus manage vector data?</h3><p>Milvus was built specifically for large-scale vector data management, and has applications spanning image and video search, chemical similarity analysis, personalized recommendation systems, conversational AI, and much more. Vector datasets stored in Milvus can be efficiently queried, with most implementations following this general process:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/beike_blog_img2_d5abb58f95.jpg" alt="beike-blog-img2.jpg" class="doc-image" id="beike-blog-img2.jpg" />
-   </span> <span class="img-wrapper"> <span>beike-blog-img2.jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/beike_blog_img2_d5abb58f95.jpg" alt="beike-blog-img2.jpg" class="doc-image" id="beike-blog-img2.jpg" />
+    <span>beike-blog-img2.jpg</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="How-does-Beike-use-Milvus-to-make-house-hunting-smarter" class="common-anchor-header">كيف يستخدم Beike تطبيق Milvus لجعل البحث عن منزل أكثر ذكاءً؟</h3><p>تُوصف "بايك" عادةً بأنها رد الصين على Zillow، وهي منصة على الإنترنت تسمح للوكلاء العقاريين بإدراج العقارات المعروضة للإيجار أو البيع. وللمساعدة في تحسين تجربة البحث عن المنازل للباحثين عن المنازل، ولمساعدة الوكلاء على إتمام الصفقات بشكل أسرع، أنشأت الشركة محرك بحث مدعوم بالذكاء الاصطناعي لقاعدة بيانات قوائم العقارات. تم تحويل قاعدة بيانات قوائم العقارات الخاصة بـ Beike إلى ناقلات ميزات ثم تم إدخالها في Milvus للفهرسة والتخزين. ثم يتم استخدام Milvus لإجراء بحث عن التشابه بناءً على قائمة المدخلات أو معايير البحث أو الملف الشخصي للمستخدم أو معايير أخرى.</p>
-<p>على سبيل المثال، عند البحث عن المزيد من المنازل المشابهة لقائمة معينة، يتم استخراج ميزات مثل مخطط الطابق والحجم والاتجاه والتشطيبات الداخلية وألوان الطلاء وغيرها. ونظراً لأن قاعدة البيانات الأصلية لبيانات قوائم العقارات قد تمت <a href="https://medium.com/unstructured-data-service/how-to-choose-an-index-in-milvus-4f3d15259212">فهرستها،</a> يمكن إجراء عمليات البحث في أجزاء من الثانية فقط. وقد بلغ متوسط وقت الاستعلام في منتج بيك النهائي 113 مللي ثانية على مجموعة بيانات تحتوي على أكثر من 3 ملايين متجه. ومع ذلك، فإن نظام Milvus قادر على الحفاظ على سرعات فعالة على مجموعات بيانات بمقياس تريليون - مما يجعل العمل خفيفًا على قاعدة البيانات العقارية الصغيرة نسبيًا. بشكل عام، يتبع النظام العملية التالية:</p>
+<h3 id="How-does-Beike-use-Milvus-to-make-house-hunting-smarter" class="common-anchor-header">How does Beike use Milvus to make house hunting smarter?</h3><p>Commonly described as China’s answer to Zillow, Beike is an online platform that allows real estate agents to list properties for rent or sale. To help improve the home search experience for house hunters, and to help agents close deals faster, the company built an AI-powered search engine for its listing database. Beike’s real estate listing database was converted into feature vectors then fed into Milvus for indexing and storage. Milvus is then used to conduct similarity search based on an input listing, search criteria, user profile, or other criteria.</p>
+<p>For example, when searching for more homes similar to a given listing, features such as floor plan, size, orientation, interior finishings, paint colors, and more are extracted. Since the original database of property listings listing data has been <a href="https://medium.com/unstructured-data-service/how-to-choose-an-index-in-milvus-4f3d15259212">indexed</a>, searches can be conducted in mere milliseconds. Beike’s final product had an average query time of 113 milliseconds on a dataset containing over 3 million vectors. However, Milvus is capable of maintaining efficient speeds on trillion-scale datasets—making light work of this relatively small real estate database. In general, the system follows the following process:</p>
 <ol>
-<li><p>تقوم نماذج التعلّم العميق (مثل CNN أو RNN أو RNN أو BERT) بتحويل البيانات غير المهيكلة إلى متجهات مميزة، والتي يتم استيرادها بعد ذلك إلى Milvus.</p></li>
-<li><p>يقوم ميلفوس بتخزين وفهرسة متجهات السمات.</p></li>
-<li><p>يقوم Milvus بإرجاع نتائج بحث التشابه بناءً على استفسارات المستخدم.</p></li>
+<li><p>Deep learning models (e.g., CNN, RNN, or BERT) convert unstructured data to feature vectors, which are then imported to Milvus.</p></li>
+<li><p>Milvus stores and indexes the feature vectors.</p></li>
+<li><p>Milvus returns similarity search results based on user queries.</p></li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_overview_diagram_d17cda0e47.png" alt="milvus-overview-diagram.png" class="doc-image" id="milvus-overview-diagram.png" />
-   </span> <span class="img-wrapper"> <span>Milvus-overview-diagram.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_overview_diagram_d17cda0e47.png" alt="milvus-overview-diagram.png" class="doc-image" id="milvus-overview-diagram.png" />
+    <span>milvus-overview-diagram.png</span>
+  </span>
+</p>
 <p><br/></p>
-<p>يتم تشغيل منصة البحث العقاري الذكي من Beike بواسطة خوارزمية توصية تحسب تشابه المتجهات باستخدام مسافة جيب التمام. يعثر النظام على المنازل المتشابهة بناءً على القوائم المفضلة ومعايير البحث. وعلى مستوى عالٍ، يعمل النظام على النحو التالي:</p>
+<p>Beike’s intelligent real estate search platform is powered by a recommendation algorithm that calculates vector similarity using cosine distance. The system finds similar homes based on favorite listings and search criteria. At a high level, it works as follows:</p>
 <ol>
-<li><p>استناداً إلى قائمة المدخلات، تُستخدم خصائص مثل مخطط الطابق والحجم والاتجاه لاستخراج 4 مجموعات من متجهات السمات.</p></li>
-<li><p>تُستخدم مجموعات الميزات المستخرجة لإجراء بحث عن التشابه في Milvus. تُعد نتائج الاستعلام لكل مجموعة من المتجهات مقياسًا للتشابه بين قائمة المدخلات والقوائم الأخرى المشابهة.</p></li>
-<li><p>تُقارن نتائج البحث من كل مجموعة من مجموعات المتجهات الأربع ثم تُستخدم للتوصية بمنازل متشابهة.</p></li>
+<li><p>Based on an input listing, characteristics such as floor plan, size, and orientation are used to extract 4 collections of feature vectors.</p></li>
+<li><p>The extracted feature collections are used to perform similarity search in Milvus. Results of the query for each collection of vectors are a measure of similarity between the input listing and other similar listings.</p></li>
+<li><p>The search results from each of the 4 vector collections are compared then used to recommend similar homes.</p></li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/beike_intelligent_house_platform_diagram_6e278da118.jpg" alt="beike-intelligent-house-platform-diagram.jpg" class="doc-image" id="beike-intelligent-house-platform-diagram.jpg" />
-   </span> <span class="img-wrapper"> <span>beike-intelligent-house-platform-diagram.jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/beike_intelligent_house_platform_diagram_6e278da118.jpg" alt="beike-intelligent-house-platform-diagram.jpg" class="doc-image" id="beike-intelligent-house-platform-diagram.jpg" />
+    <span>beike-intelligent-house-platform-diagram.jpg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>كما يوضح الشكل أعلاه، يقوم النظام بتنفيذ آلية تبديل جدول A/B لتحديث البيانات. يقوم Milvus بتخزين البيانات لأول T أيام في الجدول A، وفي اليوم T+1 يبدأ بتخزين البيانات في الجدول B، وفي اليوم 2T+1 يبدأ بإعادة كتابة الجدول A، وهكذا دواليك.</p>
+<p>As the figure above shows, the system implements an A/B table switching mechanism for updating data. Milvus stores the data for the first T days in table A, on day T+1 it starts to store data in table B, on day 2T+1, it starts to rewrite table A, and so forth.</p>
 <p><br/></p>
-<h3 id="To-learn-more-about-making-things-with-Milvus-check-out-the-following-resources" class="common-anchor-header">لمعرفة المزيد حول صنع الأشياء باستخدام ميلفوس، راجع الموارد التالية:</h3><ul>
-<li><p><a href="https://zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office">بناء مساعد كتابة مدعوم بالذكاء الاصطناعي لمكتب WPS</a></p></li>
-<li><p><a href="https://zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser">التصنيع باستخدام Milvus: توصية أخبار مدعومة بالذكاء الاصطناعي داخل متصفح الهاتف المحمول من Xiaomi</a></p></li>
+<h3 id="To-learn-more-about-making-things-with-Milvus-check-out-the-following-resources" class="common-anchor-header">To learn more about making things with Milvus, check out the following resources:</h3><ul>
+<li><p><a href="https://zilliz.com/blog/Building-an-AI-Powered-Writing-Assistant-with-WPS-Office">Building an AI-Powered Writing Assistant for WPS Office</a></p></li>
+<li><p><a href="https://zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser">Making with Milvus: AI-Powered News Recommendation Inside Xiaomi’s Mobile Browser</a></p></li>
 </ul>

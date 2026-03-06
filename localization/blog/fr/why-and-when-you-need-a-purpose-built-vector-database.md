@@ -1,8 +1,6 @@
 ---
 id: why-and-when-you-need-a-purpose-built-vector-database.md
-title: >-
-  Pourquoi et quand avez-vous besoin d'une base de données vectorielle
-  spécifique ?
+title: Why and When Do You Need a Purpose-Built Vector Database?
 author: James Luan
 date: 2023-08-29T00:00:00.000Z
 cover: >-
@@ -12,10 +10,9 @@ tags: >-
   Vector Database, AI, Artificial Intelligence, Machine Learning, Milvus, LLM,
   Large Language Models, Embeddings, Vector search, Vector similarity search
 desc: >-
-  Ce billet donne un aperçu de la recherche vectorielle et de son
-  fonctionnement, compare les différentes technologies de recherche vectorielle
-  et explique pourquoi il est essentiel d'opter pour une base de données
-  vectorielles spécialement conçue à cet effet.
+  This post provides an overview of vector search and its functioning, compare
+  different vector search technologies, and explain why opting for a
+  purpose-built vector database is crucial.
 recommend: true
 canonicalUrl: >-
   https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/
@@ -26,10 +23,10 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><em>Cet article a été publié à l'origine sur le site de <a href="https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/">l'AIAI</a> et est reproduit ici avec l'autorisation de l'auteur.</em></p>
-<p>La popularité croissante de <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> et d'autres grands modèles de langage (LLM) a stimulé l'essor des technologies de recherche vectorielle, y compris les bases de données vectorielles spécifiques telles que <a href="https://milvus.io/docs/overview.md">Milvus</a> et <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, les bibliothèques de recherche vectorielle telles que <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a> et les plugins de recherche vectorielle intégrés aux bases de données traditionnelles. Cependant, le choix de la solution la mieux adaptée à vos besoins peut s'avérer difficile. Tout comme le choix entre un restaurant haut de gamme et une chaîne de restauration rapide, la sélection de la bonne technologie de recherche vectorielle dépend de vos besoins et de vos attentes.</p>
-<p>Dans cet article, je vais donner un aperçu de la recherche vectorielle et de son fonctionnement, comparer différentes technologies de recherche vectorielle et expliquer pourquoi il est crucial d'opter pour une base de données vectorielle spécialement conçue à cet effet.</p>
-<h2 id="What-is-vector-search-and-how-does-it-work" class="common-anchor-header">Qu'est-ce que la recherche vectorielle et comment fonctionne-t-elle ?<button data-href="#What-is-vector-search-and-how-does-it-work" class="anchor-icon" translate="no">
+<p><em>This article was originally published on <a href="https://www.aiacceleratorinstitute.com/why-and-when-do-you-need-a-purpose-built-vector-database/">AIAI</a> and is reposted here with permission.</em></p>
+<p>The increasing popularity of <a href="https://zilliz.com/learn/ChatGPT-Vector-Database-Prompt-as-code">ChatGPT</a> and other large language models (LLMs) has fueled the rise of vector search technologies, including purpose-built vector databases such as <a href="https://milvus.io/docs/overview.md">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, vector search libraries such as <a href="https://zilliz.com/blog/set-up-with-facebook-ai-similarity-search-faiss">FAISS</a>, and vector search plugins integrated with traditional databases. However, choosing the best solution for your needs can be challenging. Like choosing between a high-end restaurant and a fast-food chain, selecting the right vector search technology depends on your needs and expectations.</p>
+<p>In this post, I will provide an overview of vector search and its functioning, compare different vector search technologies, and explain why opting for a purpose-built vector database is crucial.</p>
+<h2 id="What-is-vector-search-and-how-does-it-work" class="common-anchor-header">What is vector search, and how does it work?<button data-href="#What-is-vector-search-and-how-does-it-work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,18 +41,22 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La<a href="https://zilliz.com/blog/vector-similarity-search">recherche vectorielle</a>, également connue sous le nom de recherche de similarité vectorielle, est une technique permettant d'extraire les k premiers résultats les plus similaires ou sémantiquement liés à un vecteur d'interrogation donné parmi une vaste collection de données vectorielles denses.</p>
-<p>Avant d'effectuer des recherches de similarité, nous utilisons des réseaux neuronaux pour transformer des <a href="https://zilliz.com/blog/introduction-to-unstructured-data">données non structurées</a>, telles que du texte, des images, des vidéos et des sons, en vecteurs numériques à haute dimension appelés vecteurs d'intégration. Par exemple, nous pouvons utiliser le réseau neuronal convolutionnel ResNet-50 pré-entraîné pour transformer une image d'oiseau en une collection de vecteurs d'intégration à 2 048 dimensions. Nous énumérons ici les trois premiers et les trois derniers éléments du vecteur : <code translate="no">[0.1392, 0.3572, 0.1988, ..., 0.2888, 0.6611, 0.2909]</code>.</p>
+    </button></h2><p><a href="https://zilliz.com/blog/vector-similarity-search">Vector search</a>, also known as vector similarity search, is a technique for retrieving the top-k results that are most similar or semantically related to a given query vector among an extensive collection of dense vector data.</p>
+<p>Before conducting similarity searches, we leverage neural networks to transform <a href="https://zilliz.com/blog/introduction-to-unstructured-data">unstructured data</a>, such as text, images, videos, and audio, into high-dimensional numerical vectors called embedding vectors. For example, we can use the pre-trained ResNet-50 convolutional neural network to transform a bird image into a collection of embeddings with 2,048 dimensions. Here, we list the first three and last three vector elements: <code translate="no">[0.1392, 0.3572, 0.1988, ..., 0.2888, 0.6611, 0.2909]</code>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/bird_image_4a1be18f99.png" alt="A bird image by Patrice Bouchard" class="doc-image" id="a-bird-image-by-patrice-bouchard" />
-   </span> <span class="img-wrapper"> <span>Image d'un oiseau par Patrice Bouchard</span> </span></p>
-<p>Après avoir généré des vecteurs d'intégration, les moteurs de recherche vectorielle comparent la distance spatiale entre le vecteur d'entrée de la requête et les vecteurs dans les magasins de vecteurs. Plus ils sont proches dans l'espace, plus ils sont similaires.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/bird_image_4a1be18f99.png" alt="A bird image by Patrice Bouchard" class="doc-image" id="a-bird-image-by-patrice-bouchard" />
+    <span>A bird image by Patrice Bouchard</span>
+  </span>
+</p>
+<p>After generating embedding vectors, vector search engines compare the spatial distance between the input query vector and the vectors in the vector stores. The closer they are in space, the more similar they are.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_3732_20230510_073643_25f985523e.png" alt="Embedding arithmetic" class="doc-image" id="embedding-arithmetic" />
-   </span> <span class="img-wrapper"> <span>Arithmétique d'intégration</span> </span></p>
-<h2 id="Popular-vector-search-technologies" class="common-anchor-header">Technologies de recherche vectorielle populaires<button data-href="#Popular-vector-search-technologies" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_3732_20230510_073643_25f985523e.png" alt="Embedding arithmetic" class="doc-image" id="embedding-arithmetic" />
+    <span>Embedding arithmetic</span>
+  </span>
+</p>
+<h2 id="Popular-vector-search-technologies" class="common-anchor-header">Popular vector search technologies<button data-href="#Popular-vector-search-technologies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,8 +71,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>De nombreuses technologies de recherche vectorielle sont disponibles sur le marché, notamment des bibliothèques d'apprentissage automatique comme NumPy de Python, des bibliothèques de recherche vectorielle comme FAISS, des plugins de recherche vectorielle construits sur des bases de données traditionnelles et des bases de données vectorielles spécialisées comme Milvus et Zilliz Cloud.</p>
-<h3 id="Machine-learning-libraries" class="common-anchor-header">Bibliothèques d'apprentissage automatique</h3><p>L'utilisation de bibliothèques d'apprentissage automatique est le moyen le plus simple de mettre en œuvre des recherches vectorielles. Par exemple, nous pouvons utiliser NumPy de Python pour mettre en œuvre un algorithme du plus proche voisin en moins de 20 lignes de code.</p>
+    </button></h2><p>Multiple vector search technologies are available in the market, including machine learning libraries like Python’s NumPy, vector search libraries like FAISS, vector search plugins built on traditional databases, and specialized vector databases like Milvus and Zilliz Cloud.</p>
+<h3 id="Machine-learning-libraries" class="common-anchor-header">Machine learning libraries</h3><p>Using machine learning libraries is the easiest way to implement vector searches. For instance, we can use Python’s NumPy to implement a nearest neighbor algorithm in less than 20 lines of code.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 
 <span class="hljs-comment"># Function to calculate euclidean distance</span>
@@ -94,7 +95,7 @@ closest_k_indices = sorted_distances[:k, <span class="hljs-number">1</span>].ast
 <span class="hljs-comment"># Return the top k closest vectors</span>
 <span class="hljs-keyword">return</span> data[closest_k_indices]
 <button class="copy-code-btn"></button></code></pre>
-<p>Nous pouvons générer 100 vecteurs bidimensionnels et trouver le plus proche voisin du vecteur [0,5, 0,5].</p>
+<p>We can generate 100 two-dimensional vectors and find the nearest neighbor to the vector [0.5, 0.5].</p>
 <pre><code translate="no"><span class="hljs-comment"># Define some 2D vectors</span>
 data = np.random.rand(<span class="hljs-number">100</span>, <span class="hljs-number">2</span>)
 
@@ -111,16 +112,16 @@ closest_vectors = knn(data, target, k)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The closest vectors are:&quot;</span>)
 <span class="hljs-built_in">print</span>(closest_vectors)
 <button class="copy-code-btn"></button></code></pre>
-<p>Les bibliothèques d'apprentissage automatique, telles que NumPy de Python, offrent une grande flexibilité à un faible coût. Cependant, elles présentent certaines limites. Par exemple, elles ne peuvent traiter qu'une petite quantité de données et ne garantissent pas la persistance des données.</p>
-<p>Je recommande d'utiliser NumPy ou d'autres bibliothèques d'apprentissage automatique pour la recherche vectorielle uniquement dans les cas suivants :</p>
+<p>Machine learning libraries, such as Python’s NumPy, offer great flexibility at a low cost. However, they do have some limitations. For instance, they can only handle a small amount of data and do not ensure data persistence.</p>
+<p>I only recommend using NumPy or other machine learning libraries for vector search when:</p>
 <ul>
-<li>Vous avez besoin d'un prototypage rapide.</li>
-<li>Vous ne vous souciez pas de la persistance des données.</li>
-<li>La taille de vos données est inférieure à un million, et vous n'avez pas besoin de filtrage scalaire.</li>
-<li>Vous n'avez pas besoin de performances élevées.</li>
+<li>You need quick prototyping.</li>
+<li>You don’t care about data persistence.</li>
+<li>Your data size is under one million, and you do not require scalar filtering.</li>
+<li>You do not need high performance.</li>
 </ul>
-<h3 id="Vector-search-libraries" class="common-anchor-header">Bibliothèques de recherche vectorielle</h3><p>Les bibliothèques de recherche vectorielle peuvent vous aider à construire rapidement un prototype de système de recherche vectorielle très performant. FAISS en est un exemple typique. Il s'agit d'un logiciel libre développé par Meta pour la recherche efficace de similarités et le regroupement de vecteurs denses. FAISS peut traiter des collections de vecteurs de toute taille, même celles qui ne peuvent pas être entièrement chargées en mémoire. En outre, FAISS offre des outils d'évaluation et de réglage des paramètres. Bien qu'écrit en C++, FAISS fournit une interface Python/NumPy.</p>
-<p>Vous trouverez ci-dessous le code d'un exemple de recherche vectorielle basé sur FAISS :</p>
+<h3 id="Vector-search-libraries" class="common-anchor-header">Vector search libraries</h3><p>Vector search libraries can help you quickly build a high-performance prototype vector search system. FAISS is a typical example. It is open-source and developed by Meta for efficient similarity search and dense vector clustering. FAISS can handle vector collections of any size, even those that cannot be fully loaded into memory. Additionally, FAISS offers tools for evaluation and parameter tuning. Even though written in C++, FAISS provides a Python/NumPy interface.</p>
+<p>Below is the code for an example vector search based on FAISS:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> faiss
 
@@ -152,19 +153,19 @@ distances, indices = index.search(query_vectors, k)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Indices of nearest neighbors: \n&quot;</span>, indices)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nL2 distances to the nearest neighbors: \n&quot;</span>, distances)
 <button class="copy-code-btn"></button></code></pre>
-<p>Les bibliothèques de recherche vectorielle telles que FAISS sont faciles à utiliser et suffisamment rapides pour gérer des environnements de production à petite échelle avec des millions de vecteurs. Vous pouvez améliorer les performances de leurs requêtes en utilisant la quantification et les GPU et en réduisant les dimensions des données.</p>
-<p>Toutefois, ces bibliothèques présentent certaines limites lorsqu'elles sont utilisées en production. Par exemple, FAISS ne prend pas en charge l'ajout et la suppression de données en temps réel, les appels à distance, les langues multiples, le filtrage scalaire, l'évolutivité ou la reprise après sinistre.</p>
-<h3 id="Different-types-of-vector-databases" class="common-anchor-header">Différents types de bases de données vectorielles</h3><p>Les bases de données vectorielles sont apparues pour pallier les limites des bibliothèques susmentionnées et fournir une solution plus complète et plus pratique pour les applications de production.</p>
-<p>Quatre types de bases de données vectorielles sont disponibles sur le champ de bataille :</p>
+<p>Vector search libraries such as FAISS are easy to use and fast enough to handle small-scale production environments with millions of vectors. You can enhance their query performance by utilizing quantization and GPUs and reducing data dimensions.</p>
+<p>However, these libraries have some limitations when used in production. For example, FAISS does not support real-time data addition and deletion, remote calls, multiple languages, scalar filtering, scalability, or disaster recovery.</p>
+<h3 id="Different-types-of-vector-databases" class="common-anchor-header">Different types of vector databases</h3><p>Vector databases have emerged to address the limitations of the libraries above, providing a more comprehensive and practical solution for production applications.</p>
+<p>Four types of vector databases are available on the battlefield:</p>
 <ul>
-<li>Les bases de données relationnelles ou en colonnes existantes qui intègrent un plugin de recherche vectorielle. PG Vector en est un exemple.</li>
-<li>Les moteurs de recherche traditionnels à index inversé avec prise en charge de l'indexation vectorielle dense. <a href="https://zilliz.com/comparison/elastic-vs-milvus">ElasticSearch</a> en est un exemple.</li>
-<li>Bases de données vectorielles légères construites sur des bibliothèques de recherche vectorielle. Chroma en est un exemple.</li>
-<li><strong>Les bases de données vectorielles conçues à cet effet</strong>. Ce type de base de données est spécifiquement conçu et optimisé pour la recherche vectorielle de bas en haut. Les bases de données vectorielles conçues à cet effet offrent généralement des fonctionnalités plus avancées, notamment l'informatique distribuée, la reprise après sinistre et la persistance des données. <a href="https://zilliz.com/what-is-milvus">Milvus</a> en est un bon exemple.</li>
+<li>Existing relational or columnar databases that incorporate a vector search plugin. PG Vector is an example.</li>
+<li>Traditional inverted index search engines with support for dense vector indexing. <a href="https://zilliz.com/comparison/elastic-vs-milvus">ElasticSearch</a> is an example.</li>
+<li>Lightweight vector databases built on vector search libraries. Chroma is an example.</li>
+<li><strong>Purpose-built vector databases</strong>. This type of database is specifically designed and optimized for vector searching from the bottom up. Purpose-built vector databases typically offer more advanced features, including distributed computing, disaster recovery, and data persistence. <a href="https://zilliz.com/what-is-milvus">Milvus</a> is a primary example.</li>
 </ul>
-<p>Toutes les bases de données vectorielles ne se valent pas. Chaque pile présente des avantages et des limites uniques, ce qui la rend plus ou moins adaptée à différentes applications.</p>
-<p>Je préfère les bases de données vectorielles spécialisées aux autres solutions car elles constituent l'option la plus efficace et la plus pratique, offrant de nombreux avantages uniques. Dans les sections suivantes, j'utiliserai Milvus comme exemple pour expliquer les raisons de ma préférence.</p>
-<h2 id="Key-benefits-of-purpose-built-vector-databases" class="common-anchor-header">Principaux avantages des bases de données vectorielles spécifiques<button data-href="#Key-benefits-of-purpose-built-vector-databases" class="anchor-icon" translate="no">
+<p>Not all vector databases are created equal. Each stack has unique advantages and limitations, making them more or less suitable for different applications.</p>
+<p>I prefer specialized vector databases over other solutions because they are the most efficient and convenient option, offering numerous unique benefits. In the following sections, I will use Milvus as an example to explain the reasons for my preference.</p>
+<h2 id="Key-benefits-of-purpose-built-vector-databases" class="common-anchor-header">Key benefits of purpose-built vector databases<button data-href="#Key-benefits-of-purpose-built-vector-databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -179,14 +180,14 @@ distances, indices = index.search(query_vectors, k)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> est une base de données vectorielles à code source ouvert, distribuée et conçue à cet effet, qui peut stocker, indexer, gérer et récupérer des milliards de vecteurs d'intégration. C'est également l'une des bases de données vectorielles les plus populaires pour la <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">génération augmentée de recherche LLM</a>. En tant qu'exemple de bases de données vectorielles construites à cet effet, Milvus partage de nombreux avantages uniques avec ses homologues.</p>
-<h3 id="Data-Persistence-and-Cost-Effective-Storage" class="common-anchor-header">Persistance des données et stockage rentable</h3><p>Bien que la prévention de la perte de données soit l'exigence minimale pour une base de données, de nombreuses bases de données vectorielles légères et à machine unique n'accordent pas la priorité à la fiabilité des données. En revanche, les bases de données vectorielles distribuées spécialement conçues, comme <a href="https://zilliz.com/what-is-milvus">Milvus</a>, donnent la priorité à la résilience du système, à l'évolutivité et à la persistance des données en séparant le stockage et le calcul.</p>
-<p>En outre, la plupart des bases de données vectorielles qui utilisent des index approximatifs du plus proche voisin (ANN) ont besoin de beaucoup de mémoire pour effectuer des recherches vectorielles, car elles chargent les index ANN uniquement dans la mémoire. Cependant, Milvus prend en charge les index sur disque, ce qui rend le stockage dix fois plus rentable que les index en mémoire.</p>
-<h3 id="Optimal-Query-Performance" class="common-anchor-header">Performances optimales des requêtes</h3><p>Une base de données vectorielle spécialisée offre des performances de requête optimales par rapport aux autres options de recherche vectorielle. Par exemple, Milvus traite les requêtes dix fois plus rapidement que les plugins de recherche vectorielle. Milvus utilise l'algorithme <a href="https://zilliz.com/glossary/anns">ANN</a> au lieu de l'algorithme de recherche brutale KNN pour une recherche vectorielle plus rapide. En outre, il divise ses index, ce qui réduit le temps nécessaire à la construction d'un index lorsque le volume de données augmente. Cette approche permet à Milvus de gérer facilement des milliards de vecteurs avec des ajouts et des suppressions de données en temps réel. En revanche, les autres modules complémentaires de recherche vectorielle ne conviennent qu'aux scénarios comportant moins de dizaines de millions de données et des ajouts et suppressions peu fréquents.</p>
-<p>Milvus prend également en charge l'accélération GPU. Des tests internes montrent que l'indexation vectorielle accélérée par le GPU peut atteindre plus de 10 000 QPS lors de la recherche de dizaines de millions de données, ce qui est au moins dix fois plus rapide que l'indexation CPU traditionnelle pour les performances des requêtes sur une seule machine.</p>
-<h3 id="System-Reliability" class="common-anchor-header">Fiabilité du système</h3><p>De nombreuses applications utilisent des bases de données vectorielles pour des requêtes en ligne qui nécessitent une faible latence et un débit élevé. Ces applications exigent un basculement sur une seule machine au niveau de la minute, et certaines requièrent même une reprise après sinistre interrégionale pour les scénarios critiques. Les stratégies de réplication traditionnelles basées sur Raft/Paxos souffrent d'un gaspillage important de ressources et ont besoin d'aide pour pré-partager les données, ce qui conduit à une fiabilité médiocre. En revanche, Milvus possède une architecture distribuée qui exploite les files d'attente de messages K8s pour une haute disponibilité, ce qui réduit le temps de reprise et économise les ressources.</p>
-<h3 id="Operability-and-Observability" class="common-anchor-header">Exploitabilité et observabilité</h3><p>Pour mieux servir les utilisateurs professionnels, les bases de données vectorielles doivent offrir une gamme de fonctionnalités de niveau professionnel pour une meilleure opérabilité et observabilité. Milvus prend en charge plusieurs méthodes de déploiement, notamment K8s Operator et Helm chart, docker-compose et pip install, ce qui le rend accessible aux utilisateurs ayant des besoins différents. Milvus fournit également un système de surveillance et d'alarme basé sur Grafana, Prometheus et Loki, améliorant ainsi son observabilité. Avec une architecture cloud-native distribuée, Milvus est la première base de données vectorielle du secteur à prendre en charge l'isolation multi-tenant, le RBAC, la limitation des quotas et les mises à niveau glissantes. Toutes ces approches simplifient considérablement la gestion et la surveillance de Milvus.</p>
-<h2 id="Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="common-anchor-header">Démarrer avec Milvus en 3 étapes simples en 10 minutes<button data-href="#Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source, distributed, purpose-built vector database that can store, index, manage, and retrieve billions of embedding vectors. It is also one of the most popular vector databases for <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">LLM retrieval augmented generation</a>. As an exemplary instance of purpose-built vector databases, Milvus shares many unique advantages with its counterparts.</p>
+<h3 id="Data-Persistence-and-Cost-Effective-Storage" class="common-anchor-header">Data Persistence and Cost-Effective Storage</h3><p>While preventing data loss is the minimum requirement for a database, many single-machine and lightweight vector databases do not prioritize data reliability. By contrast, purpose-built distributed vector databases like <a href="https://zilliz.com/what-is-milvus">Milvus</a> prioritize system resilience, scalability, and data persistence by separating storage and computation.</p>
+<p>Moreover, most vector databases that utilize approximate nearest neighbor (ANN) indexes need a lot of memory to perform vector searching, as they load ANN indexes purely into memory. However, Milvus supports disk indexes, making storage over ten times more cost-effective than in-memory indexes.</p>
+<h3 id="Optimal-Query-Performance" class="common-anchor-header">Optimal Query Performance</h3><p>A specialized vector database provides optimal query performance compared to other vector search options. For example, Milvus is ten times faster at handling queries than vector search plugins. Milvus uses the <a href="https://zilliz.com/glossary/anns">ANN algorithm</a> instead of the KNN brutal search algorithm for faster vector searching. Additionally, it shards its indexes, reducing the time it takes to construct an index as the data volume increases. This approach enables Milvus to easily handle billions of vectors with real-time data additions and deletions. In contrast, other vector search add-ons are only suitable for scenarios with fewer than tens of millions of data and infrequent additions and deletions.</p>
+<p>Milvus also supports GPU acceleration. Internal testing shows that GPU-accelerated vector indexing can achieve 10,000+ QPS when searching tens of millions of data, which is at least ten times faster than traditional CPU indexing for single-machine query performance.</p>
+<h3 id="System-Reliability" class="common-anchor-header">System Reliability</h3><p>Many applications use vector databases for online queries that require low query latency and high throughput. These applications demand single-machine failover at the minute level, and some even require cross-region disaster recovery for critical scenarios. Traditional replication strategies based on Raft/Paxos suffer from serious resource waste and need help to pre-shard the data, leading to poor reliability. In contrast, Milvus has a distributed architecture that leverages K8s message queues for high availability, reducing recovery time and saving resources.</p>
+<h3 id="Operability-and-Observability" class="common-anchor-header">Operability and Observability</h3><p>To better serve enterprise users, vector databases must offer a range of enterprise-level features for better operability and observability. Milvus supports multiple deployment methods, including K8s Operator and Helm chart, docker-compose, and pip install, making it accessible to users with different needs. Milvus also provides a monitoring and alarm system based on Grafana, Prometheus, and Loki, improving its observability. With a distributed cloud-native architecture, Milvus is the industry’s first vector database to support multi-tenant isolation, RBAC, quota limiting, and rolling upgrades. All of these approaches make managing and monitoring Milvus much simpler.</p>
+<h2 id="Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="common-anchor-header">Getting started with Milvus in 3 simple steps within 10 minutes<button data-href="#Getting-started-with-Milvus-in-3-simple-steps-within-10-minutes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,9 +202,9 @@ distances, indices = index.search(query_vectors, k)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Construire une base de données vectorielle est une tâche complexe, mais en utiliser une est aussi simple que d'utiliser Numpy et FAISS. Même les étudiants peu familiarisés avec l'IA peuvent mettre en œuvre la recherche vectorielle basée sur Milvus en seulement dix minutes. Pour bénéficier de services de recherche vectorielle hautement évolutifs et performants, suivez les trois étapes suivantes :</p>
+    </button></h2><p>Building a vector database is a complex task, but using one is as simple as using Numpy and FAISS. Even students unfamiliar with AI can implement vector search based on Milvus in just ten minutes. To experience highly scalable and high-performance vector search services, follow these three steps:</p>
 <ul>
-<li>Déployez Milvus sur votre serveur à l'aide du <a href="https://milvus.io/docs/install_standalone-docker.md">document de déploiement Milvus</a>.</li>
-<li>Mettez en œuvre la recherche vectorielle avec seulement 50 lignes de code en vous référant au <a href="https://milvus.io/docs/example_code.md">document Hello Milvus</a>.</li>
-<li>Explorez les <a href="https://github.com/towhee-io/examples/">documents d'exemple de Towhee</a> pour vous faire une idée des <a href="https://zilliz.com/use-cases">cas d'utilisation</a> les plus courants <a href="https://zilliz.com/use-cases">des bases de données vectorielles</a>.</li>
+<li>Deploy Milvus on your server with the help of the <a href="https://milvus.io/docs/install_standalone-docker.md">Milvus deployment document</a>.</li>
+<li>Implement vector search with just 50 lines of code by referring to the <a href="https://milvus.io/docs/example_code.md">Hello Milvus document</a>.</li>
+<li>Explore the <a href="https://github.com/towhee-io/examples/">example documents of Towhee</a> to gain insight into popular <a href="https://zilliz.com/use-cases">use cases of vector databases</a>.</li>
 </ul>

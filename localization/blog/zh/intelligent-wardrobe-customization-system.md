@@ -1,9 +1,13 @@
 ---
 id: intelligent-wardrobe-customization-system.md
-title: 建立由 Milvus 向量数据库支持的智能衣柜定制系统
+title: >-
+  Building an Intelligent Wardrobe Customization System Powered by Milvus Vector
+  Database
 author: Yiyun Ni
 date: 2022-07-08T00:00:00.000Z
-desc: 利用相似性搜索技术挖掘非结构化数据的潜力，甚至包括衣柜及其组件！
+desc: >-
+  Using similarity search technology to unlock the potential of unstructured
+  data, even like wardrobes and its components!
 cover: assets.zilliz.com/Frame_1282_edc1fb7d99.png
 tag: Engineering
 tags: >-
@@ -12,30 +16,34 @@ tags: >-
 canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1282_edc1fb7d99.png" alt="cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>封面图片</span> </span></p>
-<p>如果您正在寻找一款能完美装入卧室或试衣间的衣柜，我敢打赌，大多数人都会想到量身定制的衣柜。然而，并不是每个人的预算都能达到那么多。那么，现成的衣柜又如何呢？这类衣柜的问题在于，它们很可能达不到你的期望，因为它们不够灵活，无法满足你独特的存储需求。此外，在网上搜索时，用关键字来概括您要寻找的特定类型的衣柜相当困难。很有可能，你在搜索框中输入的关键字（例如：带珠宝托盘的衣柜）与搜索引擎中的定义（例如：带<a href="https://www.ikea.com/us/en/p/komplement-pull-out-tray-with-insert-black-brown-s79249366/">嵌入式抽拉托盘</a>的衣柜）大相径庭。</p>
-<p>不过，有了新兴技术，问题就迎刃而解了！家具零售集团宜家（IKEA）提供了一种流行的设计工具<a href="https://www.ikea.com/us/en/rooms/bedroom/how-to/how-to-design-your-perfect-pax-wardrobe-pub8b76dda0">PAX 衣柜</a>，用户可以从许多现成的衣柜中进行选择，并定制衣柜的颜色、尺寸和内部设计。无论您需要的是悬挂空间、多个搁板还是内部抽屉，这个智能衣柜定制系统总能满足您的需求。</p>
-<p>要使用这款智能衣柜设计系统找到或打造理想的衣柜，您需要</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1282_edc1fb7d99.png" alt="cover image" class="doc-image" id="cover-image" />
+    <span>cover image</span>
+  </span>
+</p>
+<p>If you are looking for a wardrobe to fit perfectly into your bedroom or fitting room, I bet most people will think of the made-to-measure ones. However, not everyone’s budget can stretch that far. Then what about those ready-made ones? The problem with this type of wardrobe is that they are very likely to fall short of your expectation as they are not flexible enough to cater to your unique storage needs. Plus, when searching online, it is rather difficult to summarize the particular type of wardrobe you are looking for with keywords. Very likely, the keyword you type in the search box (eg. A wardrobe with a jewellery tray) might be very different from how it is defined in the search engine (eg. A wardrobe with <a href="https://www.ikea.com/us/en/p/komplement-pull-out-tray-with-insert-black-brown-s79249366/">pullout tray with insert</a>).</p>
+<p>But thanks to emerging technologies, there is a solution! IKEA, the furniture retail conglomerate, provides a popular design tool <a href="https://www.ikea.com/us/en/rooms/bedroom/how-to/how-to-design-your-perfect-pax-wardrobe-pub8b76dda0">PAX wardrobe</a> that allows users to choose from a number of ready-made wardrobes and customize the color, size, and interior design of the wardrobes. Whether you need hanging space, multiple shelves or internal drawers, this intelligent wardrobe customization system can always cater to your needs.</p>
+<p>To find or build your ideal wardrobe using this smart wardrobe design system, you need to:</p>
 <ol>
-<li>指定基本要求--衣柜的形状（普通型、L 型或 U 型）、长度和深度。</li>
-<li>指定您的存储需求和衣柜内部结构（例如，需要悬挂空间、拉出式裤架等）。</li>
-<li>添加或删除衣柜的抽屉或搁板等部件。</li>
+<li>Specify the basic requirements - the shape (normal, L-shaped, or U-shaped), length and depth of the wardrobe.</li>
+<li>Specify your storage need and the interior organization of the wardrobe (eg. Hanging space, a pullout pants rack, etc is needed).</li>
+<li>Add or remove parts of the wardrobe like drawers or shelves.</li>
 </ol>
-<p>然后，您的设计就完成了。简单方便！</p>
+<p>Then your design is completed. Simple and easy!</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Pax_system_ff4c3fa182.png" alt="pax system" class="doc-image" id="pax-system" />
-   </span> <span class="img-wrapper"> <span>大同系统</span> </span></p>
-<p>使这样的衣柜设计系统成为可能的一个非常关键的组件是<a href="https://zilliz.com/learn/what-is-vector-database">向量数据库</a>。因此，本文旨在介绍用于构建由向量相似性搜索驱动的智能衣柜定制系统的工作流程和相似性搜索解决方案。</p>
-<p>跳转到</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Pax_system_ff4c3fa182.png" alt="pax system" class="doc-image" id="pax-system" />
+    <span>pax system</span>
+  </span>
+</p>
+<p>A very critical component that makes such a  wardrobe design system possible is the <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a>. Therefore, this article aims to introduce the workflow and similarity search solutions used to build an intelligent wardrobe customization system powered by vector similarity search.</p>
+<p>Jump to:</p>
 <ul>
-<li><a href="#System-overview">系统概述</a></li>
-<li><a href="#Data-flow">数据流</a></li>
-<li><a href="#System-demo">系统演示</a></li>
+<li><a href="#System-overview">System overview</a></li>
+<li><a href="#Data-flow">Data flow</a></li>
+<li><a href="#System-demo">System demo</a></li>
 </ul>
-<h2 id="System-Overview" class="common-anchor-header">系统概述<button data-href="#System-Overview" class="anchor-icon" translate="no">
+<h2 id="System-Overview" class="common-anchor-header">System Overview<button data-href="#System-Overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -50,28 +58,36 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>为了提供这样一个智能衣柜定制工具，我们首先需要定义业务逻辑，了解物品属性和用户旅程。衣柜及其组件（如抽屉、托盘、衣架）都是非结构化数据。因此，第二步就是利用人工智能算法和规则、先验知识、物品描述等，将这些非结构化数据转换成计算机可以理解的数据类型--向量！</p>
+    </button></h2><p>In order to deliver such a smart wardrobe customization tool, we need to first define the business logic and understand item attributes and user journey. Wardrobes along with its components like drawers, trays, racks, are all unstructured data. Therefore, the second step is to leverage AI algorithms and rules, prior knowledge, item description, and more, to convert those unstructured data into a type of data that can be understood by computers - vectors!</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Customization_tool_overview_86d62e1730.png" alt="Customization tool overview" class="doc-image" id="customization-tool-overview" />
-   </span> <span class="img-wrapper"> <span>定制工具概述</span> </span></p>
-<p>有了生成的向量，我们需要强大的向量数据库和搜索引擎来处理它们。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Customization_tool_overview_86d62e1730.png" alt="Customization tool overview" class="doc-image" id="customization-tool-overview" />
+    <span>Customization tool overview</span>
+  </span>
+</p>
+<p>With the generated vectors, we need powerful vector databases and search engines to process them.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/tool_architecutre_33fb646954.png" alt="tool architecture" class="doc-image" id="tool-architecture" />
-   </span> <span class="img-wrapper"> <span>工具架构</span> </span></p>
-<p>定制工具利用了一些最流行的搜索引擎和数据库：Elasticsearch、<a href="https://milvus.io/">Milvus</a> 和 PostgreSQL。</p>
-<h3 id="Why-Milvus" class="common-anchor-header">为什么选择 Milvus？</h3><p>衣柜组件包含非常复杂的信息，如颜色、形状和内部结构等。然而，将衣柜数据保存在关系数据库中的传统方法远远不够。一种流行的方式是使用 Embeddings 技术将衣柜转换成向量。因此，我们需要寻找一种专门用于向量存储和相似性搜索的新型数据库。在探究了几种流行的解决方案后，<a href="https://github.com/milvus-io/milvus">Milvus</a>向量数据库以其卓越的性能、稳定性、兼容性和易用性被选中。下图是几种流行的向量搜索解决方案的比较。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/tool_architecutre_33fb646954.png" alt="tool architecture" class="doc-image" id="tool-architecture" />
+    <span>tool architecture</span>
+  </span>
+</p>
+<p>The customization tool leverages some of the most popular search engines and databases: Elasticsearch, <a href="https://milvus.io/">Milvus</a>, and PostgreSQL.</p>
+<h3 id="Why-Milvus" class="common-anchor-header">Why Milvus?</h3><p>A wardrobe component contains highly complex information, such as color, shape, and interior organization, etc. However, the traditional way of keeping wardrobe data in a relational database is far from enough. A popular way is to use embedding techniques to convert wardrobes into vectors. Therefore, we need to look for a new type of database specifically designed for vector storage and similarity search. After probing into several popular solutions, the <a href="https://github.com/milvus-io/milvus">Milvus</a> vector database is selected for its excellent performance, stability, compatibility, and ease-of-use. The chart below is a comparison of several popular vector search solutions.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Solution_comparison_d96b8f1dd5.png" alt="solution comparison" class="doc-image" id="solution-comparison" />
-   </span> <span class="img-wrapper"> <span>解决方案比较</span> </span></p>
-<h3 id="System-workflow" class="common-anchor-header">系统工作流程</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/System_workflow_250c275ec1.png" alt="System workflow" class="doc-image" id="system-workflow" />
-   </span> <span class="img-wrapper"> <span>系统工作流程</span> </span></p>
-<p>使用 Elasticsearch 按衣柜尺寸、颜色等进行粗略过滤。然后，过滤后的结果通过 Milvus 向量数据库进行相似性搜索，并根据结果与查询向量的距离/相似性进行排序。最后，根据业务洞察力对结果进行合并和进一步完善。</p>
-<h2 id="Data-flow" class="common-anchor-header">数据流<button data-href="#Data-flow" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Solution_comparison_d96b8f1dd5.png" alt="solution comparison" class="doc-image" id="solution-comparison" />
+    <span>solution comparison</span>
+  </span>
+</p>
+<h3 id="System-workflow" class="common-anchor-header">System workflow</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/System_workflow_250c275ec1.png" alt="System workflow" class="doc-image" id="system-workflow" />
+    <span>System workflow</span>
+  </span>
+</p>
+<p>Elasticsearch is used for a coarse filtering by the wardrobe size, color, etc. Then the filtered results go through Milvus the vector database for a similarity search and the results are ranked based on their distance/similarity to the query vector. Finally, the results are consolidated and further refined based on business insights.</p>
+<h2 id="Data-flow" class="common-anchor-header">Data flow<button data-href="#Data-flow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,40 +102,46 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>衣柜定制系统与传统的搜索引擎和推荐系统非常相似。它包括三个部分</p>
+    </button></h2><p>The wardrobe customization system is very similar to traditional search engines and recommender systems. It contains three parts:</p>
 <ul>
-<li>离线数据准备，包括数据定义和生成。</li>
-<li>在线服务，包括召回和排序。</li>
-<li>基于业务逻辑的数据后处理。</li>
+<li>Offline data preparation including data definition and generation.</li>
+<li>Online services including recall and ranking.</li>
+<li>Data post-processing based on business logic.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_flow_d0d9fa0fca.png" alt="Data flow" class="doc-image" id="data-flow" />
-   </span> <span class="img-wrapper"> <span>数据流</span> </span></p>
-<h3 id="Offline-data-flow" class="common-anchor-header">离线数据流</h3><ol>
-<li>利用业务洞察力定义数据。</li>
-<li>利用先验知识定义如何将不同组件组合成衣柜。</li>
-<li>识别衣柜的特征标签，并将特征编码为<code translate="no">.json</code> 文件中的 Elasticsearch 数据。</li>
-<li>通过将非结构化数据编码成向量来准备召回数据。</li>
-<li>使用向量数据库 Milvus 对上一步获得的召回结果进行排序。</li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_flow_d0d9fa0fca.png" alt="Data flow" class="doc-image" id="data-flow" />
+    <span>Data flow</span>
+  </span>
+</p>
+<h3 id="Offline-data-flow" class="common-anchor-header">Offline data flow</h3><ol>
+<li>Define data using business insight.</li>
+<li>Use prior knowledge to define how to combine different components and form them into a wardrobe.</li>
+<li>Recognize feature labels of the wardrobes and encode the features into Elasticsearch data in <code translate="no">.json</code> file.</li>
+<li>Prepare recall data by encoding unstructured data into vectors.</li>
+<li>Use Milvus the vector database to rank the recalled results obtained in the previous step.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/offline_data_flow_f91ac9cf4c.png" alt="offline data flow" class="doc-image" id="offline-data-flow" />
-   </span> <span class="img-wrapper"> <span>离线数据流</span> </span></p>
-<h3 id="Online-data-flow" class="common-anchor-header">在线数据流</h3><ol>
-<li>接收用户的查询请求并收集用户资料。</li>
-<li>通过确定用户对衣柜的要求来理解用户的查询。</li>
-<li>使用 Elasticsearch 进行粗搜索。</li>
-<li>根据 Milvus 中向量相似度的计算方法，对粗搜索得到的结果进行评分和排序。</li>
-<li>在后端平台上对结果进行后处理和整理，生成最终结果。</li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/offline_data_flow_f91ac9cf4c.png" alt="offline data flow" class="doc-image" id="offline-data-flow" />
+    <span>offline data flow</span>
+  </span>
+</p>
+<h3 id="Online-data-flow" class="common-anchor-header">Online data flow</h3><ol>
+<li>Receive query request from users and collect user profiles.</li>
+<li>Understand user query by identifying their requirements for the wardrobe.</li>
+<li>Coarse search using Elasticsearch.</li>
+<li>Score and rank the results obtained from coarse search based on the calculation of vector similarity in Milvus.</li>
+<li>Post-process and organize the results on the back-end platform to generate the final results.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/online_data_flow_1f2af25cc3.png" alt="online data flow" class="doc-image" id="online-data-flow" />
-   </span> <span class="img-wrapper"> <span>在线数据流</span> </span></p>
-<h3 id="Data-post-processing" class="common-anchor-header">数据后处理</h3><p>每个公司的业务逻辑各不相同。您可以应用贵公司的业务逻辑对结果进行最后润色。</p>
-<h2 id="System-demo" class="common-anchor-header">系统演示<button data-href="#System-demo" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/online_data_flow_1f2af25cc3.png" alt="online data flow" class="doc-image" id="online-data-flow" />
+    <span>online data flow</span>
+  </span>
+</p>
+<h3 id="Data-post-processing" class="common-anchor-header">Data post-processing</h3><p>The business logic varies among each company. You can add a final touch to the results by applying your company’s business logic.</p>
+<h2 id="System-demo" class="common-anchor-header">System demo<button data-href="#System-demo" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,24 +156,30 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>现在让我们来看看我们建立的系统是如何实际运行的。</p>
-<p>用户界面（UI）显示衣柜组件不同组合的可能性。</p>
-<p>每个组件都按其特征（尺寸、颜色等）贴上标签，并存储在 Elasticsearch（ES）中。在 ES 中存储标签时，需要填写四个主要数据字段：ID、标签、存储路径和其他支持字段。ES 和标签数据用于细粒度召回和属性过滤。</p>
+    </button></h2><p>Now let’s see how the system we build actually works.</p>
+<p>The user interface (UI) displays the possibility of different combinations of wardrobe components.</p>
+<p>Each component is labelled by its feature (size, color, etc.) and stored in Elasticsearch (ES). When storing the labels in ES, there are four main data fields to be filled out: ID, tags, storage path, and other support fields. ES and the labelled data are used for granular recall and attribute filtering.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/es_d5b0639610.png" alt="es" class="doc-image" id="es" />
-   </span> <span class="img-wrapper"> <span>ES</span> </span></p>
-<p>然后使用不同的人工智能算法将衣柜编码成向量集。向量集存储在 Milvus 中，用于相似性搜索和排序。这一步骤可返回更精细、更准确的结果。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/es_d5b0639610.png" alt="es" class="doc-image" id="es" />
+    <span>es</span>
+  </span>
+</p>
+<p>Then different AI algorithms are used to encode a wardrobe into a set of vectors. The vector sets are stored in Milvus for similarity search and ranking. This step returns more refined and accurate results.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_38dd93a439.jpeg" alt="Milvus" class="doc-image" id="milvus" />
-   </span> <span class="img-wrapper"> <span>Milvus</span> </span></p>
-<p>Elasticsearch、Milvus 和其他系统组件共同构成了定制设计平台的整体。在回忆过程中，Elasticsearch 和 Milvus 中的特定领域语言（DSL）如下。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_38dd93a439.jpeg" alt="Milvus" class="doc-image" id="milvus" />
+    <span>Milvus</span>
+  </span>
+</p>
+<p>Elasticsearch, Milvus, and other system components altogether form the customization design platform as a whole. During recall, the domain-specific language (DSL) in Elasticsearch and Milvus is as follows.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/dsl_df60097d23.png" alt="dsl" class="doc-image" id="dsl" />
-   </span> <span class="img-wrapper"> <span>DSL</span> </span></p>
-<h2 id="Looking-for-more-resources" class="common-anchor-header">寻找更多资源？<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/dsl_df60097d23.png" alt="dsl" class="doc-image" id="dsl" />
+    <span>dsl</span>
+  </span>
+</p>
+<h2 id="Looking-for-more-resources" class="common-anchor-header">Looking for more resources?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -166,8 +194,8 @@ canonicalUrl: 'https://milvus.io/blog/intelligent-wardrobe-customization-system.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>了解 Milvus 向量数据库如何为更多人工智能应用提供动力：</p>
+    </button></h2><p>Learn how the Milvus vector database can power more AI applications:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md">短视频平台 Likee 如何利用 Milvus 删除重复视频</a></li>
-<li><a href="https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md">Zhentu - 基于 Milvus 的照片欺诈检测器</a></li>
+<li><a href="https://milvus.io/blog/2022-06-23-How-Short-video-Platform-Likee-Removes-Duplicate-Videos-with-Milvus.md">How Short Video Platform Likee Removes Duplicate Videos with Milvus</a></li>
+<li><a href="https://milvus.io/blog/2022-06-20-Zhentu-the-Photo-Fraud-Detector-Based-on-Milvus.md">Zhentu - The Photo Fraud Detector Based on Milvus</a></li>
 </ul>

@@ -1,7 +1,9 @@
 ---
 id: >-
   openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md
-title: OpenAgents x Milvus：如何建立共享記憶體的更智慧型多代理系統
+title: >
+  OpenAgents x Milvus: How to Build Smarter Multi-Agent Systems That Share
+  Memory
 author: Min Yin
 date: 2025-11-24T00:00:00.000Z
 cover: assets.zilliz.com/openagents_cover_b60b987944.png
@@ -11,15 +13,18 @@ publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'multi-agent, Milvus, vector database, distributed AI architecture, OpenAgents'
 meta_title: Build Smarter Multi-Agent Systems with OpenAgents and Milvus
-desc: 探索 OpenAgents 如何實現分散式多機體協作、為何 Milvus 對於增加可擴充的記憶體至關重要，以及如何建立完整的系統。
+desc: >-
+  Explore how OpenAgents enables distributed multi-agent collaboration, why
+  Milvus is essential for adding scalable memory, and how to build a full
+  system.
 origin: >-
   https://milvus.io/blog/openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md
 ---
-<p>大多數開發人員一開始使用單一代理程式來開發他們的代理系統，後來才發現他們基本上是建立了一個非常昂貴的聊天機器人。對於簡單的任務，ReAct 式的代理系統運作良好，但很快就會遇到極限：它無法並行執行步驟，無法追蹤長的推理鏈，而且一旦加入太多工具，系統就會崩潰。多代理體設定保證可以解決這個問題，但它們也帶來了自己的問題：協調開支、脆弱的交接，以及悄悄侵蝕模型品質的膨脹共享上下文。</p>
-<p><a href="https://github.com/OpenAgentsInc">OpenAgents</a>是一個開放原始碼架構，用來建立多代理系統，讓 AI 代理在其中合作、分享資源，並在持續的社群中處理長期專案。OpenAgents 不需要單一的中央協調器，而是讓代理以更分散的方式合作：代理可以彼此發現、溝通，並圍繞共同目標進行協調。</p>
-<p>搭配<a href="https://milvus.io/">Milvus</a>向量資料庫，此管道可獲得可擴充、高效能的長期記憶體層級。Milvus 透過快速的語意搜尋、靈活的索引選擇 (例如 HNSW 和 IVF) 以及透過分割的乾淨隔離，為代理程式記憶體提供強大的能力，因此代理程式可以儲存、擷取和重複使用知識，而不會淹沒在上下文中或踩到彼此的資料。</p>
-<p>在這篇文章中，我們將介紹 OpenAgents 如何實現分散式多代理體協作、為何 Milvus 是可擴充代理體記憶體的重要基礎，以及如何逐步組裝這樣的系統。</p>
-<h2 id="Challenges-in-Building-Real-World-Agent-Systems" class="common-anchor-header">建立真實世界代理系統的挑戰<button data-href="#Challenges-in-Building-Real-World-Agent-Systems" class="anchor-icon" translate="no">
+<p>Most developers start their agentic systems with a single agent and only later realize they’ve basically built a very expensive chatbot. For simple tasks, a ReAct-style agent works fine, but it quickly hits limits: it can’t run steps in parallel, it loses track of long reasoning chains, and it tends to fall apart once you add too many tools to the mix. Multi-agent setups promise to fix this, but they bring their own problems: coordination overhead, brittle handoffs, and a ballooning shared context that quietly erodes model quality.</p>
+<p><a href="https://github.com/OpenAgentsInc">OpenAgents</a> is an open-source framework for building multi-agent systems in which AI agents work together, share resources, and tackle long-horizon projects within persistent communities. Instead of a single central orchestrator, OpenAgents lets agents collaborate in a more distributed way: they can discover each other, communicate, and coordinate around shared goals.</p>
+<p>Paired with the <a href="https://milvus.io/">Milvus</a> vector database, this pipeline gains a scalable, high-performance long-term memory layer. Milvus powers agent memory with fast semantic search, flexible indexing choices like HNSW and IVF, and clean isolation through partitioning, so agents can store, retrieve, and reuse knowledge without drowning in context or stepping on each other’s data.</p>
+<p>In this post, we’ll walk through how OpenAgents enables distributed multi-agent collaboration, why Milvus is a critical foundation for scalable agent memory, and how to assemble such a system step by step.</p>
+<h2 id="Challenges-in-Building-Real-World-Agent-Systems" class="common-anchor-header">Challenges in Building Real-World Agent Systems<button data-href="#Challenges-in-Building-Real-World-Agent-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,15 +39,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>當今許多主流的代理程式框架-LangChain、AutoGen、CrewAI 等，都是圍繞<strong>著以任務為中心的</strong>模型所建立的。您啟動一組代理程式，給他們一個工作，或許定義一個工作流程，然後讓他們執行。這對於狹窄或短暫的用例非常有效，但在真正的生產環境中，卻暴露出三種結構上的限制：</p>
+    </button></h2><p>Many mainstream agent frameworks today—LangChain, AutoGen, CrewAI, and others—are built around a <strong>task-centric</strong> model. You spin up a set of agents, give them a job, maybe define a workflow, and let them run. This works well for narrow or short-lived use cases, but in real production environments, it exposes three structural limitations:</p>
 <ul>
-<li><p><strong>知識仍然是孤立的。</strong>代理程式的經驗只限於其本身的部署。工程部門的程式碼檢閱代理程式不會與評估可行性的產品團隊代理程式分享它所學到的知識。每個團隊最終都要從頭開始重建知識，既低效又脆弱。</p></li>
-<li><p><strong>合作是僵化的。</strong>即使在多代理體架構中，合作也通常取決於事先定義的工作流程。當合作需要轉變時，這些靜態規則無法適應，使得整個系統的彈性降低。</p></li>
-<li><p><strong>缺乏持續狀態。</strong>大多數的代理程式都遵循一個簡單的生命週期：<em>啟動 → 執行 → 關閉。</em>它們會在運行之間忘記一切--上下文、關係、所做的決定和互動歷史。如果沒有持久狀態，代理程式就無法建立長期記憶或演進其行為。</p></li>
+<li><p><strong>Knowledge remains siloed.</strong> An agent’s experience is confined to its own deployment. A code-review agent in engineering doesn’t share what it learns with a product-team agent evaluating feasibility. Every team ends up rebuilding knowledge from scratch, which is both inefficient and brittle.</p></li>
+<li><p><strong>Collaboration is rigid.</strong> Even in multi-agent frameworks, cooperation usually depends on workflows defined in advance. When collaboration needs to shift, these static rules cannot adapt, making the entire system less flexible.</p></li>
+<li><p><strong>A lack of a persistent state.</strong> Most agents follow a simple lifecycle: <em>start → execute → shut down.</em> They forget everything between runs—context, relationships, decisions made, and interaction history. Without a persistent state, agents cannot build long-term memory or evolve their behavior.</p></li>
 </ul>
-<p>這些結構性問題來自於將代理視為孤立的任務執行者，而非更廣泛的協作網路中的參與者。</p>
-<p>OpenAgents 團隊相信，未來的代理系統需要的不只是更強大的推理能力，他們需要一個機制，讓代理能夠彼此發現、建立關係、分享知識，並且動態地一起工作。最重要的是，這不應該依賴於單一的中央控制器。網際網路之所以能運作，就是因為它是分散式的，沒有單一的節點能主宰一切，而且隨著系統的成長，它也會變得更強大、更可擴充。多代理系統也受惠於相同的設計原則。這就是為什麼 OpenAgents 捨棄了全能的統籌者的概念，取而代之的是分散式、網路驅動的合作。</p>
-<h2 id="What’s-OpenAgents" class="common-anchor-header">OpenAgents 是什麼？<button data-href="#What’s-OpenAgents" class="anchor-icon" translate="no">
+<p>These structural issues come from treating agents as isolated task executors rather than participants in a broader collaborative network.</p>
+<p>The OpenAgents team believes that future agent systems need more than stronger reasoning—they need a mechanism that enables agents to discover one another, build relationships, share knowledge, and work together dynamically. And critically, this should not depend on a single central controller. The internet works because it’s distributed—no single node dictates everything, and the system becomes more robust and scalable as it grows. Multi-agent systems benefit from the same design principle. That’s why OpenAgents removes the idea of an all-powerful orchestrator and instead enables decentralized, network-driven cooperation.</p>
+<h2 id="What’s-OpenAgents" class="common-anchor-header">What’s OpenAgents?<button data-href="#What’s-OpenAgents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,38 +62,38 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenAgents 是建立 AI 代理網路的開放原始碼架構，可實現開放式合作，讓 AI 代理共同合作、分享資源，並處理長期專案。OpenAgents 為代理人網路提供基礎架構，讓代理人在持續成長的社群中，與數百萬個其他代理人開放合作。在技術層級上，系統是圍繞三個核心元件所構成：<strong>Agent Network、Network Mods 和 Transports。</strong></p>
-<h3 id="1-Agent-Network-A-Shared-Environment-for-Collaboration" class="common-anchor-header">1.代理網路：合作的共享環境</h3><p>代理程式網路是一個共享環境，多個代理程式可以在這個環境中連線、溝通並共同解決複雜的任務。其核心特徵包括</p>
+    </button></h2><p>OpenAgents is an open-source framework for building AI agent networks that enables open collaboration, where AI agents work together, share resources, and tackle long-horizon projects. It provides the infrastructure for an internet of agents — where agents collaborate openly with millions of other agents in persistent, growing communities. At the technical level, the system is structured around three core components: <strong>Agent Network, Network Mods, and Transports.</strong></p>
+<h3 id="1-Agent-Network-A-Shared-Environment-for-Collaboration" class="common-anchor-header">1. Agent Network: A Shared Environment for Collaboration</h3><p>An agent network is a shared environment where multiple agents can connect, communicate, and work together to solve complex tasks. Its core characteristics include:</p>
 <ul>
-<li><p><strong>持久運作：</strong>一旦建立，網路就會獨立於任何單一任務或工作流程而保持在線。</p></li>
-<li><p><strong>動態代理：</strong>代理可隨時使用網路 ID 加入；無需事先註冊。</p></li>
-<li><p><strong>多協定支援：</strong>統一的抽象層支援透過 WebSocket、gRPC、HTTP 及 libp2p 進行通訊。</p></li>
-<li><p><strong>自主配置：</strong>每個 Network 維護自己的權限、管理和資源。</p></li>
+<li><p><strong>Persistent operation:</strong> Once created, the Network stays online independently of any single task or workflow.</p></li>
+<li><p><strong>Dynamic agent:</strong> Agents can join at any time using a Network ID; no pre-registration required.</p></li>
+<li><p><strong>Multi-protocol support:</strong> A unified abstraction layer supports communication over WebSocket, gRPC, HTTP, and libp2p.</p></li>
+<li><p><strong>Autonomous configuration:</strong> Each Network maintains its own permissions, governance, and resources.</p></li>
 </ul>
-<p>只需一行程式碼，您就可以建立一個 Network，任何代理程式都可以透過標準介面立即加入。</p>
-<h3 id="2-Network-Mods-Pluggable-Extensions-for-Collaboration" class="common-anchor-header">2.網路模組：可插拔的協作擴充</h3><p>Mods 提供與核心系統脫離的模組化協作功能層。您可以根據您的特定需求來混合和搭配 Mods，實現針對每個使用個案量身打造的協作模式。</p>
+<p>With just one line of code, you can spin up a Network, and any agent can join immediately through standard interfaces.</p>
+<h3 id="2-Network-Mods-Pluggable-Extensions-for-Collaboration" class="common-anchor-header">2. Network Mods: Pluggable Extensions for Collaboration</h3><p>Mods provide a modular layer of collaboration features that stay decoupled from the core system. You can mix and match Mods based on your specific needs, enabling collaboration patterns tailored to each use case.</p>
 <table>
 <thead>
-<tr><th><strong>模組</strong></th><th><strong>用途</strong></th><th><strong>使用個案</strong></th></tr>
+<tr><th><strong>Mod</strong></th><th><strong>Purpose</strong></th><th><strong>Use cases</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>工作區訊息傳送</strong></td><td>即時訊息通訊</td><td>串流回應、即時回饋</td></tr>
-<tr><td><strong>論壇</strong></td><td>非同步討論</td><td>提案審查、多輪商議</td></tr>
-<tr><td><strong>維基</strong></td><td>共享知識庫</td><td>知識整合、文件協作</td></tr>
-<tr><td><strong>社群</strong></td><td>關係圖</td><td>專家路由、信任網路</td></tr>
+<tr><td><strong>Workspace Messaging</strong></td><td>Real-time message communication</td><td>Streaming responses, instant feedback</td></tr>
+<tr><td><strong>Forum</strong></td><td>Asynchronous discussion</td><td>Proposal reviews, multi-round deliberation</td></tr>
+<tr><td><strong>Wiki</strong></td><td>Shared knowledge base</td><td>Knowledge consolidation, document collaboration</td></tr>
+<tr><td><strong>Social</strong></td><td>Relationship graph</td><td>Expert routing, trust networks</td></tr>
 </tbody>
 </table>
-<p>所有 Mods 都在統一的事件系統上運作，方便隨時擴充框架或引進自訂行為。</p>
-<h3 id="3-Transports-A-Protocol-Agnostic-Channel-for-Communication" class="common-anchor-header">3.Transports：與通訊協定無關的通道</h3><p>Transports 是允許異質代理在 OpenAgents 網路中連結及交換訊息的通訊協定。OpenAgents 支援多種傳輸通訊協定，可在同一個網路中同時執行，包括</p>
+<p>All Mods operate on a unified event system, making it easy to extend the framework or introduce custom behaviors whenever required.</p>
+<h3 id="3-Transports-A-Protocol-Agnostic-Channel-for-Communication" class="common-anchor-header">3. Transports: A Protocol-Agnostic Channel for Communication</h3><p>Transports are the communication protocols that allow heterogeneous agents to connect and exchange messages within an OpenAgents network. OpenAgents supports multiple transport protocols that can run simultaneously inside the same network, including:</p>
 <ul>
-<li><p>適用於廣泛、跨語言整合的<strong>HTTP/REST</strong></p></li>
-<li><p>用於低延遲、雙向通訊的<strong>WebSocket</strong></p></li>
-<li><p>用於適合大型集群的高效能<strong>RPC 的 gRPC</strong></p></li>
-<li><p>用於分散式點對點網路的<strong>libp2p</strong></p></li>
-<li><p><strong>A2A</strong> 是專為代理對代理通訊所設計的新興通訊協定。</p></li>
+<li><p><strong>HTTP/REST</strong> for broad, cross-language integration</p></li>
+<li><p><strong>WebSocket</strong> for low-latency, bidirectional communication</p></li>
+<li><p><strong>gRPC</strong> for high-performance RPC suited to large-scale clusters</p></li>
+<li><p><strong>libp2p</strong> for decentralized, peer-to-peer networking</p></li>
+<li><p><strong>A2A</strong>, an emerging protocol designed specifically for agent-to-agent communication</p></li>
 </ul>
-<p>所有的傳輸都是透過統一的事件式訊息格式來操作，因此可以在通訊協定之間進行無縫轉換。您不需要擔心對等代理使用的通訊協定，框架會自動處理。以任何語言或框架建立的代理程式都可以加入 OpenAgents 網路，而無需重新編寫現有的程式碼。</p>
-<h2 id="Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="common-anchor-header">整合 OpenAgents 與 Milvus 以提供長期的代理程式記憶體<button data-href="#Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="anchor-icon" translate="no">
+<p>All transports operate through a unified event-based message format, enabling seamless translation between protocols. You don’t need to worry about which protocol a peer agent uses—the framework handles it automatically. Agents built in any language or framework can join an OpenAgents network without rewriting existing code.</p>
+<h2 id="Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="common-anchor-header">Integrating OpenAgents with Milvus for Long-Term Agentic Memory<button data-href="#Integrating-OpenAgents-with-Milvus-for-Long-Term-Agentic-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -103,37 +108,37 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenAgents 解決了 Agents 如何<strong>溝通、相互發現與協同合作的</strong>挑戰，<strong>但僅</strong>有協同合作是不夠的。代理程式會產生洞察力、決策、會談歷史、工具結果，以及特定領域的知識。如果沒有持久性記憶體層級，所有這些都會在代理程式關閉時消失。</p>
-<p>這就是<strong>Milvus</strong>的重要性所在。Milvus 提供高效能向量儲存與語意檢索，可將代理程式互動轉換為持久、可重複使用的記憶體。當整合至 OpenAgents 網路時，它提供了三大優勢：</p>
-<h4 id="1-Semantic-Search" class="common-anchor-header"><strong>1.語意搜尋</strong></h4><p>Milvus 使用 HNSW 和 IVF_FLAT 等索引演算法提供快速的語意搜尋。代理可以根據意義而不是關鍵字來擷取最相關的歷史記錄，使他們能夠</p>
+    </button></h2><p>OpenAgents solves the challenge of how agents <strong>communicate, discover each other, and collaborate</strong>—but collaboration alone isn’t enough. Agents generate insights, decisions, conversation history, tool results, and domain-specific knowledge. Without a persistent memory layer, all of that evaporates the moment an agent shuts down.</p>
+<p>This is where <strong>Milvus</strong> becomes essential. Milvus provides the high-performance vector storage and semantic retrieval needed to turn agent interactions into durable, reusable memory. When integrated into the OpenAgents network, it offers three major advantages:</p>
+<h4 id="1-Semantic-Search" class="common-anchor-header"><strong>1. Semantic Search</strong></h4><p>Milvus delivers fast semantic search using indexing algorithms like HNSW and IVF_FLAT. Agents can retrieve the most relevant historical records based on meaning rather than keywords, enabling them to:</p>
 <ul>
-<li><p>回憶先前的決策或計劃、</p></li>
-<li><p>避免重複工作、</p></li>
-<li><p>維持跨會話的長遠情境。</p></li>
+<li><p>recall prior decisions or plans,</p></li>
+<li><p>avoid repeating work,</p></li>
+<li><p>maintain long-horizon context across sessions.</p></li>
 </ul>
-<p>這是<em>代理記憶體</em>的支柱：快速、相關、上下文檢索。</p>
-<h4 id="2-Billion-Scale-Horizontal-Scalability" class="common-anchor-header"><strong>2.十億級的水平擴充能力</strong></h4><p>真實的代理程式網路會產生大量資料。Milvus 可在此規模下舒適地運作，提供</p>
+<p>This is the backbone of <em>agentic memory</em>: fast, relevant, contextual retrieval.</p>
+<h4 id="2-Billion-Scale-Horizontal-Scalability" class="common-anchor-header"><strong>2. Billion-Scale Horizontal Scalability</strong></h4><p>Real agent networks generate massive amounts of data. Milvus is built to operate comfortably at this scale, offering:</p>
 <ul>
-<li><p>數十億向量的儲存與搜尋、</p></li>
-<li><p>&lt; 即使在高吞吐量的 Top-K 檢索下，延遲時間仍小於 30 毫秒、</p></li>
-<li><p>完全分散式架構，可隨著需求成長而線性擴充。</p></li>
+<li><p>storage and search over billions of vectors,</p></li>
+<li><p>&lt; 30 ms latency even under high-throughput Top-K retrieval,</p></li>
+<li><p>a fully distributed architecture that scales linearly as demand grows.</p></li>
 </ul>
-<p>無論您有一打代理或成千上萬的代理並行工作，Milvus 都能保持快速一致的擷取。</p>
-<h4 id="3-Multi-Tenant-Isolation" class="common-anchor-header"><strong>3.多租客隔離</strong></h4><p>Milvus 透過<strong>Partition Key</strong>（一種輕量分區機制，可在單一集合內分割記憶體）提供細粒度的多租戶隔離。這允許</p>
+<p>Whether you have a dozen agents or thousands working in parallel, Milvus keeps retrieval fast and consistent.</p>
+<h4 id="3-Multi-Tenant-Isolation" class="common-anchor-header"><strong>3. Multi-Tenant Isolation</strong></h4><p>Milvus provides granular multi-tenant isolation through <strong>Partition Key</strong>, a lightweight partitioning mechanism that segments memory inside a single collection. This allows:</p>
 <ul>
-<li><p>不同的團隊、專案或代理社群可維護獨立的記憶體空間、</p></li>
-<li><p>與維護多個集合相比，可大幅降低開銷、</p></li>
-<li><p>需要共用知識時，可選擇跨分區檢索。</p></li>
+<li><p>different teams, projects, or agent communities to maintain independent memory spaces,</p></li>
+<li><p>dramatically lower overhead compared to maintaining multiple collections,</p></li>
+<li><p>optional cross-partition retrieval when shared knowledge is needed.</p></li>
 </ul>
-<p>這種隔離性對於大型多重代理體部署非常重要，在這種部署中，資料邊界必須受到尊重，同時又不影響檢索速度。</p>
-<p>OpenAgents 透過直接呼叫 Milvus API 的<strong>自訂 Mods</strong>連接到 Milvus。代理程式訊息、工具輸出與互動記錄會自動嵌入向量並儲存在 Milvus 中。開發人員可以自訂</p>
+<p>This isolation is crucial for large multi-agent deployments where data boundaries must be respected without compromising retrieval speed.</p>
+<p>OpenAgents connects to Milvus through <strong>custom Mods</strong> that call Milvus APIs directly. Agent messages, tool outputs, and interaction logs are automatically embedded into vectors and stored in Milvus. Developers can customize:</p>
 <ul>
-<li><p>嵌入模型、</p></li>
-<li><p>儲存模式與元資料、</p></li>
-<li><p>以及檢索策略 (例如混合搜尋、分割搜尋)。</p></li>
+<li><p>the embedding model,</p></li>
+<li><p>storage schema and metadata,</p></li>
+<li><p>and retrieval strategies (e.g., hybrid search, partitioned search).</p></li>
 </ul>
-<p>這讓每個代理社群都有一個可擴充、持久、且針對語義推理最佳化的記憶層。</p>
-<h2 id="How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="common-anchor-header">如何使用 OpenAgent 和 Milvus 建立多代理聊天機器人<button data-href="#How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="anchor-icon" translate="no">
+<p>This gives each agent community a memory layer that is scalable, persistent, and optimized for semantic reasoning.</p>
+<h2 id="How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="common-anchor-header">How to Build a Multi-Agent Chatbot with OpenAgent and Milvus<button data-href="#How-to-Build-a-Multi-Agent-Chatbot-with-OpenAgent-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,20 +153,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>為了讓事情具體化，讓我們來進行一個示範：建立一個<strong>開發人員支援社群</strong>，讓多個專業代理 - Python 專家、資料庫專家、DevOps 工程師等等 - 合作回答技術問題。每個專家都會提供特定領域的推理，系統會自動將查詢路由至最適合的代理，而非依賴單一工作過度的通用代理。</p>
-<p>本範例展示如何將<strong>Milvus</strong>整合到 OpenAgents 部署中，以提供技術問答的長期記憶。代理對話、過去的解決方案、疑難排解記錄和使用者查詢都會轉換成向量嵌入並儲存於 Milvus 中，讓網路有能力</p>
+    </button></h2><p>To make things concrete, let’s walk through a demo: building a <strong>developer-support community</strong> where multiple specialist agents—Python experts, database experts, DevOps engineers, and more—collaborate to answer technical questions. Instead of relying on a single overworked generalist agent, each expert contributes domain-specific reasoning, and the system routes queries to the best-suited agent automatically.</p>
+<p>This example demonstrates how to integrate <strong>Milvus</strong> into an OpenAgents deployment to provide long-term memory for technical Q&amp;A. Agent conversations, past solutions, troubleshooting logs, and user queries are all converted into vector embeddings and stored in Milvus, giving the network the ability to:</p>
 <ul>
-<li><p>記住先前的答案、</p></li>
-<li><p>重複使用先前的技術說明、</p></li>
-<li><p>跨會話維持一致性，並</p></li>
-<li><p>隨著更多互動的累積而不斷改進。</p></li>
+<li><p>remember previous answers,</p></li>
+<li><p>reuse prior technical explanations,</p></li>
+<li><p>maintain consistency across sessions, and</p></li>
+<li><p>improve over time as more interactions accumulate.</p></li>
 </ul>
-<h3 id="Prerequisite" class="common-anchor-header">先決條件</h3><ul>
-<li><p>python3.11 以上</p></li>
+<h3 id="Prerequisite" class="common-anchor-header">Prerequisite</h3><ul>
+<li><p>python3.11+</p></li>
 <li><p>conda</p></li>
 <li><p>Openai-key</p></li>
 </ul>
-<h3 id="1-Define-Dependencies" class="common-anchor-header">1.定義相依存關係</h3><p>定義專案所需的 Python 套件：</p>
+<h3 id="1-Define-Dependencies" class="common-anchor-header">1. Define Dependencies</h3><p>Define the Python packages required for the project:</p>
 <pre><code translate="no"><span class="hljs-comment"># Core framework</span>
 openagents&gt;=<span class="hljs-number">0.6</span><span class="hljs-number">.11</span>
 <span class="hljs-comment"># Vector database</span>
@@ -173,7 +178,7 @@ openai&gt;=<span class="hljs-number">1.0</span><span class="hljs-number">.0</spa
 <span class="hljs-comment"># Environment config</span>
 python-dotenv&gt;=<span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Environment-Variables" class="common-anchor-header">2.環境變數</h3><p>這裡是您的環境設定範本：</p>
+<h3 id="2-Environment-Variables" class="common-anchor-header">2. Environment Variables</h3><p>Here is the template for your environment configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># LLM configuration (required)</span>
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
@@ -188,7 +193,7 @@ NETWORK_HOST=localhost
 NETWORK_PORT=8700
 STUDIO_PORT=8050
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Configure-Your-OpenAgents-Network" class="common-anchor-header">3.設定 OpenAgents 網路</h3><p>定義您的代理程式網路結構及其通訊設定：</p>
+<h3 id="3-Configure-Your-OpenAgents-Network" class="common-anchor-header">3. Configure Your OpenAgents Network</h3><p>Define the structure of your agent network and its communication settings:</p>
 <pre><code translate="no"><span class="hljs-comment"># Network transport protocol (HTTP on port 8700)</span>
 <span class="hljs-comment"># Multi-channel messaging system (general, coordination, expert channels)</span>
 <span class="hljs-comment"># Agent role definitions (coordinator, python_expert, etc.)</span>
@@ -218,7 +223,7 @@ network:
       <span class="hljs-built_in">type</span>: <span class="hljs-string">&quot;expert&quot;</span>
       domain: <span class="hljs-string">&quot;python&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Implement-Multi-Agent-Collaboration" class="common-anchor-header">4.實施多代理協作</h3><p>以下為核心程式碼片段 (非完整實作)。</p>
+<h3 id="4-Implement-Multi-Agent-Collaboration" class="common-anchor-header">4. Implement Multi-Agent Collaboration</h3><p>The following shows core code snippets (not the full implementation).</p>
 <pre><code translate="no"><span class="hljs-comment"># SharedMemory: Milvus’s SharedMemory system</span>
 <span class="hljs-comment"># CoordinatorAgent: Coordinator Agent, responsible for analyzing queries and dispatching tasks to expert agents</span>
 <span class="hljs-comment"># PythonExpertAgent: Python Expert</span>
@@ -307,16 +312,16 @@ load_dotenv()
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
     asyncio.run(run_multi_agent_demo())
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="5-Create-and-Activate-a-Virtual-Environment" class="common-anchor-header">5.建立並啟動虛擬環境</h3><pre><code translate="no">conda create -n openagents
+<h3 id="5-Create-and-Activate-a-Virtual-Environment" class="common-anchor-header">5. Create and Activate a Virtual Environment</h3><pre><code translate="no">conda create -n openagents
 conda activate openagents
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>安裝相依性</strong></p>
+<p><strong>Install Dependencies</strong></p>
 <pre><code translate="no">pip install -r requirements.txt
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>設定 API 金鑰</strong></p>
+<p><strong>Configure API Keys</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>啟動 OpenAgents 網路</strong></p>
+<p><strong>Start the OpenAgents Network</strong></p>
 <pre><code translate="no">openagents network start .
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -325,7 +330,7 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>啟動多重代理服務</strong></p>
+<p><strong>Start the Multi-Agent Service</strong></p>
 <pre><code translate="no">python multi_agent_demo.py
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -334,7 +339,7 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>啟動 OpenAgents Studio</strong></p>
+<p><strong>Start OpenAgents Studio</strong></p>
 <pre><code translate="no">openagents studio -s
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -343,7 +348,7 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>存取工作室</strong></p>
+<p><strong>Access Studio</strong></p>
 <pre><code translate="no"><span class="hljs-attr">http</span>:<span class="hljs-comment">//localhost:8050</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -364,14 +369,14 @@ conda activate openagents
     <span></span>
   </span>
 </p>
-<p><strong>檢查代理和網路的狀態：</strong></p>
+<p><strong>Check the status of your agents and network:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/check_state_bba1a4fe16.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -386,8 +391,8 @@ conda activate openagents
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>OpenAgents 提供了協調層，讓代理相互發現、溝通和協作，而 Milvus 則解決了知識如何儲存、分享和重複使用這個同樣重要的問題。透過提供高效能向量記憶層，Milvus 可讓代理建立持續的上下文、回想過去的互動，並隨時間累積專業知識。兩者的結合，讓 AI 系統超越了孤立模型的限制，邁向真正多機體網路的更深層次協作潛力。</p>
-<p>當然，任何多代理體架構都必須有所取捨。並行運行代理程式可能會增加代幣消耗，錯誤可能會在代理程式之間連鎖發生，同時進行決策可能會導致偶爾的衝突。這些都是積極研究和持續改善的領域，但它們不會降低建立能夠協調、記憶和進化的系統的價值。</p>
-<p>🚀準備好給您的代理體長期記憶了嗎？</p>
-<p>探索<a href="https://milvus.io/">Milvus</a>並嘗試將其與您自己的工作流程整合。</p>
-<p>對任何功能有問題或想要深入瞭解？加入我們的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 頻道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提出問題。您也可以透過<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 預約 20 分鐘的一對一會議，以獲得洞察力、指導和問題解答。</p>
+    </button></h2><p>OpenAgents provides the coordination layer that lets agents discover each other, communicate, and collaborate, while Milvus solves the equally critical problem of how knowledge is stored, shared, and reused. By delivering a high-performance vector memory layer, Milvus enables agents to build persistent context, recall past interactions, and accumulate expertise over time. Together, they push AI systems beyond the limits of isolated models and toward the deeper collaborative potential of a true multi-agent network.</p>
+<p>Of course, no multi-agent architecture is without trade-offs. Running agents in parallel can increase token consumption, errors may cascade across agents, and simultaneous decision-making can lead to occasional conflicts. These are active areas of research and ongoing improvement—but they don’t diminish the value of building systems that can coordinate, remember, and evolve.</p>
+<p>🚀 Ready to give your agents long-term memory?</p>
+<p>Explore <a href="https://milvus.io/">Milvus</a> and try integrating it with your own workflow.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

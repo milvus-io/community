@@ -1,9 +1,9 @@
 ---
 id: >-
   ai-code-review-gets-better-when-models-debate-claude-vs-gemini-vs-codex-vs-qwen-vs-minimax.md
-title: >-
-  AI Code Review wird besser, wenn Modelle debattieren: Claude vs Gemini vs
-  Codex vs Qwen vs MiniMax
+title: >
+  AI Code Review Gets Better When Models Debate: Claude vs Gemini vs Codex vs
+  Qwen vs MiniMax
 author: Li Liu
 date: 2026-02-26T00:00:00.000Z
 cover: >-
@@ -17,16 +17,15 @@ meta_keywords: >-
   review benchmark, multi-model AI debate
 meta_title: |
   Claude vs Gemini vs Codex vs Qwen vs MiniMax Code Review
-desc: >-
-  Wir haben Claude, Gemini, Codex, Qwen und MiniMax auf echte Fehlererkennung
-  getestet. Das beste Modell erreichte 53 %. Nach einer kontradiktorischen
-  Debatte stieg die Erkennungsrate auf 80 %.
+desc: >
+  We tested Claude, Gemini, Codex, Qwen, and MiniMax on real bug detection. The
+  best model hit 53%. After adversarial debate, detection jumped to 80%.
 origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
 ---
-<p>Ich habe vor kurzem KI-Modelle zur Überprüfung eines Pull-Antrags verwendet, und die Ergebnisse waren widersprüchlich: Claude meldete ein Data Race, während Gemini sagte, der Code sei sauber. Das hat mich neugierig gemacht, wie sich andere KI-Modelle verhalten würden, also habe ich die neuesten Flaggschiff-Modelle von Claude, Gemini, Codex, Qwen und MiniMax durch einen strukturierten Code-Review-Benchmark laufen lassen. Die Ergebnisse? Das leistungsstärkste Modell fand nur 53 % der bekannten Fehler.</p>
-<p>Meine Neugierde war damit aber noch nicht zu Ende: Was wäre, wenn diese KI-Modelle zusammenarbeiten würden? Ich experimentierte damit, sie miteinander diskutieren zu lassen, und nach fünf Runden gegenseitiger Diskussionen stieg die Fehlererkennung auf 80 % an. Bei den schwierigsten Fehlern, die ein Verständnis auf Systemebene erfordern, lag die Erkennungsrate im Diskussionsmodus bei 100 %.</p>
-<p>In diesem Beitrag werden der Aufbau des Experiments, die Ergebnisse für die einzelnen Modelle und die Erkenntnisse aus dem Debattiermechanismus über den tatsächlichen Einsatz von KI bei der Codeüberprüfung erläutert.</p>
-<h2 id="Benchmarking-Claude-Gemini-Codex-Qwen-and-MiniMax-for-code-review" class="common-anchor-header">Benchmarking von Claude, Gemini, Codex, Qwen und MiniMax für die Codeüberprüfung<button data-href="#Benchmarking-Claude-Gemini-Codex-Qwen-and-MiniMax-for-code-review" class="anchor-icon" translate="no">
+<p>I recently used AI models to review a pull request, and the results were contradictory: Claude flagged a data race, while Gemini said the code was clean. That got me curious about how other AI models would behave, so I ran the latest flagship models from Claude, Gemini, Codex, Qwen, and MiniMax through a structured code-review benchmark. The results? The best-performing model caught only 53% of known bugs.</p>
+<p>However, my curiosity didn’t end there: what if these AI models worked together? I experimented with having them debate each other, and after five rounds of adversarial debate, bug detection jumped to 80%. The hardest bugs, ones requiring system-level understanding, hit 100% detection in debate mode.</p>
+<p>This post walks through the experiment design, per-model results, and what the debate mechanism reveals about how to actually use AI for code review.</p>
+<h2 id="Benchmarking-Claude-Gemini-Codex-Qwen-and-MiniMax-for-code-review" class="common-anchor-header">Benchmarking Claude, Gemini, Codex, Qwen, and MiniMax for code review<button data-href="#Benchmarking-Claude-Gemini-Codex-Qwen-and-MiniMax-for-code-review" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,12 +40,12 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wenn Sie Modelle für die Codeüberprüfung verwendet haben, ist Ihnen wahrscheinlich aufgefallen, dass sie sich nicht nur in der Genauigkeit unterscheiden, sondern auch darin, wie sie den Code lesen. Ein Beispiel:</p>
-<p>Claude geht die Aufrufkette normalerweise von oben nach unten durch und verbringt viel Zeit mit "langweiligen" Pfaden (Fehlerbehandlung, Wiederholungen, Bereinigung). Dort verstecken sich oft die wirklichen Fehler, daher stört mich die Gründlichkeit nicht.</p>
-<p>Gemini neigt dazu, mit einem eindeutigen Urteil zu beginnen ("das ist schlecht" / "sieht gut aus") und dann rückwärts zu arbeiten, um es aus der Sicht des Designs/der Struktur zu rechtfertigen. Manchmal ist das nützlich. Manchmal liest es sich aber auch so, als hätte man es nur überflogen und sich dann auf einen Standpunkt festgelegt.</p>
-<p>Der Codex ist ruhiger. Aber wenn er etwas anmerkt, ist es oft konkret und umsetzbar - weniger Kommentar, mehr "diese Zeile ist falsch, weil X".</p>
-<p>Dies sind jedoch Eindrücke, keine Messungen. Um konkrete Zahlen zu erhalten, habe ich einen Benchmark eingerichtet.</p>
-<h3 id="Setup" class="common-anchor-header">Einrichtung</h3><p><strong>Es wurden fünf Flaggschiffmodelle getestet:</strong></p>
+    </button></h2><p>If you’ve been using models for code review, you’ve probably noticed they don’t just differ in accuracy; they differ in how they read code. For example:</p>
+<p>Claude usually walks the call chain top-to-bottom and will spend time on “boring” paths (error handling, retries, cleanup). That’s often where the real bugs hide, so I don’t hate the thoroughness.</p>
+<p>Gemini tends to start with a strong verdict (“this is bad” / “looks fine”) and then works backwards to justify it from a design/structure angle. Sometimes that’s useful. Sometimes it reads like it skimmed and then committed to a take.</p>
+<p>Codex is quieter. But when it flags something, it’s often concrete and actionable — less commentary, more “this line is wrong because X.”</p>
+<p>These are impressions, though, not measurements. To get actual numbers, I set up a benchmark.</p>
+<h3 id="Setup" class="common-anchor-header">Setup</h3><p><strong>Five flagship models were tested:</strong></p>
 <ul>
 <li><p>Claude Opus 4.6</p></li>
 <li><p>Gemini 3 Pro</p></li>
@@ -54,40 +53,40 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
 <li><p>Qwen-3.5-Plus</p></li>
 <li><p>MiniMax-M2.5</p></li>
 </ul>
-<p><strong>Werkzeuge (Magpie)</strong></p>
-<p>Ich habe <a href="https://github.com/liliu-z/magpie">Magpie</a> verwendet, ein von mir entwickeltes Open-Source-Benchmarking-Tool. Seine Aufgabe ist es, die "Code-Review-Vorbereitung" zu übernehmen, die Sie normalerweise manuell durchführen würden: Sie ziehen den umgebenden Kontext ein (Aufrufketten, verwandte Module und relevanten angrenzenden Code) und füttern das Modell damit <em>, bevor</em> es den PR überprüft.</p>
-<p><strong>Testfälle (Milvus-PRs mit bekannten Fehlern)</strong></p>
-<p>Der Datensatz besteht aus 15 Pull-Requests von <a href="https://github.com/milvus-io/milvus">Milvus</a> (einer Open-Source-Vektor-Datenbank, die von <a href="https://zilliz.com/">Zilliz</a> erstellt und gepflegt wird). Diese PRs sind als Benchmark nützlich, weil jede von ihnen zusammengeführt wurde, nur um später einen Revert oder Hotfix zu erfordern, nachdem ein Fehler in der Produktion aufgetaucht war. Es gibt also in jedem Fall einen bekannten Fehler, gegen den wir punkten können.</p>
-<p><strong>Schwierigkeitsgrad der Fehler</strong></p>
-<p>Nicht alle diese Fehler sind gleich schwer zu finden, daher habe ich sie in drei Schwierigkeitsgrade eingeteilt:</p>
+<p><strong>Tooling (Magpie)</strong></p>
+<p>I used <a href="https://github.com/liliu-z/magpie">Magpie</a>, an open-source benchmarking tool I built. Its job is to do the “code review prep” you’d normally do manually: pull in surrounding context (call chains, related modules, and relevant adjacent code) and feed that to the model <em>before</em> it reviews the PR.</p>
+<p><strong>Test cases (Milvus PRs with known bugs)</strong></p>
+<p>The dataset consists of 15 pull requests from <a href="https://github.com/milvus-io/milvus">Milvus</a> (an open-source vector database created and maintained by <a href="https://zilliz.com/">Zilliz</a>). These PRs are useful as a benchmark because each was merged, only to later require a revert or hotfix after a bug surfaced in production. So every case has a known bug we can score against.</p>
+<p><strong>Bug difficulty levels</strong></p>
+<p>Not all of these bugs are equally hard to find, though, so I categorized them into three difficulty levels:</p>
 <ul>
-<li><p><strong>L1:</strong> Allein anhand des Diffs erkennbar (use-after-free, off-by-one).</p></li>
-<li><p><strong>L2 (10 Fälle):</strong> Erfordert ein Verständnis des umgebenden Codes, um Dinge wie semantische Änderungen an der Schnittstelle oder Gleichzeitigkeitsrennen zu erkennen. Dies sind die häufigsten Fehler bei der täglichen Codeüberprüfung.</p></li>
-<li><p><strong>L3 (5 Fälle):</strong> Erfordert ein Verständnis der Systemebene, um Probleme wie modulübergreifende Zustandsinkonsistenzen oder Upgrade-Kompatibilitätsprobleme zu erkennen. Dies sind die härtesten Tests dafür, wie tief ein Modell in eine Codebasis eindringen kann.</p></li>
+<li><p><strong>L1:</strong> Visible from the diff alone (use-after-free, off-by-one).</p></li>
+<li><p><strong>L2 (10 cases):</strong> Requires understanding surrounding code to spot things like interface semantic changes or concurrency races. These represent the most common bugs in daily code review.</p></li>
+<li><p><strong>L3 (5 cases):</strong> Requires system-level understanding to catch issues like cross-module state inconsistencies or upgrade compatibility problems. These are the hardest tests of how deeply a model can reason about a codebase.</p></li>
 </ul>
-<p><em>Hinweis: Jedes Modell hat alle L1-Fehler erkannt, daher habe ich sie von der Bewertung ausgeschlossen.</em></p>
-<p><strong>Zwei Bewertungsmodi</strong></p>
-<p>Jedes Modell wurde in zwei Modi ausgeführt:</p>
+<p><em>Note: Every model caught all L1 bugs, so I excluded them from scoring.</em></p>
+<p><strong>Two evaluation modes</strong></p>
+<p>Each model was run in two modes:</p>
 <ul>
-<li><p><strong>Raw:</strong> Das Modell sieht nur den PR (diff + was auch immer im PR-Inhalt ist).</p></li>
-<li><p><strong>R1:</strong> Magpie zieht den umgebenden Kontext (relevante Dateien/Aufrufseiten/verwandten Code) <em>, bevor</em> das Modell prüft. Dies simuliert einen Arbeitsablauf, bei dem man den Kontext im Voraus vorbereitet, anstatt das Modell zu bitten, zu erraten, was es braucht.</p></li>
+<li><p><strong>Raw:</strong> the model sees only the PR (diff + whatever is in the PR content).</p></li>
+<li><p><strong>R1:</strong> Magpie pulls the surrounding context (relevant files / call sites / related code) <em>before</em> the model reviews. This simulates a workflow where you prep context up front instead of asking the model to guess what it needs.</p></li>
 </ul>
-<h3 id="Results-L2-+-L3-only" class="common-anchor-header">Ergebnisse (nur L2 + L3)</h3><table>
+<h3 id="Results-L2-+-L3-only" class="common-anchor-header">Results (L2 + L3 only)</h3><table>
 <thead>
-<tr><th>Modus</th><th>Claude</th><th>Zwilling</th><th>Codex</th><th>MiniMax</th><th>Qwen</th></tr>
+<tr><th>Mode</th><th>Claude</th><th>Gemini</th><th>Codex</th><th>MiniMax</th><th>Qwen</th></tr>
 </thead>
 <tbody>
-<tr><td>Rohe</td><td>53% (1.)</td><td>13% (letzter)</td><td>33%</td><td>27%</td><td>33%</td></tr>
-<tr><td>R1 (mit Kontext von Magpie)</td><td>47% ⬇️</td><td>33%⬆️</td><td>27%</td><td>33%</td><td>40%⬆️</td></tr>
+<tr><td>Raw</td><td>53% (1st)</td><td>13% (last)</td><td>33%</td><td>27%</td><td>33%</td></tr>
+<tr><td>R1 (with context by Magpie)</td><td>47% ⬇️</td><td>33%⬆️</td><td>27%</td><td>33%</td><td>40%⬆️</td></tr>
 </tbody>
 </table>
-<p>Vier Schlussfolgerungen:</p>
-<p><strong>1. Claude dominiert die Rohbewertung.</strong> Es erzielte 53 % Gesamterkennung und eine perfekte 5/5 bei L3-Fehlern, ohne jegliche Kontexthilfe. Wenn Sie ein einzelnes Modell verwenden und keine Zeit für die Vorbereitung des Kontexts aufwenden wollen, ist Claude die beste Wahl.</p>
-<p><strong>2. Gemini braucht Kontext, der ihm vorgelegt wird.</strong> Sein Rohwert von 13 % war der niedrigste in der Gruppe, aber mit Magpie, das Umgebungscode bereitstellt, stieg er auf 33 %. Gemini sammelt seinen eigenen Kontext nicht gut, aber es zeigt respektable Leistungen, wenn man ihm diese Arbeit im Vorfeld abnimmt.</p>
-<p><strong>3. Qwen ist der stärkste kontextunterstützte Performer.</strong> Es erzielte 40 % im R1-Modus und 5/10 bei L2-Fehlern, was die höchste Punktzahl auf diesem Schwierigkeitsgrad war. Für routinemäßige tägliche Überprüfungen, bei denen man bereit ist, den Kontext vorzubereiten, ist Qwen eine praktische Wahl.</p>
-<p><strong>4. Mehr Kontext ist nicht immer hilfreich.</strong> Es hat Gemini (13% → 33%) und MiniMax (27% → 33%) verbessert, aber Claude (53% → 47%) hat es geschadet. Claude ist bereits sehr gut darin, den Kontext zu organisieren, so dass die zusätzlichen Informationen wahrscheinlich eher zu Rauschen als zu Klarheit führten. Die Lehre daraus: Passen Sie den Arbeitsablauf an das Modell an, anstatt davon auszugehen, dass mehr Kontext generell besser ist.</p>
-<p>Diese Ergebnisse decken sich mit meiner täglichen Erfahrung. Claude an der Spitze ist nicht überraschend. Dass Gemini schlechter abschneidet, als ich erwartet hatte, macht im Nachhinein Sinn: Ich verwende Gemini in der Regel in Gesprächen mit mehreren Gesprächspartnern, in denen ich ein Design iteriere oder gemeinsam einem Problem nachgehe, und in dieser interaktiven Umgebung schneidet es gut ab. Bei diesem Benchmark handelt es sich um eine feste Single-Pass-Pipeline, also genau das Format, in dem Gemini am schwächsten ist. Der Abschnitt über Debatten wird später zeigen, dass sich die Leistung von Gemini merklich verbessert, wenn man ihm ein gegnerisches Format mit mehreren Runden gibt.</p>
-<h2 id="Let-AI-Models-Debate-with-Each-Other" class="common-anchor-header">KI-Modelle miteinander debattieren lassen<button data-href="#Let-AI-Models-Debate-with-Each-Other" class="anchor-icon" translate="no">
+<p>Four takeaways:</p>
+<p><strong>1. Claude dominates the raw review.</strong> It scored 53% overall detection and a perfect 5/5 on L3 bugs, without any context assistance. If you’re using a single model and don’t want to spend time preparing context, Claude is the best choice.</p>
+<p><strong>2. Gemini needs context handed to it.</strong> Its raw score of 13% was the lowest in the group, but with Magpie providing surrounding code, it jumped to 33%. Gemini doesn’t gather its own context well, but it performs respectably when you do that work upfront.</p>
+<p><strong>3. Qwen is the strongest context-assisted performer.</strong> It scored 40% in R1 mode, with 5/10 on L2 bugs, which was the highest score at that difficulty level. For routine daily reviews where you’re willing to prepare context, Qwen is a practical pick.</p>
+<p><strong>4. More context doesn’t always help.</strong> It lifted Gemini (13% → 33%) and MiniMax (27% → 33%), but it actually hurt Claude (53% → 47%). Claude already excels at organizing context on its own, so the additional information likely introduced noise rather than clarity. The lesson: match the workflow to the model, rather than assuming more context is universally better.</p>
+<p>These results align with my day-to-day experience. Claude at the top isn’t surprising. Gemini scoring lower than I expected makes sense in hindsight: I typically use Gemini in multi-turn conversations where I’m iterating on a design or chasing a problem together, and it performs well in that interactive setting. This benchmark is a fixed, single-pass pipeline, which is exactly the format in which Gemini is weakest. The debate section later will show that when you give Gemini a multi-round, adversarial format, its performance improves noticeably.</p>
+<h2 id="Let-AI-Models-Debate-with-Each-Other" class="common-anchor-header">Let AI Models Debate with Each Other<button data-href="#Let-AI-Models-Debate-with-Each-Other" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,42 +101,42 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Jedes Modell zeigte bei den einzelnen Benchmarks unterschiedliche Stärken und blinde Flecken. Ich wollte also testen, was passiert, wenn die Modelle die Arbeit der anderen überprüfen und nicht nur den Code?</p>
-<p>Also fügte ich demselben Benchmark eine Diskussionsschicht hinzu. Alle fünf Modelle nehmen an fünf Runden teil:</p>
+    </button></h2><p>Every model showed different strengths and blind spots in the individual benchmarks. So I wanted to test: what happens if the models review each other’s work rather than just the code?</p>
+<p>So I added a debate layer on top of the same benchmark. All five models participate in five rounds:</p>
 <ul>
-<li><p>In Runde 1 prüft jedes Modell unabhängig voneinander die gleiche PR.</p></li>
-<li><p>Danach gebe ich alle fünf Bewertungen an alle Teilnehmer weiter.</p></li>
-<li><p>In Runde 2 aktualisiert jedes Modell seine Position auf der Grundlage der anderen vier.</p></li>
-<li><p>Dies wird bis Runde 5 wiederholt.</p></li>
+<li><p>In Round 1, each model reviews the same PR independently.</p></li>
+<li><p>After that, I broadcast all five reviews to all participants.</p></li>
+<li><p>In Round 2, each model updates its position based on the other four.</p></li>
+<li><p>Repeat until Round 5.</p></li>
 </ul>
-<p>Am Ende reagiert jedes Modell nicht nur auf den Code, sondern auch auf Argumente, die bereits mehrfach kritisiert und überarbeitet wurden.</p>
-<p>Damit das Ganze nicht zu einem "LLMs stimmen lauthals zu" wird, habe ich eine harte Regel aufgestellt: <strong>Jede Behauptung muss auf einen bestimmten Code als Beweis verweisen</strong>, und ein Modell kann nicht einfach sagen: "Gutes Argument" - es muss erklären, warum es seine Meinung geändert hat.</p>
-<h3 id="Results-Best-Solo-vs-Debate-Mode" class="common-anchor-header">Ergebnisse: Bestes Solo gegen Debattenmodus</h3><table>
+<p>By the end, each model isn’t just reacting to the code — it’s reacting to arguments that have already been criticized and revised multiple times.</p>
+<p>To keep this from turning into “LLMs agreeing loudly,” I enforced one hard rule: <strong>every claim has to point to specific code as evidence</strong>, and a model can’t just say “good point” — it has to explain why it changed its mind.</p>
+<h3 id="Results-Best-Solo-vs-Debate-Mode" class="common-anchor-header">Results: Best Solo vs Debate Mode</h3><table>
 <thead>
-<tr><th>Modus</th><th>L2 (10 Fälle)</th><th>L3 (5 Fälle)</th><th>Erkennung insgesamt</th></tr>
+<tr><th>Mode</th><th>L2 (10 cases)</th><th>L3 (5 cases)</th><th>Total detection</th></tr>
 </thead>
 <tbody>
-<tr><td>Bester Einzelner (Raw Claude)</td><td>3/10</td><td>5/5</td><td>53%</td></tr>
-<tr><td>Debatte (alle fünf Modelle)</td><td>7/10 (verdoppelt)</td><td>5/5 (alle gefangen)</td><td>80%</td></tr>
+<tr><td>Best individual (Raw Claude)</td><td>3/10</td><td>5/5</td><td>53%</td></tr>
+<tr><td>Debate (all five models)</td><td>7/10 (doubled)</td><td>5/5 (all caught)</td><td>80%</td></tr>
 </tbody>
 </table>
-<h3 id="What-stands-out" class="common-anchor-header">Was auffällt</h3><p><strong>1. L2-Erkennung verdoppelt.</strong> Routinemäßige, mittelschwere Bugs stiegen von 3/10 auf 7/10. Dies sind die Fehler, die in realen Codebasen am häufigsten auftreten, und sie sind genau die Kategorie, in der einzelne Modelle inkonsistent sind. Der größte Beitrag des Diskussionsmechanismus besteht darin, diese alltäglichen Lücken zu schließen.</p>
-<p><strong>2. L3-Fehler: Null Fehlversuche.</strong> Bei den Einzelmodellläufen hat nur Claude alle fünf L3-Fehler auf Systemebene gefunden. Im Debattiermodus hat die Gruppe dieses Ergebnis erreicht, was bedeutet, dass man nicht mehr auf das richtige Modell setzen muss, um eine vollständige L3-Abdeckung zu erhalten.</p>
-<p><strong>3. Die Debatte füllt blinde Flecken, anstatt die Obergrenze anzuheben.</strong> Fehler auf Systemebene waren für die stärkste Person nicht das Schwierigste. Claude hatte diese bereits. Der Hauptbeitrag des Debattiermechanismus besteht darin, Claudes Schwäche bei Routine-L2-Fehlern zu beheben, wo der einzelne Claude nur 3 von 10 Fehlern fand, die Debattiergruppe aber 7. Daher rührt der Sprung von 53 % → 80 %.</p>
-<h3 id="What-debate-actually-looks-like-in-practice" class="common-anchor-header">Wie die Debatte in der Praxis aussieht</h3><p>Die obigen Zahlen zeigen, dass die Debatte funktioniert, aber ein konkretes Beispiel zeigt, <em>warum</em> sie funktioniert. Hier ist ein kurzer Überblick darüber, wie die fünf Modelle mit <strong>PR #44474</strong> umgegangen sind, der das faule Laden von Primärschlüsseln bei der Suche einführte.</p>
-<p><a href="https://github.com/milvus-io/milvus/pull/44474"><strong>PR #44474:</strong></a> Eine Lazy-Loading-Optimierung, die die Suche dahingehend änderte, dass Primärschlüssel bei Bedarf abgerufen werden, anstatt sie alle im Voraus zu laden.</p>
-<p><strong>Runde 1</strong></p>
-<p>Gemini eröffnete aggressiv:</p>
-<p>"Dieser PR ist ein Minenfeld aus schlechten Praktiken, potenziell undefiniertem Verhalten und Leistungsrückschritten, die als 'Optimierung' getarnt sind."</p>
-<p>Claude und Qwen konzentrierten sich auf undefiniertes Verhalten und Leistung und kamen zu demselben Ergebnis:</p>
-<p>"Das C++-Speichermodell garantiert keine Sicherheit für gleichzeitige Schreibvorgänge auf verschiedene Indizes desselben Vektors ohne angemessene Synchronisierung."</p>
-<p>Alle drei fanden echte Probleme, aber keiner von ihnen entdeckte den tieferen Fehler. Dann wies Codex, der sich kaum zu Wort gemeldet hatte, auf etwas hin, das die anderen übersehen hatten: Der Vektor <code translate="no">primary_keys_</code> wird in der Größe verändert, aber nur die Positionen, die die Reduktionsphase durchlaufen, werden tatsächlich aufgefüllt. Jede andere Position wird als Nullwert belassen.</p>
-<p><strong>Runde 2</strong></p>
-<p>Claude griff die Entdeckung von Codex auf und verfolgte die nachgelagerte Konsequenz:</p>
-<p>"Ich habe es gefunden: <code translate="no">SortEqualScoresByPks</code> wird vor <code translate="no">ReduceResultData</code> ausgeführt. Wenn <code translate="no">SortEqualScoresByPks</code> ausgeführt wird, sind also noch keine PKs abgeholt worden. Der gesamte <code translate="no">primary_keys_</code> Vektor ist voll von standardmäßig konstruierten PkType-Werten."</p>
-<p>Im Klartext: Die Sortierfunktion wird ausgeführt, bevor die Schlüssel geladen wurden, also sortiert sie Nullen. Claude räumte den Fehler offen ein:</p>
-<p>"codex-cli hat einen echten kritischen Korrektheitsfehler identifiziert. Das habe ich in meiner ersten Runde übersehen."</p>
-<h2 id="Which-Combination-of-Models-Can-Find-the-Most-Bugs" class="common-anchor-header">Welche Kombination von Modellen kann die meisten Fehler finden?<button data-href="#Which-Combination-of-Models-Can-Find-the-Most-Bugs" class="anchor-icon" translate="no">
+<h3 id="What-stands-out" class="common-anchor-header">What stands out</h3><p><strong>1. L2 detection doubled.</strong> Routine, mid-difficulty bugs jumped from 3/10 to 7/10. These are the bugs that appear most frequently in real codebases, and they’re exactly the category where individual models miss inconsistently. The debate mechanism’s biggest contribution is closing these everyday gaps.</p>
+<p><strong>2. L3 bugs: zero misses.</strong> In the single-model runs,  only Claude caught all five L3 system-level bugs. In debate mode, the group matched that result, meaning you no longer need to bet on the right model to get full L3 coverage.</p>
+<p><strong>3. Debate fills blind spots rather than raising the ceiling.</strong> System-level bugs weren’t the hard part for the strongest individual. Claude already had those. The debate mechanism’s core contribution is patching Claude’s weakness on routine L2 bugs, where individual Claude caught only 3 out of 10, but the debating group caught 7. That’s where the 53% → 80% jump comes from.</p>
+<h3 id="What-debate-actually-looks-like-in-practice" class="common-anchor-header">What debate actually looks like in practice</h3><p>The numbers above show that debate works, but a concrete example shows <em>why</em> it works. Here’s a condensed walkthrough of how the five models handled <strong>PR #44474</strong>, which introduced lazy loading of primary keys during search.</p>
+<p><a href="https://github.com/milvus-io/milvus/pull/44474"><strong>PR #44474:</strong></a> A lazy-loading optimization that changed search to fetch primary keys on demand instead of loading them all upfront.</p>
+<p><strong>Round 1</strong></p>
+<p>Gemini opened aggressively:</p>
+<p>“This PR is a minefield of bad practices, potential undefined behavior, and performance regressions disguised as an 'optimization.’”</p>
+<p>Claude and Qwen focused on undefined behavior and performance, converging on the same concern:</p>
+<p>“The C++ memory model doesn’t guarantee safety for concurrent writes to different indices of the same vector without proper synchronization.”</p>
+<p>All three found real issues, but none of them caught the deeper bug. Then Codex, which had barely spoken, flagged something the others missed: the <code translate="no">primary_keys_</code> vector gets resized, but only positions that pass through the reduce phase are actually populated. Every other position is left as a zero value.</p>
+<p><strong>Round 2</strong></p>
+<p>Claude picked up Codex’s finding and traced the downstream consequence:</p>
+<p>“I found it: <code translate="no">SortEqualScoresByPks</code> runs before <code translate="no">ReduceResultData</code>. So when <code translate="no">SortEqualScoresByPks</code> executes, zero PKs have been lazily fetched yet. The entire <code translate="no">primary_keys_</code> vector is full of default-constructed PkType values.”</p>
+<p>In plain terms, the sort function runs before the keys have been loaded, so it’s sorting zeros. Claude acknowledged the miss openly:</p>
+<p>“codex-cli identified a genuine critical correctness bug. I missed this in my first round.”</p>
+<h2 id="Which-Combination-of-Models-Can-Find-the-Most-Bugs" class="common-anchor-header">Which Combination of Models Can Find the Most Bugs?<button data-href="#Which-Combination-of-Models-Can-Find-the-Most-Bugs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -152,20 +151,20 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Sprung von 53 % auf 80 % ist darauf zurückzuführen, dass fünf Modelle die blinden Flecken des jeweils anderen abdecken. Aber nicht jeder kann es sich leisten, für jede Codeüberprüfung fünf Modelle einzurichten und fünf Diskussionsrunden durchzuführen.</p>
-<p><strong>Also habe ich die einfachere Version getestet: Wenn Sie nur zwei Modelle durchführen können, welches Paar kommt der Obergrenze für mehrere Modelle am nächsten?</strong></p>
-<p>Ich habe die <strong>kontextunterstützten (R1)</strong> Durchläufe verwendet und gezählt, wie viele der 15 bekannten Fehler jedes Modell gefunden hat:</p>
+    </button></h2><p>The jump from 53% to 80% happened because five models covered each other’s blind spots. But not everyone can afford to set up and run five models through five rounds of debate for every code review.</p>
+<p><strong>So I tested the simpler version: if you can only run two models, which pair gets you closest to the multi-model ceiling?</strong></p>
+<p>I used the <strong>context-assisted (R1)</strong> runs and counted how many of the 15 known bugs each model found:</p>
 <ul>
 <li><p><strong>Claude:</strong> 7/15 (47%)</p></li>
 <li><p><strong>Qwen:</strong> 6/15 (40%)</p></li>
-<li><p><strong>Zwilling:</strong> 5/15 (33%)</p></li>
+<li><p><strong>Gemini:</strong> 5/15 (33%)</p></li>
 <li><p><strong>MiniMax:</strong> 5/15 (33%)</p></li>
 <li><p><strong>Codex:</strong> 4/15 (27%)</p></li>
 </ul>
-<p>Es kommt also nicht nur darauf an, wie viele Fehler jedes Modell findet, sondern auch <em>, welche</em> Fehler es übersieht. Von den 8 Fehlern, die Claude übersehen hat, hat Gemini 3 gefunden: eine Gleichzeitigkeits-Race-Condition, ein Kompatibilitätsproblem mit der Cloud-Storage-API und eine fehlende Berechtigungsprüfung. Umgekehrt hat Gemini die meisten Fehler in Datenstrukturen und tiefer Logik übersehen, während Claude fast alle davon gefunden hat. Ihre Schwächen überschneiden sich kaum, was sie zu einem starken Paar macht.</p>
+<p>What matters, then, is not just how many bugs each model finds, but <em>which</em> bugs it misses. Of the 8 bugs Claude missed, Gemini caught 3: a concurrency race condition, a cloud storage API compatibility issue, and a missing permission check. Going the other direction, Gemini missed most data structures and deep logic bugs, and Claude caught nearly all of those. Their weaknesses barely overlap, which is what makes them a strong pair.</p>
 <table>
 <thead>
-<tr><th>Zwei-Modelle-Paarung</th><th>Kombinierte Abdeckung</th></tr>
+<tr><th>Two-model pairing</th><th>Combined coverage</th></tr>
 </thead>
 <tbody>
 <tr><td>Claude + Gemini</td><td>10/15</td></tr>
@@ -174,32 +173,32 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
 <tr><td>Claude + MiniMax</td><td>8/15</td></tr>
 </tbody>
 </table>
-<p>Alle fünf Modelle zusammen haben 11 von 15 Fehlern gefunden, d. h. 4 Fehler, die jedes Modell nicht gefunden hat.</p>
-<p><strong>Claude + Gemini</strong> erreichen als Paar mit zwei Modellen bereits 91 % der Obergrenze von fünf Modellen. Für diesen Benchmark ist dies die effizienteste Kombination.</p>
-<p>Allerdings ist Claude + Gemini nicht die beste Kombination für jede Art von Fehler. Als ich die Ergebnisse nach Fehlerkategorie aufgeschlüsselt habe, ergab sich ein differenzierteres Bild:</p>
+<p>All five models together covered 11 out of 15, leaving 4 bugs that every model missed.</p>
+<p><strong>Claude + Gemini,</strong> as a two-model pair, already reaches 91% of that five-model ceiling. For this benchmark, it’s the most efficient combination.</p>
+<p>That said, Claude + Gemini isn’t the best pairing for every type of bug. When I broke the results down by bug category, a more nuanced picture emerged:</p>
 <table>
 <thead>
-<tr><th>Fehlertyp</th><th>Insgesamt</th><th>Claude</th><th>Zwillinge</th><th>Codex</th><th>MiniMax</th><th>Qwen</th></tr>
+<tr><th>Bug type</th><th>Total</th><th>Claude</th><th>Gemini</th><th>Codex</th><th>MiniMax</th><th>Qwen</th></tr>
 </thead>
 <tbody>
-<tr><td>Validierungslücken</td><td>4</td><td>3</td><td>2</td><td>1</td><td>1</td><td>3</td></tr>
-<tr><td>Lebenszyklus der Datenstruktur</td><td>4</td><td>3</td><td>1</td><td>1</td><td>3</td><td>1</td></tr>
-<tr><td>Gleichzeitigkeitsrennen</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>Kompatibilität</td><td>2</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
-<tr><td>Tiefe Logik</td><td>3</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
-<tr><td>Insgesamt</td><td>15</td><td>7</td><td>5</td><td>4</td><td>5</td><td>6</td></tr>
+<tr><td>Validation gaps</td><td>4</td><td>3</td><td>2</td><td>1</td><td>1</td><td>3</td></tr>
+<tr><td>Data structure lifecycle</td><td>4</td><td>3</td><td>1</td><td>1</td><td>3</td><td>1</td></tr>
+<tr><td>Concurrency races</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>Compatibility</td><td>2</td><td>0</td><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>Deep logic</td><td>3</td><td>1</td><td>0</td><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>Total</td><td>15</td><td>7</td><td>5</td><td>4</td><td>5</td><td>6</td></tr>
 </tbody>
 </table>
-<p>Die Aufschlüsselung nach Fehlertyp zeigt, warum keine einzelne Paarung universell die beste ist.</p>
+<p>The bug-type breakdown reveals why no single pairing is universally best.</p>
 <ul>
-<li><p>Bei Fehlern im Lebenszyklus von Datenstrukturen liegen Claude und MiniMax mit 3/4 gleichauf.</p></li>
-<li><p>Bei den Validierungslücken lagen Claude und Qwen mit 3/4 gleichauf.</p></li>
-<li><p>Bei Gleichzeitigkeits- und Kompatibilitätsproblemen erzielte Claude bei beiden null Punkte, und Gemini ist das Modell, das diese Lücken füllt.</p></li>
-<li><p>Kein Modell deckt alles ab, aber Claude deckt den größten Bereich ab und kommt einem Generalisten am nächsten.</p></li>
+<li><p>For data structure lifecycle bugs, Claude and MiniMax tied at 3/4.</p></li>
+<li><p>For validation gaps, Claude and Qwen tied at 3/4.</p></li>
+<li><p>For concurrency and compatibility issues, Claude scored zero on both, and Gemini is the one that fills those gaps.</p></li>
+<li><p>No model covers everything, but Claude covers the widest range and comes closest to being a generalist.</p></li>
 </ul>
-<p>Vier Fehler wurden von jedem Modell übersehen. Einer betraf die Priorität der ANTLR-Grammatikregeln. Bei einem handelte es sich um eine semantische Unstimmigkeit zwischen Lese- und Schreibsperren in verschiedenen Funktionen. Bei einem musste man die Unterschiede in der Geschäftslogik zwischen den Verdichtungstypen verstehen. Und einer war ein stiller Vergleichsfehler, bei dem eine Variable Megabytes und eine andere Bytes verwendete.</p>
-<p>Diesen vier Fehlern ist gemeinsam, dass der Code syntaktisch korrekt ist. Die Fehler sind auf Annahmen zurückzuführen, die der Entwickler im Kopf hatte, nicht auf den Vergleich und auch nicht auf den umgebenden Code. Genau hier stößt die KI-Codeüberprüfung heute an ihre Grenzen.</p>
-<h2 id="After-Finding-Bugs-Which-Model-is-the-Best-at-Fixing-Them" class="common-anchor-header">Welches Modell ist nach dem Auffinden von Fehlern am besten geeignet, diese zu beheben?<button data-href="#After-Finding-Bugs-Which-Model-is-the-Best-at-Fixing-Them" class="anchor-icon" translate="no">
+<p>Four bugs were missed by every model. One involved ANTLR grammar rule priority. One was a read/write lock semantic mismatch across functions. One required understanding the business logic differences between compaction types. And one was a silent comparison error where one variable used megabytes and another used bytes.</p>
+<p>What these four have in common is that the code is syntactically correct. The bugs live in assumptions the developer carried in their head, not in the diff, and not even in the surrounding code. This is roughly where AI code review hits its ceiling today.</p>
+<h2 id="After-Finding-Bugs-Which-Model-is-the-Best-at-Fixing-Them" class="common-anchor-header">After Finding Bugs, Which Model is the Best at Fixing Them?<button data-href="#After-Finding-Bugs-Which-Model-is-the-Best-at-Fixing-Them" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -214,22 +213,22 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bei der Codeüberprüfung ist das Finden von Fehlern die halbe Arbeit. Die andere Hälfte besteht darin, sie zu beheben. Daher habe ich nach den Diskussionsrunden eine Peer-Evaluation hinzugefügt, um zu messen, wie nützlich die Korrekturvorschläge der einzelnen Modelle tatsächlich sind.</p>
-<p>Um dies zu messen, habe ich nach der Debatte eine Peer-Evaluierungsrunde eingefügt. Jedes Modell eröffnete eine neue Sitzung und fungierte als anonymer Richter, der die Bewertungen der anderen Modelle bewertete. Die fünf Modelle wurden nach dem Zufallsprinzip den Prüfern A/B/C/D/E zugeordnet, so dass kein Prüfer wusste, welches Modell welche Bewertung abgab. Jeder Bewerter bewertete vier Dimensionen, die mit 1 bis 10 bewertet wurden: Genauigkeit, Umsetzbarkeit, Tiefe und Klarheit.</p>
+    </button></h2><p>In code review, finding bugs is half the job. The other half is fixing them. So after the debate rounds, I added a peer evaluation to measure how useful each model’s fix suggestions actually are.</p>
+<p>To measure this, I added a peer evaluation round after the debate. Each model opened a fresh session and acted as an anonymous judge, scoring the other models’ reviews. The five models were randomly mapped to Reviewer A/B/C/D/E, so no judge knew which model produced which review. Each judge scored on four dimensions, rated 1 to 10: accuracy, actionability, depth, and clarity.</p>
 <table>
 <thead>
-<tr><th>Modell</th><th>Genauigkeit</th><th>Umsetzbarkeit</th><th>Tiefe</th><th>Klarheit</th><th>Insgesamt</th></tr>
+<tr><th>Model</th><th>Accuracy</th><th>Actionability</th><th>Depth</th><th>Clarity</th><th>Overall</th></tr>
 </thead>
 <tbody>
-<tr><td>Qwen</td><td>8.6</td><td>8.6</td><td>8.5</td><td>8.7</td><td>8,6 (gleichauf mit 1)</td></tr>
-<tr><td>Claude</td><td>8.4</td><td>8.2</td><td>8.8</td><td>8.8</td><td>8,6 (gleichauf mit 1)</td></tr>
+<tr><td>Qwen</td><td>8.6</td><td>8.6</td><td>8.5</td><td>8.7</td><td>8.6 (tied 1st)</td></tr>
+<tr><td>Claude</td><td>8.4</td><td>8.2</td><td>8.8</td><td>8.8</td><td>8.6 (tied 1st)</td></tr>
 <tr><td>Codex</td><td>7.7</td><td>7.6</td><td>7.1</td><td>7.8</td><td>7.5</td></tr>
-<tr><td>Zwillinge</td><td>7.4</td><td>7.2</td><td>6.7</td><td>7.6</td><td>7.2</td></tr>
+<tr><td>Gemini</td><td>7.4</td><td>7.2</td><td>6.7</td><td>7.6</td><td>7.2</td></tr>
 <tr><td>MiniMax</td><td>7.1</td><td>6.7</td><td>6.9</td><td>7.4</td><td>7.0</td></tr>
 </tbody>
 </table>
-<p>Qwen und Claude belegten mit deutlichem Abstand den ersten Platz. Beide erreichten in allen vier Dimensionen konstant hohe Werte, während Codex, Gemini und MiniMax einen ganzen Punkt oder mehr darunter lagen. Bemerkenswert ist, dass Gemini, der sich in der Pairing-Analyse als wertvoller Partner für Claude bei der Fehlersuche erwiesen hat, bei der Überprüfungsqualität am unteren Ende rangiert. Gut darin zu sein, Probleme zu erkennen und gut darin, zu erklären, wie man sie beheben kann, sind offensichtlich unterschiedliche Fähigkeiten.</p>
-<h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Qwen and Claude tied for first by a clear margin. Both scored consistently high across all four dimensions, while Codex, Gemini, and MiniMax clustered a full point or more below. Notably, Gemini, which proved valuable as a bug-finding partner for Claude in the pairing analysis, ranks near the bottom for review quality. Being good at spotting issues and being good at explaining how to fix them are evidently different skills.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -244,12 +243,12 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Claude</strong> ist derjenige, dem man die schwierigsten Überprüfungen anvertrauen würde. Er arbeitet sich durch ganze Aufrufketten, folgt tiefen Logikpfaden und zieht seinen eigenen Kontext heran, ohne dass Sie ihn mit Informationen füttern müssen. Bei L3-Fehlern auf Systemebene kommt nichts anderes an ihn heran. Manchmal wird es bei mathematischen Berechnungen übermütig, aber wenn ein anderes Modell beweist, dass es falsch ist, steht es dazu und erklärt, wo seine Argumentation versagt hat. Verwenden Sie es für den Kerncode und die Fehler, die Sie sich nicht entgehen lassen dürfen.</p>
-<p><strong>Zwillinge</strong> ist ein heißer Kandidat. Es hat eine starke Meinung über den Stil des Codes und die technischen Standards, und es ist schnell in der Lage, Probleme strukturell zu erfassen. Der Nachteil ist, dass er oft an der Oberfläche bleibt und nicht tief genug gräbt, weshalb er in der Peer-Evaluation schlecht abschnitt. Gemini verdient seinen Platz wirklich als Herausforderer: Sein Pushback zwingt andere Modelle dazu, ihre Arbeit zu überprüfen. Kombinieren Sie es mit Claude, um die strukturelle Perspektive zu erhalten, die Claude manchmal auslässt.</p>
-<p><strong>Codex</strong> sagt kaum ein Wort. Aber wenn er es tut, ist es wichtig. Seine Trefferquote bei echten Fehlern ist hoch, und er hat ein Händchen dafür, das zu finden, woran alle anderen vorbeigegangen sind. Im Beispiel des PR #44474 war Codex das Modell, das das Problem mit den nullwertigen Primärschlüsseln entdeckte, das die ganze Kette in Gang setzte. Betrachten Sie ihn als den zusätzlichen Prüfer, der auffängt, was Ihr Hauptmodell übersehen hat.</p>
-<p><strong>Qwen</strong> ist der vielseitigste der fünf. Seine Überprüfungsqualität entspricht der von Claude, und er ist besonders gut darin, verschiedene Perspektiven zu Korrekturvorschlägen zusammenzufassen, auf die Sie tatsächlich reagieren können. Es hatte auch die höchste L2-Erkennungsrate im kontextunterstützten Modus, was es zu einem soliden Standard für alltägliche PR-Überprüfungen macht. Einziger Schwachpunkt: Bei langen Debatten über mehrere Runden verliert es manchmal den Überblick über den früheren Kontext und gibt in späteren Runden inkonsistente Antworten.</p>
-<p><strong>MiniMax</strong> war am schwächsten bei der eigenständigen Fehlersuche. Es ist am besten geeignet, um eine Gruppe mit mehreren Modellen zu vervollständigen, und nicht als eigenständiger Prüfer.</p>
-<h2 id="Limitations-of-This-Experiment" class="common-anchor-header">Beschränkungen dieses Experiments<button data-href="#Limitations-of-This-Experiment" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Claude</strong> is the one you’d trust with the hardest reviews. It works through entire call chains, follows deep logic paths, and pulls in its own context without you needing to spoon-feed it. On L3 system-level bugs, nothing else came close. It does get overconfident with math sometimes, but when another model proves it wrong, it owns it and walks through where its reasoning broke down. Use it for core code and the bugs you can’t afford to miss.</p>
+<p><strong>Gemini</strong> comes in hot. It has strong opinions about code style and engineering standards, and it’s quick to frame problems structurally. The downside is that it often stays at the surface and doesn’t dig deep enough, which is why it scored low in peer evaluation. Where Gemini really earns its spot is as a challenger: its pushback forces other models to double-check their work. Pair it with Claude for the structural perspective Claude sometimes skips.</p>
+<p><strong>Codex</strong> barely says a word. But when it does, it counts. Its hit rate on real bugs is high, and it has a knack for catching the one thing everyone else walked past. In the PR #44474 example, Codex was the model that spotted the zero-value primary keys issue that kicked off the whole chain. Think of it as the supplementary reviewer that catches what your primary model missed.</p>
+<p><strong>Qwen</strong> is the most well-rounded of the five. Its review quality matched Claude’s, and it’s especially good at pulling together different perspectives into fix suggestions you can actually act on. It also had the highest L2 detection rate in context-assisted mode, which makes it a solid default for everyday PR reviews. The one weakness: in long, multi-round debates, it sometimes loses track of earlier context and starts giving inconsistent answers in later rounds.</p>
+<p><strong>MiniMax</strong> was the weakest at finding bugs on its own. It’s best used to fill out a multi-model group rather than as a standalone reviewer.</p>
+<h2 id="Limitations-of-This-Experiment" class="common-anchor-header">Limitations of This Experiment<button data-href="#Limitations-of-This-Experiment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -264,11 +263,11 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ein paar Vorbehalte, um dieses Experiment im Blick zu behalten:</p>
-<p><strong>Die Stichprobengröße ist klein.</strong> Es gibt nur 15 PRs, die alle von demselben Go/C++-Projekt (Milvus) stammen. Diese Ergebnisse lassen sich nicht auf alle Sprachen oder Codebasen verallgemeinern. Betrachten Sie sie als richtungsweisend, nicht als endgültig.</p>
-<p><strong>Modelle sind von Natur aus zufällig.</strong> Wird dieselbe Eingabeaufforderung zweimal ausgeführt, kann dies zu unterschiedlichen Ergebnissen führen. Bei den Zahlen in diesem Beitrag handelt es sich um eine einzelne Momentaufnahme, nicht um einen stabilen Erwartungswert. Die Rangliste der einzelnen Modelle sollte mit Vorsicht genossen werden, obwohl die allgemeinen Trends (Debatte übertrifft Einzelpersonen, verschiedene Modelle zeichnen sich bei verschiedenen Fehlertypen aus) konsistent sind.</p>
-<p><strong>Die Redereihenfolge wurde festgelegt.</strong> In der Debatte wurde in allen Runden die gleiche Reihenfolge verwendet, was die Reaktion der später sprechenden Modelle beeinflusst haben könnte. In einem zukünftigen Experiment könnte die Reihenfolge pro Runde randomisiert werden, um dies zu kontrollieren.</p>
-<h2 id="Try-it-yourself" class="common-anchor-header">Versuchen Sie es selbst<button data-href="#Try-it-yourself" class="anchor-icon" translate="no">
+    </button></h2><p>A few caveats to keep this experiment in perspective:</p>
+<p><strong>The sample size is small.</strong> There are only 15 PRs, all from the same Go/C++ project (Milvus). These results don’t generalize to all languages or codebases. Treat them as directional, not definitive.</p>
+<p><strong>Models are inherently random.</strong> Running the same prompt twice can produce different results. The numbers in this post are a single snapshot, not a stable expected value. The individual model rankings should be taken lightly, though the broader trends (debate outperforms individuals, different models excel at different bug types) are consistent.</p>
+<p><strong>The speaking order was fixed.</strong> The debate used the same order across all rounds, which may have influenced how later-speaking models responded. A future experiment could randomize the order per round to control for this.</p>
+<h2 id="Try-it-yourself" class="common-anchor-header">Try it yourself<button data-href="#Try-it-yourself" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -283,14 +282,14 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Alle Werkzeuge und Daten dieses Experiments sind quelloffen:</p>
+    </button></h2><p>All tools and data from this experiment are open source:</p>
 <ul>
-<li><p><a href="https://github.com/liliu-z/magpie"><strong>Magpie</strong></a>: Ein Open-Source-Tool, das Codekontext (Aufrufketten, verwandte PRs, betroffene Module) sammelt und eine kontradiktorische Debatte mit mehreren Modellen für die Codeüberprüfung orchestriert.</p></li>
-<li><p><a href="https://github.com/liliu-z/ai-code-review-arena"><strong>AI-CodeReview-Arena</strong></a>: Die komplette Evaluierungspipeline, Konfigurationen und Skripte.</p></li>
-<li><p><a href="https://github.com/liliu-z/ai-code-review-arena/blob/main/prs/manifest.yaml"><strong>Testfälle</strong></a>: Alle 15 PRs mit annotierten bekannten Fehlern.</p></li>
+<li><p><a href="https://github.com/liliu-z/magpie"><strong>Magpie</strong></a>: An open-source tool that gathers code context (call chains, related PRs, affected modules) and orchestrates multi-model adversarial debate for code review.</p></li>
+<li><p><a href="https://github.com/liliu-z/ai-code-review-arena"><strong>AI-CodeReview-Arena</strong></a>: The full evaluation pipeline, configurations, and scripts.</p></li>
+<li><p><a href="https://github.com/liliu-z/ai-code-review-arena/blob/main/prs/manifest.yaml"><strong>Test cases</strong></a>: All 15 PRs with annotated known bugs.</p></li>
 </ul>
-<p>Die Fehler in diesem Experiment stammen alle aus echten Pull Requests in <a href="https://github.com/milvus-io/milvus">Milvus</a>, einer Open-Source-Vektordatenbank für KI-Anwendungen. Wir haben eine ziemlich aktive Community auf <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> und <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack</a> und würden uns freuen, wenn noch mehr Leute am Code herumstochern würden. Und wenn Sie diesen Benchmark auf Ihrer eigenen Codebasis durchführen, teilen Sie bitte die Ergebnisse mit uns! Ich bin wirklich neugierig, ob die Trends über verschiedene Sprachen und Projekte hinweg anhalten.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Lesen Sie weiter<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p>The bugs in this experiment all came from real pull requests in <a href="https://github.com/milvus-io/milvus">Milvus</a>, an open-source vector database built for AI applications. We’ve got a pretty active community on <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> and <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack</a>, and we’d love more people poking at the code. And if you end up running this benchmark on your own codebase, please share the results! I’m really curious whether the trends hold across different languages and projects.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -306,7 +305,7 @@ origin: 'https://milvus.io/blog/ai-code-review-benchmark-multi-model-debate.md'
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md">GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Deep Think: Welches Modell passt zu Ihrem AI Agent Stack?</a></p></li>
-<li><p><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Hinzufügen von persistentem Speicher zu Claude Code mit dem Lightweight memsearch Plugin</a></p></li>
-<li><p><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">Wir haben das Speichersystem von OpenClaw extrahiert und als Open-Source angeboten (memsearch)</a></p></li>
+<li><p><a href="https://milvus.io/blog/glm5-vs-minimax-m25-vs-gemini-3-deep-think.md">GLM-5 vs. MiniMax M2.5 vs. Gemini 3 Deep Think: Which Model Fits Your AI Agent Stack?</a></p></li>
+<li><p><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Adding Persistent Memory to Claude Code with the Lightweight memsearch Plugin</a></p></li>
+<li><p><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)</a></p></li>
 </ul>

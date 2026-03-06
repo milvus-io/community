@@ -1,15 +1,17 @@
 ---
 id: 2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md
-title: 사용 방법
+title: Usage
 author: Lichen Wang
 date: 2022-02-07T00:00:00.000Z
-desc: 세계에서 가장 진보된 벡터 데이터베이스인 Milvus 2.0의 삭제 기능의 기본 설계입니다.
+desc: >-
+  The cardinal design behind the deletion function in Milvus 2.0, the world's
+  most advanced vector database.
 cover: assets.zilliz.com/Delete_9f40bbfa94.png
 tag: Engineering
 ---
-<custom-h1>Milvus가 분산 클러스터에서 스트리밍 데이터를 삭제하는 방법</custom-h1><p>통합 배치 및 스트림 처리와 클라우드 네이티브 아키텍처를 특징으로 하는 Milvus 2.0은 삭제 기능을 개발하는 과정에서 이전 버전보다 더 큰 도전에 직면하게 됩니다. 하지만 고급 스토리지-컴퓨팅 분리 설계와 유연한 게시/구독 메커니즘 덕분에 이를 달성할 수 있었음을 발표하게 되어 자랑스럽게 생각합니다. Milvus 2.0에서는 기본 키로 특정 컬렉션의 엔터티를 삭제할 수 있으며, 삭제된 엔터티는 더 이상 검색 또는 쿼리 결과에 나열되지 않습니다.</p>
-<p>Milvus의 삭제 작업은 논리적 삭제를 의미하며, 물리적 데이터 정리는 데이터 압축 중에 수행된다는 점에 유의하세요. 논리적 삭제는 I/O 속도에 제약을 받는 검색 성능을 크게 향상시킬 뿐만 아니라 데이터 복구도 용이하게 해줍니다. 논리적으로 삭제된 데이터는 시간 이동 기능을 사용해 복구할 수 있습니다.</p>
-<h2 id="Usage" class="common-anchor-header">사용 방법<button data-href="#Usage" class="anchor-icon" translate="no">
+<custom-h1>How Milvus Deletes Streaming Data in a Distributed Cluster</custom-h1><p>Featuring unified batch-and-stream processing and cloud-native architecture, Milvus 2.0 poses a greater challenge than its predecessor did during the development of the DELETE function. Thanks to its advanced storage-computation disaggregation design and the flexible publication/subscription mechanism, we are proud to announce that we made it happen. In Milvus 2.0, you can delete an entity in a given collection with its primary key so that the deleted entity will no longer be listed in the result of a search or a query.</p>
+<p>Please note that the DELETE operation in Milvus refers to logical deletion, whereas physical data cleanup occurs during the Data Compaction. Logical deletion not only greatly boosts the search performance constrained by the I/O speed, but also facilitates data recovery. Logically deleted data can still be retrieved with the help of the Time Travel function.</p>
+<h2 id="Usage" class="common-anchor-header">Usage<button data-href="#Usage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -24,7 +26,7 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>먼저 Milvus 2.0에서 DELETE 함수를 사용해 보겠습니다. (다음 예제는 Milvus 2.0.0에서 PyMilvus 2.0.0을 사용합니다).</p>
+    </button></h2><p>Let’s try out the DELETE function in Milvus 2.0 first. (The following example uses PyMilvus 2.0.0 on Milvus 2.0.0).</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, utility, Collection, DataType, FieldSchema, CollectionSchema
 <span class="hljs-comment"># Connect to Milvus</span>
 connections.connect(
@@ -79,7 +81,7 @@ post_del_res = collection.query(
 )
 <span class="hljs-built_in">print</span>(post_del_res)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Implementation" class="common-anchor-header">구현<button data-href="#Implementation" class="anchor-icon" translate="no">
+<h2 id="Implementation" class="common-anchor-header">Implementation<button data-href="#Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,28 +96,32 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 인스턴스에서 데이터 노드는 주로 스트리밍 데이터(로그 브로커의 로그)를 기록 데이터(로그 스냅샷)로 패킹하고 자동으로 객체 스토리지로 플러시하는 역할을 담당합니다. 쿼리 노드는 전체 데이터, 즉 스트리밍 데이터와 기록 데이터 모두에 대한 검색 요청을 실행합니다.</p>
-<p>클러스터 내 병렬 노드의 데이터 쓰기 용량을 최대한 활용하기 위해 Milvus는 기본 키 해싱을 기반으로 하는 샤딩 전략을 채택하여 쓰기 작업을 여러 작업자 노드에 균등하게 분산시킵니다. 즉, 프록시는 엔티티의 DML(데이터 조작 언어) 메시지(즉, 요청)를 동일한 데이터 노드와 쿼리 노드로 라우팅합니다. 이러한 메시지는 DML 채널을 통해 게시되고 데이터 노드와 쿼리 노드에서 별도로 소비되어 검색 및 쿼리 서비스를 함께 제공합니다.</p>
-<h3 id="Data-node" class="common-anchor-header">데이터 노드</h3><p>데이터 노드는 데이터 INSERT 메시지를 수신하면 메모리에서 스트리밍 데이터를 수신하기 위해 생성된 새로운 세그먼트인 증가하는 세그먼트에 데이터를 삽입합니다. 데이터 행 수 또는 증가하는 세그먼트의 지속 시간이 임계값에 도달하면 데이터 노드는 세그먼트를 봉인하여 더 이상 데이터가 들어오는 것을 방지합니다. 그런 다음 데이터 노드는 기록 데이터가 포함된 봉인된 세그먼트를 오브젝트 스토리지로 플러시합니다. 한편, 데이터 노드는 새로운 데이터의 기본 키를 기반으로 블룸 필터를 생성하여 봉인된 세그먼트와 함께 오브젝트 스토리지에 플러시하고, 블룸 필터를 세그먼트의 통계 정보가 포함된 통계 바이너리 로그(binlog)의 일부로 저장합니다.</p>
+    </button></h2><p>In a Milvus instance, a data node is mainly responsible for packing streaming data (logs in log broker) as historical data (log snapshots) and automatically flushing them to object storage. A query node executes search requests on full data, i.e. both streaming data and historical data.</p>
+<p>To make the most of the data writing capacity of parallel nodes in a cluster, Milvus adopts a sharding strategy based on primary key hashing to distribute writing operations evenly to different worker nodes. That is to say, proxy will route the Data Manipulation Language (DML) messages (i.e. requests) of an entity to the same data node and query node. These messages are published through the DML-Channel and consumed by the data node and query node separately to provide search and query services together.</p>
+<h3 id="Data-node" class="common-anchor-header">Data node</h3><p>Having received data INSERT messages, the data node inserts the data in a growing segment, which is a new segment created to receive streaming data in memory. If either the data row count or the duration of the growing segment reaches the threshold, the data node seals it to prevent any incoming data. The data node then flushes the sealed segment, which contains the historical data, to the object storage. Meanwhile, the data node generates a bloom filter based on the primary keys of the new data, and flushed it to the object storage together with the sealed segment, saving the bloom filter as a part of the statistics binary log (binlog), which contains the statistical information of the segment.</p>
 <blockquote>
-<p>블룸 필터는 긴 이진 벡터와 일련의 무작위 매핑 함수로 구성된 확률적 데이터 구조입니다. 어떤 요소가 집합의 멤버인지 여부를 테스트하는 데 사용할 수 있지만 오탐을 반환할 수 있습니다.           -- 위키백과</p>
+<p>A bloom filter is a probabilistic data structure that consists of a long binary vector and a series of random mapping functions. It can be used to test whether an element is a member of a set, but might return false positive matches.           —— Wikipedia</p>
 </blockquote>
-<p>데이터 삭제 메시지가 들어오면 데이터 노드는 해당 샤드의 모든 블룸 필터를 버퍼링하고 메시지에 제공된 기본 키와 일치시켜 삭제할 엔티티를 포함할 가능성이 있는 모든 세그먼트(성장 중인 세그먼트와 봉인된 세그먼트 모두에서)를 검색합니다. 해당 세그먼트를 정확히 찾아낸 데이터 노드는 메모리에 버퍼링하여 삭제 작업을 기록하는 델타 빈로그를 생성한 다음 해당 빈로그를 세그먼트와 함께 오브젝트 스토리지로 다시 플러시합니다.</p>
+<p>When data DELETE messages come in, data node buffers all bloom filters in the corresponding shard, and matches them with the primary keys provided in the messages to retrieve all segments (from both growing and sealed ones) that possibly include the entities to delete. Having pinpointed the corresponding segments, data node buffers them in memory to generate the Delta binlogs to record the delete operations, and then flushes those binlogs together with the segments back to the object storage.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
-   </span> <span class="img-wrapper"> <span>데이터 노드</span> </span></p>
-<p>하나의 샤드에는 하나의 DML 채널만 할당되므로 클러스터에 추가된 추가 쿼리 노드는 DML 채널에 가입할 수 없습니다. 모든 쿼리 노드가 DELETE 메시지를 수신할 수 있도록 하기 위해, 데이터 노드는 DML-Channel에서 DELETE 메시지를 필터링하고 이를 Delta-Channel로 전달하여 모든 쿼리 노드에 삭제 작업을 알립니다.</p>
-<h3 id="Query-node" class="common-anchor-header">쿼리 노드</h3><p>오브젝트 스토리지에서 컬렉션을 로드할 때 쿼리 노드는 먼저 각 샤드의 체크포인트를 가져와 마지막 플러시 작업 이후의 DML 작업을 표시합니다. 이 체크포인트를 기반으로 쿼리 노드는 모든 봉인된 세그먼트와 해당 델타 빈로그 및 블룸 필터를 함께 로드합니다. 모든 데이터가 로드되면 쿼리 노드는 DML 채널, 델타 채널, 쿼리 채널에 가입합니다.</p>
-<p>컬렉션이 메모리에 로드된 후 더 많은 데이터 INSERT 메시지가 오면 쿼리 노드는 먼저 메시지에 따라 증가하는 세그먼트를 찾아내고 쿼리 전용으로 메모리에 있는 해당 블룸 필터를 업데이트합니다. 이러한 쿼리 전용 블룸 필터는 쿼리가 완료된 후에도 오브젝트 스토리지로 플러시되지 않습니다.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_node_2397ad70c3.png" alt="Data Node" class="doc-image" id="data-node" />
+    <span>Data Node</span>
+  </span>
+</p>
+<p>Since one shard is only assigned with one DML-Channel, extra query nodes added to the cluster will not be able to subscribe to the DML-Channel. To ensure that all query nodes can receive the DELETE messages, data nodes filter the DELETE messages from the DML-Channel, and forward them to Delta-Channel to notify all query nodes of the delete operations.</p>
+<h3 id="Query-node" class="common-anchor-header">Query node</h3><p>When loading a collection from object storage, the query node first obtains each shard’s checkpoint, which marks the DML operations since the last flush operation. Based on the checkpoint, the query node loads all sealed segments together with their Delta binlog and bloom filters. With all data loaded, the query node then subscribes to DML-Channel, Delta-Channel, and Query-Channel.</p>
+<p>If more data INSERT messages come after the collection is loaded to memory, query node first pinpoints the growing segments according to the messages, and updates corresponding bloom filters in memory for query purposes only. Those query-dedicated bloom filters will not be flushed to object storage after the query is finished.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
-   </span> <span class="img-wrapper"> <span>쿼리 노드</span> </span></p>
-<p>위에서 언급했듯이, 특정 수의 쿼리 노드만 DML-Channel로부터 DELETE 메시지를 수신할 수 있으며, 이는 증가하는 세그먼트에서 해당 노드만 DELETE 요청을 실행할 수 있음을 의미합니다. DML-Channel에 가입한 쿼리 노드의 경우, 먼저 성장하는 세그먼트에서 DELETE 메시지를 필터링하고, 제공된 기본 키를 성장하는 세그먼트의 쿼리 전용 블룸 필터와 일치시켜 엔터티를 찾은 다음, 해당 세그먼트에서 삭제 작업을 기록합니다.</p>
-<p>DML 채널에 가입할 수 없는 쿼리 노드는 델타 채널에만 가입할 수 있기 때문에 봉인된 세그먼트에 대한 검색 또는 쿼리 요청만 처리하고 데이터 노드가 전달한 DELETE 메시지를 수신할 수 있습니다. 델타 채널에서 봉인된 세그먼트의 모든 DELETE 메시지를 수집한 쿼리 노드는 제공된 기본 키를 봉인된 세그먼트의 블룸 필터와 일치시켜 엔티티를 찾은 다음 해당 세그먼트에서 삭제 작업을 기록합니다.</p>
-<p>결국 검색 또는 쿼리에서 쿼리 노드는 삭제 레코드를 기반으로 비트셋을 생성하여 삭제된 엔티티를 생략하고 세그먼트 상태에 관계없이 모든 세그먼트의 나머지 엔티티 중에서 검색합니다. 마지막으로 일관성 수준은 삭제된 데이터의 가시성에 영향을 미칩니다. 이전 코드 샘플에 표시된 것처럼 강력한 일관성 수준에서는 삭제된 엔티티가 삭제 후 즉시 보이지 않습니다. 경계 일관성 수준을 적용하면 삭제된 엔터티가 보이지 않게 되기까지 몇 초의 지연 시간이 발생합니다.</p>
-<h2 id="Whats-next" class="common-anchor-header">다음 단계는 무엇인가요?<button data-href="#Whats-next" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_node_a78b1d664f.png" alt="Query Node" class="doc-image" id="query-node" />
+    <span>Query Node</span>
+  </span>
+</p>
+<p>As mentioned above, only a certain number of query nodes can receive DELETE messages from the DML-Channel, meaning only they can execute the DELETE requests in growing segments. For those query nodes which have subscribed to the DML-Channel, they first filter the DELETE messages in the growing segments, locate the entities by matching the provided primary keys with those query-dedicated bloom filters of the growing segments, and then record the delete operations in the corresponding segments.</p>
+<p>Query nodes that cannot subscribe to the DML-Channel are only allowed to process search or query requests on sealed segments because they can only subscribe to the Delta-Channel, and receive the DELETE messages forwarded by data nodes. Having collected all DELETE messages in the sealed segments from Delta-Channel, the query nodes locate the entities by matching the provided primary keys with the bloom filters of the sealed segments, and then record the delete operations in the corresponding segments.</p>
+<p>Eventually, in a search or query, the query nodes generate a bitset based on the delete records to omit the deleted entities, and search among the remaining entities from all segments, regardless of the segment status. Last but not least, the consistency level affects the visibility of the deleted data. Under Strong Consistency Level (as shown in the previous code sample), the deleted entities are immediately invisible after deletion. While Bounded Consistency Level is adopted, there will be several seconds of latency before the deleted entities become invisible.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next?<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,10 +136,10 @@ post_del_res = collection.query(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>2.0의 새로운 기능 시리즈 블로그에서는 새로운 기능의 설계에 대해 설명할 예정입니다. 이 블로그 시리즈에서 자세히 읽어보세요!</p>
+    </button></h2><p>In the 2.0 new feature series blog, we aim to explain the design of the new features. Read more in this blog series!</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">Milvus가 분산 클러스터에서 스트리밍 데이터를 삭제하는 방법</a></li>
-<li><a href="https://milvus.io/blog/2022-2-21-compact.md">Milvus에서 데이터를 압축하는 방법은 무엇인가요?</a></li>
-<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">Milvus는 노드 간 쿼리 부하를 어떻게 분산하나요?</a></li>
-<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">비트셋으로 벡터 유사도 검색의 다양성을 구현하는 방법</a></li>
+<li><a href="https://milvus.io/blog/2022-02-07-how-milvus-deletes-streaming-data-in-distributed-cluster.md">How Milvus Deletes Streaming Data in a Distributed Cluster</a></li>
+<li><a href="https://milvus.io/blog/2022-2-21-compact.md">How to Compact Data in Milvus?</a></li>
+<li><a href="https://milvus.io/blog/2022-02-28-how-milvus-balances-query-load-across-nodes.md">How Milvus Balances Query Load across Nodes?</a></li>
+<li><a href="https://milvus.io/blog/2022-2-14-bitset.md">How Bitset Enables the Versatility of Vector Similarity Search</a></li>
 </ul>

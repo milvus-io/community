@@ -1,9 +1,9 @@
 ---
 id: >-
   beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md
-title: >-
-  Melampaui Kelebihan Konteks: Bagaimana Parlant × Milvus Memberikan Kontrol dan
-  Kejelasan pada Perilaku Agen LLM
+title: >
+  Beyond Context Overload: How Parlant × Milvus Brings Control and Clarity to
+  LLM Agent Behavior
 author: Min Yin
 date: 2025-11-05T00:00:00.000Z
 cover: assets.zilliz.com/parlant_cover1_466dc0fe21.png
@@ -14,18 +14,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Parlant, Milvus, AI agents, vector database, LLM'
 meta_title: How Parlant × Milvus Brings Control to LLM Agent Behavior
 desc: >-
-  Temukan bagaimana Parlant × Milvus menggunakan pemodelan penyelarasan dan
-  kecerdasan vektor untuk membuat perilaku agen LLM dapat dikontrol, dapat
-  dijelaskan, dan siap produksi.
+  Discover how Parlant × Milvus uses alignment modeling and vector intelligence
+  to make LLM agent behavior controllable, explainable, and production-ready.
 origin: >-
   https://milvus.io/blog/beyond-context-overload-how-parlant-milvus-brings-control-and-clarity-to-llm-agent-behavior.md
 ---
-<p>Bayangkan jika Anda diminta untuk menyelesaikan tugas yang melibatkan 200 aturan bisnis, 50 alat bantu, dan 30 demo, dan Anda hanya memiliki waktu satu jam untuk mengerjakannya. Hal itu sangat tidak mungkin. Namun kita sering mengharapkan model bahasa yang besar untuk melakukan hal tersebut ketika kita mengubahnya menjadi "agen" dan membebani mereka dengan instruksi.</p>
-<p>Dalam praktiknya, pendekatan ini dengan cepat rusak. Kerangka kerja agen tradisional, seperti LangChain atau LlamaIndex, menyuntikkan semua aturan dan alat ke dalam konteks model sekaligus, yang mengarah pada konflik aturan, konteks yang berlebihan, dan perilaku yang tidak dapat diprediksi dalam produksi.</p>
-<p>Untuk mengatasi masalah ini, sebuah kerangka kerja agen sumber terbuka yang disebut<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a> baru-baru ini mendapatkan daya tarik di GitHub. Parlant memperkenalkan pendekatan baru yang disebut Alignment Modeling, bersama dengan mekanisme pengawasan dan transisi bersyarat yang membuat perilaku agen jauh lebih terkendali dan dapat dijelaskan.</p>
-<p>Ketika dipasangkan dengan <a href="https://milvus.io/"><strong>Milvus</strong></a>, sebuah basis data vektor sumber terbuka, Parlant menjadi lebih mumpuni. Milvus menambahkan kecerdasan semantik, yang memungkinkan agen secara dinamis mengambil aturan dan konteks yang paling relevan secara real time-menjaga agar tetap akurat, efisien, dan siap produksi.</p>
-<p>Dalam artikel ini, kita akan mengeksplorasi bagaimana Parlant bekerja di balik layar-dan bagaimana mengintegrasikannya dengan Milvus memungkinkan tingkat produksi.</p>
-<h2 id="Why-Traditional-Agent-Frameworks-Fall-Apart" class="common-anchor-header">Mengapa Kerangka Kerja Agen Tradisional Berantakan<button data-href="#Why-Traditional-Agent-Frameworks-Fall-Apart" class="anchor-icon" translate="no">
+<p>Imagine being told to complete a task that involves 200 business rules, 50 tools, and 30 demos, and you only have an hour to do it. That’s simply impossible. Yet we often expect large language models to do exactly that when we turn them into “agents” and overload them with instructions.</p>
+<p>In practice, this approach quickly breaks down. Traditional agent frameworks, such as LangChain or LlamaIndex, inject all rules and tools into the model’s context at once, which leads to rule conflicts, context overload, and unpredictable behavior in production.</p>
+<p>To address this problem, an open-source agent framework called<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> <strong>Parlant</strong></a> has recently been gaining traction on GitHub. It introduces a new approach called Alignment Modeling, along with a supervising mechanism and conditional transitions that make agent behavior far more controllable and explainable.</p>
+<p>When paired with <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database, Parlant becomes even more capable. Milvus adds semantic intelligence, allowing agents to dynamically retrieve the most relevant rules and context in real time—keeping them accurate, efficient, and production-ready.</p>
+<p>In this post, we’ll explore how Parlant works under the hood—and how integrating it with Milvus enables production-grade.</p>
+<h2 id="Why-Traditional-Agent-Frameworks-Fall-Apart" class="common-anchor-header">Why Traditional Agent Frameworks Fall Apart<button data-href="#Why-Traditional-Agent-Frameworks-Fall-Apart" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,13 +39,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kerangka kerja agen tradisional suka menjadi besar: ratusan aturan, lusinan alat, dan beberapa demo-semuanya dijejalkan ke dalam satu prompt yang terlalu banyak. Ini mungkin terlihat bagus dalam demo atau uji coba kotak pasir kecil, tetapi begitu Anda mendorongnya ke dalam produksi, celah-celahnya mulai terlihat dengan cepat.</p>
+    </button></h2><p>Traditional agent frameworks love to go big: hundreds of rules, dozens of tools, and a handful of demos—all crammed into a single, overstuffed prompt. It might look great in a demo or a small sandbox test, but once you push it into production, the cracks start showing fast.</p>
 <ul>
-<li><p><strong>Aturan yang Bertentangan Membawa Kekacauan:</strong> Ketika dua atau lebih aturan berlaku pada saat yang sama, kerangka kerja ini tidak memiliki cara bawaan untuk memutuskan mana yang menang. Kadang-kadang memilih salah satu. Kadang-kadang memadukan keduanya. Kadang-kadang melakukan sesuatu yang sama sekali tidak dapat diprediksi.</p></li>
-<li><p><strong>Kasus-kasus Tepi Mengekspos Kesenjangan:</strong> Anda tidak mungkin dapat memprediksi semua yang akan dikatakan oleh pengguna. Dan ketika model Anda menemukan sesuatu di luar data pelatihannya, model akan menggunakan jawaban yang umum dan tidak berkomitmen.</p></li>
-<li><p><strong>Debugging itu Menyakitkan dan Mahal:</strong> Ketika sebuah agen berperilaku buruk, hampir tidak mungkin untuk menentukan aturan mana yang menyebabkan masalah. Karena semuanya berada di dalam satu prompt sistem raksasa, satu-satunya cara untuk memperbaikinya adalah menulis ulang prompt dan menguji ulang semuanya dari awal.</p></li>
+<li><p><strong>Conflicting Rules Bring Chaos:</strong> When two or more rules apply at the same time, these frameworks have no built-in way to decide which one wins. Sometimes it picks one. Sometimes it blends both. Sometimes it does something totally unpredictable.</p></li>
+<li><p><strong>Edge Cases Expose the Gaps:</strong> You can’t possibly predict everything a user might say. And when your model runs into something outside its training data, it defaults to generic, noncommittal answers.</p></li>
+<li><p><strong>Debugging Is Painful and Expensive:</strong> When an agent misbehaves, it’s almost impossible to pinpoint which rule caused the issue. Since everything lives inside one giant system prompt, the only way to fix it is to rewrite the prompt and retest everything from scratch.</p></li>
 </ul>
-<h2 id="What-is-Parlant-and-How-It-Works" class="common-anchor-header">Apa itu Parlant dan Bagaimana Cara Kerjanya<button data-href="#What-is-Parlant-and-How-It-Works" class="anchor-icon" translate="no">
+<h2 id="What-is-Parlant-and-How-It-Works" class="common-anchor-header">What is Parlant and How It Works<button data-href="#What-is-Parlant-and-How-It-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,14 +60,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Parlant adalah Mesin Penyelarasan sumber terbuka untuk agen LLM. Anda dapat secara tepat mengontrol bagaimana agen berperilaku di berbagai skenario dengan memodelkan proses pengambilan keputusan dengan cara yang terstruktur dan berbasis aturan.</p>
-<p>Untuk mengatasi masalah yang ditemukan dalam kerangka kerja agen tradisional, Parlant memperkenalkan pendekatan baru yang kuat: <strong>Pemodelan Penyelarasan</strong>. Ide intinya adalah memisahkan definisi aturan dari eksekusi aturan, memastikan bahwa hanya aturan yang paling relevan yang dimasukkan ke dalam konteks LLM pada waktu tertentu.</p>
-<h3 id="Granular-Guidelines-The-Core-of-Alignment-Modeling" class="common-anchor-header">Pedoman Granular: Inti dari Pemodelan Penyelarasan</h3><p>Inti dari model penyelarasan Parlant adalah konsep <strong>Granular Guidelines</strong>. Alih-alih menulis satu perintah sistem raksasa yang penuh dengan aturan, Anda mendefinisikan pedoman kecil dan modular - masing-masing menjelaskan bagaimana agen harus menangani jenis situasi tertentu.</p>
-<p>Setiap pedoman terdiri dari tiga bagian:</p>
+    </button></h2><p>Parlant is an open-source Alignment Engine for LLM agents. You can precisely control how an agent behaves across different scenarios by modeling its decision-making process in a structured, rule-based way.</p>
+<p>To address the problems found in traditional agent frameworks, Parlant introduces a new powerful approach: <strong>Alignment Modeling</strong>. Its core idea is to separate rule definition from rule execution, ensuring that only the most relevant rules are injected into the LLM’s context at any given time.</p>
+<h3 id="Granular-Guidelines-The-Core-of-Alignment-Modeling" class="common-anchor-header">Granular Guidelines: The Core of Alignment Modeling</h3><p>At the heart of Parlant’s alignment model is the concept of <strong>Granular Guidelines</strong>. Instead of writing one giant system prompt full of rules, you define small, modular guidelines—each describing how the agent should handle a specific type of situation.</p>
+<p>Each guideline is made up of three parts:</p>
 <ul>
-<li><p><strong>Kondisi</strong> - Deskripsi bahasa alami tentang kapan aturan harus diterapkan. Parlant mengubah kondisi ini menjadi vektor semantik dan mencocokkannya dengan input pengguna untuk mengetahui apakah kondisi tersebut relevan.</p></li>
-<li><p><strong>Tindakan</strong> - Instruksi yang jelas yang mendefinisikan bagaimana agen harus merespons setelah kondisi terpenuhi. Tindakan ini disuntikkan ke dalam konteks LLM hanya ketika dipicu.</p></li>
-<li><p><strong>Alat</strong> - Setiap fungsi eksternal atau API yang terkait dengan aturan tertentu. Ini diekspos ke agen hanya ketika pedoman aktif, menjaga penggunaan alat tetap terkendali dan sesuai konteks.</p></li>
+<li><p><strong>Condition</strong> – A natural-language description of when the rule should apply. Parlant converts this condition into a semantic vector and matches it to the user’s input to figure out if it’s relevant.</p></li>
+<li><p><strong>Action</strong> – A clear instruction that defines how the agent should respond once the condition is met. This action is injected into the LLM’s context only when triggered.</p></li>
+<li><p><strong>Tools</strong> – Any external functions or APIs tied to that specific rule. These are exposed to the agent only when the guideline is active, keeping tool use controlled and context-aware.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">await</span> agent.<span class="hljs-title function_">create_guideline</span>(
     condition=<span class="hljs-string">&quot;The user asks about a refund and the order amount exceeds 500 RMB&quot;</span>,
@@ -76,19 +75,19 @@ origin: >-
     tools=[check_order_status, calculate_refund_amount]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Setiap kali pengguna berinteraksi dengan agen, Parlant menjalankan langkah pencocokan ringan untuk menemukan tiga hingga lima pedoman yang paling relevan. Hanya aturan-aturan tersebut yang dimasukkan ke dalam konteks model, menjaga agar petunjuk tetap ringkas dan terfokus sambil memastikan bahwa agen secara konsisten mengikuti aturan yang tepat.</p>
+<p>Every time a user interacts with the agent, Parlant runs a lightweight matching step to find the three to five most relevant guidelines. Only those rules are injected into the model’s context, keeping prompts concise and focused while ensuring that the agent consistently follows the right rules.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/guideline_system_652fb287ce.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Supervising-Mechanism-for-Accuracy-and-Consistency" class="common-anchor-header">Mekanisme Pengawasan untuk Akurasi dan Konsistensi</h3><p>Untuk menjaga akurasi dan konsistensi lebih lanjut, Parlant memperkenalkan <strong>mekanisme pengawasan</strong> yang bertindak sebagai kontrol kualitas lapisan kedua. Prosesnya berlangsung dalam tiga langkah:</p>
-<p><strong>1. Menghasilkan respons kandidat</strong> - Agen membuat balasan awal berdasarkan panduan yang sesuai dan konteks percakapan saat ini.</p>
-<p><strong>2. Memeriksa kesesuaian</strong> - Tanggapan tersebut dibandingkan dengan panduan aktif untuk memverifikasi bahwa setiap instruksi telah diikuti dengan benar.</p>
-<p><strong>3. Merevisi atau mengonfirmasi</strong> - Jika ada masalah yang ditemukan, sistem akan mengoreksi output; jika semuanya sesuai, balasan akan disetujui dan dikirim ke pengguna.</p>
-<p>Mekanisme pengawasan ini memastikan bahwa agen tidak hanya memahami aturan tetapi juga benar-benar mematuhinya sebelum membalas-memperbaiki keandalan dan kontrol.</p>
-<h3 id="Conditional-Transitions-for-Control-and-Safety" class="common-anchor-header">Transisi Bersyarat untuk Kontrol dan Keamanan</h3><p>Dalam kerangka kerja agen tradisional, setiap alat yang tersedia diekspos ke LLM setiap saat. Pendekatan "semua yang ada di atas meja" ini sering kali menyebabkan permintaan yang berlebihan dan pemanggilan alat yang tidak diinginkan. Parlant memecahkan masalah ini melalui <strong>transisi bersyarat</strong>. Mirip dengan cara kerja state machine, sebuah aksi atau alat hanya dipicu ketika kondisi tertentu terpenuhi. Setiap alat terikat erat dengan pedoman yang sesuai, dan alat tersebut hanya akan tersedia ketika kondisi pedoman tersebut diaktifkan.</p>
+<h3 id="Supervising-Mechanism-for-Accuracy-and-Consistency" class="common-anchor-header">Supervising Mechanism for Accuracy and Consistency</h3><p>To further maintain accuracy and consistency, Parlant introduces a <strong>supervising mechanism</strong> that acts as a second layer of quality control. The process unfolds in three steps:</p>
+<p><strong>1. Generate a candidate response</strong> – The agent creates an initial reply based on the matched guidelines and the current conversation context.</p>
+<p><strong>2. Check for compliance</strong> – The response is compared against the active guidelines to verify that every instruction has been followed correctly.</p>
+<p><strong>3. Revise or confirm</strong> – If any issues are found, the system corrects the output; if everything checks out, the reply is approved and sent to the user.</p>
+<p>This supervising mechanism ensures that the agent not only understands the rules but actually adheres to them before replying—improving both reliability and control.</p>
+<h3 id="Conditional-Transitions-for-Control-and-Safety" class="common-anchor-header">Conditional Transitions for Control and Safety</h3><p>In traditional agent frameworks, every available tool is exposed to the LLM at all times. This “everything on the table” approach often leads to overloaded prompts and unintended tool calls. Parlant solves this through <strong>conditional transitions</strong>. Similar to how state machines work, an action or tool is triggered only when a specific condition is met. Each tool is tightly bound to its corresponding guideline, and it becomes available only when that guideline’s condition is activated.</p>
 <pre><code translate="no"><span class="hljs-comment"># The balance inquiry tool is exposed only when the condition &quot;the user wants to make a transfer&quot; is met</span>
 <span class="hljs-keyword">await</span> agent.create_guideline(
     condition=<span class="hljs-string">&quot;The user wants to make a transfer&quot;</span>,
@@ -96,8 +95,8 @@ origin: >-
     tools=[get_user_account_balance]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Mekanisme ini mengubah pemanggilan alat menjadi transisi bersyarat-alat berpindah dari "tidak aktif" menjadi "aktif" hanya ketika kondisi pemicunya terpenuhi. Dengan menyusun eksekusi dengan cara ini, Parlant memastikan bahwa setiap tindakan terjadi dengan sengaja dan kontekstual, mencegah penyalahgunaan sekaligus meningkatkan efisiensi dan keamanan sistem.</p>
-<h2 id="How-Milvus-Powers-Parlant" class="common-anchor-header">Bagaimana Milvus Memberdayakan Parlant<button data-href="#How-Milvus-Powers-Parlant" class="anchor-icon" translate="no">
+<p>This mechanism turns tool invocation into a conditional transition—tools move from “inactive” to “active” only when their trigger conditions are satisfied. By structuring execution this way, Parlant ensures that every action happens deliberately and contextually, preventing misuse while improving both efficiency and system safety.</p>
+<h2 id="How-Milvus-Powers-Parlant" class="common-anchor-header">How Milvus Powers Parlant<button data-href="#How-Milvus-Powers-Parlant" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -112,22 +111,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika kita melihat di balik proses pencocokan pedoman Parlant, satu tantangan teknis utama menjadi jelas: bagaimana sistem dapat menemukan tiga hingga lima aturan yang paling relevan dari ratusan - atau bahkan ribuan - pilihan hanya dalam beberapa milidetik? Di situlah letak peran database vektor. Pengambilan semantik adalah hal yang memungkinkan hal ini terjadi.</p>
-<h3 id="How-Milvus-Supports-Parlant’s-Guideline-Matching-Process" class="common-anchor-header">Bagaimana Milvus Mendukung Proses Pencocokan Pedoman Parlant</h3><p>Pencocokan pedoman bekerja melalui kesamaan semantik. Bidang Kondisi setiap pedoman diubah menjadi penyematan vektor, menangkap maknanya dan bukan hanya teks harfiahnya. Ketika pengguna mengirim pesan, Parlant membandingkan semantik pesan tersebut dengan semua penyematan pedoman yang tersimpan untuk menemukan yang paling relevan.</p>
-<p>Berikut ini cara kerja prosesnya selangkah demi selangkah:</p>
-<p><strong>1. Menyandikan kueri</strong> - Pesan pengguna dan riwayat percakapan terakhir diubah menjadi vektor kueri.</p>
-<p><strong>2. Cari kemiripan</strong> - Sistem melakukan pencarian kemiripan di dalam penyimpanan vektor panduan untuk menemukan kecocokan terdekat.</p>
-<p><strong>3.</strong> Mengambil<strong>hasil Top-K</strong> - Tiga hingga lima pedoman yang paling relevan secara semantik dikembalikan.</p>
-<p><strong>4.</strong> Suntikkan<strong>ke dalam konteks</strong> - Pedoman yang cocok ini kemudian secara dinamis dimasukkan ke dalam konteks LLM sehingga model dapat bertindak sesuai dengan aturan yang benar.</p>
+    </button></h2><p>When we look under the hood of Parlant’s guideline-matching process, one core technical challenge becomes clear: how can the system find the three to five most relevant rules out of hundreds—or even thousands—of options in just a few milliseconds? That’s exactly where a vector database comes in. Semantic retrieval is what makes this possible.</p>
+<h3 id="How-Milvus-Supports-Parlant’s-Guideline-Matching-Process" class="common-anchor-header">How Milvus Supports Parlant’s Guideline Matching Process</h3><p>Guideline matching works through semantic similarity. Each guideline’s Condition field is converted into a vector embedding, capturing its meaning rather than just its literal text. When a user sends a message, Parlant compares the semantics of that message against all stored guideline embeddings to find the most relevant ones.</p>
+<p>Here’s how the process works step by step:</p>
+<p><strong>1. Encode the query</strong> – The user’s message and recent conversation history are transformed into a query vector.</p>
+<p><strong>2. Search for similarity</strong> – The system performs a similarity search within the guideline vector store to find the closest matches.</p>
+<p><strong>3. Retrieve Top-K results</strong> – The top three to five most semantically relevant guidelines are returned.</p>
+<p><strong>4. Inject into context</strong> – These matched guidelines are then dynamically inserted into the LLM’s context so the model can act according to the correct rules.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/guideline_matching_process_ffd874c77e.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Untuk memungkinkan alur kerja ini, basis data vektor harus memberikan tiga kemampuan penting: pencarian Approximate Nearest Neighbor (ANN) berkinerja tinggi, pemfilteran metadata yang fleksibel, dan pembaruan vektor secara real-time. <a href="https://milvus.io/"><strong>Milvus</strong></a>, basis data vektor open-source yang berasal dari cloud, memberikan kinerja tingkat produksi di ketiga area tersebut.</p>
-<p>Untuk memahami cara kerja Milvus dalam skenario nyata, mari kita lihat agen layanan keuangan sebagai contoh.</p>
-<p>Misalkan sistem mendefinisikan 800 panduan bisnis yang mencakup tugas-tugas seperti pertanyaan rekening, transfer dana, dan konsultasi produk manajemen kekayaan. Dalam pengaturan ini, Milvus bertindak sebagai lapisan penyimpanan dan pengambilan untuk semua data pedoman.</p>
+<p>To make this workflow possible, the vector database must deliver three critical capabilities: high-performance Approximate Nearest Neighbor (ANN) search, flexible metadata filtering, and real-time vector updates. <a href="https://milvus.io/"><strong>Milvus</strong></a>, the open-source, cloud-native vector database, provides production-grade performance in all three areas.</p>
+<p>To understand how Milvus works in real scenarios, let’s look at a financial services agent as an example.</p>
+<p>Suppose the system defines 800 business guidelines covering tasks such as account inquiries, fund transfers, and wealth-management product consultations. In this setup, Milvus acts as the storage and retrieval layer for all guideline data.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, Collection, FieldSchema, CollectionSchema, DataType
 <span class="hljs-keyword">import</span> parlant.sdk <span class="hljs-keyword">as</span> p
 
@@ -154,19 +153,19 @@ index_params = {
 }
 guideline_collection.create_index(field_name=<span class="hljs-string">&quot;condition_vector&quot;</span>, index_params=index_params)
 <button class="copy-code-btn"></button></code></pre>
-<p>Sekarang, ketika pengguna mengatakan "Saya ingin mentransfer 100.000 RMB ke rekening ibu saya", alur runtime-nya adalah:</p>
-<p><strong>1. Rektoratisasi kueri</strong> - Ubah masukan pengguna menjadi vektor 768 dimensi.</p>
-<p><strong>2. Pengambilan hibrida</strong> - Menjalankan pencarian kemiripan vektor di Milvus dengan pemfilteran metadata (mis., <code translate="no">business_domain=&quot;transfer&quot;</code>).</p>
-<p><strong>3. Pemeringkatan hasil</strong> - Memberi peringkat pada kandidat panduan berdasarkan nilai kemiripan yang dikombinasikan dengan nilai <strong>prioritasnya</strong>.</p>
-<p><strong>4. Injeksi konteks</strong> - Suntikkan Top-3 pedoman yang cocok ' <code translate="no">action_text</code> ke dalam konteks agen Parlant.</p>
+<p>Now, when a user says “I want to transfer 100,000 RMB to my mother’s account”, the runtime flow is:</p>
+<p><strong>1. Rectorize the query</strong> – Convert the user input into a 768-dimensional vector.</p>
+<p><strong>2. Hybrid retrieval</strong> – Run a vector similarity search in Milvus with metadata filtering (e.g., <code translate="no">business_domain=&quot;transfer&quot;</code>).</p>
+<p><strong>3. Result ranking</strong> – Rank the candidate guidelines based on similarity scores combined with their <strong>priority</strong> values.</p>
+<p><strong>4. Context injection</strong> – Inject the Top-3 matched guidelines’ <code translate="no">action_text</code> into the Parlant agent’s context.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/bank_transfer_use_case_481d09a407.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Dalam konfigurasi ini, Milvus memberikan latensi P99 di bawah 15 ms, bahkan ketika pustaka panduan berskala hingga 100.000 entri. Sebagai perbandingan, menggunakan basis data relasional tradisional dengan pencocokan kata kunci biasanya menghasilkan latensi di atas 200 ms dan akurasi pencocokan yang jauh lebih rendah.</p>
-<h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">Bagaimana Milvus Memungkinkan Memori Jangka Panjang dan Personalisasi</h3><p>Milvus melakukan lebih dari sekadar pencocokan pedoman. Dalam skenario di mana agen membutuhkan memori jangka panjang dan respons yang dipersonalisasi, Milvus dapat berfungsi sebagai lapisan memori yang menyimpan dan mengambil interaksi pengguna di masa lalu sebagai penyematan vektor, membantu agen mengingat apa yang telah didiskusikan sebelumnya.</p>
+<p>In this configuration, Milvus delivers P99 latency under 15 ms, even when the guideline library scales to 100,000 entries. By comparison, using a traditional relational database with keyword matching typically results in latency above 200 ms and significantly lower match accuracy.</p>
+<h3 id="How-Milvus-Enables-Long-Term-Memory-and-Personalization" class="common-anchor-header">How Milvus Enables Long-Term Memory and Personalization</h3><p>Milvus does more than guideline matching. In scenarios where agents need long-term memory and personalized responses, Milvus can serve as the memory layer that stores and retrieves users’ past interactions as vector embeddings, helping the agent remember what was discussed before.</p>
 <pre><code translate="no"><span class="hljs-comment"># store user’s past interactions</span>
 user_memory_fields = [
     FieldSchema(name=<span class="hljs-string">&quot;interaction_id&quot;</span>, dtype=DataType.VARCHAR, max_length=<span class="hljs-number">100</span>, is_primary=<span class="hljs-literal">True</span>),
@@ -177,15 +176,15 @@ user_memory_fields = [
 ]
 memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&quot;</span>, schema=CollectionSchema(user_memory_fields))
 <button class="copy-code-btn"></button></code></pre>
-<p>Ketika pengguna yang sama kembali, agen dapat mengambil interaksi historis yang paling relevan dari Milvus dan menggunakannya untuk menghasilkan pengalaman yang lebih terhubung dan seperti manusia. Misalnya, jika pengguna bertanya tentang dana investasi minggu lalu, agen dapat mengingat konteks tersebut dan merespons secara proaktif: "Selamat datang kembali! Apakah Anda masih memiliki pertanyaan tentang reksa dana yang kita bahas terakhir kali?"</p>
-<h3 id="How-to-Optimize-Performance-for-Milvus-Powered-Agent-Systems" class="common-anchor-header">Cara Mengoptimalkan Kinerja untuk Sistem Agen yang Didukung Milvus</h3><p>Ketika menerapkan sistem agen yang didukung oleh Milvus di lingkungan produksi, penyetelan kinerja menjadi sangat penting. Untuk mencapai latensi rendah dan throughput tinggi, beberapa parameter kunci perlu diperhatikan:</p>
-<p><strong>1. Memilih Jenis Indeks yang Tepat</strong></p>
-<p>Penting untuk memilih struktur indeks yang sesuai. Sebagai contoh, HNSW (Hierarchical Navigable Small World) sangat ideal untuk skenario dengan tingkat penarikan tinggi seperti keuangan atau perawatan kesehatan, di mana akurasi sangat penting. IVF_FLAT bekerja lebih baik untuk aplikasi berskala besar seperti rekomendasi e-commerce, di mana recall yang sedikit lebih rendah dapat diterima dengan imbalan kinerja yang lebih cepat dan penggunaan memori yang lebih sedikit.</p>
-<p><strong>2. Strategi Pemecahan</strong></p>
-<p>Ketika jumlah pedoman yang disimpan melebihi satu juta entri, disarankan untuk menggunakan <strong>Partisi</strong> untuk membagi data berdasarkan domain bisnis atau kasus penggunaan. Partisi mengurangi ruang pencarian per kueri, meningkatkan kecepatan pengambilan dan menjaga latensi tetap stabil meskipun kumpulan data bertambah.</p>
-<p><strong>3. Konfigurasi Cache</strong></p>
-<p>Untuk panduan yang sering diakses seperti kueri pelanggan standar atau alur kerja dengan lalu lintas tinggi, Anda dapat menggunakan cache hasil kueri Milvus. Hal ini memungkinkan sistem untuk menggunakan kembali hasil sebelumnya, mengurangi latensi hingga di bawah 5 milidetik untuk pencarian berulang.</p>
-<h2 id="Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="common-anchor-header">Demo Langsung: Cara Membangun Sistem Tanya Jawab Cerdas dengan Parlant dan Milvus Lite<button data-href="#Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="anchor-icon" translate="no">
+<p>When the same user returns, the agent can retrieve the most relevant historical interactions from Milvus and use them to generate a more connected, human-like experience. For instance, if a user asked about an investment fund last week, the agent can recall that context and respond proactively: “Welcome back! Do you still have questions about the fund we discussed last time?”</p>
+<h3 id="How-to-Optimize-Performance-for-Milvus-Powered-Agent-Systems" class="common-anchor-header">How to Optimize Performance for Milvus-Powered Agent Systems</h3><p>When deploying an agent system powered by Milvus in a production environment, performance tuning becomes critical. To achieve low latency and high throughput, several key parameters need attention:</p>
+<p><strong>1. Choosing the Right Index Type</strong></p>
+<p>It’s important to select the appropriate index structure. For example, HNSW (Hierarchical Navigable Small World) is ideal for high-recall scenarios such as finance or healthcare, where accuracy is critical. IVF_FLAT works better for large-scale applications like e-commerce recommendations, where slightly lower recall is acceptable in exchange for faster performance and reduced memory use.</p>
+<p><strong>2. Sharding Strategy</strong></p>
+<p>When the number of stored guidelines exceeds one million entries, it’s recommended to use <strong>Partition</strong> to divide the data by business domain or use case. Partitioning reduces the search space per query, improving retrieval speed and keeping latency stable even as the dataset grows.</p>
+<p><strong>3. Cache Configuration</strong></p>
+<p>For frequently accessed guidelines such as standard customer queries or high-traffic workflows, you can use the Milvus query result caching. This allows the system to reuse previous results, cutting latency down to under 5 milliseconds for repeated searches.</p>
+<h2 id="Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="common-anchor-header">Hands-on Demo: How to Build a Smart Q&amp;A System with Parlant and Milvus Lite<button data-href="#Hands-on-Demo-How-to-Build-a-Smart-QA-System-with-Parlant-and-Milvus-Lite" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -200,26 +199,26 @@ memory_collection = Collection(name=<span class="hljs-string">&quot;user_memory&
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/install-overview.md">Milvus Lite</a> adalah versi ringan dari Milvus - pustaka Python yang dapat dengan mudah disematkan ke dalam aplikasi Anda. Sangat ideal untuk membuat prototipe cepat di lingkungan seperti Notebook Jupyter atau untuk berjalan di perangkat edge dan perangkat pintar dengan sumber daya komputasi yang terbatas. Meskipun berukuran kecil, Milvus Lite mendukung API yang sama dengan penerapan Milvus lainnya. Ini berarti kode sisi klien yang Anda tulis untuk Milvus Lite dapat terhubung dengan mulus ke instance Milvus atau Zilliz Cloud yang lengkap nantinya - tidak perlu melakukan pemfaktoran ulang.</p>
-<p>Dalam demo ini, kami akan menggunakan Milvus Lite bersama dengan Parlant untuk mendemonstrasikan cara membangun sistem Tanya Jawab cerdas yang memberikan jawaban yang cepat dan sesuai konteks dengan penyiapan yang minimal.</p>
-<h3 id="Prerequisites" class="common-anchor-header">Prasyarat: Persyaratan</h3><p>1. Parlant GitHub: https://github.com/emcie-co/parlant</p>
-<p>2. Dokumentasi Parlant: https://parlant.io/docs</p>
+    </button></h2><p><a href="https://milvus.io/docs/install-overview.md">Milvus Lite</a> is a lightweight version of Milvus — a Python library that can be easily embedded into your applications. It’s ideal for quick prototyping in environments like Jupyter Notebooks or for running on edge and smart devices with limited compute resources. Despite its small footprint, Milvus Lite supports the same APIs as other Milvus deployments. This means the client-side code you write for Milvus Lite can seamlessly connect to a full Milvus or Zilliz Cloud instance later — no refactoring required.</p>
+<p>In this demo, we’ll use Milvus Lite in conjunction with Parlant to demonstrate how to build an intelligent Q&amp;A system that delivers fast, context-aware answers with minimal setup.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites：</h3><p>1.Parlant GitHub: https://github.com/emcie-co/parlant</p>
+<p>2.Parlant Documentation: https://parlant.io/docs</p>
 <p>3.python3.10+</p>
 <p>4.OpenAI_key</p>
-<p>5. MlivusLite</p>
-<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Langkah 1: Instal Ketergantungan</h3><pre><code translate="no"><span class="hljs-comment"># Install required Python packages</span>
+<p>5.MlivusLite</p>
+<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Step 1: Install Dependencies</h3><pre><code translate="no"><span class="hljs-comment"># Install required Python packages</span>
 pip install pymilvus parlant openai
 <span class="hljs-comment"># Or, if you’re using a Conda environment:</span>
 conda activate your_env_name
 pip install pymilvus parlant openai
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Configure-Environment-Variables" class="common-anchor-header">Langkah 2: Konfigurasi Variabel Lingkungan</h3><pre><code translate="no"><span class="hljs-comment"># Set your OpenAI API key</span>
+<h3 id="Step-2-Configure-Environment-Variables" class="common-anchor-header">Step 2: Configure Environment Variables</h3><pre><code translate="no"><span class="hljs-comment"># Set your OpenAI API key</span>
 <span class="hljs-built_in">export</span> OPENAI_API_KEY=<span class="hljs-string">&quot;your_openai_api_key_here&quot;</span>
 <span class="hljs-comment"># Verify that the variable is set correctly</span>
 <span class="hljs-built_in">echo</span> <span class="hljs-variable">$OPENAI_API_KEY</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Implement-the-Core-Code" class="common-anchor-header">Langkah 3: Menerapkan Kode Inti</h3><ul>
-<li>Buat Embedder OpenAI khusus</li>
+<h3 id="Step-3-Implement-the-Core-Code" class="common-anchor-header">Step 3: Implement the Core Code</h3><ul>
+<li>Create a custom OpenAI Embedder</li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">class</span> <span class="hljs-title class_">OpenAIEmbedder</span>(p.Embedder):
     <span class="hljs-comment"># Converts text into vector embeddings with built-in timeout and retry</span>
@@ -227,13 +226,13 @@ pip install pymilvus parlant openai
     <span class="hljs-comment"># Timeout: 60 seconds; Retries: up to 2 times</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>Inisialisasi basis pengetahuan</li>
+<li>Initialize the knowledge base</li>
 </ul>
-<p>1. Buat koleksi Milvus bernama kb_articles.</p>
-<p>2. Masukkan data sampel (misalnya kebijakan pengembalian dana, kebijakan penukaran, waktu pengiriman).</p>
-<p>3. Buat indeks HNSW untuk mempercepat pencarian.</p>
+<p>1.Create a Milvus collection named kb_articles.</p>
+<p>2.Insert sample data (e.g. refund policy, exchange policy, shipping time).</p>
+<p>3.Build an HNSW index to accelerate retrieval.</p>
 <ul>
-<li>Membangun alat pencarian vektor</li>
+<li>Build the vector search tool</li>
 </ul>
 <pre><code translate="no"><span class="hljs-meta">@p.tool</span>
 <span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">vector_search</span>(<span class="hljs-params">query: <span class="hljs-built_in">str</span>, top_k: <span class="hljs-built_in">int</span> = <span class="hljs-number">5</span>, min_score: <span class="hljs-built_in">float</span> = <span class="hljs-number">0.35</span></span>):
@@ -242,10 +241,10 @@ pip install pymilvus parlant openai
     <span class="hljs-comment"># 3. Return results with relevance above threshold</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>Mengonfigurasi Agen Parlant</li>
+<li>Configure the Parlant Agent</li>
 </ul>
-<p><strong>Panduan 1:</strong> Untuk pertanyaan yang bersifat faktual atau terkait kebijakan, agen harus terlebih dahulu melakukan pencarian vektor.</p>
-<p><strong>Pedoman 2:</strong> Ketika bukti ditemukan, agen harus menjawab dengan menggunakan templat terstruktur (ringkasan + poin-poin penting + sumber).</p>
+<p><strong>Guideline 1:</strong> For factual or policy-related questions, the agent must first perform a vector search.</p>
+<p><strong>Guideline 2:</strong> When evidence is found, the agent must reply using a structured template (summary + key points + sources).</p>
 <pre><code translate="no"><span class="hljs-comment"># Guideline 1: Run vector search for factual or policy-related questions</span>
 <span class="hljs-keyword">await</span> agent.create_guideline(
             condition=<span class="hljs-string">&quot;User asks a factual question about policy, refund, exchange, or shipping&quot;</span>,
@@ -273,7 +272,7 @@ pip install pymilvus parlant openai
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li>Tuliskan kode yang lengkap</li>
+<li>Write the complete code</li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> asyncio
@@ -437,7 +436,7 @@ embedder = OpenAIEmbedder()
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
     asyncio.run(main())
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Run-the-Code" class="common-anchor-header">Langkah 4: Jalankan Kode</h3><pre><code translate="no"><span class="hljs-comment"># Run the main program</span>
+<h3 id="Step-4-Run-the-Code" class="common-anchor-header">Step 4: Run the Code</h3><pre><code translate="no"><span class="hljs-comment"># Run the main program</span>
 python main.py
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -447,12 +446,12 @@ python main.py
   </span>
 </p>
 <ul>
-<li>Kunjungi Taman Bermain:</li>
+<li>Visit the Playground:</li>
 </ul>
 <pre><code translate="no">&lt;<span class="hljs-attr">http</span>:<span class="hljs-comment">//localhost:8800&gt;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Anda sekarang telah berhasil membangun sistem Tanya Jawab cerdas menggunakan Parlant dan Milvus.</p>
-<h2 id="Parlant-vs-LangChainLlamaIndex-How-They-Differ-and-How-They-Work-Together" class="common-anchor-header">Parlant vs LangChain/LlamaIndex: Bagaimana Mereka Berbeda dan Bagaimana Mereka Bekerja Bersama<button data-href="#Parlant-vs-LangChainLlamaIndex-How-They-Differ-and-How-They-Work-Together" class="anchor-icon" translate="no">
+<p>You have now successfully built an intelligent Q&amp;A system using Parlant and Milvus.</p>
+<h2 id="Parlant-vs-LangChainLlamaIndex-How-They-Differ-and-How-They-Work-Together" class="common-anchor-header">Parlant vs. LangChain/LlamaIndex: How They Differ and How They Work Together<button data-href="#Parlant-vs-LangChainLlamaIndex-How-They-Differ-and-How-They-Work-Together" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -467,16 +466,16 @@ python main.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dibandingkan dengan kerangka kerja agen yang sudah ada seperti <strong>LangChain</strong> atau <strong>LlamaIndex</strong>, apa perbedaan Parlant?</p>
-<p>LangChain dan LlamaIndex adalah kerangka kerja tujuan umum. Mereka menyediakan berbagai macam komponen dan integrasi, sehingga ideal untuk pembuatan prototipe dan eksperimen penelitian yang cepat. Namun, ketika harus menerapkan dalam produksi, pengembang sering kali perlu membangun lapisan ekstra sendiri - seperti manajemen aturan, pemeriksaan kepatuhan, dan mekanisme keandalan - untuk menjaga agar agen tetap konsisten dan dapat dipercaya.</p>
-<p>Parlant menawarkan Manajemen Pedoman bawaan, mekanisme kritik diri, dan alat penjelasan yang membantu pengembang mengelola bagaimana agen berperilaku, merespons, dan memberi alasan. Hal ini membuat Parlant sangat cocok untuk kasus penggunaan yang berisiko tinggi dan berhadapan langsung dengan pelanggan yang membutuhkan akurasi dan akuntabilitas, seperti keuangan, perawatan kesehatan, dan layanan hukum.</p>
-<p>Bahkan, kerangka kerja ini dapat bekerja bersama:</p>
+    </button></h2><p>Compared to existing agent frameworks like <strong>LangChain</strong> or <strong>LlamaIndex</strong>, how does Parlant differ?</p>
+<p>LangChain and LlamaIndex are general-purpose frameworks. They provide a wide range of components and integrations, making them ideal for rapid prototyping and research experiments. However, when it comes to deploying in production, developers often need to build extra layers themselves—such as rule management, compliance checks, and reliability mechanisms—to keep agents consistent and trustworthy.</p>
+<p>Parlant offers built-in Guideline Management, self-critique mechanisms, and explainability tools that help developers manage how an agent behaves, responds, and reasons. This makes Parlant especially suitable for high-stakes, customer-facing use cases where accuracy and accountability matter, such as finance, healthcare, and legal services.</p>
+<p>In fact, these frameworks can work together:</p>
 <ul>
-<li><p>Gunakan LangChain untuk membangun jalur pemrosesan data yang kompleks atau alur kerja pengambilan data.</p></li>
-<li><p>Gunakan Parlant untuk mengelola lapisan interaksi akhir, memastikan keluaran mengikuti aturan bisnis dan tetap dapat diinterpretasikan.</p></li>
-<li><p>Gunakan Milvus sebagai fondasi basis data vektor untuk memberikan pencarian semantik, memori, dan pengambilan pengetahuan secara real-time di seluruh sistem.</p></li>
+<li><p>Use LangChain to build complex data-processing pipelines or retrieval workflows.</p></li>
+<li><p>Use Parlant to manage the final interaction layer, ensuring outputs follow business rules and remain interpretable.</p></li>
+<li><p>Use Milvus as the vector database foundation to deliver real-time semantic search, memory, and knowledge retrieval across the system.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -491,7 +490,7 @@ python main.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika agen LLM beralih dari eksperimen ke produksi, pertanyaan kuncinya bukan lagi apa yang dapat mereka lakukan-tetapi seberapa andal dan aman mereka dapat melakukannya. Parlant menyediakan struktur dan kontrol untuk keandalan tersebut, sementara Milvus memberikan infrastruktur vektor yang dapat diskalakan yang membuat semuanya berjalan dengan cepat dan sesuai dengan konteks.</p>
-<p>Bersama-sama, keduanya memungkinkan pengembang untuk membangun agen AI yang tidak hanya mampu, tetapi juga dapat dipercaya, dapat dijelaskan, dan siap produksi.</p>
-<p>🚀 Lihat<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> Parlant di GitHub</a> dan integrasikan dengan<a href="https://milvus.io"> Milvus</a> untuk membangun sistem agen cerdas yang digerakkan oleh aturan Anda sendiri.</p>
-<p>Punya pertanyaan atau ingin mendalami fitur apa pun? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+    </button></h2><p>As LLM agents move from experimentation to production, the key question is no longer what they can do—but how reliably and safely they can do it. Parlant provides the structure and control for that reliability, while Milvus delivers the scalable vector infrastructure that keeps everything fast and context-aware.</p>
+<p>Together, they allow developers to build AI agents that are not just capable, but trustworthy, explainable, and production-ready.</p>
+<p>🚀 Check out<a href="https://github.com/emcie-co/parlant?utm_source=chatgpt.com"> Parlant on GitHub</a> and integrate it with<a href="https://milvus.io"> Milvus</a> to build your own intelligent, rule-driven agent system.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

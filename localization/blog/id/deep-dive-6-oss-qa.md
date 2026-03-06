@@ -1,32 +1,34 @@
 ---
 id: deep-dive-6-oss-qa.md
-title: Jaminan Kualitas Perangkat Lunak Sumber Terbuka (OSS) - Studi Kasus Milvus
+title: Open Source Software (OSS) Quality Assurance - A Milvus Case Study
 author: Wenxing Zhu
 date: 2022-04-25T00:00:00.000Z
 desc: >-
-  Jaminan kualitas adalah proses untuk menentukan apakah suatu produk atau
-  layanan memenuhi persyaratan tertentu.
+  Quality assurance is a process of determining whether a product or service
+  meets certain requirements.
 cover: assets.zilliz.com/Deep_Dive_6_c2cd44801d.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deep_Dive_6_c2cd44801d.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Gambar sampul depan</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deep_Dive_6_c2cd44801d.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Artikel ini ditulis oleh <a href="https://github.com/zhuwenxing">Wenxing Zhu</a> dan disadur oleh <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>This article is written by <a href="https://github.com/zhuwenxing">Wenxing Zhu</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>Jaminan kualitas (QA) adalah proses sistematis untuk menentukan apakah suatu produk atau layanan memenuhi persyaratan tertentu. Sistem QA adalah bagian tak terpisahkan dari proses R&amp;D karena, seperti namanya, sistem ini memastikan kualitas produk.</p>
-<p>Tulisan ini memperkenalkan kerangka kerja QA yang diadopsi dalam mengembangkan basis data vektor Milvus, yang bertujuan untuk memberikan panduan bagi pengembang dan pengguna yang berkontribusi untuk berpartisipasi dalam proses tersebut. Ini juga akan mencakup modul pengujian utama di Milvus serta metode dan alat yang dapat dimanfaatkan untuk meningkatkan efisiensi pengujian QA.</p>
-<p><strong>Langsung ke:</strong></p>
+<p>Quality assurance (QA) is a systematic process of determining whether a product or service meets certain requirements. A QA system is an indispensable part of the R&amp;D process because, as its name suggests, it ensures that quality of the product.</p>
+<p>This post introduces the QA framework adopted in developing the Milvus vector database, aiming to provide a guideline for contributing developers and users to participate in the process. It will also cover the major test modules in Milvus as well as methods and tools that can be leveraged to improve the efficiency of QA testings.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#A-general-introduction-to-the-Milvus-QA-system">Pengenalan umum terhadap sistem QA Milvus</a></li>
-<li><a href="#Test-modules-in-Milvus">Modul-modul pengujian di Milvus</a></li>
-<li><a href="#Tools-and-methods-for-better-QA-efficiency">Alat dan metode untuk efisiensi QA yang lebih baik</a></li>
+<li><a href="#A-general-introduction-to-the-Milvus-QA-system">A general introduction to the Milvus QA system</a></li>
+<li><a href="#Test-modules-in-Milvus">Test modules in Milvus</a></li>
+<li><a href="#Tools-and-methods-for-better-QA-efficiency">Tools and methods for better QA efficiency</a></li>
 </ul>
-<h2 id="A-general-introduction-to-the-Milvus-QA-system" class="common-anchor-header">Pengenalan umum terhadap sistem QA Milvus<button data-href="#A-general-introduction-to-the-Milvus-QA-system" class="anchor-icon" translate="no">
+<h2 id="A-general-introduction-to-the-Milvus-QA-system" class="common-anchor-header">A general introduction to the Milvus QA system<button data-href="#A-general-introduction-to-the-Milvus-QA-system" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,45 +43,53 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Arsitektur sistem</a> sangat penting untuk melakukan pengujian QA. Semakin seorang insinyur QA memahami sistem, semakin besar kemungkinan dia akan menghasilkan rencana pengujian yang masuk akal dan efisien.</p>
+    </button></h2><p>The <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">system architecture</a> is critical to conducting QA testings. The more a QA engineer is familiar with the system, the more likely he or she is going to come up with a reasonable and efficient testing plan.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_feaccc489d.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
-   </span> <span class="img-wrapper"> <span>Arsitektur Milvus</span> </span></p>
-<p>Milvus 2.0 mengadopsi <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-cloud-native-first-approach">arsitektur cloud-native, terdistribusi, dan berlapis</a>, dengan SDK sebagai <a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">pintu masuk utama bagi data</a> untuk mengalir di Milvus. Pengguna Milvus sangat sering menggunakan SDK, oleh karena itu pengujian fungsional pada sisi SDK sangat dibutuhkan. Selain itu, uji fungsi pada SDK dapat membantu mendeteksi masalah internal yang mungkin ada di dalam sistem Milvus. Selain uji fungsi, jenis pengujian lain juga akan dilakukan pada database vektor, termasuk uji unit, uji penerapan, uji keandalan, uji stabilitas, dan uji kinerja.</p>
-<p>Arsitektur cloud-native dan terdistribusi memberikan kemudahan sekaligus tantangan dalam pengujian QA. Tidak seperti sistem yang digunakan dan dijalankan secara lokal, instance Milvus yang digunakan dan dijalankan di cluster Kubernetes dapat memastikan bahwa pengujian perangkat lunak dilakukan dalam kondisi yang sama dengan pengembangan perangkat lunak. Namun, sisi negatifnya adalah kompleksitas arsitektur terdistribusi membawa lebih banyak ketidakpastian yang dapat membuat pengujian QA sistem menjadi lebih sulit dan berat. Sebagai contoh, Milvus 2.0 menggunakan layanan mikro dari komponen yang berbeda, dan hal ini menyebabkan peningkatan jumlah <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">layanan dan node</a>, serta kemungkinan lebih besar terjadinya kesalahan sistem. Oleh karena itu, rencana QA yang lebih canggih dan komprehensif diperlukan untuk efisiensi pengujian yang lebih baik.</p>
-<h3 id="QA-testings-and-issue-management" class="common-anchor-header">Pengujian QA dan manajemen masalah</h3><p>QA di Milvus melibatkan pelaksanaan pengujian dan pengelolaan masalah yang muncul selama pengembangan perangkat lunak.</p>
-<h4 id="QA-testings" class="common-anchor-header">Pengujian QA</h4><p>Milvus melakukan berbagai jenis pengujian QA sesuai dengan fitur Milvus dan kebutuhan pengguna sesuai dengan urutan prioritas seperti yang ditunjukkan pada gambar di bawah ini.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_feaccc489d.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
+    <span>Milvus architecture</span>
+  </span>
+</p>
+<p>Milvus 2.0 adopts a <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-cloud-native-first-approach">cloud-native, distributed, and layered architecture</a>, with SDK being the <a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">main entrance for data</a> to flow in Milvus. The Milvus users leverage the SDK very frequently, hence functional testing on the SDK side is much needed. Also, function tests on SDK can help detect the internal issues that might exist within the Milvus system. Apart from function tests, other types of tests will also be conducted on the vector database, including unit tests, deployment tests, reliability tests, stability tests, and performance tests.</p>
+<p>A cloud-native and distributed architecture brings both convenience and challenges to QA testings. Unlike systems that are deployed and run locally, a Milvus instance deployed and run on a Kubernetes cluster can ensure that software testing is carried out under the same circumstance as software development. However, the downside is that the complexity of distributed architecture brings more uncertainties that can make QA testing of the system even harder and strenuous. For instance, Milvus 2.0 uses microservices of different components, and this leads to an increased number of <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#A-bare-bones-skeleton-of-the-Milvus-architecture">services and nodes</a>, and a greater possibility of a system error. Consequently, a more sophisticated and comprehensive QA plan is needed for better testing efficiency.</p>
+<h3 id="QA-testings-and-issue-management" class="common-anchor-header">QA testings and issue management</h3><p>QA in Milvus involves both conducting tests and managing issues emerged during software development.</p>
+<h4 id="QA-testings" class="common-anchor-header">QA testings</h4><p>Milvus conducts different types of QA testing according to Milvus features and user needs in order of priority as shown in the image below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_14_2aff081d41.png" alt="QA testing priority" class="doc-image" id="qa-testing-priority" />
-   </span> <span class="img-wrapper"> <span>Prioritas pengujian QA</span> </span></p>
-<p>Pengujian QA dilakukan pada aspek-aspek berikut di Milvus dengan prioritas sebagai berikut:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_14_2aff081d41.png" alt="QA testing priority" class="doc-image" id="qa-testing-priority" />
+    <span>QA testing priority</span>
+  </span>
+</p>
+<p>QA testings are conducted on the following aspects in Milvus in the following priority:</p>
 <ol>
-<li><strong>Fungsi</strong>: Memverifikasi apakah fungsi dan fitur bekerja sesuai dengan rancangan awal.</li>
-<li><strong>Penerapan</strong>: Memeriksa apakah pengguna dapat melakukan deployment, menginstal ulang, dan meng-upgrade versi mandiri Mivus dan cluster Milvus dengan metode yang berbeda (Docker Compose, Helm, APT atau YUM, dll.).</li>
-<li><strong>Kinerja</strong>:  Menguji kinerja penyisipan data, pengindeksan, pencarian vektor, dan kueri di Milvus.</li>
-<li><strong>Stabilitas</strong>: Periksa apakah Milvus dapat berjalan dengan stabil selama 5-10 hari di bawah tingkat beban kerja normal.</li>
-<li><strong>Keandalan</strong>: Menguji apakah Milvus masih dapat berfungsi sebagian jika terjadi kesalahan sistem tertentu.</li>
-<li><strong>Konfigurasi</strong>: Memverifikasi apakah Milvus bekerja seperti yang diharapkan dalam konfigurasi tertentu.</li>
-<li><strong>Kompatibilitas</strong>: Menguji apakah Milvus kompatibel dengan berbagai jenis perangkat keras atau perangkat lunak.</li>
+<li><strong>Function</strong>: Verify if the functions and features work as originally designed.</li>
+<li><strong>Deployment</strong>: Check if a user can deploy, reinstall, and upgrade both Mivus standalone version and Milvus cluster with different methods (Docker Compose, Helm, APT or YUM, etc.).</li>
+<li><strong>Performance</strong>:  Test the performance of data insertion, indexing, vector search and query in Milvus.</li>
+<li><strong>Stability</strong>: Check if Milvus can run stably for 5-10 days under a normal level of workload.</li>
+<li><strong>Reliability</strong>: Test if Milvus can still partly function if certain system error occurs.</li>
+<li><strong>Configuration</strong>: Verify if Milvus works as expected under certain configuration.</li>
+<li><strong>Compatibility</strong>: Test if Milvus is compatible with different types of hardware or software.</li>
 </ol>
-<h4 id="Issue-management" class="common-anchor-header">Manajemen masalah</h4><p>Banyak masalah yang mungkin muncul selama pengembangan perangkat lunak. Penulis dari templat masalah dapat berupa insinyur QA sendiri atau pengguna Milvus dari komunitas sumber terbuka. Tim QA bertanggung jawab untuk mencari tahu masalah tersebut.</p>
+<h4 id="Issue-management" class="common-anchor-header">Issue management</h4><p>Many issues may emerge during software development. The author of the templated issues can be QA engineers themselves or Milvus users from the open-source community. The QA team is responsible for figuring out the issues.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Issue_management_workflow_12c726efa1.png" alt="Issue management workflow" class="doc-image" id="issue-management-workflow" />
-   </span> <span class="img-wrapper"> <span>Alur kerja manajemen isu</span> </span></p>
-<p>Ketika sebuah <a href="https://github.com/milvus-io/milvus/issues">isu</a> dibuat, isu tersebut akan melalui triase terlebih dahulu. Selama triase, masalah baru akan diperiksa untuk memastikan bahwa rincian masalah yang cukup disediakan. Jika isu tersebut dikonfirmasi, maka isu tersebut akan diterima oleh pengembang dan mereka akan mencoba untuk memperbaiki isu tersebut. Setelah pengembangan selesai, penulis isu perlu memverifikasi apakah isu tersebut sudah diperbaiki. Jika ya, isu tersebut akan ditutup.</p>
-<h3 id="When-is-QA-needed" class="common-anchor-header">Kapan QA dibutuhkan?</h3><p>Salah satu kesalahpahaman umum adalah bahwa QA dan pengembangan tidak bergantung satu sama lain. Namun, kenyataannya adalah untuk memastikan kualitas sistem, diperlukan upaya dari pengembang dan insinyur QA. Oleh karena itu, QA perlu dilibatkan di seluruh siklus hidup.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Issue_management_workflow_12c726efa1.png" alt="Issue management workflow" class="doc-image" id="issue-management-workflow" />
+    <span>Issue management workflow</span>
+  </span>
+</p>
+<p>When an <a href="https://github.com/milvus-io/milvus/issues">issue</a> is created, it will go through triage first. During triage, new issues will be examined to ensure that sufficient details of the issues are provided. If the issue is confirmed, it will be accepted by the developers and they will try to fix the issues. Once development is done, the issue author needs to verify if it is fixed. If yes, the issue will be ultimately closed.</p>
+<h3 id="When-is-QA-needed" class="common-anchor-header">When is QA needed?</h3><p>One common misconception is that QA and development are independent from each other. However, the truth is to ensure the quality of the system, efforts are needed from both developers and QA engineers. Therefore, QA needs to be involved throughout the whole lifecycle.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/QA_lifecycle_375f4fd8a8.png" alt="QA lifecycle" class="doc-image" id="qa-lifecycle" />
-   </span> <span class="img-wrapper"> <span>Siklus hidup QA</span> </span></p>
-<p>Seperti yang ditunjukkan pada gambar di atas, siklus hidup R&amp;D perangkat lunak yang lengkap mencakup tiga tahap.</p>
-<p>Pada tahap awal, pengembang mempublikasikan dokumentasi desain sementara insinyur QA membuat rencana pengujian, menentukan kriteria rilis, dan menetapkan tugas QA. Pengembang dan insinyur QA harus terbiasa dengan dokumen desain dan rencana pengujian sehingga pemahaman bersama tentang tujuan rilis (dalam hal fitur, kinerja, stabilitas, konvergensi bug, dll.) Dibagikan di antara kedua tim.</p>
-<p>Selama R&amp;D, pengembangan dan pengujian QA sering berinteraksi untuk mengembangkan dan memverifikasi fitur dan fungsi, serta memperbaiki bug dan masalah yang dilaporkan oleh <a href="https://slack.milvus.io/">komunitas</a> sumber terbuka.</p>
-<p>Pada tahap akhir, jika kriteria rilis terpenuhi, citra Docker baru dari versi Milvus yang baru akan dirilis. Sebuah catatan rilis yang berfokus pada fitur-fitur baru dan bug yang telah diperbaiki serta tag rilis diperlukan untuk rilis resmi. Kemudian tim QA juga akan mempublikasikan laporan pengujian pada rilis ini.</p>
-<h2 id="Test-modules-in-Milvus" class="common-anchor-header">Modul pengujian di Milvus<button data-href="#Test-modules-in-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/QA_lifecycle_375f4fd8a8.png" alt="QA lifecycle" class="doc-image" id="qa-lifecycle" />
+    <span>QA lifecycle</span>
+  </span>
+</p>
+<p>As shown in the figure above, a complete software R&amp;D lifecycle includes three stages.</p>
+<p>During the initial stage, the developers publish design documentation while QA engineers come up with test plans, define release criteria, and assign QA tasks. Developers and QA engineers need to be familiar with both the design doc and test plan so that a mutual understanding of the objective of the release (in terms of features, performance, stability, bug convergence, etc.) is shared among the two teams.</p>
+<p>During R&amp;D, development and QA testings interact frequently to develop and verify features and functions, and fix bugs and issues reported by the open-source <a href="https://slack.milvus.io/">community</a> as well.</p>
+<p>During the final stage, if the release criteria is met, a new Docker image of the new Milvus version will be released. A release note focusing on new features and fixed bugs and a release tag is needed for the official release. Then the QA team will also publish a testing report on this release.</p>
+<h2 id="Test-modules-in-Milvus" class="common-anchor-header">Test modules in Milvus<button data-href="#Test-modules-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,49 +104,57 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ada beberapa modul pengujian di Milvus dan bagian ini akan menjelaskan setiap modul secara rinci.</p>
+    </button></h2><p>There are several test modules in Milvus and this section will explain each module in detail.</p>
 <h3 id="Unit-test" class="common-anchor-header">Unit test</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Unit_test_7d3d422345.png" alt="Unit test" class="doc-image" id="unit-test" />
-   </span> <span class="img-wrapper"> <span>Uji coba unit</span> </span></p>
-<p>Unit test dapat membantu mengidentifikasi bug perangkat lunak pada tahap awal dan memberikan kriteria verifikasi untuk restrukturisasi kode. Menurut kriteria penerimaan pull request (PR) Milvus, <a href="https://app.codecov.io/gh/milvus-io/milvus/">cakupan</a> uji unit kode harus 80%.</p>
-<h3 id="Function-test" class="common-anchor-header">Uji fungsi</h3><p>Uji fungsi di Milvus terutama diatur di sekitar <a href="https://github.com/milvus-io/pymilvus">PyMilvus</a> dan SDK. Tujuan utama dari uji fungsi adalah untuk memverifikasi apakah antarmuka dapat bekerja seperti yang dirancang. Uji fungsi memiliki dua aspek:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Unit_test_7d3d422345.png" alt="Unit test" class="doc-image" id="unit-test" />
+    <span>Unit test</span>
+  </span>
+</p>
+<p>Unit tests can help identify software bugs at an early stage and provide a verification criteria for code restructuring. According to the Milvus pull request (PR) acceptance criteria, the <a href="https://app.codecov.io/gh/milvus-io/milvus/">coverage</a> of code unit test should be 80%.</p>
+<h3 id="Function-test" class="common-anchor-header">Function test</h3><p>Function tests in Milvus are mainly organized around <a href="https://github.com/milvus-io/pymilvus">PyMilvus</a> and SDKs. The main purpose of function tests are to verify if the interfaces can work as designed. Function tests have two facets:</p>
 <ul>
-<li>Menguji apakah SDK dapat mengembalikan hasil yang diharapkan ketika parameter yang benar diberikan.</li>
-<li>Menguji apakah SDK dapat menangani kesalahan dan mengembalikan pesan kesalahan yang wajar ketika parameter yang salah diberikan.</li>
+<li>Test if SDKs can return expected results when correct parameters are passed.</li>
+<li>Test if SDKs can handle errors and return reasonable error messages when incorrect parameters are passed.</li>
 </ul>
-<p>Gambar di bawah ini menggambarkan kerangka kerja saat ini untuk uji fungsi yang didasarkan pada kerangka kerja <a href="https://pytest.org/">pytest</a> arus utama. Kerangka kerja ini menambahkan pembungkus ke PyMilvus dan memberdayakan pengujian dengan antarmuka pengujian otomatis.</p>
+<p>The figure below depicts the current framework for function tests which is based on the mainstream <a href="https://pytest.org/">pytest</a> framework. This framework adds a wrapper to PyMilvus and empowers testing with an automated testing interface.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Function_test_41f837d3e7.png" alt="Function test" class="doc-image" id="function-test" />
-   </span> <span class="img-wrapper"> <span>Uji fungsi</span> </span></p>
-<p>Mempertimbangkan metode pengujian bersama diperlukan dan beberapa fungsi perlu digunakan kembali, kerangka kerja pengujian di atas diadopsi, daripada menggunakan antarmuka PyMilvus secara langsung. Modul "cek" juga disertakan dalam kerangka kerja untuk memberikan kemudahan dalam verifikasi nilai yang diharapkan dan nilai aktual.</p>
-<p>Sebanyak 2.700 kasus uji fungsi dimasukkan ke dalam direktori <code translate="no">tests/python_client/testcases</code>, yang mencakup hampir semua antarmuka PyMilvus. Uji fungsi ini secara ketat mengawasi kualitas setiap PR.</p>
-<h3 id="Deployment-test" class="common-anchor-header">Uji penyebaran</h3><p>Milvus hadir dalam dua mode: <a href="https://milvus.io/docs/v2.0.x/install_standalone-docker.md">mandiri</a> dan <a href="https://milvus.io/docs/v2.0.x/install_cluster-docker.md">cluster</a>. Dan ada dua cara utama untuk men-deploy Milvus: menggunakan Docker Compose atau Helm. Dan setelah men-deploy Milvus, pengguna juga dapat memulai ulang atau meningkatkan layanan Milvus. Ada dua kategori utama dari uji coba penyebaran: uji coba restart dan uji coba peningkatan.</p>
-<p>Restart test mengacu pada proses pengujian persistensi data, yaitu apakah data masih tersedia setelah restart. Upgrade test mengacu pada proses pengujian kompatibilitas data untuk mencegah situasi di mana format data yang tidak kompatibel dimasukkan ke dalam Milvus. Kedua jenis uji penerapan ini memiliki alur kerja yang sama seperti yang diilustrasikan pada gambar di bawah ini.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Function_test_41f837d3e7.png" alt="Function test" class="doc-image" id="function-test" />
+    <span>Function test</span>
+  </span>
+</p>
+<p>Considering a shared testing method is needed and some functions need to be reused, the above testing framework is adopted, rather than using the PyMilvus interface directly. A “check” module is also included in the framework to bring convenience to the verification of expected and actual values.</p>
+<p>As many as 2,700 function test cases are incorporated into the <code translate="no">tests/python_client/testcases</code> directory, fully covering almost all the PyMilvus interfaces. These function tests strictly supervise the quality of each PR.</p>
+<h3 id="Deployment-test" class="common-anchor-header">Deployment test</h3><p>Milvus comes in two modes: <a href="https://milvus.io/docs/v2.0.x/install_standalone-docker.md">standalone</a> and <a href="https://milvus.io/docs/v2.0.x/install_cluster-docker.md">cluster</a>. And there are two major ways to deploy Milvus: using Docker Compose or Helm. And after deploying Milvus, users can also restart or upgrade the Milvus service. There are two main categories of deployment test: restart test and upgrade test.</p>
+<p>Restart test refers to the process of testing data persistence, i.e. whether data are still available after a restart. Upgrade test refers to the process of testing data compatibility to prevent situations where incompatible formats of data are inserted into Milvus. Both the two types of deployment tests share the same workflow as illustrated in the image below.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Deployment_test_342ab3b3f5.png" alt="Deployment test" class="doc-image" id="deployment-test" />
-   </span> <span class="img-wrapper"> <span>Uji penyebaran</span> </span></p>
-<p>Dalam uji coba restart, kedua deployment menggunakan citra docker yang sama. Namun dalam pengujian peningkatan, deployment pertama menggunakan citra docker dari versi sebelumnya sedangkan deployment kedua menggunakan citra docker dari versi yang lebih baru. Hasil pengujian dan data disimpan dalam file <code translate="no">Volumes</code> atau <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">persistent volume claim</a> (PVC).</p>
-<p>Ketika menjalankan pengujian pertama, beberapa koleksi dibuat dan operasi yang berbeda dilakukan pada masing-masing koleksi. Ketika menjalankan pengujian kedua, fokus utamanya adalah memverifikasi apakah koleksi yang dibuat masih tersedia untuk operasi CRUD, dan apakah koleksi baru dapat dibuat lebih lanjut.</p>
-<h3 id="Reliability-test" class="common-anchor-header">Uji keandalan</h3><p>Pengujian keandalan sistem terdistribusi cloud-native biasanya menggunakan metode chaos engineering yang bertujuan untuk mengatasi kesalahan dan kegagalan sistem sejak awal. Dengan kata lain, dalam uji coba chaos engineering, kami sengaja menciptakan kegagalan sistem untuk mengidentifikasi masalah dalam uji tekanan dan memperbaiki kegagalan sistem sebelum benar-benar mulai menimbulkan bahaya. Selama uji kekacauan di Milvus, kami memilih <a href="https://chaos-mesh.org/">Chaos Mesh</a> sebagai alat untuk menciptakan kekacauan. Ada beberapa jenis kegagalan yang perlu dibuat:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Deployment_test_342ab3b3f5.png" alt="Deployment test" class="doc-image" id="deployment-test" />
+    <span>Deployment test</span>
+  </span>
+</p>
+<p>In a restart test, the two deployments uses the same docker image. However in an upgrade test, the first deployment uses a docker image of a previous version while the second deployment uses a docker image of a later version. The test results and data are saved in the <code translate="no">Volumes</code> file or <a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">persistent volume claim</a> (PVC).</p>
+<p>When running the first test, multiple collections are created and different operations are made to each of the collection. When running the second test, the main focus will be on verifying if the created collections are still available for CRUD operations, and if new collections can be further created.</p>
+<h3 id="Reliability-test" class="common-anchor-header">Reliability test</h3><p>Testings on the reliability of cloud-native distributed system usually adopt a chaos engineering method whose purpose is to nip errors and system failures in the bud. In other words, in an chaos engineering test, we purposefully create system failures to identify issues in pressure tests and fix system failures before they really start to do hazards. During a chaos test in Milvus, we choose <a href="https://chaos-mesh.org/">Chaos Mesh</a> as the tool to create a chaos. There are several types of failures that needs to be created:</p>
 <ul>
-<li><strong>Pod kill</strong>: simulasi skenario di mana node mati.</li>
-<li><strong>Kegagalan pod</strong>: Menguji jika salah satu pod node pekerja gagal apakah seluruh sistem masih dapat terus bekerja.</li>
-<li><strong>Memory stress</strong>: simulasi konsumsi memori dan sumber daya CPU yang berat dari node kerja.</li>
-<li><strong>Partisi jaringan</strong>: Karena Milvus <a href="https://milvus.io/docs/v2.0.x/four_layers.md">memisahkan penyimpanan dari komputasi</a>, sistem ini sangat bergantung pada komunikasi antara berbagai komponen. Simulasi skenario di mana komunikasi antara pod yang berbeda dipartisi diperlukan untuk menguji saling ketergantungan komponen Milvus yang berbeda.</li>
+<li><strong>Pod kill</strong>: a simulation of the scenario where nodes are down.</li>
+<li><strong>Pod failure</strong>: Test if one of the worker node pods fails whether the whole system can still continue to work.</li>
+<li><strong>Memory stress</strong>: a simulation of heavy memory and CPU resources consumption from the work nodes.</li>
+<li><strong>Network partition</strong>: Since Milvus <a href="https://milvus.io/docs/v2.0.x/four_layers.md">separates storage from computing</a>, the system relies heavily on the communication between various components. A simulation of the scenario where the communication between different pods are partitioned is needed to test the interdependency of different Milvus components.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Reliability_test_a7331b91f4.png" alt="Reliability test" class="doc-image" id="reliability-test" />
-   </span> <span class="img-wrapper"> <span>Uji keandalan</span> </span></p>
-<p>Gambar di atas menunjukkan kerangka kerja uji reliabilitas di Milvus yang dapat mengotomatiskan uji kekacauan. Alur kerja uji reliabilitas adalah sebagai berikut:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Reliability_test_a7331b91f4.png" alt="Reliability test" class="doc-image" id="reliability-test" />
+    <span>Reliability test</span>
+  </span>
+</p>
+<p>The figure above demonstrates the reliability test framework in Milvus that can automate chaos tests. The workflow of a reliability test is as follows:</p>
 <ol>
-<li>Inisialisasi cluster Milvus dengan membaca konfigurasi penerapan.</li>
-<li>Ketika cluster sudah siap, jalankan <code translate="no">test_e2e.py</code> untuk menguji apakah fitur-fitur Milvus sudah tersedia.</li>
-<li>Jalankan <code translate="no">hello_milvus.py</code> untuk menguji persistensi data. Buat koleksi bernama "hello_milvus" untuk penyisipan data, flush, pembuatan indeks, pencarian vektor, dan kueri. Koleksi ini tidak akan dirilis atau dihapus selama pengujian.</li>
-<li>Buat sebuah objek pemantauan yang akan memulai enam thread yang mengeksekusi operasi create, insert, flush, index, search dan query.</li>
+<li>Initialize a Milvus cluster by reading the deployment configurations.</li>
+<li>When the cluster is ready, run <code translate="no">test_e2e.py</code> to test if the Milvus features are available.</li>
+<li>Run <code translate="no">hello_milvus.py</code> to test data persistence. Create a collection named “hello_milvus” for data insertion, flush, index building, vector search and query. This collection will not be released or dropped during the test.</li>
+<li>Create a monitoring object which will start six threads executing create, insert, flush, index, search and query operations.</li>
 </ol>
 <pre><code translate="no">checkers = {
     Op.create: CreateChecker(),
@@ -148,39 +166,41 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
 }
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>Buat pernyataan pertama - semua operasi berhasil seperti yang diharapkan.</li>
-<li>Perkenalkan kegagalan sistem pada Milvus dengan menggunakan Chaos Mesh untuk mem-parsing file yaml yang mendefinisikan kegagalan. Kegagalan dapat berupa mematikan simpul kueri setiap lima detik misalnya.</li>
-<li>Buat pernyataan kedua saat memperkenalkan kegagalan sistem - Menilai apakah hasil yang dikembalikan dari operasi di Milvus selama kegagalan sistem sesuai dengan yang diharapkan.</li>
-<li>Hilangkan kegagalan melalui Chaos Mesh.</li>
-<li>Ketika layanan Milvus telah pulih (yang berarti semua pod telah siap), buat pernyataan ketiga - semua operasi berhasil seperti yang diharapkan.</li>
-<li>Jalankan <code translate="no">test_e2e.py</code> untuk menguji apakah fitur Milvus tersedia. Beberapa operasi selama kekacauan mungkin diblokir karena pernyataan ketiga. Dan bahkan setelah kekacauan dihilangkan, beberapa operasi mungkin akan terus diblokir, sehingga menghambat pernyataan ketiga untuk berhasil seperti yang diharapkan. Langkah ini bertujuan untuk memfasilitasi pernyataan ketiga dan berfungsi sebagai standar untuk memeriksa apakah layanan Milvus telah pulih.</li>
-<li>Jalankan <code translate="no">hello_milvus.py</code>, muat koleksi yang telah dibuat, dan lakukan operasi CRUP pada koleksi tersebut. Kemudian, periksa apakah data yang ada sebelum kegagalan sistem masih tersedia setelah pemulihan kegagalan.</li>
-<li>Kumpulkan log.</li>
+<li>Make the first assertion - all operations are successful as expected.</li>
+<li>Introduce a system failure to Milvus by using Chaos Mesh to parse the yaml file which defines the failure. A failure can be killing the query node every five seconds for instance.</li>
+<li>Make the second assertion while introducing a system failure - Judge whether the returned results of the operations in Milvus during a system failure matches the expectation.</li>
+<li>Eliminate the failure via Chaos Mesh.</li>
+<li>When the Milvus service is recovered (meaning all pods are ready), make the third assertion - all operations are successful as expected.</li>
+<li>Run <code translate="no">test_e2e.py</code> to test if the Milvus features are available. Some of the operations during the chaos might be blocked due to the third assertion. And even after the chaos is eliminated, some operations might continue to be blocked, hampering the third assertion from being successful as expected. This step aims to facilitate the third assertion and serves as a standard for checking if the Milvus service has recovered.</li>
+<li>Run <code translate="no">hello_milvus.py</code>, load the created collection, and conduct CRUP operations on the collection. Then, check if the data existing before the system failure are still available after failure recovery.</li>
+<li>Collect logs.</li>
 </ol>
-<h3 id="Stability-and-performance-test" class="common-anchor-header">Uji stabilitas dan kinerja</h3><p>Gambar di bawah ini menjelaskan tujuan, skenario pengujian, dan metrik uji stabilitas dan performa.</p>
+<h3 id="Stability-and-performance-test" class="common-anchor-header">Stability and performance test</h3><p>The figure below describes the purposes, test scenarios, and metrics of stability and performance test.</p>
 <table>
 <thead>
-<tr><th></th><th>Uji stabilitas</th><th>Uji kinerja</th></tr>
+<tr><th></th><th>Stability test</th><th>Performance test</th></tr>
 </thead>
 <tbody>
-<tr><td>Tujuan</td><td>- Memastikan bahwa Milvus dapat bekerja dengan lancar untuk jangka waktu tertentu di bawah beban kerja normal. <br> - Memastikan sumber daya dikonsumsi secara stabil ketika layanan Milvus dimulai.</td><td>- Menguji kinerja semua antarmuka Milvus. <br> - Temukan konfigurasi yang optimal dengan bantuan tes kinerja.  <br> - Berfungsi sebagai tolok ukur untuk rilis mendatang. <br> - Menemukan hambatan yang menghambat kinerja yang lebih baik.</td></tr>
-<tr><td>Skenario</td><td>- Skenario offline read-intensive di mana data hampir tidak diperbarui setelah penyisipan dan persentase pemrosesan setiap jenis permintaan adalah: permintaan pencarian 90%, permintaan penyisipan 5%, lainnya 5%. <br> - Skenario online write-intensive dimana data disisipkan dan dicari secara bersamaan dan persentase pemrosesan setiap jenis permintaan adalah: permintaan sisipkan 50%, permintaan pencarian 40%, lainnya 10%.</td><td>- Penyisipan data <br> - Pembuatan indeks <br> - Pencarian vektor</td></tr>
-<tr><td>Metrik</td><td>- Penggunaan memori <br> - Konsumsi CPU <br> - Latensi IO <br> - Status pod Milvus <br> - Waktu respons dari layanan Milvus <br> dll.</td><td>- Throughput data selama penyisipan data <br> - Waktu yang dibutuhkan untuk membangun indeks <br> - Waktu respons selama pencarian vektor <br> - Kueri per detik (QPS) <br> - Permintaan per detik  <br> - Tingkat penarikan kembali <br> dll.</td></tr>
+<tr><td>Purposes</td><td>- Ensure that Milvus can work smoothly for a fixed period of time under normal workload. <br> - Make sure resources are consumed stably when the Milvus service starts.</td><td>- Test the performance of alll Milvus interfaces. <br> - Find the optimal configuration with the help of performance tests.  <br> - Serve as the benchmark for future releases. <br> - Find the bottleneck that hampers a better performance.</td></tr>
+<tr><td>Scenarios</td><td>- Offline read-intensive scenario where data are barely updated after insertion and the percentage of processing each type of request is: search request 90%, insert request 5%, others 5%. <br> - Online write-intensive scenario where data are inserted and searched simultaneously and the percentage of processing each type of request is: insert request 50%, search request 40%, others 10%.</td><td>- Data insertion <br> - Index building <br> - Vector search</td></tr>
+<tr><td>Metrics</td><td>- Memory usage <br> - CPU consumption <br> - IO latency <br> - The status of Milvus pods <br> - Response time of the Milvus service <br> etc.</td><td>- Data throughput during data insertion <br> - The time it takes to build an index <br> - Response time during a vector search <br> - Query per second (QPS) <br> - Request per second  <br> - Recall rate <br> etc.</td></tr>
 </tbody>
 </table>
-<p>Uji stabilitas dan uji performa memiliki alur kerja yang sama:</p>
+<p>Both stability test and performance test share the same set of workflow:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Stability_and_performance_test_6ed8532697.png" alt="Stability and performance test" class="doc-image" id="stability-and-performance-test" />
-   </span> <span class="img-wrapper"> <span>Uji stabilitas dan performa</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Stability_and_performance_test_6ed8532697.png" alt="Stability and performance test" class="doc-image" id="stability-and-performance-test" />
+    <span>Stability and performance test</span>
+  </span>
+</p>
 <ol>
-<li>Mengurai dan memperbarui konfigurasi, dan menentukan metrik. <code translate="no">server-configmap</code> berhubungan dengan konfigurasi Milvus standalone atau cluster, sedangkan <code translate="no">client-configmap</code> berhubungan dengan konfigurasi kasus uji.</li>
-<li>Mengkonfigurasi server dan klien.</li>
-<li>Persiapan data</li>
-<li>Meminta interaksi antara server dan klien.</li>
-<li>Melaporkan dan menampilkan metrik.</li>
+<li>Parse and update configurations, and define metrics. The <code translate="no">server-configmap</code> corresponds to the configuration of Milvus standalone or cluster while <code translate="no">client-configmap</code> corresponds to the test case configurations.</li>
+<li>Configure the server and the client.</li>
+<li>Data preparation</li>
+<li>Request interaction between the server and the client.</li>
+<li>Report and display metrics.</li>
 </ol>
-<h2 id="Tools-and-methods-for-better-QA-efficiency" class="common-anchor-header">Alat dan metode untuk efisiensi QA yang lebih baik<button data-href="#Tools-and-methods-for-better-QA-efficiency" class="anchor-icon" translate="no">
+<h2 id="Tools-and-methods-for-better-QA-efficiency" class="common-anchor-header">Tools and methods for better QA efficiency<button data-href="#Tools-and-methods-for-better-QA-efficiency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -195,42 +215,48 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dari bagian pengujian modul, kita dapat melihat bahwa prosedur untuk sebagian besar pengujian sebenarnya hampir sama, terutama melibatkan modifikasi konfigurasi server dan klien Milvus, dan mengoper parameter API. Ketika ada beberapa konfigurasi, semakin bervariasi kombinasi konfigurasi yang berbeda, semakin banyak skenario pengujian yang dapat dicakup oleh eksperimen dan pengujian ini. Hasilnya, penggunaan ulang kode dan prosedur menjadi semakin penting dalam proses peningkatan efisiensi pengujian.</p>
-<h3 id="SDK-test-framework" class="common-anchor-header">Kerangka kerja pengujian SDK</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/SDK_test_framework_8219e28f4c.png" alt="SDK test framework" class="doc-image" id="sdk-test-framework" />
-   </span> <span class="img-wrapper"> <span>Kerangka kerja pengujian SDK</span> </span></p>
-<p>Untuk mempercepat proses pengujian, kita dapat menambahkan pembungkus <code translate="no">API_request</code> ke kerangka kerja pengujian asli, dan mengaturnya sebagai sesuatu yang mirip dengan API gateway. API gateway ini akan bertugas mengumpulkan semua permintaan API dan kemudian meneruskannya ke Milvus untuk menerima respons secara kolektif. Tanggapan ini akan diteruskan kembali ke klien setelahnya. Desain seperti ini membuat pengambilan informasi log tertentu seperti parameter, dan hasil yang dikembalikan menjadi lebih mudah. Selain itu, komponen pemeriksa dalam kerangka kerja pengujian SDK dapat memverifikasi dan memeriksa hasil dari Milvus. Dan semua metode pengecekan dapat ditentukan dalam komponen checker ini.</p>
-<p>Dengan kerangka kerja pengujian SDK, beberapa proses inisialisasi yang krusial dapat dibungkus dalam satu fungsi. Dengan demikian, potongan besar kode yang membosankan dapat dihilangkan.</p>
-<p>Perlu juga dicatat bahwa setiap kasus uji individu terkait dengan koleksi uniknya untuk memastikan isolasi data.</p>
-<p>Saat menjalankan kasus uji,<code translate="no">pytest-xdist</code>, ekstensi pytest, dapat dimanfaatkan untuk menjalankan semua kasus uji secara paralel, sehingga sangat meningkatkan efisiensi.</p>
-<h3 id="GitHub-action" class="common-anchor-header">Tindakan GitHub</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Git_Hub_action_c3c1bed591.png" alt="GitHub action" class="doc-image" id="github-action" />
-   </span> <span class="img-wrapper"> <span>Tindakan GitHub</span> </span></p>
-<p><a href="https://docs.github.com/en/actions">GitHub Action</a> juga diadopsi untuk meningkatkan efisiensi QA karena karakteristiknya sebagai berikut:</p>
+    </button></h2><p>From the module testing section, we can see that the procedure for most of the testings are in fact almost the same, mainly involving modifying Milvus server and client configurations, and passing API parameters. When there are multiple configurations, the more varied the combination of different configurations, the more testing scenarios these experiments and tests can cover. As a result, the reuse of codes and procedures is all the more critical to the process of enhancing testing efficiency.</p>
+<h3 id="SDK-test-framework" class="common-anchor-header">SDK test framework</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/SDK_test_framework_8219e28f4c.png" alt="SDK test framework" class="doc-image" id="sdk-test-framework" />
+    <span>SDK test framework</span>
+  </span>
+</p>
+<p>To accelerate the testing process, we can add an <code translate="no">API_request</code> wrapper to the original testing framework, and set it as something similar to the API gateway. This API gateway will be in charge of collecting all API requests and then pass them to Milvus to collectively receive responses. These responses will be passed back to the client afterwards. Such a design makes capturing certain log information like parameters, and returned results much more easier. In addition, the checker component in the SDK test framework can verify and examine the results from Milvus. And all checking methods can be defining within this checker component.</p>
+<p>With the SDK test framework, some crucial initialization processes can be wrapped into one single function. By doing so, large chunks of tedious codes can be eliminated.</p>
+<p>It is also noteworthy that each individual test case is related to its unique collection to ensure data isolation.</p>
+<p>When executing test cases,<code translate="no">pytest-xdist</code>, the pytest extension, can be leveraged to execute all individual test cases in parallel, greatly boosting the efficiency.</p>
+<h3 id="GitHub-action" class="common-anchor-header">GitHub action</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Git_Hub_action_c3c1bed591.png" alt="GitHub action" class="doc-image" id="github-action" />
+    <span>GitHub action</span>
+  </span>
+</p>
+<p><a href="https://docs.github.com/en/actions">GitHub Action</a> is also adopted to improve QA efficiency for its following characteristics:</p>
 <ul>
-<li>Ini adalah alat CI/CD asli yang terintegrasi secara mendalam dengan GitHub.</li>
-<li>Alat ini hadir dengan lingkungan mesin yang dikonfigurasi secara seragam dan alat pengembangan perangkat lunak umum yang sudah diinstal sebelumnya, termasuk Docker, Docker Compose, dll.</li>
-<li>Mendukung berbagai sistem operasi dan versi termasuk Ubuntu, MacOs, Windows-server, dll.</li>
-<li>Memiliki pasar yang menawarkan ekstensi yang kaya dan fungsi-fungsi di luar kotak.</li>
-<li>Matriksnya mendukung pekerjaan yang bersamaan, dan menggunakan kembali alur pengujian yang sama untuk meningkatkan efisiensi</li>
+<li>It is a native CI/CD tool deeply integrated with GitHub.</li>
+<li>It comes with a uniformly configured machine environment and pre-installed common software development tools including Docker, Docker Compose, etc.</li>
+<li>It supports multiple operating systems and versions including Ubuntu, MacOs, Windows-server, etc.</li>
+<li>It has a marketplace that offers rich extensions and out-of-box functions.</li>
+<li>Its matrix supports concurrent jobs, and reusing the same test flow to improve efficiency</li>
 </ul>
-<p>Terlepas dari karakteristik di atas, alasan lain untuk mengadopsi GitHub Action adalah karena uji penyebaran dan uji reliabilitas membutuhkan lingkungan yang independen dan terisolasi. Dan GitHub Action sangat ideal untuk pemeriksaan inspeksi harian pada dataset berskala kecil.</p>
-<h3 id="Tools-for-benchmark-tests" class="common-anchor-header">Alat bantu untuk uji tolok ukur</h3><p>Untuk membuat pengujian QA lebih efisien, sejumlah alat bantu digunakan.</p>
+<p>Apart from the characteristics above, another reason for adopting GitHub action is that deployment tests and reliability tests require independent and isolated environment. And GitHub Action is ideal for daily inspection checks on small-scale datasets.</p>
+<h3 id="Tools-for-benchmark-tests" class="common-anchor-header">Tools for benchmark tests</h3><p>To make QA tests more efficient, a number of tools are used.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_13_fbc71dfe4f.png" alt="QA tools" class="doc-image" id="qa-tools" />
-   </span> <span class="img-wrapper"> <span>Alat bantu QA</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_13_fbc71dfe4f.png" alt="QA tools" class="doc-image" id="qa-tools" />
+    <span>QA tools</span>
+  </span>
+</p>
 <ul>
-<li><a href="https://argoproj.github.io/">Argo</a>: seperangkat alat sumber terbuka untuk Kubernetes untuk menjalankan alur kerja dan mengelola cluster dengan menjadwalkan tugas. Alat ini juga dapat menjalankan beberapa tugas secara paralel.</li>
-<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">Dasbor Kubernetes</a>: antarmuka pengguna Kubernetes berbasis web untuk memvisualisasikan <code translate="no">server-configmap</code> dan <code translate="no">client-configmap</code>.</li>
-<li><a href="https://en.wikipedia.org/wiki/Network-attached_storage">NAS</a>: Network attached storage (NAS) adalah server penyimpanan data komputer tingkat file untuk menyimpan dataset benchmark ANN yang umum.</li>
-<li><a href="https://www.influxdata.com/">InfluxDB</a> dan <a href="https://www.mongodb.com/">MongoDB</a>: Basis data untuk menyimpan hasil tes benchmark.</li>
-<li><a href="https://grafana.com/">Grafana</a>: Solusi analitik dan pemantauan sumber terbuka untuk memantau metrik sumber daya server dan metrik kinerja klien.</li>
-<li><a href="https://redash.io/">Redash</a>: Layanan yang membantu memvisualisasikan data Anda dan membuat bagan untuk pengujian benchmark.</li>
+<li><a href="https://argoproj.github.io/">Argo</a>: a set of open-source tools for Kubernetes to run workflows and manage clusters by scheduling tasks. It can also enable running multiple tasks in parallel.</li>
+<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/">Kubernetes dashboard</a>: a web-based Kubernetes user interface for visualizing <code translate="no">server-configmap</code>  and <code translate="no">client-configmap</code>.</li>
+<li><a href="https://en.wikipedia.org/wiki/Network-attached_storage">NAS</a>: Network attached storage (NAS) is a file-level computer data storage server for keeping common ANN-benchmark datasets.</li>
+<li><a href="https://www.influxdata.com/">InfluxDB</a> and <a href="https://www.mongodb.com/">MongoDB</a>: Databases for saving results of benchmark tests.</li>
+<li><a href="https://grafana.com/">Grafana</a>: An open-source analytics and monitoring solution for monitoring server resource metrics and client performance metrics.</li>
+<li><a href="https://redash.io/">Redash</a>: A service that helps visualize your data and create charts for benchmark tests.</li>
 </ul>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Tentang Seri Deep Dive<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -245,14 +271,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-6-oss-qa.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dengan <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">pengumuman resmi ketersediaan umum</a> Milvus 2.0, kami menyusun seri blog Milvus Deep Dive ini untuk memberikan interpretasi mendalam tentang arsitektur dan kode sumber Milvus. Topik-topik yang dibahas dalam seri blog ini meliputi:</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Gambaran umum arsitektur Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">API dan SDK Python</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Pemrosesan data</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Manajemen data</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Kueri waktu nyata</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Mesin eksekusi skalar</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">Sistem QA</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Mesin eksekusi vektor</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

@@ -1,8 +1,6 @@
 ---
 id: how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25.md
-title: >-
-  Como a OpusSearch criou a correspondência exacta para o RAG empresarial com o
-  Milvus BM25
+title: How OpusSearch Built Exact Matching for Enterprise RAG with Milvus BM25
 author: Chronos Kou
 date: 2025-10-17T00:00:00.000Z
 cover: assets.zilliz.com/opus_cover_new_1505263938.png
@@ -13,14 +11,13 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus, enterprise RAG, vector database, semantic search'
 meta_title: How OpusSearch Built Exact Matching for Enterprise RAG with Milvus
 desc: >-
-  Saiba como o OpusSearch utiliza o Milvus BM25 para potenciar a correspondência
-  exacta em sistemas RAG empresariais, combinando a pesquisa semântica com a
-  recuperação precisa de palavras-chave.
+  Learn how OpusSearch uses Milvus BM25 to power exact matching in enterprise
+  RAG systems—combining semantic search with precise keyword retrieval.
 origin: >-
   https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b
 ---
-<p>Este post foi originalmente publicado no <a href="https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b">Medium</a> e é republicado aqui com permissão.</p>
-<h2 id="The-Semantic-Search-Blind-Spot" class="common-anchor-header">O ponto cego da pesquisa semântica<button data-href="#The-Semantic-Search-Blind-Spot" class="anchor-icon" translate="no">
+<p>This post was originally published on <a href="https://medium.com/opus-engineering/how-opussearch-built-exact-matching-for-enterprise-rag-with-milvus-bm25-aa1098a9888b">Medium</a> and is reposted here with permission.</p>
+<h2 id="The-Semantic-Search-Blind-Spot" class="common-anchor-header">The Semantic Search Blind Spot<button data-href="#The-Semantic-Search-Blind-Spot" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,14 +32,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Imagine o seguinte: És um editor de vídeo com um prazo a cumprir. Precisa de clips do "episódio 281" do seu podcast. Escreve-o na nossa pesquisa. A nossa pesquisa semântica alimentada por IA, orgulhosa da sua inteligência, devolve clips do 280, 282 e até sugere o episódio 218 porque os números são semelhantes, certo?</p>
-<p><strong>Errado</strong>.</p>
-<p>Quando lançámos o <a href="https://www.opus.pro/opussearch">OpusSearch</a> para empresas em janeiro de 2025, pensámos que a pesquisa semântica seria suficiente. As consultas em linguagem natural como "encontrar momentos engraçados sobre encontros" funcionavam lindamente. O nosso sistema RAG <a href="https://milvus.io/">, alimentado por Milvus</a>, estava a arrasar.</p>
-<p><strong>Mas depois a realidade bateu-nos na cara com o feedback dos utilizadores:</strong></p>
-<p>"Só quero clips do episódio 281. Porque é que isto é tão difícil?"</p>
-<p>"Quando procuro 'Foi isso que ela disse', quero EXACTAMENTE essa frase, não 'foi isso que ele quis dizer'."</p>
-<p>Acontece que os editores de vídeo e os recortadores nem sempre querem que a IA seja inteligente. Por vezes, querem que o software seja <strong>direto e correto</strong>.</p>
-<h2 id="Why-do-we-care-about-Search" class="common-anchor-header">Porque é que nos preocupamos com a Pesquisa?<button data-href="#Why-do-we-care-about-Search" class="anchor-icon" translate="no">
+    </button></h2><p>Picture this: You’re a video editor on deadline. You need clips from “episode 281” of your podcast. You type it into our search. Our AI-powered semantic search, proud of its intelligence, returns clips from 280, 282, and even suggests episode 218 because the numbers are similar, right?</p>
+<p><strong>Wrong</strong>.</p>
+<p>When we launched <a href="https://www.opus.pro/opussearch">OpusSearch</a> for enterprises in January 2025, we thought semantic search would be enough. Natural language queries like “find funny moments about dating” worked beautifully. Our <a href="https://milvus.io/">Milvus</a>-powered RAG system was crushing it.</p>
+<p><strong>But then reality hit us in the face with user feedback:</strong></p>
+<p>“I just want clips from episode 281. Why is this so hard?”</p>
+<p>“When I search ‘That’s what she said,’ I want EXACTLY that phrase, not ‘that’s what he meant.’”</p>
+<p>Turns out that video editors and clippers don’t always want AI to be clever. Sometimes they want software to be <strong>straightforward and correct</strong>.</p>
+<h2 id="Why-do-we-care-about-Search" class="common-anchor-header">Why do we care about Search?<button data-href="#Why-do-we-care-about-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,8 +54,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Criámos uma <a href="https://www.opus.pro/opussearch">função de pesquisa empresarial</a> porque identificámos que <strong>a rentabilização de</strong> grandes catálogos de vídeo é o principal desafio que as organizações enfrentam. A nossa plataforma com tecnologia RAG funciona como um <strong>agente de crescimento</strong> que permite às empresas <strong>pesquisar, redirecionar e rentabilizar todas as suas bibliotecas de vídeo</strong>. Leia sobre as histórias de sucesso de <strong>All The Smoke</strong>, <strong>KFC Radio</strong> e <strong>TFTC</strong> <a href="https://www.opus.pro/blog/growing-a-new-youtube-channel-in-90-days-without-creating-new-videos">aqui</a>.</p>
-<h2 id="Why-We-Doubled-Down-on-Milvus-Instead-of-Adding-Another-Database" class="common-anchor-header">Por que dobramos a aposta no Milvus (em vez de adicionar outro banco de dados)<button data-href="#Why-We-Doubled-Down-on-Milvus-Instead-of-Adding-Another-Database" class="anchor-icon" translate="no">
+    </button></h2><p>We built an <a href="https://www.opus.pro/opussearch">enterprise search function</a> because we identified that <strong>monetizing</strong> large video catalogs is the key challenge organizations face. Our RAG-powered platform serves as a <strong>growth agent</strong> that enables enterprises to <strong>search, repurpose, and monetize their entire video libraries</strong>. Read about success case stories from <strong>All The Smoke</strong>, <strong>KFC Radio</strong> and <strong>TFTC</strong> <a href="https://www.opus.pro/blog/growing-a-new-youtube-channel-in-90-days-without-creating-new-videos">here</a>.</p>
+<h2 id="Why-We-Doubled-Down-on-Milvus-Instead-of-Adding-Another-Database" class="common-anchor-header">Why We Doubled Down on Milvus (Instead of Adding Another Database)<button data-href="#Why-We-Doubled-Down-on-Milvus-Instead-of-Adding-Another-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,19 +70,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A solução óbvia era adicionar o Elasticsearch ou o MongoDB para obter uma correspondência exacta. No entanto, como uma startup, manter vários sistemas de pesquisa introduz uma sobrecarga e complexidade operacional significativa.</p>
+    </button></h2><p>The obvious solution was to add Elasticsearch or MongoDB for exact matching. However, as a startup, maintaining multiple search systems introduces significant operational overhead and complexity.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Strong_community_adoption_with_35k_Git_Hub_stars_fbf773dcdb.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>A Milvus tinha recentemente lançado a sua funcionalidade de pesquisa de texto integral e uma avaliação com o nosso próprio conjunto de dados <strong>sem qualquer afinação</strong> mostrou vantagens convincentes:</p>
+<p>Milvus had recently shipped their full-text search feature, and an evaluation with our own dataset <strong>without any tuning</strong> showed compelling advantages:</p>
 <ul>
-<li><p><strong>Precisão de correspondência parcial superior</strong>. Por exemplo, "drinking story" e "jumping high", outras bases de dados vectoriais devolvem por vezes "dining story" e "getting high", o que altera o significado.</p></li>
-<li><p>Milvus <strong>apresenta resultados mais longos e mais completos</strong> do que outras bases de dados quando as consultas são gerais, o que é naturalmente mais ideal para o nosso caso de utilização.</p></li>
+<li><p><strong>Superior partial matching accuracy</strong>. For example “drinking story” and “jumping high”, other vector DBs returns sometimes “dining story” and “getting high” which alters the meaning.</p></li>
+<li><p>Milvus <strong>returns longer, more comprehensive results</strong> than other databases when queries are general, which is naturally more ideal for our use case.</p></li>
 </ul>
-<h2 id="Architecture-from-5000-feet" class="common-anchor-header">Arquitetura a 5000 pés<button data-href="#Architecture-from-5000-feet" class="anchor-icon" translate="no">
+<h2 id="Architecture-from-5000-feet" class="common-anchor-header">Architecture from 5000 feet<button data-href="#Architecture-from-5000-feet" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,7 +103,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="BM25-+-Filtering--Exact-Match-Magic" class="common-anchor-header">BM25 + filtragem = magia da correspondência exacta<button data-href="#BM25-+-Filtering--Exact-Match-Magic" class="anchor-icon" translate="no">
+<h2 id="BM25-+-Filtering--Exact-Match-Magic" class="common-anchor-header">BM25 + Filtering = Exact Match Magic<button data-href="#BM25-+-Filtering--Exact-Match-Magic" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,15 +118,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A pesquisa de texto completo do Milvus não tem propriamente a ver com correspondência exacta, mas sim com pontuação de relevância utilizando o BM25<a href="https://en.wikipedia.org/wiki/Okapi_BM25">(Best Matching 25</a>), que calcula a relevância de um documento para a sua consulta. É excelente para "encontre-me algo próximo", mas terrível para "encontre-me exatamente isto".</p>
-<p>Em seguida, combinámos <strong>o poder do BM25 com a filtragem TEXT_MATCH do Milvus</strong>. Eis como funciona:</p>
+    </button></h2><p>Milvus’s full-text search isn’t really about exact matching, but it’s about relevance scoring using BM25 (<a href="https://en.wikipedia.org/wiki/Okapi_BM25">Best Matching 25</a>), which calculates how relevant a document is to your query. It’s great for “find me something close,” but terrible for “find me exactly this.”</p>
+<p>We then <strong>combined BM25’s power with Milvus’s TEXT_MATCH filtering</strong>. Here’s how it works:</p>
 <ol>
-<li><p><strong>Filtrar primeiro</strong>: O TEXT_MATCH encontra documentos que contêm as suas palavras-chave exactas</p></li>
-<li><p><strong>Classificação em segundo lugar</strong>: o BM25 classifica essas correspondências exactas por relevância</p></li>
-<li><p><strong>Vitória</strong>: obtém correspondências exactas, classificadas de forma inteligente</p></li>
+<li><p><strong>Filter first</strong>: TEXT_MATCH finds documents containing your exact keywords</p></li>
+<li><p><strong>Rank second</strong>: BM25 sorts those exact matches by relevance</p></li>
+<li><p><strong>Win</strong>: You get exact matches, ranked intelligently</p></li>
 </ol>
-<p>Pense nisso como "dê-me tudo com 'episódio 281', depois mostre-me os melhores primeiro".</p>
-<h2 id="The-Code-That-Made-It-Work" class="common-anchor-header">O código que o fez funcionar<button data-href="#The-Code-That-Made-It-Work" class="anchor-icon" translate="no">
+<p>Think of it as “give me everything with ‘episode 281’, then show me the best ones first.”</p>
+<h2 id="The-Code-That-Made-It-Work" class="common-anchor-header">The Code That Made It Work<button data-href="#The-Code-That-Made-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,7 +141,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Schema-Design" class="common-anchor-header">Desenho do esquema</h3><p><strong>Importante</strong>: Desactivámos totalmente as palavras de paragem, uma vez que termos como "The Office" e "Office" representam entidades distintas no nosso domínio de conteúdo.</p>
+    </button></h2><h3 id="Schema-Design" class="common-anchor-header">Schema Design</h3><p><strong>Important</strong>: We disabled stop words entirely, as terms like “The Office” and “Office” represent distinct entities in our content domain.</p>
 <pre><code translate="no"><span class="hljs-built_in">export</span> <span class="hljs-keyword">function</span> getExactMatchFields(): FieldType[] {
  <span class="hljs-built_in">return</span> [
    {
@@ -181,7 +178,7 @@ origin: >-
  ]
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="BM25-Function-Setup" class="common-anchor-header">Configuração da função BM25</h3><pre><code translate="no"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-attr">FUNCTIONS</span>: <span class="hljs-title class_">FunctionObject</span>[] = [
+<h3 id="BM25-Function-Setup" class="common-anchor-header">BM25 Function Setup</h3><pre><code translate="no"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-attr">FUNCTIONS</span>: <span class="hljs-title class_">FunctionObject</span>[] = [
  {
    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;text_bm25_embedding&#x27;</span>,
    <span class="hljs-attr">type</span>: <span class="hljs-title class_">FunctionType</span>.<span class="hljs-property">BM25</span>,
@@ -191,9 +188,9 @@ origin: >-
  },
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Index-Config" class="common-anchor-header">Configuração do índice</h3><p>Estes parâmetros bm25_k1 e bm25_b foram ajustados em relação ao nosso conjunto de dados de produção para um desempenho ótimo.</p>
-<p><strong>bm25_k1</strong>: Valores mais altos (até ~2.0) dão mais peso a ocorrências de termos repetidos, enquanto valores mais baixos reduzem o impacto da frequência do termo após as primeiras ocorrências.</p>
-<p><strong>bm25_b</strong>: Valores próximos de 1,0 penalizam fortemente documentos mais longos, enquanto valores próximos de 0 ignoram completamente o comprimento do documento.</p>
+<h3 id="Index-Config" class="common-anchor-header">Index Config</h3><p>These bm25_k1 and bm25_b parameters were tuned against our production dataset for optimal performance.</p>
+<p><strong>bm25_k1</strong>: Higher values (up to ~2.0) give more weight to repeated term occurrences, while lower values reduce the impact of term frequency after the first few occurrences.</p>
+<p><strong>bm25_b</strong>: Values closer to 1.0 heavily penalize longer documents, while values closer to 0 ignore document length entirely.</p>
 <pre><code translate="no">index_params: [
  {
    field_name: <span class="hljs-string">&#x27;sparse_vector&#x27;</span>,
@@ -207,7 +204,7 @@ origin: >-
  },
 ],
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="The-Search-Query-That-Started-Working" class="common-anchor-header">A consulta de pesquisa que começou a funcionar</h3><pre><code translate="no"><span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">milvusClient</span>.<span class="hljs-title function_">search</span>({
+<h3 id="The-Search-Query-That-Started-Working" class="common-anchor-header">The Search Query That Started Working</h3><pre><code translate="no"><span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">milvusClient</span>.<span class="hljs-title function_">search</span>({
  <span class="hljs-attr">collection_name</span>: <span class="hljs-string">&#x27;my_collection&#x27;</span>,
  <span class="hljs-attr">limit</span>: <span class="hljs-number">30</span>,
  <span class="hljs-attr">output_fields</span>: [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;text&#x27;</span>],
@@ -216,10 +213,10 @@ origin: >-
  <span class="hljs-attr">data</span>: <span class="hljs-string">&#x27;episode 281&#x27;</span>,  <span class="hljs-comment">// BM25 ranking query</span>
 })
 <button class="copy-code-btn"></button></code></pre>
-<p>Para correspondências exactas de múltiplos termos:</p>
+<p>For multi-term exact matches:</p>
 <pre><code translate="no"><span class="hljs-built_in">filter</span>: `TEXT_MATCH(text, <span class="hljs-string">&quot;foo&quot;</span>) <span class="hljs-keyword">and</span> TEXT_MATCH(text, <span class="hljs-string">&quot;bar&quot;</span>)`
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="The-Mistakes-We-Made-So-You-Don’t-Have-To" class="common-anchor-header">Os erros que cometemos (para que não tenha de os cometer)<button data-href="#The-Mistakes-We-Made-So-You-Don’t-Have-To" class="anchor-icon" translate="no">
+<h2 id="The-Mistakes-We-Made-So-You-Don’t-Have-To" class="common-anchor-header">The Mistakes We Made (So You Don’t Have To)<button data-href="#The-Mistakes-We-Made-So-You-Don’t-Have-To" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -234,7 +231,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Dynamic-Fields-Critical-for-Production-Flexibility" class="common-anchor-header">Campos dinâmicos: Crítico para a flexibilidade da produção</h3><p>Inicialmente, não habilitamos os campos dinâmicos, o que era problemático. As modificações no esquema exigiam a eliminação e a recriação de coleções em ambientes de produção.</p>
+    </button></h2><h3 id="Dynamic-Fields-Critical-for-Production-Flexibility" class="common-anchor-header">Dynamic Fields: Critical for Production Flexibility</h3><p>Initially, we didn’t enable dynamic fields, which was problematic. Schema modifications required dropping and recreating collections in production environments.</p>
 <pre><code translate="no"><span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">milvusClient</span>.<span class="hljs-title function_">createCollection</span>({
  <span class="hljs-attr">collection_name</span>: collectionName,
  <span class="hljs-attr">fields</span>: fields,
@@ -242,12 +239,12 @@ origin: >-
  <span class="hljs-comment">// ... rest of config</span>
 })
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Collection-Design-Maintain-Clear-Separation-of-Concerns" class="common-anchor-header">Design da coleção: Manter uma separação clara das preocupações</h3><p>Nossa arquitetura usa coleções dedicadas por domínio de recurso. Essa abordagem modular minimiza o impacto das alterações de esquema e melhora a capacidade de manutenção.</p>
-<h3 id="Memory-Usage-Optimize-with-MMAP" class="common-anchor-header">Uso de memória: Otimizar com MMAP</h3><p>Os índices esparsos requerem uma alocação significativa de memória. Para grandes conjuntos de dados de texto, recomendamos a configuração do MMAP para utilizar o armazenamento em disco. Esta abordagem requer uma capacidade de E/S adequada para manter as caraterísticas de desempenho.</p>
+<h3 id="Collection-Design-Maintain-Clear-Separation-of-Concerns" class="common-anchor-header">Collection Design: Maintain Clear Separation of Concerns</h3><p>Our architecture uses dedicated collections per feature domain. This modular approach minimizes the impact of schema changes and improves maintainability.</p>
+<h3 id="Memory-Usage-Optimize-with-MMAP" class="common-anchor-header">Memory Usage: Optimize with MMAP</h3><p>Sparse indexes require significant memory allocation. For large text datasets, we recommend configuring MMAP to utilize disk storage. This approach requires adequate I/O capacity to maintain performance characteristics.</p>
 <pre><code translate="no"><span class="hljs-comment">// In your Milvus configuration</span>
 <span class="hljs-attr">use_mmap</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Production-Impact-and-Results" class="common-anchor-header">Impacto na produção e resultados<button data-href="#Production-Impact-and-Results" class="anchor-icon" translate="no">
+<h2 id="Production-Impact-and-Results" class="common-anchor-header">Production Impact and Results<button data-href="#Production-Impact-and-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -262,9 +259,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Após a implementação da funcionalidade de correspondência exacta em junho de 2025, observámos melhorias mensuráveis nas métricas de satisfação do utilizador e um volume de suporte reduzido para problemas relacionados com a pesquisa. A nossa abordagem de modo duplo permite a pesquisa semântica para consultas exploratórias, ao mesmo tempo que fornece uma correspondência exacta para a recuperação de conteúdos específicos.</p>
-<p>A principal vantagem arquitetónica: manter um único sistema de base de dados que suporta ambos os paradigmas de pesquisa, reduzindo a complexidade operacional e expandindo a funcionalidade.</p>
-<h2 id="What’s-Next" class="common-anchor-header">O que vem a seguir?<button data-href="#What’s-Next" class="anchor-icon" translate="no">
+    </button></h2><p>Following the June 2025 deployment of exact match functionality, we observed measurable improvements in user satisfaction metrics and reduced support volume for search-related issues. Our dual-mode approach enables semantic search for exploratory queries while providing precise matching for specific content retrieval.</p>
+<p>The key architectural benefit: maintaining a single database system that supports both search paradigms, reducing operational complexity while expanding functionality.</p>
+<h2 id="What’s-Next" class="common-anchor-header">What’s Next?<button data-href="#What’s-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -279,5 +276,5 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Estamos a fazer experiências com <strong>consultas</strong> <strong>híbridas</strong> <strong>que combinam correspondência semântica e exacta numa única pesquisa</strong>. Imagine: "Encontrar clips engraçados do episódio 281" em que "engraçado" utiliza a pesquisa semântica e "episódio 281" utiliza a correspondência exacta.</p>
-<p>O futuro da pesquisa não é escolher entre a IA semântica e a correspondência exacta. É utilizar <strong>ambas</strong> de forma inteligente no mesmo sistema.</p>
+    </button></h2><p>We’re experimenting with <strong>hybrid</strong> <strong>queries combining semantic and exact match in a single search</strong>. Imagine: “Find funny clips from episode 281” where “funny” uses semantic search and “episode 281” uses exact match.</p>
+<p>The future of search isn’t picking between semantic AI and exact matching. It’s using <strong>both</strong> intelligently in the same system.</p>

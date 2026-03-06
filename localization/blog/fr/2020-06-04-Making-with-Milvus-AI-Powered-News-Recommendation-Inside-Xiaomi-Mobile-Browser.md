@@ -2,74 +2,82 @@
 id: >-
   Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser.md
 title: >-
-  Faire avec Milvus une recommandation d'actualités basée sur l'IA dans le
-  navigateur mobile de Xiaomi
+  Making with Milvus AI-Powered News Recommendation Inside Xiaomi's Mobile
+  Browser
 author: milvus
 date: 2020-06-04T02:30:34.750Z
 desc: >-
-  Découvrez comment Xiaomi a tiré parti de l'IA et de Milvus pour créer un
-  système intelligent de recommandation de nouvelles capable de trouver le
-  contenu le plus pertinent pour les utilisateurs de son navigateur web mobile.
+  Discover how Xiaomi leveraged AI and Milvus to build an intelligent news
+  recommendation system capable of finding the most relevant content for users
+  of its mobile web browser.
 cover: assets.zilliz.com/blog_Sohu_News_dec53d0814.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/Making-with-Milvus-AI-Powered-News-Recommendation-Inside-Xiaomi-Mobile-Browser
 ---
-<custom-h1>Making with Milvus : AI-Powered News Recommendation Inside Xiaomi's Mobile Browser (en anglais)</custom-h1><p>Des flux de médias sociaux aux recommandations de listes de lecture sur Spotify, l'<a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">intelligence artificielle</a> joue déjà un rôle majeur dans le contenu que nous voyons et avec lequel nous interagissons chaque jour. Afin de différencier son navigateur web mobile, le fabricant multinational d'électronique Xiaomi a conçu un moteur de recommandation d'actualités basé sur l'intelligence artificielle. <a href="https://milvus.io/">Milvus</a>, une base de données vectorielle open-source spécialement conçue pour la recherche de similarités et l'intelligence artificielle, a été utilisée comme plateforme de gestion des données de base de l'application. Cet article explique comment Xiaomi a construit son moteur de recommandation d'actualités alimenté par l'IA et comment Milvus et d'autres algorithmes d'IA ont été utilisés.</p>
+<custom-h1>Making with Milvus: AI-Powered News Recommendation Inside Xiaomi’s Mobile Browser</custom-h1><p>From social media feeds to playlist recommendations on Spotify, <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">artificial intelligence</a> already plays a major role in the content we see and interact with each day. In an effort to differentiate their mobile web browser, multinational electronics manufacturer Xiaomi built an AI-powered news recommendation engine. <a href="https://milvus.io/">Milvus</a>, an open-source vector database built specifically for similarity search and artificial intelligence, was used as the application’s core data management platform. This article explains how Xiaomi built its AI-powered news recommendation engine, and how Milvus and other AI algorithms were used.</p>
 <p><br/></p>
-<h3 id="Using-AI-to-suggest-personalized-content-and-cut-through-news-noise" class="common-anchor-header">L'utilisation de l'IA pour suggérer des contenus personnalisés et réduire le bruit de l'actualité</h3><p>Le New York Times publiant à lui seul plus de <a href="https://www.theatlantic.com/technology/archive/2016/05/how-many-stories-do-newspapers-publish-per-day/483845/">230 articles par</a> jour, le simple volume d'articles produits ne permet pas aux individus d'avoir une vue d'ensemble de toutes les actualités. Pour aider à passer au crible d'importants volumes de contenu et recommander les articles les plus pertinents ou les plus intéressants, nous nous tournons de plus en plus vers l'IA. Bien que les recommandations soient loin d'être parfaites, l'apprentissage automatique est de plus en plus nécessaire pour se frayer un chemin dans le flux constant de nouvelles informations qui se déversent dans notre monde de plus en plus complexe et interconnecté.</p>
-<p>Xiaomi fabrique et investit dans des smartphones, des applications mobiles, des ordinateurs portables, des appareils électroménagers et bien d'autres produits. Afin de différencier un navigateur mobile préinstallé sur plus de 40 millions de smartphones vendus chaque trimestre par l'entreprise, Xiaomi y a intégré un système de recommandation d'actualités. Lorsque les utilisateurs lancent le navigateur mobile de Xiaomi, l'intelligence artificielle est utilisée pour recommander des contenus similaires en fonction de l'historique de recherche de l'utilisateur, de ses centres d'intérêt, etc. Milvus est une base de données de recherche de similarités vectorielles open-source utilisée pour accélérer la recherche d'articles connexes.</p>
+<h3 id="Using-AI-to-suggest-personalized-content-and-cut-through-news-noise" class="common-anchor-header">Using AI to suggest personalized content and cut through news noise</h3><p>With the New York Times alone publishing over <a href="https://www.theatlantic.com/technology/archive/2016/05/how-many-stories-do-newspapers-publish-per-day/483845/">230 pieces</a> of content each day, the sheer volume of articles produced makes it impossible for individuals to get a comprehensive view of all the news. To help sift through large volumes of content, and recommend the most relevant or interesting pieces, we increasingly turn to AI. Although recommendations remain far from perfect, machine learning is increasingly necessary to cut through the constant stream of new information pouring out of our increasingly complex and interconnected world.</p>
+<p>Xiaomi makes and invests in smartphones, mobile apps, laptops, home appliances, and many more products. In an effort to differentiate a mobile browser that comes preinstalled on many of 40+ million smartphones the company sells each quarter, Xiaomi built a news recommendation system into it. When users launch Xiaomi’s mobile browser, artificial intelligence is used to recommend similar content based on user search history, interests, and more. Milvus is an open-source vector similarity search database used to accelerate retrieval of related articles.</p>
 <p><br/></p>
-<h3 id="How-does-AI-powered-content-recommendation-work" class="common-anchor-header">Comment fonctionne la recommandation de contenu alimentée par l'IA ?</h3><p>À la base, la recommandation d'actualités (ou tout autre type de système de recommandation de contenu) consiste à comparer des données d'entrée à une base de données massive afin de trouver des informations similaires. Pour que la recommandation de contenu soit efficace, il faut trouver un équilibre entre la pertinence et l'actualité, et intégrer efficacement d'énormes volumes de nouvelles données, souvent en temps réel.</p>
-<p>Pour s'adapter à des ensembles de données volumineux, les systèmes de recommandation sont généralement divisés en deux étapes :</p>
+<h3 id="How-does-AI-powered-content-recommendation-work" class="common-anchor-header">How does AI-powered content recommendation work?</h3><p>At its core, news recommendation (or any other type of content recommendation system) involves comparing input data to a massive database to find similar information. Successful content recommendation involves balancing relevance with timeliness, and efficiently incorporating huge volumes of new data—often in real time.</p>
+<p>To accommodate massive datasets, recommendation systems are typically divided into two stages:</p>
 <ol>
-<li>La<strong>recherche</strong>: Lors de la recherche, le contenu est réduit à partir d'une bibliothèque plus large en fonction des intérêts et du comportement de l'utilisateur. Dans le navigateur mobile de Xiaomi, des milliers d'éléments de contenu sont sélectionnés à partir d'un vaste ensemble de données contenant des millions d'articles d'actualité.</li>
-<li><strong>Tri</strong>: Ensuite, le contenu sélectionné lors de la recherche est trié en fonction de certains indicateurs avant d'être transmis à l'utilisateur. Au fur et à mesure que les utilisateurs s'intéressent au contenu recommandé, le système s'adapte en temps réel pour fournir des suggestions plus pertinentes.</li>
+<li><strong>Retrieval</strong>: During retrieval, content is narrowed down from the broader library based on user interests and behavior. In Xiaomi’s mobile browser, thousands of pieces of content are selected from a massive dataset that contains millions of news articles.</li>
+<li><strong>Sorting</strong>: Next, content selected during retrieval is sorted according to certain indicators before being pushed to the user. As users engage with recommended content, the system adapts in real time to provide more relevant suggestions.</li>
 </ol>
-<p>Les recommandations de contenu d'actualité doivent être faites en temps réel sur la base du comportement de l'utilisateur et du contenu récemment publié. En outre, le contenu suggéré doit correspondre autant que possible aux intérêts de l'utilisateur et à son intention de recherche.</p>
+<p>News content recommendations need to be made in real-time based on user behavior and recently published content. Additionally, suggested content must match user interests and search intent as much as possible.</p>
 <p><br/></p>
-<h3 id="Milvus-+-BERT--intelligent-content-suggestions" class="common-anchor-header">Milvus + BERT = suggestions de contenu intelligentes</h3><p>Milvus est une base de données open-source de recherche de similarités vectorielles qui peut être intégrée à des modèles d'apprentissage profond pour alimenter des applications couvrant le traitement du langage naturel, la vérification d'identité, et bien plus encore. Milvus indexe de grands ensembles de données vectorielles pour rendre la recherche plus efficace et prend en charge une variété de cadres d'IA populaires pour simplifier le processus de développement d'applications d'apprentissage automatique. Ces caractéristiques font de la plateforme la solution idéale pour le stockage et l'interrogation de données vectorielles, un élément essentiel de nombreuses applications d'apprentissage automatique.</p>
-<p>Xiaomi a choisi Milvus pour gérer les données vectorielles de son système intelligent de recommandation d'actualités parce qu'il est rapide, fiable et ne nécessite qu'une configuration et une maintenance minimales. Cependant, Milvus doit être associé à un algorithme d'IA pour créer des applications déployables. Xiaomi a choisi BERT, abréviation de Bidirectional Encoder Representation Transformers, comme modèle de représentation du langage dans son moteur de recommandation. BERT peut être utilisé comme un modèle NLU (compréhension du langage naturel) général qui peut piloter un certain nombre de tâches NLP (traitement du langage naturel) différentes. Ses principales caractéristiques sont les suivantes</p>
+<h3 id="Milvus-+-BERT--intelligent-content-suggestions" class="common-anchor-header">Milvus + BERT = intelligent content suggestions</h3><p>Milvus is an open-source vector similarity search database that can be integrated with deep learning models to power applications spanning natural language processing, identity verification, and much more. Milvus indexes large vector datasets to make search more efficient, and supports a variety of popular AI frameworks to simplify the process of developing machine learning applications. These characteristics make the platform the ideal for storing and querying vector data, a critical component of many machine learning applications.</p>
+<p>Xiaomi selected Milvus to manage vector data for its intelligent news recommendation system because it is fast, reliable, and requires minimal configuration and maintenance. However, Milvus must be paired with an AI algorithm to build deployable applications. Xiaomi selected BERT, short for Bidirectional Encoder Representation Transformers, as the language representation model in its recommendation engine. BERT can be used as a general NLU (natural language understanding) model that can drive a number of different NLP (natural language processing) tasks. Its key features include:</p>
 <ul>
-<li>Le transformateur de BERT est utilisé comme cadre principal de l'algorithme et est capable de capturer des relations explicites et implicites dans et entre les phrases.</li>
-<li>Objectifs d'apprentissage multitâches, modélisation du langage masqué (MLM) et prédiction de la phrase suivante (NSP).</li>
-<li>BERT est plus performant avec de grandes quantités de données et peut améliorer d'autres techniques de traitement du langage naturel telles que Word2Vec en agissant comme une matrice de conversion.</li>
+<li>BERT’s transformer is used as the main framework of the algorithm and is capable of capturing explicit and implicit relationships within and between sentences.</li>
+<li>Multi-task learning goals, masked language modeling (MLM), and next sentence prediction (NSP).</li>
+<li>BERT performs better with greater amounts of data, and can enhance other natural language processing techniques such as Word2Vec by acting as a conversion matrix.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_1_6301344312.jpeg" alt="Blog_Xiaomi_1.jpeg" class="doc-image" id="blog_xiaomi_1.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog_Xiaomi_1.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_1_6301344312.jpeg" alt="Blog_Xiaomi_1.jpeg" class="doc-image" id="blog_xiaomi_1.jpeg" />
+    <span>Blog_Xiaomi_1.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>L'architecture du réseau BERT utilise une structure de transformateur multicouche qui abandonne les réseaux neuronaux RNN et CNN traditionnels. Elle fonctionne en convertissant la distance entre deux mots à n'importe quelle position en un seul grâce à son mécanisme d'attention, et résout le problème de dépendance qui persiste dans le NLP depuis un certain temps.</p>
+<p>BERT’s network architecture uses a multi-layer transformer structure that abandons the traditional RNN and CNN neural networks. It works by converting the distance between two words at any position into one through its attention mechanism, and solves the dependency issue that has persisted in NLP for some time.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_2_fe5cf2e401.jpeg" alt="Blog-Xiaomi-2.jpeg" class="doc-image" id="blog-xiaomi-2.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog-Xiaomi-2.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_2_fe5cf2e401.jpeg" alt="Blog-Xiaomi-2.jpeg" class="doc-image" id="blog-xiaomi-2.jpeg" />
+    <span>Blog-Xiaomi-2.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_3_5d10b51440.jpeg" alt="Blog-Xiaomi-3.jpeg" class="doc-image" id="blog-xiaomi-3.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog-Xiaomi-3.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_3_5d10b51440.jpeg" alt="Blog-Xiaomi-3.jpeg" class="doc-image" id="blog-xiaomi-3.jpeg" />
+    <span>Blog-Xiaomi-3.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>BERT propose un modèle simple et un modèle complexe. Les hyperparamètres correspondants sont les suivants : BERT BASE : L = 12, H = 768, A = 12, paramètre total 110M ; BERT LARGE : L = 24, H = 1024, A = 16, le nombre total de paramètres est 340M.</p>
-<p>Dans les hyperparamètres ci-dessus, L représente le nombre de couches dans le réseau (c'est-à-dire le nombre de blocs Transformer), A représente le nombre d'auto-attention dans l'attention multi-têtes, et la taille du filtre est de 4H.</p>
+<p>BERT provides a simple and a complex model. The corresponding hyperparameters are as follows: BERT BASE: L = 12, H = 768, A = 12, total parameter 110M; BERT LARGE: L = 24, H = 1024, A = 16, the total number of parameters is 340M.</p>
+<p>In the above hyperparameters, L represents the number of layers in the network (i.e. the number of Transformer blocks), A represents the number of self-Attention in Multi-Head Attention, and the filter size is 4H.</p>
 <p><br/></p>
-<h3 id="Xiaomi’s-content-recommendation-system" class="common-anchor-header">Système de recommandation de contenu de Xiaomi</h3><p>Le système de recommandation d'actualités de Xiaomi basé sur le navigateur repose sur trois composants clés : la vectorisation, le mappage d'ID et le service de voisinage le plus proche (ANN).</p>
-<p>La vectorisation est un processus par lequel les titres des articles sont convertis en vecteurs de phrases générales. Le modèle SimBert, basé sur BERT, est utilisé dans le système de recommandation de Xiaomi. SimBert est un modèle à 12 couches avec une taille cachée de 768. Simbert utilise le modèle d'apprentissage chinois L-12_H-768_A-12 pour l'apprentissage continu (la tâche d'apprentissage étant "apprentissage métrique +UniLM", et a entraîné 1,17 million d'étapes sur une TITAN RTX avec l'optimiseur Adam (taux d'apprentissage 2e-6, taille de lot 128). En d'autres termes, il s'agit d'un modèle BERT optimisé.</p>
-<p>Les algorithmes ANN comparent les titres d'articles vectorisés à l'ensemble de la bibliothèque d'actualités stockée dans Milvus, puis renvoient un contenu similaire aux utilisateurs. Le mappage d'ID est utilisé pour obtenir des informations pertinentes telles que les pages vues et les clics pour les articles correspondants.</p>
+<h3 id="Xiaomi’s-content-recommendation-system" class="common-anchor-header">Xiaomi’s content recommendation system</h3><p>Xiaomi browser-based news recommender system relies on three key components: vectorization, ID mapping, and approximate nearest neighbor (ANN) service.</p>
+<p>Vectorization is process where article titles are converted into general sentence vectors. The SimBert model, based on BERT, is used in Xiaomi’s recommendation system. SimBert is a 12-layer model with a hidden size of 768. Simbert uses the training model Chinese L-12_H-768_A-12 for continuous training (training task being “metric learning +UniLM”, and has trained 1.17 million steps on a signle TITAN RTX with the Adam optimizer (learning rate 2e-6, batch size 128). Simply put, this is an optimized BERT model.</p>
+<p>ANN algorithms compare vectorized article titles to the entire news library stored in Milvus, then return similar content for users. ID mapping is used to obtain relevant information such as page views and clicks for corresponding articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_N1_f4749b3131.jpeg" alt="Blog-Xiaomi-N1.jpeg" class="doc-image" id="blog-xiaomi-n1.jpeg" />
-   </span> <span class="img-wrapper"> <span>Blog-Xiaomi-N1.jpeg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Blog_Xiaomi_N1_f4749b3131.jpeg" alt="Blog-Xiaomi-N1.jpeg" class="doc-image" id="blog-xiaomi-n1.jpeg" />
+    <span>Blog-Xiaomi-N1.jpeg</span>
+  </span>
+</p>
 <p><br/></p>
-<p>Les données stockées dans Milvus qui alimentent le moteur de recommandation d'actualités de Xiaomi sont constamment mises à jour, y compris des articles supplémentaires et des informations sur les activités. Au fur et à mesure que le système intègre de nouvelles données, les anciennes doivent être purgées. Dans ce système, des mises à jour complètes des données sont effectuées pendant les premiers T-1 jours et des mises à jour incrémentielles sont effectuées pendant les T jours suivants.</p>
-<p>À intervalles définis, les anciennes données sont supprimées et les données traitées des T-1 jours sont insérées dans la collection. Ici, les données nouvellement générées sont incorporées en temps réel. Une fois les nouvelles données insérées, une recherche de similarité est effectuée dans Milvus. Les articles récupérés sont à nouveau triés en fonction du taux de clics et d'autres facteurs, et le contenu le plus important est présenté aux utilisateurs. Dans un scénario comme celui-ci, où les données sont fréquemment mises à jour et où les résultats doivent être fournis en temps réel, la capacité de Milvus à intégrer et à rechercher rapidement de nouvelles données permet d'accélérer considérablement la recommandation de contenu d'actualités dans le navigateur mobile de Xiaomi.</p>
+<p>The data stored in Milvus that powers Xiaomi’s news recommendation engine is constantly being updated, including additional articles and activity information. As the system incorporates new data, old data must be purged. In this system, full data updates are done for the first T-1 days and incremental updates are done in the subsequent T days.</p>
+<p>At defined intervals, old data is deleted and processed data of the T-1 days is inserted into the collection. Here newly generated data is incorporated in real time. Once new data is inserted, similarity search is conducted in Milvus. Retrieved articles are again sorted by click rate and other factors, and the top content is shown to users. In a scenario like this where data is frequently updated and results must be delivered in real time, Milvus’ ability to rapidly incorporate and search new data makes it possible to drastically accelerate news content recommendation in Xiaomi’s mobile browser.</p>
 <p><br/></p>
-<h3 id="Milvus-makes-vector-similarity-search-better" class="common-anchor-header">Milvus améliore la recherche de similarité vectorielle</h3><p>La vectorisation des données et le calcul de la similarité entre les vecteurs constituent la technologie de recherche la plus couramment utilisée. L'essor des moteurs de recherche de similarités vectorielles basés sur des ANN a considérablement amélioré l'efficacité des calculs de similarités vectorielles. Par rapport à des solutions similaires, Milvus offre un stockage de données optimisé, de nombreux SDK et une version distribuée qui réduit considérablement la charge de travail liée à la construction d'une couche de recherche. En outre, la communauté open-source active de Milvus est une ressource puissante qui peut aider à répondre aux questions et à résoudre les problèmes au fur et à mesure qu'ils surviennent.</p>
-<p>Si vous souhaitez en savoir plus sur la recherche par similarité vectorielle et Milvus, consultez les ressources suivantes :</p>
+<h3 id="Milvus-makes-vector-similarity-search-better" class="common-anchor-header">Milvus makes vector similarity search better</h3><p>Vectorizing data and then calculating similarity between vectors is the most commonly used retrieval technology. The rise of ANN-based vector similarity search engines has greatly improved the efficiency of vector similarity calculations. Compared with similar solutions, Milvus offers optimized data storage, abundant SDKs, and a distributed version that greatly reduces the workload of building a retrieval layer. Additionally, Milvus’ active open-source community is a powerful resource that can help answer questions and troubleshoot problems as they arise.</p>
+<p>If you would like to learn more about vector similarity search and Milvus, check out the following resources:</p>
 <ul>
-<li>Consultez <a href="https://github.com/milvus-io/milvus">Milvus</a> sur Github.</li>
-<li><a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">La recherche de similarité vectorielle se cache dans la vue de tous</a></li>
-<li><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Accélérer la recherche de similarité sur des données très volumineuses avec l'indexation vectorielle</a></li>
+<li>Check out <a href="https://github.com/milvus-io/milvus">Milvus</a> on Github.</li>
+<li><a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">Vector Similarity Search Hides in Plain View</a></li>
+<li><a href="https://zilliz.com/blog/Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing">Accelerating Similarity Search on Really Big Data with Vector Indexing</a></li>
 </ul>
-<p>Lisez d'autres <a href="https://zilliz.com/user-stories">témoignages d'utilisateurs</a> pour en savoir plus sur l'utilisation de Milvus.</p>
+<p>Read other <a href="https://zilliz.com/user-stories">user stories</a> to learn more about making things with Milvus.</p>

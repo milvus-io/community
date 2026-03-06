@@ -1,6 +1,8 @@
 ---
 id: debugging-rag-in-3d-with-projectgolem-and-milvus.md
-title: 如果您可以看到 RAG 失敗的原因？使用 Project_Golem 和 Milvus 在 3D 中偵錯 RAG
+title: >
+  What If You Could See Why RAG Fails? Debugging RAG in 3D with Project_Golem
+  and Milvus
 author: Min Yin
 date: 2026-02-18T00:00:00.000Z
 cover: assets.zilliz.com/Debugging_RAG_in_3_D_f1b45f9a99_5f98979c06.png
@@ -11,21 +13,23 @@ tags: 'Milvus, vector database, RAG'
 meta_keywords: 'Project_Golem, milvus, RAG'
 meta_title: |
   Debugging RAG in 3D with Project_Golem and Milvus
-desc: 了解 Project_Golem 和 Milvus 如何透過向量空間的可視化、檢索錯誤的除錯以及即時向量搜尋的擴充，使 RAG 系統成為可觀察的系統。
+desc: >
+  Learn how Project_Golem and Milvus make RAG systems observable by visualizing
+  vector space, debugging retrieval errors, and scaling real-time vector search.
 origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md'
 ---
-<p>當 RAG 擷取出錯時，您通常會知道它壞了 - 相關的文件沒有顯示出來，或是不相關的文件顯示出來。但要找出原因則是另一回事。您要處理的只是相似度得分和結果的平面清單。您無法看到文件在向量空間中的實際位置、文件塊之間的關係，或是您的查詢相對於它應該匹配的內容的位置。實際上，這意味著 RAG 的除錯大多數是試驗與錯誤：調整分塊策略、更換嵌入模型、調整 top-k，希望結果有所改善。</p>
-<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a>是一個開放源碼工具，讓向量空間變得可見。它使用 UMAP 將高維的 embeddings 投射到 3D 中，並使用 Three.js 在瀏覽器中以互動方式呈現。您不需要猜測擷取失敗的原因，而是可以在單一視覺化介面中看到各個區塊的語意聚類方式、您的查詢落腳點，以及擷取到哪些文件。</p>
+<p>When RAG retrieval goes wrong, you usually know that it’s broken — relevant documents don’t show up, or irrelevant ones do. But figuring out why is a different story. All you have to work with are similarity scores and a flat list of results. There’s no way to see how documents are actually positioned in the vector space, how chunks relate to each other, or where your query landed relative to the content it should have matched. In practice, this means RAG debugging is mostly trial and error: tweak the chunking strategy, swap the embedding model, adjust the top-k, and hope the results improve.</p>
+<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> is an open-source tool that makes the vector space visible. It uses UMAP to project high-dimensional embeddings into 3D and Three.js to render them interactively in the browser. Instead of guessing why retrieval failed, you can see how chunks cluster semantically, where your query lands, and which documents were retrieved — all in a single visual interface.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/debugging_rag_in_3d_with_projectgolem_and_milvus_1_01de566e04.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>這真是令人驚訝。然而，最初的 Project_Golem 是為小型示範而設計，而非實際世界的系統。它依賴於平面檔案、強制搜尋和全資料集重建，這表示當您的資料超過幾千個文件時，它就會迅速瓦解。</p>
-<p>為了彌補這個缺口，我們將 Project_Golem 與<a href="https://milvus.io/docs/release_notes.md#v268">Milvus</a>(特別是 2.6.8 版) 整合，作為其向量骨幹。Milvus 是一個開放原始碼的高效能向量資料庫，可處理即時擷取、可擴充索引以及毫秒級的擷取，而 Project_Golem 則專注於其最擅長的領域：讓向量擷取行為變得可見。兩者的結合，讓 3D 可視化從玩具式的示範，變成 RAG 生產系統的實用除錯工具。</p>
-<p>在這篇文章中，我們將介紹 Project_Golem，並顯示我們如何將它與 Milvus 整合，使向量檢索行為可觀察、可擴充，並適用於生產。</p>
-<h2 id="What-Is-ProjectGolem" class="common-anchor-header">什麼是 Project_Golem？<button data-href="#What-Is-ProjectGolem" class="anchor-icon" translate="no">
+<p>This is amazing. However, the original Project_Golem was designed for small demos, not real-world systems. It relies on flat files, brute-force search, and full-dataset rebuilds — which means it breaks down quickly as your data grows beyond a few thousand documents.</p>
+<p>To bridge that gap, we integrated Project_Golem with <a href="https://milvus.io/docs/release_notes.md#v268">Milvus</a> (specifically version 2.6.8) as its vector backbone. Milvus is an open-source high-performance vector database that handles real-time ingestion, scalable indexing, and millisecond-level retrieval, while Project_Golem stays focused on what it does best: making vector retrieval behavior visible. Together, they turn 3D visualization from a toy demo into a practical debugging tool for production RAG systems.</p>
+<p>In this post, we’ll walk through Project_Golem and show how we integrated it with Milvus to make vector search behavior observable, scalable, and production-ready.</p>
+<h2 id="What-Is-ProjectGolem" class="common-anchor-header">What Is Project_Golem?<button data-href="#What-Is-ProjectGolem" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,16 +44,16 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>RAG 調試很困難，原因很簡單：向量空間是高維的，人類看不到它們。</p>
-<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a>是一個以瀏覽器為基礎的工具，可以讓您看到 RAG 系統運作的向量空間。它將驅動檢索的高維嵌入（通常為 768 或 1536 維），投影到您可以直接探索的互動式 3D 场景中。</p>
-<p>以下是它的工作原理：</p>
+    </button></h2><p>RAG debugging is hard for a simple reason: vector spaces are high-dimensional, and humans can’t see them.</p>
+<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> is a browser-based tool that lets you see the vector space your RAG system operates in. It takes the high-dimensional embeddings that drive retrieval — typically 768 or 1536 dimensions — and projects them into an interactive 3D scene you can explore directly.</p>
+<p>Here’s how it works under the hood:</p>
 <ul>
-<li>使用 UMAP 減少維度。Project_Golem 使用 UMAP 將高維向量壓縮為三維，同時保留它們的相對距離。在原始空間中語意相似的區塊，在 3D 投影中會靠得很近；不相干的區塊則會相隔很遠。</li>
-<li>使用 Three.js 進行 3D 渲染。在瀏覽器中渲染的 3D 场景中，每個文件片段都會顯示為一個節點。您可以旋轉、縮放和探索空間，以查看您的文件如何聚類 - 哪些主題緊密聚合、哪些主題重疊，以及邊界在哪裡。</li>
-<li>查詢時高亮顯示。當您執行查詢時，仍會使用余弦相似度在原始的高維空間中進行檢索。但是一旦結果傳回，擷取的區塊就會在 3D 檢視中亮起。您可以立即看到您的查詢相對於結果的位置 - 同樣重要的是，相對於它沒有擷取到的文件。</li>
+<li>Dimensionality reduction with UMAP. Project_Golem uses UMAP to compress high-dimensional vectors down to three dimensions while preserving their relative distances. Chunks that are semantically similar in the original space stay close together in the 3D projection; unrelated chunks end up far apart.</li>
+<li>3D rendering with Three.js. Each document chunk appears as a node in a 3D scene rendered in the browser. You can rotate, zoom, and explore the space to see how your documents cluster — which topics group tightly, which ones overlap, and where the boundaries are.</li>
+<li>Query-time highlighting. When you run a query, retrieval still happens in the original high-dimensional space using cosine similarity. But once results come back, the retrieved chunks light up in the 3D view. You can immediately see where your query landed relative to the results — and just as importantly, relative to the documents it didn’t retrieve.</li>
 </ul>
-<p>這就是 Project_Golem 在調試時的用處。與其盯著排序的結果清單猜測為何遺漏了一個相關的文件，您可以看到它是否位於一個遙遠的叢集（嵌入問題），與不相關的內容重疊（分塊問題），或只是勉強在檢索臨界值之外（配置問題）。3D 視圖可將抽象的相似性分數轉化為您可以推理的空間關係。</p>
-<h2 id="Why-ProjectGolem-Isnt-Production-Ready" class="common-anchor-header">為什麼 Project_Golem 還沒有準備好投入生產？<button data-href="#Why-ProjectGolem-Isnt-Production-Ready" class="anchor-icon" translate="no">
+<p>This is what makes Project_Golem useful for debugging. Instead of staring at a ranked list of results and guessing why a relevant document was missed, you can see whether it’s sitting in a distant cluster (an embedding issue), overlapping with irrelevant content (a chunking issue), or just barely outside the retrieval threshold (a configuration issue). The 3D view turns abstract similarity scores into spatial relationships you can reason about.</p>
+<h2 id="Why-ProjectGolem-Isnt-Production-Ready" class="common-anchor-header">Why Project_Golem Isn’t Production-Ready<button data-href="#Why-ProjectGolem-Isnt-Production-Ready" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,14 +68,14 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Project_Golem 被設計成一個可視化的原型，它在這方面運作良好。但是它的架構所做的假設，在大規模的情況下很快就會被打破 - 如果您想要將它用於真實世界的 RAG 除錯，這些假設是很重要的。</p>
-<h3 id="Every-Update-Requires-a-Full-Rebuild" class="common-anchor-header">每次更新都需要完全重建</h3><p>這是最基本的限制。在原始設計中，新增文件會觸發完整的管道重建：重新產生內嵌並寫入 .npy 檔案、在整個資料集重新執行 UMAP，以及將 3D 座標重新匯出為 JSON。</p>
-<p>即使是 100,000 個文件，單核心 UMAP 執行也需要 5-10 分鐘。到了百萬文件的規模，就完全不可行了。您無法將其用於任何持續變更的資料集（例如新聞提報源、文件、使用者對話），因為每次更新都意味著需要等待一個完整的重新處理週期。</p>
-<h3 id="Brute-Force-Search-Doesnt-Scale" class="common-anchor-header">粗暴的搜尋方式無法擴充規模</h3><p>擷取方面也有自己的上限。原始實作使用 NumPy 來進行粗暴的余弦相似性搜尋 - 線性時間複雜度，無索引。在百萬文件的資料集上，單一查詢可能需要超過一秒。這對任何互動或線上系統都是無法使用的。</p>
-<p>記憶體壓力使問題更加複雜。每個 768 維的 float32 向量大約需要 3 KB，因此一個百萬向量的資料集需要超過 3 GB 的記憶體 - 全部載入一個平面的 NumPy 陣列，而且沒有索引結構來提高搜尋效率。</p>
-<h3 id="No-Metadata-Filtering-No-Multi-Tenancy" class="common-anchor-header">無元資料篩選，無多租戶功能</h3><p>在真正的 RAG 系統中，向量相似性很少是唯一的檢索標準。您幾乎總是需要透過元資料來篩選，例如文件類型、時間戳記、使用者權限或應用程式層級邊界。舉例來說，客戶支援 RAG 系統需要將檢索範圍擴大到特定租戶的文件 - 而不是搜尋所有人的資料。</p>
-<p>Project_Golem 不支援這些功能。沒有 ANN 索引（如 HNSW 或 IVF）、沒有標量過濾、沒有租戶隔離，也沒有混合搜尋。它只是一個可視化層，下面沒有生產檢索引擎。</p>
-<h2 id="How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="common-anchor-header">Milvus 如何強化 Project_Golem 的檢索層<button data-href="#How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="anchor-icon" translate="no">
+    </button></h2><p>Project_Golem was designed as a visualization prototype, and it works well for that. But its architecture makes assumptions that break down quickly at scale — in ways that matter if you want to use it for real-world RAG debugging.</p>
+<h3 id="Every-Update-Requires-a-Full-Rebuild" class="common-anchor-header">Every Update Requires a Full Rebuild</h3><p>This is the most fundamental limitation. In the original design, adding new documents triggers a complete pipeline rebuild: embeddings are regenerated and written to .npy files, UMAP is rerun across the entire dataset, and 3D coordinates are re-exported as JSON.</p>
+<p>Even at 100,000 documents, a single-core UMAP run takes 5–10 minutes. At the million-document scale, it becomes impractical entirely. You can’t use this for any dataset that changes continuously — news feeds, documentation, user conversations — because every update means waiting for a full reprocessing cycle.</p>
+<h3 id="Brute-Force-Search-Doesnt-Scale" class="common-anchor-header">Brute-Force Search Doesn’t Scale</h3><p>The retrieval side has its own ceiling. The original implementation uses NumPy for brute-force cosine similarity search — linear time complexity, no indexing. On a million-document dataset, a single query can take over a second. That’s unusable for any interactive or online system.</p>
+<p>Memory pressure compounds the problem. Each 768-dimensional float32 vector takes roughly 3 KB, so a million-vector dataset requires over 3 GB in memory — all loaded into a flat NumPy array with no index structure to make search efficient.</p>
+<h3 id="No-Metadata-Filtering-No-Multi-Tenancy" class="common-anchor-header">No Metadata Filtering, No Multi-Tenancy</h3><p>In a real RAG system, vector similarity is rarely the only retrieval criterion. You almost always need to filter by metadata, such as document type, timestamps, user permissions, or application-level boundaries. A customer support RAG system, for example, needs to scope retrieval to a specific tenant’s documents — not search across everyone’s data.</p>
+<p>Project_Golem supports none of this. There are no ANN indexes (like HNSW or IVF), no scalar filtering, no tenant isolation, and no hybrid search. It’s a visualization layer without a production retrieval engine underneath.</p>
+<h2 id="How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="common-anchor-header">How Milvus Powers Project_Golem’s Retrieval Layer<button data-href="#How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,34 +90,34 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>上一節指出了三個缺口：每次更新都要完全重建、強制搜尋，以及沒有元資料感知檢索。這三個缺口的根源都是相同的 - Project_Golem 沒有資料庫層。擷取、儲存和視覺化都纏結在單一的管道中，因此變更任何部分都會強迫重建所有東西。</p>
-<p>要解決這個問題，並不是要優化這個管道。而是將它分開。</p>
-<p>透過整合 Milvus 2.6.8 作為向量骨幹，擷取就成為一個專屬的、生產級的層次，獨立於可視化運作。Milvus 負責向量儲存、索引與搜尋。Project_Golem 純粹專注於渲染 - 從 Milvus 擷取文件 ID，並在 3D 視圖中將其突出顯示。</p>
-<p>這樣的分離產生了兩個乾淨、獨立的流程：</p>
-<p>檢索流程 (線上、毫秒級)</p>
+    </button></h2><p>The previous section identified three gaps: full rebuilds on every update, brute-force search, and no metadata-aware retrieval. All three stem from the same root cause — Project_Golem has no database layer. Retrieval, storage, and visualization are tangled into a single pipeline, so changing any part forces a rebuild of everything.</p>
+<p>The fix isn’t to optimize that pipeline. It’s to split it apart.</p>
+<p>By integrating Milvus 2.6.8 as the vector backbone, retrieval becomes a dedicated, production-grade layer that operates independently from visualization. Milvus handles vector storage, indexing, and search. Project_Golem focuses purely on rendering — consuming document IDs from Milvus and highlighting them in the 3D view.</p>
+<p>This separation produces two clean, independent flows:</p>
+<p>Retrieval Flow (Online, Millisecond-Level)</p>
 <ul>
-<li>您的查詢會使用 OpenAI 嵌入式轉換成向量。</li>
-<li>查詢向量會傳送至 Milvus 套件。</li>
-<li>Milvus AUTOINDEX 選擇並優化適當的索引。</li>
-<li>即時的余弦相似性搜尋會返回相關的文件 ID。</li>
+<li>Your query is converted into a vector using OpenAI embeddings.</li>
+<li>The query vector is sent to a Milvus collection.</li>
+<li>Milvus AUTOINDEX selects and optimizes the appropriate index.</li>
+<li>A real-time cosine similarity search returns the relevant document IDs.</li>
 </ul>
-<p>可視化流程 (離線、示範規模)</p>
+<p>Visualization Flow (Offline, Demo-Scale)</p>
 <ul>
-<li>UMAP 會在資料輸入時產生 3D 座標 (n_neighbors=30, min_dist=0.1)。</li>
-<li>座標儲存於 golem_cortex.json。</li>
-<li>前端會使用 Milvus 傳回的文件 ID 高亮顯示對應的 3D 節點。</li>
+<li>UMAP generates 3D coordinates during data ingestion (n_neighbors=30, min_dist=0.1).</li>
+<li>The coordinates are stored in golem_cortex.json.</li>
+<li>The frontend highlights the corresponding 3D nodes using the document IDs returned by Milvus.</li>
 </ul>
-<p>關鍵點：檢索不再等待可視化。您可以攝取新的文件並立即進行搜尋 - 3D 視圖會依據自己的排程進行搜尋。</p>
-<h3 id="What-Streaming-Nodes-Change" class="common-anchor-header">串流節點的改變</h3><p>Milvus 2.6.8 中的一項新功能：<a href="https://milvus.io/docs/configure_streamingnode.md#streamingNode-related-Configurations">流節點</a>，為實時擷取提供了動力。在早期版本中，即時擷取需要外部訊息佇列，例如 Kafka 或 Pulsar。Streaming Nodes 將這個協調功能移到 Milvus 本身 - 新的向量會被持續擷取，索引會以增量方式更新，而新加入的文件會立即成為可搜尋的文件，不需要完全重建，也不需要外部依賴。</p>
-<p>對於 Project_Golem，這就是架構的實用性。您可以在 RAG 系統中不斷新增文件 - 新文章、更新的文件、使用者產生的內容 - 而檢索也能保持最新，無須觸發昂貴的 UMAP → JSON → 重新載入週期。</p>
-<h3 id="Extending-Visualization-to-Million-Scale-Future-Path" class="common-anchor-header">將視覺化擴展至百萬級 (未來路徑)</h3><p>有了這個 Milvus 支援的設定，Project_Golem 目前可支援約 10,000 個文件的互動演示。擷取的規模遠遠超過這個規模 - Milvus 可以處理數百萬個文件 - 但視覺化管道仍然依賴 UMAP 的批次執行。為了縮小此差距，可透過增量式視覺化管道來擴充此架構：</p>
+<p>The critical point: retrieval no longer waits on visualization. You can ingest new documents and search them immediately — the 3D view catches up on its own schedule.</p>
+<h3 id="What-Streaming-Nodes-Change" class="common-anchor-header">What Streaming Nodes Change</h3><p>This real-time ingestion is powered by a new capability in Milvus 2.6.8: <a href="https://milvus.io/docs/configure_streamingnode.md#streamingNode-related-Configurations">Streaming Nodes</a>. In earlier versions, real-time ingestion required an external message queue like Kafka or Pulsar. Streaming Nodes move that coordination into Milvus itself — new vectors are ingested continuously, indexes are updated incrementally, and newly added documents become searchable immediately with no full rebuild and no external dependencies.</p>
+<p>For Project_Golem, this is what makes the architecture practical. You can keep adding documents to your RAG system — new articles, updated docs, user-generated content — and retrieval stays current without triggering the expensive UMAP → JSON → reload cycle.</p>
+<h3 id="Extending-Visualization-to-Million-Scale-Future-Path" class="common-anchor-header">Extending Visualization to Million-Scale (Future Path)</h3><p>With this Milvus-backed setup, Project_Golem currently supports interactive demos at around 10,000 documents. Retrieval scales well beyond that — Milvus handles millions — but the visualization pipeline still relies on batch UMAP runs. To close that gap, the architecture can be extended with an incremental visualization pipeline:</p>
 <ul>
-<li><p>更新觸發器：系統會監聽 Milvus 資料集中的插入事件。一旦新加入的文件達到定義的臨界值（例如 1,000 項），就會觸發增量更新。</p></li>
-<li><p>增量投影：新向量會使用 UMAP 的 transform() 方法投射到現有的 3D 空間中，而不是在整個資料集中重新執行 UMAP。這可保留全局結構，同時大幅降低計算成本。</p></li>
-<li><p>前端同步：更新的座標片段會透過 WebSocket 串流至前端，讓新節點可以動態出現，而無需重新載入整個場景。</p></li>
+<li><p>Update triggers: The system listens for insert events on the Milvus collection. Once newly added documents reach a defined threshold (for example, 1,000 items), an incremental update is triggered.</p></li>
+<li><p>Incremental projection: Instead of rerunning UMAP across the full dataset, new vectors are projected into the existing 3D space using UMAP’s transform() method. This preserves global structure while dramatically reducing computation cost.</p></li>
+<li><p>Frontend synchronization: Updated coordinate fragments are streamed to the frontend via WebSocket, allowing new nodes to appear dynamically without reloading the entire scene.</p></li>
 </ul>
-<p>除了可擴充性外，Milvus 2.6.8 還能結合向量相似性、全文搜尋與標量值篩選，實現混合搜尋。這為更豐富的 3D 互動打開了大門 - 例如關鍵字高亮、類別篩選和基於時間的切片 - 讓開發人員有更強大的方式來探索、除錯和推理 RAG 行為。</p>
-<h2 id="How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="common-anchor-header">如何使用 Milvus 部署和探索 Project_Golem<button data-href="#How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="anchor-icon" translate="no">
+<p>Beyond scalability, Milvus 2.6.8 enables hybrid search by combining vector similarity with full-text search and scalar filtering. This opens the door to richer 3D interactions—such as keyword highlighting, category filtering, and time-based slicing—giving developers more powerful ways to explore, debug, and reason about RAG behavior.</p>
+<h2 id="How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="common-anchor-header">How to Deploy and Explore Project_Golem with Milvus<button data-href="#How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -128,15 +132,15 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>升級後的 Project_Golem 現已在<a href="https://github.com/yinmin2020/Project_Golem_Milvus">GitHub</a> 上開放原始碼。使用 Milvus 官方文件作為我們的資料集，我們將透過 3D 來實現可視化 RAG 擷取的全過程。設定使用 Docker 和 Python，即使您是從零開始，也能輕鬆上手。</p>
-<h3 id="Prerequisites" class="common-anchor-header">先決條件</h3><ul>
+    </button></h2><p>The upgraded Project_Golem is now open source on <a href="https://github.com/yinmin2020/Project_Golem_Milvus">GitHub</a>. Using the Milvus official documentation as our dataset, we walk through the full process of visualizing RAG retrieval in 3D. The setup uses Docker and Python and is easy to follow, even if you’re starting from scratch.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><ul>
 <li>Docker ≥ 20.10</li>
 <li>Docker Compose ≥ 2.0</li>
 <li>Python ≥ 3.11</li>
-<li>OpenAI API 金鑰</li>
-<li>資料集（Milvus 文件 Markdown 格式）</li>
+<li>An OpenAI API key</li>
+<li>A dataset (Milvus documentation in Markdown format)</li>
 </ul>
-<h3 id="1-Deploy-Milvus" class="common-anchor-header">1.部署 Milvus</h3><pre><code translate="no">Download docker-compose.yml
+<h3 id="1-Deploy-Milvus" class="common-anchor-header">1. Deploy Milvus</h3><pre><code translate="no">Download docker-compose.yml
 wget https://github.com/milvus-io/milvus/releases/download/v2.6.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
 Start Milvus（verify port mapping：19530:19530）
 docker-compose up -d
@@ -144,8 +148,8 @@ Verify that the services are running
 docker ps | grep milvus
 You should see three containers：milvus-standalone, milvus-etcd, milvus-minio
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Core-Implementation" class="common-anchor-header">2.核心實作</h3><p>Milvus 整合 (ingest.py)</p>
-<p>注意：實作最多支援八個文件類別。如果類別數量超過此限制，顏色會以輪流方式重複使用。</p>
+<h3 id="2-Core-Implementation" class="common-anchor-header">2. Core Implementation</h3><p>Milvus Integration (ingest.py)</p>
+<p>Note: The implementation supports up to eight document categories. If the number of categories exceeds this limit, colors are reused in a round-robin fashion.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-keyword">from</span> pymilvus.milvus_client.index <span class="hljs-keyword">import</span> IndexParams
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
@@ -333,7 +337,7 @@ index_params=index_params
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
 ingest_dense()
 <button class="copy-code-btn"></button></code></pre>
-<p>前端視覺化 (GolemServer.py)</p>
+<p>Frontend Visualization (GolemServer.py)</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, jsonify, send_from_directory
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
@@ -425,7 +429,7 @@ scores = [r[<span class="hljs-string">&#x27;distance&#x27;</span>] <span class="
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;   ✅ SYSTEM ONLINE: http://localhost:8000&quot;</span>)
 app.run(port=<span class="hljs-number">8000</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>下載資料集並放置在指定目錄中</p>
+<p>Download the dataset and place it in the specified directory</p>
 <pre><code translate="no">https://github.com/milvus-io/milvus-docs/tree/v2.6.x/site/en
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -434,20 +438,20 @@ app.run(port=<span class="hljs-number">8000</span>)
     <span></span>
   </span>
 </p>
-<h3 id="3-Start-the-project" class="common-anchor-header">3.啟動專案</h3><p>將文字內嵌轉換為 3D 空間</p>
+<h3 id="3-Start-the-project" class="common-anchor-header">3. Start the project</h3><p>Converting text embeddings into 3D space</p>
 <pre><code translate="no">python ingest.py
 <button class="copy-code-btn"></button></code></pre>
-<p>[圖片］</p>
-<p>啟動前端服務</p>
+<p>[image]</p>
+<p>Start the Frontend Service</p>
 <pre><code translate="no">python GolemServer.py
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Visualization-and-Interaction" class="common-anchor-header">4.可視化與互動</h3><p>前端接收到檢索結果後，節點亮度會根據余弦相似度分數來縮放，同時保留原來的節點顏色，以維持清晰的類別叢集。從查詢點到每個匹配節點之間會繪製半透明的線條，攝影機會平順地平移和縮放，以聚焦在啟動的叢集上。</p>
-<h4 id="Example-1-In-Domain-Match" class="common-anchor-header">範例 1：域內匹配</h4><p>查詢：「Milvus 支援哪些索引類型？」</p>
-<p>可視化行為：</p>
+<h3 id="4-Visualization-and-Interaction" class="common-anchor-header">4. Visualization and Interaction</h3><p>After the frontend receives the retrieval results, node brightness is scaled based on cosine similarity scores, while the original node colors are preserved to maintain clear category clusters. Semi-transparent lines are drawn from the query point to each matched node, and the camera smoothly pans and zooms to focus on the activated cluster.</p>
+<h4 id="Example-1-In-Domain-Match" class="common-anchor-header">Example 1: In-Domain Match</h4><p>Query: “Which index types does Milvus support?”</p>
+<p>Visualization behavior:</p>
 <ul>
-<li><p>在 3D 空間中，標示 INDEXES 的紅色叢集內約有 15 個節點的亮度明顯增加 (約 2-3×)。</p></li>
-<li><p>匹配的節點包括來自 index_types.md、hnsw_index.md 和 ivf_index.md 等文件的區塊。</p></li>
-<li><p>半透明的線條從查詢向量渲染到每個匹配的節點，攝影機平滑地對焦在紅色叢集上。</p></li>
+<li><p>In the 3D space, approximately 15 nodes within the red cluster labeled INDEXES show a noticeable increase in brightness (about 2–3×).</p></li>
+<li><p>Matched nodes include chunks from documents such as index_types.md, hnsw_index.md, and ivf_index.md.</p></li>
+<li><p>Semi-transparent lines are rendered from the query vector to each matched node, and the camera smoothly focuses on the red cluster.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -455,12 +459,12 @@ app.run(port=<span class="hljs-number">8000</span>)
     <span></span>
   </span>
 </p>
-<h4 id="Example-2-Out-of-Domain-Query-Rejection" class="common-anchor-header">範例 2：域外查詢拒絕</h4><p>查詢：「肯德基超值套餐多少錢？」</p>
-<p>可視化行為：</p>
+<h4 id="Example-2-Out-of-Domain-Query-Rejection" class="common-anchor-header">Example 2: Out-of-Domain Query Rejection</h4><p>Query: “How much is the KFC value meal?”</p>
+<p>Visualization behavior:</p>
 <ul>
-<li><p>所有節點都保留原本的顏色，只有輕微的大小變化 (小於 1.1×)。</p></li>
-<li><p>匹配的節點散佈在多個具有不同顏色的叢集中，並未顯示出明顯的語意集中。</p></li>
-<li><p>由於未達到相似性臨界值 (0.5)，因此相機不會觸發對焦動作。</p></li>
+<li><p>All nodes retain their original colors, with only slight size changes (less than 1.1×).</p></li>
+<li><p>Matched nodes are scattered across multiple clusters with different colors, showing no clear semantic concentration.</p></li>
+<li><p>The camera does not trigger a focus action, as the similarity threshold (0.5) is not met.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -468,7 +472,7 @@ app.run(port=<span class="hljs-number">8000</span>)
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -483,8 +487,8 @@ app.run(port=<span class="hljs-number">8000</span>)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Project_Golem 搭配 Milvus 不會取代現有的 RAG 評估管道 - 但它增加了大多數管道完全缺乏的功能：檢視向量空間內部發生什麼事的能力。</p>
-<p>有了這個設定，您就可以區分出由於糟糕的 embedding 所造成的擷取失敗、由於不良的 chunking 所造成的擷取失敗，以及由於臨界值稍微太緊所造成的擷取失敗。這種診斷以前需要猜測和反覆。現在您可以看到它。</p>
-<p>目前的整合支援示範規模 (~10,000 個文件) 的互動式除錯，並由 Milvus 向量資料庫在幕後處理生產級的擷取。通往百萬規模可視化的路徑已經繪製完成，但尚未建置，因此現在是參與的好時機。</p>
-<p>在 GitHub 上查看<a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a>，用您自己的資料集試試看，看看您的向量空間實際上是什麼樣子。</p>
-<p>如果您有任何問題或想要分享您的發現，請加入我們的<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack 頻道</a>，或預約<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours 課程</a>，以獲得實作指導。</p>
+    </button></h2><p>Project_Golem paired with Milvus won’t replace your existing RAG evaluation pipeline — but it adds something most pipelines lack entirely: the ability to see what’s happening inside the vector space.</p>
+<p>With this setup, you can tell the difference between a retrieval failure caused by a bad embedding, one caused by poor chunking, and one caused by a threshold that’s just slightly too tight. That kind of diagnosis used to require guessing and iterating. Now you can see it.</p>
+<p>The current integration supports interactive debugging at demo scale (~10,000 documents), with Milvus vector database handling production-grade retrieval behind the scenes. The path to million-scale visualization is mapped out but not yet built — which makes this a good time to get involved.</p>
+<p>Check out <a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> on GitHub, try it with your own dataset, and see what your vector space actually looks like.</p>
+<p>If you have questions or want to share what you find, join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a>, or book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session for hands-on guidance on your setup.</p>

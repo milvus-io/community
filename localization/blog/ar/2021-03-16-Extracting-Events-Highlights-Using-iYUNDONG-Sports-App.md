@@ -1,78 +1,85 @@
 ---
 id: Extracting-Events-Highlights-Using-iYUNDONG-Sports-App.md
-title: استخراج أبرز الأحداث الرياضية باستخدام تطبيق iYUNDONG الرياضي
+title: Extracting Event Highlights Using iYUNDONG Sports App
 author: milvus
 date: 2021-03-16T03:41:30.983Z
-desc: صنع مع تطبيق ميلفوس نظام استرجاع الصور الذكي للرياضة iYUNDONG
+desc: Making with Milvus Intelligent image retrieval system for sports App iYUNDONG
 cover: assets.zilliz.com/blog_iyundong_6db0f70ef4.jpg
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/Extracting-Events-Highlights-Using-iYUNDONG-Sports-App'
 ---
-<custom-h1>استخراج أبرز الأحداث باستخدام تطبيق iYUNDONG الرياضي</custom-h1><p>iYUNDONG هي شركة إنترنت تهدف إلى إشراك المزيد من محبي الرياضة والمشاركين في الأحداث الرياضية مثل سباقات الماراثون. وهي تقوم ببناء أدوات <a href="https://en.wikipedia.org/wiki/Artificial_intelligence">ذكاء اصطناعي (AI)</a> يمكنها تحليل الوسائط الملتقطة أثناء الأحداث الرياضية لاستخراج أبرز الأحداث تلقائيًا. على سبيل المثال، يمكن لمستخدم تطبيق iYUNDONG الرياضي الذي شارك في حدث رياضي أن يسترجع صوره أو مقاطع الفيديو الخاصة به من مجموعة بيانات وسائط ضخمة للحدث، وذلك من خلال تحميل صورة شخصية.</p>
-<p>وتسمى إحدى الميزات الرئيسية لتطبيق iYUNDONG "ابحث عني أثناء الحركة".  عادةً ما يلتقط المصورون كميات هائلة من الصور أو مقاطع الفيديو أثناء حدث رياضي مثل سباق الماراثون، ويقومون بتحميل الصور ومقاطع الفيديو في الوقت الفعلي إلى قاعدة بيانات iYUNDONG للوسائط. يمكن لعدائي الماراثون الذين يرغبون في مشاهدة لحظاتهم البارزة استرجاع الصور بما في ذلك صورهم الشخصية ببساطة عن طريق تحميل إحدى صورهم الشخصية. وهذا يوفر عليهم الكثير من الوقت لأن نظام استرجاع الصور في تطبيق iYUNDONG يقوم بكل مطابقة الصور. وقد اعتمدت شركة iYUNDONG نظام <a href="https://milvus.io/">Milvus</a> لتشغيل هذا النظام حيث يمكن لـ Milvus تسريع عملية الاسترجاع بشكل كبير وإرجاع نتائج دقيقة للغاية.</p>
+<custom-h1>Extracting Event Highlights Using iYUNDONG Sports App</custom-h1><p>iYUNDONG is an Internet company aiming to engage more sport lovers and participants of events such as marathon races. It builds <a href="https://en.wikipedia.org/wiki/Artificial_intelligence">artificial intelligence (AI)</a> tools that can analyze media captured during sporting events to automatically generate highlights. For example, by uploading a selfie, a user of the iYUNDONG sports App who took part in a sport event can instaneously retrieve his or her own photos or video clips from a massive media dataset of the event.</p>
+<p>One of the key features of iYUNDONG App is called “Find me in motion“.  Photographers usually take massive volumes of photos or videos during a sporting event such as a marathon race, and would upload the photos and videos in real time to the iYUNDONG media database. Marathon runners who want to see their highlighted moments can retrieve pictures including themselves simply by uploading one of their selfies. This saves them a lot of time because an image retrieval system in the iYUNDONG App does all the image matching. <a href="https://milvus.io/">Milvus</a> is adopted by iYUNDONG to power this system as Milvus can greatly accelerate the retrieval process and return highly accurate results.</p>
 <p><br/></p>
-<p><strong>الانتقال إلى:</strong></p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#extracting-event-highlights-using-iyundong-sports-app">استخراج أبرز الأحداث باستخدام تطبيق iYUNDONG الرياضي</a><ul>
-<li><a href="#difficulties-and-solutions">الصعوبات والحلول</a></li>
-<li><a href="#what-is-milvus">ما هو ميلفوس</a>- <a href="#an-overview-of-milvus"><em>نظرة عامة على ميلفوس.</em></a></li>
-<li><a href="#why-milvus">لماذا ميلفوس</a></li>
-<li><a href="#system-and-workflow">النظام وسير العمل</a></li>
-<li><a href="#iyundong-app-interface">واجهة تطبيق iYUNDONG</a>- <a href="#iyundong-app-interface-1"><em>واجهة تطبيق iYUNDONG.</em></a></li>
-<li><a href="#conclusion">الخاتمة</a></li>
+<li><a href="#extracting-event-highlights-using-iyundong-sports-app">Extracting Event Highlights Using iYUNDONG Sports App</a>
+<ul>
+<li><a href="#difficulties-and-solutions">Difficulties and solutions</a></li>
+<li><a href="#what-is-milvus">What is Milvus</a>
+- <a href="#an-overview-of-milvus"><em>An overview of Milvus.</em></a></li>
+<li><a href="#why-milvus">Why Milvus</a></li>
+<li><a href="#system-and-workflow">System and Workflow</a></li>
+<li><a href="#iyundong-app-interface">iYUNDONG App Interface</a>
+- <a href="#iyundong-app-interface-1"><em>iYUNDONG app interface.</em></a></li>
+<li><a href="#conclusion">Conclusion</a></li>
 </ul></li>
 </ul>
 <p><br/></p>
-<h3 id="Difficulties-and-solutions" class="common-anchor-header">الصعوبات والحلول</h3><p>واجهت iYUNDONG المشكلات التالية ونجحت في إيجاد الحلول المناسبة لها عند بناء نظام استرجاع الصور الخاص بها.</p>
+<h3 id="Difficulties-and-solutions" class="common-anchor-header">Difficulties and solutions</h3><p>iYUNDONG faced the following issues and successfully found corresponding solutions when building its image retrieval system.</p>
 <ul>
-<li>يجب أن تكون صور الأحداث متاحة على الفور للبحث.</li>
+<li>Event photos must be immediately available for search.</li>
 </ul>
-<p>طورت iYUNDONG وظيفة تسمى InstantUpload لضمان إتاحة صور الأحداث للبحث فور تحميلها.</p>
+<p>iYUNDONG developed a function called InstantUpload to ensure that event photos are available for search immediately after they are uploaded.</p>
 <ul>
-<li>تخزين مجموعات البيانات الضخمة</li>
+<li>Storage of massive datasets</li>
 </ul>
-<p>يتم تحميل بيانات ضخمة مثل الصور ومقاطع الفيديو إلى الواجهة الخلفية ل iYUNDONG كل جزء من الثانية. لذلك قررت iYUNDONG الانتقال إلى أنظمة التخزين السحابية بما في ذلك <a href="https://aws.amazon.com/">AWS</a> <a href="https://aws.amazon.com/s3/?nc1=h_ls">وS3</a> <a href="https://www.alibabacloud.com/product/oss">وخدمة تخزين الكائنات السحابية (OSS) من علي بابا</a> للتعامل مع كميات هائلة من البيانات غير المهيكلة بطريقة آمنة وسريعة وموثوقة.</p>
+<p>Massive data such as photos and videos are uploaded to the iYUNDONG backend every millisecond. So iYUNDONG decided to migrate onto cloud storage systems including <a href="https://aws.amazon.com/">AWS</a>, <a href="https://aws.amazon.com/s3/?nc1=h_ls">S3</a>, and <a href="https://www.alibabacloud.com/product/oss">Alibaba Cloud Object Storage Service (OSS)</a> for handling gargantuan volumes of unstructured data in a secure, fast and reliable way.</p>
 <ul>
-<li>القراءة الفورية</li>
+<li>Instant reading</li>
 </ul>
-<p>من أجل تحقيق القراءة الفورية، طوّرت iYUNDONG برمجيتها الوسيطة للتجزئة لتحقيق قابلية التوسع الأفقي بسهولة وتخفيف التأثير على النظام من قراءة الأقراص. بالإضافة إلى ذلك، يتم استخدام <a href="https://redis.io/">Redis</a> للعمل كطبقة تخزين مؤقت لضمان أداء متسق في حالة التزامن العالي.</p>
+<p>In order to achieve instant reading, iYUNDONG developed its own sharding middleware to achieve horizontal scalability easily and mitigate the impact on the system from disk reading. In addition, <a href="https://redis.io/">Redis</a> is used to serve as a caching layer to ensure consistent performance in situation of high concurrency.</p>
 <ul>
-<li>الاستخراج الفوري لملامح الوجه</li>
+<li>Instant extraction of facial features</li>
 </ul>
-<p>من أجل استخراج ميزات الوجه بدقة وكفاءة من الصور التي يقوم المستخدم بتحميلها، طوّر iYUNDONG خوارزمية تحويل صور خاصة به تقوم بتحويل الصور إلى متجهات ميزات ذات 128 بُعداً. ومن المشاكل الأخرى التي تمت مواجهتها هي أنه في كثير من الأحيان، قام العديد من المستخدمين والمصورين بتحميل الصور أو مقاطع الفيديو في وقت واحد. لذلك احتاج مهندسو النظام إلى مراعاة قابلية التوسع الديناميكي عند نشر النظام. وبشكل أكثر تحديدًا، استفاد نظام iYUNDONG بشكل كامل من خدمة الحوسبة المرنة (ECS) على السحابة لتحقيق التوسع الديناميكي.</p>
+<p>In order to accurately and efficiently extract facial features from user-uploaded photos, iYUNDONG developed a proprietary image conversion algorithm which converts images into 128-dimensional feature vectors. Another issue encountered was that, oftentimes, many users and photographers uploaded images or videos simultaneously. So system engineers needed to take dynamic scalability into consideration when deploying the system. More specifically, iYUNDONG fully leveraged its elastic compute service (ECS) on the cloud to achieve dynamic scaling.</p>
 <ul>
-<li>بحث متجه سريع وواسع النطاق</li>
+<li>Quick and large-scale vector search</li>
 </ul>
-<p>احتاجت شركة iYUNDONG إلى قاعدة بيانات متجهات لتخزين عدد كبير من متجهات الميزات المستخرجة بواسطة نماذج الذكاء الاصطناعي. وفقًا لسيناريو تطبيق الأعمال الفريد الخاص بها، توقعت شركة iYUNDONG أن تكون قاعدة بيانات المتجهات قادرة على:</p>
+<p>iYUNDONG needed a vector database to store its large number of feature vectors extracted by AI models. According to its own unique business application scenario, iYUNDONG expected the vector database to be able to:</p>
 <ol>
-<li>إجراء استرجاع سريع للغاية للمتجهات على مجموعات بيانات كبيرة للغاية.</li>
-<li>تحقيق تخزين ضخم بتكاليف أقل.</li>
+<li>Perform blazing fast vector retrieval on ultra-large datasets.</li>
+<li>Achieve mass storage at lower costs.</li>
 </ol>
-<p>في البداية، تمت معالجة ما متوسطه مليون صورة سنويًا، لذلك قامت iYUNDONG بتخزين جميع بياناتها للبحث في ذاكرة الوصول العشوائي. ومع ذلك، في العامين الماضيين، ازدهرت أعمالها في العامين الماضيين وشهدت نموًا هائلاً في البيانات غير المهيكلة - تجاوز عدد الصور في قاعدة بيانات iYUNDONG 60 مليون صورة في عام 2019، مما يعني أن هناك أكثر من مليار متجه ميزة كان يجب تخزينها. هذا الكم الهائل من البيانات جعل نظام iYUNDONG حتمًا نظام iYUNDONG ثقيل البنية ومستهلكًا للموارد. لذلك كان عليها أن تستثمر باستمرار في مرافق الأجهزة لضمان الأداء العالي. وعلى وجه التحديد، قامت iYUNDONG بنشر المزيد من خوادم البحث، وذاكرة وصول عشوائي أكبر، ووحدة معالجة مركزية أفضل أداءً لتحقيق كفاءة أكبر وقابلية للتوسع الأفقي. ومع ذلك، كان أحد عيوب هذا الحل أنه أدى إلى ارتفاع تكاليف التشغيل بشكل باهظ. ولذلك، بدأت شركة iYUNDONG في استكشاف حل أفضل لهذه المشكلة وفكرت في الاستفادة من مكتبات الفهرس المتجه مثل Faiss لتوفير التكاليف وتوجيه أعمالها بشكل أفضل. وأخيرًا اختارت iYUNDONG قاعدة بيانات المتجهات مفتوحة المصدر Milvus.</p>
+<p>Initially, an average of 1 million images were processed annually, so iYUNDONG stored all its data for search in RAM. However, in the past two years, its business boomed and saw an exponential growth of unstructured data – the number of images in iYUNDONG’s database exceeded 60 milllion in 2019, meaning that there were more than 1 billion feature vectors that needed to be stored. A tremendous amount of data inevitably made the iYUNDONG system heavily-built and resource-consuming. So it had to continuously invest in hardware facilities to ensure high performance. Specifically, iYUNDONG deployed more search servers, larger RAM, and a better-performing CPU to achieve greater efficiency and horizontal scalability. However, one of the defects of this solution was that it drove the operating costs prohibitively high. Therefore, iYUNDONG started to explore a better solution to this issue and pondered on leveraging vector index libraries like Faiss to save costs and better steer its business. Finally iYUNDONG chose open-source vector database Milvus.</p>
 <p><br/></p>
-<h3 id="What-is-Milvus" class="common-anchor-header">ما هي ميلفوس</h3><p>Milvus هي قاعدة بيانات متجهات مفتوحة المصدر سهلة الاستخدام ومرنة للغاية وموثوقة وسريعة للغاية. إلى جانب العديد من نماذج التعلم العميق مثل التعرف على الصور والصوت ومعالجة الفيديو ومعالجة اللغة الطبيعية، يمكن لـ Milvus معالجة وتحليل البيانات غير المنظمة التي يتم تحويلها إلى متجهات باستخدام خوارزميات الذكاء الاصطناعي المختلفة. فيما يلي سير العمل لكيفية معالجة Milvus لجميع البيانات غير المهيكلة:</p>
-<p>● يتم تحويل البيانات غير المهيكلة إلى متجهات مضمنة بواسطة نماذج التعلم العميق أو خوارزميات الذكاء الاصطناعي الأخرى.</p>
-<p>● ثم يتم إدراج متجهات التضمين في ميلفوس لتخزينها. كما تنشئ ميلفوس أيضًا فهارس لتلك المتجهات.</p>
-<p>● تقوم Milvus بإجراء بحث التشابه وإرجاع نتائج بحث دقيقة بناءً على احتياجات العمل المختلفة.</p>
+<h3 id="What-is-Milvus" class="common-anchor-header">What is Milvus</h3><p>Milvus is an open-source vector database that is easy to use, highly flexible, reliable, and blazing fast. Combined with various deep learning models such as photo and voice recognition, video processing, natural language processing, Milvus can process and analyze unstructured data that are converted into vectors by using various AI algorithms. Below is the workflow of how Milvus processes all unstructured data:</p>
+<p>● Unstructured data are converted into embedding vectors by deep learning models or other AI algorithms.</p>
+<p>● Then embedding vectors are inserted into Milvus for storage. Milvus also builds indexes for those vectors.</p>
+<p>● Milvus performs similarity search and returns accurate search results based on various business needs.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/i_YUNDONG_Blog_1_d8abe065ae.png" alt="iYUNDONG Blog 1.png" class="doc-image" id="iyundong-blog-1.png" />
-   </span> <span class="img-wrapper"> <span>مدونة iYUNDONG 1.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/i_YUNDONG_Blog_1_d8abe065ae.png" alt="iYUNDONG Blog 1.png" class="doc-image" id="iyundong-blog-1.png" />
+    <span>iYUNDONG Blog 1.png</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="Why-Milvus" class="common-anchor-header">لماذا ميلفوس</h3><p>منذ نهاية عام 2019، أجرت iYUNDONG سلسلة من الاختبارات على استخدام Milvus لتشغيل نظام استرجاع الصور الخاص بها. وقد أظهرت نتائج الاختبارات أن Milvus يتفوق على قواعد البيانات المتجهة السائدة الأخرى لأنه يدعم فهارس متعددة ويمكنه تقليل استخدام ذاكرة الوصول العشوائي بكفاءة، مما يقلل بشكل كبير من الجدول الزمني للبحث عن تشابه المتجهات.</p>
-<p>علاوة على ذلك، يتم إصدار إصدارات جديدة من Milvus بانتظام. خلال فترة الاختبار، مرّ ميلفوس بتحديثات متعددة للإصدارات من الإصدار 0.6.0 إلى الإصدار 0.10.1.</p>
-<p>بالإضافة إلى ذلك، وبفضل مجتمعه النشط المفتوح المصدر وميزاته القوية الجاهزة، يسمح ميلفوس لـ iYUNDONG بالعمل بميزانية تطوير محدودة.</p>
+<h3 id="Why-Milvus" class="common-anchor-header">Why Milvus</h3><p>Since the end of 2019, iYUNDONG has carried out a series of testings on using Milvus to power its image retrieval system. The testing results turned out that Milvus outperforms other mainstream vector databases as it supports multiple indexes and can efficiently reduce RAM usage, significantly compressing the timeline for vector similarity search.</p>
+<p>Moreover, new versions of Milvus are released regularly. Over the testing period, Milvus has went through multiple version updates from v0.6.0 to v0.10.1.</p>
+<p>Additionally, with its active open-source community and powerful out-of-the-box features, Milvus allows iYUNDONG to operate on a tight development budget.</p>
 <p><br/></p>
-<h3 id="System-and-Workflow" class="common-anchor-header">النظام وسير العمل</h3><p>يقوم نظام iYUNDONG باستخراج ملامح الوجه عن طريق اكتشاف الوجوه في صور الأحداث التي يرفعها المصورون أولاً. ثم يتم تحويل ملامح الوجه هذه إلى متجهات ذات 128 بُعداً وتخزينها في مكتبة ميلفوس. يقوم برنامج Milvus بإنشاء فهارس لتلك المتجهات ويمكنه إرجاع نتائج فورية عالية الدقة.</p>
-<p>يتم تخزين المعلومات الإضافية الأخرى مثل معرّفات الصور والإحداثيات التي تشير إلى موضع الوجه في الصورة في قاعدة بيانات تابعة لجهة خارجية.</p>
-<p>لكل متجه ميزة معرف فريد خاص به في مكتبة ميلفوس. اعتمدت iYUNDONG <a href="https://github.com/Meituan-Dianping/Leaf">خوارزمية Leaf،</a> وهي خدمة توليد معرفات موزعة تم تطويرها بواسطة منصة البحث والتطوير الأساسية <a href="https://about.meituan.com/en">Meituan،</a> لربط معرف المتجه في ميلفوس بالمعلومات الإضافية المقابلة المخزنة في قاعدة بيانات أخرى. من خلال الجمع بين متجه الميزة والمعلومات الإضافية، يمكن لنظام iYUNDONG إرجاع نتائج مماثلة عند بحث المستخدم.</p>
+<h3 id="System-and-Workflow" class="common-anchor-header">System and Workflow</h3><p>iYUNDONG’s system extracts facial features by detecting faces in event photos uploaded by photographers first. Then those facial features are converted into 128-dimensional vectors and stored in the Milvus library. Milvus creates indexes for those vectors and can instantaneously return highly accurate results.</p>
+<p>Other additional information such as photo IDs and coordinates indicating the position of a face in a photo are stored in a third-party database.</p>
+<p>Each feature vector has its unique ID in the Milvus library. iYUNDONG adopted the <a href="https://github.com/Meituan-Dianping/Leaf">Leaf algorithm</a>, a distributed ID generation service developed by <a href="https://about.meituan.com/en">Meituan</a> basic R&amp;D platform, to associate the vector ID in Milvus with its corresponing additional information stored in another database. By combining the feature vector and the additional information, the iYUNDONG system can return similar results upon user search.</p>
 <p><br/></p>
-<h3 id="iYUNDONG-App-Interface" class="common-anchor-header">واجهة تطبيق iYUNDONG</h3><p>يتم سرد سلسلة من أحدث الأحداث الرياضية على الصفحة الرئيسية. بالنقر على أحد الأحداث، يمكن للمستخدمين الاطلاع على التفاصيل الكاملة.</p>
-<p>بعد النقر على الزر الموجود في أعلى صفحة معرض الصور، يمكن للمستخدمين بعد ذلك تحميل صورة خاصة بهم لاسترجاع صور لأبرز الأحداث الرياضية.</p>
+<h3 id="iYUNDONG-App-Interface" class="common-anchor-header">iYUNDONG App Interface</h3><p>A series of latest sports events are listed on the homepage. By tapping one of the events, users can see the full details.</p>
+<p>After tapping the button on the top of the photo gallery page, users can then upload a photo of their own to retrieve images of their highlights.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/iyundong_interface_3da684d206.jpg" alt="iyundong-interface.jpg" class="doc-image" id="iyundong-interface.jpg" />
-   </span> <span class="img-wrapper"> <span>iyundong-interface.jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/iyundong_interface_3da684d206.jpg" alt="iyundong-interface.jpg" class="doc-image" id="iyundong-interface.jpg" />
+    <span>iyundong-interface.jpg</span>
+  </span>
+</p>
 <p><br/></p>
-<h3 id="Conclusion" class="common-anchor-header">الخاتمة</h3><p>يقدّم هذا المقال كيف يبني تطبيق iYUNDONG نظامًا ذكيًا لاسترجاع الصور يمكنه إرجاع نتائج بحث دقيقة بناءً على الصور التي حمّلها المستخدم والتي تختلف في الدقة والحجم والوضوح والزاوية وغيرها من الطرق التي تعقّد البحث عن التشابه. وبمساعدة Milvus، يمكن لتطبيق iYUNDONG تشغيل استعلامات على مستوى أجزاء من الثانية بنجاح على قاعدة بيانات تضم أكثر من 60 مليون صورة. ويتجاوز معدل دقة استرجاع الصور باستمرار 92%. يسهّل تطبيق Milvus على iYUNDONG إنشاء نظام استرجاع صور قوي على مستوى المؤسسات في وقت قصير وبموارد محدودة.</p>
-<p>اقرأ <a href="https://zilliz.com/user-stories">قصص المستخدمين</a> الآخرين لمعرفة المزيد حول صنع الأشياء باستخدام Milvus.</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>This article introduces how iYUNDONG App builds an intelligent image retrieval system that can return accurate search results based on user uploaded photos varying in resolution, size, clarity, angle, and other ways that complicate similarity search. With the help of Milvus, iYUNDONG App can successfully run millisecond-level queries on a database of 60+ million images. And accuracy rate of photo retrieval is constantly above 92%. Milvus makes it easier for iYUNDONG to create a powerful, enterprise-grade image retrieval system in a short time with limited resources.</p>
+<p>Read other <a href="https://zilliz.com/user-stories">user stories</a> to learn more about making things with Milvus.</p>

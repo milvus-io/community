@@ -1,33 +1,33 @@
 ---
 id: deep-dive-5-real-time-query.md
-title: Verwendung der Milvus-Vektordatenbank für Echtzeitabfragen
+title: Using the Milvus Vector Database for Real-Time Query
 author: Xi Ge
 date: 2022-04-11T00:00:00.000Z
-desc: >-
-  Erfahren Sie mehr über den zugrunde liegenden Mechanismus der Echtzeitabfrage
-  in Milvus.
+desc: Learn about the underlying mechanism of real-time query in Milvus.
 cover: assets.zilliz.com/deep_dive_5_5e9175c7f7.png
 tag: Engineering
 tags: 'Data science, Database, Technology, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_dive_5_5e9175c7f7.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Titelbild</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/deep_dive_5_5e9175c7f7.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Dieser Artikel wurde von <a href="https://github.com/xige-16">Xi Ge</a> geschrieben und von <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a> umgesetzt.</p>
+<p>This article is written by <a href="https://github.com/xige-16">Xi Ge</a> and transcreated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
 </blockquote>
-<p>Im vorigen Beitrag haben wir über die <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Dateneinfügung und Datenpersistenz</a> in Milvus gesprochen. In diesem Artikel werden wir weiter erklären, wie <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">verschiedene Komponenten</a> in Milvus miteinander interagieren, um Echtzeit-Datenabfragen durchzuführen.</p>
-<p><em>Bevor Sie beginnen, finden Sie unten einige nützliche Ressourcen. Wir empfehlen, diese zuerst zu lesen, um das Thema in diesem Beitrag besser zu verstehen.</em></p>
+<p>In the previous post, we have talked about <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">data insertion and data persistence</a> in Milvus. In this article, we will continue to explain how <a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">different components</a> in Milvus interact with each other to complete real-time data query.</p>
+<p><em>Some useful resources before getting started are listed below. We recommend reading them first to better understand the topic in this post.</em></p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Ein tiefer Einblick in die Milvus-Architektur</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">Milvus-Datenmodell</a></li>
-<li><a href="https://milvus.io/docs/v2.0.x/four_layers.md">Die Rolle und Funktion der einzelnen Milvus-Komponenten</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Datenverarbeitung in Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Dateneinfügung und Datenpersistenz in Milvus</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Deep dive into the Milvus architecture</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md#Data-Model">Milvus data model</a></li>
+<li><a href="https://milvus.io/docs/v2.0.x/four_layers.md">The role and function of each Milvus component</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing in Milvus</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data insertion and data persistence in Milvus</a></li>
 </ul>
-<h2 id="Load-data-to-query-node" class="common-anchor-header">Laden von Daten in den Abfrageknoten<button data-href="#Load-data-to-query-node" class="anchor-icon" translate="no">
+<h2 id="Load-data-to-query-node" class="common-anchor-header">Load data to query node<button data-href="#Load-data-to-query-node" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,16 +42,18 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bevor eine Abfrage ausgeführt wird, müssen die Daten zunächst in die Abfrageknoten geladen werden.</p>
-<p>Es gibt zwei Arten von Daten, die in den Abfrageknoten geladen werden: Streaming-Daten aus dem <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Log-broker">Log-Broker</a> und historische Daten aus dem <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Object-storage">Objektspeicher</a> (im Folgenden auch persistenter Speicher genannt).</p>
+    </button></h2><p>Before a query is executed, the data has to be loaded to the query nodes first.</p>
+<p>There are two types of data that are loaded to query node: streaming data from <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Log-broker">log broker</a>, and historical data from <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Object-storage">object storage</a> (also called persistent storage below).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/flowchart_b1c51dfdaa.png" alt="Flowchart" class="doc-image" id="flowchart" />
-   </span> <span class="img-wrapper"> <span>Flussdiagramm</span> </span></p>
-<p>Die Datenkoordination ist für die Handhabung von Streaming-Daten zuständig, die kontinuierlich in Milvus eingefügt werden. Wenn ein Milvus-Benutzer <code translate="no">collection.load()</code> aufruft, um eine Sammlung zu laden, fragt der Abfragekoordinator den Datenkoordinator, um zu erfahren, welche Segmente im Speicher persistiert wurden und welche Checkpoints ihnen entsprechen. Ein Checkpoint ist eine Markierung, die anzeigt, dass persistierte Segmente vor dem Checkpoint verbraucht werden, während die Segmente nach dem Checkpoint nicht verbraucht werden.</p>
-<p>Anschließend gibt die Abfragekoordination auf der Grundlage der Informationen aus der Datenkoordination eine Zuordnungsstrategie aus: entweder nach Segmenten oder nach Kanälen. Der Segment Allocator ist für die Zuweisung von Segmenten im persistenten Speicher (Stapeldaten) an verschiedene Abfrageknoten zuständig. In der obigen Abbildung ordnet die Segmentzuordnung beispielsweise die Segmente 1 und 3 (S1, S3) dem Abfrageknoten 1 und die Segmente 2 und 4 (S2, S4) dem Abfrageknoten 2 zu. Der Kanalzuweiser weist verschiedenen Abfrageknoten die Überwachung mehrerer <a href="https://milvus.io/docs/v2.0.x/data_processing.md#Data-insertion">Datenmanipulationskanäle</a> (DMChannels) im Log-Broker zu. In der obigen Abbildung weist der Kanalzuweiser beispielsweise Abfrageknoten 1 die Überwachung von Kanal 1 (Ch1) und Abfrageknoten 2 die Überwachung von Kanal 2 (Ch2) zu.</p>
-<p>Mit dieser Zuweisungsstrategie lädt jeder Abfrageknoten Segmentdaten und überwacht die Kanäle entsprechend. Im Abfrageknoten 1 in der Abbildung werden historische Daten (Stapeldaten) über die zugeordneten S1 und S3 aus dem persistenten Speicher geladen. In der Zwischenzeit lädt Abfrageknoten 1 inkrementelle Daten (Streaming-Daten), indem er den Kanal 1 im Log-Broker abonniert.</p>
-<h2 id="Data-management-in-query-node" class="common-anchor-header">Datenverwaltung im Abfrageknoten<button data-href="#Data-management-in-query-node" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/flowchart_b1c51dfdaa.png" alt="Flowchart" class="doc-image" id="flowchart" />
+    <span>Flowchart</span>
+  </span>
+</p>
+<p>Data coord is in charge of handling streaming data that are continuously inserted into Milvus. When a Milvus user calls <code translate="no">collection.load()</code> to load a collection, query coord will inquire the data coord to learn which segments have been persisted in storage and their corresponding checkpoints. A checkpoint is a mark to signify that persisted segments before the checkpoints are consumed while those after the checkpoint are not.</p>
+<p>Then, the query coord outputs allocation strategy based on the information from the data coord: either by segment or by channel. The segment allocator is responsible for allocating segments in persistent storage  (batch data) to different query nodes. For instance, in the image above, the segment allocator allocates segment 1 and 3 (S1, S3) to query node 1, and segment 2 and 4 (S2, S4) to query node 2. The channel allocator assigns different query nodes to watch multiple data manipulation <a href="https://milvus.io/docs/v2.0.x/data_processing.md#Data-insertion">channels</a> (DMChannels) in the log broker. For instance, in the image above, the channel allocator assigns query node 1 to watch  channel 1 (Ch1), and query node 2 to watch channel 2 (Ch2).</p>
+<p>With the allocation strategy, each query node loads segment data and watch the channels accordingly. In query node 1 in the image, historical data (batch data), are loaded via the allocated S1 and S3 from persistent storage. In the meanwhile, query node 1 loads incremental data (streaming data) by subscribing to channel 1 in log broker.</p>
+<h2 id="Data-management-in-query-node" class="common-anchor-header">Data management in query node<button data-href="#Data-management-in-query-node" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,27 +68,33 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ein Abfrageknoten muss sowohl historische als auch inkrementelle Daten verwalten. Historische Daten werden in <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Sealed-segment">versiegelten Segmenten</a> gespeichert, während inkrementelle Daten in <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Growing-segment">wachsenden Segmenten</a> gespeichert werden.</p>
-<h3 id="Historical-data-management" class="common-anchor-header">Verwaltung historischer Daten</h3><p>Bei der Verwaltung historischer Daten gibt es hauptsächlich zwei Überlegungen: Lastausgleich und Ausfallsicherung des Abfrageknotens.</p>
+    </button></h2><p>A query node needs to manage both historical and incremental data. Historical data are stored in <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Sealed-segment">sealed segments</a> while incremental data are stored in <a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md#Growing-segment">growing segments</a>.</p>
+<h3 id="Historical-data-management" class="common-anchor-header">Historical data management</h3><p>There are mainly two considerations for historical data management: load balance and query node failover.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/load_balance_c77e22bb5c.png" alt="Load balance" class="doc-image" id="load-balance" />
-   </span> <span class="img-wrapper"> <span>Lastausgleich</span> </span></p>
-<p>Wie in der Abbildung zu sehen ist, wurden beispielsweise dem Abfrageknoten 4 mehr versiegelte Segmente zugewiesen als den übrigen Abfrageknoten. Dadurch wird Abfrageknoten 4 höchstwahrscheinlich zum Engpass, der den gesamten Abfrageprozess verlangsamt. Um dieses Problem zu lösen, muss das System mehrere Segmente in Abfrageknoten 4 anderen Abfrageknoten zuweisen. Dies wird als Lastausgleich bezeichnet.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/load_balance_c77e22bb5c.png" alt="Load balance" class="doc-image" id="load-balance" />
+    <span>Load balance</span>
+  </span>
+</p>
+<p>For instance, as shown in the illustration, query node 4 has been allocated more sealed segments than the rest of the query nodes. Very likely, this will make query node 4 the bottleneck that slows down the whole query process. To solve this issue, the system needs to allocate several segments in query node 4 to other query nodes. This is called load balance.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Query_node_failover_3278c0e307.png" alt="Query node failover" class="doc-image" id="query-node-failover" />
-   </span> <span class="img-wrapper"> <span>Ausfallsicherung für Abfrageknoten</span> </span></p>
-<p>Eine weitere mögliche Situation ist in der obigen Abbildung dargestellt. Einer der Knoten, Abfrageknoten 4, ist plötzlich ausgefallen. In diesem Fall muss die Last (dem Abfrageknoten 4 zugewiesene Segmente) auf andere funktionierende Abfrageknoten übertragen werden, um die Genauigkeit der Abfrageergebnisse zu gewährleisten.</p>
-<h3 id="Incremental-data-management" class="common-anchor-header">Inkrementelle Datenverwaltung</h3><p>Der Abfrageknoten überwacht die DMChannels, um inkrementelle Daten zu empfangen. In diesem Prozess wird ein Flowgraph eingeführt. Er filtert zunächst alle Dateneinfügemeldungen. Damit soll sichergestellt werden, dass nur Daten in einer bestimmten Partition geladen werden. Jede Sammlung in Milvus hat einen entsprechenden Kanal, der von allen Partitionen in dieser Sammlung gemeinsam genutzt wird. Daher wird ein Flussdiagramm zum Filtern der eingefügten Daten benötigt, wenn ein Milvus-Benutzer nur Daten in einer bestimmten Partition laden möchte. Andernfalls werden die Daten aus allen Partitionen der Sammlung in den Abfrageknoten geladen.</p>
-<p>Nach der Filterung werden die inkrementellen Daten in wachsende Segmente eingefügt und an die Server-Zeitknoten weitergeleitet.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Query_node_failover_3278c0e307.png" alt="Query node failover" class="doc-image" id="query-node-failover" />
+    <span>Query node failover</span>
+  </span>
+</p>
+<p>Another possible situation is illustrated in the image above. One of the nodes, query node 4, is suddenly down. In this case, the load (segments allocated to query node 4) needs to be transferred to other working query nodes to ensure the accuracy of query results.</p>
+<h3 id="Incremental-data-management" class="common-anchor-header">Incremental data management</h3><p>Query node watches DMChannels to receive incremental data. Flowgraph is introduced in this process. It first filters all the data insertion messages. This is to ensure that only data in a specified partition is loaded. Each collection in Milvus has a corresponding channel, which is shared by all partitions in that collection. Therefore, a flowgraph is needed for filtering inserted data if a Milvus user only needs to load data in a certain partition. Otherwise, data in all partitions in the collection will be loaded to query node.</p>
+<p>After being filtered, the incremental data are inserted into growing segments, and further passed on to server time nodes.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/flow_graph_dc58651367.png" alt="Flowgraph" class="doc-image" id="flowgraph" />
-   </span> <span class="img-wrapper"> <span>Flussdiagramm</span> </span></p>
-<p>Beim Einfügen von Daten wird jeder Einfügemeldung ein Zeitstempel zugewiesen. In dem oben abgebildeten DMChannel werden die Daten in der Reihenfolge von links nach rechts eingefügt. Die erste Einfügemeldung hat den Zeitstempel 1, die zweite den Zeitstempel 2 und die dritte den Zeitstempel 6. Die vierte, rot markierte Meldung ist keine Einfügemeldung, sondern eine Timetick-Meldung. Dies bedeutet, dass eingefügte Daten, deren Zeitstempel kleiner als dieser Zeitstempel ist, bereits im Log-Broker sind. Mit anderen Worten: Daten, die nach dieser Zeitstempel-Meldung eingefügt werden, sollten alle Zeitstempel haben, deren Werte größer sind als dieser Zeitstempel. Wenn der Abfrageknoten in der obigen Abbildung beispielsweise feststellt, dass der aktuelle Zeitstempel 5 beträgt, bedeutet dies, dass alle Einfügemeldungen, deren Zeitstempelwert kleiner als 5 ist, in den Abfrageknoten geladen werden.</p>
-<p>Der Zeitknoten des Servers liefert jedes Mal, wenn er einen Zeitstempel vom Einfügeknoten erhält, einen aktualisierten Wert <code translate="no">tsafe</code>. <code translate="no">tsafe</code> bedeutet Sicherheitszeit, und alle Daten, die vor diesem Zeitpunkt eingefügt wurden, können abgefragt werden. Ein Beispiel: Wenn <code translate="no">tsafe</code> = 9 ist, können alle eingefügten Daten mit Zeitstempeln kleiner als 9 abgefragt werden.</p>
-<h2 id="Real-time-query-in-Milvus" class="common-anchor-header">Echtzeit-Abfrage in Milvus<button data-href="#Real-time-query-in-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/flow_graph_dc58651367.png" alt="Flowgraph" class="doc-image" id="flowgraph" />
+    <span>Flowgraph</span>
+  </span>
+</p>
+<p>During data insertion, each insertion message is assigned a timestamp. In the DMChannel shown in the image above, data are are inserted in order, from left to right. The timestamp for the first insertion message is 1; the second, 2; and the third, 6. The fourth message marked in red is not an insertion message, but rather a timetick message. This is to signify that inserted data whose timestamps are smaller than this timetick are already in log broker. In other words, data inserted after this timetick message should all have timestamps whose values are bigger than this timetick. For instance, in the image above, when query node perceives that the current timetick is 5, it means all insertion messages whose timestamp value is less than 5 are all loaded to query node.</p>
+<p>The server time node provides an updated <code translate="no">tsafe</code> value every time it receives a timetick from the insert node. <code translate="no">tsafe</code> means safety time, and all data inserted before this point of time can be queried. Take an example, if <code translate="no">tsafe</code> = 9, inserted data with timestamps smaller than 9 can all be queried.</p>
+<h2 id="Real-time-query-in-Milvus" class="common-anchor-header">Real-time query in Milvus<button data-href="#Real-time-query-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,34 +109,38 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die Echtzeitabfrage in Milvus wird durch Abfragenachrichten ermöglicht. Abfragenachrichten werden über einen Proxy in den Log-Broker eingefügt. Dann erhalten die Abfrageknoten Abfragenachrichten, indem sie den Abfragekanal im Logbroker beobachten.</p>
-<h3 id="Query-message" class="common-anchor-header">Abfragemeldung</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_message_4d57814f47.png" alt="Query message" class="doc-image" id="query-message" />
-   </span> <span class="img-wrapper"> <span>Abfragemeldung</span> </span></p>
-<p>Eine Abfrage-Nachricht enthält die folgenden wichtigen Informationen über eine Abfrage:</p>
+    </button></h2><p>Real-time query in Milvus is enabled by query messages. Query messages are inserted into log broker by proxy. Then query nodes obtain query messages by watching the query channel in log broker.</p>
+<h3 id="Query-message" class="common-anchor-header">Query message</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_message_4d57814f47.png" alt="Query message" class="doc-image" id="query-message" />
+    <span>Query message</span>
+  </span>
+</p>
+<p>A query message includes the following crucial information about a query:</p>
 <ul>
-<li><code translate="no">msgID</code>: Message ID, die vom System zugewiesene ID der Abfragenachricht.</li>
-<li><code translate="no">collectionID</code>: Die ID der abzufragenden Sammlung (falls vom Benutzer angegeben).</li>
-<li><code translate="no">execPlan</code>: Der Ausführungsplan wird hauptsächlich für die Attributfilterung in einer Abfrage verwendet.</li>
-<li><code translate="no">service_ts</code>: Der Zeitstempel des Dienstes wird zusammen mit der oben genannten <code translate="no">tsafe</code> aktualisiert. Der Zeitstempel des Dienstes gibt an, zu welchem Zeitpunkt der Dienst in ist. Alle vor <code translate="no">service_ts</code> eingefügten Daten sind für die Abfrage verfügbar.</li>
-<li><code translate="no">travel_ts</code>: Der Reisezeitstempel gibt einen Zeitbereich in der Vergangenheit an. Die Abfrage wird auf Daten durchgeführt, die in dem von <code translate="no">travel_ts</code> angegebenen Zeitraum liegen.</li>
-<li><code translate="no">guarantee_ts</code>: Garantiezeitstempel gibt eine Zeitspanne an, nach der die Abfrage durchgeführt werden muss. Die Abfrage wird nur durchgeführt, wenn <code translate="no">service_ts</code> &gt; <code translate="no">guarantee_ts</code>.</li>
+<li><code translate="no">msgID</code>: Message ID, the ID of the query message assigned by the system.</li>
+<li><code translate="no">collectionID</code>: The ID of the collection to query (if specified by user).</li>
+<li><code translate="no">execPlan</code>: The execution plan is mainly used for attribute filtering in a query.</li>
+<li><code translate="no">service_ts</code>: Service timestamp will be updated together with <code translate="no">tsafe</code> mentioned above. Service timestamp signifies at which point is the service in. All data inserted before <code translate="no">service_ts</code> are available for query.</li>
+<li><code translate="no">travel_ts</code>: Travel timestamp specifies a range of time in the past. And the query will be conducted on data existing in the time period specified by <code translate="no">travel_ts</code>.</li>
+<li><code translate="no">guarantee_ts</code>: Guarantee timestamp specifies a period of time after which the query needs to be conducted. Query will only be conducted when <code translate="no">service_ts</code> &gt; <code translate="no">guarantee_ts</code>.</li>
 </ul>
-<h3 id="Real-time-query" class="common-anchor-header">Abfrage in Echtzeit</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/query_process_7f676972d8.png" alt="Query process" class="doc-image" id="query-process" />
-   </span> <span class="img-wrapper"> <span>Abfrageprozess</span> </span></p>
-<p>Wenn eine Abfragenachricht empfangen wird, beurteilt Milvus zunächst, ob die aktuelle Servicezeit, <code translate="no">service_ts</code>, größer ist als der Garantiezeitstempel, <code translate="no">guarantee_ts</code>, in der Abfragenachricht. Wenn ja, wird die Abfrage ausgeführt. Die Abfrage wird parallel zu den historischen Daten und den inkrementellen Daten durchgeführt. Da es zu Datenüberschneidungen zwischen Streaming-Daten und Batch-Daten kommen kann, ist eine Aktion namens "local reduce" erforderlich, um die redundanten Abfrageergebnisse herauszufiltern.</p>
-<p>Ist jedoch die aktuelle Servicezeit kleiner als der garantierte Zeitstempel in einer neu eingefügten Abfragenachricht, wird die Abfragenachricht zu einer ungelösten Nachricht und wartet auf ihre Verarbeitung, bis die Servicezeit größer als der garantierte Zeitstempel wird.</p>
-<p>Die Abfrageergebnisse werden schließlich an den Ergebniskanal weitergeleitet. Der Proxy holt die Abfrageergebnisse aus diesem Kanal ab. Ebenso führt der Proxy eine "globale Reduzierung" durch, da er Ergebnisse von mehreren Abfrageknoten erhält und sich Abfrageergebnisse wiederholen können.</p>
-<p>Um sicherzustellen, dass der Proxy alle Abfrageergebnisse erhalten hat, bevor er sie an das SDK zurücksendet, enthält die Ergebnisnachricht auch eine Aufzeichnung der Informationen, einschließlich der durchsuchten versiegelten Segmente, der durchsuchten DMChannels und der globalen versiegelten Segmente (alle Segmente auf allen Abfrageknoten). Das System kann nur dann zu dem Schluss kommen, dass der Proxy alle Abfrageergebnisse erhalten hat, wenn beide der folgenden Bedingungen erfüllt sind:</p>
+<h3 id="Real-time-query" class="common-anchor-header">Real-time query</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/query_process_7f676972d8.png" alt="Query process" class="doc-image" id="query-process" />
+    <span>Query process</span>
+  </span>
+</p>
+<p>When a query message is received, Milvus first judges if the current service time, <code translate="no">service_ts</code>, is larger than the guarantee timestamp, <code translate="no">guarantee_ts</code>, in the query message. If yes, the query will be executed. Query will be conducted in parallel on both historical data and incremental data. Since there can be an overlap of data between streaming data and batch data , an action called “local reduce” is needed to filter out the redundant query results.</p>
+<p>However, if the current service time is smaller than the guarantee timestamp in a newly inserted query message, the query message will become an unsolved message and wait to be processed till the service time becomes bigger than the guarantee timestamp.</p>
+<p>Query results are ultimately pushed to the result channel. Proxy obtains the query results from that channel. Likewise, proxy will conduct a “global reduce” as well because it receives results from multiple query nodes and query results might be repetitive.</p>
+<p>To ensure that the proxy has received all query results before returning them to the SDK, result message will also keep a record of information including searched sealed segments, searched DMChannels, and global sealed segments (all segments on all query nodes). The system can conclude that the proxy has received all query results only if both of the following conditions are met:</p>
 <ul>
-<li>Die Vereinigung aller gesuchten versiegelten Segmente, die in allen Ergebnisnachrichten aufgezeichnet sind, ist größer als die globalen versiegelten Segmente,</li>
-<li>Alle DMChannels in der Sammlung sind abgefragt worden.</li>
+<li>The union of all searched sealed segments recorded in all result messages is larger than global sealed segments,</li>
+<li>All DMChannels in the collection are queried.</li>
 </ul>
-<p>Letztendlich gibt der Proxy die endgültigen Ergebnisse nach "global reduce" an das Milvus SDK zurück.</p>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Über die Deep Dive-Serie<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+<p>Ultimately, proxy returns the final results after “global reduce” to the Milvus SDK.</p>
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,14 +155,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-5-real-time-query.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mit der <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">offiziellen Ankündigung der allgemeinen Verfügbarkeit</a> von Milvus 2.0 haben wir diese Milvus-Deep-Dive-Blogserie ins Leben gerufen, um eine tiefgehende Interpretation der Milvus-Architektur und des Quellcodes zu bieten. Die Themen dieser Blogserie umfassen:</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Überblick über die Milvus-Architektur</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs und Python-SDKs</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Datenverarbeitung</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Datenverwaltung</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Abfrage in Echtzeit</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Skalare Ausführungsmaschine</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA-System</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vektorielles Ausführungssystem</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

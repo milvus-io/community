@@ -2,14 +2,13 @@
 id: >-
   why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md
 title: >-
-  Warum ich gegen den Grep-Only-Abruf von Claude Code bin? Es verbrennt einfach
-  zu viele Token
+  Why I’m Against Claude Code’s Grep-Only Retrieval? It Just Burns Too Many
+  Tokens
 author: Cheney Zhang
 date: 2025-08-25T00:00:00.000Z
 desc: >-
-  Erfahren Sie, wie die vektorbasierte Codeabfrage den Verbrauch von Claude
-  Code-Token um 40 % reduziert. Open-Source-Lösung mit einfacher
-  MCP-Integration. Testen Sie claude-context noch heute.
+  Learn how vector-based code retrieval cuts Claude Code token consumption by
+  40%. Open-source solution with easy MCP integration. Try claude-context today.
 cover: >-
   assets.zilliz.com/why_im_against_claude_codes_grep_only_retrieval_it_just_burns_too_many_tokens_milvus_cover_2928b4b72d.png
 tag: Engineering
@@ -22,27 +21,27 @@ meta_title: >
 origin: >
   https://milvus.io/blog/why-im-against-claude-codes-grep-only-retrieval-it-just-burns-too-many-tokens.md
 ---
-<p>KI-Codierassistenten sind auf dem Vormarsch. In nur zwei Jahren haben sich Tools wie Cursor, Claude Code, Gemini CLI und Qwen Code von Kuriositäten zu alltäglichen Begleitern für Millionen von Entwicklern entwickelt. Doch hinter diesem rasanten Aufstieg verbirgt sich ein Streit über etwas täuschend Einfaches: <strong>Wie sollte ein KI-Codierassistent eigentlich Ihre Codebasis nach Kontext durchsuchen?</strong></p>
-<p>Zurzeit gibt es zwei Ansätze:</p>
+<p>AI coding assistants are exploding. In just the last two years, tools like Cursor, Claude Code, Gemini CLI, and Qwen Code have gone from curiosities to everyday companions for millions of developers. But behind this rapid rise lies a brewing fight over something deceptively simple: <strong>how should an AI coding assistant actually search your codebase for context?</strong></p>
+<p>Right now, there are two approaches:</p>
 <ul>
-<li><p><strong>Vektorsuche mit RAG</strong> (semantisches Retrieval).</p></li>
-<li><p><strong>Schlüsselwortsuche mit grep</strong> (literal string matching).</p></li>
+<li><p><strong>Vector search-powered RAG</strong> (semantic retrieval).</p></li>
+<li><p><strong>Keyword search with grep</strong> (literal string matching).</p></li>
 </ul>
-<p>Claude Code und Gemini haben sich für Letzteres entschieden. Tatsächlich gab ein Claude-Ingenieur auf Hacker News offen zu, dass Claude Code überhaupt kein RAG verwendet. Stattdessen wird das Repo einfach Zeile für Zeile durchsucht (was sie "agentic search" nennen) - keine Semantik, keine Struktur, nur roher String-Matching.</p>
+<p>Claude Code and Gemini have chosen the latter. In fact, a Claude engineer openly admitted on Hacker News that Claude Code doesn’t use RAG at all. Instead, it just greps your repo line by line (what they call “agentic search”)—no semantics, no structure, just raw string matching.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_2b03e89759.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Diese Offenbarung hat die Gemeinschaft gespalten:</p>
+<p>That revelation split the community:</p>
 <ul>
-<li><p><strong>Die Befürworter</strong> verteidigen die Einfachheit von grep. Es ist schnell, genau und - was am wichtigsten ist - vorhersehbar. Beim Programmieren, so argumentieren sie, ist Präzision alles, und die heutigen Einbettungen sind noch zu unscharf, um ihnen zu vertrauen.</p></li>
-<li><p><strong>Kritiker</strong> sehen grep als eine Sackgasse. Es ertränkt Sie in irrelevanten Treffern, verbrennt Token und bremst Ihren Arbeitsablauf. Ohne semantisches Verständnis ist es so, als würde man seine KI bitten, mit verbundenen Augen zu debuggen.</p></li>
+<li><p><strong>Supporters</strong> defend grep’s simplicity. It’s fast, exact, and—most importantly—predictable. With programming, they argue, precision is everything, and today’s embeddings are still too fuzzy to trust.</p></li>
+<li><p><strong>Critics</strong> see grep as a dead end. It drowns you in irrelevant matches, burns tokens, and stalls your workflow. Without semantic understanding, it’s like asking your AI to debug blindfolded.</p></li>
 </ul>
-<p>Beide Seiten haben ihre Argumente. Und nachdem ich meine eigene Lösung entwickelt und getestet habe, kann ich Folgendes sagen: Der auf Vektorsuche basierende RAG-Ansatz verändert das Spiel. <strong>Er macht die Suche nicht nur wesentlich schneller und genauer, sondern reduziert auch die Verwendung von Token um 40 % oder mehr. (Überspringen Sie den Teil "Claude Context" für meinen Ansatz)</strong></p>
-<p>Warum also ist grep so einschränkend? Und wie kann die Vektorsuche in der Praxis bessere Ergebnisse liefern? Schauen wir uns das mal an.</p>
-<h2 id="What’s-Wrong-with-Claude-Code’s-Grep-Only-Code-Search" class="common-anchor-header">Was ist falsch an der reinen Grep-Codesuche von Claude Code?<button data-href="#What’s-Wrong-with-Claude-Code’s-Grep-Only-Code-Search" class="anchor-icon" translate="no">
+<p>Both sides have a point. And after building and testing my own solution, I can say this: vector search-based RAG approach changes the game. <strong>Not only does it make search dramatically faster and more accurate, but it also reduces token usage by 40% or more. (Skip to the Claude Context part for my approach)</strong></p>
+<p>So why is grep so limiting? And how can vector search actually deliver better results in practice? Let’s break it down.</p>
+<h2 id="What’s-Wrong-with-Claude-Code’s-Grep-Only-Code-Search" class="common-anchor-header">What’s Wrong with Claude Code’s Grep-Only Code Search?<button data-href="#What’s-Wrong-with-Claude-Code’s-Grep-Only-Code-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,14 +56,14 @@ origin: >
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Auf dieses Problem stieß ich bei der Fehlersuche in einem heiklen Fall. Claude Code feuerte Grep-Abfragen über mein Repository ab und lieferte mir riesige Klumpen irrelevanten Textes zurück. Nach einer Minute hatte ich immer noch nicht die relevante Datei gefunden. Fünf Minuten später hatte ich endlich die richtigen 10 Zeilen, aber sie waren unter 500 Zeilen Rauschen begraben worden.</p>
+    </button></h2><p>I ran into this problem while debugging a thorny issue. Claude Code fired off grep queries across my repo, dumping giant blobs of irrelevant text back at me. One minute in, I still hadn’t found the relevant file. Five minutes later, I finally had the right 10 lines—but they’d been buried in 500 lines of noise.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_299eeeaea5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Das ist kein Einzelfall. Ein Blick auf die GitHub-Probleme von Claude Code zeigt, dass viele frustrierte Entwickler gegen die gleiche Wand rennen:</p>
+<p>That’s not an edge case. Skimming Claude Code’s GitHub issues shows plenty of frustrated developers running into the same wall:</p>
 <ul>
 <li><p>issue1:<a href="https://github.com/anthropics/claude-code/issues/1315"> https://github.com/anthropics/claude-code/issues/1315</a></p></li>
 <li><p>issue2:<a href="https://github.com/anthropics/claude-code/issues/4556"> https://github.com/anthropics/claude-code/issues/4556</a></p></li>
@@ -75,14 +74,14 @@ origin: >
     <span></span>
   </span>
 </p>
-<p>Die Frustration der Community lässt sich auf drei Schmerzpunkte reduzieren:</p>
+<p>The community’s frustration boils down to three pain points:</p>
 <ol>
-<li><p><strong>Aufgeblähte Token.</strong> Jeder grep dump schaufelt riesige Mengen an irrelevantem Code in den LLM, was die Kosten in die Höhe treibt, die mit der Größe des Repos entsetzlich skalieren.</p></li>
-<li><p><strong>Zeitsteuer.</strong> Sie müssen warten, während die KI zwanzig Fragen mit Ihrer Codebasis spielt, was den Fokus und den Ablauf stört.</p></li>
-<li><p><strong>Kein Kontext.</strong> Grep vergleicht wörtliche Zeichenfolgen. Es hat keinen Sinn für Bedeutung oder Beziehungen, so dass man praktisch blind sucht.</p></li>
+<li><p><strong>Token bloat.</strong> Every grep dump shovels massive amounts of irrelevant code into the LLM, driving up costs that scale horribly with repo size.</p></li>
+<li><p><strong>Time tax.</strong> You’re stuck waiting while the AI plays twenty questions with your codebase, killing focus and flow.</p></li>
+<li><p><strong>Zero context.</strong> Grep matches literal strings. It has no sense of meaning or relationships, so you’re effectively searching blind.</p></li>
 </ol>
-<p>Deshalb ist diese Debatte so wichtig: Grep ist nicht nur "altmodisch", sondern behindert aktiv die KI-gestützte Programmierung.</p>
-<h2 id="Claude-Code-vs-Cursor-Why-the-Latter-Has-Better-Code-Context" class="common-anchor-header">Claude Code vs. Cursor: Warum letzterer den besseren Code-Kontext hat<button data-href="#Claude-Code-vs-Cursor-Why-the-Latter-Has-Better-Code-Context" class="anchor-icon" translate="no">
+<p>That’s why the debate matters: grep isn’t just “old school,” it’s actively holding back AI-assisted programming.</p>
+<h2 id="Claude-Code-vs-Cursor-Why-the-Latter-Has-Better-Code-Context" class="common-anchor-header">Claude Code vs Cursor: Why the Latter Has Better Code Context<button data-href="#Claude-Code-vs-Cursor-Why-the-Latter-Has-Better-Code-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -97,28 +96,28 @@ origin: >
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wenn es um Code-Kontext geht, hat Cursor die bessere Arbeit geleistet. Vom ersten Tag an hat sich Cursor auf die <strong>Indizierung der Codebasis</strong> gestützt: Zerlegen Sie Ihr Repo in sinnvolle Teile, betten Sie diese Teile in Vektoren ein, und rufen Sie sie semantisch ab, wenn die KI Kontext benötigt. Das ist Retrieval-Augmented Generation (RAG) wie aus dem Lehrbuch, und die Ergebnisse sprechen für sich: engerer Kontext, weniger verschwendete Token und schnelleres Auffinden.</p>
+    </button></h2><p>When it comes to code context, Cursor has done a better job. From day one, Cursor has leaned into <strong>codebase indexing</strong>: break your repo into meaningful chunks, embed those chunks into vectors, and retrieve them semantically whenever the AI needs context. This is textbook Retrieval-Augmented Generation (RAG) applied to code, and the results speak for themselves: tighter context, fewer tokens wasted, and faster retrieval.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_a9f5beb01d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Claude Code hingegen hat sich der Einfachheit verschrieben. Keine Indizes, keine Einbettungen - nur Grep. Das bedeutet, dass jede Suche ein buchstabengetreuer Zeichenfolgenabgleich ist, ohne dass Struktur oder Semantik berücksichtigt werden. In der Theorie ist das schnell, aber in der Praxis müssen sich die Entwickler oft durch Heuhaufen von irrelevanten Übereinstimmungen wühlen, bevor sie die eine Nadel finden, die sie wirklich brauchen.</p>
+<p>Claude Code, by contrast, has doubled down on simplicity. No indexes, no embeddings—just grep. That means every search is literal string matching, with no understanding of structure or semantics. It’s fast in theory, but in practice, developers often end up sifting through haystacks of irrelevant matches before finding the one needle they actually need.</p>
 <table>
 <thead>
 <tr><th></th><th><strong>Claude Code</strong></th><th><strong>Cursor</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Suchgenauigkeit</td><td>Findet nur exakte Übereinstimmungen - alles, was anders heißt, wird übersehen.</td><td>Findet semantisch relevanten Code, auch wenn die Schlüsselwörter nicht genau übereinstimmen.</td></tr>
-<tr><td>Effizienz</td><td>Grep speist riesige Codeblöcke in das Modell ein, was die Token-Kosten in die Höhe treibt.</td><td>Kleinere Chunks mit höherem Signalgehalt reduzieren die Tokenlast um 30-40 %.</td></tr>
-<tr><td>Skalierbarkeit</td><td>Das Repo wird jedes Mal neu gegreppt, was sich bei wachsenden Projekten verlangsamt.</td><td>Einmalige Indizierung, dann Abrufe in großem Umfang mit minimaler Verzögerung.</td></tr>
-<tr><td>Philosophie</td><td>Minimalistisch bleiben - keine zusätzliche Infrastruktur.</td><td>Alles indizieren, intelligent abrufen.</td></tr>
+<tr><td>Search Accuracy</td><td>Only surfaces exact matches—misses anything named differently.</td><td>Finds semantically relevant code even when keywords don’t match exactly.</td></tr>
+<tr><td>Efficiency</td><td>Grep dumps massive blobs of code into the model, driving up token costs.</td><td>Smaller, higher-signal chunks reduce token load by 30–40%.</td></tr>
+<tr><td>Scalability</td><td>Re-greps the repo every time, which slows down as projects grow.</td><td>Indexes once, then retrieves at scale with minimal lag.</td></tr>
+<tr><td>Philosophy</td><td>Stay minimal—no extra infrastructure.</td><td>Index everything, retrieve intelligently.</td></tr>
 </tbody>
 </table>
-<p>Warum also ist Claude (oder Gemini oder Cline) nicht dem Beispiel von Cursor gefolgt? Die Gründe sind zum Teil technischer und zum Teil kultureller Natur. <strong>Das Abrufen von Vektoren ist nicht trivial - man muss Chunking, inkrementelle Aktualisierungen und groß angelegte Indizierungen lösen.</strong> Aber was noch wichtiger ist: Claude Code ist auf Minimalismus ausgelegt: keine Server, keine Indizes, nur eine saubere CLI. Einbettungen und Vektor-DBs passen nicht in diese Designphilosophie.</p>
-<p>Diese Einfachheit ist reizvoll - aber sie begrenzt auch die Möglichkeiten, die Claude Code bieten kann. Die Bereitschaft von Cursor, in eine echte Indexierungsinfrastruktur zu investieren, ist der Grund, warum es sich heute leistungsfähiger anfühlt.</p>
-<h2 id="Claude-Context-an-Open-Source-Project-for-Adding-Semantic-Code-Search-to-Claude-Code" class="common-anchor-header">Claude Context: ein Open-Source-Projekt zur Erweiterung von Claude Code um eine semantische Codesuche<button data-href="#Claude-Context-an-Open-Source-Project-for-Adding-Semantic-Code-Search-to-Claude-Code" class="anchor-icon" translate="no">
+<p>So why hasn’t Claude (or Gemini, or Cline) followed Cursor’s lead? The reasons are partly technical and partly cultural. <strong>Vector retrieval isn’t trivial—you need to solve chunking, incremental updates, and large-scale indexing.</strong> But more importantly, Claude Code is built around minimalism: no servers, no indexes, just a clean CLI. Embeddings and vector DBs don’t fit that design philosophy.</p>
+<p>That simplicity is appealing—but it also caps the ceiling of what Claude Code can deliver. Cursor’s willingness to invest in real indexing infrastructure is why it feels more powerful today.</p>
+<h2 id="Claude-Context-an-Open-Source-Project-for-Adding-Semantic-Code-Search-to-Claude-Code" class="common-anchor-header">Claude Context: an Open-Source Project for Adding Semantic Code Search to Claude Code<button data-href="#Claude-Context-an-Open-Source-Project-for-Adding-Semantic-Code-Search-to-Claude-Code" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -133,27 +132,27 @@ origin: >
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Claude Code ist ein starkes Werkzeug, aber es hat einen schlechten Code-Kontext. Cursor löste dieses Problem mit der Codebase-Indizierung, aber Cursor ist Closed-Source, an Abonnements gebunden und für Einzelpersonen oder kleine Teams sehr teuer.</p>
-<p>Diese Lücke ist der Grund, warum wir unsere eigene Open-Source-Lösung entwickelt haben: <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>.</p>
-<p><a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> ist ein quelloffenes MCP-Plugin, das die <strong>semantische Codesuche</strong> in Claude Code (und jeden anderen KI-Codieragenten, der MCP spricht) integriert. Anstatt Ihr Repo mit Grep zu durchsuchen, integriert es Vektordatenbanken mit Einbettungsmodellen, um LLMs <em>tiefen, gezielten Kontext</em> aus Ihrer gesamten Codebasis zu geben. Das Ergebnis: eine schärfere Suche, weniger Token-Verschwendung und eine weitaus bessere Erfahrung für Entwickler.</p>
-<p>Hier sehen Sie, wie wir es entwickelt haben:</p>
-<h3 id="Technologies-We-Use" class="common-anchor-header">Verwendete Technologien</h3><p><strong>🔌 Schnittstellenschicht: MCP als universeller Konnektor</strong></p>
-<p>Wir wollten, dass dies überall funktioniert - nicht nur in Claude. MCP (Model Context Protocol) funktioniert wie der USB-Standard für LLMs und ermöglicht die nahtlose Anbindung externer Tools. Da Claude Context als MCP-Server verpackt ist, funktioniert es nicht nur mit Claude Code, sondern auch mit Gemini CLI, Qwen Code, Cline und sogar Cursor.</p>
-<p><strong>🗄️ Vektor-Datenbank: Zilliz Cloud</strong></p>
-<p>Als Backbone haben wir uns für <a href="https://zilliz.com/cloud">Zilliz Cloud</a> entschieden (ein vollständig verwalteter Dienst, der auf <a href="https://milvus.io/">Milvus</a> aufbaut). Er ist hochleistungsfähig, Cloud-nativ, elastisch und für KI-Workloads wie Codebase-Indizierung konzipiert. Das bedeutet Abruf mit geringer Latenz, nahezu unbegrenzte Skalierbarkeit und grundsolide Zuverlässigkeit.</p>
-<p><strong>🧩 Einbettungsmodelle: Flexibel durch DesignUnterschiedliche</strong>Teams haben unterschiedliche Anforderungen, daher unterstützt Claude Context von Haus aus mehrere Einbettungsanbieter:</p>
+    </button></h2><p>Claude Code is a strong tool—but it has poor code context. Cursor solved this with codebase indexing, but Cursor is closed-source, locked behind subscriptions, and pricey for individuals or small teams.</p>
+<p>That gap is why we started building our own open-source solution: <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>.</p>
+<p><a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a> is an open-source MCP plugin that brings <strong>semantic code search</strong> to Claude Code (and any other AI coding agent that speaks MCP). Instead of brute-forcing your repo with grep, it integrates vector databases with embedding models to give LLMs <em>deep, targeted context</em> from your entire codebase. The result: sharper retrieval, less token waste, and a far better developer experience.</p>
+<p>Here is how we built it:</p>
+<h3 id="Technologies-We-Use" class="common-anchor-header">Technologies We Use</h3><p><strong>🔌 Interface Layer: MCP as the Universal Connector</strong></p>
+<p>We wanted this to work everywhere—not just Claude. MCP (Model Context Protocol) acts like the USB standard for LLMs, letting external tools plug in seamlessly. By packaging Claude Context as an MCP server, it works not only with Claude Code but also with Gemini CLI, Qwen Code, Cline, and even Cursor.</p>
+<p><strong>🗄️ Vector Database: Zilliz Cloud</strong></p>
+<p>For the backbone, we chose <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (a fully managed service built on <a href="https://milvus.io/">Milvus</a>). It’s high-performance, cloud-native, elastic, and designed for AI workloads like codebase indexing. That means low-latency retrieval, near-infinite scale, and rock-solid reliability.</p>
+<p><strong>🧩 Embedding Models: Flexible by Design</strong>Different teams have different needs, so Claude Context supports multiple embedding providers out of the box:</p>
 <ul>
-<li><p><strong>OpenAI-Einbettungen</strong> für Stabilität und breite Akzeptanz.</p></li>
-<li><p><strong>Voyage-Einbettungen</strong> für code-spezifische Leistung.</p></li>
-<li><p><strong>Ollama</strong> für lokale Einsätze, bei denen der Datenschutz im Vordergrund steht.</p></li>
+<li><p><strong>OpenAI embeddings</strong> for stability and wide adoption.</p></li>
+<li><p><strong>Voyage embeddings</strong> for code-specialized performance.</p></li>
+<li><p><strong>Ollama</strong> for privacy-first local deployments.</p></li>
 </ul>
-<p>Weitere Modelle können je nach den sich entwickelnden Anforderungen hinzugefügt werden.</p>
-<p><strong>💻 Wahl der Sprache: TypeScript</strong></p>
-<p>Wir haben über Python gegen TypeScript debattiert. TypeScript hat gewonnen - nicht nur wegen der Kompatibilität auf Anwendungsebene (VSCode-Plugins, Webtools), sondern auch, weil Claude Code und Gemini CLI selbst auf TypeScript basieren. Das macht die Integration nahtlos und hält das Ökosystem kohärent.</p>
-<h3 id="System-Architecture" class="common-anchor-header">Systemarchitektur</h3><p>Claude Context folgt einem sauberen, mehrschichtigen Design:</p>
+<p>Additional models can be slotted in as requirements evolve.</p>
+<p><strong>💻 Language Choice: TypeScript</strong></p>
+<p>We debated Python vs. TypeScript. TypeScript won—not just for application-level compatibility (VSCode plugins, web tooling) but also because Claude Code and Gemini CLI themselves are TypeScript-based. That makes integration seamless and keeps the ecosystem coherent.</p>
+<h3 id="System-Architecture" class="common-anchor-header">System Architecture</h3><p>Claude Context follows a clean, layered design:</p>
 <ul>
-<li><p>Die<strong>Kernmodule</strong> übernehmen die Hauptarbeit: Code-Parsing, Chunking, Indizierung, Abruf und Synchronisierung.</p></li>
-<li><p>Die<strong>Benutzeroberfläche</strong> kümmert sich um die Integration von MCP-Servern, VSCode-Plugins oder anderen Adaptern.</p></li>
+<li><p><strong>Core modules</strong> handle the heavy lifting: code parsing, chunking, indexing, retrieval, and synchronization.</p></li>
+<li><p><strong>User interface</strong> handles integrations—MCP servers, VSCode plugins, or other adapters.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -161,8 +160,8 @@ origin: >
     <span></span>
   </span>
 </p>
-<p>Durch diese Trennung bleibt die Kern-Engine in verschiedenen Umgebungen wiederverwendbar, während die Integrationen schnell weiterentwickelt werden können, wenn neue KI-Codierassistenten auftauchen.</p>
-<h3 id="Core-Module-Implementation" class="common-anchor-header">Implementierung der Kernmodule</h3><p>Die Kernmodule bilden die Grundlage des gesamten Systems. Sie abstrahieren Vektordatenbanken, Einbettungsmodelle und andere Komponenten in zusammensetzbare Module, die ein Context-Objekt erstellen und verschiedene Vektordatenbanken und Einbettungsmodelle für unterschiedliche Szenarien ermöglichen.</p>
+<p>This separation keeps the core engine reusable across different environments while letting integrations evolve quickly as new AI coding assistants emerge.</p>
+<h3 id="Core-Module-Implementation" class="common-anchor-header">Core Module Implementation</h3><p>The core modules form the foundation of the entire system. They abstract vector databases, embedding models, and other components into composable modules that create a Context object, enabling different vector databases and embedding models for different scenarios.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Context</span>, <span class="hljs-title class_">MilvusVectorDatabase</span>, <span class="hljs-title class_">OpenAIEmbedding</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@zilliz/claude-context-core&#x27;</span>;
 <span class="hljs-comment">// Initialize embedding provider</span>
 <span class="hljs-keyword">const</span> embedding = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OpenAIEmbedding</span>(...);
@@ -175,7 +174,7 @@ origin: >
 <span class="hljs-comment">// Perform semantic search</span>
 <span class="hljs-keyword">const</span> results = <span class="hljs-keyword">await</span> context.<span class="hljs-title function_">semanticSearch</span>(<span class="hljs-string">&#x27;./your-project&#x27;</span>, <span class="hljs-string">&#x27;vector database operations&#x27;</span>);
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Solving-Key-Technical-Challenges" class="common-anchor-header">Lösung der wichtigsten technischen Herausforderungen<button data-href="#Solving-Key-Technical-Challenges" class="anchor-icon" translate="no">
+<h2 id="Solving-Key-Technical-Challenges" class="common-anchor-header">Solving Key Technical Challenges<button data-href="#Solving-Key-Technical-Challenges" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,14 +189,14 @@ origin: >
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bei der Entwicklung von Claude Context ging es nicht nur darum, Einbettungen und eine Vektordatenbank miteinander zu verbinden. Die eigentliche Arbeit bestand darin, die schwierigen Probleme zu lösen, die für die Indexierung von Code in großem Maßstab entscheidend sind. Im Folgenden erfahren Sie, wie wir die drei größten Herausforderungen angegangen sind:</p>
-<h3 id="Challenge-1-Intelligent-Code-Chunking" class="common-anchor-header">Herausforderung 1: Intelligentes Code Chunking</h3><p>Code kann nicht einfach nach Zeilen oder Zeichen aufgeteilt werden. Dies führt zu unübersichtlichen, unvollständigen Fragmenten und entzieht dem Code die Logik, die ihn verständlich macht.</p>
-<p>Wir haben dieses Problem mit <strong>zwei sich ergänzenden Strategien</strong> gelöst:</p>
-<h4 id="AST-Based-Chunking-Primary-Strategy" class="common-anchor-header">AST-basiertes Chunking (primäre Strategie)</h4><p>Dies ist der Standardansatz, bei dem Tree-Sitter-Parser verwendet werden, um die Syntaxstruktur des Codes zu verstehen und entlang semantischer Grenzen aufzuteilen: Funktionen, Klassen, Methoden. Dies liefert:</p>
+    </button></h2><p>Building Claude Context wasn’t just about wiring up embeddings and a vector DB. The real work came in solving the hard problems that make or break code indexing at scale. Here’s how we approached the three biggest challenges:</p>
+<h3 id="Challenge-1-Intelligent-Code-Chunking" class="common-anchor-header">Challenge 1: Intelligent Code Chunking</h3><p>Code can’t just be split by lines or characters. That creates messy, incomplete fragments and strips away the logic that makes code understandable.</p>
+<p>We solved this with <strong>two complementary strategies</strong>:</p>
+<h4 id="AST-Based-Chunking-Primary-Strategy" class="common-anchor-header">AST-Based Chunking (Primary Strategy)</h4><p>This is the default approach, using tree-sitter parsers to understand code syntax structure and split along semantic boundaries: functions, classes, methods. This delivers:</p>
 <ul>
-<li><p><strong>Syntaktische Vollständigkeit</strong> - keine abgehackten Funktionen oder gebrochenen Deklarationen.</p></li>
-<li><p><strong>Logische Kohärenz</strong> - verwandte Logik bleibt zusammen, um eine bessere semantische Auffindbarkeit zu gewährleisten.</p></li>
-<li><p><strong>Unterstützung mehrerer Sprachen</strong> - funktioniert in JS, Python, Java, Go und anderen Sprachen über Tree-Sitter-Grammatiken.</p></li>
+<li><p><strong>Syntax completeness</strong> – no chopped functions or broken declarations.</p></li>
+<li><p><strong>Logical coherence</strong> – related logic stays together for better semantic retrieval.</p></li>
+<li><p><strong>Multi-language support</strong> – works across JS, Python, Java, Go, and more via tree-sitter grammars.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -205,63 +204,70 @@ origin: >
     <span></span>
   </span>
 </p>
-<h4 id="LangChain-Text-Splitting-Fallback-Strategy" class="common-anchor-header">LangChain-Textaufteilung (Fallback-Strategie)</h4><p>Für Sprachen, die AST nicht parsen kann oder wenn das Parsen fehlschlägt, bietet LangChain's <code translate="no">RecursiveCharacterTextSplitter</code> ein zuverlässiges Backup.</p>
+<h4 id="LangChain-Text-Splitting-Fallback-Strategy" class="common-anchor-header">LangChain Text Splitting (Fallback Strategy)</h4><p>For languages that AST can’t parse or when parsing fails, LangChain’s <code translate="no">RecursiveCharacterTextSplitter</code> provides a reliable backup.</p>
 <pre><code translate="no"><span class="hljs-comment">// Use recursive character splitting to maintain code structure</span>
 <span class="hljs-keyword">const</span> splitter = <span class="hljs-title class_">RecursiveCharacterTextSplitter</span>.<span class="hljs-title function_">fromLanguage</span>(language, { 
   <span class="hljs-attr">chunkSize</span>: <span class="hljs-number">1000</span>, 
   <span class="hljs-attr">chunkOverlap</span>: <span class="hljs-number">200</span>,
 });
 <button class="copy-code-btn"></button></code></pre>
-<p>Es ist weniger "intelligent" als AST, aber sehr zuverlässig und stellt sicher, dass die Entwickler nicht auf verlorenem Posten stehen. Zusammen bieten diese beiden Strategien ein Gleichgewicht zwischen semantischem Reichtum und universeller Anwendbarkeit.</p>
-<h3 id="Challenge-2-Handling-Code-Changes-Efficiently" class="common-anchor-header">Herausforderung 2: Effizienter Umgang mit Codeänderungen</h3><p>Die Verwaltung von Codeänderungen stellt eine der größten Herausforderungen bei Code-Indizierungssystemen dar. Die Neuindizierung ganzer Projekte für geringfügige Dateiänderungen wäre völlig unpraktisch.</p>
-<p>Um dieses Problem zu lösen, haben wir den Merkle-Baum-basierten Synchronisationsmechanismus entwickelt.</p>
-<h4 id="Merkle-Trees-The-Foundation-of-Change-Detection" class="common-anchor-header">Merkle-Bäume: Die Grundlage der Änderungserkennung</h4><p>Merkle-Bäume schaffen ein hierarchisches "Fingerabdruck"-System, in dem jede Datei ihren eigenen Hash-Fingerabdruck hat, Ordner haben Fingerabdrücke, die auf ihrem Inhalt basieren, und alles gipfelt in einem einzigartigen Fingerabdruck des Wurzelknotens für die gesamte Codebasis.</p>
+<p>It’s less “intelligent” than AST, but highly reliable—ensuring developers are never left stranded. Together, these two strategies balance semantic richness with universal applicability.</p>
+<h3 id="Challenge-2-Handling-Code-Changes-Efficiently" class="common-anchor-header">Challenge 2: Handling Code Changes Efficiently</h3><p>Managing code changes represents one of the biggest challenges in code indexing systems. Re-indexing entire projects for minor file modifications would be completely impractical.</p>
+<p>To solve this problem, we built the Merkle Tree-based synchronization mechanism.</p>
+<h4 id="Merkle-Trees-The-Foundation-of-Change-Detection" class="common-anchor-header">Merkle Trees: The Foundation of Change Detection</h4><p>Merkle Trees create a hierarchical “fingerprint” system where each file has its own hash fingerprint, folders have fingerprints based on their contents, and everything culminates in a unique root node fingerprint for the entire codebase.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/7_79adb21c84.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Wenn sich der Inhalt einer Datei ändert, wandern die Hash-Fingerabdrücke kaskadenförmig durch die einzelnen Ebenen bis zum Stammknoten nach oben. Dies ermöglicht eine schnelle Erkennung von Änderungen durch den Vergleich von Hash-Fingerabdrücken Schicht für Schicht von der Wurzel abwärts, wodurch Dateiveränderungen schnell identifiziert und lokalisiert werden können, ohne das gesamte Projekt neu zu indizieren.</p>
-<p>Das System führt alle 5 Minuten eine Handshake-Synchronisationsprüfung durch, die in einem optimierten Drei-Phasen-Prozess abläuft:</p>
-<p><strong>Phase 1: Die blitzschnelle Erkennung</strong> berechnet den Merkle-Root-Hash der gesamten Codebase und vergleicht ihn mit dem vorherigen Snapshot. Identische Root-Hashes bedeuten, dass keine Änderungen stattgefunden haben - das System überspringt die gesamte Verarbeitung in Millisekunden.</p>
-<p><strong>Phase 2: Präziser Vergleich</strong> löst aus, wenn Root-Hashes voneinander abweichen, und führt eine detaillierte Analyse auf Dateiebene durch, um genau festzustellen, welche Dateien hinzugefügt, gelöscht oder geändert wurden.</p>
-<p><strong>Phase 3: Inkrementelle Updates</strong> berechnet die Vektoren nur für geänderte Dateien neu und aktualisiert die Vektordatenbank entsprechend, um die Effizienz zu maximieren.</p>
-<h4 id="Local-Snapshot-Management" class="common-anchor-header">Lokale Snapshot-Verwaltung</h4><p>Der gesamte Synchronisationsstatus bleibt lokal im <code translate="no">~/.context/merkle/</code> Verzeichnis des Benutzers erhalten. Jede Codebasis unterhält ihre eigene, unabhängige Snapshot-Datei, die Datei-Hashtabellen und serialisierte Merkle-Baumdaten enthält, um eine genaue Wiederherstellung des Zustands auch nach einem Programmneustart zu gewährleisten.</p>
-<p>Die Vorteile dieses Konzepts liegen auf der Hand: Die meisten Prüfungen werden innerhalb von Millisekunden abgeschlossen, wenn keine Änderungen vorliegen, nur wirklich geänderte Dateien lösen eine erneute Verarbeitung aus (wodurch eine massive Rechenverschwendung vermieden wird), und die Wiederherstellung des Zustands funktioniert in allen Programmsitzungen einwandfrei.</p>
-<p>Aus Sicht des Benutzers löst die Änderung einer einzelnen Funktion die Neuindizierung nur für diese Datei und nicht für das gesamte Projekt aus, was die Entwicklungseffizienz erheblich verbessert.</p>
-<h3 id="Challenge-3-Designing-the-MCP-Interface" class="common-anchor-header">Herausforderung 3: Gestaltung der MCP-Schnittstelle</h3><p>Selbst die intelligenteste Indizierungsmaschine ist ohne eine saubere Benutzeroberfläche für Entwickler nutzlos. MCP war die offensichtliche Wahl, aber sie brachte einzigartige Herausforderungen mit sich:</p>
-<h4 id="🔹-Tool-Design-Keep-It-Simple" class="common-anchor-header"><strong>🔹 Tool Design: Keep It Simple</strong></h4><p>Das MCP-Modul dient als Benutzerschnittstelle, so dass die Benutzerfreundlichkeit oberste Priorität hat.</p>
-<p>Das Werkzeugdesign beginnt mit der Abstrahierung der standardmäßigen Indizierung von Codebasen und Suchvorgängen in zwei Kernwerkzeuge: <code translate="no">index_codebase</code> für die Indizierung von Codebasen und <code translate="no">search_code</code> für die Codesuche.</p>
-<p>Dies wirft eine wichtige Frage auf: Welche zusätzlichen Werkzeuge sind notwendig?</p>
-<p>Die Anzahl der Tools erfordert eine sorgfältige Abwägung - zu viele Tools verursachen einen kognitiven Overhead und verwirren die Auswahl der LLM-Tools, während bei zu wenigen wesentliche Funktionen fehlen könnten.</p>
-<p>Bei der Beantwortung dieser Frage ist es hilfreich, sich an realen Anwendungsfällen zu orientieren.</p>
-<h4 id="Addressing-Background-Processing-Challenges" class="common-anchor-header">Bewältigung von Herausforderungen bei der Hintergrundverarbeitung</h4><p>Die Indizierung großer Codebasen kann erhebliche Zeit in Anspruch nehmen. Der naive Ansatz, synchron auf die Fertigstellung zu warten, zwingt die Benutzer dazu, mehrere Minuten zu warten, was einfach inakzeptabel ist. Eine asynchrone Hintergrundverarbeitung ist unumgänglich, aber MCP unterstützt dieses Muster nicht von Haus aus.</p>
+<p>When file content changes, the hash fingerprints cascade upward through each layer to the root node. This enables rapid change detection by comparing hash fingerprints layer by layer from the root downward, quickly identifying and localizing file modifications without full project re-indexing.</p>
+<p>The system performs handshake synchronization checks every 5 minutes using a streamlined three-phase process:</p>
+<p><strong>Phase 1: Lightning-Fast Detection</strong> calculates the entire codebase’s Merkle root hash and compares it with the previous snapshot. Identical root hashes mean no changes occurred—the system skips all processing in milliseconds.</p>
+<p><strong>Phase 2: Precise Comparison</strong> triggers when root hashes differ, performing detailed file-level analysis to identify exactly which files were added, deleted, or modified.</p>
+<p><strong>Phase 3: Incremental Updates</strong> recalculates vectors only for changed files and updates the vector database accordingly, maximizing efficiency.</p>
+<h4 id="Local-Snapshot-Management" class="common-anchor-header">Local Snapshot Management</h4><p>All synchronization state persists locally in the user’s <code translate="no">~/.context/merkle/</code> directory. Each codebase maintains its own independent snapshot file containing file hash tables and serialized Merkle tree data, ensuring accurate state recovery even after program restarts.</p>
+<p>This design delivers obvious benefits: most checks complete in milliseconds when no changes exist, only genuinely modified files trigger reprocessing (avoiding massive computational waste), and state recovery works flawlessly across program sessions.</p>
+<p>From a user experience perspective, modifying a single function triggers re-indexing for only that file, not the entire project, dramatically improving development efficiency.</p>
+<h3 id="Challenge-3-Designing-the-MCP-Interface" class="common-anchor-header">Challenge 3: Designing the MCP Interface</h3><p>Even the smartest indexing engine is useless without a clean developer-facing interface. MCP was the obvious choice, but it introduced unique challenges:</p>
+<h4 id="🔹-Tool-Design-Keep-It-Simple" class="common-anchor-header"><strong>🔹 Tool Design: Keep It Simple</strong></h4><p>The MCP module serves as the user-facing interface, making user experience the top priority.</p>
+<p>Tool design starts with abstracting standard codebase indexing and search operations into two core tools: <code translate="no">index_codebase</code> for indexing codebases and <code translate="no">search_code</code> for searching code.</p>
+<p>This raises an important question: what additional tools are necessary?</p>
+<p>The tool count requires careful balance—too many tools create cognitive overhead and confuse LLM tool selection, while too few might miss essential functionality.</p>
+<p>Working backward from real-world use cases helps answer this question.</p>
+<h4 id="Addressing-Background-Processing-Challenges" class="common-anchor-header">Addressing Background Processing Challenges</h4><p>Large codebases can take considerable time to index. The naive approach of synchronously waiting for completion forces users to wait several minutes, which is simply unacceptable. Asynchronous background processing becomes essential, but MCP doesn’t natively support this pattern.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/8_e1f0aa290f.png" alt="8.png" class="doc-image" id="8.png" />
-   </span> <span class="img-wrapper"> <span>8.png</span> </span></p>
-<p>Unser MCP-Server führt einen Hintergrundprozess innerhalb des MCP-Servers aus, der die Indizierung durchführt und gleichzeitig sofort Startmeldungen an die Benutzer zurückgibt, damit diese weiterarbeiten können.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/8_e1f0aa290f.png" alt="8.png" class="doc-image" id="8.png" />
+    <span>8.png</span>
+  </span>
+</p>
+<p>Our MCP server runs a background process within the MCP server to handle indexing while immediately returning startup messages to users, allowing them to continue working.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/9_1cb37d15f3.png" alt="9.png" class="doc-image" id="9.png" />
-   </span> <span class="img-wrapper"> <span>9.png</span> </span></p>
-<p>Daraus ergibt sich eine neue Herausforderung: Wie können die Benutzer den Fortschritt der Indizierung verfolgen?</p>
-<p>Ein spezielles Tool zur Abfrage des Indizierungsfortschritts oder -status löst dieses Problem auf elegante Weise. Der Indizierungsprozess im Hintergrund speichert die Fortschrittsinformationen asynchron, so dass die Benutzer jederzeit den Prozentsatz der Fertigstellung, den Erfolgsstatus oder die Fehlerbedingungen überprüfen können. Darüber hinaus gibt es ein Tool zum manuellen Löschen von Indizes, wenn Benutzer ungenaue Indizes zurücksetzen oder den Indizierungsprozess neu starten müssen.</p>
-<p><strong>Endgültiger Entwurf des Tools:</strong></p>
-<p><code translate="no">index_codebase</code> - Indexcodebasis<code translate="no">search_code</code> - Suchcode<code translate="no">get_indexing_status</code> - Indexierungsstatus abfragen<code translate="no">clear_index</code> - Index löschen</p>
-<p>Vier Tools, die das perfekte Gleichgewicht zwischen Einfachheit und Funktionalität herstellen.</p>
-<h4 id="🔹-Environment-Variable-Management" class="common-anchor-header">🔹 Verwaltung von Umgebungsvariablen</h4><p>Die Verwaltung von Umgebungsvariablen wird oft übersehen, obwohl sie die Benutzerfreundlichkeit erheblich beeinträchtigt. Die Notwendigkeit einer separaten API-Schlüsselkonfiguration für jeden MCP-Client würde die Benutzer dazu zwingen, die Anmeldeinformationen beim Wechsel zwischen Claude Code und Gemini CLI mehrfach zu konfigurieren.</p>
-<p>Ein globaler Konfigurationsansatz beseitigt diese Reibung, indem eine <code translate="no">~/.context/.env</code> Datei im Home-Verzeichnis des Benutzers erstellt wird:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/9_1cb37d15f3.png" alt="9.png" class="doc-image" id="9.png" />
+    <span>9.png</span>
+  </span>
+</p>
+<p>This creates a new challenge: how do users track indexing progress?</p>
+<p>A dedicated tool for querying indexing progress or status solves this elegantly. The background indexing process asynchronously caches progress information, enabling users to check completion percentages, success status, or failure conditions at any time. Additionally, a manual index clearing tool handles situations where users need to reset inaccurate indexes or restart the indexing process.</p>
+<p><strong>Final Tool Design:</strong></p>
+<p><code translate="no">index_codebase</code> - Index codebase
+<code translate="no">search_code</code> - Search code
+<code translate="no">get_indexing_status</code> - Query indexing status
+<code translate="no">clear_index</code> - Clear index</p>
+<p>Four tools that strike the perfect balance between simplicity and functionality.</p>
+<h4 id="🔹-Environment-Variable-Management" class="common-anchor-header">🔹 Environment Variable Management</h4><p>Environment variable management often gets overlooked despite significantly impacting user experience. Requiring separate API key configuration for every MCP Client would force users to configure credentials multiple times when switching between Claude Code and Gemini CLI.</p>
+<p>A global configuration approach eliminates this friction by creating a <code translate="no">~/.context/.env</code> file in the user’s home directory:</p>
 <pre><code translate="no"><span class="hljs-comment"># ~/.context/.env</span>
 OPENAI_API_KEY=your-api-key-here
 MILVUS_TOKEN=your-milvus-token
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Dieser Ansatz bietet eindeutige Vorteile:</strong> Benutzer konfigurieren einmal und verwenden sie überall auf allen MCP-Clients, alle Konfigurationen werden an einem einzigen Ort zentralisiert, um die Wartung zu erleichtern, und sensible API-Schlüssel werden nicht über mehrere Konfigurationsdateien verstreut.</p>
-<p>Wir implementieren außerdem eine dreistufige Prioritätshierarchie: Prozessumgebungsvariablen haben höchste Priorität, globale Konfigurationsdateien haben mittlere Priorität, und Standardwerte dienen als Fallback.</p>
-<p>Dieses Design bietet eine enorme Flexibilität: Entwickler können Umgebungsvariablen für temporäre Testüberschreibungen verwenden, Produktionsumgebungen können sensible Konfigurationen über Systemumgebungsvariablen einspeisen, um die Sicherheit zu erhöhen, und Benutzer konfigurieren einmal, um nahtlos mit Claude Code, Gemini CLI und anderen Tools zu arbeiten.</p>
-<p>An diesem Punkt ist die Kernarchitektur des MCP-Servers vollständig und reicht von Code-Parsing und Vektorspeicherung bis hin zu intelligentem Abruf und Konfigurationsmanagement. Jede Komponente wurde sorgfältig entworfen und optimiert, um ein System zu schaffen, das sowohl leistungsstark als auch benutzerfreundlich ist.</p>
-<h2 id="Hands-on-Testing" class="common-anchor-header">Praktische Tests<button data-href="#Hands-on-Testing" class="anchor-icon" translate="no">
+<p><strong>This approach delivers clear benefits:</strong> users configure once and use everywhere across all MCP clients, all configurations centralize in a single location for easy maintenance, and sensitive API keys don’t scatter across multiple configuration files.</p>
+<p>We also implements a three-tier priority hierarchy: process environment variables take highest priority, global configuration files have medium priority, and default values serve as fallbacks.</p>
+<p>This design offers tremendous flexibility: developers can use environment variables for temporary testing overrides, production environments can inject sensitive configurations through system environment variables for enhanced security, and users configure once to work seamlessly across Claude Code, Gemini CLI, and other tools.</p>
+<p>At this point, the MCP server’s core architecture is complete, spanning code parsing and vector storage through intelligent retrieval and configuration management. Every component has been carefully designed and optimized to create a system that’s both powerful and user-friendly.</p>
+<h2 id="Hands-on-Testing" class="common-anchor-header">Hands-on Testing<button data-href="#Hands-on-Testing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -276,30 +282,30 @@ MILVUS_TOKEN=your-milvus-token
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wie schlägt sich Claude Context nun in der Praxis? Ich habe es mit genau demselben Szenario getestet, das mich anfangs frustriert hat.</p>
-<p>Die Installation war nur ein einziger Befehl vor dem Start von Claude Code:</p>
+    </button></h2><p>So how does Claude Context actually perform in practice? I tested it against the exact same bug-hunting scenario that initially left me frustrated.</p>
+<p>Installation was just one command before launching Claude Code:</p>
 <pre><code translate="no">claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e MILVUS_TOKEN=your-zilliz-cloud-api-key -- npx <span class="hljs-meta">@zilliz</span>/claude-context-mcp<span class="hljs-meta">@latest</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Sobald meine Codebasis indiziert war, gab ich Claude Code dieselbe Fehlerbeschreibung, die es zuvor auf eine <strong>fünfminütige Grep-gestützte Gänsejagd</strong> geschickt hatte. Dieses Mal <strong>fand</strong> es durch <code translate="no">claude-context</code> MCP-Aufrufe <strong>sofort die genaue Datei- und Zeilennummer</strong>, zusammen mit einer Erklärung des Problems.</p>
+<p>Once my codebase was indexed, I gave Claude Code the same bug description that had previously sent it on a <strong>five-minute grep-powered goose chase</strong>. This time, through <code translate="no">claude-context</code> MCP calls, it <strong>immediately pinpointed the exact file and line number</strong>, complete with an explanation of the issue.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_context_gif_e04d07cd00.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Der Unterschied war nicht subtil - es war wie Tag und Nacht.</p>
-<p>Und es ging nicht nur um die Fehlersuche. Mit der Integration von Claude Context lieferte Claude Code durchgängig qualitativ hochwertigere Ergebnisse:</p>
+<p>The difference wasn’t subtle—it was night and day.</p>
+<p>And it wasn’t just bug hunting. With Claude Context integrated, Claude Code consistently produced higher-quality results across:</p>
 <ul>
-<li><p><strong>Fehlerbehebung</strong></p></li>
-<li><p><strong>Code-Refactoring</strong></p></li>
-<li><p><strong>Erkennung von doppeltem Code</strong></p></li>
-<li><p><strong>Umfassende Tests</strong></p></li>
+<li><p><strong>Issue resolution</strong></p></li>
+<li><p><strong>Code refactoring</strong></p></li>
+<li><p><strong>Duplicate code detection</strong></p></li>
+<li><p><strong>Comprehensive testing</strong></p></li>
 </ul>
-<p>Die Leistungssteigerung zeigt sich auch in den Zahlen. In einem Side-by-Side-Test:</p>
+<p>The performance boost shows up in the numbers, too. In side-by-side testing:</p>
 <ul>
-<li><p>Der Token-Verbrauch sank um über 40 %, ohne dass es zu Einbußen bei der Wiedererkennung kam.</p></li>
-<li><p>Das schlägt sich direkt in niedrigeren API-Kosten und schnelleren Antworten nieder.</p></li>
-<li><p>Alternativ lieferte Claude Context mit demselben Budget weitaus genauere Abrufe.</p></li>
+<li><p>Token usage dropped by over 40%, without any loss in recall.</p></li>
+<li><p>That translates directly into lower API costs and faster responses.</p></li>
+<li><p>Alternatively, with the same budget, Claude Context delivered far more accurate retrievals.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -307,20 +313,20 @@ MILVUS_TOKEN=your-milvus-token
     <span></span>
   </span>
 </p>
-<p>Wir haben Claude Context auf GitHub als Open Source zur Verfügung gestellt, und es hat bereits 2,6K+ Sterne erhalten. Vielen Dank für eure Unterstützung und Likes.</p>
-<p>Sie können es selbst ausprobieren:</p>
+<p>We have open-sourced Claude Context on GitHub, and it has earned 2.6K+ stars already. Thank you all for your support and likes.</p>
+<p>You can try it yourself:</p>
 <ul>
 <li><p>GitHub:<a href="https://github.com/zilliztech/claude-context"> github.com/zilliztech/claude-context</a></p></li>
 <li><p>npm:<a href="https://www.npmjs.com/package/@zilliz/claude-context-mcp"> @zilliz/claude-context-mcp</a></p></li>
 </ul>
-<p>Detaillierte Benchmarks und die Testmethodik sind im Repo verfügbar - wir würden uns über Ihr Feedback freuen.</p>
+<p>Detailed benchmarks and testing methodology are available in the repo—we’d love your feedback.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_88bf595b15.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Looking-Forward" class="common-anchor-header">Blick nach vorn<button data-href="#Looking-Forward" class="anchor-icon" translate="no">
+<h2 id="Looking-Forward" class="common-anchor-header">Looking Forward<button data-href="#Looking-Forward" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -335,12 +341,12 @@ MILVUS_TOKEN=your-milvus-token
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Was als Frustration mit grep in Claude Code begann, hat sich zu einer soliden Lösung entwickelt: <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context - ein</strong></a>quelloffenes MCP-Plugin, das die semantische, vektorgestützte Suche in Claude Code und andere Programmierassistenten integriert. Die Botschaft ist einfach: Entwickler müssen sich nicht mit ineffizienten KI-Werkzeugen zufrieden geben. Mit RAG und Vektorsuche können Sie schneller debuggen, die Token-Kosten um 40 % senken und endlich eine KI-Unterstützung erhalten, die Ihre Codebasis wirklich versteht.</p>
-<p>Und das ist nicht auf Claude Code beschränkt. Da Claude Context auf offenen Standards aufbaut, funktioniert derselbe Ansatz nahtlos mit Gemini CLI, Qwen Code, Cursor, Cline und anderen. Sie sind nicht mehr an Kompromisse zwischen Anbietern gebunden, die der Einfachheit den Vorrang vor der Leistung geben.</p>
-<p>Wir würden uns freuen, wenn Sie an dieser Zukunft teilhaben könnten:</p>
+    </button></h2><p>What started as a frustration with grep in Claude Code has grown into a solid solution: <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a>—an open-source MCP plugin that brings semantic, vector-powered search to Claude Code and other coding assistants. The message is simple: developers don’t have to settle for inefficient AI tooling. With RAG and vector retrieval, you can debug faster, cut token costs by 40%, and finally get AI assistance that truly understands your codebase.</p>
+<p>And this isn’t limited to Claude Code. Because Claude Context is built on open standards, the same approach works seamlessly with Gemini CLI, Qwen Code, Cursor, Cline, and beyond. No more being locked into vendor trade-offs that prioritize simplicity over performance.</p>
+<p>We’d love for you to be part of that future:</p>
 <ul>
-<li><p><strong>Testen</strong> <a href="https://github.com/zilliztech/claude-context"><strong>Sie Claude Context</strong></a><strong>:</strong> es ist Open-Source und völlig kostenlos</p></li>
-<li><p><strong>Tragen Sie zu seiner Entwicklung bei</strong></p></li>
-<li><p><strong>Oder bauen Sie Ihre eigene Lösung</strong> mit Claude Context</p></li>
+<li><p><strong>Try</strong> <a href="https://github.com/zilliztech/claude-context"><strong>Claude Context</strong></a><strong>:</strong> it is open-source and totally free</p></li>
+<li><p><strong>Contribute to its development</strong></p></li>
+<li><p><strong>Or build your own solution</strong> using Claude Context</p></li>
 </ul>
-<p>👉 Teilen Sie Ihr Feedback mit, stellen Sie Fragen oder erhalten Sie Hilfe, indem Sie unserer <a href="https://discord.com/invite/8uyFbECzPX"><strong>Discord-Community</strong></a> beitreten.</p>
+<p>👉 Share your feedback, ask questions, or get help by joining our <a href="https://discord.com/invite/8uyFbECzPX"><strong>Discord community</strong></a>.</p>

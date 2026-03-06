@@ -1,11 +1,11 @@
 ---
 id: i-built-a-deep-research-with-open-source-so-can-you.md
-title: 'Construí una investigación profunda con código abierto, ¡y tú también puedes!'
+title: I Built a Deep Research with Open Source—and So Can You!
 author: Stefan Webb
 date: 2025-02-6
 desc: >-
-  Aprenda a crear un agente al estilo de Deep Research utilizando herramientas
-  de código abierto como Milvus, DeepSeek R1 y LangChain.
+  Learn how to create a Deep Research-style agent using open-source tools like
+  Milvus, DeepSeek R1, and LangChain.
 cover: >-
   assets.zilliz.com/I_Built_a_Deep_Research_with_Open_Source_and_So_Can_You_7eb2a38078.png
 tag: Tutorials
@@ -19,10 +19,10 @@ canonicalUrl: 'https://milvus.io/blog/i-built-a-deep-research-with-open-source-s
     <span></span>
   </span>
 </p>
-<p>Bueno, en realidad, un agente de alcance mínimo que puede razonar, planificar, utilizar herramientas, etc. para realizar investigaciones utilizando Wikipedia. Aún así, no está mal para unas pocas horas de trabajo...</p>
-<p>A menos que residas bajo una roca, en una cueva o en un remoto monasterio de montaña, habrás oído hablar del lanzamiento de <em>Deep Research</em> por parte de OpenAI el 2 de febrero de 2025. Este nuevo producto promete revolucionar la forma en que respondemos a preguntas que requieren la síntesis de grandes cantidades de información diversa.</p>
-<p>El usuario teclea su consulta, selecciona la opción Deep Research y la plataforma busca de forma autónoma en la red, realiza un razonamiento sobre lo que descubre y sintetiza múltiples fuentes en un informe coherente y completamente citado. Tarda varios órdenes de magnitud más en producir sus resultados que un chatbot estándar, pero el resultado es más detallado, más informado y más matizado.</p>
-<h2 id="How-does-it-work" class="common-anchor-header">¿Cómo funciona?<button data-href="#How-does-it-work" class="anchor-icon" translate="no">
+<p>Well actually, a minimally scoped agent that can reason, plan, use tools, etc. to perform research using Wikipedia. Still, not bad for a few hours of work…</p>
+<p>Unless you reside under a rock, in a cave, or in a remote mountain monastery, you will have heard about OpenAI’s release of <em>Deep Research</em> on Feb 2, 2025. This new product promises to revolutionize how we answer questions requiring the synthesis of large amounts of diverse information.</p>
+<p>You type in your query, select the Deep Research option, and the platform autonomously searches the web, performs reasoning on what it discovers, and synthesizes multiple sources into a coherent, fully-cited report. It takes several orders of magnitude longer to produce its output relative to a standard chatbot, but the result is more detailed, more informed, and more nuanced.</p>
+<h2 id="How-does-it-work" class="common-anchor-header">How does it work?<button data-href="#How-does-it-work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,26 +37,26 @@ canonicalUrl: 'https://milvus.io/blog/i-built-a-deep-research-with-open-source-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pero, ¿cómo funciona esta tecnología y por qué Deep Research supone una mejora notable con respecto a intentos anteriores (como la <em>Deep Research</em> de Google: alerta de conflicto de marcas entrante)? Dejaremos esto último para un próximo post. En cuanto a lo primero, no cabe duda de que hay mucha "salsa secreta" subyacente en Deep Research. Podemos extraer algunos detalles de la publicación de OpenAI, que resumo.</p>
-<p><strong>Deep Research explota los recientes avances en modelos de fundamentos especializados para tareas de razonamiento:</strong></p>
+    </button></h2><p>But how does this technology work, and why is Deep Research a noticeable improvement over previous attempts (like Google’s <em>Deep Research</em> - incoming trademark dispute alert)? We’ll leave the latter for a future post. As for the former, there is no doubt much “secret sauce” underlying Deep Research. We can glean a few details from OpenAI’s release post, which I summarize.</p>
+<p><strong>Deep Research exploits recent advances in foundation models specialized for reasoning tasks:</strong></p>
 <ul>
-<li><p>"...afinado en el próximo modelo de razonamiento OpenAI o3..."</p></li>
-<li><p>"...aprovecha el razonamiento para buscar, interpretar y analizar cantidades masivas de texto...".</p></li>
+<li><p>“…fine-tuned on the upcoming OpenAI o3 reasoning model…”</p></li>
+<li><p>“…leverages reasoning to search, interpret, and analyze massive amounts of text…”</p></li>
 </ul>
-<p><strong>Deep Research hace uso de un sofisticado flujo de trabajo agéntico con planificación, reflexión y memoria:</strong></p>
+<p><strong>Deep Research makes use of a sophisticated agentic workflow with planning, reflection, and memory:</strong></p>
 <ul>
-<li><p>"...aprendió a planificar y ejecutar una trayectoria de múltiples pasos..."</p></li>
-<li><p>"...retrocediendo y reaccionando a la información en tiempo real..."</p></li>
-<li><p>"...pivotar según sea necesario en reacción a la información que encuentra..."</p></li>
+<li><p>“…learned to plan and execute a multi-step trajectory…”</p></li>
+<li><p>“…backtracking and reacting to real-time information…”</p></li>
+<li><p>“…pivoting as needed in reaction to information it encounters…”</p></li>
 </ul>
-<p><strong>Deep Research se entrena con datos propios, utilizando varios tipos de ajuste fino, lo que probablemente sea un componente clave de su rendimiento:</strong></p>
+<p><strong>Deep Research is trained on proprietary data, using several types of fine-tuning, which is likely a key component in its performance:</strong></p>
 <ul>
-<li><p>"...entrenado utilizando aprendizaje de refuerzo de extremo a extremo en tareas difíciles de navegación y razonamiento a través de una gama de dominios..."</p></li>
-<li><p>"...optimizado para la navegación web y el análisis de datos...".</p></li>
+<li><p>“…trained using end-to-end reinforcement learning on hard browsing and reasoning tasks across a range of domains…”</p></li>
+<li><p>“…optimized for web browsing and data analysis…”</p></li>
 </ul>
-<p>El diseño exacto del flujo de trabajo agéntico es un secreto, sin embargo, podemos construir algo nosotros mismos basándonos en ideas bien establecidas sobre cómo estructurar agentes.</p>
-<p><strong>Una nota antes de empezar</strong>: Es fácil dejarse llevar por la fiebre de la IA Generativa, especialmente cuando se lanza un nuevo producto que parece un paso adelante. Sin embargo, la Investigación Profunda, como reconoce OpenAI, tiene limitaciones comunes a la tecnología de IA Generativa. Deberíamos acordarnos de pensar de forma crítica sobre el resultado, ya que puede contener hechos falsos ("alucinaciones"), formato y citas incorrectos, y variar significativamente en calidad en función de la semilla aleatoria.</p>
-<h2 id="Can-I-build-my-own" class="common-anchor-header">¿Puedo crear mi propia IA?<button data-href="#Can-I-build-my-own" class="anchor-icon" translate="no">
+<p>The exact design of the agentic workflow is a secret, however, we can build something ourselves based on well-established ideas about how to structure agents.</p>
+<p><strong>One note before we begin</strong>: It is easy to be swept away by Generative AI fever, especially when a new product that seems a step-improvement is released. However, Deep Research, as OpenAI acknowledges, has limitations common to Generative AI technology. We should remember to think critically about the output in that it may contain false facts (“hallucinations”), incorrect formatting and citations, and vary significantly in quality based on the random seed.</p>
+<h2 id="Can-I-build-my-own" class="common-anchor-header">Can I build my own?<button data-href="#Can-I-build-my-own" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,22 +71,22 @@ canonicalUrl: 'https://milvus.io/blog/i-built-a-deep-research-with-open-source-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Por supuesto. Construyamos nuestra propia "Investigación Profunda", funcionando localmente y con herramientas de código abierto. Sólo contaremos con conocimientos básicos de IA Generativa, sentido común, un par de horas libres, una GPU y las herramientas de código abierto <a href="https://milvus.io/docs">Milvus</a>, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a> y <a href="https://python.langchain.com/docs/introduction/">LangChain</a>.</p>
-<p>Por supuesto, no podemos esperar replicar el rendimiento de OpenAI, pero nuestro prototipo demostrará mínimamente algunas de las ideas clave que probablemente subyacen en su tecnología, combinando avances en los modelos de razonamiento con avances en los flujos de trabajo agénticos. Es importante destacar que, a diferencia de OpenAI, sólo utilizaremos herramientas de código abierto y podremos desplegar nuestro sistema localmente.</p>
-<p>Haremos algunas suposiciones simplificadoras para reducir el alcance de nuestro proyecto:</p>
+    </button></h2><p>Why certainly! Let’s build our own “Deep Research”, running locally and with open-source tools. We’ll be armed with just a basic knowledge of Generative AI, common sense, a couple of spare hours, a GPU, and the open-source <a href="https://milvus.io/docs">Milvus</a>, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a>, and <a href="https://python.langchain.com/docs/introduction/">LangChain</a>.</p>
+<p>We cannot hope to replicate OpenAI’s performance of course, but our prototype will minimally demonstrate some of the key ideas likely underlying their technology, combining advances in reasoning models with advances in agentic workflows. Importantly, and unlike OpenAI, we will be using only open-source tools, and be able to deploy our system locally - open-source certainly provides us great flexibility!</p>
+<p>We will make a few simplifying assumptions to reduce the scope of our project:</p>
 <ul>
-<li><p>Utilizaremos un modo de razonamiento de código abierto destilado y <a href="https://zilliz.com/learn/unlock-power-of-vector-quantization-techniques-for-efficient-data-compression-and-retrieval">cuantificado</a> para 4 bits que pueda ejecutarse localmente.</p></li>
-<li><p>No realizaremos ajustes adicionales en nuestro modelo de razonamiento.</p></li>
-<li><p>La única herramienta con la que cuenta nuestro agente es la capacidad de descargar y leer una página de Wikipedia y realizar consultas RAG independientes (no tendremos acceso a toda la web).</p></li>
-<li><p>Nuestro agente sólo procesará datos de texto, no imágenes, PDFs, etc.</p></li>
-<li><p>Nuestro agente no retrocederá ni tendrá en cuenta pivotes.</p></li>
-<li><p>Nuestro agente (aún no) controlará su flujo de ejecución basándose en su salida.</p></li>
-<li><p>Wikipedia contiene la verdad, toda la verdad y nada más que la verdad.</p></li>
+<li><p>We will use an open-source reasoning mode distilled then <a href="https://zilliz.com/learn/unlock-power-of-vector-quantization-techniques-for-efficient-data-compression-and-retrieval">quantized</a> for 4-bits that can be run locally.</p></li>
+<li><p>We will not perform additional fine-tuning on our reasoning model ourselves.</p></li>
+<li><p>The only tool our agent has is the ability to download and read a Wikipedia page and perform separate RAG queries (we will not have access to the entire web).</p></li>
+<li><p>Our agent will only process text data, not images, PDFs, etc.</p></li>
+<li><p>Our agent will not backtrack or consider pivots.</p></li>
+<li><p>Our agent will (not yet) control its execution flow based on its output.</p></li>
+<li><p>Wikipedia contains the truth, the whole truth and nothing but the truth.</p></li>
 </ul>
-<p>Utilizaremos <a href="https://milvus.io/docs">Milvus</a> para nuestra base de datos vectorial, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a> como modelo de razonamiento y <a href="https://python.langchain.com/docs/introduction/">LangChain</a> para implementar RAG. Empecemos.</p>
-<custom-h1>Un agente mínimo para la investigación en línea</custom-h1><p>Utilizaremos nuestro modelo mental de cómo los humanos llevan a cabo la investigación para diseñar el flujo de trabajo del agente:</p>
-<h3 id="DefineRefine-Question" class="common-anchor-header">Definir/Refinar pregunta</h3><p>La investigación comienza definiendo una pregunta. Tomamos la pregunta como la consulta del usuario, pero utilizamos nuestro modelo de razonamiento para asegurarnos de que la pregunta se expresa de forma específica, clara y centrada. Es decir, nuestro primer paso es reescribir la pregunta y extraer cualquier subconsulta o subpregunta. Hacemos un uso eficaz de la especialización de nuestros modelos de base para el razonamiento y de un método sencillo para la salida estructurada en JSON.</p>
-<p>He aquí un ejemplo de razonamiento a medida que DeepSeek refina la pregunta "¿Cómo ha cambiado el reparto a lo largo del tiempo?":</p>
+<p>We will use <a href="https://milvus.io/docs">Milvus</a> for our vector database, <a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">DeepSeek R1</a> as our reasoning model, and <a href="https://python.langchain.com/docs/introduction/">LangChain</a> to implement RAG. Let’s get started!</p>
+<custom-h1>A Minimal Agent for Online Research</custom-h1><p>We will use our mental model of how humans conduct research to design the agentic workflow:</p>
+<h3 id="DefineRefine-Question" class="common-anchor-header">Define/Refine Question</h3><p>Research starts by defining a question. We take the question to be the user’s query, however, we use our reasoning model to ensure the question is expressed in a way that is specific, clear, and focused. That is, our first step is to rewrite the prompt and extract any subqueries or subquestions. We make effective use of our foundation models specialization for reasoning, and a simple method for JSON structured output.</p>
+<p>Here is an example reasoning trace as DeepSeek refines the question “How has the cast changed over time?”:</p>
 <pre><code translate="no" class="language-text">&lt;think&gt;
 
 Alright, so I need to <span class="hljs-built_in">break</span> down the question <span class="hljs-string">&quot;How has the cast changed over time?&quot;</span> related to the evolution of The Simpsons. Let me think about what aspects are involved here.
@@ -103,8 +103,8 @@ Lastly, the overall impact on the cast<span class="hljs-string">&#x27;s careers 
 
 &lt;/think&gt;
 </span><button class="copy-code-btn"></button></code></pre>
-<h3 id="Search" class="common-anchor-header">Búsqueda</h3><p>A continuación, realizamos una "revisión bibliográfica" de los artículos de Wikipedia. Por ahora, leemos un solo artículo y dejamos los enlaces de navegación para una iteración futura. Durante el prototipado descubrimos que la exploración de enlaces puede resultar muy costosa si cada enlace requiere una llamada al modelo de razonamiento. Analizamos el artículo y almacenamos sus datos en nuestra base de datos vectorial, Milvus, como si tomáramos notas.</p>
-<p>He aquí un fragmento de código que muestra cómo almacenamos nuestra página de Wikipedia en Milvus utilizando su integración LangChain:</p>
+<h3 id="Search" class="common-anchor-header">Search</h3><p>Next, we conduct a “literature review” of Wikipedia articles. For now, we read a single article and leave navigating links to a future iteration. We discovered during prototyping that link exploration can become very expensive if each link requires a call to the reasoning model. We parse the article, and store its data in our vector database, Milvus, akin to taking notes.</p>
+<p>Here is a code snippet showing how we store our Wikipedia page in Milvus using its LangChain integration:</p>
 <pre><code translate="no" class="language-python">wiki_wiki = wikipediaapi.Wikipedia(user_agent=<span class="hljs-string">&#x27;MilvusDeepResearchBot (&lt;insert your email&gt;)&#x27;</span>, language=<span class="hljs-string">&#x27;en&#x27;</span>)
 page_py = wiki_wiki.page(page_title)
 
@@ -125,8 +125,8 @@ vectorstore = Milvus.from_documents(  <span class="hljs-comment"># or Zilliz.fro
     },
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Analyze" class="common-anchor-header">Analizar</h3><p>El agente vuelve a sus preguntas y las responde basándose en la información relevante del documento. Dejaremos un flujo de trabajo de análisis/reflexión en varios pasos para futuros trabajos, así como cualquier reflexión crítica sobre la credibilidad y el sesgo de nuestras fuentes.</p>
-<p>He aquí un fragmento de código que ilustra la construcción de una RAG con LangChain y la respuesta a nuestras subpreguntas por separado.</p>
+<h3 id="Analyze" class="common-anchor-header">Analyze</h3><p>The agent returns to its questions and answers them based on the relevant information in the document. We will leave a multi-step analysis/reflection workflow for future work, as well as any critical thinking on the credibility and bias of our sources.</p>
+<p>Here is a code snippet illustrating constructing a RAG with LangChain and answering our subquestions separately.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Define the RAG chain for response generation</span>
 rag_chain = (
     {<span class="hljs-string">&quot;context&quot;</span>: retriever | format_docs, <span class="hljs-string">&quot;question&quot;</span>: RunnablePassthrough()}
@@ -151,9 +151,9 @@ pbar = tqdm(total=total)
             answers[q] = rag_chain.invoke(q).split(<span class="hljs-string">&#x27;&lt;/think&gt;&#x27;</span>)[-<span class="hljs-number">1</span>].strip()
             pbar.update(<span class="hljs-number">1</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Synthesize" class="common-anchor-header">Sintetizar</h3><p>Una vez que el agente ha realizado su investigación, crea un esquema estructurado, o mejor dicho, un esqueleto, de sus conclusiones para resumirlas en un informe. A continuación, completa cada sección con un título y el contenido correspondiente. Dejamos para una futura iteración un flujo de trabajo más sofisticado con reflexión, reordenación y reescritura. Esta parte del agente implica planificación, uso de herramientas y memoria.</p>
-<p>Consulte el <a href="https://drive.google.com/file/d/1waKX_NTgiY-47bYE0cI6qD8Cjn3zjrL6/view?usp=sharing">cuaderno adjunto</a> para ver el código completo y el <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link">archivo de informe guardado</a> para ver un ejemplo de salida.</p>
-<h2 id="Results" class="common-anchor-header">Resultados<button data-href="#Results" class="anchor-icon" translate="no">
+<h3 id="Synthesize" class="common-anchor-header">Synthesize</h3><p>After the agent has performed its research, it creates a structured outline, or rather, a skeleton, of its findings to summarize in a report. It then completes each section, filling it in with a section title and the corresponding content. We leave a more sophisticated workflow with reflection, reordering, and rewriting for a future iteration. This part of the agent involves planning, tool usage, and memory.</p>
+<p>See <a href="https://drive.google.com/file/d/1waKX_NTgiY-47bYE0cI6qD8Cjn3zjrL6/view?usp=sharing">accompanying notebook</a> for the full code and the <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link">saved report file</a> for example output.</p>
+<h2 id="Results" class="common-anchor-header">Results<button data-href="#Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -168,14 +168,14 @@ pbar = tqdm(total=total)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nuestra consulta para las pruebas es <em>"¿Cómo han cambiado Los Simpson con el tiempo?"</em> y la fuente de datos es el artículo de Wikipedia sobre "Los Simpson". A continuación se muestra una sección del <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=sharing">informe generado</a>:</p>
+    </button></h2><p>Our query for testing is <em>“How has The Simpsons changed over time?”</em> and the data source is the Wikipedia article for “The Simpsons”. Here is one section of the <a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=sharing">generated report</a>:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/result_query_424beba224.jpg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Summary-What-we-built-and-what’s-next" class="common-anchor-header">Resumen: Lo que hemos construido y lo que queda por hacer<button data-href="#Summary-What-we-built-and-what’s-next" class="anchor-icon" translate="no">
+<h2 id="Summary-What-we-built-and-what’s-next" class="common-anchor-header">Summary: What we built and what’s next<button data-href="#Summary-What-we-built-and-what’s-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,15 +190,15 @@ pbar = tqdm(total=total)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En tan sólo unas horas, hemos diseñado un flujo de trabajo básico que puede razonar, planificar y recuperar información de Wikipedia para generar un informe de investigación estructurado. Aunque este prototipo está lejos de la Investigación Profunda de OpenAI, demuestra el poder de las herramientas de código abierto como Milvus, DeepSeek, y LangChain en la construcción de agentes autónomos de investigación.</p>
-<p>Por supuesto, hay mucho margen de mejora. Las futuras iteraciones podrían:</p>
+    </button></h2><p>In just a few hours, we have designed a basic agentic workflow that can reason, plan, and retrieve information from Wikipedia to generate a structured research report. While this prototype is far from OpenAI’s Deep Research, it demonstrates the power of open-source tools like Milvus, DeepSeek, and LangChain in building autonomous research agents.</p>
+<p>Of course, there’s plenty of room for improvement. Future iterations could:</p>
 <ul>
-<li><p>Ampliar más allá de Wikipedia para buscar múltiples fuentes dinámicamente</p></li>
-<li><p>Introducir el backtracking y la reflexión para refinar las respuestas.</p></li>
-<li><p>Optimizar el flujo de ejecución basándose en el propio razonamiento del agente.</p></li>
+<li><p>Expand beyond Wikipedia to search multiple sources dynamically</p></li>
+<li><p>Introduce backtracking and reflection to refine responses</p></li>
+<li><p>Optimize execution flow based on the agent’s own reasoning</p></li>
 </ul>
-<p>El código abierto nos da una flexibilidad y un control que el código cerrado no nos da. Ya sea para la investigación académica, la síntesis de contenidos o la asistencia basada en IA, la creación de nuestros propios agentes de investigación abre posibilidades apasionantes. Permanece atento al próximo post, en el que exploraremos la incorporación de la recuperación web en tiempo real, el razonamiento multipaso y el flujo de ejecución condicional.</p>
-<h2 id="Resources" class="common-anchor-header">Recursos<button data-href="#Resources" class="anchor-icon" translate="no">
+<p>Open-source gives us flexibility and control that closed source doesn’t. Whether for academic research, content synthesis, or AI-powered assistance, building our own research agents open up exciting possibilities. Stay tuned for the next post where we explore adding real-time web retrieval, multi-step reasoning, and conditional execution flow!</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -214,10 +214,10 @@ pbar = tqdm(total=total)
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Cuaderno de notas:<a href="https://colab.research.google.com/drive/1W5tW8SqWXve7ZwbSb9pVdbt5R2wq105O?usp=sharing"><em>"Línea de base para una investigación profunda de código abierto</em></a><em>"</em></p></li>
-<li><p>Informe:<a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link"><em>"La evolución de Los Simpson como programa a lo largo del tiempo, abarcando cambios en el contenido, el humor, el desarrollo de personajes, la animación y su papel en la sociedad</em></a><em>"</em><a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link"><em>.</em></a></p></li>
-<li><p><a href="https://milvus.io/docs">Documentación de la base de datos vectorial Milvus</a></p></li>
-<li><p><a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">Página del modelo DeepSeek R1 destilado y cuantizado</a></p></li>
+<li><p>Notebook: <em>“</em><a href="https://colab.research.google.com/drive/1W5tW8SqWXve7ZwbSb9pVdbt5R2wq105O?usp=sharing"><em>Baseline for An Open-Source Deep Research</em></a><em>”</em></p></li>
+<li><p>Report: <em>“</em><a href="https://drive.google.com/file/d/15xeEe_EqY-29V2IlAvDy5yGdJdEPSHOh/view?usp=drive_link"><em>The evolution of The Simpsons as a show over time, covering changes in content, humor, character development, animation, and its role in society.</em></a><em>”</em></p></li>
+<li><p><a href="https://milvus.io/docs">Milvus vector database documentation</a></p></li>
+<li><p><a href="https://huggingface.co/unsloth/DeepSeek-R1-Distill-Llama-8B-unsloth-bnb-4bit">Distilled and quantized DeepSeek R1 model page</a></p></li>
 <li><p><a href="https://python.langchain.com/docs/introduction/">️🔗 LangChain</a></p></li>
-<li><p><a href="https://help.openai.com/en/articles/10500283-deep-research-faq">Preguntas frecuentes sobre la investigación profunda | Centro de ayuda de OpenAI</a></p></li>
+<li><p><a href="https://help.openai.com/en/articles/10500283-deep-research-faq">Deep Research FAQ | OpenAI Help Center</a></p></li>
 </ul>

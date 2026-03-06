@@ -1,9 +1,9 @@
 ---
 id: >-
   unlocking-8×-milvus-performance-with-cloudian-hyperstore-and-nvidia-rdma-for-s3-storage.md
-title: >-
-  Производительность 8× Milvus с Cloudian HyperStore и NVIDIA RDMA для S3
-  Storage
+title: >
+  Unlocking 8× Milvus Performance with Cloudian HyperStore and NVIDIA RDMA for
+  S3 Storage
 author: Jon Toor
 date: 2025-11-17T00:00:00.000Z
 cover: assets.zilliz.com/cloudian_931ffc8646.png
@@ -14,16 +14,15 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Cloudian, NVIDIA, RDMA for S3-compatible storage, Milvus'
 meta_title: 8× Milvus Boost with Cloudian HyperStore and NVIDIA RDMA
 desc: >-
-  Cloudian и NVIDIA представляют RDMA для S3-совместимых хранилищ, ускоряя
-  рабочие нагрузки ИИ с низкой задержкой и обеспечивая 8-кратный прирост
-  производительности в Milvus.
+  Cloudian and NVIDIA introduce RDMA for S3-compatible storage, accelerating AI
+  workloads with low latency and enabling an 8× performance boost in  Milvus.
 origin: >-
   https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/
 ---
-<p><em>Это сообщение было первоначально опубликовано на сайте <a href="https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/">Cloudian</a> и публикуется здесь с разрешения.</em></p>
-<p>Cloudian сотрудничает с NVIDIA, чтобы добавить поддержку RDMA для S3-совместимых хранилищ в свое решение HyperStore®, опираясь на свой более чем 13-летний опыт в реализации S3 API. Будучи платформой на базе S3-API с архитектурой параллельной обработки данных, Cloudian обладает уникальными возможностями для участия в развитии этой технологии и извлечения из нее выгоды. Это сотрудничество использует глубокий опыт Cloudian в протоколах объектного хранения и лидерство NVIDIA в ускорении вычислений и сетей для создания решения, которое легко интегрирует высокопроизводительные вычисления с хранилищами корпоративного масштаба.</p>
-<p>NVIDIA объявила о предстоящей общей доступности технологии RDMA для S3-совместимых хранилищ (Remote Direct Memory Access), что знаменует собой важную веху в развитии инфраструктуры ИИ. Эта прорывная технология обещает изменить то, как организации справляются с огромными данными, требуемыми современными рабочими нагрузками ИИ, обеспечивая беспрецедентный прирост производительности при сохранении масштабируемости и простоты, которые сделали S3-совместимые объектные хранилища основой облачных вычислений.</p>
-<h2 id="What-is-RDMA-for-S3-compatible-storage" class="common-anchor-header">Что такое RDMA для S3-совместимых хранилищ?<button data-href="#What-is-RDMA-for-S3-compatible-storage" class="anchor-icon" translate="no">
+<p><em>This post was originally published on <a href="https://cloudian.com/blog/cloudian-deploys-new-nvidia-rdma-for-s3-compatible-storage-a-game-changer-for-ai-storage-performance/">Cloudian</a> and is reposted here with permission.</em></p>
+<p>Cloudian has collaborated with NVIDIA to add support for RDMA for S3-compatible storage to its HyperStore® solution, drawing on its 13+ years of experience in S3 API implementation. As an S3-API based platform with parallel processing architecture, Cloudian is uniquely suited to both contribute to and capitalize on the development of this technology. This collaboration leverages Cloudian’s deep expertise in object storage protocols and NVIDIA’s leadership in compute and network acceleration to create a solution that seamlessly integrates high-performance computing with enterprise-scale storage.</p>
+<p>NVIDIA has announced the upcoming general availability of RDMA for S3-compatible storage (Remote Direct Memory Access) technology, marking a significant milestone in AI infrastructure evolution. This breakthrough technology promises to transform how organizations handle the massive data requirements of modern AI workloads, delivering unprecedented performance improvements while maintaining the scalability and simplicity that has made S3-compatible object storage the foundation of cloud computing.</p>
+<h2 id="What-is-RDMA-for-S3-compatible-storage" class="common-anchor-header">What is RDMA for S3-compatible storage?<button data-href="#What-is-RDMA-for-S3-compatible-storage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,16 +37,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Этот запуск представляет собой фундаментальное усовершенствование способов взаимодействия систем хранения данных с ускорителями ИИ. Технология обеспечивает прямую передачу данных между S3 API-совместимым объектным хранилищем и памятью GPU, полностью минуя традиционные пути передачи данных, опосредованные процессором. В отличие от традиционных архитектур хранения, в которых все данные передаются через центральный процессор и системную память, что создает узкие места и задержки, технология SDMA для S3-совместимых хранилищ создает прямую магистраль от хранилища к GPU.</p>
+    </button></h2><p>This launch represents a fundamental advancement in how storage systems communicate with AI accelerators. The technology enables direct data transfers between S3 API-compatible object storage and GPU memory, completely bypassing traditional CPU-mediated data paths. Unlike conventional storage architectures that route all data transfers through the CPU and system memory—creating bottlenecks and latency—RDMA for S3-compatible storage establishes a direct highway from storage to GPU.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/RDMA_for_S3_compatible_storage_18fdd69d02.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>По своей сути эта технология устраняет промежуточные этапы, обеспечивая прямой путь, который уменьшает задержки, значительно снижает требования к процессору и существенно сокращает энергопотребление. В результате системы хранения данных способны передавать данные со скоростью, необходимой современным GPU для работы с требовательными приложениями искусственного интеллекта.</p>
-<p>Технология сохраняет совместимость с повсеместно используемыми API S3, добавляя при этом высокопроизводительный путь передачи данных. Команды по-прежнему передаются через стандартные протоколы хранения на базе S3-API, но фактическая передача данных происходит через RDMA непосредственно в память GPU, минуя CPU и устраняя накладные расходы на обработку протоколов TCP.</p>
-<h2 id="Breakthrough-Performance-Results" class="common-anchor-header">Прорывные результаты производительности<button data-href="#Breakthrough-Performance-Results" class="anchor-icon" translate="no">
+<p>At its core, this technology eliminates intermediate steps with a direct pathway that reduces latency, dramatically cuts CPU processing demands, and significantly reduces power consumption. The result is storage systems that can deliver data at the speed modern GPUs require for demanding AI applications.</p>
+<p>The technology maintains compatibility with the ubiquitous S3 APIs while adding this high-performance data path. Commands are still issued through standard S3-API based storage protocols, but the actual data transfer occurs via RDMA directly to GPU memory, bypassing the CPU entirely and eliminating the overhead of TCP protocol processing.</p>
+<h2 id="Breakthrough-Performance-Results" class="common-anchor-header">Breakthrough Performance Results<button data-href="#Breakthrough-Performance-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -62,26 +61,26 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Повышение производительности, обеспечиваемое RDMA для S3-совместимых хранилищ, можно назвать просто революционным. Реальные испытания демонстрируют способность технологии устранять узкие места ввода-вывода в хранилищах, сдерживающие рабочие нагрузки ИИ.</p>
-<h3 id="Dramatic-Speed-Improvements" class="common-anchor-header">Значительное повышение скорости:</h3><ul>
-<li><p><strong>35 ГБ/с на узел</strong> (чтение) с линейной масштабируемостью по кластерам.</p></li>
-<li><p><strong>Масштабируемость до ТБ/с</strong> благодаря архитектуре параллельной обработки Cloudian.</p></li>
-<li><p><strong>3-5-кратное увеличение пропускной способности</strong> по сравнению с обычными объектными хранилищами на базе TCP</p></li>
+    </button></h2><p>The performance improvements delivered by RDMA for S3-compatible storage are nothing short of transformational. Real-world testing demonstrates the technology’s ability to eliminate storage I/O bottlenecks that constrain AI workloads.</p>
+<h3 id="Dramatic-Speed-Improvements" class="common-anchor-header">Dramatic Speed Improvements:</h3><ul>
+<li><p><strong>35 GB/s per node throughput</strong> (reads) measured, with linear scalability across clusters</p></li>
+<li><p><strong>Scalability to TBs/s</strong> with Cloudian’s parallel processing architecture</p></li>
+<li><p><strong>3-5x throughput improvement</strong> compared to conventional TCP-based object storage</p></li>
 </ul>
-<h3 id="Resource-Efficiency-Gains" class="common-anchor-header">Повышение эффективности использования ресурсов:</h3><ul>
-<li><p><strong>90-процентное снижение загрузки центрального процессора</strong> за счет создания прямых путей передачи данных на графические процессоры</p></li>
-<li><p><strong>Увеличение загрузки GPU</strong> за счет устранения узких мест</p></li>
-<li><p>Значительное снижение энергопотребления за счет уменьшения накладных расходов на обработку данных</p></li>
-<li><p>Снижение затрат на хранение данных с искусственным интеллектом</p></li>
+<h3 id="Resource-Efficiency-Gains" class="common-anchor-header">Resource Efficiency Gains:</h3><ul>
+<li><p><strong>90% reduction in CPU utilization</strong> by establishing direct data pathways to GPUs</p></li>
+<li><p><strong>Increase GPU utilization</strong> with bottlenecks eliminated</p></li>
+<li><p>Dramatic reduction in power consumption through reduced processing overhead</p></li>
+<li><p>Cost reductions for AI storage</p></li>
 </ul>
-<h3 id="8X-Performance-Boost-on-Milvus-by-Zilliz-Vector-DB" class="common-anchor-header">Увеличение производительности в 8 раз на Milvus за счет векторной БД Zilliz</h3><p>Этот прирост производительности особенно заметен в операциях с векторными базами данных, где сотрудничество Cloudian и Zilliz с использованием <a href="https://developer.nvidia.com/cuvs">NVIDIA cuVS</a> и <a href="https://www.nvidia.com/en-us/data-center/l40s/">NVIDIA L40S GPU</a> продемонстрировало <strong>8-кратный прирост производительности в операциях Milvus</strong> по сравнению с системами на базе CPU и передачей данных по TCP. Это представляет собой фундаментальный сдвиг от ограничения возможностей хранения к возможности использования хранилища для раскрытия потенциала приложений ИИ.</p>
+<h3 id="8X-Performance-Boost-on-Milvus-by-Zilliz-Vector-DB" class="common-anchor-header">8X Performance Boost on Milvus by Zilliz Vector DB</h3><p>These performance improvements are particularly evident in vector database operations, where collaboration between Cloudian and Zilliz using <a href="https://developer.nvidia.com/cuvs">NVIDIA cuVS</a> and <a href="https://www.nvidia.com/en-us/data-center/l40s/">NVIDIA L40S GPUs</a> demonstrated an <strong>8x performance boost in Milvus operations</strong> when compared with CPU-based systems and TCP-based data transfer. This represents a fundamental shift from storage being a constraint to storage enabling AI applications to achieve their full potential.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_indexing_time_354bdd4b46.webp" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Why-S3-API-based-Object-Storage-for-AI-Workloads" class="common-anchor-header">Почему объектное хранилище на базе S3 API для рабочих нагрузок ИИ<button data-href="#Why-S3-API-based-Object-Storage-for-AI-Workloads" class="anchor-icon" translate="no">
+<h2 id="Why-S3-API-based-Object-Storage-for-AI-Workloads" class="common-anchor-header">Why S3 API-based Object Storage for AI Workloads<button data-href="#Why-S3-API-based-Object-Storage-for-AI-Workloads" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,13 +95,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Объединение технологии RDMA с архитектурой объектных хранилищ создает идеальную основу для инфраструктуры ИИ, решая многочисленные проблемы, которые сдерживали традиционные подходы к хранению данных.</p>
-<p><strong>Экзабайтная масштабируемость для взрыва данных ИИ:</strong> Рабочие нагрузки ИИ, особенно связанные с синтетическими и мультимодальными данными, повышают требования к хранению данных до 100 петабайт и выше. Плоское адресное пространство объектных хранилищ плавно масштабируется от петабайтов до экзабайтов, позволяя обеспечить экспоненциальный рост наборов данных для обучения ИИ без иерархических ограничений, которые сдерживают файловые системы.</p>
-<p><strong>Унифицированная платформа для комплексных рабочих процессов ИИ:</strong> Современные операции ИИ включают в себя ввод данных, их очистку, обучение, контрольные точки и выводы - каждая из них имеет свои требования к производительности и емкости. Совместимое с S3 объектное хранилище поддерживает весь этот спектр благодаря согласованному API-доступу, устраняя сложность и затраты на управление несколькими уровнями хранения. Данные обучения, модели, файлы контрольных точек и наборы данных для выводов могут находиться в едином высокопроизводительном озере данных.</p>
-<p><strong>Богатые метаданные для операций ИИ:</strong> Критически важные операции ИИ, такие как поиск и перечисление, в своей основе опираются на метаданные. Богатые, настраиваемые возможности метаданных в объектных хранилищах позволяют эффективно маркировать, искать и управлять данными, что необходимо для организации и поиска данных в сложных рабочих процессах обучения моделей ИИ и выводов.</p>
-<p><strong>Экономические и эксплуатационные преимущества:</strong> Совместимое с S3 объектное хранилище обеспечивает снижение совокупной стоимости владения до 80 % по сравнению с альтернативными файловыми хранилищами, используя стандартное для отрасли оборудование и независимое масштабирование емкости и производительности. Такая экономическая эффективность приобретает решающее значение по мере того, как массивы данных ИИ достигают масштабов предприятия.</p>
-<p><strong>Безопасность и управление предприятием:</strong> В отличие от реализаций GPUDirect, требующих модификации на уровне ядра, RDMA для S3-совместимых хранилищ не требует изменений в ядре конкретного производителя, обеспечивая безопасность системы и соответствие нормативным требованиям. Такой подход особенно ценен в таких отраслях, как здравоохранение и финансы, где безопасность данных и соответствие нормативным требованиям имеют первостепенное значение.</p>
-<h2 id="The-Road-Ahead" class="common-anchor-header">Дорога вперед<button data-href="#The-Road-Ahead" class="anchor-icon" translate="no">
+    </button></h2><p>The convergence of RDMA technology  with object storage architecture creates the ideal foundation for AI infrastructure, addressing multiple challenges that have constrained traditional storage approaches.</p>
+<p><strong>Exabyte Scalability for AI’s Data Explosion:</strong> AI workloads, particularly those involving synthetic and multi-modal data, are pushing storage requirements into the 100-petabyte range and beyond. Object storage’s flat address space scales seamlessly from petabytes to exabytes, accommodating the exponential growth in AI training datasets without the hierarchical limitations that constrain file-based systems.</p>
+<p><strong>Unified Platform for Complete AI Workflows:</strong> Modern AI operations span data ingestion, cleansing, training, checkpointing, and inference—each with distinct performance and capacity requirements. S3-compatible object storage supports this entire spectrum through consistent API access, eliminating the complexity and cost of managing multiple storage tiers. Training data, models, checkpoint files, and inference datasets can all reside in a single, high-performance data lake.</p>
+<p><strong>Rich Metadata for AI Operations:</strong> Critical AI operations like search and enumeration are fundamentally metadata-driven. Object storage’s rich, customizable metadata capabilities enable efficient data tagging, searching, and management—essential for organizing and retrieving data in complex AI model training and inference workflows.</p>
+<p><strong>Economic and Operational Advantages:</strong> S3-compatible object storage delivers up to 80% lower total cost of ownership compared to file storage alternatives, leveraging industry-standard hardware and independent scaling of capacity and performance. This economic efficiency becomes crucial as AI datasets reach enterprise scale.</p>
+<p><strong>Enterprise Security and Governance:</strong> Unlike GPUDirect implementations that require kernel-level modifications, RDMA for S3-compatible storage requires no vendor-specific kernel changes, maintaining system security and regulatory compliance. This approach is particularly valuable in sectors like healthcare and finance where data security and regulatory compliance are paramount.</p>
+<h2 id="The-Road-Ahead" class="common-anchor-header">The Road Ahead<button data-href="#The-Road-Ahead" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -117,10 +116,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Объявление NVIDIA о всеобщей доступности RDMA для S3-совместимых хранилищ представляет собой не просто технологическую веху - оно сигнализирует о зрелости архитектуры инфраструктуры ИИ. Сочетая безграничную масштабируемость объектного хранилища с прорывной производительностью прямого доступа GPU, организации наконец-то могут создавать инфраструктуры ИИ, которые масштабируются в соответствии с их амбициями.</p>
-<p>Поскольку рабочие нагрузки ИИ продолжают расти по сложности и масштабу, RDMA для S3-совместимых систем хранения обеспечивает основу для хранения данных, которая позволяет организациям максимизировать свои инвестиции в ИИ, сохраняя при этом суверенитет данных и простоту эксплуатации. Технология превращает хранилище из узкого места в инструмент, позволяющий приложениям ИИ полностью раскрыть свой потенциал в масштабах предприятия.</p>
-<p>Для организаций, планирующих развитие инфраструктуры искусственного интеллекта, общедоступность RDMA для S3-совместимых хранилищ знаменует начало новой эры, когда производительность хранилищ будет соответствовать требованиям современных рабочих нагрузок искусственного интеллекта.</p>
-<h2 id="Industry-Perspectives" class="common-anchor-header">Перспективы развития отрасли<button data-href="#Industry-Perspectives" class="anchor-icon" translate="no">
+    </button></h2><p>NVIDIA’s announcement of RDMA for S3-compatible storage general availability represents more than a technological milestone—it signals the maturation of AI infrastructure architecture. By combining the limitless scalability of object storage with the breakthrough performance of direct GPU access, organizations can finally build AI infrastructures that scale with their ambitions.</p>
+<p>As AI workloads continue to grow in complexity and scale, RDMA for S3-compatible storage provides the storage foundation that enables organizations to maximize their AI investments while maintaining data sovereignty and operational simplicity. The technology transforms storage from a bottleneck into an enabler, allowing AI applications to achieve their full potential at enterprise scale.</p>
+<p>For organizations planning their AI infrastructure roadmap, the general availability of RDMA for S3-compatible storage marks the beginning of a new era where storage performance truly matches the demands of modern AI workloads.</p>
+<h2 id="Industry-Perspectives" class="common-anchor-header">Industry Perspectives<button data-href="#Industry-Perspectives" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -135,7 +134,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Поскольку искусственный интеллект занимает все более важное место в системе здравоохранения, мы постоянно стремимся повысить производительность и эффективность нашей инфраструктуры. Новый RDMA для S3-совместимых хранилищ от NVIDIA и Cloudian будет иметь решающее значение для наших приложений по анализу медицинских изображений и диагностическому ИИ, где быстрая обработка больших массивов данных может напрямую повлиять на лечение пациентов, одновременно снижая затраты на перемещение данных между устройствами хранения на базе S3-API и NAS-хранилищами на базе SSD".  - <em>Доктор Свапнил Ране (Swapnil Rane) MD, DNB, PDCC (Nephropath), Mres (TCM), Fellowship in Oncopath, FRCPath Профессор (F) патологии, PI, AI/Computational Pathology And Imaging Lab OIC- Department of Digital and Computational Oncology, Tata Memorial Centre</em></p>
-<p>"Анонс NVIDIA RDMA для S3-совместимости подтверждает ценность нашей стратегии инфраструктуры ИИ на базе Cloudian. Мы позволяем организациям выполнять высокопроизводительный ИИ в масштабе, сохраняя совместимость с API S3, что упрощает миграцию и снижает затраты на разработку приложений". - <em>Сунил Гупта, соучредитель, управляющий директор и главный исполнительный директор (CEO) Yotta Data Services</em></p>
-<p>"По мере расширения наших локальных возможностей для предоставления суверенного ИИ технология хранения RDMA от NVIDIA, совместимая с S3, и высокопроизводительное объектное хранилище Cloudian обеспечивают необходимую производительность без ущерба для сохранности данных и не требуют модификаций на уровне ядра". Платформа Cloudian HyperStore позволяет нам масштабироваться до эксабайтов, сохраняя конфиденциальные данные ИИ под полным контролем". - <em>Логан Ли (Logan Lee), EVP и руководитель облачного подразделения в Kakao</em></p>
-<p>"Мы рады анонсу NVIDIA о предстоящем выпуске GA для хранения данных, совместимого с RDMA для S3. Наше тестирование с Cloudian показало 8-кратное увеличение производительности операций с векторными базами данных, что позволит нашим пользователям Milvus by Zilliz достичь производительности в масштабах облака для требовательных рабочих нагрузок ИИ, сохраняя при этом полный суверенитет данных". - <em>Чарльз Кси, основатель и генеральный директор Zilliz</em></p>
+    </button></h2><p>As AI becomes increasingly central to healthcare delivery, we continuously seek to boost the performance and efficiency of our infrastructure. The new RDMA for S3-compatible storage from NVIDIA and Cloudian will be critical for our medical imaging analysis and diagnostic AI applications, where processing large datasets quickly can directly impact patient care, while reducing costs of moving data between S3-API based storage devices and SSD based NAS storages.  – <em>Dr. Swapnil Rane MD, DNB, PDCC (Nephropath), Mres (TCM), Fellowship in Oncopath, FRCPath Professor (F) of Pathology, PI, AI/Computational Pathology And Imaging Lab OIC- Department of Digital and Computational Oncology, Tata Memorial Centre</em></p>
+<p>“NVIDIA’s RDMA for S3-compatible announcement confirms the value of our Cloudian-based AI infrastructure strategy. We enable organizations to run high-performance AI at scale while preserving S3 API compatibility that keeps migration simple and application development costs low.” – <em>Sunil Gupta, Co-founder, Managing Director &amp; Chief Executive Officer (CEO), Yotta Data Services</em></p>
+<p>“As we expand our on-premises capabilities to deliver sovereign AI, NVIDIA’s RDMA for S3-compatible storage technology and Cloudian’s high-performance object storage give us the performance we need without compromising data residency and without requiring any kernel-level modifications. The Cloudian HyperStore platform lets us scale to exabytes while keeping our sensitive AI data completely under our control.” – <em>Logan Lee, EVP &amp; Head of Cloud, Kakao</em></p>
+<p>“We’re excited about NVIDIA’s announcement of the upcoming RDMA for S3-compatible storage GA release. Our testing with Cloudian showed up to 8X performance improvement for vector database operations, which will let our Milvus by Zilliz users achieve cloud-scale performance for demanding AI workloads while maintaining complete data sovereignty.” – <em>Charles Xie, Founder and CEO of Zilliz</em></p>

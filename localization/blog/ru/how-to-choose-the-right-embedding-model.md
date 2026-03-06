@@ -1,12 +1,12 @@
 ---
 id: how-to-choose-the-right-embedding-model.md
-title: Как выбрать правильную модель встраивания?
+title: |
+  How to Choose the Right Embedding Model?
 author: Lumina Wang
 date: 2025-04-09T00:00:00.000Z
 desc: >-
-  Изучите основные факторы и лучшие практики для выбора правильной модели
-  встраивания для эффективного представления данных и повышения
-  производительности.
+  Explore essential factors and best practices to choose the right embedding
+  model for effective data representation and improved performance.
 cover: assets.zilliz.com/Complete_Workflow_31b4ac825c.gif
 tag: Engineering
 tags: >-
@@ -14,15 +14,15 @@ tags: >-
   Optimization
 canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md'
 ---
-<p>Выбор правильной <a href="https://zilliz.com/ai-models">модели встраивания</a> - критически важное решение при создании систем, которые понимают и работают с <a href="https://zilliz.com/learn/introduction-to-unstructured-data">неструктурированными данными</a>, такими как текст, изображения или аудио. Эти модели преобразуют исходные данные в высокоразмерные векторы фиксированного размера, которые передают семантический смысл, что позволяет использовать их для поиска по сходству, рекомендаций, классификации и т. д.</p>
-<p>Но не все модели встраивания созданы одинаковыми. При таком количестве вариантов как выбрать правильную? Неправильный выбор может привести к неоптимальной точности, узким местам в производительности или ненужным затратам. В этом руководстве представлена практическая схема, которая поможет вам оценить и выбрать оптимальную модель встраивания для ваших конкретных требований.</p>
+<p>Selecting the right <a href="https://zilliz.com/ai-models">embedding model</a> is a critical decision when building systems that understand and work with <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> like text, images, or audio. These models transform raw input into fixed-size, high-dimensional vectors that capture semantic meaning, enabling powerful applications in similarity search, recommendations, classification, and more.</p>
+<p>But not all embedding models are created equal. With so many options available, how do you choose the right one? The wrong choice can lead to suboptimal accuracy, performance bottlenecks, or unnecessary costs. This guide provides a practical framework to help you evaluate and select the best embedding model for your specific requirements.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Complete_Workflow_31b4ac825c.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="1-Define-Your-Task-and-Business-Requirements" class="common-anchor-header">1. Определите свою задачу и бизнес-требования<button data-href="#1-Define-Your-Task-and-Business-Requirements" class="anchor-icon" translate="no">
+<h2 id="1-Define-Your-Task-and-Business-Requirements" class="common-anchor-header">1. Define Your Task and Business Requirements<button data-href="#1-Define-Your-Task-and-Business-Requirements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,11 +37,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем выбрать модель встраивания, начните с уточнения основных целей:</p>
+    </button></h2><p>Before choosing an embedding model, start by clarifying your core objectives:</p>
 <ul>
-<li><strong>Тип задачи:</strong> Начните с определения основного приложения, которое вы создаете - семантический поиск, система рекомендаций, конвейер классификации или что-то другое. Для каждого случая использования существуют свои требования к тому, как вкрапления должны представлять и организовывать информацию. Например, если вы создаете систему семантического поиска, вам нужны модели типа Sentence-BERT, которые улавливают нюансы семантического смысла между запросами и документами, обеспечивая близость схожих понятий в векторном пространстве. Для задач классификации вкрапления должны отражать структуру, характерную для конкретной категории, чтобы входы из одного класса располагались в векторном пространстве близко друг к другу. Это облегчает последующим классификаторам различение классов. Обычно используются такие модели, как DistilBERT и RoBERTa. В рекомендательных системах целью является поиск вкраплений, которые отражают отношения между пользователем и элементом или предпочтения. Для этого можно использовать модели, специально обученные на данных неявных отзывов, например нейронную коллаборативную фильтрацию (NCF).</li>
-<li><strong>Оценка рентабельности инвестиций:</strong> Сопоставьте производительность и затраты с учетом специфики вашего бизнеса. Критически важные приложения (например, диагностика в здравоохранении) могут оправдать использование моделей премиум-класса с более высокой точностью, поскольку это может быть вопросом жизни и смерти, в то время как чувствительные к затратам приложения с большим объемом требуют тщательного анализа соотношения цены и качества. Главное - определить, оправдывает ли повышение производительности всего на 2-3 % потенциально значительное увеличение затрат в вашем конкретном сценарии.</li>
-<li><strong>Другие ограничения:</strong> Учитывайте свои технические требования при отборе вариантов. Если вам нужна многоязычная поддержка, многие общие модели не справляются с неанглийским контентом, поэтому могут потребоваться специализированные многоязычные модели. Если вы работаете в специализированных областях (медицина/юриспруденция), встраиваемые модели общего назначения часто не понимают специфический жаргон - например, они могут не понимать, что <em>"stat"</em> в медицинском контексте означает <em>"немедленно",</em> или что <em>"consideration"</em> в юридических документах означает нечто ценное, обмененное в контракте. Аналогичным образом, аппаратные ограничения и требования к задержкам напрямую влияют на то, какие модели могут быть использованы в вашей среде развертывания.</li>
+<li><strong>Task Type:</strong> Start by identifying the core application you’re building—semantic search, a recommender system, a classification pipeline, or something else entirely. Each use case has different requirements for how embeddings should represent and organize information. For example, if you are building a semantic search engine, you need models like Sentence-BERT that capture nuanced semantic meaning between queries and documents, ensuring that similar concepts are close in vector space. For classification tasks, embeddings must reflect category-specific structure, so that inputs from the same class are placed close together in the vector space. This makes it easier for downstream classifiers to distinguish between classes. Models like DistilBERT, and RoBERTa are commonly used. In recommender systems, the goal is to find embeddings that reflect user-item relationships or preferences. For this, you might use models that are specifically trained on implicit feedback data like Neural Collaborative Filtering (NCF).</li>
+<li><strong>ROI Assessment:</strong> Balance performance against costs based on your specific business context. Mission-critical applications (like healthcare diagnostics) may justify premium models with higher accuracy since it could be a matter of like and death, while cost-sensitive applications with high volume need careful cost-benefit analysis. The key is determining whether a mere 2-3% performance improvement justifies potentially significant cost increases in your particular scenario.</li>
+<li><strong>Other Constraints:</strong> Consider your technical requirements when narrowing down options. If you need multilingual support, many general models struggle with non-English content, so specialized multilingual models may be necessary. If you’re working in specialized domains (medical/legal), general-purpose embeddings often miss domain-specific jargon—for example, they might not understand that <em>“stat”</em> in a medical context means <em>“immediately”</em>, or that <em>“consideration”</em> in legal documents refers to something of value exchanged in a contract. Similarly, hardware limitations and latency requirements will directly impact which models are feasible for your deployment environment.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -49,7 +49,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="2-Evaluate-Your-Data" class="common-anchor-header">2. Оцените свои данные<button data-href="#2-Evaluate-Your-Data" class="anchor-icon" translate="no">
+<h2 id="2-Evaluate-Your-Data" class="common-anchor-header">2. Evaluate Your Data<button data-href="#2-Evaluate-Your-Data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -64,11 +64,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Характер ваших данных существенно влияет на выбор модели встраивания. Ключевыми факторами являются:</p>
+    </button></h2><p>The nature of your data significantly influences the choice of embedding model. Key considerations include:</p>
 <ul>
-<li><strong>Модальность данных:</strong> Являются ли ваши данные текстовыми, визуальными или мультимодальными по своей природе? Подберите модель в соответствии с типом данных. Используйте модели на основе трансформаторов, такие как <a href="https://zilliz.com/learn/what-is-bert">BERT</a> или <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence-BERT</a> для текста, <a href="https://zilliz.com/glossary/convolutional-neural-network">архитектуры CNN</a> или Vision Transformers<a href="https://zilliz.com/learn/understanding-vision-transformers-vit">(ViT</a>) для изображений, специализированные модели для аудио, а также мультимодальные модели, такие как <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a> и MagicLens, для мультимодальных приложений.</li>
-<li><strong>Специфика домена:</strong> Подумайте, достаточно ли общих моделей, или вам нужны модели, ориентированные на конкретную область, которые понимают специализированные знания. Общие модели, обученные на различных наборах данных (например, <a href="https://zilliz.com/ai-models/text-embedding-3-large">модели встраивания текста OpenAI</a>), хорошо работают для общих тем, но часто упускают тонкие различия в специализированных областях. Однако в таких областях, как здравоохранение или юридические услуги, они часто упускают тонкие различия, поэтому вкрапления, специфичные для конкретной области, такие как <a href="https://arxiv.org/abs/1901.08746">BioBERT</a> или <a href="https://arxiv.org/abs/2010.02559">LegalBERT</a>, могут быть более подходящими.</li>
-<li><strong>Тип вкрапления:</strong> <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">Разреженные вкрапления</a> отлично справляются с подбором ключевых слов, что делает их идеальными для каталогов продукции или технической документации. Плотные вкрапления лучше передают семантические связи, что делает их подходящими для запросов на естественном языке и понимания намерений. Многие производственные системы, такие как системы рекомендаций для электронной коммерции, выигрывают от гибридного подхода, использующего оба типа, например, используя <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> (разреженные) для сопоставления ключевых слов и добавляя BERT (плотные вкрапления) для улавливания семантического сходства.</li>
+<li><strong>Data Modality:</strong> Is your data textual, visual, or multimodal in nature? Match your model to your data type. Use transformer-based models like <a href="https://zilliz.com/learn/what-is-bert">BERT</a> or <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence-BERT</a>  for text, <a href="https://zilliz.com/glossary/convolutional-neural-network">CNN architectures</a> or Vision Transformers (<a href="https://zilliz.com/learn/understanding-vision-transformers-vit">ViT</a>) for images, specialized models for audio, and multimodal models like <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a> and MagicLens for multimodal applications.</li>
+<li><strong>Domain Specificity:</strong> Consider whether general models are sufficient, or if you need domain-specific models that understand specialized knowledge. General models trained on diverse datasets (like <a href="https://zilliz.com/ai-models/text-embedding-3-large">OpenAI text embedding models</a>) work well for common topics but often miss subtle distinctions in specialized fields. However, in fields like healthcare or legal services, they often miss subtle distinctions—so domain-specific embeddings like <a href="https://arxiv.org/abs/1901.08746">BioBERT</a> or <a href="https://arxiv.org/abs/2010.02559">LegalBERT</a> may be more suitable.</li>
+<li><strong>Embedding Type:</strong> <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">Sparse embeddings</a> excel at keyword matching, making them ideal for product catalogs or technical documentation. Dense embeddings capture semantic relationships better, making them suitable for natural language queries and intent understanding. Many production systems like e-commerce recommender systems benefit from a hybrid approach that leverages both types—for example, using <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> (sparse) for keyword matching while adding BERT (dense embeddings) to capture semantic similarity.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -76,7 +76,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="3-Research-Available-Models" class="common-anchor-header">3. Исследование доступных моделей<button data-href="#3-Research-Available-Models" class="anchor-icon" translate="no">
+<h2 id="3-Research-Available-Models" class="common-anchor-header">3. Research Available Models<button data-href="#3-Research-Available-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,15 +91,15 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После понимания задачи и данных пришло время изучить доступные модели встраивания. Вот как можно подойти к этому вопросу:</p>
+    </button></h2><p>After understanding your task and data, it’s time to research available embedding models. Here’s how you can approach this:</p>
 <ul>
-<li><p><strong>Популярность:</strong> Отдавайте предпочтение моделям с активными сообществами и широким распространением. Такие модели обычно имеют лучшую документацию, более широкую поддержку сообщества и регулярные обновления. Это может значительно снизить трудности при внедрении. Ознакомьтесь с ведущими моделями в вашей области. Например:</p>
+<li><p><strong>Popularity:</strong> Prioritize models with active communities and widespread adoption. These models usually benefit from better documentation, broader community support, and regular updates. This can significantly reduce implementation difficulties. Familiarize yourself with leading models in your domain. For example:</p>
 <ul>
-<li>Для текста: рассмотрите вкрапления OpenAI, варианты Sentence-BERT или модели E5/BGE.</li>
-<li>Для изображений: посмотрите на ViT и ResNet, или CLIP и SigLIP для выравнивания текста и изображения.</li>
-<li>Для аудио: проверьте PNN, CLAP или <a href="https://zilliz.com/learn/top-10-most-used-embedding-models-for-audio-data">другие популярные модели</a>.</li>
+<li>For Text: consider OpenAI embeddings, Sentence-BERT variants, or E5/BGE models.</li>
+<li>For image: look at ViT and ResNet, or CLIP and SigLIP for text-image alignment.</li>
+<li>For Audio: check PNNs, CLAP or <a href="https://zilliz.com/learn/top-10-most-used-embedding-models-for-audio-data">other popular models</a>.</li>
 </ul></li>
-<li><p><strong>Авторское право и лицензирование</strong>: Тщательно оцените последствия лицензирования, поскольку они напрямую влияют на краткосрочные и долгосрочные затраты. Модели с открытым исходным кодом (например, MIT, Apache 2.0 или аналогичные лицензии) обеспечивают гибкость при модификации и коммерческом использовании, предоставляя полный контроль над развертыванием, но требуя опыта работы с инфраструктурой. Собственные модели, доступные через API, обеспечивают удобство и простоту, но сопряжены с постоянными расходами и потенциальными проблемами конфиденциальности данных. Это решение особенно важно для приложений в регулируемых отраслях, где суверенитет данных или требования соответствия могут сделать самостоятельное размещение необходимым, несмотря на более высокие первоначальные инвестиции.</p></li>
+<li><p><strong>Copyright and Licensing</strong>: Carefully evaluate the licensing implications as they directly affect both short and long-term costs. Open-source models (like MIT, Apache 2.0, or similar licenses) provide flexibility for modification and commercial use, giving you full control over deployment but requiring infrastructure expertise. Proprietary models accessed via APIs offer convenience and simplicity but come with ongoing costs and potential data privacy concerns. This decision is especially critical for applications in regulated industries where data sovereignty or compliance requirements may make self-hosting necessary despite the higher initial investment.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -107,7 +107,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="4-Evaluate-Candidate-Models" class="common-anchor-header">4. Оцените модели-кандидаты<button data-href="#4-Evaluate-Candidate-Models" class="anchor-icon" translate="no">
+<h2 id="4-Evaluate-Candidate-Models" class="common-anchor-header">4. Evaluate Candidate Models<button data-href="#4-Evaluate-Candidate-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -122,11 +122,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После того как вы отобрали несколько моделей, настало время протестировать их на образцах данных. Вот ключевые факторы, которые следует учитывать:</p>
+    </button></h2><p>Once you’ve shortlisted a few models, it’s time to test them with your sample data. Here are key factors you should consider:</p>
 <ul>
-<li><strong>Оценка:</strong> При оценке качества встраивания - особенно в приложениях для расширенного поиска (RAG) или поисковых системах - важно определить <em>, насколько точными, релевантными и полными</em> являются возвращаемые результаты. Ключевые метрики включают верность, релевантность ответа, точность контекста и отзыв. Такие фреймворки, как Ragas, DeepEval, Phoenix и TruLens-Eval, упрощают процесс оценки, предоставляя структурированные методики для оценки различных аспектов качества встраивания. Наборы данных не менее важны для полноценной оценки. Они могут быть созданы вручную для представления реальных случаев использования, синтетически сгенерированы LLM для проверки конкретных возможностей или созданы с помощью таких инструментов, как Ragas и FiddleCube, для нацеливания на определенные аспекты тестирования. Правильное сочетание набора данных и фреймворка зависит от конкретного приложения и уровня детализации оценки, который необходим для принятия уверенных решений.</li>
-<li><strong>Бенчмарк производительности:</strong> Оцените модели на эталонах для конкретных задач (например, MTEB для поиска). Помните, что рейтинги существенно различаются в зависимости от сценария (поиск или классификация), наборов данных (общие или специфические для конкретной области, например BioASQ) и метрик (точность, скорость). Хотя эталонные показатели дают ценную информацию, они не всегда идеально подходят для реальных приложений. Проверьте лучшие результаты, которые соответствуют вашему типу данных и целям, но всегда проверяйте их с помощью собственных тестовых примеров, чтобы выявить модели, которые могут превышать эталонные показатели, но не работать в реальных условиях с вашими конкретными шаблонами данных.</li>
-<li><strong>Нагрузочное тестирование:</strong> Для моделей, размещаемых на собственном хостинге, смоделируйте реалистичные производственные нагрузки, чтобы оценить производительность в реальных условиях. Измерьте пропускную способность, а также загрузку GPU и потребление памяти во время вычислений, чтобы выявить потенциальные узкие места. Модель, которая хорошо работает в изоляции, может стать проблемной при обработке одновременных запросов или сложных входных данных. Если модель слишком ресурсоемка, она может оказаться непригодной для крупномасштабных приложений или приложений реального времени, независимо от ее точности по эталонным метрикам.</li>
+<li><strong>Evaluation:</strong> When evaluating embedding quality—especially in retrieval augmented generation (RAG) or search application—it’s important to measure <em>how accurate, relevant, and complete</em> the returned results are. Key metrics include faithfulness, answer relevancy, context precision, and recall. Frameworks like Ragas, DeepEval, Phoenix, and TruLens-Eval streamline this evaluation process by providing structured methodologies for assessing different aspects of embedding quality. Datasets are equally important for meaningful evaluation. They can be hand-crafted to represent real use cases, synthetically generated by LLMs to test specific capabilities, or created using tools like Ragas and FiddleCube to target particular testing aspects. The right combination of dataset and framework depends on your specific application and the level of evaluation granularity you need to make confident decisions.</li>
+<li><strong>Benchmark Performance:</strong> Evaluate models on task-specific benchmarks (e.g., MTEB for retrieval). Remember that rankings vary significantly by scenario (search vs. classification), datasets (general vs. domain-specific like BioASQ), and metrics (accuracy, speed). While benchmark performance provide valuable insights, it doesn’t always translate perfectly to real-world applications. Cross-check top performers that align with your data type and goals, but always validate with your own custom test cases to identify models that might overfit to benchmarks but underperform in real-world conditions with your specific data patterns.</li>
+<li><strong>Load Testing:</strong> For self-hosted models, simulate realistic production loads to evaluate performance under real-world conditions. Measure throughput as well as GPU utilization and memory consumption during inference to identify potential bottlenecks. A model that performs well in isolation may become problematic when handling concurrent requests or complex inputs. If the model is too resource-intensive, it may not be suitable for large-scale or real-time applications regardless of its accuracy on benchmark metrics.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -134,7 +134,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="5-Model-Integration" class="common-anchor-header">5. Интеграция модели<button data-href="#5-Model-Integration" class="anchor-icon" translate="no">
+<h2 id="5-Model-Integration" class="common-anchor-header">5. Model Integration<button data-href="#5-Model-Integration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -149,11 +149,11 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После выбора модели настало время спланировать подход к интеграции.</p>
+    </button></h2><p>After selecting a model, now it is time to plan your integration approach.</p>
 <ul>
-<li><strong>Выбор весов:</strong> Решите, использовать ли заранее обученные веса для быстрого развертывания или провести тонкую настройку на данных, специфичных для конкретной области, для повышения производительности. Помните, что тонкая настройка может повысить производительность, но требует больших ресурсов. Подумайте, оправдывает ли прирост производительности дополнительную сложность.</li>
-<li><strong>Самостоятельный хостинг против стороннего сервиса:</strong> Выбирайте подход к развертыванию, исходя из возможностей и требований вашей инфраструктуры. Самостоятельное размещение дает вам полный контроль над моделью и потоком данных, потенциально снижая стоимость каждого запроса при масштабировании и обеспечивая конфиденциальность данных. Однако для этого требуется опыт работы с инфраструктурой и постоянное обслуживание. Сторонние сервисы обработки выводов обеспечивают быстрое развертывание с минимальной настройкой, но вносят сетевые задержки, потенциальные ограничения на использование и постоянные расходы, которые могут стать значительными при масштабировании.</li>
-<li><strong>Интеграционный дизайн:</strong> Продумайте дизайн API, стратегии кэширования, подход к пакетной обработке и выбор <a href="https://milvus.io/blog/what-is-a-vector-database.md">векторной базы данных</a> для эффективного хранения и запроса вкраплений.</li>
+<li><strong>Weights Selection:</strong> Decide between using pre-trained weights for quick deployment or fine-tuning on domain-specific data for improved performance. Remember fine-tuning can improve performance but is resource heavy. Consider whether performance gains justify the additional complexity.</li>
+<li><strong>Self-Hosting vs. Third-party Inference Service:</strong> Choose your deployment approach based on your infrastructure capabilities and requirements. Self-hosting gives you complete control over the model and data flow, potentially reducing per-request costs at scale and ensuring data privacy. However, it requires infrastructure expertise and ongoing maintenance. Third-party inference services offer rapid deployment with minimal setup but introduce network latency, potential usage caps, and continuous costs that can become significant at scale.</li>
+<li><strong>Integration Design:</strong> Plan your API design, caching strategies, batch processing approach, and <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector database</a> selection for storing and querying embeddings efficiently.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -161,7 +161,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="6-End-to-End-Testing" class="common-anchor-header">6. Сквозное тестирование<button data-href="#6-End-to-End-Testing" class="anchor-icon" translate="no">
+<h2 id="6-End-to-End-Testing" class="common-anchor-header">6. End-to-End Testing<button data-href="#6-End-to-End-Testing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -176,10 +176,10 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Перед полным развертыванием проведите сквозное тестирование, чтобы убедиться, что модель работает так, как ожидается:</p>
+    </button></h2><p>Before full deployment, run end-to-end tests to ensure the model works as expected:</p>
 <ul>
-<li><strong>Производительность</strong>: Всегда оценивайте модель на собственном наборе данных, чтобы убедиться, что она хорошо работает в вашем конкретном случае. Учитывайте такие метрики, как MRR, MAP и NDCG для качества поиска, точность, отзыв и F1 для точности, а также перцентили пропускной способности и задержки для операционной производительности.</li>
-<li><strong>Надежность</strong>: Протестируйте модель в различных условиях, включая нестандартные ситуации и разнообразные входные данные, чтобы убедиться, что она работает стабильно и точно.</li>
+<li><strong>Performance</strong>: Always evaluate the model on your own dataset to ensure they perform well in your specific use case. Consider metrics like MRR, MAP and NDCG for retrieval quality, precision, recall and F1 for accuracy, and throughput and latency percentiles for operational performance.</li>
+<li><strong>Robustness</strong>: Test the model under different conditions, including edge cases and diverse data inputs, to verify that it performs consistently and accurately.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -187,7 +187,7 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
     <span></span>
   </span>
 </p>
-<h2 id="Summary" class="common-anchor-header">Резюме<button data-href="#Summary" class="anchor-icon" translate="no">
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -202,14 +202,14 @@ canonicalUrl: 'https://milvus.io/blog/how-to-choose-the-right-embedding-model.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Как мы видели в этом руководстве, выбор правильной модели встраивания требует соблюдения этих шести критических шагов:</p>
+    </button></h2><p>As we’ve seen throughout this guide, selecting the right embedding model requires following these six critical steps:</p>
 <ol>
-<li>Определите бизнес-требования и тип задачи.</li>
-<li>Проанализируйте характеристики данных и специфику области</li>
-<li>Изучите доступные модели и условия их лицензирования</li>
-<li>Тщательно оцените кандидатов по соответствующим эталонам и тестовым наборам данных</li>
-<li>Планируйте подход к интеграции с учетом вариантов развертывания</li>
-<li>Проведите комплексное сквозное тестирование перед внедрением в производство.</li>
+<li>Define your business requirements and task type</li>
+<li>Analyze your data characteristics and domain specificity</li>
+<li>Research available models and their licensing terms</li>
+<li>Rigorously evaluate candidates against relevant benchmarks and test datasets</li>
+<li>Plan your integration approach considering deployment options</li>
+<li>Conduct comprehensive end-to-end testing before production deployment</li>
 </ol>
-<p>Следуя этой схеме, вы сможете принять обоснованное решение, которое позволит сбалансировать производительность, стоимость и технические ограничения для вашего конкретного случая использования. Помните, что "лучшая" модель - это не обязательно модель с самыми высокими показателями - это модель, которая наилучшим образом отвечает вашим конкретным требованиям в рамках операционных ограничений.</p>
-<p>Поскольку модели встраивания быстро развиваются, стоит периодически пересматривать свой выбор, поскольку появляются новые варианты, которые могут предложить значительные улучшения для вашего приложения.</p>
+<p>By following this framework, you can make an informed decision that balances performance, cost, and technical constraints for your specific use case. Remember that the “best” model isn’t necessarily the one with the highest benchmark scores—it’s the one that best meets your particular requirements within your operational constraints.</p>
+<p>With embedding models evolving rapidly, it’s also worth periodically reassessing your choice as new options emerge that might offer significant improvements for your application.</p>

@@ -1,14 +1,12 @@
 ---
 id: >-
   2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md
-title: >-
-  Verwendung von Zeichenkettendaten zur Verbesserung Ihrer Anwendungen für die
-  Ähnlichkeitssuche
+title: How to Use String Data to Empower Your Similarity Search Applications
 author: Xi Ge
 date: 2022-08-08T00:00:00.000Z
 desc: >-
-  Verwenden Sie String-Daten, um den Prozess der Erstellung Ihrer eigenen
-  Anwendungen für die Ähnlichkeitssuche zu rationalisieren.
+  Use string data to streamline the process of building your own similarity
+  search applications.
 cover: assets.zilliz.com/string_6129ce83e6.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
@@ -16,37 +14,40 @@ canonicalUrl: >-
   https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/string_6129ce83e6.png" alt="Cover" class="doc-image" id="cover" />
-   </span> <span class="img-wrapper"> <span>Umschlag</span> </span></p>
-<p>Milvus 2.1 kommt mit <a href="https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md">einigen bedeutenden Aktualisierungen</a>, die die Arbeit mit Milvus wesentlich erleichtern. Eine davon ist die Unterstützung von String-Datentypen. Im Moment <a href="https://milvus.io/docs/v2.1.x/schema.md#Supported-data-type">unterstützt</a> Milvus <a href="https://milvus.io/docs/v2.1.x/schema.md#Supported-data-type">Datentypen</a> wie Strings, Vektoren, Boolesche, Ganzzahlen, Gleitkommazahlen und mehr.</p>
-<p>Dieser Artikel bietet eine Einführung in die Unterstützung von String-Datentypen. Lesen Sie ihn und erfahren Sie, was Sie damit machen können und wie Sie ihn verwenden.</p>
-<p><strong>Springen Sie zu:</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/string_6129ce83e6.png" alt="Cover" class="doc-image" id="cover" />
+    <span>Cover</span>
+  </span>
+</p>
+<p>Milvus 2.1 comes with <a href="https://milvus.io/blog/2022-08-05-whats-new-in-milvus-2-1.md">some significant updates</a> which make working with Milvus a lot easier. One of them is the support of string data type. Right now Milvus <a href="https://milvus.io/docs/v2.1.x/schema.md#Supported-data-type">supports data types</a> including strings, vectors, Boolean, integers, floating-point numbers, and more.</p>
+<p>This article presents an introduction to the support of string data type. Read and learn what you can do with it and how to use it.</p>
+<p><strong>Jump to:</strong></p>
 <ul>
-<li><a href="#What-can-you-do-with-string-data">Was können Sie mit String-Daten tun?</a></li>
-<li><a href="#How-to-manage-string-data-in-Milvus-21">Wie verwaltet man String-Daten in Milvus 2.1?</a><ul>
-<li><a href="#Create-a-collection">Eine Sammlung erstellen</a></li>
-<li><a href="#Insert-data">Einfügen und Löschen von Daten</a></li>
-<li><a href="#Build-an-index">Einen Index erstellen</a></li>
-<li><a href="#Hybrid-search">Hybride Suche</a></li>
-<li><a href="#String-expressions">String-Ausdrücke</a></li>
+<li><a href="#What-can-you-do-with-string-data">What can you do with string data?</a></li>
+<li><a href="#How-to-manage-string-data-in-Milvus-21">How to manage string data in Milvus 2.1?</a>
+<ul>
+<li><a href="#Create-a-collection">Create a collection</a></li>
+<li><a href="#Insert-data">Insert and delete data</a></li>
+<li><a href="#Build-an-index">Build an index</a></li>
+<li><a href="#Hybrid-search">Hybrid search</a></li>
+<li><a href="#String-expressions">String expressions</a></li>
 </ul></li>
 </ul>
-<custom-h1>Was kann man mit String-Daten machen?</custom-h1><p>Die Unterstützung des Datentyps String war eine der von den Benutzern am meisten erwarteten Funktionen. Sie rationalisiert sowohl den Prozess der Erstellung einer Anwendung mit der Milvus-Vektordatenbank als auch die Geschwindigkeit der Ähnlichkeitssuche und der Vektorabfrage, wodurch die Effizienz erheblich gesteigert und die Wartungskosten der Anwendung, an der Sie arbeiten, reduziert werden.</p>
-<p>Milvus 2.1 unterstützt insbesondere den VARCHAR-Datentyp, der Zeichenketten unterschiedlicher Länge speichert. Mit der Unterstützung des VARCHAR-Datentyps können Sie:</p>
+<custom-h1>What can you do with string data?</custom-h1><p>The support of string data type has been one of the functions most expected by users. It both streamlines the process of building an application with the Milvus vector database and accelerates the speed of similarity search and vector query, largely increasing the efficiency and reducing the maintenance cost of whatever application you are working on.</p>
+<p>Specifically, Milvus 2.1 supports VARCHAR data type, which stores character strings of varying length. With the support of VARCHAR data type, you can:</p>
 <ol>
-<li>Direkte Verwaltung von Zeichenkettendaten ohne die Hilfe einer externen relationalen Datenbank.</li>
+<li>Directly manage string data without the help of an external relational database.</li>
 </ol>
-<p>Die Unterstützung des VARCHAR-Datentyps ermöglicht es Ihnen, beim Einfügen von Daten in Milvus den Schritt der Konvertierung von Zeichenketten in andere Datentypen zu überspringen. Nehmen wir an, Sie arbeiten an einem Buchsuchsystem für Ihren eigenen Online-Buchladen. Sie erstellen einen Buchdatensatz und möchten die Bücher mit ihren Namen identifizieren. Während Milvus in früheren Versionen den String-Datentyp nicht unterstützt, müssen Sie vor dem Einfügen von Daten in Milvus die Strings (die Namen der Bücher) mit Hilfe einer relationalen Datenbank wie MySQL in Buch-IDs umwandeln. Da jetzt der Datentyp String unterstützt wird, können Sie einfach ein Stringfeld erstellen und die Buchnamen anstelle der ID-Nummern direkt eingeben.</p>
-<p>Die Bequemlichkeit gilt auch für den Such- und Abfrageprozess. Stellen Sie sich vor, es gibt einen Kunden, dessen Lieblingsbuch <em>"Hallo Milvus"</em> ist. Sie möchten im System nach ähnlichen Büchern suchen und sie dem Kunden empfehlen. In früheren Versionen von Milvus liefert Ihnen das System nur Buch-IDs, und Sie müssen einen zusätzlichen Schritt unternehmen, um die entsprechenden Buchinformationen in einer relationalen Datenbank zu überprüfen. In Milvus 2.1 können Sie jedoch die Buchnamen direkt abrufen, da Sie bereits ein String-Feld mit den Buchnamen darin erstellt haben.</p>
-<p>Mit einem Wort, die Unterstützung des String-Datentyps erspart Ihnen den Aufwand, sich an andere Tools zu wenden, um String-Daten zu verwalten, was den Entwicklungsprozess erheblich vereinfacht.</p>
+<p>The support of VARCHAR data type enables you to skip the step of converting strings into other data types when inserting data into Milvus. Let’s say you’re working on a book search system for your own online bookstore. You are creating a book dataset and want to identify the books with their names. While in previous versions where Milvus does not support the string data type, before inserting data into MIilvus, you may need to first transform the strings (the names of the books) into book IDs with the help of a relational database like MySQL. Right now, as string data type is supported, you can simply create a string field and directly enter the book names instead of their ID numbers.</p>
+<p>The convenience also goes to the search and query process. Imagine there is a client whose favourite book is <em>Hello Milvus</em>. You want to search in the system for similar books and recommend them to the client. In previous versions of Milvus, the system will only return you book IDs and you need to take an extra step to check the corresponding book information in a relational database. But in Milvus 2.1, you can directly get the book names as you have already created a string field with book names in it.</p>
+<p>In a word, the support of string data type saves you the effort to turn to other tools to manage string data, which greatly simplifies the development process.</p>
 <ol start="2">
-<li>Beschleunigen Sie die Geschwindigkeit der <a href="https://milvus.io/docs/v2.1.x/hybridsearch.md">hybriden Suche</a> und der <a href="https://milvus.io/docs/v2.1.x/query.md">Vektorabfrage</a> durch Attributfilterung.</li>
+<li>Accelerate the speed of <a href="https://milvus.io/docs/v2.1.x/hybridsearch.md">hybrid search</a> and <a href="https://milvus.io/docs/v2.1.x/query.md">vector query</a> through attribute filtering.</li>
 </ol>
-<p>Wie andere skalare Datentypen kann VARCHAR für die Attributfilterung in der hybriden Suche und Vektorabfrage durch boolesche Ausdrücke verwendet werden. Besonders erwähnenswert ist, dass Milvus 2.1 den Operator <code translate="no">like</code> hinzufügt, der es Ihnen ermöglicht, ein Präfix-Matching durchzuführen. Außerdem können Sie mit dem Operator <code translate="no">==</code> ein exaktes Matching durchführen.</p>
-<p>Außerdem wird ein MARISA-trie-basierter invertierter Index unterstützt, um die hybride Suche und Abfrage zu beschleunigen. Lesen Sie weiter und erfahren Sie alles über die String-Ausdrücke, die Sie kennen sollten, um die Attributfilterung mit String-Daten durchzuführen.</p>
-<custom-h1>Wie verwaltet man String-Daten in Milvus 2.1?</custom-h1><p>Wir wissen jetzt, dass der String-Datentyp extrem nützlich ist, aber wann genau müssen wir diesen Datentyp bei der Erstellung unserer eigenen Anwendungen verwenden? Im Folgenden sehen Sie einige Code-Beispiele für Szenarien, die String-Daten beinhalten können, die Ihnen ein besseres Verständnis für die Verwaltung von VARCHAR-Daten in Milvus 2.1 vermitteln.</p>
-<h2 id="Create-a-collection" class="common-anchor-header">Erstellen Sie eine Sammlung<button data-href="#Create-a-collection" class="anchor-icon" translate="no">
+<p>Like other scalar data types, VARCHAR can be used for attribute filtering in hybrid search and vector query through Boolean expression. It is particularly worth mentioning that Milvus 2.1 adds the operator <code translate="no">like</code>, which enables you to perform prefix matching. Also, you can perform exact matching using the operator <code translate="no">==</code>.</p>
+<p>Besides, a MARISA-trie based inverted index is supported to accelerate hybrid search and query. Continue to read and find out all the string expressions you may want to know to perform attribute filtering with string data.</p>
+<custom-h1>How to manage string data in Milvus 2.1?</custom-h1><p>Now we know the string data type is extremely useful, but when exactly do we need to use this data type in building our own applications? In the following, you will see some code examples of scenarios that may involve string data, which will give you a better understanding of how to manage VARCHAR data in Milvus 2.1.</p>
+<h2 id="Create-a-collection" class="common-anchor-header">Create a collection<button data-href="#Create-a-collection" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,8 +62,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Lassen Sie uns dem vorherigen Beispiel folgen. Sie arbeiten immer noch an dem Buchempfehlungssystem und möchten eine Buchsammlung mit einem Primärschlüsselfeld namens <code translate="no">book_name</code> erstellen, in das Sie Zeichenkettendaten einfügen werden. In diesem Fall können Sie den Datentyp als <code translate="no">DataType.VARCHAR</code>festlegen, wenn Sie das Feldschema einstellen, wie im folgenden Beispiel gezeigt.</p>
-<p>Beachten Sie, dass Sie bei der Erstellung eines VARCHAR-Feldes die maximale Zeichenlänge über den Parameter <code translate="no">max_length</code> angeben müssen, dessen Wert zwischen 1 und 65.535 liegen kann.  In diesem Beispiel haben wir die maximale Länge auf 200 festgelegt.</p>
+    </button></h2><p>Let’s follow the previous example. You are still working on the book recommender system and want to create a book collection with a primary key field called <code translate="no">book_name</code>, into which you will insert string data. In this case, you can set the data type as <code translate="no">DataType.VARCHAR</code>when setting the field schema, as shown in the example below.</p>
+<p>Note that when creating a VARCHAR field, it is necessary to specify the maximum character length via the parameter <code translate="no">max_length</code> whose value can range from 1 to 65,535.  In this example, we set the maximum length as 200.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> CollectionSchema, FieldSchema, DataType
 book_id = FieldSchema(
   name=<span class="hljs-string">&quot;book_id&quot;</span>, 
@@ -89,7 +90,7 @@ schema = CollectionSchema(
 )
 collection_name = <span class="hljs-string">&quot;book&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Insert-data" class="common-anchor-header">Daten einfügen<button data-href="#Insert-data" class="anchor-icon" translate="no">
+<h2 id="Insert-data" class="common-anchor-header">Insert data<button data-href="#Insert-data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -104,7 +105,7 @@ collection_name = <span class="hljs-string">&quot;book&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nun, da die Sammlung erstellt ist, können wir Daten in sie einfügen. Im folgenden Beispiel fügen wir 2.000 Zeilen mit zufällig generierten Zeichenketten ein.</p>
+    </button></h2><p>Now that the collection is created, we can insert data into it. In the following example, we insert 2,000 rows of randomly generated string data.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">import</span> random
 data = [
   [i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2000</span>)],
@@ -113,7 +114,7 @@ data = [
   [[random.random() <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>)] <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2000</span>)],
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Delete-data" class="common-anchor-header">Daten löschen<button data-href="#Delete-data" class="anchor-icon" translate="no">
+<h2 id="Delete-data" class="common-anchor-header">Delete data<button data-href="#Delete-data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -128,14 +129,14 @@ data = [
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Angenommen, zwei Bücher mit den Namen <code translate="no">book_0</code> und <code translate="no">book_1</code> sind in Ihrem Shop nicht mehr verfügbar, so dass Sie die entsprechenden Informationen aus Ihrer Datenbank löschen möchten. In diesem Fall können Sie den Termausdruck <code translate="no">in</code> verwenden, um die zu löschenden Entitäten zu filtern, wie im folgenden Beispiel gezeigt.</p>
-<p>Denken Sie daran, dass Milvus nur das Löschen von Entitäten mit eindeutig spezifizierten Primärschlüsseln unterstützt. Bevor Sie also den folgenden Code ausführen, stellen Sie sicher, dass Sie das Feld <code translate="no">book_name</code> als Primärschlüsselfeld festgelegt haben.</p>
+    </button></h2><p>Suppose two books, named <code translate="no">book_0</code> and <code translate="no">book_1</code>, are no longer available in your store, so you want to delete the relevant information from your database. In this case, you can use the term expression <code translate="no">in</code> to filter the entities to delete, as shown in the example below.</p>
+<p>Remember that Milvus only supports deleting entities with clearly specified primary keys, so before running the following code, make sure that you have set the <code translate="no">book_name</code> field as the primary key field.</p>
 <pre><code translate="no" class="language-Python">expr = <span class="hljs-string">&quot;book_name in [\&quot;book_0\&quot;, \&quot;book_1\&quot;]&quot;</span> 
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">Collection</span>
 collection = <span class="hljs-title class_">Collection</span>(<span class="hljs-string">&quot;book&quot;</span>)     
 collection.<span class="hljs-title function_">delete</span>(expr)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Build-an-Index" class="common-anchor-header">Einen Index erstellen<button data-href="#Build-an-Index" class="anchor-icon" translate="no">
+<h2 id="Build-an-Index" class="common-anchor-header">Build an Index<button data-href="#Build-an-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -150,8 +151,8 @@ collection.<span class="hljs-title function_">delete</span>(expr)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.1 unterstützt den Aufbau von skalaren Indizes, was die Filterung von String-Feldern erheblich beschleunigt. Im Gegensatz zur Erstellung eines Vektorindexes müssen Sie vor der Erstellung eines skalaren Indexes keine Parameter vorbereiten. Milvus unterstützt vorübergehend nur den Dictionary Tree (MARISA-trie) Index, so dass der Indextyp eines VARCHAR-Feldes standardmäßig MARISA-trie ist.</p>
-<p>Sie können den Indexnamen beim Erstellen des Indexes angeben. Wenn er nicht angegeben wird, lautet der Standardwert von <code translate="no">index_name</code> <code translate="no">&quot;_default_idx_&quot;</code> . Im folgenden Beispiel haben wir den Index <code translate="no">scalar_index</code> genannt.</p>
+    </button></h2><p>Milvus 2.1 supports building scalar indexes, which will greatly accelerate the filtering of string fields. Unlike building a vector index, you don’t have to prepare parameters before building a scalar index. Milvus temporarily only supports the dictionary tree (MARISA-trie) index, so the index type of VARCHAR type field is MARISA-trie by default.</p>
+<p>You can specify the index name when building it. If not specified, the default value of <code translate="no">index_name</code> is <code translate="no">&quot;_default_idx_&quot;</code>. In the example below, we named the index <code translate="no">scalar_index</code>.</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">Collection</span>
 collection = <span class="hljs-title class_">Collection</span>(<span class="hljs-string">&quot;book&quot;</span>)   
 collection.<span class="hljs-title function_">create_index</span>(
@@ -159,7 +160,7 @@ collection.<span class="hljs-title function_">create_index</span>(
   index_name=<span class="hljs-string">&quot;scalar_index&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Hybrid-search" class="common-anchor-header">Hybride Suche<button data-href="#Hybrid-search" class="anchor-icon" translate="no">
+<h2 id="Hybrid-search" class="common-anchor-header">Hybrid search<button data-href="#Hybrid-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,8 +175,8 @@ collection.<span class="hljs-title function_">create_index</span>(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Durch die Angabe von booleschen Ausdrücken können Sie die String-Felder während einer Vektorähnlichkeitssuche filtern.</p>
-<p>Wenn Sie beispielsweise nach Büchern suchen, deren Intro Hello Milvus am ähnlichsten ist, aber nur die Bücher erhalten möchten, deren Namen mit "book_2" beginnen, können Sie den Operator <code translate="no">like</code>verwenden, um eine Präfix-Übereinstimmung durchzuführen und die gewünschten Bücher zu erhalten, wie im folgenden Beispiel gezeigt.</p>
+    </button></h2><p>By specifying boolean expressions, you can filter the string fields during a vector similarity search.</p>
+<p>For example, if you are searching for books whose intro are most similar to Hello Milvus but only want to get the books whose names start with 'book_2’, you can use the operator <code translate="no">like</code>to perform a prefix match and get the targeted books, as shown in the example below.</p>
 <pre><code translate="no" class="language-Python">search_param = {
   <span class="hljs-string">&quot;data&quot;</span>: [[<span class="hljs-number">0.1</span>, <span class="hljs-number">0.2</span>]],
   <span class="hljs-string">&quot;anns_field&quot;</span>: <span class="hljs-string">&quot;book_intro&quot;</span>,
@@ -185,7 +186,7 @@ collection.<span class="hljs-title function_">create_index</span>(
 }
 res = collection.<span class="hljs-title function_">search</span>(**search_param)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="String-expressions" class="common-anchor-header">String-Ausdrücke<button data-href="#String-expressions" class="anchor-icon" translate="no">
+<h2 id="String-expressions" class="common-anchor-header">String expressions<button data-href="#String-expressions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -200,14 +201,14 @@ res = collection.<span class="hljs-title function_">search</span>(**search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Neben dem neu hinzugefügten Operator <code translate="no">like</code> können auch andere Operatoren, die bereits in früheren Versionen von Milvus unterstützt wurden, für die Filterung von Stringfeldern verwendet werden. Im Folgenden finden Sie einige Beispiele für häufig verwendete <a href="https://milvus.io/docs/v2.1.x/boolean.md">String-Ausdrücke</a>, wobei <code translate="no">A</code> ein Feld vom Typ VARCHAR darstellt. Denken Sie daran, dass alle unten aufgeführten String-Ausdrücke mit logischen Operatoren wie AND, OR und NOT logisch kombiniert werden können.</p>
-<h3 id="Set-operations" class="common-anchor-header">Mengenoperationen</h3><p>Sie können <code translate="no">in</code> und <code translate="no">not in</code> verwenden, um Mengenoperationen zu realisieren, wie z. B. <code translate="no">A in [&quot;str1&quot;, &quot;str2&quot;]</code>.</p>
-<h3 id="Compare-two-string-fields" class="common-anchor-header">Vergleich zweier Stringfelder</h3><p>Sie können relationale Operatoren verwenden, um die Werte von zwei Stringfeldern zu vergleichen. Solche relationalen Operatoren sind <code translate="no">==</code>, <code translate="no">!=</code>, <code translate="no">&gt;</code>, <code translate="no">&gt;=</code>, <code translate="no">&lt;</code>, <code translate="no">&lt;=</code>. Weitere Informationen finden Sie unter <a href="https://milvus.io/docs/v2.1.x/boolean.md#Relational-operators">Relationale Operatoren</a>.</p>
-<p>Beachten Sie, dass Zeichenfolgenfelder nur mit anderen Zeichenfolgenfeldern und nicht mit Feldern anderer Datentypen verglichen werden können. Zum Beispiel kann ein Feld vom Typ VARCHAR nicht mit einem Feld vom Typ Boolean oder vom Typ Integer verglichen werden.</p>
-<h3 id="Compare-a-field-with-a-constant-value" class="common-anchor-header">Vergleich eines Felds mit einem konstanten Wert</h3><p>Sie können <code translate="no">==</code> oder <code translate="no">!=</code> verwenden, um zu überprüfen, ob der Wert eines Felds gleich einem konstanten Wert ist.</p>
-<h3 id="Filter-fields-with-a-single-range" class="common-anchor-header">Filtern von Feldern mit einem einzigen Bereich</h3><p>Sie können <code translate="no">&gt;</code>, <code translate="no">&gt;=</code>, <code translate="no">&lt;</code>, <code translate="no">&lt;=</code> verwenden, um Zeichenkettenfelder mit einem einzigen Bereich zu filtern, z. B. <code translate="no">A &gt; &quot;str1&quot;</code>.</p>
-<h3 id="Prefix-matching" class="common-anchor-header">Präfix-Abgleich</h3><p>Wie bereits erwähnt, fügt Milvus 2.1 den Operator <code translate="no">like</code> für den Präfixabgleich hinzu, z. B. <code translate="no">A like &quot;prefix%&quot;</code>.</p>
-<h2 id="Whats-next" class="common-anchor-header">Was kommt als Nächstes?<button data-href="#Whats-next" class="anchor-icon" translate="no">
+    </button></h2><p>Apart from the newly added operator <code translate="no">like</code>, other operators, which are already supported in previous versions of Milvus, can also be used for string field filtering. Below are some examples of commonly used <a href="https://milvus.io/docs/v2.1.x/boolean.md">string expressions</a>, where <code translate="no">A</code> represents a field of type VARCHAR. Remember that all the string expressions below can be logically combined using logical operators, such as AND, OR, and NOT.</p>
+<h3 id="Set-operations" class="common-anchor-header">Set operations</h3><p>You can use <code translate="no">in</code> and <code translate="no">not in</code> to realize set operations, such as <code translate="no">A in [&quot;str1&quot;, &quot;str2&quot;]</code>.</p>
+<h3 id="Compare-two-string-fields" class="common-anchor-header">Compare two string fields</h3><p>You can use relational operators to compare the values of two string fields. Such relational operators include <code translate="no">==</code>, <code translate="no">!=</code>, <code translate="no">&gt;</code>, <code translate="no">&gt;=</code>, <code translate="no">&lt;</code>, <code translate="no">&lt;=</code>. For more information, see <a href="https://milvus.io/docs/v2.1.x/boolean.md#Relational-operators">Relational operators</a>.</p>
+<p>Note that string fields can only be compared with other string fields instead of fields of other data types. For example, a field of type VARCHAR cannot be compared with a field of type Boolean or of type integer.</p>
+<h3 id="Compare-a-field-with-a-constant-value" class="common-anchor-header">Compare a field with a constant value</h3><p>You can use <code translate="no">==</code> or <code translate="no">!=</code> to verify if the value of a field is equal to a constant value.</p>
+<h3 id="Filter-fields-with-a-single-range" class="common-anchor-header">Filter fields with a single range</h3><p>You can use <code translate="no">&gt;</code>, <code translate="no">&gt;=</code>, <code translate="no">&lt;</code>, <code translate="no">&lt;=</code> to filter string fields with a single range, such as <code translate="no">A &gt; &quot;str1&quot;</code>.</p>
+<h3 id="Prefix-matching" class="common-anchor-header">Prefix matching</h3><p>As mentioned earlier, Milvus 2.1 adds the operator <code translate="no">like</code> for prefix matching, such as <code translate="no">A like &quot;prefix%&quot;</code>.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -222,12 +223,12 @@ res = collection.<span class="hljs-title function_">search</span>(**search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mit der offiziellen Freigabe von Milvus 2.1 haben wir eine Reihe von Blogs vorbereitet, in denen die neuen Funktionen vorgestellt werden. Lesen Sie mehr in dieser Blogserie:</p>
+    </button></h2><p>With the official release of Milvus 2.1, we have prepared a series of blogs introducing the new features. Read more in this blog series:</p>
 <ul>
-<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">Wie Sie String-Daten nutzen, um Ihre Anwendungen für die Ähnlichkeitssuche zu verbessern</a></li>
-<li><a href="https://milvus.io/blog/embedded-milvus.md">Verwendung von Embedded Milvus zur sofortigen Installation und Ausführung von Milvus mit Python</a></li>
-<li><a href="https://milvus.io/blog/in-memory-replicas.md">Erhöhen Sie den Lesedurchsatz Ihrer Vektordatenbank mit In-Memory-Replikaten</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Verständnis der Konsistenzebene in der Milvus-Vektordatenbank</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Verständnis der Konsistenzstufe in der Milvus-Vektordatenbank (Teil II)</a></li>
-<li><a href="https://milvus.io/blog/data-security.md">Wie gewährleistet die Milvus-Vektor-Datenbank die Datensicherheit?</a></li>
+<li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">How to Use String Data to Empower Your Similarity Search Applications</a></li>
+<li><a href="https://milvus.io/blog/embedded-milvus.md">Using Embedded Milvus to Instantly Install and Run Milvus with Python</a></li>
+<li><a href="https://milvus.io/blog/in-memory-replicas.md">Increase Your Vector Database Read Throughput with In-Memory Replicas</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Understanding Consistency Level in the Milvus Vector Database</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database-2.md">Understanding Consistency Level in the Milvus Vector Database (Part II)</a></li>
+<li><a href="https://milvus.io/blog/data-security.md">How Does the Milvus Vector Database Ensure Data Security?</a></li>
 </ul>
