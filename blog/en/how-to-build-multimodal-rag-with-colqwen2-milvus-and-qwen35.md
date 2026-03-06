@@ -4,7 +4,7 @@ title: >
  How to Build Multimodal RAG with ColQwen2, Milvus, and Qwen3.5
 author: Lumina Wang
 date: 2026-3-6
-cover: 
+cover: assets.zilliz.com/download_11zon_1862455eb4.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -371,10 +371,10 @@ Got questions, or want to show off what you've built? The [Milvus Slack](https:/
 
 ## Keep Reading
 
--   # [What If You Could See Why RAG Fails? Debugging RAG in 3D with Project_Golem and Milvus](https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md)
+-    [What If You Could See Why RAG Fails? Debugging RAG in 3D with Project_Golem and Milvus](https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md)
     
--   # [Is RAG Becoming Outdated Now That Long-Running Agents Like Claude Cowork Are Emerging?](https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md)
+-    [Is RAG Becoming Outdated Now That Long-Running Agents Like Claude Cowork Are Emerging?](https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md)
     
--   # [How We Built a Semantic Highlighting Model for RAG Context Pruning and Token Saving](https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md)
+-    [How We Built a Semantic Highlighting Model for RAG Context Pruning and Token Saving](https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md)
     
--   # [AI Code Review Gets Better When Models Debate: Claude vs Gemini vs Codex vs Qwen vs MiniMax](https://milvus.io/blog/ai-code-review-gets-better-when-models-debate-claude-vs-gemini-vs-codex-vs-qwen-vs-minimax.md)
+-    [AI Code Review Gets Better When Models Debate: Claude vs Gemini vs Codex vs Qwen vs MiniMax](https://milvus.io/blog/ai-code-review-gets-better-when-models-debate-claude-vs-gemini-vs-codex-vs-qwen-vs-minimax.md)
