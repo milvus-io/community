@@ -1,13 +1,12 @@
 ---
 id: langchain-vs-langgraph.md
-title: 'LangChain vs LangGraph : Guide du développeur pour choisir son framework d''IA'
+title: |
+  LangChain vs LangGraph: A Developer's Guide to Choosing Your AI Frameworks
 author: Min Yin
 date: 2025-09-09T00:00:00.000Z
 desc: >-
-  Comparez LangChain et LangGraph pour les applications LLM. Découvrez leurs
-  différences en termes d'architecture, de gestion des états et de cas
-  d'utilisation, ainsi que le moment où il convient d'utiliser chacun d'entre
-  eux.
+  Compare LangChain and LangGraph for LLM apps. See how they differ in
+  architecture, state management, and use cases — plus when to use each.
 cover: assets.zilliz.com/Chat_GPT_Image_Sep_9_2025_09_42_12_PM_1_49154d15cc.png
 tag: Engineering
 recommend: false
@@ -18,10 +17,10 @@ meta_title: |
   LangChain vs LangGraph: A Developer's Guide to Choosing Your AI Frameworks
 origin: 'https://milvus.io/blog/langchain-vs-langgraph.md'
 ---
-<p>Lorsque vous construisez avec de grands modèles de langage (LLM), le cadre que vous choisissez a un impact considérable sur votre expérience de développement. Un bon cadre rationalise les flux de travail, réduit les tâches répétitives et facilite le passage du prototype à la production. Un mauvais choix peut avoir l'effet inverse, en ajoutant des frictions et de la dette technique.</p>
-<p>Deux des options les plus populaires aujourd'hui sont <a href="https://python.langchain.com/docs/introduction/"><strong>LangChain</strong></a> et <a href="https://langchain-ai.github.io/langgraph/"><strong>LangGraph</strong></a> - toutes deux open source et créées par l'équipe LangChain. LangChain se concentre sur l'orchestration des composants et l'automatisation des flux de travail, ce qui en fait un bon outil pour les cas d'utilisation courants tels que la génération augmentée par récupération<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG)</a>. LangGraph s'appuie sur LangChain avec une architecture basée sur les graphes, mieux adaptée aux applications avec état, à la prise de décision complexe et à la coordination multi-agents.</p>
-<p>Dans ce guide, nous allons comparer les deux frameworks côte à côte : comment ils fonctionnent, leurs forces, et les types de projets pour lesquels ils sont les mieux adaptés. À la fin, vous aurez une idée plus claire de celui qui répond le mieux à vos besoins.</p>
-<h2 id="LangChain-Your-Component-Library-and-LCEL-Orchestration-Powerhouse" class="common-anchor-header">LangChain : Votre bibliothèque de composants et votre centrale d'orchestration LCEL<button data-href="#LangChain-Your-Component-Library-and-LCEL-Orchestration-Powerhouse" class="anchor-icon" translate="no">
+<p>When building with large language models (LLMs), the framework you choose has a huge impact on your development experience. A good framework streamlines workflows, reduces boilerplate, and makes it easier to move from prototype to production. A poor fit can do the opposite, adding friction and technical debt.</p>
+<p>Two of the most popular options today are <a href="https://python.langchain.com/docs/introduction/"><strong>LangChain</strong></a> and <a href="https://langchain-ai.github.io/langgraph/"><strong>LangGraph</strong></a> — both open source and created by the LangChain team. LangChain focuses on component orchestration and workflow automation, making it a good fit for common use cases like retrieval-augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>). LangGraph builds on top of LangChain with a graph-based architecture, which is better suited for stateful applications, complex decision-making, and multi-agent coordination.</p>
+<p>In this guide, we’ll compare the two frameworks side by side: how they work, their strengths, and the types of projects they’re best suited for. By the end, you’ll have a clearer sense of which one makes the most sense for your needs.</p>
+<h2 id="LangChain-Your-Component-Library-and-LCEL-Orchestration-Powerhouse" class="common-anchor-header">LangChain: Your Component Library and LCEL Orchestration Powerhouse<button data-href="#LangChain-Your-Component-Library-and-LCEL-Orchestration-Powerhouse" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,16 +35,16 @@ origin: 'https://milvus.io/blog/langchain-vs-langgraph.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/langchain-ai/langchain"><strong>LangChain</strong></a> est un framework open-source conçu pour faciliter la création d'applications LLM. Vous pouvez le considérer comme l'intergiciel qui se situe entre votre modèle (par exemple, <a href="https://milvus.io/blog/gpt-5-review-accuracy-up-prices-down-code-strong-but-bad-for-creativity.md">GPT-5</a> d'OpenAI ou <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude</a> d'Anthropic) et votre application réelle. Sa tâche principale est de vous aider à <em>enchaîner</em> toutes les parties mobiles : invites, API externes, <a href="https://zilliz.com/learn/what-is-vector-database">bases de données vectorielles</a> et logique commerciale personnalisée.</p>
-<p>Prenons l'exemple de RAG. Au lieu de tout câbler à partir de zéro, LangChain vous donne des abstractions prêtes à l'emploi pour connecter un LLM à une base de données vectorielles (comme <a href="https://milvus.io/">Milvus</a> ou <a href="https://zilliz.com/cloud">Zilliz Cloud</a>), effectuer une recherche sémantique et renvoyer les résultats dans votre invite. En outre, il offre des utilitaires pour les modèles d'invite, des agents qui peuvent appeler des outils et des couches d'orchestration qui permettent de maintenir des flux de travail complexes.</p>
-<p><strong>Qu'est-ce qui distingue LangChain ?</strong></p>
+    </button></h2><p><a href="https://github.com/langchain-ai/langchain"><strong>LangChain</strong></a> is an open-source framework designed to make building LLM applications more manageable. You can think of it as the middleware that sits between your model (say, OpenAI’s <a href="https://milvus.io/blog/gpt-5-review-accuracy-up-prices-down-code-strong-but-bad-for-creativity.md">GPT-5</a> or Anthropic’s <a href="https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md">Claude</a>) and your actual app. Its main job is to help you <em>chain together</em> all the moving parts: prompts, external APIs, <a href="https://zilliz.com/learn/what-is-vector-database">vector databases</a>, and custom business logic.</p>
+<p>Take RAG as an example. Instead of wiring everything from scratch, LangChain gives you ready-made abstractions to connect an LLM with a vector store (like <a href="https://milvus.io/">Milvus</a> or <a href="https://zilliz.com/cloud">Zilliz Cloud</a>), run semantic search, and feed results back into your prompt. Beyond that, it offers utilities for prompt templates, agents that can call tools, and orchestration layers that keep complex workflows maintainable.</p>
+<p><strong>What makes LangChain stand out?</strong></p>
 <ul>
-<li><p><strong>Une riche bibliothèque de composants</strong> - chargeurs de documents, séparateurs de texte, connecteurs de stockage vectoriel, interfaces de modèles, etc.</p></li>
-<li><p><strong>Orchestration LCEL (LangChain Expression Language)</strong> - Une manière déclarative de mélanger et d'assortir les composants en limitant les lourdeurs.</p></li>
-<li><p><strong>Intégration facile</strong> - Fonctionne sans problème avec les API, les bases de données et les outils tiers.</p></li>
-<li><p><strong>Un écosystème mature</strong> - Une documentation solide, des exemples et une communauté active.</p></li>
+<li><p><strong>Rich component library</strong> – Document loaders, text splitters, vector storage connectors, model interfaces, and more.</p></li>
+<li><p><strong>LCEL (LangChain Expression Language) orchestration</strong> – A declarative way to mix and match components with less boilerplate.</p></li>
+<li><p><strong>Easy integration</strong> – Works smoothly with APIs, databases, and third-party tools.</p></li>
+<li><p><strong>Mature ecosystem</strong> – Strong documentation, examples, and an active community.</p></li>
 </ul>
-<h2 id="LangGraph-Your-Go-To-for-Stateful-Agent-Systems" class="common-anchor-header">LangGraph : L'outil idéal pour les systèmes d'agents avec état<button data-href="#LangGraph-Your-Go-To-for-Stateful-Agent-Systems" class="anchor-icon" translate="no">
+<h2 id="LangGraph-Your-Go-To-for-Stateful-Agent-Systems" class="common-anchor-header">LangGraph: Your Go-To for Stateful Agent Systems<button data-href="#LangGraph-Your-Go-To-for-Stateful-Agent-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,16 +59,16 @@ origin: 'https://milvus.io/blog/langchain-vs-langgraph.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/langchain-ai/langgraph">LangGraph</a> est une extension spécialisée de LangChain qui se concentre sur les applications avec état. Au lieu d'écrire des flux de travail sous la forme d'un script linéaire, vous les définissez sous la forme d'un graphe de nœuds et d'arêtes - essentiellement une machine à états. Chaque nœud représente une action (comme l'appel d'un LLM, l'interrogation d'une base de données ou la vérification d'une condition), tandis que les arêtes définissent la manière dont le flux évolue en fonction des résultats. Cette structure permet de gérer plus facilement les boucles, les branchements et les nouvelles tentatives sans que votre code ne se transforme en un enchevêtrement d'instructions if/else.</p>
-<p>Cette approche est particulièrement utile pour les cas d'utilisation avancés tels que les copilotes et les <a href="https://zilliz.com/blog/what-exactly-are-ai-agents-why-openai-and-langchain-are-fighting-over-their-definition">agents autonomes</a>. Ces systèmes doivent souvent conserver la mémoire, gérer des résultats inattendus ou prendre des décisions de manière dynamique. En modélisant explicitement la logique sous forme de graphe, LangGraph rend ces comportements plus transparents et plus faciles à maintenir.</p>
-<p><strong>Les principales caractéristiques de LangGraph sont les suivantes</strong></p>
+    </button></h2><p><a href="https://github.com/langchain-ai/langgraph">LangGraph</a> is a specialized extension of LangChain that focuses on stateful applications. Instead of writing workflows as a linear script, you define them as a graph of nodes and edges — essentially a state machine. Each node represents an action (like calling an LLM, querying a database, or checking a condition), while the edges define how the flow moves depending on the results. This structure makes it easier to handle loops, branching, and retries without your code turning into a tangle of if/else statements.</p>
+<p>This approach is especially useful for advanced use cases such as copilots and <a href="https://zilliz.com/blog/what-exactly-are-ai-agents-why-openai-and-langchain-are-fighting-over-their-definition">autonomous agents</a>. These systems often need to keep track of memory, handle unexpected results, or make decisions dynamically. By modeling the logic explicitly as a graph, LangGraph makes these behaviors more transparent and maintainable.</p>
+<p><strong>Core features of LangGraph include:</strong></p>
 <ul>
-<li><p><strong>Architecture basée sur les graphes</strong> - Prise en charge native des boucles, des retours en arrière et des flux de contrôle complexes.</p></li>
-<li><p><strong>Gestion de l'état</strong> - L'état centralisé garantit que le contexte est préservé entre les étapes.</p></li>
-<li><p><strong>Support multi-agents</strong> - Conçu pour les scénarios où plusieurs agents collaborent ou se coordonnent.</p></li>
-<li><p><strong>Outils de débogage</strong> - Visualisation et débogage via LangSmith Studio pour tracer l'exécution du graphe.</p></li>
+<li><p><strong>Graph-based architecture</strong> – Native support for loops, backtracking, and complex control flows.</p></li>
+<li><p><strong>State management</strong> – Centralized state ensures context is preserved across steps.</p></li>
+<li><p><strong>Multi-agent support</strong> – Built for scenarios where multiple agents collaborate or coordinate.</p></li>
+<li><p><strong>Debugging tools</strong> – Visualization and debugging via LangSmith Studio to trace graph execution.</p></li>
 </ul>
-<h2 id="LangChain-vs-LangGraph-Technical-Deep-Dive" class="common-anchor-header">LangChain vs LangGraph : Approfondissement technique<button data-href="#LangChain-vs-LangGraph-Technical-Deep-Dive" class="anchor-icon" translate="no">
+<h2 id="LangChain-vs-LangGraph-Technical-Deep-Dive" class="common-anchor-header">LangChain vs LangGraph: Technical Deep Dive<button data-href="#LangChain-vs-LangGraph-Technical-Deep-Dive" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,7 +83,7 @@ origin: 'https://milvus.io/blog/langchain-vs-langgraph.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Architecture" class="common-anchor-header">L'architecture</h3><p>LangChain utilise le <strong>langage LCEL (LangChain Expression Language)</strong> pour relier les composants entre eux dans un pipeline linéaire. C'est un langage déclaratif, lisible et idéal pour les flux de travail simples comme RAG.</p>
+    </button></h2><h3 id="Architecture" class="common-anchor-header">Architecture</h3><p>LangChain uses <strong>LCEL (LangChain Expression Language)</strong> to wire components together in a linear pipeline. It’s declarative, readable, and great for straightforward workflows like RAG.</p>
 <pre><code translate="no"><span class="hljs-comment"># LangChain LCEL orchestration example</span>
 <span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> ChatPromptTemplate
 <span class="hljs-keyword">from</span> langchain.chat_models <span class="hljs-keyword">import</span> ChatOpenAI
@@ -98,7 +97,7 @@ chain = prompt | model
 <span class="hljs-comment"># Run the chain</span>
 result = chain.invoke({<span class="hljs-string">&quot;question&quot;</span>: <span class="hljs-string">&quot;What is artificial intelligence?&quot;</span>})
 <button class="copy-code-btn"></button></code></pre>
-<p>LangGraph adopte une approche différente : les flux de travail sont exprimés sous la forme d'un <strong>graphe de nœuds et d'arêtes</strong>. Chaque nœud définit une action, et le moteur de graphe gère l'état, les branchements et les tentatives.</p>
+<p>LangGraph takes a different approach: workflows are expressed as a <strong>graph of nodes and edges</strong>. Each node defines an action, and the graph engine manages state, branching, and retries.</p>
 <pre><code translate="no"><span class="hljs-comment"># LangGraph graph structure definition</span>
 <span class="hljs-keyword">from</span> langgraph.graph <span class="hljs-keyword">import</span> StateGraph
 <span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> TypedDict
@@ -118,24 +117,24 @@ graph.add_node(<span class="hljs-string">&quot;node_a&quot;</span>, node_a)
 graph.add_node(<span class="hljs-string">&quot;node_b&quot;</span>, node_b)
 graph.add_edge(<span class="hljs-string">&quot;node_a&quot;</span>, <span class="hljs-string">&quot;node_b&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Alors que LCEL vous donne un pipeline linéaire propre, LangGraph supporte nativement les boucles, les branchements et les flux conditionnels. Cela le rend plus adapté aux <strong>systèmes de type agent</strong> ou aux interactions en plusieurs étapes qui ne suivent pas une ligne droite.</p>
-<h3 id="State-Management" class="common-anchor-header">Gestion des états</h3><ul>
-<li><p><strong>LangChain</strong>: Utilise des composants de mémoire pour transmettre le contexte. Il convient parfaitement aux conversations simples à plusieurs tours ou aux flux de travail linéaires.</p></li>
-<li><p><strong>LangGraph</strong>: Utilise un système d'état centralisé qui prend en charge les retours en arrière, le backtracking et l'historique détaillé. Essentiel pour les applications de longue durée, avec état, où la continuité du contexte est importante.</p></li>
+<p>Where LCEL gives you a clean linear pipeline, LangGraph natively supports loops, branching, and conditional flows. This makes it a stronger fit for <strong>agent-like systems</strong> or multi-step interactions that don’t follow a straight line.</p>
+<h3 id="State-Management" class="common-anchor-header">State Management</h3><ul>
+<li><p><strong>LangChain</strong>: Uses Memory components for passing context. Works fine for simple multi-turn conversations or linear workflows.</p></li>
+<li><p><strong>LangGraph</strong>: Uses a centralized state system that supports rollbacks, backtracking, and detailed history. Essential for long-running, stateful apps where context continuity matters.</p></li>
 </ul>
-<h3 id="Execution-Models" class="common-anchor-header">Modèles d'exécution</h3><table>
+<h3 id="Execution-Models" class="common-anchor-header">Execution Models</h3><table>
 <thead>
-<tr><th><strong>Fonctionnalité</strong></th><th><strong>Chaîne de Lang</strong></th><th><strong>LangGraph</strong></th></tr>
+<tr><th><strong>Feature</strong></th><th><strong>LangChain</strong></th><th><strong>LangGraph</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Mode d'exécution</td><td>Orchestration linéaire</td><td>Exécution avec état (graphique)</td></tr>
-<tr><td>Prise en charge des boucles</td><td>Support limité</td><td>Support natif</td></tr>
-<tr><td>Branchement conditionnel</td><td>Implémenté via RunnableMap</td><td>Support natif</td></tr>
-<tr><td>Gestion des exceptions</td><td>Implémenté via RunnableBranch</td><td>Support intégré</td></tr>
-<tr><td>Traitement des erreurs</td><td>Transmission en chaîne</td><td>Traitement au niveau du nœud</td></tr>
+<tr><td>Execution Mode</td><td>Linear orchestration</td><td>Stateful (Graph) Execution</td></tr>
+<tr><td>Loop Support</td><td>Limited Support</td><td>Native Support</td></tr>
+<tr><td>Conditional Branching</td><td>Implemented via RunnableMap</td><td>Native Support</td></tr>
+<tr><td>Exception Handling</td><td>Implemented via RunnableBranch</td><td>Built-in Support</td></tr>
+<tr><td>Error Processing</td><td>Chain-style Transmission</td><td>Node-level Processing</td></tr>
 </tbody>
 </table>
-<h2 id="Real-World-Use-Cases-When-to-Use-Each" class="common-anchor-header">Cas d'utilisation dans le monde réel : Quand utiliser chacun d'entre eux ?<button data-href="#Real-World-Use-Cases-When-to-Use-Each" class="anchor-icon" translate="no">
+<h2 id="Real-World-Use-Cases-When-to-Use-Each" class="common-anchor-header">Real-World Use Cases: When to Use Each<button data-href="#Real-World-Use-Cases-When-to-Use-Each" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -150,8 +149,8 @@ graph.add_edge(<span class="hljs-string">&quot;node_a&quot;</span>, <span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Les frameworks ne sont pas qu'une question d'architecture - ils s'illustrent dans différentes situations. La vraie question est donc la suivante : quand faut-il utiliser LangChain, et quand LangGraph est-il plus judicieux ? Examinons quelques scénarios pratiques.</p>
-<h3 id="When-LangChain-Is-Your-Best-Choice" class="common-anchor-header">Quand LangChain est le meilleur choix</h3><h4 id="1-Straightforward-Task-Processing" class="common-anchor-header">1. Traitement de tâches simples</h4><p>LangChain est idéal lorsque vous devez transformer des données d'entrée en données de sortie sans avoir recours à un suivi d'état lourd ou à une logique de branchement. Par exemple, une extension de navigateur qui traduit le texte sélectionné :</p>
+    </button></h2><p>Frameworks aren’t just about architecture — they shine in different situations. So the real question is: when should you reach for LangChain, and when does LangGraph make more sense? Let’s look at some practical scenarios.</p>
+<h3 id="When-LangChain-Is-Your-Best-Choice" class="common-anchor-header">When LangChain Is Your Best Choice</h3><h4 id="1-Straightforward-Task-Processing" class="common-anchor-header">1. Straightforward Task Processing</h4><p>LangChain is a great fit when you need to transform input into output without heavy state tracking or branching logic. For example, a browser extension that translates selected text:</p>
 <pre><code translate="no"><span class="hljs-comment"># Implementing simple text translation using LCEL</span>
 <span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> ChatPromptTemplate
 <span class="hljs-keyword">from</span> langchain.chat_models <span class="hljs-keyword">import</span> ChatOpenAI
@@ -162,15 +161,15 @@ chain = prompt | model
 
 result = chain.invoke({<span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;Hello, World!&quot;</span>})
 <button class="copy-code-btn"></button></code></pre>
-<p>Dans ce cas, il n'y a pas besoin de mémoire, de nouvelles tentatives ou de raisonnement en plusieurs étapes - juste une transformation efficace de l'entrée vers la sortie. LangChain permet au code de rester propre et ciblé.</p>
-<h4 id="2-Foundation-Components" class="common-anchor-header">2. Composants de base</h4><p>LangChain fournit des composants de base riches qui peuvent servir de blocs de construction pour des systèmes plus complexes. Même lorsque les équipes construisent avec LangGraph, elles s'appuient souvent sur les composants matures de LangChain. Le framework offre :</p>
+<p>In this case, there’s no need for memory, retries, or multi-step reasoning — just efficient input-to-output transformation. LangChain keeps the code clean and focused.</p>
+<h4 id="2-Foundation-Components" class="common-anchor-header">2. Foundation Components</h4><p>LangChain provides rich basic components that can serve as building blocks for constructing more complex systems. Even when teams build with LangGraph, they often rely on LangChain’s mature components. The framework offers:</p>
 <ul>
-<li><p><strong>Connecteurs de magasins vectoriels</strong> - Interfaces unifiées pour des bases de données telles que Milvus et Zilliz Cloud.</p></li>
-<li><p><strong>Chargeurs et séparateurs de documents</strong> - Pour les PDF, les pages web et d'autres contenus.</p></li>
-<li><p><strong>Interfaces de modèle</strong> - Enveloppes standardisées pour les LLM les plus courants.</p></li>
+<li><p><strong>Vector store connectors</strong> – Unified interfaces for databases like Milvus and Zilliz Cloud.</p></li>
+<li><p><strong>Document loaders &amp; splitters</strong> – For PDFs, web pages, and other content.</p></li>
+<li><p><strong>Model interfaces</strong> – Standardized wrappers for popular LLMs.</p></li>
 </ul>
-<p>LangChain n'est donc pas seulement un outil de gestion des flux de travail, mais aussi une bibliothèque de composants fiables pour des systèmes plus importants.</p>
-<h3 id="When-LangGraph-Is-the-Clear-Winner" class="common-anchor-header">Quand LangGraph l'emporte haut la main</h3><h4 id="1-Sophisticated-Agent-Development" class="common-anchor-header">1. Développement d'agents sophistiqués</h4><p>LangGraph excelle lorsque vous construisez des systèmes d'agents avancés qui ont besoin de boucler, de bifurquer et de s'adapter. Voici un modèle d'agent simplifié :</p>
+<p>This makes LangChain not only a workflow tool but also a reliable component library for larger systems.</p>
+<h3 id="When-LangGraph-Is-the-Clear-Winner" class="common-anchor-header">When LangGraph Is the Clear Winner</h3><h4 id="1-Sophisticated-Agent-Development" class="common-anchor-header">1. Sophisticated Agent Development</h4><p>LangGraph excels when you’re building advanced agent systems that need to loop, branch, and adapt. Here’s a simplified agent pattern:</p>
 <pre><code translate="no"><span class="hljs-comment"># Simplified Agent system example</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">agent</span>(<span class="hljs-params">state</span>):
     messages = state[<span class="hljs-string">&quot;messages&quot;</span>]
@@ -191,32 +190,32 @@ graph.add_node(<span class="hljs-string">&quot;tool_executor&quot;</span>, tool_
 graph.add_edge(<span class="hljs-string">&quot;agent&quot;</span>, <span class="hljs-string">&quot;tool_executor&quot;</span>)
 graph.add_edge(<span class="hljs-string">&quot;tool_executor&quot;</span>, <span class="hljs-string">&quot;agent&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Exemple :</strong> GitHub Les fonctionnalités avancées de Copilot X démontrent parfaitement l'architecture agent de LangGraph en action. Le système comprend l'intention du développeur, décompose les tâches de programmation complexes en étapes gérables, exécute plusieurs opérations en séquence, apprend des résultats intermédiaires et adapte son approche en fonction de ce qu'il découvre en cours de route.</p>
-<h4 id="2-Advanced-Multi-Turn-Conversation-Systems" class="common-anchor-header">2. Systèmes avancés de conversation multi-tours</h4><p>Les capacités de gestion d'état de LangGraph le rendent tout à fait adapté à la construction de systèmes de conversation multi-tours complexes :</p>
+<p><strong>Example:</strong> GitHub Copilot X’s advanced features perfectly demonstrate LangGraph’s agent architecture in action. The system understands developer intent, breaks complex programming tasks into manageable steps, executes multiple operations in sequence, learns from intermediate results, and adapts its approach based on what it discovers along the way.</p>
+<h4 id="2-Advanced-Multi-Turn-Conversation-Systems" class="common-anchor-header">2. Advanced Multi-Turn Conversation Systems</h4><p>LangGraph’s state management capabilities make it very suitable for building complex multi-turn conversation systems:</p>
 <ul>
-<li><p><strong>Systèmes de service à la clientèle</strong>: Systèmes de service à la clientèle : capables de suivre l'historique de la conversation, de comprendre le contexte et de fournir des réponses cohérentes.</p></li>
-<li><p><strong>Systèmes de tutorat éducatif</strong>: Ajustement des stratégies d'enseignement en fonction de l'historique des réponses des étudiants</p></li>
-<li><p><strong>Systèmes de simulation d'entretien</strong>: Ajustement des questions d'entretien en fonction des réponses des candidats</p></li>
+<li><p><strong>Customer service systems</strong>: Capable of tracking conversation history, understanding context, and providing coherent responses</p></li>
+<li><p><strong>Educational tutoring systems</strong>: Adjusting teaching strategies based on students’ answer history</p></li>
+<li><p><strong>Interview simulation systems</strong>: Adjusting interview questions based on candidates’ responses</p></li>
 </ul>
-<p><strong>Exemple :</strong> Le système de tutorat par IA de Duolingo illustre parfaitement cette approche. Le système analyse en permanence les schémas de réponse de chaque apprenant, identifie les lacunes spécifiques, suit la progression de l'apprentissage sur plusieurs sessions et propose des expériences d'apprentissage des langues personnalisées qui s'adaptent aux styles d'apprentissage individuels, aux préférences en matière de rythme et aux domaines de difficulté.</p>
-<h4 id="3-Multi-Agent-Collaboration-Ecosystems" class="common-anchor-header">3. Ecosystèmes de collaboration multi-agents</h4><p>LangGraph supporte nativement les écosystèmes où plusieurs agents se coordonnent. En voici quelques exemples :</p>
+<p><strong>Example:</strong> Duolingo’s AI tutoring system showcases this perfectly. The system continuously analyzes each learner’s response patterns, identifies specific knowledge gaps, tracks learning progress across multiple sessions, and delivers personalized language learning experiences that adapt to individual learning styles, pace preferences, and areas of difficulty.</p>
+<h4 id="3-Multi-Agent-Collaboration-Ecosystems" class="common-anchor-header">3. Multi-Agent Collaboration Ecosystems</h4><p>LangGraph natively supports ecosystems where multiple agents coordinate. Examples include:</p>
 <ul>
-<li><p><strong>Simulation de collaboration en équipe</strong>: Des rôles multiples accomplissant des tâches complexes en collaboration</p></li>
-<li><p><strong>Systèmes de débat</strong>: Plusieurs rôles ayant des points de vue différents s'engagent dans un débat.</p></li>
-<li><p><strong>Plateformes de collaboration créative</strong>: Des agents intelligents issus de différents domaines professionnels créent ensemble.</p></li>
+<li><p><strong>Team collaboration simulation</strong>: Multiple roles collaboratively completing complex tasks</p></li>
+<li><p><strong>Debate systems</strong>: Multiple roles holding different viewpoints engaging in debate</p></li>
+<li><p><strong>Creative collaboration platforms</strong>: Intelligent agents from different professional domains creating together</p></li>
 </ul>
-<p>Cette approche s'est révélée prometteuse dans des domaines de recherche tels que la découverte de médicaments, où des agents modélisent différents domaines d'expertise et combinent les résultats pour obtenir de nouvelles connaissances.</p>
-<h3 id="Making-the-Right-Choice-A-Decision-Framework" class="common-anchor-header">Faire le bon choix : Un cadre décisionnel</h3><table>
+<p>This approach has shown promise in research domains like drug discovery, where agents model different areas of expertise and combine results into new insights.</p>
+<h3 id="Making-the-Right-Choice-A-Decision-Framework" class="common-anchor-header">Making the Right Choice: A Decision Framework</h3><table>
 <thead>
-<tr><th><strong>Caractéristiques du projet</strong></th><th><strong>Cadre recommandé</strong></th><th><strong>Pourquoi</strong></th></tr>
+<tr><th><strong>Project Characteristics</strong></th><th><strong>Recommended Framework</strong></th><th><strong>Why</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Tâches simples et ponctuelles</td><td>LangChain</td><td>L'orchestration de LCEL est simple et intuitive</td></tr>
-<tr><td>Traduction/optimisation de texte</td><td>LangChain</td><td>Pas besoin de gestion d'état complexe</td></tr>
-<tr><td>Systèmes d'agents</td><td>LangGraph</td><td>Gestion d'état et flux de contrôle puissants</td></tr>
-<tr><td>Systèmes de conversation multi-tours</td><td>LangGraph</td><td>Suivi des états et gestion du contexte</td></tr>
-<tr><td>Collaboration multi-agents</td><td>LangGraph</td><td>Prise en charge native de l'interaction multi-nœuds</td></tr>
-<tr><td>Systèmes nécessitant l'utilisation d'outils</td><td>LangGraph</td><td>Contrôle flexible du flux d'invocation des outils</td></tr>
+<tr><td>Simple One-Time Tasks</td><td>LangChain</td><td>LCEL orchestration is simple and intuitive</td></tr>
+<tr><td>Text Translation/Optimization</td><td>LangChain</td><td>No need for complex state management</td></tr>
+<tr><td>Agent Systems</td><td>LangGraph</td><td>Powerful state management and control flow</td></tr>
+<tr><td>Multi-Turn Conversation Systems</td><td>LangGraph</td><td>State tracking and context management</td></tr>
+<tr><td>Multi-Agent Collaboration</td><td>LangGraph</td><td>Native support for multi-node interaction</td></tr>
+<tr><td>Systems Requiring Tool Usage</td><td>LangGraph</td><td>Flexible tool invocation flow control</td></tr>
 </tbody>
 </table>
 <h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
@@ -234,10 +233,10 @@ graph.add_edge(<span class="hljs-string">&quot;tool_executor&quot;</span>, <span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans la plupart des cas, LangChain et LangGraph sont complémentaires et non concurrents. LangChain vous donne une base solide de composants et d'orchestration LCEL - idéal pour les prototypes rapides, les tâches sans état, ou les projets qui ont juste besoin de flux d'entrée-sortie propres. LangGraph intervient lorsque votre application dépasse ce modèle linéaire et nécessite des états, des branchements ou la collaboration de plusieurs agents.</p>
+    </button></h2><p>In most cases, LangChain and LangGraph are complementary, not competitors. LangChain gives you a solid foundation of components and LCEL orchestration — great for quick prototypes, stateless tasks, or projects that just need clean input-to-output flows. LangGraph steps in when your application outgrows that linear model and requires state, branching, or multiple agents working together.</p>
 <ul>
-<li><p><strong>Choisissez LangChain</strong> si vous vous concentrez sur des tâches simples comme la traduction de textes, le traitement de documents ou la transformation de données, où chaque requête est indépendante.</p></li>
-<li><p><strong>Choisissez LangGraph</strong> si vous construisez des conversations à plusieurs tours, des systèmes d'agents ou des écosystèmes d'agents collaboratifs où le contexte et la prise de décision sont importants.</p></li>
-<li><p><strong>Combinez les deux</strong> pour obtenir les meilleurs résultats. De nombreux systèmes de production commencent par les composants de LangChain (chargeurs de documents, connecteurs de magasins de vecteurs, interfaces de modèles), puis ajoutent LangGraph pour gérer la logique de graphe avec état.</p></li>
+<li><p><strong>Choose LangChain</strong> if your focus is on straightforward tasks like text translation, document processing, or data transformation, where each request stands on its own.</p></li>
+<li><p><strong>Choose LangGraph</strong> if you’re building multi-turn conversations, agent systems, or collaborative agent ecosystems where context and decision-making matter.</p></li>
+<li><p><strong>Mix both</strong> for the best results. Many production systems start with LangChain’s components (document loaders, vector store connectors, model interfaces) and then add LangGraph to manage stateful, graph-driven logic on top.</p></li>
 </ul>
-<p>En fin de compte, il s'agit moins de suivre les tendances que d'aligner le framework sur les besoins réels de votre projet. Les deux écosystèmes évoluent rapidement, sous l'impulsion de communautés actives et d'une documentation solide. En comprenant la place de chacun, vous serez mieux équipé pour concevoir des applications évolutives, que vous construisiez votre premier pipeline RAG avec Milvus ou que vous orchestriez un système multi-agents complexe.</p>
+<p>Ultimately, it’s less about chasing trends and more about aligning the framework with your project’s genuine needs. Both ecosystems are evolving rapidly, driven by active communities and robust documentation. By understanding where each fits, you’ll be better equipped to design applications that scale — whether you’re building your first RAG pipeline with Milvus or orchestrating a complex multi-agent system.</p>

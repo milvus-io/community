@@ -1,12 +1,14 @@
 ---
 id: >-
   tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
-title: 'ترميز أذكى واسترجاع أفضل: نظرة متعمقة في محلل ميلفوس للبحث عن النص الكامل'
+title: >
+  Tokenize Smarter, Retrieve Better: A Deep Dive into Milvus Analyzer for
+  Full-Text Search
 author: Jack Li
 date: 2025-10-16T00:00:00.000Z
 desc: >-
-  استكشف كيف يعمل محلل Milvus Analyzer على تمكين استرجاع الذكاء الاصطناعي الهجين
-  من خلال ترميز وتصفية فعالة، مما يتيح بحثًا أسرع وأكثر ذكاءً في النص الكامل.
+  Explore how Milvus Analyzer powers hybrid AI retrieval with efficient
+  tokenization and filtering, enabling faster, smarter full-text search.
 cover: assets.zilliz.com/Milvus_Analyzer_2_ccde10876e.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
@@ -17,10 +19,10 @@ meta_keywords: 'Milvus Analyzer, RAG, full-text search, vector database, tokeniz
 origin: >-
   https://milvus.io/blog/tokenize-smarter-retrieve-better-a-deep-dive-into-milvus-analyzer-for-full-text-search.md
 ---
-<p>تطبيقات الذكاء الاصطناعي الحديثة معقدة ونادراً ما تكون أحادية البعد. في كثير من الحالات، لا يمكن لطريقة بحث واحدة حل مشاكل العالم الحقيقي بمفردها. خذ نظام التوصية، على سبيل المثال. فهو يتطلب <strong>بحثاً متجهاً</strong> لفهم المعنى الكامن وراء النص أو الصور، <strong>وتصفية البيانات الوصفية</strong> لتنقيح النتائج حسب السعر أو الفئة أو الموقع،<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>وبحثاً بالنص الكامل</strong></a> للتعامل مع الاستعلامات المباشرة مثل "Nike Air Max". وتحل كل طريقة جزءًا مختلفًا من اللغز - وتعتمد الأنظمة العملية على عملها جميعًا معًا بسلاسة.</p>
-<p>يتفوق برنامج Milvus في البحث المتجه وتصفية البيانات الوصفية، وبدءًا من الإصدار 2.5، قدم البحث في النص الكامل استنادًا إلى خوارزمية BM25 المحسّنة. تجعل هذه الترقية البحث بالذكاء الاصطناعي أكثر ذكاءً ودقةً، حيث تجمع بين الفهم الدلالي والهدف الدقيق للكلمات الرئيسية. مع الإصدار<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 2.6 من Milvus 2.6</a>، أصبح البحث في النص الكامل أسرع - حتى<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4 أضعاف أداء Elasticsearch</a>.</p>
-<p>في قلب هذه الإمكانية يوجد <strong>Milvus Analyzer،</strong> وهو المكوّن الذي يحوّل النص الخام إلى رموز قابلة للبحث. وهو ما يمكّن ميلفوس من تفسير اللغة بكفاءة وإجراء مطابقة الكلمات الرئيسية على نطاق واسع. في بقية هذا المنشور، سنتعمق في كيفية عمل محلل Milvus Analyzer - ولماذا هو مفتاح إطلاق الإمكانات الكاملة للبحث المختلط في Milvus.</p>
-<h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">ما هو محلل ميلفوس؟<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
+<p>Modern AI applications are complex and rarely one-dimensional. In many cases, a single search method can’t solve real-world problems on its own. Take a recommendation system, for example. It requires <strong>vector search</strong> to comprehend the meaning behind text or images, <strong>metadata filtering</strong> to refine results by price, category, or location, and<a href="https://milvus.io/blog/full-text-search-in-milvus-what-is-under-the-hood.md"> <strong>full-text search</strong></a> to handle direct queries like “Nike Air Max.” Each method solves a different part of the puzzle—and practical systems depend on all of them working together seamlessly.</p>
+<p>Milvus excels at vector search and metadata filtering, and starting with version 2.5, it introduced full-text search based on the optimized BM25 algorithm. This upgrade makes AI search both smarter and more accurate, combining semantic understanding with precise keyword intent. With<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> Milvus 2.6</a>, full-text search becomes even faster—up to<a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md#Turbocharged-BM25-400-Faster-Full-Text-Search-Than-Elasticsearch"> 4× the performance of Elasticsearch</a>.</p>
+<p>At the heart of this capability is the <strong>Milvus Analyzer</strong>, the component that transforms raw text into searchable tokens. It’s what enables Milvus to interpret language efficiently and perform keyword matching at scale. In the rest of this post, we’ll dive into how the Milvus Analyzer works—and why it’s key to unlocking the full potential of hybrid search in Milvus.</p>
+<h2 id="What-is-Milvus-Analyzer" class="common-anchor-header">What is Milvus Analyzer？<button data-href="#What-is-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,19 +37,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لتشغيل البحث الفعال عن النص الكامل - سواء لمطابقة الكلمات الرئيسية أو الاسترجاع الدلالي - فإن الخطوة الأولى هي نفسها دائمًا: تحويل النص الخام إلى رموز يمكن للنظام فهمها وفهرستها ومقارنتها.</p>
-<p>يتعامل <strong>محلل ميلفوس</strong> مع هذه الخطوة. إنه مكوّن مدمج لمعالجة النص مسبقًا وترميزه يقوم بتقسيم النص المدخل إلى رموز منفصلة، ثم يقوم بتطبيعها وتنظيفها وتوحيدها لضمان مطابقتها عبر الاستعلامات والمستندات. تضع هذه العملية الأساس لبحث دقيق وعالي الأداء في النص الكامل والاسترجاع المختلط.</p>
-<p>فيما يلي نظرة عامة على بنية Milvus Analyzer:</p>
+    </button></h2><p>To power efficient full-text search—whether for keyword matching or semantic retrieval—the first step is always the same: turning raw text into tokens that the system can understand, index, and compare.</p>
+<p>The <strong>Milvus Analyzer</strong> handles this step. It’s a built-in text preprocessing and tokenization component that breaks input text into discrete tokens, then normalizes, cleans, and standardizes them to ensure consistent matching across queries and documents. This process lays the foundation for accurate, high-performance full-text search and hybrid retrieval.</p>
+<p>Here’s an overview of the Milvus Analyzer architecture:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_5_8e0ec1dbdf.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>كما هو موضح في الرسم البياني، يحتوي المحلل على مكونين أساسيين: <strong>أداة الترميز</strong> <strong>والمرشح</strong>. يقومان معًا بتحويل النص المدخل إلى رموز وتحسينها من أجل الفهرسة والاسترجاع الفعال.</p>
+<p>As the diagram shows, Analyzer has two core components: the <strong>Tokenizer</strong> and the <strong>Filter</strong>. Together, they convert input text into tokens and optimize them for efficient indexing and retrieval.</p>
 <ul>
-<li><p><strong>أداة الترميز</strong>: يقسّم النص إلى رموز أساسية باستخدام طرق مثل تقسيم المسافات البيضاء (Whitespace)، أو تجزئة الكلمات الصينية (Jieba)، أو التجزئة متعددة اللغات (ICU).</p></li>
-<li><p><strong>التصفية</strong>: يعالج الرموز من خلال تحويلات محددة. يتضمن Milvus مجموعة غنية من الفلاتر المدمجة لعمليات مثل تطبيع حالة الأحرف (Lowercase)، وإزالة علامات الترقيم (Removepunct)، وتصفية كلمات التوقف (Stop)، والوقف (Stemmer)، ومطابقة الأنماط (Regex). يمكنك ربط مرشحات متعددة للتعامل مع احتياجات المعالجة المعقدة.</p></li>
+<li><p><strong>Tokenizer</strong>: Splits text into basic tokens using methods like whitespace splitting (Whitespace), Chinese word segmentation (Jieba), or multilingual segmentation (ICU).</p></li>
+<li><p><strong>Filter</strong>: Processes tokens through specific transformations. Milvus includes a rich set of built-in filters for operations like case normalization (Lowercase), punctuation removal (Removepunct), stop word filtering (Stop), stemming (Stemmer), and pattern matching (Regex). You can chain multiple filters to handle complex processing needs.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -55,22 +57,22 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>يقدم Milvus العديد من أنواع المحللات: ثلاثة خيارات مدمجة (قياسية وإنجليزية وصينية)، ومحللات مخصصة حيث يمكنك تحديد مجموعات الرموز والمرشحات الخاصة بك، ومحلل متعدد اللغات للتعامل مع المستندات متعددة اللغات. تدفق المعالجة بسيط ومباشر: نص خام ← أداة ترميز ← أداة ترميز ← أداة تصفية ← رموز.</p>
-<h3 id="Tokenizer" class="common-anchor-header">أداة الترميز</h3><p>أداة الترميز هي خطوة المعالجة الأولى. يقوم بتقسيم النص الخام إلى رموز أصغر (كلمات أو كلمات فرعية)، ويعتمد الاختيار الصحيح على لغتك وحالة الاستخدام.</p>
-<p>يدعم ميلفوس حاليًا الأنواع التالية من أدوات الترميز:</p>
+<p>Milvus offers several Analyzer types: three built-in options (Standard, English, and Chinese), Custom Analyzers where you define your own Tokenizer and Filter combinations, and the Multi-language Analyzer for handling multilingual documents. The processing flow is straightforward: Raw text → Tokenizer → Filter → Tokens.</p>
+<h3 id="Tokenizer" class="common-anchor-header">Tokenizer</h3><p>The Tokenizer is the first processing step. It splits raw text into smaller tokens (words or subwords), and the right choice depends on your language and use case.</p>
+<p>Milvus currently supports the following types of tokenizers:</p>
 <table>
 <thead>
-<tr><th><strong>أداة الترميز</strong></th><th><strong>حالة الاستخدام</strong></th><th><strong>الوصف</strong></th></tr>
+<tr><th><strong>Tokenizer</strong></th><th><strong>Use Case</strong></th><th><strong>Description</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>القياسية</td><td>اللغة الإنجليزية واللغات ذات المسافات المحدودة</td><td>أداة ترميز الأغراض العامة الأكثر شيوعًا؛ تكتشف حدود الكلمات وتقسم وفقًا لذلك.</td></tr>
-<tr><td>المسافات البيضاء</td><td>نص بسيط مع الحد الأدنى من المعالجة المسبقة</td><td>يقوم بالتقسيم حسب المسافات فقط؛ لا يتعامل مع علامات الترقيم أو الغلاف.</td></tr>
-<tr><td>جيبا (الصينية)</td><td>نص صيني</td><td>قاموس ومعالج رموز قائم على الاحتمالات يقوم بتقسيم الأحرف الصينية المستمرة إلى كلمات ذات معنى.</td></tr>
-<tr><td>لينديرا （JP/KR）</td><td>نص ياباني وكوري</td><td>يستخدم تحليل لينديرا الصرفي للتجزئة الفعالة.</td></tr>
-<tr><td>ICU （متعدد اللغات）</td><td>اللغات المعقدة مثل العربية والسيناريوهات متعددة اللغات</td><td>استنادًا إلى مكتبة ICU مع دعم الترميز متعدد اللغات عبر Unicode.</td></tr>
+<tr><td>Standard</td><td>English and space-delimited languages</td><td>The most common general-purpose tokenizer; detects word boundaries and splits accordingly.</td></tr>
+<tr><td>Whitespace</td><td>Simple text with minimal preprocessing</td><td>Splits only by spaces; does not handle punctuation or casing.</td></tr>
+<tr><td>Jieba（Chinese）</td><td>Chinese text</td><td>Dictionary and probability-based tokenizer that splits continuous Chinese characters into meaningful words.</td></tr>
+<tr><td>Lindera（JP/KR）</td><td>Japanese and Korean text</td><td>Uses Lindera morphological analysis for effective segmentation.</td></tr>
+<tr><td>ICU（Multi-language）</td><td>Complex languages like Arabic, and multilingual scenarios</td><td>Based on the ICU library with support for multilingual tokenization across Unicode.</td></tr>
 </tbody>
 </table>
-<p>يمكنك تكوين Tokenizer Tokenizer عند إنشاء مخطط المجموعة، وتحديدًا عند تحديد حقول <code translate="no">VARCHAR</code> من خلال المعلمة <code translate="no">analyzer_params</code>. وبعبارة أخرى، فإن أداة الترميز ليست كائنًا مستقلاً ولكنها تكوين على مستوى الحقل. يقوم ميلفوس تلقائيًا بإجراء الترميز والمعالجة المسبقة عند إدراج البيانات.</p>
+<p>You can configure the Tokenizer when creating your Collection’s Schema, specifically when defining <code translate="no">VARCHAR</code> fields through the <code translate="no">analyzer_params</code> parameter. In other words, the Tokenizer is not a standalone object but a field-level configuration. Milvus automatically performs tokenization and preprocessing when inserting data.</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -80,29 +82,29 @@ origin: >-
     }
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Filter" class="common-anchor-header">التصفية</h3><p>إذا قام أداة الترميز بتقطيع النص، يقوم عامل التصفية بتنقية ما تبقى. تقوم المرشحات بتوحيد الرموز أو تنظيفها أو تحويلها لجعلها جاهزة للبحث.</p>
-<p>تتضمّن عمليات التصفية الشائعة تطبيع حالة الأحرف، وإزالة كلمات التوقف (مثل "ال" و"و")، وحذف علامات الترقيم، وتطبيق الجذع (اختزال كلمة "تشغيل" إلى "تشغيل").</p>
-<p>يتضمن ميلفوس العديد من الفلاتر المدمجة لمعظم احتياجات معالجة اللغة:</p>
+<h3 id="Filter" class="common-anchor-header">Filter</h3><p>If the Tokenizer cuts text apart, the Filter refines what’s left. Filters standardize, clean, or transform your tokens to make them search-ready.</p>
+<p>Common Filter operations include normalizing case, removing stop words (like “the” and “and”), stripping punctuation, and applying stemming (reducing “running” to “run”).</p>
+<p>Milvus includes many built-in Filters for most language processing needs:</p>
 <table>
 <thead>
-<tr><th><strong>اسم المرشح</strong></th><th><strong>الوظيفة</strong></th><th><strong>حالة الاستخدام</strong></th></tr>
+<tr><th><strong>Filter Name</strong></th><th><strong>Function</strong></th><th><strong>Use Case</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>الأحرف الصغيرة</td><td>تحويل جميع الرموز إلى أحرف صغيرة</td><td>ضرورية للبحث باللغة الإنجليزية لتجنب عدم تطابق حالة الأحرف</td></tr>
-<tr><td>أسسيفولدينغ</td><td>تحويل الأحرف المعلمة إلى ASCII</td><td>السيناريوهات متعددة اللغات (على سبيل المثال، "مقهى" → "مقهى")</td></tr>
-<tr><td>Alphanumonly</td><td>يحتفظ بالأحرف والأرقام فقط</td><td>يحذف الرموز المختلطة من النص مثل السجلات</td></tr>
-<tr><td>كنشارونلي</td><td>يحتفظ بالأحرف الصينية فقط</td><td>تنظيف المجموعة الصينية</td></tr>
-<tr><td>Cnalphanumonly</td><td>يحتفظ فقط بالصينية والإنجليزية والأرقام</td><td>نص صيني-إنجليزي مختلط</td></tr>
-<tr><td>الطول</td><td>تصفية الرموز حسب الطول</td><td>يزيل الرموز القصيرة أو الطويلة للغاية</td></tr>
-<tr><td>إيقاف</td><td>إيقاف تصفية الكلمات</td><td>إزالة الكلمات عالية التردد التي لا معنى لها مثل "هو" و"ال"</td></tr>
-<tr><td>مفكك الكلمات</td><td>يقسم الكلمات المركبة</td><td>اللغات ذات المركبات المتكررة مثل الألمانية والهولندية</td></tr>
-<tr><td>ستيممر</td><td>تجذيم الكلمات</td><td>سيناريوهات اللغة الإنجليزية (على سبيل المثال،&quot;دراسات&quot; و&quot;دراسة&quot; → &quot;دراسة&quot;</td></tr>
-<tr><td>إزالة علامات الترقيم</td><td>إزالة علامات الترقيم</td><td>تنظيف النص العام</td></tr>
-<tr><td>ريجكس</td><td>يُرشّح أو يستبدل بنمط ريجكس</td><td>احتياجات مخصصة، مثل استخراج عناوين البريد الإلكتروني فقط</td></tr>
+<tr><td>Lowercase</td><td>Converts all tokens to lowercase</td><td>Essential for English search to avoid case mismatches</td></tr>
+<tr><td>Asciifolding</td><td>Converts accented characters to ASCII</td><td>Multilingual scenarios (e.g., “café” → “cafe”)</td></tr>
+<tr><td>Alphanumonly</td><td>Keeps only letters and numbers</td><td>Strips mixed symbols from text like logs</td></tr>
+<tr><td>Cncharonly</td><td>Keeps only Chinese characters</td><td>Chinese corpus cleaning</td></tr>
+<tr><td>Cnalphanumonly</td><td>Keeps only Chinese, English, and numbers</td><td>Mixed Chinese-English text</td></tr>
+<tr><td>Length</td><td>Filters tokens by length</td><td>Removes excessively short or long tokens</td></tr>
+<tr><td>Stop</td><td>Stop word filtering</td><td>Removes high-frequency meaningless words like “is” and “the”</td></tr>
+<tr><td>Decompounder</td><td>Splits compound words</td><td>Languages with frequent compounds like German and Dutch</td></tr>
+<tr><td>Stemmer</td><td>Word stemming</td><td>English scenarios (e.g.,&quot;studies&quot; and “studying” → “study”</td></tr>
+<tr><td>Removepunct</td><td>Removes punctuation</td><td>General text cleaning</td></tr>
+<tr><td>Regex</td><td>Filters or replaces with a regex pattern</td><td>Custom needs, like extracting only email addresses</td></tr>
 </tbody>
 </table>
-<p>تكمن قوة الفلاتر في مرونتها - يمكنك مزج قواعد التنظيف ومطابقتها بناءً على احتياجاتك. بالنسبة للبحث باللغة الإنجليزية، فإن التركيبة النموذجية هي أحرف صغيرة + إيقاف + ستيمير، لضمان توحيد حالة الأحرف، وإزالة كلمات الحشو، وتطبيع أشكال الكلمات مع جذعها.</p>
-<p>بالنسبة للبحث الصيني، عادةً ما تجمع بين Cncharonly + Stop للحصول على نتائج أنظف وأكثر دقة. قم بتكوين الفلاتر بنفس طريقة تكوين عوامل التصفية، من خلال <code translate="no">analyzer_params</code> في FieldSchema الخاص بك:</p>
+<p>The power of Filters is in their flexibility—you can mix and match cleaning rules based on your needs. For English search, a typical combination is Lowercase + Stop + Stemmer, ensuring case uniformity, removing filler words, and normalizing word forms to their stem.</p>
+<p>For Chinese search, you’ll usually combine Cncharonly + Stop for cleaner, more precise results. Configure Filters the same way as Tokenizers, through <code translate="no">analyzer_params</code> in your FieldSchema:</p>
 <pre><code translate="no">FieldSchema(
     name=<span class="hljs-string">&quot;text&quot;</span>,
     dtype=DataType.VARCHAR,
@@ -122,7 +124,7 @@ origin: >-
     }
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Analyzer-Types" class="common-anchor-header">أنواع المحللات<button data-href="#Analyzer-Types" class="anchor-icon" translate="no">
+<h2 id="Analyzer-Types" class="common-anchor-header">Analyzer Types<button data-href="#Analyzer-Types" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -137,34 +139,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يجعل المحلل المناسب بحثك أسرع وأكثر فعالية من حيث التكلفة. لتناسب الاحتياجات المختلفة، يوفر ميلفوس ثلاثة أنواع: محلل مدمج ومتعدد اللغات ومحلل مخصص.</p>
-<h3 id="Built-in-Analyzer" class="common-anchor-header">محلل مدمج</h3><p>المحللات المدمجة جاهزة للاستخدام خارج الصندوق - تكوينات قياسية تعمل لمعظم السيناريوهات الشائعة. وهي مزودة بمجموعات محددة مسبقًا من الرموز والفلاتر:</p>
+    </button></h2><p>The right Analyzer makes your search both faster and more cost-effective. To fit different needs, Milvus provides three types: Built-in, Multi-language, and Custom Analyzers.</p>
+<h3 id="Built-in-Analyzer" class="common-anchor-header">Built-in Analyzer</h3><p>Built-in Analyzers are ready to use out of the box—standard configurations that work for most common scenarios. They come with predefined Tokenizer and Filter combinations:</p>
 <table>
 <thead>
-<tr><th><strong>الاسم</strong></th><th><strong>المكوّنات （مُرمِّز+مرشِّح）</strong></th><th><strong>حالة الاستخدام</strong></th></tr>
+<tr><th><strong>Name</strong></th><th><strong>Components（Tokenizer+Filters）</strong></th><th><strong>Use Case</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>قياسي</td><td>أداة ترميز قياسية + أحرف صغيرة</td><td>الاستخدام العام للغة الإنجليزية أو اللغات ذات المسافات المحددة</td></tr>
-<tr><td>الإنجليزية</td><td>أداة ترميز قياسية + أحرف صغيرة + إيقاف + أداة توقف + أداة توقف</td><td>بحث باللغة الإنجليزية بدقة أعلى</td></tr>
-<tr><td>الصينية</td><td>رمز جيبا توكنزر + وقف فقط</td><td>البحث عن النص الصيني مع تجزئة الكلمات الطبيعية</td></tr>
+<tr><td>Standard</td><td>Standard Tokenizer + Lowercase</td><td>General use for English or space-delimited languages</td></tr>
+<tr><td>English</td><td>Standard Tokenizer + Lowercase + Stop + Stemmer</td><td>English search with higher precision</td></tr>
+<tr><td>Chinese</td><td>Jieba Tokenizer + Cnalphanumonly</td><td>Chinese text search with natural word segmentation</td></tr>
 </tbody>
 </table>
-<p>للبحث المباشر باللغة الإنجليزية أو الصينية مباشرة، تعمل هذه المحللات المدمجة دون أي إعداد إضافي.</p>
-<p>ملاحظة مهمة: تم تصميم المحلل القياسي للغة الإنجليزية افتراضيًا. في حالة تطبيقه على النص الصيني، قد لا يُرجع البحث عن النص الكامل أي نتائج.</p>
-<h3 id="Multi-language-Analyzer" class="common-anchor-header">محلل متعدد اللغات</h3><p>عندما تتعامل مع لغات متعددة، لا يمكن لمحلل رمزي واحد في كثير من الأحيان التعامل مع كل شيء. وهنا يأتي دور المحلل متعدد اللغات - حيث يقوم تلقائيًا باختيار أداة الترميز المناسبة بناءً على لغة كل نص. إليك كيفية ربط اللغات بأدوات الترميز:</p>
+<p>For straightforward English or Chinese search, these built-in Analyzers work without any extra setup.</p>
+<p>One important note: the Standard Analyzer is designed for English by default. If applied to Chinese text, full-text search may return no results.</p>
+<h3 id="Multi-language-Analyzer" class="common-anchor-header">Multi-language Analyzer</h3><p>When you deal with multiple languages, a single tokenizer often can’t handle everything. That’s where the Multi-language Analyzer comes in—it automatically picks the right tokenizer based on each text’s language. Here’s how languages map to Tokenizers:</p>
 <table>
 <thead>
-<tr><th><strong>رمز اللغة</strong></th><th><strong>الرموز المستخدمة</strong></th></tr>
+<tr><th><strong>Language Code</strong></th><th><strong>Tokenizer Used</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>إن</td><td>محلل اللغة الإنجليزية</td></tr>
-<tr><td>zh</td><td>جيبا</td></tr>
-<tr><td>جا / كو</td><td>لينديرا</td></tr>
-<tr><td>ع</td><td>وحدة العناية المركزة</td></tr>
+<tr><td>en</td><td>English Analyzer</td></tr>
+<tr><td>zh</td><td>Jieba</td></tr>
+<tr><td>ja / ko</td><td>Lindera</td></tr>
+<tr><td>ar</td><td>ICU</td></tr>
 </tbody>
 </table>
-<p>إذا كانت مجموعة البيانات الخاصة بك تمزج بين الإنجليزية والصينية واليابانية والكورية وحتى العربية، فيمكن لـ Milvus التعامل معها جميعًا في نفس المجال. وهذا يقلل بشكل كبير من المعالجة اليدوية المسبقة.</p>
-<h3 id="Custom-Analyzer" class="common-anchor-header">محلل مخصص</h3><p>عندما لا تناسبك المحللات المدمجة أو متعددة اللغات تمامًا، يتيح لك Milvus إنشاء محللات مخصصة. امزج وطابق الرموز والفلاتر لإنشاء شيء مخصص لاحتياجاتك. إليك مثال على ذلك:</p>
+<p>If your dataset mixes English, Chinese, Japanese, Korean, and even Arabic, Milvus can handle them all in the same field. This cuts down dramatically on manual preprocessing.</p>
+<h3 id="Custom-Analyzer" class="common-anchor-header">Custom Analyzer</h3><p>When Built-in or Multi-language Analyzers don’t quite fit, Milvus lets you build Custom Analyzers. Mix and match Tokenizers and Filters to create something tailored to your needs. Here’s an example:</p>
 <pre><code translate="no">FieldSchema(
         name=<span class="hljs-string">&quot;text&quot;</span>,
         dtype=DataType.VARCHAR,
@@ -175,7 +177,7 @@ origin: >-
         }
     )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Hands-on-Coding-with-Milvus-Analyzer" class="common-anchor-header">ترميز عملي باستخدام محلل ميلفوس<button data-href="#Hands-on-Coding-with-Milvus-Analyzer" class="anchor-icon" translate="no">
+<h2 id="Hands-on-Coding-with-Milvus-Analyzer" class="common-anchor-header">Hands-on Coding with Milvus Analyzer<button data-href="#Hands-on-Coding-with-Milvus-Analyzer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,8 +192,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>النظرية مفيدة، لكن لا شيء يضاهي مثالاً برمجيًا كاملًا. دعونا نتعرف على كيفية استخدام المحللات في ميلفوس مع مجموعة أدوات تطوير البرمجة بايثون، والتي تغطي كلاً من المحللات المدمجة والمحللات متعددة اللغات. هذه الأمثلة تستخدم Milvus v2.6.1 و Pymilvus v2.6.1.</p>
-<h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">كيفية استخدام المحلل المدمج</h3><p>لنفترض أنك تريد إنشاء مجموعة للبحث عن نص باللغة الإنجليزية تتعامل تلقائيًا مع الترميز والمعالجة المسبقة أثناء إدخال البيانات. سنستخدم محلل اللغة الإنجليزية المدمج (ما يعادل <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
+    </button></h2><p>Theory helps, but nothing beats a full code example. Let’s walk through how to use Analyzers in Milvus with the Python SDK, covering both built-in Analyzers and multi-language Analyzers. These examples use Milvus v2.6.1 and Pymilvus v2.6.1.</p>
+<h3 id="How-to-Use-Built-in-Analyzer" class="common-anchor-header">How to Use Built-in Analyzer</h3><p>Say you want to build a Collection for English text search that automatically handles tokenization and preprocessing during data insertion. We’ll use the built-in English Analyzer (equivalent to <code translate="no">standard + lowercase + stop + stemmer</code> ).</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 client = MilvusClient(
@@ -352,7 +354,7 @@ search_queries = [
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Search complete！&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;=&quot;</span>*<span class="hljs-number">60</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>الإخراج ： الإخراج</p>
+<p>Output：</p>
 <pre><code translate="no">Dropped existing collection: english_demo
 Successfully created collection: english_demo
 
@@ -397,7 +399,7 @@ Query <span class="hljs-number">4</span>: <span class="hljs-string">&#x27;learn&
 Search complete！
 ============================================================
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">كيفية استخدام محلل متعدد اللغات</h3><p>عندما تحتوي مجموعة البيانات الخاصة بك على لغات متعددة - الإنجليزية والصينية واليابانية، على سبيل المثال - يمكنك تمكين المحلل متعدد اللغات. سيختار Milvus تلقائيًا أداة الترميز المناسبة بناءً على لغة كل نص.</p>
+<h3 id="How-to-Use-Multi-language-Analyzer" class="common-anchor-header">How to Use Multi-language Analyzer</h3><p>When your dataset contains multiple languages—English, Chinese, and Japanese, for example—you can enable the Multi-language Analyzer. Milvus will automatically pick the right tokenizer based on each text’s language.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 <span class="hljs-keyword">import</span> time
 
@@ -587,7 +589,7 @@ search_cases = [
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nComplete&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>الإخراج ： الإخراج</p>
+<p>Output：</p>
 <pre><code translate="no"><span class="hljs-title class_">Waiting</span> <span class="hljs-keyword">for</span> <span class="hljs-title class_">BM25</span> vector generation...
 
 <span class="hljs-title class_">Tokenizer</span> <span class="hljs-title class_">Analysis</span>:
@@ -611,8 +613,8 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
 
 <span class="hljs-title class_">Complete</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>أيضًا، يدعم Milvus أداة ترميز اللغة_المُعرّف اللغوي للبحث. يكتشف تلقائيًا لغات نص معين، مما يعني أن حقل اللغة اختياري. لمزيد من التفاصيل، راجع<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> كيف يقوم ميلفوس 2.6 بترقية البحث متعدد اللغات بالنص الكامل على نطاق واسع</a>.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Also, Milvus supports the language_identifier tokenizer for search. It automatically detects the languages of a given text, which means the language field is optional. For more details, check out<a href="https://milvus.io/blog/how-milvus-26-powers-hybrid-multilingual-search-at-scale.md"> How Milvus 2.6 Upgrades Multilingual Full-Text Search at Scale</a>.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -627,5 +629,5 @@ en <span class="hljs-string">&#x27;algorithm&#x27;</span>:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يحوّل محلل Milvus Analyzer ما كان في السابق خطوة بسيطة للمعالجة المسبقة إلى نظام معياري واضح المعالم للتعامل مع النص. يمنح تصميمه - المبني على الترميز والتصفية - المطورين تحكمًا دقيقًا في كيفية تفسير اللغة وتنظيفها وفهرستها. سواء كنت تقوم ببناء تطبيق بلغة واحدة أو نظام RAG عالمي يمتد عبر لغات متعددة، يوفر المحلل أساسًا متسقًا للبحث في النص الكامل. إنه جزء من Milvus الذي يجعل كل شيء آخر يعمل بشكل أفضل بهدوء.</p>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل Milvus المكتبية</a>.</p>
+    </button></h2><p>The Milvus Analyzer turns what used to be a simple preprocessing step into a well-defined, modular system for handling text. Its design—built around tokenization and filtering—gives developers fine-grained control over how language is interpreted, cleaned, and indexed. Whether you’re building a single-language application or a global RAG system that spans multiple languages, the Analyzer provides a consistent foundation for full-text search. It’s the part of Milvus that quietly makes everything else work better.</p>
+<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

@@ -2,8 +2,8 @@
 id: >-
   milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
 title: >-
-  Milvus 2.3.4: Ускоренный поиск, расширенная поддержка данных, улучшенный
-  мониторинг и многое другое
+  Milvus 2.3.4: Faster Searches, Expanded Data Support, Improved Monitoring, and
+  More
 author: 'Ken Zhang, Fendy Feng'
 date: 2024-01-12T00:00:00.000Z
 cover: assets.zilliz.com/What_is_new_in_Milvus_2_3_4_1847b0fa8a.png
@@ -11,7 +11,7 @@ tag: News
 tags: >-
   Milvus, Vector Database, Open Source, Data science, Artificial Intelligence,
   Vector Management, Vector Search
-desc: Новые возможности и улучшения Milvus 2.3.4
+desc: introducing Milvus 2.3.4 new features and improvements
 recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/milvus-2-3-4-faster-searches-expanded-data-support-improved-monitoring-and-more.md
@@ -22,8 +22,8 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>Мы рады представить новейший релиз Milvus 2.3.4. В этом обновлении представлен набор функций и улучшений, тщательно проработанных для оптимизации производительности, повышения эффективности и обеспечения бесперебойной работы пользователей. В этой статье блога мы рассмотрим основные возможности Milvus 2.3.4.</p>
-<h2 id="Access-logs-for-improved-monitoring" class="common-anchor-header">Журналы доступа для улучшения мониторинга<button data-href="#Access-logs-for-improved-monitoring" class="anchor-icon" translate="no">
+<p>We are excited to unveil the latest release of Milvus 2.3.4. This update introduces a suite of features and enhancements meticulously crafted to optimize performance, boost efficiency, and deliver a seamless user experience. In this blog post, we’ll delve into the highlights of Milvus 2.3.4.</p>
+<h2 id="Access-logs-for-improved-monitoring" class="common-anchor-header">Access logs for improved monitoring<button data-href="#Access-logs-for-improved-monitoring" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,10 +38,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus теперь поддерживает журналы доступа, предоставляя бесценную информацию о взаимодействии с внешними интерфейсами. В эти журналы записываются имена методов, запросы пользователей, время отклика, коды ошибок и другая информация о взаимодействии, что позволяет разработчикам и системным администраторам проводить анализ производительности, аудит безопасности и эффективно устранять неполадки.</p>
-<p><strong><em>Примечание:</em></strong> <em>В настоящее время журналы доступа поддерживают только gRPC-взаимодействия. Однако мы продолжаем работать над совершенствованием, и в будущих версиях эта возможность будет расширена за счет журналов запросов RESTful.</em></p>
-<p>Более подробную информацию можно найти в разделе <a href="https://milvus.io/docs/configure_access_logs.md">Настройка журналов доступа</a>.</p>
-<h2 id="Parquet-file-imports-for-enhanced-data-processing-efficiency" class="common-anchor-header">Импорт файлов Parquet для повышения эффективности обработки данных<button data-href="#Parquet-file-imports-for-enhanced-data-processing-efficiency" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus now supports access logs, offering invaluable insights into interactions with external interfaces. These logs record method names, user requests, response times, error codes, and other interaction information, empowering developers and system administrators to conduct performance analysis, security auditing, and efficient troubleshooting.</p>
+<p><strong><em>Note:</em></strong> <em>Currently, access logs only support gRPC interactions. However, our commitment to improvement continues, and future versions will extend this capability to include RESTful request logs.</em></p>
+<p>For more detailed information, refer to <a href="https://milvus.io/docs/configure_access_logs.md">Configure Access Logs</a>.</p>
+<h2 id="Parquet-file-imports-for-enhanced-data-processing-efficiency" class="common-anchor-header">Parquet file imports for enhanced data processing efficiency<button data-href="#Parquet-file-imports-for-enhanced-data-processing-efficiency" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,9 +56,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3.4 теперь поддерживает импорт файлов Parquet - широко распространенного формата колоночного хранения данных, разработанного для повышения эффективности хранения и обработки больших массивов данных. Это дополнение позволяет пользователям повысить гибкость и эффективность обработки данных. Благодаря отсутствию необходимости в трудоемком преобразовании форматов данных пользователи, управляющие значительными наборами данных в формате Parquet, смогут оптимизировать процесс импорта данных, значительно сократив время от первоначальной подготовки данных до последующего извлечения вектора.</p>
-<p>Кроме того, наш инструмент преобразования форматов данных, BulkWriter, теперь использует Parquet в качестве выходного формата данных по умолчанию, обеспечивая более интуитивный опыт для разработчиков.</p>
-<h2 id="Binlog-index-on-growing-segments-for-faster-searches" class="common-anchor-header">Индекс Binlog на растущих сегментах для ускорения поиска<button data-href="#Binlog-index-on-growing-segments-for-faster-searches" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.3.4 now supports importing Parquet files, a widely embraced columnar storage format designed to enhance the efficiency of storing and processing large-scale datasets. This addition gives users increased flexibility and efficiency in their data processing endeavors. By eliminating the need for laborious data format conversions, users managing substantial datasets in the Parquet format will experience a streamlined data import process, significantly reducing the time from initial data preparation to subsequent vector retrieval.</p>
+<p>Furthermore, our data format conversion tool, BulkWriter, has now embraced Parquet as its default output data format, ensuring a more intuitive experience for developers.</p>
+<h2 id="Binlog-index-on-growing-segments-for-faster-searches" class="common-anchor-header">Binlog index on growing segments for faster searches<button data-href="#Binlog-index-on-growing-segments-for-faster-searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,8 +73,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus теперь использует индекс binlog в растущих сегментах, что позволяет ускорить поиск в растущих сегментах до десяти раз. Это усовершенствование значительно повышает эффективность поиска и поддерживает такие продвинутые индексы, как IVF или Fast Scan, улучшая общий пользовательский опыт.</p>
-<h2 id="Support-for-up-to-10000-collectionspartitions" class="common-anchor-header">Поддержка до 10 000 коллекций/разделов<button data-href="#Support-for-up-to-10000-collectionspartitions" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus now leverages a binlog index on growing segments, resulting in up to tenfold faster searches in growing segments. This enhancement significantly boosts search efficiency and supports advanced indices like IVF or Fast Scan, improving the overall user experience.</p>
+<h2 id="Support-for-up-to-10000-collectionspartitions" class="common-anchor-header">Support for up to 10,000 collections/partitions<button data-href="#Support-for-up-to-10000-collectionspartitions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -89,9 +89,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Подобно таблицам и разделам в реляционных базах данных, коллекции и разделы являются основными единицами хранения и управления векторными данными в Milvus. Отвечая на растущие потребности пользователей в тонкой организации данных, Milvus 2.3.4 теперь поддерживает до 10 000 коллекций/разделов в кластере, что значительно превышает предыдущее ограничение в 4 096. Это усовершенствование благоприятно сказывается на различных вариантах использования, таких как управление базами знаний и многопользовательские среды. Расширение поддержки коллекций/разделов связано с усовершенствованием механизма временных тиков, управления горутинами и использования памяти.</p>
-<p><strong><em>Примечание:</em></strong> <em>Рекомендуемое ограничение на количество коллекций/разделов составляет 10 000, так как превышение этого предела может повлиять на восстановление после сбоев и использование ресурсов.</em></p>
-<h2 id="Other-enhancements" class="common-anchor-header">Другие усовершенствования<button data-href="#Other-enhancements" class="anchor-icon" translate="no">
+    </button></h2><p>Like tables and partitions in relational databases, collections and partitions are the core units for storing and managing vector data in Milvus. Responding to users’ evolving needs for nuanced data organization, Milvus 2.3.4 now supports up to 10,000 collections/partitions in a cluster, a significant jump from the previous limit of 4,096. This enhancement benefits diverse use cases, such as knowledge base management and multi-tenant environments. The expanded support for collections/partitions stems from refinements to the time tick mechanism, goroutine management, and memory usage.</p>
+<p><strong><em>Note:</em></strong> <em>The recommended limit for the number of collections/partitions is 10,000, as exceeding this limit may impact failure recovery and resource usage.</em></p>
+<h2 id="Other-enhancements" class="common-anchor-header">Other enhancements<button data-href="#Other-enhancements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,9 +106,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Помимо вышеперечисленных функций, Milvus 2.3.4 включает в себя различные улучшения и исправления ошибок. К ним относятся снижение потребления памяти при извлечении данных и обработка данных переменной длины, уточнение сообщений об ошибках, ускорение загрузки и улучшение баланса шардов запросов. Все эти улучшения способствуют повышению плавности и эффективности работы пользователей.</p>
-<p>Полный обзор всех изменений, внесенных в Milvus 2.3.4, можно найти в разделе <a href="https://milvus.io/docs/release_notes.md#v234">"Примечания к выпуску</a>".</p>
-<h2 id="Stay-connected" class="common-anchor-header">Оставайтесь на связи!<button data-href="#Stay-connected" class="anchor-icon" translate="no">
+    </button></h2><p>In addition to the features above, Milvus 2.3.4 includes various improvements and bug fixes. These include reduced memory usage during data retrieval and variable-length data handling, refined error messaging, accelerated loading speed, and improved query shard balance. These collective enhancements contribute to a smoother and more efficient overall user experience.</p>
+<p>For a comprehensive overview of all the changes introduced in Milvus 2.3.4, refer to our <a href="https://milvus.io/docs/release_notes.md#v234">Release Notes</a>.</p>
+<h2 id="Stay-connected" class="common-anchor-header">Stay connected!<button data-href="#Stay-connected" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,4 +123,4 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Если у вас есть вопросы или отзывы о Milvus, присоединяйтесь к нашему <a href="https://discord.com/invite/8uyFbECzPX">каналу Discord</a>, чтобы напрямую пообщаться с нашими инженерами и сообществом, или присоединяйтесь к <a href="https://discord.com/invite/RjNbk8RR4f">обеду и обучению сообщества Milvus</a> каждый вторник с 12 до 12:30 вечера по тихоокеанскому времени. Вы также можете следить за нами в <a href="https://twitter.com/milvusio">Twitter</a> или <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a>, чтобы узнавать последние новости и обновления о Milvus.</p>
+    </button></h2><p>If you have questions or feedback about Milvus, join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> to engage with our engineers and the community directly or join our <a href="https://discord.com/invite/RjNbk8RR4f">Milvus Community Lunch and Learn</a> Every Tuesday from 12-12:30 PM PST. You’re also welcome to follow us on <a href="https://twitter.com/milvusio">Twitter</a> or <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a> for the latest news and updates about Milvus.</p>

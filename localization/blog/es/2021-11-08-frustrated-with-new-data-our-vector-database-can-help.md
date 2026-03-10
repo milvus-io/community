@@ -1,19 +1,17 @@
 ---
 id: 2021-11-08-frustrated-with-new-data-our-vector-database-can-help.md
-title: Introducción
+title: Introduction
 author: Zilliz
 date: 2021-11-08T00:00:00.000Z
-desc: >-
-  Diseño y práctica de sistemas de bases de datos vectoriales de propósito
-  general orientados a la IA
+desc: Design and Practice of AI-oriented General-purpose Vector Database Systems
 cover: assets.zilliz.com/Frustrated_with_new_data_5051d3ad15.png
 tag: Engineering
 ---
-<custom-h1>¿Frustrado con los nuevos datos? Nuestra base de datos vectorial puede ayudarle</custom-h1><p>En la era del Big Data, ¿qué tecnologías y aplicaciones de bases de datos cobrarán protagonismo? ¿Cuál será la próxima revolución?</p>
-<p>Dado que los datos no estructurados representan aproximadamente el 80-90% de todos los datos almacenados, ¿qué se supone que debemos hacer con estos crecientes lagos de datos? Se podría pensar en utilizar métodos analíticos tradicionales, pero éstos no consiguen extraer información útil, si es que la obtienen. Para responder a esta pregunta, los "Tres Mosqueteros" del equipo de Investigación y Desarrollo de Zilliz, el Dr. Rentong Guo, el Sr. Xiaofan Luan y el Dr. Xiaomeng Yi, han escrito conjuntamente un artículo en el que analizan el diseño y los retos a los que se enfrenta la creación de un sistema de base de datos vectorial de uso general.</p>
-<p>Este artículo se ha incluido en Programmer, una revista producida por CSDN, la mayor comunidad de desarrolladores de software de China. Este número de Programmer también incluye artículos de Jeffrey Ullman, galardonado con el Premio Turing 2020, Yann LeCun, galardonado con el Premio Turing 2018, Mark Porter, CTO de MongoDB, Zhenkun Yang, fundador de OceanBase, Dongxu Huang, fundador de PingCAP, etc.</p>
-<p>A continuación compartimos con vosotros el artículo completo:</p>
-<custom-h1>Diseño y práctica de sistemas de bases de datos vectoriales de propósito general orientados a la IA</custom-h1><h2 id="Introduction" class="common-anchor-header">Introducción<button data-href="#Introduction" class="anchor-icon" translate="no">
+<custom-h1>Frustrated with New Data? Our Vector Database can Help</custom-h1><p>In the era of Big Data, what database technologies and applications will come into the limelight? What will be the next game-changer?</p>
+<p>With unstructured data representing roughly 80-90% of all stored data; what are we supposed to do with these growing data lakes? One might think of using traditional analyitical methods, but these fail to pull out useful information, if any info at all. To answer this question, the “Three Musketeers” of Zilliz’s Research and Developement team, Dr. Rentong Guo, Mr. Xiaofan Luan, and Dr. Xiaomeng Yi, have co-authored an article to discuss the design and challenges faced when building a general-purpose vector database system.</p>
+<p>This article has been included in Programmer, a journal produced by CSDN, the biggest software developer community in China. This issue of Programmer also includes articles by Jeffrey Ullman, recipient of the 2020 Turing Award, Yann LeCun, recipient of the 2018 Turing Award, Mark Porter, CTO of MongoDB, Zhenkun Yang, founder of OceanBase, Dongxu Huang, founder of PingCAP, etc.</p>
+<p>Below we share the full-length article with you:</p>
+<custom-h1>Design and Practice of AI-oriented General-purpose Vector Database Systems</custom-h1><h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -28,8 +26,8 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Las aplicaciones de datos modernas pueden tratar con facilidad datos estructurados, que representan aproximadamente el 20% de los datos actuales. En su caja de herramientas se encuentran sistemas como las bases de datos relacionales, las bases de datos NoSQL, etc.; en cambio, los datos no estructurados, que representan aproximadamente el 80% de todos los datos, no cuentan con ningún sistema fiable. Para resolver este problema, este artículo tratará los puntos débiles que la analítica de datos tradicional tiene con los datos no estructurados y, además, analizará la arquitectura y los retos a los que nos enfrentamos al crear nuestro propio sistema de base de datos vectorial de propósito general.</p>
-<h2 id="Data-Revolution-in-the-AI-era" class="common-anchor-header">La revolución de los datos en la era de la IA<button data-href="#Data-Revolution-in-the-AI-era" class="anchor-icon" translate="no">
+    </button></h2><p>Modern-day data applications can easily deal with structured data, which accounts for roughly 20% of today’s data. In its toolbox are systems like relational databases, NoSQL databases, etc; in contrast, unstructured data, which accounts for roughly 80% of all data, does not have any reliable systems in place. To solve this problem, this article will discuss the pain points that traditional data analytics has with unstructured data and further discuss the architecture and challenges that we faced building up our own general- purpose vector database system.</p>
+<h2 id="Data-Revolution-in-the-AI-era" class="common-anchor-header">Data Revolution in the AI era<button data-href="#Data-Revolution-in-the-AI-era" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,32 +42,38 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con el rápido desarrollo de las tecnologías 5G e IoT, las industrias buscan multiplicar sus canales de recopilación de datos y proyectar aún más el mundo real en el espacio digital. Aunque ha traído consigo algunos desafíos tremendos, también ha traído consigo enormes beneficios para la creciente industria. Uno de estos duros retos es cómo obtener una visión más profunda de estos nuevos datos entrantes.</p>
-<p>Según las estadísticas de IDC, sólo en 2020 se generarán más de 40.000 exabytes de nuevos datos en todo el mundo. Del total, sólo el 20% son datos estructurados, es decir, datos muy ordenados y fáciles de organizar y analizar mediante cálculos numéricos y álgebra relacional. Por el contrario, los datos no estructurados (que representan el 80% restante) son extremadamente ricos en variaciones de tipos de datos, lo que dificulta descubrir la semántica profunda a través de los métodos tradicionales de análisis de datos.</p>
-<p>Afortunadamente, estamos experimentando una rápida evolución simultánea de los datos no estructurados y la IA, que nos permite comprender mejor los datos a través de diversos tipos de redes neuronales, como se muestra en la Figura 1.</p>
+    </button></h2><p>With the rapid development of 5G and IoT technologies, industries are seeking to multiply their channels of data collection and further project the real world into the digital space. Although it has brought on some tremendous challenges, it has also brought with it tremendous benefits to the growing industry. One of these tough challenges is how to gain deeper insights into this new incoming data.</p>
+<p>According to IDC statistics, more than 40,000 exabytes of new data was generated worldwide in 2020 alone. Of the total, only 20% is structured data - data that is highly ordered and easy to organize and analyze via numerical calculations and relational algebra. In contrast, unstructured data (taking up the remaining 80%) is extremely rich in data type variations, making it difficult to uncover the deep semantics through traditional data analytic methods.</p>
+<p>Fortunately, we are experiencing a concurrent, rapid evolution in unstructured data and AI, with AI allowing us to better understand the data through various types of neural networks, as shown in Figure 1.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/newdata1_d5c34497d0.jpeg" alt="newdata1.jpeg" class="doc-image" id="newdata1.jpeg" />
-   </span> <span class="img-wrapper"> <span>newdata1.jpeg</span> </span></p>
-<p>La tecnología de incrustación ha ganado popularidad rápidamente tras el debut de Word2vec, y la idea de "incrustarlo todo" ha llegado a todos los sectores del aprendizaje automático. Esto conduce a la aparición de dos grandes capas de datos: la capa de datos brutos y la capa de datos vectoriales. La capa de datos brutos se compone de datos no estructurados y ciertos tipos de datos estructurados; la capa vectorial es la colección de incrustaciones fácilmente analizables que se origina a partir de la capa de datos brutos pasando por modelos de aprendizaje automático.</p>
-<p>En comparación con los datos brutos, los datos vectorizados presentan las siguientes ventajas:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/newdata1_d5c34497d0.jpeg" alt="newdata1.jpeg" class="doc-image" id="newdata1.jpeg" />
+    <span>newdata1.jpeg</span>
+  </span>
+</p>
+<p>Embedding technology has quickly gained popularity after the debut of Word2vec, with the idea of “embed everything” reaching all sectors of machine learning. This leads to the emergence of two major data layers: the raw data layer and the vector data layer. The raw data layer is comprised of unstructured data and certain types of structured data; the vector layer is the collection of easily analyzable embeddings that originates from the raw layer passing through machine learning models.</p>
+<p>When compared with raw data, vectorized data features the following advantages:</p>
 <ul>
-<li>Los vectores de incrustación son un tipo abstracto de datos, lo que significa que podemos construir un sistema de álgebra unificada dedicado a reducir la complejidad de los datos no estructurados.</li>
-<li>Los vectores incrustados se expresan mediante vectores densos de coma flotante, lo que permite a las aplicaciones aprovechar las ventajas de SIMD. Dado que las GPU y casi todas las CPU modernas admiten SIMD, los cálculos a través de vectores pueden alcanzar un alto rendimiento a un coste relativamente bajo.</li>
-<li>Los datos vectoriales codificados mediante modelos de aprendizaje automático ocupan menos espacio de almacenamiento que los datos no estructurados originales, lo que permite un mayor rendimiento.</li>
-<li>La aritmética también puede realizarse a través de vectores incrustados. La figura 2 muestra un ejemplo de correspondencia semántica aproximada entre modalidades: las imágenes de la figura son el resultado de la correspondencia entre incrustaciones de palabras e incrustaciones de imágenes.</li>
+<li>Embedding vectors are an abstract type of data, meaning we can build a unified algebra system dedicated to reducing the complexity of unstructured data.</li>
+<li>Embedding vectors are expressed through dense floating-point vectors, allowing applications to take advantage of SIMD. With SIMD being supported by GPUs and nearly all modern CPUs, computations across vectors can achieve high performance at a relatively low cost.</li>
+<li>Vector data encoded via machine learning models takes up less storage space than the original unstructured data, allowing for higher throughput.</li>
+<li>Arithmetic can also be performed across embedding vectors. Figure 2 shows an example of cross-modal semantic approximate matching - the pictures shown in the figure are the result of matching words embeddings with image embeddings.</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/newdata2_14e0554305.png" alt="newdata2.png" class="doc-image" id="newdata2.png" />
-   </span> <span class="img-wrapper"> <span>datosnuevos2.png</span> </span></p>
-<p>Como se muestra en la figura 3, la combinación de la semántica de imágenes y palabras puede realizarse con una simple suma y resta de vectores a través de sus correspondientes incrustaciones.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/newdata2_14e0554305.png" alt="newdata2.png" class="doc-image" id="newdata2.png" />
+    <span>newdata2.png</span>
+  </span>
+</p>
+<p>As shown in Figure 3, combining image and word semantics can be done with simple vector addition and subtraction across their corresponding embeddings.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/newdata3_3c71fc56b9.png" alt="newdata3.png" class="doc-image" id="newdata3.png" />
-   </span> <span class="img-wrapper"> <span>newdata3.png</span> </span></p>
-<p>Aparte de las funciones anteriores, estos operadores permiten realizar consultas más complejas en situaciones prácticas. La recomendación de contenidos es un ejemplo bien conocido. Por lo general, el sistema incrusta tanto el contenido como las preferencias de visualización de los usuarios. A continuación, el sistema compara las preferencias del usuario con los contenidos más similares mediante un análisis de similitud semántica, lo que da como resultado nuevos contenidos similares a las preferencias del usuario. Esta capa de datos vectoriales no se limita a los sistemas de recomendación, los casos de uso incluyen el comercio electrónico, el análisis de malware, el análisis de datos, la verificación biométrica, el análisis de fórmulas químicas, las finanzas, los seguros, etc.</p>
-<h2 id="Unstructured-data-requires-a-complete-basic-software-stack" class="common-anchor-header">Los datos no estructurados requieren una pila de software básica completa<button data-href="#Unstructured-data-requires-a-complete-basic-software-stack" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/newdata3_3c71fc56b9.png" alt="newdata3.png" class="doc-image" id="newdata3.png" />
+    <span>newdata3.png</span>
+  </span>
+</p>
+<p>Apart from the above features, these operators support more complicated query statements in practical scenarios. Content recommendation is a well-known example. Generally, the system embeds both the content and the users’ viewing preferences. Next, the system matches the embedded user’s preferences with the most similar embedded content via semantic similarity analysis, resulting in new content that is similar to users’ preferences. This vector data layer isn’t just limited to recommender systems, use cases include e-commerce, malware analysis, data analysis, biometric verification, chemical formula analysis, finance, insurance, etc.</p>
+<h2 id="Unstructured-data-requires-a-complete-basic-software-stack" class="common-anchor-header">Unstructured data requires a complete basic software stack<button data-href="#Unstructured-data-requires-a-complete-basic-software-stack" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,10 +88,10 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El software de sistema está en la base de todas las aplicaciones orientadas a datos, pero el software de sistema de datos construido en las últimas décadas, como bases de datos, motores de análisis de datos, etc., está pensado para tratar datos estructurados. Las aplicaciones de datos modernas se basan casi exclusivamente en datos no estructurados y no se benefician de los sistemas tradicionales de gestión de bases de datos.</p>
-<p>Para abordar este problema, hemos desarrollado y puesto en marcha un sistema de base de datos vectorial de propósito general orientado a la IA llamado <em>Milvus</em> (Referencia nº 1~2). En comparación con los sistemas de bases de datos tradicionales, Milvus trabaja sobre una capa de datos diferente. Las bases de datos tradicionales, como las bases de datos relacionales, las bases de datos KV, las bases de datos de texto, las bases de datos de imágenes/vídeos, etc... trabajan sobre la capa de datos brutos, mientras que Milvus trabaja sobre la capa de datos vectoriales.</p>
-<p>En los capítulos siguientes, analizaremos las características novedosas, el diseño arquitectónico y los retos técnicos a los que nos enfrentamos al construir Milvus.</p>
-<h2 id="Major-attributes-of-vector-database" class="common-anchor-header">Principales atributos de las bases de datos vectoriales<button data-href="#Major-attributes-of-vector-database" class="anchor-icon" translate="no">
+    </button></h2><p>System software sits at the foundation of all data-oriented applications, but the data system software built up over the past several decades, e.g. databases, data analysis engines, etc., are meant to deal with structured data. Modern data applications rely almost exclusively on unstructured data and do not benefit from traditional database management systems.</p>
+<p>To tackle this issue, we have developed and open-sourced an AI-oriented general-purpose vector database system named <em>Milvus</em> (Reference No. 1~2). When compared with traditional database systems, Milvus works on a different layer of data. Traditional databases, such as relational databases, KV databases, text databases, images/video databases, etc… work on the raw data layer, while Milvus works on the vector data layer.</p>
+<p>In the following chapters, we will discuss the novel features, architectural design, and technical challenges we faced when building Milvus.</p>
+<h2 id="Major-attributes-of-vector-database" class="common-anchor-header">Major attributes of vector database<button data-href="#Major-attributes-of-vector-database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,28 +106,28 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Las bases de datos vectoriales almacenan, recuperan y analizan vectores y, al igual que cualquier otra base de datos, también proporcionan una interfaz estándar para operaciones CRUD. Además de estas características "estándar", los atributos enumerados a continuación también son cualidades importantes para una base de datos vectorial:</p>
+    </button></h2><p>Vector databases store, retrieve, analyze vectors, and, just as with any other database, also provide a standard interface for CRUD operations. In addition to these “standard” features, the attributes listed below are also important qualities for a vector database:</p>
 <ul>
-<li><strong>Soporte para operadores vectoriales de alta eficiencia</strong></li>
+<li><strong>Support for high-efficiency vector operators</strong></li>
 </ul>
-<p>El soporte de operadores vectoriales en un motor de análisis se centra en dos niveles. En primer lugar, la base de datos vectorial debe admitir distintos tipos de operadores, por ejemplo, la coincidencia de similitud semántica y la aritmética semántica mencionadas anteriormente. Además, debe admitir diversas métricas de similitud para los cálculos de similitud subyacentes. Dicha similitud suele cuantificarse como distancia espacial entre vectores, siendo métricas comunes la distancia euclidiana, la distancia coseno y la distancia producto interior.</p>
+<p>Support for vector operators in an analysis engine focuses on two levels. First, the vector database should support different types of operators, for example, semantic similarity matching and semantic arithmetic mentioned above. In addition to this, it should support a variety of similarity metrics for the underlying similarity calculations. Such similarity is usually quantified as spatial distance between vectors, with common metrics being Euclidean distance, cosine distance, and inner product distance.</p>
 <ul>
-<li><strong>Apoyo a la indexación vectorial</strong></li>
+<li><strong>Support for vector indexing</strong></li>
 </ul>
-<p>En comparación con los índices basados en árboles B o LSM de las bases de datos tradicionales, los índices vectoriales de alta dimensión suelen consumir muchos más recursos informáticos. Recomendamos utilizar algoritmos de clustering e índices de grafos, y dar prioridad a las operaciones matriciales y vectoriales, aprovechando así al máximo las capacidades de aceleración del cálculo vectorial por hardware mencionadas anteriormente.</p>
+<p>Compared to B-tree or LSM-tree based indexes in traditional databases, high-dimensional vector indexes usually consume much more computing resources. We recommend using clustering and graph index algorithms, and giving priority to matrix and vector operations, hence taking full advantage of the hardware vector calculation acceleration abilities previously mentioned.</p>
 <ul>
-<li><strong>Experiencia de usuario coherente en distintos entornos de despliegue</strong></li>
+<li><strong>Consistent user experience across different deployment environments</strong></li>
 </ul>
-<p>Las bases de datos vectoriales suelen desarrollarse y desplegarse en distintos entornos. En la fase preliminar, los científicos de datos y los ingenieros de algoritmos trabajan principalmente en sus portátiles y estaciones de trabajo, ya que prestan más atención a la eficiencia de la verificación y a la velocidad de iteración. Una vez finalizada la verificación, pueden desplegar la base de datos a tamaño completo en un clúster privado o en la nube. Por lo tanto, un sistema de base de datos vectorial cualificado debe ofrecer un rendimiento y una experiencia de usuario coherentes en diferentes entornos de despliegue.</p>
+<p>Vector databases are usually dveloped and deployed in different environments. At the preliminary stage, data scientists and algorithm engineers work mostly on their laptops and workstations, as they pay more attention to verification efficiency and iteration speed. When verification is completed, they may deploy the full-size database on a private cluster or the cloud. Therefore, a qualified vector database system should deliver consistent performance and user experience across different deployment environments.</p>
 <ul>
-<li><strong>Compatibilidad con la búsqueda híbrida</strong></li>
+<li><strong>Support for hybrid search</strong></li>
 </ul>
-<p>A medida que las bases de datos vectoriales se vuelven omnipresentes, surgen nuevas aplicaciones. Entre todas estas demandas, la que se menciona con más frecuencia es la búsqueda híbrida en vectores y otros tipos de datos. Algunos ejemplos son la búsqueda aproximada del vecino más próximo (ANNS) tras el filtrado escalar, la recuperación multicanal a partir de la búsqueda de texto completo y la búsqueda vectorial, y la búsqueda híbrida de datos espaciotemporales y datos vectoriales. Estos retos exigen una escalabilidad elástica y una optimización de las consultas para fusionar eficazmente los motores de búsqueda vectorial con los motores de búsqueda KV, de texto y de otro tipo.</p>
+<p>New applications are emerging as vector databases become ubiquitous. Among all these demands, the most frequently mentioned is hybrid search on vectors and other types of data. A few examples of this is approximate nearest neighbor search (ANNS) after scalar filtering, multi-channel recall from full-text search and vector search, and hybrid search of spatio-temporal data and vector data. Such challenges demand elastic scalability and query optimization to effectively fuse vector search engines with KV, text, and other search engines.</p>
 <ul>
-<li><strong>Arquitectura nativa en la nube</strong></li>
+<li><strong>Cloud-native architecture</strong></li>
 </ul>
-<p>El volumen de datos vectoriales crece como setas con el crecimiento exponencial de la recopilación de datos. Los datos vectoriales a escala de billones y de alta dimensión corresponden a miles de TB de almacenamiento, lo que supera con creces el límite de un único nodo. En consecuencia, la capacidad de ampliación horizontal es una característica clave de las bases de datos vectoriales y debe satisfacer las demandas de elasticidad y agilidad de despliegue de los usuarios. Además, también debe reducir la complejidad de funcionamiento y mantenimiento del sistema, al tiempo que mejora la observabilidad con la ayuda de la infraestructura en la nube. Algunas de estas necesidades se presentan en forma de aislamiento multiusuario, instantáneas y copias de seguridad de datos, cifrado de datos y visualización de datos, que son habituales en las bases de datos tradicionales.</p>
-<h2 id="Vector-database-system-architecture" class="common-anchor-header">Arquitectura del sistema de base de datos vectorial<button data-href="#Vector-database-system-architecture" class="anchor-icon" translate="no">
+<p>The volume of vector data mushrooms with the exponential growth of data collection. Trillion-scale, high-dimensional vector data corresponds to thousands of TB of storage, which is far beyond the limit of a single node. As a result, horizontal extendability is a key ability for a vector database, and should satisfy the users’ demands for elasticity and deployment agility. Furthermore, it should also lower the system operation and maintenance complexity while improving observability with the assistance of cloud infrastructure. Some of these needs come in the form of multi-tenant isolation, data snapshot and backup, data encryption, and data visualization, which are common in traditional databases.</p>
+<h2 id="Vector-database-system-architecture" class="common-anchor-header">Vector database system architecture<button data-href="#Vector-database-system-architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,20 +142,24 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.0 sigue los principios de diseño de &quot;registro como datos&quot;, &quot;procesamiento unificado de lotes y flujos&quot;, &quot;sin estado&quot; y &quot;microservicios&quot;. La figura 4 muestra la arquitectura general de Milvus 2.0.</p>
+    </button></h2><p>Milvus 2.0 follows the design principles of &quot;log as data&quot;, &quot;unified batch and stream processing&quot;, &quot;stateless&quot;, and &quot;micro-services&quot;. Figure 4 depicts the overall architecture of Milvus 2.0.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/newdata4_b7f3ab6969.png" alt="newdata4.png" class="doc-image" id="newdata4.png" />
-   </span> <span class="img-wrapper"> <span>newdata4.png</span> </span></p>
-<p><strong>Registro como datos</strong>: Milvus 2.0 no mantiene ninguna tabla física. En su lugar, garantiza la fiabilidad de los datos mediante la persistencia y las instantáneas de los registros. El corredor de registros (la columna vertebral del sistema) almacena los registros y desacopla los componentes y servicios mediante el mecanismo de publicación-suscripción de registros (pub-sub). Como se muestra en la Figura 5, el corredor de registros se compone de una &quot;secuencia de registros&quot; y un &quot;suscriptor de registros&quot;. La secuencia de logs registra todas las operaciones que cambian el estado de una colección (equivalente a una tabla en una base de datos relacional ); el suscriptor de logs se suscribe a la secuencia de logs para actualizar sus datos locales y proporcionar servicios en forma de copias de sólo lectura. El mecanismo pub-sub también da cabida a la extensibilidad del sistema en términos de captura de datos de cambios (CDC) y despliegue distribuido globalmente.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/newdata4_b7f3ab6969.png" alt="newdata4.png" class="doc-image" id="newdata4.png" />
+    <span>newdata4.png</span>
+  </span>
+</p>
+<p><strong>Log as data</strong>: Milvus 2.0 does not maintain any physical tables. Instead, it ensures data reliability via log persistence and log snapshots. The log broker (the system’s backbone) stores logs and decouples components and services through the log publication-subscription (pub-sub) mechanism. As shown in Figure 5, the log broker is comprised of “log sequence” and &quot;log subscriber&quot;. The log sequence records all operations that change the state of a collection (equivalent to a table in a relational database ); log subscriber subscribes to the log sequence to update its local data and provide services in the form of read-only copies. The pub-sub mechanism also makes room for system extendability in terms of change data capture (CDC) and globally-distributed deployment.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/newdata5_853dd38bc3.png" alt="newdata5.png" class="doc-image" id="newdata5.png" />
-   </span> <span class="img-wrapper"> <span>newdata5.png</span> </span></p>
-<p><strong>Procesamiento unificado de lotes y flujos</strong>: El flujo de registros permite a Milvus actualizar los datos en tiempo real, garantizando así la entregabilidad en tiempo real. Además, al transformar los lotes de datos en instantáneas de registros y crear índices a partir de las instantáneas, Milvus puede lograr una mayor eficacia en las consultas. Durante una consulta, Milvus fusiona los resultados de la consulta tanto de los datos incrementales como de los históricos para garantizar la integridad de los datos devueltos. Este diseño equilibra mejor el rendimiento y la eficiencia en tiempo real, aliviando la carga de mantenimiento de los sistemas en línea y fuera de línea en comparación con la arquitectura Lambda tradicional.</p>
-<p><strong>Sin estado</strong>: La infraestructura en la nube y los componentes de almacenamiento de código abierto liberan a Milvus de la persistencia de datos dentro de sus propios componentes. Milvus 2.0 persiste los datos con tres tipos de almacenamiento: almacenamiento de metadatos, almacenamiento de registros y almacenamiento de objetos. El almacenamiento de metadatos no sólo almacena los metadatos, sino que también gestiona el descubrimiento de servicios y la gestión de nodos. El almacenamiento de registros ejecuta la persistencia incremental de datos y la publicación-suscripción de datos. El almacenamiento de objetos almacena instantáneas de registros, índices y algunos resultados de cálculos intermedios.</p>
-<p><strong>Microservicios</strong>: Milvus sigue los principios de desagregación del plano de datos y el plano de control, separación de lectura/escritura y separación de tareas en línea/fuera de línea. Se compone de cuatro capas de servicio: la capa de acceso, la capa de coordinador, la capa de trabajador y la capa de almacenamiento. Estas capas son mutuamente independientes cuando se trata de escalado y recuperación de desastres. La capa de acceso, que es la capa frontal y el punto final del usuario, gestiona las conexiones de los clientes, valida sus solicitudes y combina los resultados de las consultas. Como &quot;cerebro&quot; del sistema, la capa de coordinación asume las tareas de gestión de la topología del clúster, equilibrio de carga, declaración de datos y gestión de datos. La capa de trabajadores contiene las "extremidades" del sistema, ejecutando actualizaciones de datos, consultas y operaciones de creación de índices. Por último, la capa de almacenamiento se encarga de la persistencia y replicación de los datos. En conjunto, este diseño basado en microservicios garantiza una complejidad controlable del sistema, en el que cada componente es responsable de su función correspondiente. Milvus aclara los límites de los servicios mediante interfaces bien definidas y desacopla los servicios basándose en una granularidad más fina, lo que optimiza aún más la escalabilidad elástica y la distribución de recursos.</p>
-<h2 id="Technical-challenges-faced-by-vector-databases" class="common-anchor-header">Retos técnicos de las bases de datos vectoriales<button data-href="#Technical-challenges-faced-by-vector-databases" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/newdata5_853dd38bc3.png" alt="newdata5.png" class="doc-image" id="newdata5.png" />
+    <span>newdata5.png</span>
+  </span>
+</p>
+<p><strong>Unified batch and stream processing</strong>: Log streaming allows Milvus to update data in real time, thereby ensuring real-time deliverability. Furthermore, by transforming data batches into log snapshots and building index on snapshots, Milvus is able to achieve higher query efficiency. During a query, Milvus merges the query results from both incremental data and historical data to guarantee the integrality of the data returned. Such design better balances real-time performance and efficiency, easing the maintenance burden of both online and offline systems compared to that of the traditional Lambda architecture.</p>
+<p><strong>Stateless</strong>: Cloud infrastructure and open-source storage components free Milvus from persisting data within its own components. Milvus 2.0 persists data with three types of storage: metadata storage, log storage, and object storage. Metadata storage not only stores the metadata, but also handles services discovery and node management. Log storage executes incremental data persistence and data publication-subscription. Object storage stores log snapshots, indexes, and some intermediate calculation results.</p>
+<p><strong>Microservices</strong>: Milvus follows the principles of data plane and control plane disaggregation, read/write separation, and online/offline task separation. It is compromised of four layers of service: the access layer, coordinator layer, worker layer, and storage layer. These layers are mutually independent when it comes to scaling and disaster recovery. As the front-facing layer and user endpoint, the access layer handles client connections, validates client requests, and combines query results. As the system’s &quot;brain&quot;, the coordinator layer takes on the tasks of cluster topology management, load balancing, data declaration, and data management. The worker layer contains the “limbs” of the system, executing data updates, queries, and index building operations. Finally, the storage layer is in charge of data persistence and replication. Overall, this microservice-based design ensures a controllable system complexity, with each component responsible to its own corresponding function. Milvus clarifies the service boundaries through well-defined interfaces, and decouples the services based on finer granularity, which further optimizes the elastic scalability and resource distribution.</p>
+<h2 id="Technical-challenges-faced-by-vector-databases" class="common-anchor-header">Technical challenges faced by vector databases<button data-href="#Technical-challenges-faced-by-vector-databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -166,25 +174,25 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Las primeras investigaciones sobre bases de datos vectoriales se centraron principalmente en el diseño de estructuras de índices y métodos de consulta de alta eficiencia, lo que dio lugar a una gran variedad de bibliotecas de algoritmos de búsqueda vectorial (Referencia nº 3~5). En los últimos años, un número cada vez mayor de equipos académicos y de ingeniería han vuelto a examinar los problemas de la búsqueda vectorial desde la perspectiva del diseño de sistemas, y han propuesto algunas soluciones sistemáticas. Resumiendo los estudios existentes y la demanda de los usuarios, clasificamos los principales retos técnicos de las bases de datos vectoriales del siguiente modo:</p>
+    </button></h2><p>Early research on vector databases was mainly concentrated on the design of high-efficiency index structures and query methods - this resulted in a variety of vector search algorithm libraries (Reference No. 3~5). Over the past few years, an increasing number of academic and engineering teams have taken a fresh look at vector search issues from system design perspective, and proposed some systematic solutions. Summarizing existing studies and user demand, we categorize the main technical challenges for vector databases as follows:</p>
 <ul>
-<li><strong>Optimización de la relación coste-rendimiento en relación con la carga</strong></li>
+<li><strong>Optimization of cost-to-performance ratio relative to load</strong></li>
 </ul>
-<p>En comparación con los tipos de datos tradicionales, el análisis de datos vectoriales requiere muchos más recursos de almacenamiento y computación debido a su alta dimensionalidad. Además, los usuarios han mostrado preferencias diversas en cuanto a las características de la carga y la optimización del coste-rendimiento de las soluciones de búsqueda vectorial. Por ejemplo, los usuarios que trabajan con conjuntos de datos extremadamente grandes (decenas o cientos de miles de millones de vectores) preferirían soluciones con menores costes de almacenamiento de datos y una latencia de búsqueda variable, mientras que otros podrían exigir un mayor rendimiento de búsqueda y una latencia media no variable. Para satisfacer estas preferencias tan diversas, el componente central del índice de la base de datos vectorial debe ser capaz de soportar estructuras de índice y algoritmos de búsqueda con diferentes tipos de almacenamiento y hardware informático.</p>
-<p>Por ejemplo, el almacenamiento de datos vectoriales y de los datos de índice correspondientes en medios de almacenamiento más baratos (como NVM y SSD) debe tenerse en cuenta a la hora de reducir los costes de almacenamiento. Sin embargo, la mayoría de los algoritmos de búsqueda vectorial existentes funcionan con datos leídos directamente de la memoria. Para evitar la pérdida de rendimiento que conlleva el uso de unidades de disco, la base de datos vectorial debe ser capaz de explotar la localidad de acceso a los datos combinada con los algoritmos de búsqueda, además de poder ajustarse a las soluciones de almacenamiento de datos vectoriales y estructura de índices (Referencia nº 6~8). Con el fin de mejorar el rendimiento, la investigación actual se ha centrado en tecnologías de aceleración de hardware que incluyen GPU, NPU, FPGA, etc. (Referencia nº 9). Sin embargo, el hardware y los chips específicos de aceleración varían en el diseño de la arquitectura, y el problema de la ejecución más eficiente a través de diferentes aceleradores de hardware aún no está resuelto.</p>
+<p>Compared to that of traditional data types, analysis of vector data takes much more storage and computing resources because of its high dimensionality. Moreover, users have shown diverse preferences for load characteristics and cost-performance optimization on vector search solutions. For instance, users, who work with extremely large datasets (tens or hundreds of billions of vectors), would prefer solutions with lower data storage costs and variance in search latency, while others may demand higher search performance and a non-varying average latency. To satisfy such diverse preferences, the core index component of the vector database must be able to support index structures and search algorithms with different types of storage and computing hardware.</p>
+<p>For example, storing vector data and the corresponding index data in cheaper storage mediums (such as NVM and SSD) should be taken into consideration when lowering storage costs. However, most existing vector search algorithms work on data read directly from memory. To avoid performance loss brought by the usage of disk drives, the vector database should be able to exploit the locality of data access combined with search algorithms in addition to being able to adjust to storage solutions for vector data and index structure (Reference No. 6~8). For the sake of performance improvements, contemporary research has been focused on hardware acceleration technologies involving GPU, NPU, FPGA, etc. (Reference No. 9). However, acceleration-specific hardware and chips vary in architecture design, and the problem of most efficient execution across different hardware accelerators is not yet solved.</p>
 <ul>
-<li><strong>Configuración y ajuste automatizados del sistema</strong></li>
+<li><strong>Automated system configuration and tuning</strong></li>
 </ul>
-<p>La mayoría de los estudios existentes sobre algoritmos de búsqueda vectorial buscan un equilibrio flexible entre los costes de almacenamiento, el rendimiento computacional y la precisión de la búsqueda. Por lo general, tanto los parámetros del algoritmo como las características de los datos influyen en el rendimiento real de un algoritmo. Dado que las demandas de los usuarios difieren en costes y rendimiento, la selección de un método de búsqueda vectorial que se adapte a sus necesidades y a las características de los datos plantea un reto importante.</p>
-<p>Sin embargo, los métodos manuales de análisis de los efectos de la distribución de datos en los algoritmos de búsqueda no son eficaces debido a la alta dimensionalidad de los datos vectoriales. Para abordar este problema, el mundo académico y la industria están buscando soluciones de recomendación de algoritmos basadas en el aprendizaje automático (Referencia nº 10).</p>
-<p>El diseño de un algoritmo de búsqueda vectorial inteligente basado en el aprendizaje automático es también un tema candente de investigación. En general, los algoritmos de búsqueda vectorial existentes se desarrollan universalmente para datos vectoriales con diversos patrones de dimensionalidad y distribución. En consecuencia, no admiten estructuras de índices específicas según las características de los datos, por lo que tienen poco espacio para la optimización. Los estudios futuros también deberían explorar tecnologías eficaces de aprendizaje automático que puedan adaptar las estructuras de los índices a las diferentes características de los datos (Referencia nº 11-12).</p>
+<p>Most existing studies on vector search algorithms seek a flexible balance between storage costs, computational performance, and search accuracy. Generally, both algorithm parameters and data features influence the actual performance of an algorithm. As user demands differ in costs and performance, selecting a vector query method that suits their needs and data features poses a significant challenge.</p>
+<p>Nevertheless, manual methods of analyzing the effects of data distribution on search algorithms aren’t effective due to the high dimensionality of the vector data. To address this issue, academia and industry are seeking algorithm recommendation solutions based on machine learning (Reference No. 10).</p>
+<p>The design of an ML-powered intelligent vector search algorithm is also a research hotspot. Generally speaking, existing vector search algorithms are developed universally for vector data with various dimensionality and distribution patterns. As a result, they do not support specific index structures according to the data features, and thus have little space for optimization. Future studies should also explore effective machine learning technologies that can tailor index structures for different data features (Reference No. 11-12).</p>
 <ul>
-<li><strong>Soporte de semántica de consulta avanzada</strong></li>
+<li><strong>Support for advanced query semantics</strong></li>
 </ul>
-<p>Las aplicaciones modernas se basan a menudo en consultas más avanzadas a través de vectores: la semántica tradicional de búsqueda del vecino más próximo ya no es aplicable a la búsqueda de datos vectoriales. Además, está surgiendo una demanda de búsqueda combinada en múltiples bases de datos vectoriales o en datos vectoriales y no vectoriales (Referencia nº 13).</p>
-<p>Concretamente, las variaciones en las métricas de distancia para la similitud vectorial crecen rápidamente. Las puntuaciones de similitud tradicionales, como la distancia euclidiana, la distancia producto interior y la distancia coseno, no pueden satisfacer todas las demandas de las aplicaciones. Con la popularización de la tecnología de inteligencia artificial, muchas industrias están desarrollando sus propias métricas de similitud vectorial específicas para cada campo, como la distancia Tanimoto, la distancia Mahalanobis, la superestructura y la subestructura. Tanto la integración de estas métricas de evaluación en los algoritmos de búsqueda existentes como el diseño de nuevos algoritmos que utilicen dichas métricas son problemas de investigación que suponen todo un reto.</p>
-<p>A medida que aumente la complejidad de los servicios a los usuarios, las aplicaciones tendrán que buscar tanto en datos vectoriales como en datos no vectoriales. Por ejemplo, un recomendador de contenidos analiza las preferencias y relaciones sociales de los usuarios y las relaciona con los temas de actualidad para ofrecerles el contenido adecuado. Estas búsquedas suelen implicar consultas en varios tipos de datos o en varios sistemas de procesamiento de datos. Dar soporte a estas búsquedas híbridas de forma eficiente y flexible es otro de los retos del diseño de sistemas.</p>
-<h2 id="Authors" class="common-anchor-header">Autores<button data-href="#Authors" class="anchor-icon" translate="no">
+<p>Modern applications often rely on more advanced queries across vectors - traditional nearest neighbour search semantics are no longer applicable to vector data search. Moreover, demand for combined search across multiple vector databases or on vector and non-vector data is emerging (Reference No. 13).</p>
+<p>Specifically, variations in distance metrics for vector similarity grow fast. Traditional similarity scores, such as Euclidean distance, inner product distance, and cosine distance cannot satisfy all application demands. With the popularization of artificial intelligence technology, many industries are developing their own field-specific vector similarity metrics, such as Tanimoto distance, Mahalanobis distance, Superstructure, and Substructure. Integrating these evaluation metrics into existing search algorithms and designing novel algorithms utilizing said metrics are both challenging research problems.</p>
+<p>As the complexity of user services increase, applications will need to search across both vector data and non-vector data. For example, a content recommender analyzes users’ preferences, social relations, and matches them with current hot topics to pull proper content to users. Such searches normally involve queries on multiple data types or across multiple data processing systems. To support such hybrid searches efficiently and flexibly is another system design challenge.</p>
+<h2 id="Authors" class="common-anchor-header">Authors<button data-href="#Authors" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -199,11 +207,11 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dr. Rentong Guo (Doctor en Teoría y Software Informático por la Universidad Huazhong de Ciencia y Tecnología), socio y Director de I+D de Zilliz. Es miembro del Comité Técnico de Informática Distribuida y Procesamiento de la Federación China de Ordenadores (CCF TCDCP). Sus investigaciones se centran en bases de datos, sistemas distribuidos, sistemas de caché y computación heterogénea. Sus trabajos de investigación se han publicado en varios congresos y revistas de primer nivel, como Usenix ATC, ICS, DATE y TPDS. Como arquitecto de Milvus, el Dr. Guo busca soluciones para desarrollar sistemas analíticos de datos basados en IA altamente escalables y rentables.</p>
-<p>Xiaofan Luan, socio y Director de Ingeniería de Zilliz, y miembro del Comité Asesor Técnico de LF AI &amp; Data Foundation. Trabajó sucesivamente en la sede estadounidense de Oracle y en Hedvig, una startup de almacenamiento definido por software. Se incorporó al equipo de Alibaba Cloud Database y se encargó del desarrollo de las bases de datos NoSQL HBase y Lindorm. Luan obtuvo su máster en Ingeniería Informática Electrónica en la Universidad de Cornell.</p>
-<p>Dr. Xiaomeng Yi (Doctor en Arquitectura Informática por la Universidad Huazhong de Ciencia y Tecnología), Investigador principal y jefe del equipo de investigación de Zilliz. Sus investigaciones se centran en la gestión de datos de alta dimensión, la recuperación de información a gran escala y la asignación de recursos en sistemas distribuidos. Los trabajos de investigación del Dr. Yi se han publicado en destacadas revistas y conferencias internacionales como IEEE Network Magazine, IEEE/ACM TON, ACM SIGMOD, IEEE ICDCS y ACM TOMPECS.</p>
-<p>Filip Haltmayer, ingeniero de datos de Zilliz, se licenció en Informática por la Universidad de California, Santa Cruz. Después de unirse a Zilliz, Filip pasa la mayor parte de su tiempo trabajando en despliegues en la nube, interacciones con clientes, charlas técnicas y desarrollo de aplicaciones de IA.</p>
-<h2 id="References" class="common-anchor-header">Referencias<button data-href="#References" class="anchor-icon" translate="no">
+    </button></h2><p>Dr. Rentong Guo (Ph.D. of Computer Software and Theory, Huazhong University of Science and Technology), partner and R&amp;D Director of Zilliz. He is a member of China Computer Federation Technical Committee on Distributed Computing and Processing (CCF TCDCP). His research focuses on database, distributed system, caching system, and heterogeneous computing. His research works have been published on several top-tier conferences and journals, including Usenix ATC, ICS, DATE, TPDS. As the architect of Milvus, Dr. Guo is seeking solutions to develop highly scalable and cost-efficient AI-based data analytic systems.</p>
+<p>Xiaofan Luan, partner and Engineering Director of Zilliz, and Technical Advisory Committee member of LF AI &amp; Data Foundation. He worked successively in the Oracle US headquarters and Hedvig, a software defined storage startup. He joined Alibaba Cloud Database team and was in charge of the development of  NoSQL database HBase and  Lindorm. Luan obtained his master’s degree in Electronic Computer Engineering from Cornell University.</p>
+<p>Dr. Xiaomeng Yi (Ph.D. of Computer Architecture, Huazhong University of Science and Technology), Senior Researcher and Research team leader of Zilliz. His research concentrates on high-dimension data management, large-scale information retrieval, and resource allocation in distributed systems. Dr. Yi’s research works have been published on leading journals and international conferences including IEEE Network Magazine, IEEE/ACM TON, ACM SIGMOD, IEEE ICDCS, and ACM TOMPECS.</p>
+<p>Filip Haltmayer, a Zilliz Data Engineer, graduated from University of California, Santa Cruz with a BS in Computer Science. After joining Zilliz, Filip spends most of his time working on cloud deployments, client interactions, techincal talks, and AI application development.</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -219,21 +227,21 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ol>
-<li>Proyecto Milvus: https://github.com/milvus-io/milvus</li>
-<li>Milvus: Un sistema de gestión de datos vectoriales creado a propósito, SIGMOD'21</li>
-<li>Proyecto Faiss: https://github.com/facebookresearch/faiss</li>
-<li>Proyecto Annoy: https://github.com/spotify/annoy</li>
-<li>Proyecto SPTAG: https://github.com/microsoft/SPTAG</li>
-<li>GRIP: Multi-Store Capacity-Optimized High-Performance Nearest Neighbor Search for Vector Search Engine, CIKM'19</li>
-<li>DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node, NIPS'19</li>
-<li>HM-ANN: búsqueda eficiente de vecinos más próximos en miles de millones de puntos en memoria heterogénea, NIPS'20</li>
-<li>SONG: búsqueda aproximada del vecino más próximo en la GPU, ICDE'20</li>
-<li>Demostración del servicio de ajuste automático del sistema de gestión de bases de datos ottertune, VLDB'18</li>
-<li>El caso de las estructuras de índices aprendidas, SIGMOD'18</li>
-<li>Improving Approximate Nearest Neighbor Search through Learned Adaptive Early Termination, SIGMOD'20</li>
-<li>AnalyticDB-V: A Hybrid Analytical Engine Towards Query Fusion for Structured and Unstructured Data, VLDB'20</li>
+<li>Milvus Project: https://github.com/milvus-io/milvus</li>
+<li>Milvus: A Purpose-Built Vector Data Management System, SIGMOD’21</li>
+<li>Faiss Project: https://github.com/facebookresearch/faiss</li>
+<li>Annoy Project: https://github.com/spotify/annoy</li>
+<li>SPTAG Project: https://github.com/microsoft/SPTAG</li>
+<li>GRIP: Multi-Store Capacity-Optimized High-Performance Nearest Neighbor Search for Vector Search Engine, CIKM’19</li>
+<li>DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node, NIPS’19</li>
+<li>HM-ANN: Efficient Billion-Point Nearest Neighbor Search on Heterogeneous Memory, NIPS’20</li>
+<li>SONG: Approximate Nearest Neighbor Search on GPU, ICDE’20</li>
+<li>A demonstration of the ottertune automatic database management system tuning service, VLDB’18</li>
+<li>The Case for Learned Index Structures, SIGMOD’18</li>
+<li>Improving Approximate Nearest Neighbor Search through Learned Adaptive Early Termination, SIGMOD’20</li>
+<li>AnalyticDB-V: A Hybrid Analytical Engine Towards Query Fusion for Structured and Unstructured Data, VLDB’20</li>
 </ol>
-<h2 id="Engage-with-our-open-source-community" class="common-anchor-header">Participe en nuestra comunidad de código abierto:<button data-href="#Engage-with-our-open-source-community" class="anchor-icon" translate="no">
+<h2 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:<button data-href="#Engage-with-our-open-source-community" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -249,7 +257,7 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ul>
-<li>Encuentre o contribuya a Milvus en <a href="https://bit.ly/3khejQB">GitHub</a>.</li>
-<li>Interactúe con la comunidad a través <a href="https://bit.ly/307HVsY">del Foro</a>.</li>
-<li>Conéctese con nosotros en <a href="https://bit.ly/3wn5aek">Twitter</a>.</li>
+<li>Find or contribute to Milvus on <a href="https://bit.ly/3khejQB">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://bit.ly/307HVsY">Forum</a>.</li>
+<li>Connect with us on <a href="https://bit.ly/3wn5aek">Twitter</a>.</li>
 </ul>

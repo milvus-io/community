@@ -1,6 +1,7 @@
 ---
 id: milvus-at-its-best-exploring-2-2-to-2-2-6.md
-title: 'Milvus yang Terbaik: Menjelajahi v2.2 hingga v2.2.6'
+title: |
+  Milvus at Its Best: Exploring v2.2 to v2.2.6
 author: Fendy Feng
 date: 2023-04-22T00:00:00.000Z
 cover: assets.zilliz.com/explore_milvus_latest_versions_48a4138d02.png
@@ -8,17 +9,19 @@ tag: News
 tags: >-
   Milvus, Vector Database, Open Source, Data science, Artificial Intelligence,
   Vector Management
-desc: apa yang baru di Milvus 2.2 hingga 2.2.6
+desc: what is new with Milvus 2.2 to 2.2.6
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/exploring_milvus_latest_versions_4fa890533e.png" alt="Milvus at Its Best" class="doc-image" id="milvus-at-its-best" />
-   </span> <span class="img-wrapper"> <span>Milvus yang Terbaik</span> </span></p>
-<p>Selamat datang kembali, para pengikut Milvus! Kami tahu sudah cukup lama sejak terakhir kali kami membagikan pembaruan pada database vektor sumber terbuka yang canggih ini. Tapi jangan khawatir, karena kami di sini untuk memberi tahu Anda tentang semua perkembangan menarik yang telah terjadi sejak Agustus lalu.</p>
-<p>Dalam artikel blog ini, kami akan mengajak Anda untuk melihat rilis Milvus terbaru, mulai dari versi 2.2 hingga versi 2.2.6. Ada banyak hal yang akan kami bahas, termasuk fitur-fitur baru, peningkatan, perbaikan bug, dan pengoptimalan. Jadi, kencangkan sabuk pengaman Anda, dan mari kita selami!</p>
-<h2 id="Milvus-v22-a-major-release-with-enhanced-stability-faster-search-speed-and-flexible-scalability" class="common-anchor-header">Milvus v2.2: rilis utama dengan peningkatan stabilitas, kecepatan pencarian yang lebih cepat, dan skalabilitas yang fleksibel<button data-href="#Milvus-v22-a-major-release-with-enhanced-stability-faster-search-speed-and-flexible-scalability" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/exploring_milvus_latest_versions_4fa890533e.png" alt="Milvus at Its Best" class="doc-image" id="milvus-at-its-best" />
+    <span>Milvus at Its Best</span>
+  </span>
+</p>
+<p>Welcome back, Milvus followers! We know it’s been a while since we last shared our updates on this cutting-edge open-source vector database. But fear not, because we’re here to catch you up on all the exciting developments that have taken place since last August.</p>
+<p>In this blog post, we’ll take you through the latest Milvus releases, spanning from version 2.2 to version 2.2.6. We have much to cover, including new features, improvements, bug fixes, and optimizations. So, fasten your seatbelts, and let’s dive in!</p>
+<h2 id="Milvus-v22-a-major-release-with-enhanced-stability-faster-search-speed-and-flexible-scalability" class="common-anchor-header">Milvus v2.2: a major release with enhanced stability, faster search speed, and flexible scalability<button data-href="#Milvus-v22-a-major-release-with-enhanced-stability-faster-search-speed-and-flexible-scalability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,18 +36,18 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus v2.2 adalah rilis penting yang memperkenalkan tujuh fitur baru dan berbagai terobosan peningkatan pada versi sebelumnya. Mari kita lihat lebih dekat beberapa hal yang menarik:</p>
+    </button></h2><p>Milvus v2.2 is a significant release that introduces seven brand-new features and numerous breakthrough improvements to previous versions. Let’s take a closer look at some of the highlights:</p>
 <ul>
-<li><strong>Penyisipan Massal Entitas dari File</strong>: Dengan fitur ini, Anda dapat mengunggah sejumlah entitas dalam satu atau beberapa file secara langsung ke Milvus hanya dengan beberapa baris kode, sehingga menghemat waktu dan tenaga Anda.</li>
-<li><strong>Penomoran Hasil Kueri</strong>: Untuk menghindari hasil pencarian dan kueri yang sangat besar yang kembali dalam satu panggilan prosedur jarak jauh (RPC), Milvus v2.2 memungkinkan Anda untuk mengonfigurasi offset dan memfilter hasil dengan kata kunci dalam pencarian dan kueri.</li>
-<li><strong>Kontrol Akses Berbasis Peran (RBAC</strong>): Milvus v2.2 sekarang mendukung RBAC, memungkinkan Anda untuk mengontrol akses ke instance Milvus Anda dengan mengelola pengguna, peran, dan izin.</li>
-<li><strong>Kuota dan Batas</strong>: Kuota dan batasan adalah mekanisme baru dalam Milvus v2.2 yang melindungi sistem basis data dari kesalahan out-of-memory (OOM) dan crash saat terjadi lonjakan trafik secara tiba-tiba. Dengan fitur ini, Anda dapat mengontrol konsumsi, pencarian, dan penggunaan memori.</li>
-<li><strong>Time to Live (TTL) pada Tingkat Koleksi</strong>: Pada rilis sebelumnya, Milvus hanya mengizinkan Anda untuk mengonfigurasi TTL untuk cluster Anda. Namun, Milvus v2.2 sekarang mendukung konfigurasi TTL pada tingkat koleksi. Mengkonfigurasi TTL untuk koleksi tertentu dan entitas dalam koleksi tersebut akan secara otomatis berakhir setelah TTL berakhir. Konfigurasi ini memberikan kontrol yang lebih baik atas retensi data.</li>
-<li><strong>Indeks Perkiraan Pencarian Tetangga Terdekat (ANNS) Berbasis Disk (Beta)</strong>: Milvus v2.2 memperkenalkan dukungan untuk DiskANN, sebuah algoritme ANNS berbasis grafik Vamana yang berbasis pada SSD. Dukungan ini memungkinkan pencarian langsung pada kumpulan data berskala besar, yang secara signifikan dapat mengurangi penggunaan memori hingga 10 kali lipat.</li>
-<li><strong>Pencadangan Data (Beta)</strong>: Milvus v2.2 menyediakan <a href="https://github.com/zilliztech/milvus-backup">alat baru</a> untuk mencadangkan dan memulihkan data Milvus Anda dengan benar, baik melalui baris perintah atau server API.</li>
+<li><strong>Bulk Inserts of Entities from Files</strong>: With this feature, you can upload a batch of entities in one or multiple files directly to Milvus with just a few lines of code, saving you time and effort.</li>
+<li><strong>Query Result Pagination</strong>: To avoid massive search and query results returning in a single remote procedure call (RPC), Milvus v2.2 allows you to configure offset and filter results with keywords in searches and queries.</li>
+<li><strong>Role-Based Access Control (RBAC)</strong>: Milvus v2.2 now supports RBAC, allowing you to control access to your Milvus instance by managing users, roles, and permissions.</li>
+<li><strong>Quotas and Limits</strong>: Quotas and limits is a new mechanism in Milvus v2.2 that protects the database system from out-of-memory (OOM) errors and crashes during sudden traffic surges. With this feature, you can control ingestion, search, and memory usage.</li>
+<li><strong>Time to Live (TTL) at a Collection Level</strong>: In previous releases, Milvus only allowed you to configure TTL for your clusters. However, Milvus v2.2 now supports configuring TTL at the collection level. Configuring TTL for a specific collection and entities in that collection will automatically expire after the TTL ends. This configuration provides more fine-grained control over data retention.</li>
+<li><strong>Disk-Based Approximate Nearest Neighbor Search (ANNS) Indexes (Beta)</strong>: Milvus v2.2 introduces support for DiskANN, an SSD-resident, and Vamana graph-based ANNS algorithm. This support allows for direct searching on large-scale datasets, which can significantly reduce memory usage, by up to 10 times.</li>
+<li><strong>Data Backup (Beta)</strong>: Milvus v2.2 provides <a href="https://github.com/zilliztech/milvus-backup">a brand new tool</a> for backing up and restoring your Milvus data properly, either through a command line or an API server.</li>
 </ul>
-<p>Selain fitur-fitur baru yang disebutkan di atas, Milvus v2.2 mencakup perbaikan untuk lima bug dan beberapa peningkatan untuk meningkatkan stabilitas, kemampuan pengamatan, dan kinerja Milvus. Untuk lebih jelasnya, lihat <a href="https://milvus.io/docs/release_notes.md#v220">Catatan Rilis Milvus v2.2.</a></p>
-<h2 id="Milvus-v221--v222-minor-releases-with-issues-fixed" class="common-anchor-header">Milvus v2.2.1 &amp; v2.2.2: rilis minor dengan masalah yang telah diperbaiki<button data-href="#Milvus-v221--v222-minor-releases-with-issues-fixed" class="anchor-icon" translate="no">
+<p>In addition to the new features mentioned above, Milvus v2.2 includes fixes for five bugs and multiple improvements to enhance Milvus’ stability, observability, and performance. For more details, see <a href="https://milvus.io/docs/release_notes.md#v220">Milvus v2.2 Release Notes</a>.</p>
+<h2 id="Milvus-v221--v222-minor-releases-with-issues-fixed" class="common-anchor-header">Milvus v2.2.1 &amp; v2.2.2: minor releases with issues fixed<button data-href="#Milvus-v221--v222-minor-releases-with-issues-fixed" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -59,21 +62,21 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus v2.2.1 dan v2.2.2 merupakan rilis minor yang berfokus pada perbaikan masalah kritis pada versi sebelumnya dan memperkenalkan fitur-fitur baru. Berikut adalah beberapa sorotan:</p>
+    </button></h2><p>Milvus v2.2.1 and v2.2.2 are minor releases focusing on fixing critical issues in older versions and introducing new features. Here are some highlights:</p>
 <h3 id="Milvus-v221" class="common-anchor-header">Milvus v2.2.1</h3><ul>
-<li>Mendukung penyewa Pulsa dan otentikasi</li>
-<li>Mendukung keamanan lapisan transport (TLS) dalam sumber konfigurasi etcd</li>
-<li>Meningkatkan kinerja pencarian lebih dari 30%.</li>
-<li>Mengoptimalkan penjadwal dan meningkatkan kemungkinan penggabungan tugas</li>
-<li>Memperbaiki beberapa bug, termasuk kegagalan pemfilteran istilah pada bidang skalar yang diindeks dan kepanikan IndexNode saat gagal membuat indeks</li>
+<li>Supports Pulsa tenant and authentication</li>
+<li>Supports transport layer security (TLS) in the etcd config source</li>
+<li>Improves search performance by over 30%</li>
+<li>Optimizes the scheduler and increases the probability of merge tasks</li>
+<li>Fixes multiple bugs, including term filtering failures on indexed scalar fields and IndexNode panic upon failures to create an index</li>
 </ul>
 <h3 id="Milvus-v222" class="common-anchor-header">Milvus v2.2.2</h3><ul>
-<li>Memperbaiki masalah bahwa proksi tidak memperbarui cache pemimpin pecahan</li>
-<li>Memperbaiki masalah bahwa info yang dimuat tidak dibersihkan untuk koleksi / partisi yang dirilis</li>
-<li>Memperbaiki masalah bahwa jumlah beban tidak dibersihkan tepat waktu</li>
+<li>Fixes the issue that the proxy doesn’t update the cache of shard leaders</li>
+<li>Fixes the issue that the loaded info is not cleaned for released collections/partitions</li>
+<li>Fixes the issue that the load count is not cleared on time</li>
 </ul>
-<p>Untuk lebih jelasnya, lihat <a href="https://milvus.io/docs/release_notes.md#v221">Catatan Rilis Milvus v2.2.1</a> dan <a href="https://milvus.io/docs/release_notes.md#v222">Catatan Rilis Milvus v2.2.2</a>.</p>
-<h2 id="Milvus-v223-more-secure-stable-and-available" class="common-anchor-header">Milvus v2.2.3: lebih aman, stabil, dan tersedia<button data-href="#Milvus-v223-more-secure-stable-and-available" class="anchor-icon" translate="no">
+<p>For more details, see <a href="https://milvus.io/docs/release_notes.md#v221">Milvus v2.2.1 Release Notes</a> and <a href="https://milvus.io/docs/release_notes.md#v222">Milvus v2.2.2 Release Notes</a>.</p>
+<h2 id="Milvus-v223-more-secure-stable-and-available" class="common-anchor-header">Milvus v2.2.3: more secure, stable, and available<button data-href="#Milvus-v223-more-secure-stable-and-available" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,13 +91,13 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus v2.2.3 adalah rilis yang berfokus pada peningkatan keamanan, stabilitas, dan ketersediaan sistem. Selain itu, rilis ini juga memperkenalkan dua fitur penting:</p>
+    </button></h2><p>Milvus v2.2.3 is a release that focuses on enhancing the system’s security, stability, and availability. In addition, it introduces two important features:</p>
 <ul>
-<li><p><strong>Upgrade bergulir</strong>: Fitur ini memungkinkan Milvus untuk menanggapi permintaan yang masuk selama proses upgrade, yang tidak mungkin dilakukan pada rilis sebelumnya. Upgrade bergulir memastikan sistem tetap tersedia dan responsif terhadap permintaan pengguna bahkan selama peningkatan.</p></li>
-<li><p><strong>Ketersediaan tinggi koordinator (HA)</strong>: Fitur ini memungkinkan koordinator Milvus untuk bekerja dalam mode siaga aktif, sehingga mengurangi risiko kegagalan satu titik. Bahkan dalam bencana yang tidak terduga, waktu pemulihan dikurangi menjadi paling lama 30 detik.</p></li>
+<li><p><strong>Rolling upgrade</strong>: This feature allows Milvus to respond to incoming requests during the upgrade process, which was impossible in previous releases. Rolling upgrades ensure the system remains available and responsive to user requests even during upgrades.</p></li>
+<li><p><strong>Coordinator high availability (HA)</strong>: This feature enables Milvus coordinators to work in an active-standby mode, reducing the risk of single-point failures. Even in unexpected disasters, the recovery time is reduced to at most 30 seconds.</p></li>
 </ul>
-<p>Selain fitur-fitur baru ini, Milvus v2.2.3 mencakup banyak peningkatan dan perbaikan bug, termasuk peningkatan kinerja penyisipan massal, penggunaan memori yang lebih sedikit, metrik pemantauan yang dioptimalkan, dan kinerja meta-storage yang lebih baik. Untuk lebih jelasnya, lihat <a href="https://milvus.io/docs/release_notes.md#v223">Catatan Rilis Milvus v2.2.3.</a></p>
-<h2 id="Milvus-v224-faster-more-reliable-and-resource-saving" class="common-anchor-header">Milvus v2.2.4: lebih cepat, lebih andal, dan hemat sumber daya<button data-href="#Milvus-v224-faster-more-reliable-and-resource-saving" class="anchor-icon" translate="no">
+<p>In addition to these new features, Milvus v2.2.3 includes numerous improvements and bug fixes, including enhanced bulk insert performance, reduced memory usage, optimized monitoring metrics, and improved meta-storage performance. For more details, see <a href="https://milvus.io/docs/release_notes.md#v223">Milvus v2.2.3 Release Notes</a>.</p>
+<h2 id="Milvus-v224-faster-more-reliable-and-resource-saving" class="common-anchor-header">Milvus v2.2.4: faster, more reliable and resource saving<button data-href="#Milvus-v224-faster-more-reliable-and-resource-saving" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -109,15 +112,15 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus v2.2.4 merupakan pembaruan minor untuk Milvus v2.2. Milvus v2.2.4 memperkenalkan empat fitur baru dan beberapa peningkatan, yang menghasilkan kinerja yang lebih cepat, meningkatkan keandalan, dan mengurangi konsumsi sumber daya. Hal-hal penting dari rilis ini meliputi:</p>
+    </button></h2><p>Milvus v2.2.4 is a minor update to Milvus v2.2. It introduces four new features and several enhancements, resulting in faster performance, improved reliability, and reduced resource consumption. The highlights of this release include:</p>
 <ul>
-<li><strong>Pengelompokan sumber daya</strong>: Milvus sekarang mendukung pengelompokan QueryNode ke dalam kelompok sumber daya lain, memungkinkan isolasi penuh akses ke sumber daya fisik dalam kelompok yang berbeda.</li>
-<li>Penggantian<strong>nama koleksi</strong>: API penggantian nama koleksi memungkinkan pengguna untuk mengubah nama koleksi, memberikan fleksibilitas yang lebih besar dalam mengelola koleksi dan meningkatkan kegunaan.</li>
-<li><strong>Dukungan untuk Google Cloud Storage</strong></li>
-<li><strong>Opsi baru dalam API pencarian dan kueri</strong>: Fitur baru ini memungkinkan pengguna untuk melewatkan pencarian pada semua segmen yang sedang berkembang, menawarkan kinerja pencarian yang lebih baik dalam skenario di mana pencarian dilakukan bersamaan dengan penyisipan data.</li>
+<li><strong>Resource grouping</strong>: Milvus now supports grouping QueryNodes into other resource groups, allowing for complete isolation of access to physical resources in different groups.</li>
+<li><strong>Collection renaming</strong>: The Collection-renaming API allows users to change the name of a collection, providing more flexibility in managing collections and improving usability.</li>
+<li><strong>Support for Google Cloud Storage</strong></li>
+<li><strong>New option in search and query APIs</strong>: This new feature allows users to skip search on all growing segments, offering better search performance in scenarios where the search is performed concurrently with data insertion.</li>
 </ul>
-<p>Untuk informasi lebih lanjut, lihat <a href="https://milvus.io/docs/release_notes.md#v224">Catatan Rilis Milvus v2.2.4.</a></p>
-<h2 id="Milvus-v225-NOT-RECOMMENDED" class="common-anchor-header">Milvus v2.2.5: TIDAK DIREKOMENDASIKAN<button data-href="#Milvus-v225-NOT-RECOMMENDED" class="anchor-icon" translate="no">
+<p>For more information, see <a href="https://milvus.io/docs/release_notes.md#v224">Milvus v2.2.4 Release Notes</a>.</p>
+<h2 id="Milvus-v225-NOT-RECOMMENDED" class="common-anchor-header">Milvus v2.2.5: NOT RECOMMENDED<button data-href="#Milvus-v225-NOT-RECOMMENDED" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,8 +135,8 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus v2.2.5 memiliki beberapa masalah kritis, dan oleh karena itu, kami tidak menyarankan untuk menggunakan rilis ini.  Kami dengan tulus meminta maaf atas ketidaknyamanan yang disebabkan oleh masalah-masalah tersebut. Namun, masalah-masalah ini telah diatasi dalam Milvus v2.2.6.</p>
-<h2 id="Milvus-v226-resolves-critical-issues-from-v225" class="common-anchor-header">Milvus v2.2.6: menyelesaikan masalah-masalah kritis dari v2.2.5<button data-href="#Milvus-v226-resolves-critical-issues-from-v225" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus v2.2.5 has several critical issues, and therefore, we do not recommend using this release.  We sincerely apologize for any inconvenience caused by them. However, these issues have been addressed in Milvus v2.2.6.</p>
+<h2 id="Milvus-v226-resolves-critical-issues-from-v225" class="common-anchor-header">Milvus v2.2.6: resolves critical issues from v2.2.5<button data-href="#Milvus-v226-resolves-critical-issues-from-v225" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,19 +151,19 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus v2.2.6 telah berhasil mengatasi masalah kritis yang ditemukan pada v2.2.5, termasuk masalah dengan daur ulang data binlog kotor dan kegagalan DataCoord GC. Jika saat ini Anda menggunakan v2.2.5, silakan lakukan upgrade untuk memastikan kinerja dan stabilitas yang optimal.</p>
-<p>Masalah kritis yang diperbaiki meliputi:</p>
+    </button></h2><p>Milvus v2.2.6 has successfully addressed the critical issues discovered in v2.2.5, including problems with recycling dirty binlog data and the DataCoord GC failure. If you currently use v2.2.5, please upgrade it to ensure optimal performance and stability.</p>
+<p>Critical issues fixed include:</p>
 <ul>
-<li>Kegagalan DataCoord GC</li>
-<li>Penimpaan parameter indeks yang dilewatkan</li>
-<li>Penundaan sistem yang disebabkan oleh penumpukan pesan RootCoord</li>
-<li>Ketidakakuratan metrik RootCoordInsertChannelTimeTick</li>
-<li>Kemungkinan penghentian cap waktu</li>
-<li>Penghancuran diri peran koordinator sesekali selama proses restart</li>
-<li>Pos pemeriksaan yang tertinggal karena keluarnya pengumpulan sampah yang tidak normal</li>
+<li>DataCoord GC failure</li>
+<li>Override of passed index parameters</li>
+<li>System delay caused by RootCoord message backlog</li>
+<li>Inaccuracy of metric RootCoordInsertChannelTimeTick</li>
+<li>Possible timestamp stop</li>
+<li>Occasional coordinator role self-destruction during the restart process</li>
+<li>Checkpoints falling behind due to abnormal exit of garbage collection</li>
 </ul>
-<p>Untuk lebih jelasnya, lihat <a href="https://milvus.io/docs/release_notes.md#v226">Catatan Rilis Milvus v2.2.6</a>.</p>
-<h2 id="Summary" class="common-anchor-header">Ringkasan<button data-href="#Summary" class="anchor-icon" translate="no">
+<p>For more details, see <a href="https://milvus.io/docs/release_notes.md#v226">Milvus v2.2.6 Release Notes</a>.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,4 +178,4 @@ canonicalUrl: 'https://milvus.io/blog/milvus-at-its-best-exploring-2-2-to-2-2-6.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebagai kesimpulan, rilis Milvus terbaru dari v2.2 ke v2.2.6 telah memberikan banyak pembaruan dan peningkatan yang menarik. Dari fitur-fitur baru hingga perbaikan bug dan pengoptimalan, Milvus terus memenuhi komitmennya untuk menyediakan solusi mutakhir dan memberdayakan aplikasi di berbagai domain. Nantikan pembaruan dan inovasi yang lebih menarik dari komunitas Milvus.</p>
+    </button></h2><p>In conclusion, the latest Milvus releases from v2.2 to v2.2.6 have delivered many exciting updates and improvements. From new features to bug fixes and optimizations, Milvus continues to meet its commitments to provide cutting-edge solutions and empower applications in various domains. Stay tuned for more exciting updates and innovations from the Milvus community.</p>

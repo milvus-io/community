@@ -1,7 +1,9 @@
 ---
 id: >-
   milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
-title: コールドデータへの支払いをやめる：milvus階層型ストレージのオンデマンド・ホット/コールド・データ・ローディングによる80%のコスト削減
+title: >
+  Stop Paying for Cold Data: 80% Cost Reduction with On-Demand Hot–Cold Data
+  Loading in Milvus Tiered Storage
 author: Buqian Zheng
 date: 2025-12-15T00:00:00.000Z
 cover: assets.zilliz.com/tiered_storage_cover_38237a3bda.png
@@ -14,27 +16,27 @@ meta_title: >
   Milvus Tiered Storage: 80% Less Vector Search Cost with On-Demand Hot–Cold
   Data Loading
 desc: >-
-  MilvusのTiered
-  Storageが、ホットデータとコールドデータのオンデマンド・ローディングを可能にし、最大80%のコスト削減とロード時間の短縮をスケーラブルに実現する方法をご覧ください。
+  Learn how Tiered Storage in Milvus enables on-demand loading for hot and cold
+  data, delivering up to 80% cost reduction and faster load times at scale.
 origin: >-
   https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
 ---
-<p><strong>システムがほとんど触れていないデータのために、いまだに割高なインフラ料金を支払っているチームはどれくらいあるだろうか？正直に言うと、ほとんどのチームがそうだ。</strong></p>
-<p>ベクター検索をプロダクションで運用しているのであれば、おそらくこのような状況を目の当たりにしているはずだ。大量のメモリとSSDをプロビジョニングすることで、データセットのほんの一部しかアクティブになっていないにもかかわらず、すべてが「クエリ・レディ」の状態に保たれているのだ。そして、それはあなただけではない。同じようなケースはたくさん見てきました：</p>
+<p><strong>How many of you are still paying premium infrastructure bills for data your system barely touches? Be honest — most teams are.</strong></p>
+<p>If you run vector search in production, you’ve probably seen this firsthand. You provision large amounts of memory and SSDs so everything stays “query-ready,” even though only a small slice of your dataset is actually active. And you’re not alone. We’ve seen a lot of similar cases as well:</p>
 <ul>
-<li><p><strong>マルチテナントのSaaSプラットフォーム：</strong>マルチテナントのSaaSプラットフォーム：何百ものテナントが契約しているが、ある日アクティブなのは10～15%に過ぎない。残りのテナントは、リソースを占有したまま放置されている。</p></li>
-<li><p><strong>Eコマース・レコメンデーション・システム：</strong>100万ものSKUがあるにもかかわらず、上位8％の商品がレコメンデーションと検索トラフィックのほとんどを生み出している。</p></li>
-<li><p><strong>AI検索：</strong>ユーザーのクエリの90％が過去1週間の商品をヒットしているにもかかわらず、膨大な埋め込みアーカイブがある。</p></li>
+<li><p><strong>Multi-tenant SaaS platforms:</strong> Hundreds of onboarded tenants, but only 10–15% active on any given day. The rest sit cold but still occupy resources.</p></li>
+<li><p><strong>E-commerce recommendation systems:</strong> A million SKUs, yet the top 8% of products generate most of the recommendations and search traffic.</p></li>
+<li><p><strong>AI search:</strong> Vast archives of embeddings, even though 90% of user queries hit items from the past week.</p></li>
 </ul>
-<p><strong>頻繁にクエリされるデータは全体の10％以下だが、ストレージとメモリの80％を消費している</strong>。この不均衡が存在することは誰もが知っていますが、最近まで、それを修正するクリーンなアーキテクチャの方法はありませんでした。</p>
-<p><strong>それが</strong> <a href="https://milvus.io/docs/release_notes.md">Milvus 2.6で</a><strong>変わります</strong><strong>。</strong></p>
-<p>このリリース以前は、Milvusは（多くのベクターデータベースと同様に）<strong>フルロードモデルに</strong>依存していた。検索可能なデータが必要な場合、ローカルノードにロードする必要があった。検索可能なデータが必要な場合は、ローカルノードにロードされなければならなかった。そのデータが1分間に1000回ヒットするか、四半期に1回ヒットするかは問題ではなく、<strong>すべてホットな状態を維持しなければならなかった。</strong>この設計上の選択により、予測可能なパフォーマンスを確保することができましたが、クラスタのサイズを大きくし、コールドデータにはふさわしくないリソースにお金を払うことになりました。</p>
-<p><a href="https://milvus.io/docs/tiered-storage-overview.md">階層型</a> <strong>ストレージが私たちの答えです。</strong></p>
-<p>Milvus 2.6では、<strong>真のオンデマンドローディングを</strong>備えた新しい階層型ストレージアーキテクチャを導入し、システムがホットデータとコールドデータを自動的に区別できるようにしました：</p>
+<p>It’s the same story across industries: <strong>less than 10% of your data gets queried frequently, but it often consumes 80% of your storage and memory.</strong> Everyone knows the imbalance exists — but until recently, there hasn’t been a clean architectural way to fix it.</p>
+<p><strong>That changes with</strong> <a href="https://milvus.io/docs/release_notes.md">Milvus 2.6</a><strong>.</strong></p>
+<p>Before this release, Milvus (like most vector databases) depended on <strong>a full-load model</strong>: if data needed to be searchable, it had to be loaded onto local nodes. It didn’t matter whether that data was hit a thousand times a minute or once a quarter — <strong>it all had to stay hot.</strong> That design choice ensured predictable performance, but it also meant oversizing clusters and paying for resources that cold data simply didn’t deserve.</p>
+<p><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage</a> <strong>is our answer.</strong></p>
+<p>Milvus 2.6 introduces a new tiered storage architecture with <strong>true on-demand loading</strong>, letting the system differentiate between hot and cold data automatically:</p>
 <ul>
-<li><p>ホットセグメントはコンピュート近くにキャッシュされます。</p></li>
-<li><p>コールドセグメントはリモートのオブジェクトストレージに安価に保存</p></li>
-<li><p><strong>クエリが実際にデータを必要とするときだけ、</strong>ローカルノードにデータを取り込む。</p></li>
+<li><p>Hot segments stay cached close to the compute</p></li>
+<li><p>Cold segments live cheaply in remote object storage</p></li>
+<li><p>Data is pulled into local nodes <strong>only when a query actually needs it</strong></p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -42,9 +44,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>これにより、コスト構造が "どれだけのデータを持っているか "から "<strong>どれだけのデータを実際に使用しているか "</strong>にシフトする。そして、初期の本番環境では、この単純なシフトにより、<strong>ストレージとメモリーのコストを最大80％削減することが</strong>できる。</p>
-<p>この記事の続きでは、Tiered Storageがどのように機能するかを説明し、実際のパフォーマンス結果を共有し、この変更が最大の効果をもたらす場所を示す。</p>
-<h2 id="Why-Full-Loading-Breaks-Down-at-Scale" class="common-anchor-header">フルローディングがスケールダウンする理由<button data-href="#Why-Full-Loading-Breaks-Down-at-Scale" class="anchor-icon" translate="no">
+<p>This shifts your cost structure from “how much data you have” to <strong>“how much data you actually use.”</strong> And in early production deployments, this simple shift delivers <strong>up to an 80% reduction in storage and memory cost</strong>.</p>
+<p>In the rest of this post, we’ll walk through how Tiered Storage works, share real performance results, and show where this change delivers the biggest impact.</p>
+<h2 id="Why-Full-Loading-Breaks-Down-at-Scale" class="common-anchor-header">Why Full Loading Breaks Down at Scale<button data-href="#Why-Full-Loading-Breaks-Down-at-Scale" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -59,47 +61,47 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ソリューションに入る前に、なぜMilvus 2.5とそれ以前のリリースで使われていた<strong>フルロードモードが</strong>、ワークロードの規模が拡大するにつれて制限要因になったのかを詳しく見ておく価値がある。</p>
-<p>Milvus 2.5およびそれ以前では、ユーザーが<code translate="no">Collection.load()</code> リクエストを発行すると、各QueryNodeはメタデータ、フィールドデータ、インデックスを含むコレクション全体をローカルにキャッシュしていた。これらのコンポーネントは、オブジェクトストレージからダウンロードされ、完全にメモリに格納されるか、ローカルディスクにメモリマップ（mmap）されます。このデータが<em>すべて</em>ローカルで利用できるようになって初めて、コレクションはロードされ、クエリを処理する準備ができたとマークされます。</p>
-<p>言い換えると、コレクションは、ホットまたはコールドの完全なデータセットがノード上に存在するまで、クエリ可能ではありません。</p>
+    </button></h2><p>Before diving into the solution, it’s worth taking a closer look at why the <strong>full-load mode</strong> used in Milvus 2.5 and earlier releases became a limiting factor as workloads scaled.</p>
+<p>In Milvus 2.5 and earlier, when a user issued a <code translate="no">Collection.load()</code> request, each QueryNode cached the entire collection locally, including metadata, field data, and indexes. These components are downloaded from object storage and stored either fully in memory or memory-mapped (mmap) to local disk. Only after <em>all</em> of this data is available locally is the collection marked as loaded and ready to serve queries.</p>
+<p>In other words, the collection is not queryable until the full dataset—hot or cold—is present on the node.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_5_en_3adca38b7e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>注意:</strong>未加工のベクトルデータを含むインデックスタイプの場合、Milvusはベクトルフィールドを個別にロードするのではなく、インデックスファイルのみをロードします。それでも、実際にどの程度のデータにアクセスするかに関わらず、クエリに対応するためにはインデックスを完全にロードする必要があります。</p>
-<p>これがなぜ問題になるかを知るために、具体的な例を考えてみましょう：</p>
-<p>具体的な例を考えてみましょう：</p>
+<p><strong>Note:</strong> For index types that embed raw vector data, Milvus loads only the index files, not the vector field separately. Even so, the index must be fully loaded to serve queries, regardless of how much of the data is actually accessed.</p>
+<p>To see why this becomes problematic, consider a concrete example:</p>
+<p>Suppose you have a mid-sized vector dataset with:</p>
 <ul>
-<li><p><strong>1億ベクトル</strong></p></li>
-<li><p><strong>768次元</strong>（BERTエンベッディング）</p></li>
-<li><p><strong>float32</strong>精度（各次元4バイト）</p></li>
-<li><p><strong>HNSWインデックス</strong></p></li>
+<li><p><strong>100 million vectors</strong></p></li>
+<li><p><strong>768 dimensions</strong> (BERT embeddings)</p></li>
+<li><p><strong>float32</strong> precision (4 bytes per dimension)</p></li>
+<li><p>An <strong>HNSW index</strong></p></li>
 </ul>
-<p>このセットアップでは、HNSWインデックスだけで、埋め込まれた生ベクトルを含めて、約430GBのメモリを消費する。ユーザーID、タイムスタンプ、カテゴリーラベルのような一般的なスカラーフィールドを追加すると、ローカルリソースの総使用量は500GBを簡単に超えます。</p>
-<p>これは、データの80%がめったにクエリされないか、まったくクエリされない場合でも、システムはコレクションをオンラインに保つためだけに、500GB以上のローカルメモリまたはディスクをプロビジョニングし、保持しなければならないことを意味します。</p>
-<p>ワークロードによっては、この動作は許容範囲内です：</p>
+<p>In this setup, the HNSW index alone—including the embedded raw vectors—consumes approximately 430 GB of memory. After adding common scalar fields such as user IDs, timestamps, or category labels, total local resource usage easily exceeds 500 GB.</p>
+<p>This means that even if 80% of the data is rarely or never queried, the system must still provision and hold more than 500 GB of local memory or disk just to keep the collection online.</p>
+<p>For some workloads, this behavior is acceptable:</p>
 <ul>
-<li><p>ほぼすべてのデータが頻繁にアクセスされる場合、すべてを完全にロードすることで、可能な限り低いクエリ・レイテンシが得られますが、コストは最も高くなります。</p></li>
-<li><p>データをホットサブセットとウォームサブセットに分割できる場合、ウォームデータをディスクにメモリマッピングすることで、メモリへの負荷を部分的に軽減することができます。</p></li>
+<li><p>If nearly all data is frequently accessed, fully loading everything delivers the lowest possible query latency—at the highest cost.</p></li>
+<li><p>If data can be divided into hot and warm subsets, memory-mapping warm data to disk can partially reduce memory pressure.</p></li>
 </ul>
-<p>しかし、データの80%以上がロングテールに位置するようなワークロードでは、<strong>パフォーマンスと</strong> <strong>コストの</strong>両面で、フルローディングの欠点がすぐに表面化します。</p>
-<h3 id="Performance-bottlenecks" class="common-anchor-header">パフォーマンスのボトルネック</h3><p>実際には、フルローディングはクエリのパフォーマンス以上に影響し、日常的な運用ワークフローを遅くすることが多い：</p>
+<p>However, in workloads where 80% or more of the data sits in the long tail, the drawbacks of full loading surface quickly, across both <strong>performance</strong> and <strong>cost</strong>.</p>
+<h3 id="Performance-bottlenecks" class="common-anchor-header">Performance bottlenecks</h3><p>In practice, full loading affects more than query performance and often slows down routine operational workflows:</p>
 <ul>
-<li><p><strong>ローリングアップグレードの長期化：</strong>大規模クラスタでは、ローリングアップグレードに数時間から丸一日かかることもある。</p></li>
-<li><p><strong>障害後の回復が遅い：</strong>QueryNodeが再起動すると、すべてのデータが再ロードされるまでトラフィックに対応できないため、復旧時間が大幅に長くなり、ノード障害の影響が増幅されます。</p></li>
-<li><p><strong>反復と実験の速度低下：</strong>フルロードは開発ワークフローを遅らせ、AIチームは新しいデータセットやインデックス構成をテストする際、データがロードされるまで何時間も待たなければならない。</p></li>
+<li><p><strong>Longer rolling upgrades:</strong> In large clusters, rolling upgrades can take hours or even a full day, as each node must reload the entire dataset before becoming available again.</p></li>
+<li><p><strong>Slower recovery after failures:</strong> When a QueryNode restarts, it cannot serve traffic until all data is reloaded, significantly prolonging recovery time and amplifying the impact of node failures.</p></li>
+<li><p><strong>Slower iteration and experimentation:</strong> Full loading slows down development workflows, forcing AI teams to wait hours for data to load when testing new datasets or index configurations.</p></li>
 </ul>
-<h3 id="Cost-inefficiencies" class="common-anchor-header">コストの非効率性</h3><p>フルローディングはインフラコストも押し上げる。例えば、メモリが最適化された主流のクラウドインスタンスでは、1TBのデータをローカルに保存する場合、およそ<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>**</mn></mrow></semantics></math></span></span>70<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo separator="true">,</mo><mn>000peryear</mn><mo separator="true">∗∗、</mo></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">basedonconservativepricing</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">（</mo><mi>AWSr</mi><mi>6i</mi><mo>:</mo></mrow></semantics></math></span></span><mtext> </mtext><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">70,000/年**、</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">basedonconservativepricing（AWS</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">r6i: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">70</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">000peryear</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span> ∗</span></span></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">basedonconservativepricing（AWSr6i</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span>:<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace nobreak"> </span> 5.74 /GB/月; GCP n4-highmem：~5</span></span></span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>.</mn><mi>68</mi><mn>/GB/月</mn><mo separator="true">;</mo><mi>AzureE</mi><mi>-series</mi><mo>:</mo></mrow></semantics></math></span></span><mtext> </mtext> 5<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">.68/GB/月;Azure E-series：</annotation></semantics></math></span></span>~<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span> 5</span></span></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.</span><span class="mord mathnormal">68</span><span class="mord">/GB/月</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">AzureE</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">シリーズ</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span>:<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace nobreak"> </span> 5.67/GB/月）。</span></span></span></p>
-<p>次に、より現実的なアクセスパターンを考えてみよう。そのデータの80%はコールドデータであり、代わりにオブジェクトストレージに保存することができる（おおよそ$0.023 / GB /月）：</p>
+<h3 id="Cost-inefficiencies" class="common-anchor-header">Cost inefficiencies</h3><p>Full loading also drives up infrastructure costs. For example, on mainstream cloud memory-optimized instances, storing 1 TB of data locally costs roughly **<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>70</mn><mo separator="true">,</mo><mn>000</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo>∗</mo><mo>∗</mo><mo separator="true">,</mo><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi><mi>d</mi><mi>o</mi><mi>n</mi><mi>c</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>e</mi><mi>p</mi><mi>r</mi><mi>i</mi><mi>c</mi><mi>i</mi><mi>n</mi><mi>g</mi><mo stretchy="false">(</mo><mi>A</mi><mi>W</mi><mi>S</mi><mi>r</mi><mn>6</mn><mi>i</mi><mo>:</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">70,000 per year**, based on conservative pricing (AWS r6i: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">70</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">000</span><span class="mord mathnormal">p</span><span class="mord mathnormal">erye</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∗</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">ba</span><span class="mord mathnormal">se</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">co</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.02778em;">ser</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">e</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">i</span><span class="mord mathnormal">c</span><span class="mord mathnormal">in</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord">6</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace nobreak"> </span></span></span></span>5.74 / GB / month; GCP n4-highmem: ~<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5.68</mn><mi mathvariant="normal">/</mi><mi>G</mi><mi>B</mi><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mo separator="true">;</mo><mi>A</mi><mi>z</mi><mi>u</mi><mi>r</mi><mi>e</mi><mi>E</mi><mo>−</mo><mi>s</mi><mi>e</mi><mi>r</mi><mi>i</mi><mi>e</mi><mi>s</mi><mo>:</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">5.68 / GB / month; Azure E-series: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">5.68/</span><span class="mord mathnormal" style="margin-right:0.05017em;">GB</span><span class="mord">/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord mathnormal">u</span><span class="mord mathnormal">re</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">ser</span><span class="mord mathnormal">i</span><span class="mord mathnormal">es</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace nobreak"> </span></span></span></span>5.67 / GB / month).</p>
+<p>Now consider a more realistic access pattern, where 80% of that data is cold and could be stored in object storage instead (at roughly $0.023 / GB / month):</p>
 <ul>
-<li><p>ホットデータ200GB × $5.68</p></li>
-<li><p>コールドデータ800GB × $0.023</p></li>
+<li><p>200 GB hot data × $5.68</p></li>
+<li><p>800 GB cold data × $0.023</p></li>
 </ul>
-<p>年間コスト：（200×5.68+800×0.023）×12≒14<strong>,000</strong>ドル</p>
-<p>これは、実際に重要な部分のパフォーマンスを犠牲にすることなく、総ストレージコストを<strong>80%削減</strong>することになる。</p>
-<h2 id="What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="common-anchor-header">階層型ストレージとその仕組みとは？<button data-href="#What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<p>Annual cost: (200×5.68+800×0.023)×12≈<strong>$14,000</strong></p>
+<p>That’s an <strong>80% reduction</strong> in total storage cost, without sacrificing performance where it actually matters.</p>
+<h2 id="What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="common-anchor-header">What Is the Tiered Storage and How Does It Work?<button data-href="#What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,66 +116,66 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>このトレードオフをなくすために、Milvus 2.6では、ローカルストレージをデータセット全体のコンテナとしてではなく、キャッシュとして扱うことで、性能とコストのバランスをとる<strong>Tiered Storageを</strong>導入した。</p>
-<p>このモデルでは、QueryNodeは起動時に軽量のメタデータのみをロードします。フィールドデータとインデックスは、クエリが必要とするときにリモート・オブジェクト・ストレージからオンデマンドでフェッチされ、頻繁にアクセスされる場合はローカルにキャッシュされる。また、頻繁にアクセスされる場合はローカルにキャッシュされます。</p>
-<p>その結果、ホットデータはコンピュート・レイヤーの近くに留まり、低レイテンシーのクエリーを実現し、コールドデータは必要な時までオブジェクト・ストレージに留まります。これにより、ロード時間が短縮され、リソース効率が向上し、QueryNodeはローカルメモリやディスク容量よりもはるかに大きなデータセットをクエリできるようになります。</p>
-<p>実際には、Tiered Storageは以下のように機能する：</p>
+    </button></h2><p>To remove the trade-off, Milvus 2.6 introduced <strong>Tiered Storage</strong>, which balances performance and cost by treating local storage as a cache rather than a container for the entire dataset.</p>
+<p>In this model, QueryNodes load only lightweight metadata at startup. Field data and indexes are fetched on demand from remote object storage when a query requires them, and cached locally if they are accessed frequently. Inactive data can be evicted to free up space.</p>
+<p>As a result, hot data stays close to the compute layer for low-latency queries, while cold data remains in object storage until needed. This reduces load time, improves resource efficiency, and allows QueryNodes to query datasets far larger than their local memory or disk capacity.</p>
+<p>In practice, Tiered Storage works as follows:</p>
 <ul>
-<li><p><strong>ホットデータをローカルに保つ：</strong>頻繁にアクセスされるデータのおよそ20%をローカルノードに常駐させ、最も重要な80%のクエリで低レイテンシを実現します。</p></li>
-<li><p><strong>コールドデータをオンデマンドでロードする：</strong>残りの80%のアクセス頻度の低いデータは、必要なときのみフェッチされ、ローカルメモリとディスクリソースの大半を解放します。</p></li>
-<li><p><strong>LRUベースで動的に適応：</strong>Milvusは、LRU（Least Recently Used：最近使用されたデータ消去）戦略を使用して、どのデータをホットまたはコールドとみなすかを継続的に調整します。非アクティブなデータは自動的に退去され、新しくアクセスされたデータのためのスペースを確保します。</p></li>
+<li><p><strong>Keep hot data local:</strong> Roughly 20% of frequently accessed data remains resident on local nodes, ensuring low latency for the 80% of queries that matter most.</p></li>
+<li><p><strong>Load cold data on demand:</strong> The remaining 80% of rarely accessed data is fetched only when needed, freeing up the majority of local memory and disk resources.</p></li>
+<li><p><strong>Adapt dynamically with LRU-based eviction:</strong> Milvus uses an LRU (Least Recently Used) eviction strategy to continuously adjust which data is considered hot or cold. Inactive data is automatically evicted to make room for newly accessed data.</p></li>
 </ul>
-<p>この設計により、Milvusはもはやローカルメモリとディスクの固定容量に制約されることはない。代わりに、ローカルリソースは動的に管理されるキャッシュとして機能し、非アクティブなデータからスペースが継続的に回収され、アクティブなワークロードに再割り当てされる。</p>
-<p>この動作は、3つのコア技術メカニズムによって実現されている：</p>
-<h3 id="1-Lazy-Load" class="common-anchor-header">1.遅延ロード</h3><p>Milvusは初期化時に最小限のセグメントレベルのメタデータのみをロードし、起動後すぐにコレクションをクエリ可能にします。フィールドデータとインデックスファイルはリモートストレージに残り、クエリ実行中にオンデマンドでフェッチされるため、ローカルメモリとディスクの使用量を低く抑えることができます。</p>
-<p><strong>Milvus 2.5でのコレクションローディングの仕組み</strong></p>
+<p>With this design, Milvus is no longer constrained by the fixed capacity of local memory and disk. Instead, local resources function as a dynamically managed cache, where space is continuously reclaimed from inactive data and reallocated to active workloads.</p>
+<p>Under the hood, this behavior is enabled by three core technical mechanisms:</p>
+<h3 id="1-Lazy-Load" class="common-anchor-header">1. Lazy Load</h3><p>At initialization, Milvus loads only minimal segment-level metadata, allowing collections to become queryable almost immediately after startup. Field data and index files remain in remote storage and are fetched on demand during query execution, keeping local memory and disk usage low.</p>
+<p><strong>How collection loading worked in Milvus 2.5</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_5_en_aa89de3570.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Milvus 2.6以降での遅延ロードの仕組み</strong></p>
+<p><strong>How lazy loading works in Milvus 2.6 and later</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_6_en_049fa45540.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>初期化時にロードされるメタデータは4つの主要なカテゴリーに分類されます：</p>
+<p>The metadata loaded during initialization falls into four key categories:</p>
 <ul>
-<li><p><strong>セグメント統計</strong>(行数、セグメントサイズ、スキーマメタデータなどの基本情報)</p></li>
-<li><p><strong>タイムスタンプ</strong>(タイムトラベルクエリをサポートするために使用される)</p></li>
-<li><p><strong>レコードの挿入と削除</strong>(クエリ実行中にデータの一貫性を維持するために必要)</p></li>
-<li><p><strong>ブルームフィルタ</strong>(無関係なセグメントを素早く除外するための、高速なプレフィルタリングに使用される)</p></li>
+<li><p><strong>Segment statistics</strong> (Basic information such as row count, segment size, and schema metadata)</p></li>
+<li><p><strong>Timestamps</strong> (Used to support time-travel queries)</p></li>
+<li><p><strong>Insert and delete records</strong> (Required to maintain data consistency during query execution)</p></li>
+<li><p><strong>Bloom filters</strong> (Used for fast pre-filtering to quickly eliminate irrelevant segments)</p></li>
 </ul>
-<h3 id="2-Partial-Load" class="common-anchor-header">2.部分ロード</h3><p>レイジーローディングがデータをロードする<em>タイミングを</em>制御するのに対し、パーシャルローディングはロードするデータの<em>量を</em>制御する。クエリまたは検索が開始されると、QueryNode は部分ロードを実行し、必要なデータチャンクまたはインデックスファイルのみをオブジェクトストレージからフェッチします。</p>
-<p><strong>ベクトル・インデックス：テナントを意識したロード</strong></p>
-<p>Milvus 2.6+で導入された最もインパクトのある機能の1つは、マルチテナントのワークロードのために特別に設計された、テナントを意識したベクトルインデックスのロードです。</p>
-<p>クエリが単一のテナントのデータにアクセスする場合、Milvusはそのテナントに属するベクトルインデックスの部分のみをロードし、他のすべてのテナントのインデックスデータをスキップします。これにより、ローカルリソースをアクティブなテナントに集中させることができます。</p>
-<p>この設計にはいくつかの利点があります：</p>
+<h3 id="2-Partial-Load" class="common-anchor-header">2. Partial Load</h3><p>While Lazy loading controls <em>when</em> data is loaded, partial loading controls <em>how much</em> data is loaded. Once queries or searches begin, the QueryNode performs a partial load, fetching only the required data chunks or index files from object storage.</p>
+<p><strong>Vector indexes: Tenant-aware loading</strong></p>
+<p>One of the most impactful capabilities introduced in Milvus 2.6+ is tenant-aware loading of vector indexes, designed specifically for multi-tenant workloads.</p>
+<p>When a query accesses data from a single tenant, Milvus loads only the portion of the vector index belonging to that tenant, skipping index data for all other tenants. This keeps local resources focused on active tenants.</p>
+<p>This design provides several benefits:</p>
 <ul>
-<li><p>非アクティブテナントのベクトルインデックスは、ローカルメモリやディスクを消費しません。</p></li>
-<li><p>アクティブなテナントのインデックスデータは、低レイテンシアクセスのためにキャッシュされたままである。</p></li>
-<li><p>テナントレベルのLRU退去ポリシーにより、テナント間での公平なキャッシュ使用が保証されます。</p></li>
+<li><p>Vector indexes for inactive tenants do not consume local memory or disk</p></li>
+<li><p>Index data for active tenants stays cached for low-latency access</p></li>
+<li><p>A tenant-level LRU eviction policy ensures fair cache usage across tenants</p></li>
 </ul>
-<p><strong>スカラーフィールド：カラムレベルのパーシャルローディング</strong></p>
-<p>パーシャルローディングは<strong>スカラーフィールドにも</strong>適用され、milvusはクエリによって明示的に参照されたカラムのみをロードすることができます。</p>
-<p><code translate="no">id</code>,<code translate="no">vector</code>,<code translate="no">title</code>,<code translate="no">description</code>,<code translate="no">category</code>,<code translate="no">price</code>,<code translate="no">stock</code>,<code translate="no">tags</code> のような<strong>50のスキーマフィールドを</strong>持つコレクションで、<code translate="no">id</code>,<code translate="no">title</code>,<code translate="no">price</code> の3つのフィールドのみを返す必要があるとします。</p>
+<p><strong>Scalar fields: Column-level partial loading</strong></p>
+<p>Partial loading also applies to <strong>scalar fields</strong>, allowing Milvus to load only the columns explicitly referenced by a query.</p>
+<p>Consider a collection with <strong>50 schema fields</strong>, such as <code translate="no">id</code>, <code translate="no">vector</code>, <code translate="no">title</code>, <code translate="no">description</code>, <code translate="no">category</code>, <code translate="no">price</code>, <code translate="no">stock</code>, and <code translate="no">tags</code>, and you only need to return three fields—<code translate="no">id</code>, <code translate="no">title</code>, and <code translate="no">price</code>.</p>
 <ul>
-<li><p><strong>Milvus 2.5では</strong>、50のスカラーフィールドはクエリー要件に関係なくロードされます。</p></li>
-<li><p><strong>Milvus 2.6+では</strong>、要求された3つのフィールドのみがロードされます。残りの47フィールドはロードされずに残り、後でアクセスされた場合のみ遅延フェッチされます。</p></li>
+<li><p>In <strong>Milvus 2.5</strong>, all 50 scalar fields are loaded regardless of query requirements.</p></li>
+<li><p>In <strong>Milvus 2.6+</strong>, only the three requested fields are loaded. The remaining 47 fields stay unloaded and are fetched lazily only if they are accessed later.</p></li>
 </ul>
-<p>リソースの節約は非常に大きい。各スカラー・フィールドが20GBを占有する場合：</p>
+<p>The resource savings can be substantial. If each scalar field occupies 20 GB:</p>
 <ul>
-<li><p>すべてのフィールドをロードするには<strong>1,000GBが</strong>必要（50×20GB）。</p></li>
-<li><p>必要な3つのフィールドだけをロードする場合は<strong>60GB</strong></p></li>
+<li><p>Loading all fields requires <strong>1,000 GB</strong> (50 × 20 GB)</p></li>
+<li><p>Loading only the three required fields uses <strong>60 GB</strong></p></li>
 </ul>
-<p>これは、クエリの正しさや結果に影響を与えることなく、スカラーデータのロードを<strong>94%削減</strong>したことになります。</p>
-<p><strong>注：</strong>スカラー・フィールドとベクトル・インデックスのテナント対応パーシャル・ローディングは、今後のリリースで正式に導入される予定です。これが利用可能になれば、大規模なマルチテナント展開におけるロードレイテンシをさらに削減し、コールドクエリのパフォーマンスを向上させることができます。</p>
-<h3 id="3-LRU-Based-Cache-Eviction" class="common-anchor-header">3.LRUベースのキャッシュ消去</h3><p>レイジーローディングとパーシャルローディングは、ローカルメモリとディスクに持ち込まれるデータ量を大幅に削減します。しかし、長時間稼動するシステムでは、新しいデータがアクセスされるにつれてキャッシュは増大します。ローカル容量に達すると、LRUベースのキャッシュ消去が有効になる。</p>
-<p>LRU（Least Recently Used）消去は、最近アクセスされていないデータが最初に消去されるという単純なルールに従っている。これにより、頻繁に使用されるデータをキャッシュに常駐させながら、新しくアクセスされるデータのためにローカル領域を解放する。</p>
-<h2 id="Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="common-anchor-header">性能評価：ティアード・ストレージとフルローディングの比較<button data-href="#Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="anchor-icon" translate="no">
+<p>This represents a <strong>94% reduction</strong> in scalar data loading, without affecting query correctness or results.</p>
+<p><strong>Note:</strong> Tenant-aware partial loading for scalar fields and vector indexes will be officially introduced in an upcoming release. Once available, it will further reduce load latency and improve cold-query performance in large multi-tenant deployments.</p>
+<h3 id="3-LRU-Based-Cache-Eviction" class="common-anchor-header">3. LRU-Based Cache Eviction</h3><p>Lazy loading and partial loading significantly reduce how much data is brought into local memory and disk. However, in long-running systems, the cache will still grow as new data is accessed over time. When local capacity is reached, LRU-based cache eviction takes effect.</p>
+<p>LRU (Least Recently Used) eviction follows a simple rule: data that has not been accessed recently is evicted first. This frees up local space for newly accessed data while keeping frequently used data resident in the cache.</p>
+<h2 id="Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="common-anchor-header">Performance Evaluation: Tiered Storage vs. Full Loading<button data-href="#Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -188,91 +190,91 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Tiered Storageの</strong>実環境への影響を評価するため、実運用ワークロードを忠実に反映したテス ト環境を構築した。ロード時間、リソース使用量、クエリ性能、有効容量、コスト効率の5つの側面から、Tiered Storageを使用した場合と使用しない場合のMilvusを比較した。</p>
-<h3 id="Experimental-setup" class="common-anchor-header">実験セットアップ</h3><p><strong>データセット</strong></p>
+    </button></h2><p>To evaluate the real-world impact of <strong>Tiered Storage</strong>, we set up a test environment that closely mirrors production workloads. We compared Milvus with and without Tiered Storage across five dimensions: load time, resource usage, query performance, effective capacity, and cost efficiency.</p>
+<h3 id="Experimental-setup" class="common-anchor-header">Experimental setup</h3><p><strong>Dataset</strong></p>
 <ul>
-<li><p>768次元の1億ベクトル（BERTエンベッディング）</p></li>
-<li><p>ベクトルインデックスサイズ：約430GB</p></li>
-<li><p>ID、タイムスタンプ、カテゴリを含む10個のスカラーフィールド</p></li>
+<li><p>100 million vectors with 768 dimensions (BERT embeddings)</p></li>
+<li><p>Vector index size: approximately 430 GB</p></li>
+<li><p>10 scalar fields, including ID, timestamp, and category</p></li>
 </ul>
-<p><strong>ハードウェア構成</strong></p>
+<p><strong>Hardware configuration</strong></p>
 <ul>
-<li><p>4 vCPU、32 GBメモリ、1 TB NVMe SSDを搭載したQueryNode 1台</p></li>
-<li><p>10 Gbpsネットワーク</p></li>
-<li><p>リモートストレージバックエンドとしてMinIOオブジェクトストレージクラスター</p></li>
+<li><p>1 QueryNode with 4 vCPUs, 32 GB memory, and 1 TB NVMe SSD</p></li>
+<li><p>10 Gbps network</p></li>
+<li><p>MinIO object storage cluster as the remote storage backend</p></li>
 </ul>
-<p><strong>アクセスパターン</strong></p>
-<p>クエリは現実的なホット-コールドアクセス分布に従う：</p>
+<p><strong>Access pattern</strong></p>
+<p>Queries follow a realistic hot–cold access distribution:</p>
 <ul>
-<li><p>クエリの80%は直近30日間のデータを対象（全データの20%程度）</p></li>
-<li><p>15%は30～90日前のデータ（全データの約30%）。</p></li>
-<li><p>5%は90日以上前のデータを対象（全データの50%以上）</p></li>
+<li><p>80% of queries target data from the most recent 30 days (≈20% of total data)</p></li>
+<li><p>15% target data from 30–90 days (≈30% of total data)</p></li>
+<li><p>5% target data older than 90 days (≈50% of total data)</p></li>
 </ul>
-<h3 id="Key-results" class="common-anchor-header">主な結果</h3><p><strong>1.33倍速いロード時間</strong></p>
+<h3 id="Key-results" class="common-anchor-header">Key results</h3><p><strong>1. 33× faster load time</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>ステージ</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (階層型ストレージ)</strong></th><th style="text-align:center"><strong>スピードアップ</strong></th></tr>
+<tr><th style="text-align:center"><strong>Stage</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Speedup</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">データダウンロード</td><td style="text-align:center">22分</td><td style="text-align:center">28秒</td><td style="text-align:center">47×</td></tr>
-<tr><td style="text-align:center">インデックスロード</td><td style="text-align:center">3分</td><td style="text-align:center">17秒</td><td style="text-align:center">10.5×</td></tr>
-<tr><td style="text-align:center"><strong>合計</strong></td><td style="text-align:center"><strong>25分</strong></td><td style="text-align:center"><strong>45秒</strong></td><td style="text-align:center"><strong>33×</strong></td></tr>
+<tr><td style="text-align:center">Data download</td><td style="text-align:center">22 minutes</td><td style="text-align:center">28 seconds</td><td style="text-align:center">47×</td></tr>
+<tr><td style="text-align:center">Index loading</td><td style="text-align:center">3 minutes</td><td style="text-align:center">17 seconds</td><td style="text-align:center">10.5×</td></tr>
+<tr><td style="text-align:center"><strong>Total</strong></td><td style="text-align:center"><strong>25 minutes</strong></td><td style="text-align:center"><strong>45 seconds</strong></td><td style="text-align:center"><strong>33×</strong></td></tr>
 </tbody>
 </table>
-<p>Milvus 2.5では、コレクションのロードに<strong>25分かかって</strong>いた。Milvus 2.6+のTiered Storageでは、同じワークロードがわずか<strong>45</strong>秒で完了し、ロード効率が一段と向上しました。</p>
-<p><strong>2.ローカルリソース使用量の80%削減</strong></p>
+<p>In Milvus 2.5, loading the collection took <strong>25 minutes</strong>. With Tiered Storage in Milvus 2.6+, the same workload completes in just <strong>45 seconds</strong>, representing a step-change improvement in load efficiency.</p>
+<p><strong>2. 80% Reduction in Local Resource Usage</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>ステージ</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (ティアード・ストレージ)</strong></th><th style="text-align:center"><strong>削減量</strong></th></tr>
+<tr><th style="text-align:center"><strong>Stage</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Reduction</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">負荷後</td><td style="text-align:center">430 GB</td><td style="text-align:center">12 GB</td><td style="text-align:center">-97%</td></tr>
-<tr><td style="text-align:center">1時間後</td><td style="text-align:center">430 GB</td><td style="text-align:center">68 GB</td><td style="text-align:center">-84%</td></tr>
-<tr><td style="text-align:center">24時間後</td><td style="text-align:center">430 GB</td><td style="text-align:center">85 GB</td><td style="text-align:center">-80%</td></tr>
-<tr><td style="text-align:center">定常状態</td><td style="text-align:center">430 GB</td><td style="text-align:center">85-95 GB</td><td style="text-align:center">~80%</td></tr>
+<tr><td style="text-align:center">After load</td><td style="text-align:center">430 GB</td><td style="text-align:center">12 GB</td><td style="text-align:center">–97%</td></tr>
+<tr><td style="text-align:center">After 1 hour</td><td style="text-align:center">430 GB</td><td style="text-align:center">68 GB</td><td style="text-align:center">–84%</td></tr>
+<tr><td style="text-align:center">After 24 hours</td><td style="text-align:center">430 GB</td><td style="text-align:center">85 GB</td><td style="text-align:center">–80%</td></tr>
+<tr><td style="text-align:center">Steady state</td><td style="text-align:center">430 GB</td><td style="text-align:center">85–95 GB</td><td style="text-align:center">~80%</td></tr>
 </tbody>
 </table>
-<p>Milvus 2.5では、ワークロードやランタイムに関係なく、ローカルリソースの使用量は<strong>430GBで</strong>一定です。一方、Milvus 2.6+では、ロード直後はわずか<strong>12 GBから</strong>始まります。</p>
-<p>クエリが実行されるにつれ、頻繁にアクセスされるデータはローカルにキャッシュされ、リソース使用量は徐々に増加する。約24時間後、システムは<strong>85-95GBで</strong>安定し、ホットデータの作業セットを反映する。長期的には、クエリの可用性を犠牲にすることなく、ローカルメモリとディスクの使用量を<strong>約80%削減</strong>することができます。</p>
-<p><strong>3.ホットデータのパフォーマンスへの影響はほぼゼロ</strong></p>
+<p>In Milvus 2.5, local resource usage remains constant at <strong>430 GB</strong>, regardless of workload or runtime. In contrast, Milvus 2.6+ starts with just <strong>12 GB</strong> immediately after loading.</p>
+<p>As queries run, frequently accessed data is cached locally and resource usage gradually increases. After approximately 24 hours, the system stabilizes at <strong>85–95 GB</strong>, reflecting the working set of hot data. Over the long term, this results in an <strong>~80% reduction</strong> in local memory and disk usage, without sacrificing query availability.</p>
+<p><strong>3. Near-zero impact on hot data performance</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>クエリータイプ</strong></th><th style="text-align:center"><strong>Milvus 2.5 P99レイテンシ</strong></th><th style="text-align:center"><strong>Milvus 2.6+ P99レイテンシ</strong></th><th style="text-align:center"><strong>変更</strong></th></tr>
+<tr><th style="text-align:center"><strong>Query type</strong></th><th style="text-align:center"><strong>Milvus 2.5 P99 latency</strong></th><th style="text-align:center"><strong>Milvus 2.6+ P99 latency</strong></th><th style="text-align:center"><strong>Change</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">ホットデータクエリ</td><td style="text-align:center">15 ms</td><td style="text-align:center">16 ms</td><td style="text-align:center">+6.7%</td></tr>
-<tr><td style="text-align:center">ウォームデータクエリー</td><td style="text-align:center">15 ms</td><td style="text-align:center">28 ms</td><td style="text-align:center">+86%</td></tr>
-<tr><td style="text-align:center">コールドデータクエリ（最初のアクセス）</td><td style="text-align:center">15 ms</td><td style="text-align:center">120 ms</td><td style="text-align:center">+700%</td></tr>
-<tr><td style="text-align:center">コールドデータ・クエリー（キャッシュ）</td><td style="text-align:center">15 ms</td><td style="text-align:center">18 ms</td><td style="text-align:center">+20%</td></tr>
+<tr><td style="text-align:center">Hot data queries</td><td style="text-align:center">15 ms</td><td style="text-align:center">16 ms</td><td style="text-align:center">+6.7%</td></tr>
+<tr><td style="text-align:center">Warm data queries</td><td style="text-align:center">15 ms</td><td style="text-align:center">28 ms</td><td style="text-align:center">+86%</td></tr>
+<tr><td style="text-align:center">Cold data queries (first access)</td><td style="text-align:center">15 ms</td><td style="text-align:center">120 ms</td><td style="text-align:center">+700%</td></tr>
+<tr><td style="text-align:center">Cold data queries (cached)</td><td style="text-align:center">15 ms</td><td style="text-align:center">18 ms</td><td style="text-align:center">+20%</td></tr>
 </tbody>
 </table>
-<p>全クエリの約80%を占めるホットデータでは、P99のレイテンシはわずか6.7%しか増加せず、本番環境での影響はほとんど感じられません。</p>
-<p>コールドデータクエリでは、オブジェクトストレージからのオンデマンドロードにより、最初のアクセス時の待ち時間が長くなります。しかし、一旦キャッシュされると、レイテンシは20%増加するだけである。コールドデータのアクセス頻度が低いことを考慮すると、このトレードオフは、ほとんどの実世界のワークロードで一般的に許容可能です。</p>
-<p><strong>4.4.3倍の実効容量</strong></p>
-<p>Milvus 2.5 は、同じハードウェア予算（各 64 GB のメモリを搭載した 8 台のサーバ（合計 512 GB））のもとで、最大 512 GB のデータ（約 1 億 3,600 万のベクターに相当）をロードすることができます。</p>
-<p>Milvus 2.6+でTiered Storageを有効にした場合、同じハードウェアで2.2 TBのデータ、すなわち約5億9,000万のベクターをサポートすることができます。これは実効容量が4.3倍増加したことを意味し、ローカルメモリを拡張することなく、大幅に大きなデータセットに対応することができる。</p>
-<p><strong>5.80.1%のコスト削減</strong></p>
-<p>AWS環境における2TBのベクトルデータセットを例に、データの20%がホットデータ（400GB）であると仮定した場合のコスト比較は以下のようになる：</p>
+<p>For hot data, which accounts for roughly 80% of all queries, P99 latency increases by only 6.7%, resulting in virtually no perceptible impact in production.</p>
+<p>Cold data queries show higher latency on first access due to on-demand loading from object storage. However, once cached, their latency increases by only 20%. Given the low access frequency of cold data, this trade-off is generally acceptable for most real-world workloads.</p>
+<p><strong>4. 4.3× Larger Effective Capacity</strong></p>
+<p>Under the same hardware budget—eight servers with 64 GB of memory each (512 GB total)—Milvus 2.5 can load at most 512 GB of data, equivalent to approximately 136 million vectors.</p>
+<p>With Tiered Storage enabled in Milvus 2.6+, the same hardware can support 2.2 TB of data, or roughly 590 million vectors. This represents a 4.3× increase in effective capacity, enabling significantly larger datasets to be served without expanding local memory.</p>
+<p><strong>5. 80.1% Cost Reduction</strong></p>
+<p>Using a 2 TB vector dataset in an AWS environment as an example, and assuming 20% of the data is hot (400 GB), the cost comparison is as follows:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>項目</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (階層型ストレージ)</strong></th><th style="text-align:center"><strong>節約額</strong></th></tr>
+<tr><th style="text-align:center"><strong>Item</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Savings</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">月額コスト</td><td style="text-align:center">$11,802</td><td style="text-align:center">$2,343</td><td style="text-align:center">$9,459</td></tr>
-<tr><td style="text-align:center">年間コスト</td><td style="text-align:center">$141,624</td><td style="text-align:center">$28,116</td><td style="text-align:center">$113,508</td></tr>
-<tr><td style="text-align:center">節約率</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><strong>80.1%</strong></td></tr>
+<tr><td style="text-align:center">Monthly cost</td><td style="text-align:center">$11,802</td><td style="text-align:center">$2,343</td><td style="text-align:center">$9,459</td></tr>
+<tr><td style="text-align:center">Annual cost</td><td style="text-align:center">$141,624</td><td style="text-align:center">$28,116</td><td style="text-align:center">$113,508</td></tr>
+<tr><td style="text-align:center">Savings rate</td><td style="text-align:center">–</td><td style="text-align:center">–</td><td style="text-align:center"><strong>80.1%</strong></td></tr>
 </tbody>
 </table>
-<h3 id="Benchmark-Summary" class="common-anchor-header">ベンチマーク概要</h3><p>すべてのテストにおいて、Tiered Storageは一貫した測定可能な改善を実現しました：</p>
+<h3 id="Benchmark-Summary" class="common-anchor-header">Benchmark Summary</h3><p>Across all tests, Tiered Storage delivers consistent and measurable improvements:</p>
 <ul>
-<li><p><strong>ロード時間が33倍高速化：</strong>コレクションのロード時間が<strong>25分から45秒に</strong>短縮。</p></li>
-<li><p><strong>ローカルリソースの使用量を80%削減：</strong>定常状態では、メモリとローカルディスクの使用量が<strong>約80%</strong>減少。</p></li>
-<li><p><strong>ホットデータのパフォーマンスへの影響はほぼゼロ：</strong>ホットデータに対するP99レイテンシーの増加は<strong>10%未満で</strong>、低レイテンシーのクエリーパフォーマンスを維持します。</p></li>
-<li><p><strong>コールドデータの待ち時間を制御：</strong>コールドデータの初回アクセス時のレイテンシは大きくなりますが、アクセス頻度が低いため許容範囲です。</p></li>
-<li><p><strong>4.3倍の実効容量：</strong>メモリを追加することなく、同じハードウェアで<strong>4～5倍のデータを</strong>処理できる。</p></li>
-<li><p><strong>80%以上のコスト削減：</strong>年間インフラコストを<strong>80％以上</strong>削減。</p></li>
+<li><p><strong>33× faster load times:</strong> Collection load time is reduced from <strong>25 minutes to 45 seconds</strong>.</p></li>
+<li><p><strong>80% lower local resource usage:</strong> In steady-state operation, memory and local disk usage drop by approximately <strong>80%</strong>.</p></li>
+<li><p><strong>Near-zero impact on hot data performance:</strong> P99 latency for hot data increases by <strong>less than 10%</strong>, preserving low-latency query performance.</p></li>
+<li><p><strong>Controlled latency for cold data:</strong> Cold data incurs higher latency on first access, but this is acceptable given its low access frequency.</p></li>
+<li><p><strong>4.3× higher effective capacity:</strong> The same hardware can serve <strong>4–5× more data</strong> without additional memory.</p></li>
+<li><p><strong>Over 80% cost reduction:</strong> Annual infrastructure costs are reduced by <strong>more than 80%</strong>.</p></li>
 </ul>
-<h2 id="When-to-Use-Tiered-Storage-in-Milvus" class="common-anchor-header">milvusで階層型ストレージを使用する場合<button data-href="#When-to-Use-Tiered-Storage-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="When-to-Use-Tiered-Storage-in-Milvus" class="common-anchor-header">When to Use Tiered Storage in Milvus<button data-href="#When-to-Use-Tiered-Storage-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -287,48 +289,48 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベンチマークの結果と実際の生産事例に基づいて、Tiered Storageの使用事例を3つのカテゴリーに分類し、ワークロードに適しているかどうかを判断できるようにしています。</p>
-<h3 id="Best-Fit-Use-Cases" class="common-anchor-header">最適な使用例</h3><p><strong>1.マルチテナント型ベクトル検索プラットフォーム</strong></p>
+    </button></h2><p>Based on benchmark results and real-world production cases, we group Tiered Storage use cases into three categories to help you decide whether it is a good fit for your workload.</p>
+<h3 id="Best-Fit-Use-Cases" class="common-anchor-header">Best-Fit Use Cases</h3><p><strong>1. Multi-tenant vector search platforms</strong></p>
 <ul>
-<li><p><strong>特徴</strong>ベクトル検索が中核ワークロードである。</p></li>
-<li><p><strong>アクセスパターン：</strong>ベクトル検索クエリの80%以上を生成するテナントは20%未満。</p></li>
-<li><p><strong>期待される効果</strong>70-80％のコスト削減、3-5倍の容量拡張。</p></li>
+<li><p><strong>Characteristics:</strong> Large number of tenants with highly uneven activity; vector search is the core workload.</p></li>
+<li><p><strong>Access pattern:</strong> Fewer than 20% of tenants generate over 80% of vector queries.</p></li>
+<li><p><strong>Expected benefits:</strong> 70–80% cost reduction; 3–5× capacity expansion.</p></li>
 </ul>
-<p><strong>2.Eコマース・レコメンデーション・システム（ベクトル検索ワークロード）</strong></p>
+<p><strong>2. E-commerce recommendation systems (vector search workloads)</strong></p>
 <ul>
-<li><p><strong>特徴</strong>トップ商品とロングテール商品の間に強い人気の偏りがある。</p></li>
-<li><p><strong>アクセスパターン：</strong>上位10％の商品がベクトル検索トラフィックの～80％を占める。</p></li>
-<li><p><strong>期待されるメリット</strong>ピーク時の追加キャパシティの必要なし、60-70%のコスト削減。</p></li>
+<li><p><strong>Characteristics:</strong> Strong popularity skew between top products and the long tail.</p></li>
+<li><p><strong>Access pattern:</strong> Top 10% of products account for ~80% of vector search traffic.</p></li>
+<li><p><strong>Expected benefits:</strong> No need for extra capacity during peak events; 60–70% cost reduction</p></li>
 </ul>
-<p><strong>3.ホット・コールドが明確な大規模データセット（ベクトル優位）</strong></p>
+<p><strong>3. Large-scale datasets with clear hot–cold separation (vector-dominant)</strong></p>
 <ul>
-<li><p><strong>特徴</strong>TBスケール以上のデータセットで、アクセスが最近のデータに偏っている。</p></li>
-<li><p><strong>アクセスパターン：</strong>古典的な80/20分布：20%のデータが80%のクエリに対応している。</p></li>
-<li><p><strong>期待されるメリット</strong>75～85％のコスト削減</p></li>
+<li><p><strong>Characteristics:</strong> TB-scale or larger datasets, with access heavily biased toward recent data.</p></li>
+<li><p><strong>Access pattern:</strong> A classic 80/20 distribution: 20% of data serves 80% of queries</p></li>
+<li><p><strong>Expected benefits:</strong> 75–85% cost reduction</p></li>
 </ul>
-<h3 id="Good-Fit-Use-Cases" class="common-anchor-header">最適なユースケース</h3><p><strong>1.コスト重視のワークロード</strong></p>
+<h3 id="Good-Fit-Use-Cases" class="common-anchor-header">Good-Fit Use Cases</h3><p><strong>1. Cost-sensitive workloads</strong></p>
 <ul>
-<li><p><strong>特徴</strong>予算が厳しく、性能のトレードオフをある程度許容できる。</p></li>
-<li><p><strong>アクセスパターン：</strong>ベクタークエリーが比較的集中している。</p></li>
-<li><p><strong>期待される効果</strong>50～70％のコスト削減。コールドデータでは、最初のアクセスで500ミリ秒程度の待ち時間が発生する可能性があり、SLA要件と照らし合わせて評価する必要がある。</p></li>
+<li><p><strong>Characteristics:</strong> Tight budgets with some tolerance for minor performance trade-offs.</p></li>
+<li><p><strong>Access pattern:</strong> Vector queries are relatively concentrated.</p></li>
+<li><p><strong>Expected benefits:</strong> 50–70% cost reduction; Cold data may incur ~500 ms latency on first access, which should be evaluated against SLA requirements.</p></li>
 </ul>
-<p><strong>2.履歴データの保持とアーカイブ検索</strong></p>
+<p><strong>2. Historical data retention and archival search</strong></p>
 <ul>
-<li><p><strong>特徴</strong>クエリー頻度が非常に低い、大量の履歴ベクトル。</p></li>
-<li><p><strong>アクセスパターン：</strong>クエリの約90％が最近のデータを対象としている。</p></li>
-<li><p><strong>期待されるメリット</strong>完全な履歴データセットの保持、予測可能でコントロール可能なインフラコストの維持</p></li>
+<li><p><strong>Characteristics:</strong> Large volumes of historical vectors with very low query frequency.</p></li>
+<li><p><strong>Access pattern:</strong> Around 90% of queries target recent data.</p></li>
+<li><p><strong>Expected benefits:</strong> Retain full historical datasets; Keep infrastructure costs predictable and controlled</p></li>
 </ul>
-<h3 id="Poor-Fit-Use-Cases" class="common-anchor-header">適合しないユースケース</h3><p><strong>1.一様にホットなデータ・ワークロード</strong></p>
+<h3 id="Poor-Fit-Use-Cases" class="common-anchor-header">Poor-Fit Use Cases</h3><p><strong>1. Uniformly hot data workloads</strong></p>
 <ul>
-<li><p><strong>特徴：</strong>すべてのデータが同じような頻度でアクセスされ、ホットとコールドの明確な区別がない。</p></li>
-<li><p><strong>適合しない理由</strong>キャッシュの利点は限定的。意味のある利得を得ずにシステムを複雑化させる。</p></li>
+<li><p><strong>Characteristics:</strong> All data is accessed at a similar frequency, with no clear hot–cold distinction.</p></li>
+<li><p><strong>Why unfit:</strong> Limited cache benefit; Added system complexity without meaningful gains</p></li>
 </ul>
-<p><strong>2.超低レイテンシワークロード</strong></p>
+<p><strong>2. Ultra–low-latency workloads</strong></p>
 <ul>
-<li><p><strong>特徴：</strong>金融取引やリアルタイム入札など、レイテンシに非常に敏感なシステム</p></li>
-<li><p><strong>不向きな理由</strong>わずかなレイテンシ変動も許容できない。フルローディングの方が予測可能なパフォーマンスが得られる。</p></li>
+<li><p><strong>Characteristics:</strong> Extremely latency-sensitive systems, such as financial trading or real-time bidding</p></li>
+<li><p><strong>Why unfit:</strong> Even small latency variations are unacceptable; Full loading provides more predictable performance</p></li>
 </ul>
-<h2 id="Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="common-anchor-header">クイック・スタートMilvus 2.6+で階層型ストレージを試す<button data-href="#Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="anchor-icon" translate="no">
+<h2 id="Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="common-anchor-header">Quick Start: Try Tiered Storage in Milvus 2.6+<button data-href="#Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -357,7 +359,7 @@ queryNode.segcore.tieredStorage:
 <span class="hljs-comment"># Launch Milvus</span>
 $ docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -372,14 +374,14 @@ $ docker-compose up -d
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6のTiered Storageは、ベクターデータの格納方法と実際のアクセス方法のミスマッチに対処します。ほとんどのプロダクションシステムでは、頻繁にクエリされるデータはごく一部であるにもかかわらず、従来のローディングモデルはすべてのデータを等しくホットなデータとして扱っている。Milvusは、オンデマンドローディングに移行し、ローカルメモリとディスクをキャッシュとして管理することで、リソースの消費をワーストケースの仮定ではなく、実際のクエリの挙動に合わせます。</p>
-<p>このアプローチにより、ホットクエリの性能をほぼ維持したまま、ローカルリソースを比例的に増加させることなく、システムをより大きなデータセットに拡張することができます。コールドデータは必要なときにアクセス可能であり続け、予測可能で制限されたレイテンシを実現し、トレードオフを明確かつ制御可能にしている。ベクトル検索が、コスト重視、マルチテナント、長時間稼働の本番環境に深く入り込むにつれて、Tiered Storageは、スケールに応じて効率的に運用するための実用的な基盤を提供します。</p>
-<p>Tiered Storageの詳細については、以下のドキュメントをご覧ください：</p>
+    </button></h2><p>Tiered Storage in Milvus 2.6 addresses a common mismatch between how vector data is stored and how it is actually accessed. In most production systems, only a small fraction of data is queried frequently, yet traditional loading models treat all data as equally hot. By shifting to on-demand loading and managing local memory and disk as a cache, Milvus aligns resource consumption with real query behavior rather than worst-case assumptions.</p>
+<p>This approach allows systems to scale to larger datasets without proportional increases in local resources, while keeping hot-query performance largely unchanged. Cold data remains accessible when needed, with predictable and bounded latency, making the trade-off explicit and controllable. As vector search moves deeper into cost-sensitive, multi-tenant, and long-running production environments, Tiered Storage provides a practical foundation for operating efficiently at scale.</p>
+<p>For more information about the Tiered Storage, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage｜Milvusドキュメント</a></li>
+<li><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage | Milvus Documentation</a></li>
 </ul>
-<p>Milvusの最新機能に関するご質問やディープダイブをご希望ですか？私たちの<a href="https://discord.com/invite/8uyFbECzPX"> Discordチャンネルに</a>参加するか、<a href="https://github.com/milvus-io/milvus"> GitHubに</a>課題を提出してください。また、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvusオフィスアワーを通して</a>、20分間の1対1のセッションを予約し、洞察、ガイダンス、質問への回答を得ることもできます。</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Milvus 2.6の機能についてもっと知る<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -395,15 +397,15 @@ $ docker-compose up -d
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6のご紹介: 10億スケールの手頃な価格のベクトル検索</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">エンベッディング機能のご紹介Milvus 2.6によるベクトル化とセマンティック検索の効率化</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">MilvusのJSONシュレッダー: 88.9倍高速なJSONフィルタリングと柔軟性</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">真のエンティティレベルの検索：Milvusの新しいArray-of-StructsとMAX_SIM機能</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Milvus 2.6におけるジオメトリフィールドとRTREEによる地理空間フィルタリングとベクトル検索の統合</a></p></li>
-<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">MilvusにおけるAISAQの導入: 10億スケールのベクトル検索がメモリ上で3,200倍安くなった</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">MilvusにおけるNVIDIA CAGRAの最適化：GPUとCPUのハイブリッドアプローチによるインデックス作成の高速化とクエリの低コスト化</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MilvusにおけるMinHash LSH：LLMトレーニングデータの重複と戦うための秘密兵器 </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">ベクトル圧縮を極限まで高める：MilvusがRaBitQで3倍以上のクエリに対応する方法</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">ベンチマークは嘘をつく - ベクトルDBは真のテストに値する </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">MilvusのためにKafka/PulsarをWoodpeckerに置き換えた</a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6</a></p></li>
+<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200× Cheaper on Memory</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster Indexing and Cheaper Queries</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus</a></p></li>
 </ul>

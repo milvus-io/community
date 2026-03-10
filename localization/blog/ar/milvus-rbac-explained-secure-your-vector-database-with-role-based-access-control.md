@@ -1,9 +1,9 @@
 ---
 id: >-
   milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md
-title: >-
-  شرح ميلفوس RBAC: تأمين قاعدة بيانات المتجهات الخاصة بك باستخدام التحكم في
-  الوصول المستند إلى الأدوار
+title: >
+  Milvus RBAC Explained: Secure Your Vector Database with Role-Based Access
+  Control 
 author: Juan Xu
 date: 2025-12-31T00:00:00.000Z
 cover: assets.zilliz.com/RBAC_in_Milvus_Cover_1fe181b31d.png
@@ -15,23 +15,23 @@ meta_keywords: 'Milvus, RBAC, access control, vector database security'
 meta_title: |
   Milvus RBAC Guide: How to Control Access to Your Vector Database
 desc: >-
-  تعرّف على سبب أهمية RBAC، وكيفية عمل RBAC في Milvus، وكيفية تكوين التحكم في
-  الوصول، وكيف يتيح الوصول الأقل امتيازاً، والفصل الواضح بين الأدوار، وعمليات
-  الإنتاج الآمنة.
+  Learn why RBAC matters, how RBAC in Milvus works, how to configure access
+  control, and how it enables least-privilege access, clear role separation, and
+  safe production operations.
 origin: >-
   https://milvus.io/blog/milvus-rbac-explained-secure-your-vector-database-with-role-based-access-control.md
 ---
-<p>عند إنشاء نظام قاعدة بيانات، يقضي المهندسون معظم وقتهم في التركيز على الأداء: أنواع الفهارس، والاستدعاء، والكمون والإنتاجية، والتوسع. ولكن بمجرد أن ينتقل النظام إلى ما هو أبعد من جهاز كمبيوتر محمول لمطور واحد، يصبح سؤال آخر بنفس الأهمية: <strong>من يمكنه فعل ماذا داخل مجموعة ميلفوس الخاصة بك؟</strong> بمعنى آخر - التحكم في الوصول.</p>
-<p>في جميع أنحاء الصناعة، تنبع العديد من الحوادث التشغيلية من أخطاء بسيطة في الأذونات. يتم تشغيل برنامج نصي في بيئة خاطئة. حساب خدمة لديه وصول أوسع من المقصود. ينتهي الأمر ببيانات اعتماد مسؤول مشترك في CI. عادةً ما تظهر هذه المشكلات على شكل أسئلة عملية للغاية:</p>
+<p>When building a database system, engineers spend most of their time on performance: index types, recall, latency, throughput, and scaling. But once a system moves beyond a single developer’s laptop, another question becomes just as critical: <strong>who can do what inside your Milvus cluster</strong>? In other words—access control.</p>
+<p>Across the industry, many operational incidents stem from simple permission mistakes. A script runs against the wrong environment. A service account has broader access than intended. A shared admin credential ends up in CI. These issues usually surface as very practical questions:</p>
 <ul>
-<li><p>هل يُسمح للمطورين بحذف مجموعات الإنتاج؟</p></li>
-<li><p>لماذا يمكن لحساب اختبار قراءة بيانات ناقلات الإنتاج؟</p></li>
-<li><p>لماذا يتم تسجيل دخول خدمات متعددة بنفس دور المسؤول؟</p></li>
-<li><p>هل يمكن أن يكون لوظائف التحليلات وصول للقراءة فقط مع عدم وجود امتيازات للكتابة؟</p></li>
+<li><p>Are developers allowed to delete production collections?</p></li>
+<li><p>Why can a test account read production vector data?</p></li>
+<li><p>Why are multiple services logging in with the same admin role?</p></li>
+<li><p>Can analytics jobs have read-only access with zero write privileges?</p></li>
 </ul>
-<p>يعالج<a href="https://milvus.io/">Milvus</a> هذه التحديات من خلال <a href="https://milvus.io/docs/rbac.md">التحكم في الوصول المستند إلى الدور (RBAC)</a>. فبدلاً من منح كل مستخدم حقوق المسؤول الفائق أو محاولة فرض قيود في التعليمات البرمجية للتطبيق، يتيح لك التحكم في الوصول المستند إلى الأدوار (RBAC) تحديد أذونات دقيقة في طبقة قاعدة البيانات. يحصل كل مستخدم أو خدمة على القدرات التي يحتاجها بالضبط - لا أكثر.</p>
-<p>يشرح هذا المنشور كيفية عمل RBAC في Milvus، وكيفية تكوينه، وكيفية تطبيقه بأمان في بيئات الإنتاج.</p>
-<h2 id="Why-Access-Control-Matters-When-Using-Milvus" class="common-anchor-header">لماذا يعتبر التحكم في الوصول مهمًا عند استخدام ميلفوس<button data-href="#Why-Access-Control-Matters-When-Using-Milvus" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus</a> addresses these challenges with <a href="https://milvus.io/docs/rbac.md">role-based access control (RBAC)</a>. Instead of giving every user superadmin rights or trying to enforce restrictions in application code, RBAC lets you define precise permissions at the database layer. Each user or service gets exactly the capabilities it needs—nothing more.</p>
+<p>This post explains how RBAC works in Milvus, how to configure it, and how to apply it safely in production environments.</p>
+<h2 id="Why-Access-Control-Matters-When-Using-Milvus" class="common-anchor-header">Why Access Control Matters When Using Milvus<button data-href="#Why-Access-Control-Matters-When-Using-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,23 +46,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>عندما تكون الفرق صغيرة، وتخدم تطبيقات الذكاء الاصطناعي الخاصة بها عددًا محدودًا من المستخدمين، عادةً ما تكون البنية التحتية بسيطة. حيث يقوم عدد قليل من المهندسين بإدارة النظام؛ ويتم استخدام ميلفوس للتطوير أو الاختبار فقط؛ وتكون تدفقات العمل التشغيلية مباشرة. في هذه المرحلة المبكرة، نادرًا ما يبدو التحكم في الوصول أمرًا ملحًا - لأن سطح المخاطر صغير ويمكن عكس أي أخطاء بسهولة.</p>
-<p>مع انتقال ميلفوس إلى مرحلة الإنتاج وتزايد عدد المستخدمين والخدمات والمشغلين، يتغير نموذج الاستخدام بسرعة. تشمل السيناريوهات الشائعة ما يلي:</p>
+    </button></h2><p>When teams are small, and their AI applications serve only a limited number of users, infrastructure is usually simple. A few engineers manage the system; Milvus is used only for development or testing; and operational workflows are straightforward. In this early stage, access control rarely feels urgent—because the risk surface is small and any mistakes can be easily reversed.</p>
+<p>As Milvus moves into production and the number of users, services, and operators grows, the usage model changes quickly. Common scenarios include:</p>
 <ul>
-<li><p>أنظمة أعمال متعددة تتشارك نفس مثيل ميلفوس</p></li>
-<li><p>فرق متعددة تصل إلى نفس مجموعات المتجهات</p></li>
-<li><p>بيانات الاختبار والتدريج وبيانات الإنتاج التي تتعايش في مجموعة واحدة</p></li>
-<li><p>أدوار مختلفة تحتاج إلى مستويات مختلفة من الوصول، من الاستعلامات للقراءة فقط إلى الكتابة والتحكم التشغيلي</p></li>
+<li><p>Multiple business systems sharing the same Milvus instance</p></li>
+<li><p>Multiple teams accessing the same vector collections</p></li>
+<li><p>Test, staging, and production data coexisting in a single cluster</p></li>
+<li><p>Different roles needing different levels of access, from read-only queries to writes and operational control</p></li>
 </ul>
-<p>بدون حدود وصول واضحة المعالم، تخلق هذه الإعدادات مخاطر يمكن التنبؤ بها:</p>
+<p>Without well-defined access boundaries, these setups create predictable risks:</p>
 <ul>
-<li><p>قد تؤدي عمليات سير عمل الاختبار إلى حذف مجموعات الإنتاج عن طريق الخطأ</p></li>
-<li><p>قد يقوم المطورون بتعديل الفهارس التي تستخدمها الخدمات المباشرة عن غير قصد</p></li>
-<li><p>الاستخدام الواسع النطاق للحساب <code translate="no">root</code> يجعل من المستحيل تتبع الإجراءات أو التدقيق فيها</p></li>
-<li><p>قد يحصل التطبيق المخترق على وصول غير مقيد إلى جميع بيانات المتجهات.</p></li>
+<li><p>Test workflows might accidentally delete production collections</p></li>
+<li><p>Developers might unintentionally modify indexes used by live services</p></li>
+<li><p>Widespread use of the <code translate="no">root</code> account makes actions impossible to trace or audit</p></li>
+<li><p>A compromised application might gain unrestricted access to all vector data</p></li>
 </ul>
-<p>مع تزايد الاستخدام، لم يعد الاعتماد على الاصطلاحات غير الرسمية أو حسابات المسؤول المشتركة مستداماً. يصبح نموذج الوصول المتسق والقابل للتنفيذ أمرًا ضروريًا - وهذا بالضبط ما يوفره نظام Milvus RBAC.</p>
-<h2 id="What-is-RBAC-in-Milvus" class="common-anchor-header">ما هو RBAC في ميلفوس<button data-href="#What-is-RBAC-in-Milvus" class="anchor-icon" translate="no">
+<p>As usage grows, relying on informal conventions or shared admin accounts is no longer sustainable. A consistent, enforceable access model becomes essential—and this is exactly what Milvus RBAC provides.</p>
+<h2 id="What-is-RBAC-in-Milvus" class="common-anchor-header">What is RBAC in Milvus<button data-href="#What-is-RBAC-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,28 +77,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/rbac.md">RBAC (التحكم في الوصول المستند إلى الدور)</a> هو نموذج إذن يتحكم في الوصول بناءً على <strong>الأدوار</strong> بدلاً من المستخدمين الفرديين. في ميلفوس، يتيح لك التحكم في الوصول القائم على الأدوار في ميلفوس تحديد العمليات التي يُسمح للمستخدم أو الخدمة بتنفيذها بالضبط - وعلى أي موارد محددة. يوفر طريقة منظمة وقابلة للتطوير لإدارة الأمان مع نمو نظامك من مطور واحد إلى بيئة إنتاج كاملة.</p>
-<p>يتمحور نظام Milvus RBAC حول المكونات الأساسية التالية:</p>
+    </button></h2><p><a href="https://milvus.io/docs/rbac.md">RBAC (Role-Based Access Control)</a> is a permission model that controls access based on <strong>roles</strong> rather than individual users. In Milvus, RBAC lets you define exactly which operations a user or service is allowed to perform—and on which specific resources. It provides a structured, scalable way to manage security as your system grows from a single developer to a complete production environment.</p>
+<p>Milvus RBAC is built around the following core components:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/users_roles_privileges_030620f913.png" alt="Users Roles Privileges" class="doc-image" id="users-roles-privileges" />
-   </span> <span class="img-wrapper"> <span>امتيازات أدوار المستخدمين</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/users_roles_privileges_030620f913.png" alt="Users Roles Privileges" class="doc-image" id="users-roles-privileges" />
+    <span>Users Roles Privileges</span>
+  </span>
+</p>
 <ul>
-<li><p><strong>المورد</strong>: الكيان الذي يتم الوصول إليه. في ميلفوس، تتضمن الموارد <strong>المثيل</strong> <strong>وقاعدة البيانات</strong> <strong>والمجموعة</strong>.</p></li>
-<li><p><strong>الامتيازات</strong>: عملية محددة مسموح بها على مورد - على سبيل المثال، إنشاء مجموعة أو إدراج بيانات أو حذف كيانات.</p></li>
-<li><p><strong>مجموعة الامتيازات</strong>: مجموعة محددة مسبقاً من الامتيازات ذات الصلة، مثل "للقراءة فقط" أو "الكتابة".</p></li>
-<li><p><strong>الدور</strong>: مجموعة من الامتيازات والموارد التي تنطبق عليها. يحدد الدور العمليات <em>التي</em> يمكن تنفيذها <em>وأين</em> يمكن تنفيذها.</p></li>
-<li><p><strong>المستخدم</strong>: هوية في ميلفوس. لكل مستخدم معرف فريد ويتم تعيين دور واحد أو أكثر له.</p></li>
+<li><p><strong>Resource</strong>: The entity being accessed. In Milvus, resources include the <strong>instance</strong>, <strong>database</strong>, and <strong>collection</strong>.</p></li>
+<li><p><strong>Privilege</strong>: A specific allowed operation on a resource—for example, creating a collection, inserting data, or deleting entities.</p></li>
+<li><p><strong>Privilege Group</strong>: A predefined set of related privileges, such as “read-only” or “write.”</p></li>
+<li><p><strong>Role</strong>: A combination of privileges and the resources they apply to. A role determines <em>what</em> operations can be performed and <em>where</em>.</p></li>
+<li><p><strong>User</strong>: An identity in Milvus. Each user has a unique ID and is assigned one or more roles.</p></li>
 </ul>
-<p>تشكل هذه المكونات تسلسلاً هرمياً واضحاً:</p>
+<p>These components form a clear hierarchy:</p>
 <ol>
-<li><p><strong>يتم تعيين أدوار للمستخدمين</strong></p></li>
-<li><p><strong>تحدد الأدوار الامتيازات</strong></p></li>
-<li><p><strong>تنطبق الامتيازات على موارد محددة</strong></p></li>
+<li><p><strong>Users are assigned roles</strong></p></li>
+<li><p><strong>Roles define privileges</strong></p></li>
+<li><p><strong>Privileges apply to specific resources</strong></p></li>
 </ol>
-<p>أحد مبادئ التصميم الرئيسية في ميلفوس هو أن <strong>الأذونات لا يتم تعيينها مباشرة للمستخدمين</strong>. تمر جميع الصلاحيات عبر الأدوار. هذا التوجيه يبسط الإدارة، ويقلل من أخطاء التكوين، ويجعل تغييرات الأذونات متوقعة.</p>
-<p>يتم توسيع نطاق هذا النموذج بشكل نظيف في عمليات النشر الحقيقية. عندما يشترك عدة مستخدمين في دور ما، فإن تحديث امتيازات الدور يقوم على الفور بتحديث الأذونات لهم جميعًا - دون تعديل كل مستخدم على حدة. إنها نقطة تحكم واحدة تتماشى مع كيفية إدارة البنية التحتية الحديثة للوصول.</p>
-<h2 id="How-RBAC-Works-in-Milvus" class="common-anchor-header">كيفية عمل RBAC في ميلفوس<button data-href="#How-RBAC-Works-in-Milvus" class="anchor-icon" translate="no">
+<p>A key design principle in Milvus is that <strong>permissions are never assigned directly to users</strong>. All access goes through roles. This indirection simplifies administration, reduces configuration errors, and makes permission changes predictable.</p>
+<p>This model scales cleanly in real deployments. When multiple users share a role, updating the role’s privileges instantly updates permissions for all of them—without modifying each user individually. It’s a single point of control aligned with how modern infrastructure manages access.</p>
+<h2 id="How-RBAC-Works-in-Milvus" class="common-anchor-header">How RBAC Works in Milvus<button data-href="#How-RBAC-Works-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -113,18 +115,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>عندما يرسل العميل طلباً إلى Milvus، يقوم النظام بتقييمه من خلال سلسلة من خطوات التفويض. يجب أن تجتاز كل خطوة قبل السماح بمتابعة العملية:</p>
+    </button></h2><p>When a client sends a request to Milvus, the system evaluates it through a series of authorization steps. Each step must pass before the operation is allowed to proceed:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/how_rbac_works_afe48bc717.png" alt="How RBAC Works in Milvus" class="doc-image" id="how-rbac-works-in-milvus" />
-   </span> <span class="img-wrapper"> <span>كيفية عمل RBAC في ملفوس</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/how_rbac_works_afe48bc717.png" alt="How RBAC Works in Milvus" class="doc-image" id="how-rbac-works-in-milvus" />
+    <span>How RBAC Works in Milvus</span>
+  </span>
+</p>
 <ol>
-<li><p><strong>مصادقة الطلب:</strong> يتحقق ميلفوس أولاً من هوية المستخدم. إذا فشلت المصادقة، يتم رفض الطلب مع ظهور خطأ مصادقة.</p></li>
-<li><p><strong>التحقق من تعيين الدور:</strong> بعد المصادقة، يتحقق ميلفوس مما إذا كان المستخدم لديه دور واحد على الأقل معين. إذا لم يتم العثور على أي دور، يتم رفض الطلب مع ظهور خطأ رفض الإذن.</p></li>
-<li><p><strong>التحقق من الامتيازات المطلوبة:</strong> يقوم Milvus بعد ذلك بتقييم ما إذا كان دور المستخدم يمنح الامتياز المطلوب على المورد الهدف. في حالة فشل التحقق من الامتيازات، يتم رفض الطلب مع ظهور خطأ رفض الإذن.</p></li>
-<li><p><strong>تنفيذ العملية:</strong> إذا نجحت جميع عمليات التحقق، يقوم ميلفوس بتنفيذ العملية المطلوبة وإرجاع النتيجة.</p></li>
+<li><p><strong>Authenticate the request:</strong> Milvus first verifies the user identity. If authentication fails, the request is rejected with an authentication error.</p></li>
+<li><p><strong>Check role assignment:</strong> After authentication, Milvus checks whether the user has at least one role assigned. If no role is found, the request is rejected with a permission denied error.</p></li>
+<li><p><strong>Verify required privileges:</strong> Milvus then evaluates whether the user’s role grants the required privilege on the target resource. If the privilege check fails, the request is rejected with a permission denied error.</p></li>
+<li><p><strong>Execute the operation:</strong> If all checks pass, Milvus executes the requested operation and returns the result.</p></li>
 </ol>
-<h2 id="How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="common-anchor-header">كيفية تكوين التحكم في الوصول عبر RBAC في ميلفوس<button data-href="#How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="common-anchor-header">How to Configure Access Control via RBAC in Milvus<button data-href="#How-to-Configure-Access-Control-via-RBAC-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -139,28 +143,28 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Prerequisites" class="common-anchor-header">1. المتطلبات الأساسية</h3><p>قبل أن يتم تقييم قواعد RBAC وتطبيقها، يجب تمكين مصادقة المستخدم بحيث يمكن ربط كل طلب إلى Milvus بهوية مستخدم معين.</p>
-<p>فيما يلي طريقتان قياسيتان للنشر.</p>
+    </button></h2><h3 id="1-Prerequisites" class="common-anchor-header">1. Prerequisites</h3><p>Before RBAC rules can be evaluated and enforced, user authentication must be enabled so that every request to Milvus can be associated with a specific user identity.</p>
+<p>Here are two standard deployment methods.</p>
 <ul>
-<li><strong>النشر باستخدام Docker Compose</strong></li>
+<li><strong>Deploying with Docker Compose</strong></li>
 </ul>
-<p>إذا تم نشر ملف Milvus باستخدام Docker Compose، فقم بتحرير ملف التكوين <code translate="no">milvus.yaml</code> وقم بتمكين التخويل عن طريق تعيين <code translate="no">common.security.authorizationEnabled</code> إلى <code translate="no">true</code>:</p>
+<p>If Milvus is deployed using Docker Compose, edit the <code translate="no">milvus.yaml</code> configuration file and enable authorization by setting <code translate="no">common.security.authorizationEnabled</code> to <code translate="no">true</code>:</p>
 <pre><code translate="no"><span class="hljs-attr">common</span>:
   <span class="hljs-attr">security</span>:
     <span class="hljs-attr">authorizationEnabled</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>النشر باستخدام مخططات هيلم</strong></li>
+<li><strong>Deploying with Helm Charts</strong></li>
 </ul>
-<p>إذا تم نشر ملف Milvus باستخدام مخططات Helm، فقم بتحرير الملف <code translate="no">values.yaml</code> وأضف التكوين التالي ضمن <code translate="no">extraConfigFiles.user.yaml</code>:</p>
+<p>If Milvus is deployed using Helm Charts, edit the <code translate="no">values.yaml</code> file and add the following configuration under <code translate="no">extraConfigFiles.user.yaml</code>:</p>
 <pre><code translate="no"><span class="hljs-attr">extraConfigFiles</span>:
   user.<span class="hljs-property">yaml</span>: |+
     <span class="hljs-attr">common</span>:
       <span class="hljs-attr">security</span>:
         <span class="hljs-attr">authorizationEnabled</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Initialization" class="common-anchor-header">2. التهيئة</h3><p>بشكل افتراضي، يقوم ميلفوس بإنشاء مستخدم مدمج <code translate="no">root</code> عند بدء تشغيل النظام. كلمة المرور الافتراضية لهذا المستخدم هي <code translate="no">Milvus</code>.</p>
-<p>كخطوة أمان أولية، استخدم المستخدم <code translate="no">root</code> للاتصال بـ Milvus وقم بتغيير كلمة المرور الافتراضية على الفور. يوصى بشدة باستخدام كلمة مرور معقدة لمنع الوصول غير المصرح به.</p>
+<h3 id="2-Initialization" class="common-anchor-header">2. Initialization</h3><p>By default, Milvus creates a built-in <code translate="no">root</code> user when the system starts. The default password for this user is <code translate="no">Milvus</code>.</p>
+<p>As an initial security step, use the <code translate="no">root</code> user to connect to Milvus and change the default password immediately. It is strongly recommended to use a complex password to prevent unauthorized access.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-comment"># Connect to Milvus using the default root user</span>
 client = MilvusClient(
@@ -174,31 +178,31 @@ client.update_password(
     new_password=<span class="hljs-string">&quot;xgOoLudt3Kc#Pq68&quot;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Core-Operations" class="common-anchor-header">3. العمليات الأساسية</h3><p><strong>إنشاء المستخدمين</strong></p>
-<p>للاستخدام اليومي، يوصى بإنشاء مستخدمين مخصصين بدلاً من استخدام حساب <code translate="no">root</code>.</p>
+<h3 id="3-Core-Operations" class="common-anchor-header">3. Core Operations</h3><p><strong>Create Users</strong></p>
+<p>For daily usage, it is recommended to create dedicated users instead of using the <code translate="no">root</code> account.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>, password=<span class="hljs-string">&quot;P@ssw0rd&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>إنشاء الأدوار</strong></p>
-<p>يوفر ميلفوس دورًا مدمجًا <code translate="no">admin</code> مع امتيازات إدارية كاملة. ومع ذلك، بالنسبة لمعظم سيناريوهات الإنتاج، يوصى بإنشاء أدوار مخصصة لتحقيق تحكم وصول أكثر دقة.</p>
+<p><strong>Create Roles</strong></p>
+<p>Milvus provides a built-in <code translate="no">admin</code> role with full administrative privileges. For most production scenarios, however, it is recommended to create custom roles to achieve finer-grained access control.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>إنشاء مجموعات امتيازات</strong></p>
-<p>مجموعة الامتيازات هي مجموعة من الامتيازات المتعددة. لتبسيط إدارة الأذونات، يمكن تجميع الامتيازات ذات الصلة ومنحها معاً.</p>
-<p>يتضمن ميلفوس مجموعات الامتيازات المضمنة التالية:</p>
+<p><strong>Create Privilege Groups</strong></p>
+<p>A privilege group is a collection of multiple privileges. To simplify permission management, related privileges can be grouped and granted together.</p>
+<p>Milvus includes the following built-in privilege groups:</p>
 <ul>
-<li><p><code translate="no">COLL_RO</code> <code translate="no">COLL_RW</code>, <code translate="no">COLL_ADMIN</code></p></li>
-<li><p><code translate="no">DB_RO</code>، <code translate="no">DB_RW</code>, <code translate="no">DB_ADMIN</code></p></li>
-<li><p><code translate="no">Cluster_RO</code> <code translate="no">Cluster_RW</code>, <code translate="no">Cluster_ADMIN</code></p></li>
+<li><p><code translate="no">COLL_RO</code>, <code translate="no">COLL_RW</code>, <code translate="no">COLL_ADMIN</code></p></li>
+<li><p><code translate="no">DB_RO</code>, <code translate="no">DB_RW</code>, <code translate="no">DB_ADMIN</code></p></li>
+<li><p><code translate="no">Cluster_RO</code>, <code translate="no">Cluster_RW</code>, <code translate="no">Cluster_ADMIN</code></p></li>
 </ul>
-<p>يمكن أن يؤدي استخدام مجموعات الامتيازات المضمنة هذه إلى تقليل تعقيد تصميم الأذونات بشكل كبير وتحسين الاتساق بين الأدوار.</p>
-<p>يمكنك إما استخدام مجموعات الامتيازات المضمنة مباشرةً أو إنشاء مجموعات امتيازات مخصصة حسب الحاجة.</p>
+<p>Using these built-in privilege groups can significantly reduce the complexity of permission design and improve consistency across roles.</p>
+<p>You can either use the built-in privilege groups directly or create custom privilege groups as needed.</p>
 <pre><code translate="no"><span class="hljs-comment"># Create a privilege group</span>
 client.create_privilege_group(group_name=<span class="hljs-string">&#x27;privilege_group_1&#x27;</span>）
 <span class="hljs-comment"># Add privileges to the privilege group</span>
 client.add_privileges_to_group(group_name=<span class="hljs-string">&#x27;privilege_group_1&#x27;</span>, privileges=[<span class="hljs-string">&#x27;Query&#x27;</span>, <span class="hljs-string">&#x27;Search&#x27;</span>])
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>منح الامتيازات أو مجموعات الامتيازات للأدوار</strong></p>
-<p>بعد إنشاء الدور، يمكن منح الامتيازات أو مجموعات الامتيازات للدور. يمكن تحديد الموارد المستهدفة لهذه الامتيازات على مستويات مختلفة، بما في ذلك المثيل أو قاعدة البيانات أو المجموعات الفردية.</p>
+<p><strong>Grant Privileges or Privilege Groups to Roles</strong></p>
+<p>After a role is created, privileges or privilege groups can be granted to the role. The target resources for these privileges can be specified at different levels, including the instance, database, or individual Collections.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">grant_privilege_v2</span>(
     role_name=<span class="hljs-string">&quot;role_a&quot;</span>,
     privilege=<span class="hljs-string">&quot;Search&quot;</span>,
@@ -218,17 +222,17 @@ client.<span class="hljs-title function_">grant_privilege_v2</span>(
     db_name=<span class="hljs-string">&#x27;*&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>منح الأدوار للمستخدمين</strong></p>
-<p>بمجرد تعيين الأدوار لمستخدم، يمكن للمستخدم الوصول إلى الموارد وتنفيذ العمليات التي تحددها تلك الأدوار. يمكن منح مستخدم واحد دورًا واحدًا أو عدة أدوار، اعتمادًا على نطاق الوصول المطلوب.</p>
+<p><strong>Grant Roles to Users</strong></p>
+<p>Once roles are assigned to a user, the user can access resources and perform the operations defined by those roles. A single user can be granted one or multiple roles, depending on the required access scope.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">grant_role</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>, role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Inspect-and-Revoke-Access" class="common-anchor-header">4. فحص وإلغاء الوصول</h3><p><strong>فحص الأدوار المعينة لمستخدم</strong></p>
+<h3 id="4-Inspect-and-Revoke-Access" class="common-anchor-header">4. Inspect and Revoke Access</h3><p><strong>Inspect Roles Assigned to a User</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">describe_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>فحص الامتيازات المعينة لدور ما</strong></p>
+<p><strong>Inspect Privileges Assigned to a Role</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">describe_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>إلغاء الامتيازات من أحد الأدوار</strong></p>
+<p><strong>Revoke Privileges from a Role</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">revoke_privilege_v2</span>(
     role_name=<span class="hljs-string">&quot;role_a&quot;</span>,
     privilege=<span class="hljs-string">&quot;Search&quot;</span>,
@@ -242,17 +246,17 @@ client.<span class="hljs-title function_">revoke_privilege_v2</span>(
     db_name=<span class="hljs-string">&#x27;default&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>إبطال الأدوار من مستخدم</strong></p>
+<p><strong>Revoke Roles from a User</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">revoke_role</span>(
     user_name=<span class="hljs-string">&#x27;user_1&#x27;</span>,
     role_name=<span class="hljs-string">&#x27;role_a&#x27;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>حذف المستخدمين والأدوار</strong></p>
+<p><strong>Delete Users and Roles</strong></p>
 <pre><code translate="no">client.<span class="hljs-title function_">drop_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>)
 client.<span class="hljs-title function_">drop_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">مثال: تصميم التحكم بالوصول لنظام RAG المدعوم من ميلفوس<button data-href="#Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
+<h2 id="Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">Example: Access Control Design for a Milvus-Powered RAG System<button data-href="#Example-Access-Control-Design-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -267,16 +271,16 @@ client.<span class="hljs-title function_">drop_role</span>(role_name=<span class
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ضع في اعتبارك نظام الاسترجاع المعزز (RAG) المبني على نظام Milvus.</p>
-<p>في هذا النظام، يكون للمكونات والمستخدمين المختلفين مسؤوليات منفصلة بوضوح، ويتطلب كل منها مستوى مختلف من الوصول.</p>
+    </button></h2><p>Consider a Retrieval-Augmented Generation (RAG) system built on top of Milvus.</p>
+<p>In this system, different components and users have clearly separated responsibilities, and each requires a different level of access.</p>
 <table>
 <thead>
-<tr><th>الجهة الفاعلة</th><th>المسؤولية</th><th>الوصول المطلوب</th></tr>
+<tr><th>Actor</th><th>Responsibility</th><th>Required Access</th></tr>
 </thead>
 <tbody>
-<tr><td>مسؤول المنصة</td><td>عمليات النظام وتكوينه</td><td>الإدارة على مستوى المثيل</td></tr>
-<tr><td>خدمة استيعاب المتجهات</td><td>إدخال بيانات المتجهات وتحديثاتها</td><td>الوصول للقراءة والكتابة</td></tr>
-<tr><td>خدمة البحث</td><td>البحث عن المتجهات واسترجاعها</td><td>الوصول للقراءة فقط</td></tr>
+<tr><td>Platform Administrator</td><td>System operations and configuration</td><td>Instance-level administration</td></tr>
+<tr><td>Vector Ingestion Service</td><td>Vector data ingestion and updates</td><td>Read and write access</td></tr>
+<tr><td>Search Service</td><td>Vector search and retrieval</td><td>Read-only access</td></tr>
 </tbody>
 </table>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
@@ -317,7 +321,7 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_admin&quot;</spa
 client.grant_role(user_name=<span class="hljs-string">&quot;rag_reader&quot;</span>, role_name=<span class="hljs-string">&quot;role_read_only&quot;</span>)
 client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</span>, role_name=<span class="hljs-string">&quot;role_read_write&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="common-anchor-header">نصائح سريعة: كيفية تشغيل التحكم في الوصول بأمان في الإنتاج<button data-href="#Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="anchor-icon" translate="no">
+<h2 id="Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="common-anchor-header">Quick Tips: How to Operate Access Control Safely in Production<button data-href="#Quick-Tips-How-to-Operate-Access-Control-Safely-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -332,21 +336,21 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لضمان بقاء التحكم في الوصول فعالاً وقابلاً للإدارة في أنظمة الإنتاج طويلة الأمد، اتبع هذه الإرشادات العملية.</p>
-<p><strong>1. تغيير كلمة المرور الافتراضية</strong> <code translate="no">root</code> <strong>والحد من استخدام</strong> <strong>الحساب</strong> <code translate="no">root</code> </p>
-<p>قم بتحديث كلمة المرور الافتراضية <code translate="no">root</code> مباشرة بعد التهيئة وقصر استخدامها على المهام الإدارية فقط. تجنب استخدام أو مشاركة حساب الجذر في العمليات الروتينية. بدلاً من ذلك، قم بإنشاء مستخدمين وأدوار مخصصة للوصول اليومي لتقليل المخاطر وتحسين المساءلة.</p>
-<p><strong>2. اعزل مثيلات ميلفوس فعلياً عبر البيئات</strong></p>
-<p>نشر مثيلات Milvus منفصلة للتطوير والتدريج والإنتاج. يوفر العزل المادي حدود أمان أقوى من التحكم المنطقي في الوصول وحده ويقلل بشكل كبير من مخاطر الأخطاء عبر البيئات.</p>
-<p><strong>3. اتبع مبدأ الامتيازات الأقل</strong></p>
-<p>منح الأذونات المطلوبة لكل دور فقط:</p>
+    </button></h2><p>To ensure access control remains effective and manageable in long-running production systems, follow these practical guidelines.</p>
+<p><strong>1. Change the default</strong> <code translate="no">root</code> <strong>password and limit the use of</strong> <code translate="no">root</code> <strong>account</strong></p>
+<p>Update the default <code translate="no">root</code> password immediately after initialization and restrict its use to administrative tasks only. Avoid using or sharing the root account for routine operations. Instead, create dedicated users and roles for day-to-day access to reduce risk and improve accountability.</p>
+<p><strong>2. Physically isolate Milvus instances across environments</strong></p>
+<p>Deploy separate Milvus instances for development, staging, and production. Physical isolation provides a stronger safety boundary than logical access control alone and significantly reduces the risk of cross-environment mistakes.</p>
+<p><strong>3. Follow the principle of least privilege</strong></p>
+<p>Grant only the permissions required for each role:</p>
 <ul>
-<li><p><strong>بيئات التطوير:</strong> يمكن أن تكون الأذونات أكثر تساهلاً لدعم التكرار والاختبار</p></li>
-<li><p><strong>بيئات الإنتاج:</strong> يجب أن تقتصر الأذونات على ما هو ضروري فقط.</p></li>
-<li><p><strong>عمليات التدقيق المنتظمة:</strong> مراجعة الأذونات الحالية بشكل دوري للتأكد من أنها لا تزال مطلوبة.</p></li>
+<li><p><strong>Development environments:</strong> permissions can be more permissive to support iteration and testing</p></li>
+<li><p><strong>Production environments:</strong> permissions should be strictly limited to what is necessary</p></li>
+<li><p><strong>Regular audits:</strong> periodically review existing permissions to ensure they are still required</p></li>
 </ul>
-<p><strong>4. إلغاء الأذونات بشكل فعال عندما لا تكون هناك حاجة إليها.</strong></p>
-<p>التحكم في الوصول ليس إعداداً لمرة واحدة، بل يتطلب صيانة مستمرة. قم بإلغاء الأدوار والامتيازات على الفور عندما يتغير المستخدمون أو الخدمات أو المسؤوليات. هذا يمنع الأذونات غير المستخدمة من التراكم بمرور الوقت وتصبح مخاطر أمنية خفية.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><strong>4. Actively revoke permissions when they are no longer needed</strong></p>
+<p>Access control is not a one-time setup—it requires ongoing maintenance. Revoke roles and privileges promptly when users, services, or responsibilities change. This prevents unused permissions from accumulating over time and becoming hidden security risks.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -361,13 +365,13 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تكوين التحكم في الوصول في ميلفوس ليس معقدًا بطبيعته، ولكنه ضروري لتشغيل النظام بأمان وموثوقية في الإنتاج. باستخدام نموذج RBAC جيد التصميم، يمكنك:</p>
+    </button></h2><p>Configuring access control in Milvus is not inherently complex, but it is essential for operating the system safely and reliably in production. With a well-designed RBAC model, you can:</p>
 <ul>
-<li><p><strong>الحد من المخاطر</strong> عن طريق منع العمليات العرضية أو المدمرة</p></li>
-<li><p><strong>تحسين الأمان</strong> من خلال فرض الوصول الأقل امتيازاً إلى بيانات المتجهات</p></li>
-<li><p><strong>توحيد العمليات</strong> من خلال فصل واضح للمسؤوليات</p></li>
-<li><p><strong>توسيع النطاق بثقة،</strong> ووضع الأساس لعمليات النشر متعددة المستأجرين وعلى نطاق واسع</p></li>
+<li><p><strong>Reduce risk</strong> by preventing accidental or destructive operations</p></li>
+<li><p><strong>Improve security</strong> by enforcing least-privilege access to vector data</p></li>
+<li><p><strong>Standardize operations</strong> through a clear separation of responsibilities</p></li>
+<li><p><strong>Scale with confidence</strong>, laying the foundation for multi-tenant and large-scale deployments</p></li>
 </ul>
-<p>التحكم في الوصول ليس ميزة اختيارية أو مهمة لمرة واحدة. إنه جزء أساسي من تشغيل Milvus بأمان على المدى الطويل.</p>
-<p>👉 ابدأ ببناء خط أساس أمني متين باستخدام <a href="https://milvus.io/docs/rbac.md">RBAC</a> لنشر Milvus الخاص بك.</p>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة من أحدث إصدار من Milvus؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات على أسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل Milvus المكتبية</a>.</p>
+<p>Access control is not an optional feature or a one-time task. It is a foundational part of operating Milvus safely over the long term.</p>
+<p>👉 Start building a solid security baseline with <a href="https://milvus.io/docs/rbac.md">RBAC</a> for your Milvus deployment.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

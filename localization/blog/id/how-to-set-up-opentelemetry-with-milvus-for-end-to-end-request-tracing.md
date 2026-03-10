@@ -1,14 +1,12 @@
 ---
 id: how-to-set-up-opentelemetry-with-milvus-for-end-to-end-request-tracing.md
-title: >-
-  Cara Mengatur OpenTelemetri dengan Milvus untuk Penelusuran Permintaan
-  End-to-End
+title: How to Set Up OpenTelemetry with Milvus for End-to-End Request Tracing
 author: Yi Gong
 date: 2025-06-05T00:00:00.000Z
 desc: >-
-  Memantau kinerja basis data vektor Milvus dengan penelusuran OpenTelemetry.
-  Tutorial lengkap dengan pengaturan Docker, klien Python, visualisasi Jaeger,
-  dan kiat-kiat debugging.
+  Monitor Milvus vector database performance with OpenTelemetry tracing.
+  Complete tutorial with Docker setup, Python client, Jaeger visualization, and
+  debugging tips.
 cover: >-
   assets.zilliz.com/How_to_Set_Up_Open_Telemetry_with_Milvus_for_End_to_End_Request_Tracing_f1842af82a.png
 tag: Tutorial
@@ -22,7 +20,7 @@ meta_title: How to Set Up OpenTelemetry with Milvus for End-to-End Request Traci
 origin: >-
   https://milvus.io/blog/how-to-set-up-opentelemetry-with-milvus-for-end-to-end-request-tracing.md
 ---
-<h2 id="Introduction" class="common-anchor-header">Pendahuluan<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,12 +35,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ketika membangun aplikasi yang didukung AI dengan <a href="https://milvus.io/blog/what-is-a-vector-database.md">database vektor</a>, memahami kinerja sistem menjadi sangat penting seiring dengan meningkatnya skala aplikasi Anda. Satu permintaan pencarian dapat memicu beberapa operasi internal-pengindeksan vektor, penghitungan kemiripan, dan pengambilan data-di berbagai komponen. Tanpa pengamatan yang tepat, mendiagnosis perlambatan atau kegagalan menjadi seperti menemukan jarum di tumpukan jerami.</p>
-<p>Pelacakan<strong>terdistribusi</strong> memecahkan masalah ini dengan melacak permintaan saat mereka mengalir melalui sistem Anda, memberikan gambaran lengkap tentang apa yang terjadi di balik layar.</p>
-<p><a href="https://github.com/open-telemetry"><strong>OpenTelemetry (OTEL)</strong></a> adalah kerangka kerja pengamatan sumber terbuka yang didukung oleh <a href="https://www.cncf.io/">Cloud Native Computing Foundation (CNCF</a> ) yang membantu Anda mengumpulkan jejak, metrik, dan log dari aplikasi Anda. OTEL bersifat netral terhadap vendor, diadopsi secara luas, dan bekerja secara mulus dengan alat pemantauan populer.</p>
-<p>Dalam panduan ini, kami akan menunjukkan kepada Anda cara menambahkan penelusuran ujung ke ujung ke <a href="https://milvus.io/"><strong>Milvus</strong></a>, basis data vektor berkinerja tinggi yang dibuat untuk aplikasi AI. Anda akan belajar melacak segala sesuatu mulai dari permintaan klien hingga operasi basis data internal, sehingga pengoptimalan kinerja dan debugging menjadi lebih mudah.</p>
-<p>Kami juga akan menggunakan <a href="https://github.com/jaegertracing/jaeger-ui"><strong>Jaeger</strong></a> untuk memvisualisasikan data pelacakan, memberi Anda wawasan yang kuat ke dalam operasi basis data vektor Anda.</p>
-<h2 id="What-Well-Build" class="common-anchor-header">Apa yang Akan Kita Bangun<button data-href="#What-Well-Build" class="anchor-icon" translate="no">
+    </button></h2><p>When building AI-powered applications with <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector databases</a>, understanding system performance becomes critical as your application scales. A single search request might trigger multiple internal operations—vector indexing, similarity calculations, and data retrieval—across different components. Without proper observability, diagnosing slowdowns or failures becomes like finding a needle in a haystack.</p>
+<p><strong>Distributed tracing</strong> solves this problem by tracking requests as they flow through your system, giving you a complete picture of what’s happening under the hood.</p>
+<p><a href="https://github.com/open-telemetry"><strong>OpenTelemetry (OTEL)</strong></a> is an open-source observability framework backed by the <a href="https://www.cncf.io/">Cloud Native Computing Foundation (CNCF)</a> that helps you collect traces, metrics, and logs from your applications. It’s vendor-neutral, widely adopted, and works seamlessly with popular monitoring tools.</p>
+<p>In this guide, we’ll show you how to add end-to-end tracing to <a href="https://milvus.io/"><strong>Milvus</strong></a>, a high-performance vector database built for AI applications. You’ll learn to track everything from client requests to internal database operations, making performance optimization and debugging much easier.</p>
+<p>We’ll also utilize <a href="https://github.com/jaegertracing/jaeger-ui"><strong>Jaeger</strong></a> to visualize the trace data, providing you with powerful insights into your vector database operations.</p>
+<h2 id="What-Well-Build" class="common-anchor-header">What We’ll Build<button data-href="#What-Well-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,15 +55,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pada akhir tutorial ini, Anda akan memiliki pipeline penelusuran lengkap yang terdiri dari:</p>
+    </button></h2><p>By the end of this tutorial, you’ll have a complete tracing pipeline consisting of:</p>
 <ol>
-<li><p><strong>Basis data vektor Milvus</strong> dengan penelusuran OpenTelemetri yang diaktifkan</p></li>
-<li><p><strong>Jaeger</strong> untuk visualisasi dan analisis jejak</p></li>
-<li><p><strong>Klien Python</strong> yang secara otomatis melacak semua operasi Milvus</p></li>
-<li><p><strong>Visibilitas ujung ke ujung</strong> dari permintaan klien ke operasi basis data</p></li>
+<li><p><strong>Milvus vector database</strong> with OpenTelemetry tracing enabled</p></li>
+<li><p><strong>Jaeger</strong> for trace visualization and analysis</p></li>
+<li><p><strong>A Python client</strong> that automatically traces all Milvus operations</p></li>
+<li><p><strong>End-to-end visibility</strong> from client requests to database operations</p></li>
 </ol>
-<p>Perkiraan waktu penyiapan: 15-20 menit</p>
-<h2 id="Quick-Start-5-Minutes" class="common-anchor-header">Mulai Cepat (5 Menit)<button data-href="#Quick-Start-5-Minutes" class="anchor-icon" translate="no">
+<p>Estimated setup time: 15-20 minutes</p>
+<h2 id="Quick-Start-5-Minutes" class="common-anchor-header">Quick Start (5 Minutes)<button data-href="#Quick-Start-5-Minutes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,30 +78,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ingin melihatnya bekerja terlebih dahulu? Inilah jalur tercepatnya:</p>
+    </button></h2><p>Want to see it working first? Here’s the fastest path:</p>
 <ol>
-<li>Kloning repositori demo:</li>
+<li>Clone the demo repository:</li>
 </ol>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/topikachu/milvus-py-otel
 <span class="hljs-built_in">cd</span> milvus-py-otel
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>Mulai layanan:</li>
+<li>Start the services:</li>
 </ol>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li><p>Tunggu 30 detik, lalu periksa Jaeger UI di: <code translate="no">http://localhost:16686</code></p></li>
-<li><p>Jalankan contoh Python:</p></li>
+<li><p>Wait 30 seconds, then check Jaeger UI at: <code translate="no">http://localhost:16686</code></p></li>
+<li><p>Run the Python example:</p></li>
 </ol>
 <pre><code translate="no">pip install -r requirements.txt
 python example.py
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>Segarkan Jaeger dan cari jejak dari layanan <code translate="no">standalone</code> (Milvus) dan <code translate="no">milvus-client</code>.</li>
+<li>Refresh Jaeger and look for traces from both <code translate="no">standalone</code> (Milvus) and <code translate="no">milvus-client</code> services.</li>
 </ol>
-<p>Jika Anda melihat jejak muncul, semuanya berfungsi! Sekarang mari kita pahami bagaimana semuanya bekerja bersama-sama.</p>
-<h2 id="Environment-Setup" class="common-anchor-header">Pengaturan Lingkungan<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
+<p>If you see traces appearing, everything is working! Now let’s understand how it all fits together.</p>
+<h2 id="Environment-Setup" class="common-anchor-header">Environment Setup<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,15 +116,15 @@ python example.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Inilah yang Anda perlukan:</p>
+    </button></h2><p>Here’s what you’ll need:</p>
 <ul>
-<li><p><strong>Milvus 2.5.11</strong> (basis data vektor)</p></li>
-<li><p><strong>Jaeger 1.46.0</strong> (visualisasi jejak)</p></li>
-<li><p><strong>Python 3.7+</strong> (pengembangan klien)</p></li>
-<li><p><strong>Docker dan Docker Compose</strong> (orkestrasi kontainer)</p></li>
+<li><p><strong>Milvus 2.5.11</strong> (vector database)</p></li>
+<li><p><strong>Jaeger 1.46.0</strong> (trace visualization)</p></li>
+<li><p><strong>Python 3.7+</strong> (client development)</p></li>
+<li><p><strong>Docker and Docker Compose</strong> (container orchestration)</p></li>
 </ul>
-<p>Versi ini telah diuji bersama; namun, versi yang lebih baru juga akan bekerja dengan baik.</p>
-<h2 id="Setting-Up-Milvus-and-Jaeger" class="common-anchor-header">Menyiapkan Milvus dan Jaeger<button data-href="#Setting-Up-Milvus-and-Jaeger" class="anchor-icon" translate="no">
+<p>These versions have been tested together; however, newer versions should also work fine.</p>
+<h2 id="Setting-Up-Milvus-and-Jaeger" class="common-anchor-header">Setting Up Milvus and Jaeger<button data-href="#Setting-Up-Milvus-and-Jaeger" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -141,8 +139,8 @@ python example.py
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kita akan menggunakan Docker Compose untuk menjalankan kedua layanan dengan jaringan dan konfigurasi yang tepat.</p>
-<h3 id="Docker-Compose-Configuration" class="common-anchor-header">Konfigurasi Docker Compose</h3><p>Buat berkas <code translate="no">docker-compose.yaml</code>:</p>
+    </button></h2><p>We’ll use Docker Compose to run both services with proper networking and configuration.</p>
+<h3 id="Docker-Compose-Configuration" class="common-anchor-header">Docker Compose Configuration</h3><p>Create a <code translate="no">docker-compose.yaml</code> file:</p>
 <pre><code translate="no">version: <span class="hljs-string">&#x27;3.7&#x27;</span>
 Services:
 <span class="hljs-comment"># Milvus - configured to send traces to Jaeger</span>
@@ -183,8 +181,8 @@ Services:
     environment:
       - COLLECTOR_OTLP_ENABLED=<span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Catatan:</strong> Contoh berkas konfigurasi <code translate="no">embedEtcd.yaml</code> dan <code translate="no">milvus.yaml</code> dapat ditemukan di: <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel.</a></p>
-<h3 id="Milvus-Tracing-Configuration" class="common-anchor-header">Konfigurasi Penelusuran Milvus</h3><p>Buat <code translate="no">configs/milvus.yaml</code> dengan konfigurasi penelusuran:</p>
+<p><strong>Note:</strong> Example configuration files <code translate="no">embedEtcd.yaml</code> and <code translate="no">milvus.yaml</code> can be found at: <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel</a>.</p>
+<h3 id="Milvus-Tracing-Configuration" class="common-anchor-header">Milvus Tracing Configuration</h3><p>Create <code translate="no">configs/milvus.yaml</code> with the tracing configuration:</p>
 <pre><code translate="no"><span class="hljs-comment"># OpenTelemetry tracing configuration</span>
 trace:
   exporter: otlp           <span class="hljs-comment"># Use OpenTelemetry Protocol</span>
@@ -195,19 +193,19 @@ trace:
     secure: <span class="hljs-literal">false</span>         <span class="hljs-comment"># No TLS (use true in production)</span>
     initTimeoutSeconds: 10
 <button class="copy-code-btn"></button></code></pre>
-<p>Konfigurasi dijelaskan:</p>
+<p>Configuration explained:</p>
 <ul>
-<li><p><code translate="no">sampleFraction: 1.0</code> melacak setiap permintaan (berguna untuk pengembangan, tetapi gunakan 0.1 atau lebih rendah dalam produksi)</p></li>
-<li><p><code translate="no">secure: false</code> menonaktifkan TLS (aktifkan dalam produksi)</p></li>
-<li><p><code translate="no">endpoint: jaeger:4317</code> menggunakan nama layanan Docker untuk komunikasi internal</p></li>
+<li><p><code translate="no">sampleFraction: 1.0</code> traces every request (useful for development, but use 0.1 or lower in production)</p></li>
+<li><p><code translate="no">secure: false</code> disables TLS (enable in production)</p></li>
+<li><p><code translate="no">endpoint: jaeger:4317</code> uses Docker service name for internal communication</p></li>
 </ul>
-<h3 id="Starting-the-Services" class="common-anchor-header">Memulai Layanan</h3><pre><code translate="no">docker-compose up -d
+<h3 id="Starting-the-Services" class="common-anchor-header">Starting the Services</h3><pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Verifying-Trace-Delivery-from-Milvus-to-Jaeger" class="common-anchor-header">Memverifikasi Pengiriman Jejak dari Milvus ke Jaeger</h3><p>Setelah layanan berjalan, Anda dapat memverifikasi apakah data jejak dipancarkan dari Milvus mandiri dan diterima oleh Jaeger.</p>
+<h3 id="Verifying-Trace-Delivery-from-Milvus-to-Jaeger" class="common-anchor-header">Verifying Trace Delivery from Milvus to Jaeger</h3><p>Once the services are running, you can verify if trace data is emitted from the Milvus standalone and received by Jaeger.</p>
 <ul>
-<li><p>Buka browser Anda dan kunjungi Jaeger UI di: <code translate="no">http://localhost:16686/search</code></p></li>
-<li><p>Pada panel <strong>Pencarian</strong> (kiri atas), pilih menu tarik-turun <strong>Layanan</strong> dan pilih <code translate="no">standalone</code>. Jika Anda melihat <code translate="no">standalone</code> dalam daftar layanan, itu berarti konfigurasi OpenTelemetri bawaan Milvus berfungsi dan telah berhasil mendorong data jejak ke Jaeger.</p></li>
-<li><p>Klik <strong>Cari Jejak</strong> untuk menjelajahi rantai jejak yang dihasilkan oleh komponen internal Milvus (seperti interaksi gRPC antar modul).</p></li>
+<li><p>Open your browser and visit Jaeger UI at: <code translate="no">http://localhost:16686/search</code></p></li>
+<li><p>In the <strong>Search</strong> panel (top-left), choose the <strong>Service</strong> dropdown and select <code translate="no">standalone</code>. If you see <code translate="no">standalone</code> in the service list, it means Milvus’s built-in OpenTelemetry configuration is working and has successfully pushed trace data to Jaeger.</p></li>
+<li><p>Click <strong>Find Traces</strong> to explore trace chains generated by internal Milvus components (such as gRPC interactions between modules).</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -215,12 +213,12 @@ trace:
     <span></span>
   </span>
 </p>
-<h3 id="If-Trace-Data-Is-Not-Showing" class="common-anchor-header">Jika Data Jejak Tidak Muncul:</h3><ul>
-<li><p>Periksa kembali apakah blok <code translate="no">trace</code> di <code translate="no">milvus.yaml</code> telah dikonfigurasi dengan benar dan Jaeger berjalan tanpa masalah.</p></li>
-<li><p>Periksa log kontainer Milvus untuk melihat apakah ada kesalahan yang terkait dengan inisialisasi Trace.</p></li>
-<li><p>Tunggu beberapa detik dan segarkan UI Jaeger; pelaporan jejak mungkin mengalami penundaan singkat.</p></li>
+<h3 id="If-Trace-Data-Is-Not-Showing" class="common-anchor-header">If Trace Data Is Not Showing:</h3><ul>
+<li><p>Double-check that the <code translate="no">trace</code> block in <code translate="no">milvus.yaml</code> is configured correctly and that Jaeger is running without issues.</p></li>
+<li><p>Inspect the Milvus container logs to see if there are any errors related to Trace initialization.</p></li>
+<li><p>Wait a few seconds and refresh the Jaeger UI; trace reporting may experience a short delay.</p></li>
 </ul>
-<h2 id="Python-Client-Setup-and-Dependencies" class="common-anchor-header">Pengaturan Klien Python dan Ketergantungan<button data-href="#Python-Client-Setup-and-Dependencies" class="anchor-icon" translate="no">
+<h2 id="Python-Client-Setup-and-Dependencies" class="common-anchor-header">Python Client Setup and Dependencies<button data-href="#Python-Client-Setup-and-Dependencies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -235,8 +233,8 @@ trace:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sekarang mari kita siapkan klien Python untuk melacak semua operasi Milvus secara otomatis.</p>
-<p>Pertama, buat file <code translate="no">requirements.txt</code>:</p>
+    </button></h2><p>Now let’s set up the Python client to trace all Milvus operations automatically.</p>
+<p>First, create a <code translate="no">requirements.txt</code> file:</p>
 <pre><code translate="no"><span class="hljs-comment"># OpenTelemetry core</span>
 opentelemetry-api==<span class="hljs-number">1.33</span><span class="hljs-number">.1</span>
 opentelemetry-sdk==<span class="hljs-number">1.33</span><span class="hljs-number">.1</span>
@@ -248,11 +246,11 @@ opentelemetry-instrumentation-grpc==<span class="hljs-number">0.54</span>b1
 <span class="hljs-comment"># Milvus client</span>
 pymilvus==<span class="hljs-number">2.5</span><span class="hljs-number">.9</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Kemudian instal dependensi melalui:</p>
+<p>Then install dependencies via:</p>
 <pre><code translate="no">pip install -r requirements.txt
 <button class="copy-code-btn"></button></code></pre>
-<p>Ini memastikan lingkungan Python Anda siap untuk melacak panggilan gRPC yang dibuat ke backend Milvus.</p>
-<h2 id="Initializing-OpenTelemetry-in-Python" class="common-anchor-header">Menginisialisasi OpenTelemetry di Python<button data-href="#Initializing-OpenTelemetry-in-Python" class="anchor-icon" translate="no">
+<p>This ensures your Python environment is ready for tracing gRPC calls made to the Milvus backend.</p>
+<h2 id="Initializing-OpenTelemetry-in-Python" class="common-anchor-header">Initializing OpenTelemetry in Python<button data-href="#Initializing-OpenTelemetry-in-Python" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -267,7 +265,7 @@ pymilvus==<span class="hljs-number">2.5</span><span class="hljs-number">.9</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sekarang, mari kita mengonfigurasi penelusuran di dalam aplikasi Python Anda. Cuplikan ini menyiapkan OTEL dengan instrumentasi gRPC dan menyiapkan pelacak.</p>
+    </button></h2><p>Now, let’s configure tracing within your Python application. This snippet sets up OTEL with gRPC instrumentation and prepares a tracer.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> opentelemetry <span class="hljs-keyword">import</span> trace
 <span class="hljs-keyword">from</span> opentelemetry.sdk.resources <span class="hljs-keyword">import</span> Resource
@@ -301,8 +299,8 @@ grpc_client_instrumentor.instrument()
 <span class="hljs-comment"># Acquire tracer</span>
 tracer = trace.get_tracer(__name__)
 <button class="copy-code-btn"></button></code></pre>
-<p>Di sini, <code translate="no">GrpcInstrumentorClient()</code> terhubung ke tumpukan gRPC yang mendasarinya sehingga Anda tidak perlu memodifikasi kode klien secara manual untuk instrumentasi. <code translate="no">OTLPSpanExporter()</code> dikonfigurasikan untuk mengirim data pelacakan ke instance Jaeger lokal Anda.</p>
-<h2 id="Complete-Milvus-Python-Example-with-Tracing" class="common-anchor-header">Contoh Milvus Python Lengkap dengan Pelacakan<button data-href="#Complete-Milvus-Python-Example-with-Tracing" class="anchor-icon" translate="no">
+<p>Here, <code translate="no">GrpcInstrumentorClient()</code> hooks into the underlying gRPC stack so you don’t need to manually modify client code for instrumentation. The <code translate="no">OTLPSpanExporter()</code> is configured to send trace data to your local Jaeger instance.</p>
+<h2 id="Complete-Milvus-Python-Example-with-Tracing" class="common-anchor-header">Complete Milvus Python Example with Tracing<button data-href="#Complete-Milvus-Python-Example-with-Tracing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -317,7 +315,7 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sekarang mari kita buat contoh komprehensif yang mendemonstrasikan tracing dengan operasi Milvus yang realistis:</p>
+    </button></h2><p>Now let’s create a comprehensive example that demonstrates tracing with realistic Milvus operations:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-keyword">from</span> opentelemetry <span class="hljs-keyword">import</span> trace
 
@@ -341,7 +339,7 @@ tracer = trace.get_tracer(__name__)
     
     milvus_client.close()
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Viewing-Trace-Output" class="common-anchor-header">Melihat Keluaran Jejak<button data-href="#Viewing-Trace-Output" class="anchor-icon" translate="no">
+<h2 id="Viewing-Trace-Output" class="common-anchor-header">Viewing Trace Output<button data-href="#Viewing-Trace-Output" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -356,15 +354,15 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah klien Python Anda mengirimkan data trace, kembalilah ke Jaeger: <a href="http://localhost:16686"><code translate="no">http://localhost:16686</code></a></p>
-<p>Pilih layanan <code translate="no">milvus-client</code> untuk melihat rentang jejak yang sesuai dengan operasi Milvus klien Python Anda. Hal ini akan mempermudah untuk menganalisis kinerja dan melacak interaksi di seluruh batas sistem.</p>
+    </button></h2><p>Once your Python client sends trace data, return to Jaeger: <a href="http://localhost:16686"><code translate="no">http://localhost:16686</code></a></p>
+<p>Select the <code translate="no">milvus-client</code> service to view trace spans that correspond to your Python client’s Milvus operations. This makes it much easier to analyze performance and trace interactions across system boundaries.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/milvus_client_22aab6ab9f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Examples-in-Other-Languages" class="common-anchor-header">Contoh dalam Bahasa Lain<button data-href="#Examples-in-Other-Languages" class="anchor-icon" translate="no">
+<h2 id="Examples-in-Other-Languages" class="common-anchor-header">Examples in Other Languages<button data-href="#Examples-in-Other-Languages" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -379,10 +377,12 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Selain Python, Anda dapat mengimplementasikan penelusuran Milvus dalam bahasa lain:</p>
-<p>Bahasa <a href="https://github.com/topikachu/milvus-java-otel"><strong>Jawa</strong></a>: Gunakan Agen Java OpenTelemetry untuk instrumentasi tanpa kode <a href="https://github.com/topikachu/milvus-go-otel"><strong>👉Go</strong></a>: Memanfaatkan OpenTelemetry Go SDK untuk integrasi asli 👉Node<a href="https://github.com/topikachu/milvus-nodejs-otel"><strong>.js</strong></a>: Panggilan gRPC instrumen otomatis dengan JavaScript SDK</p>
-<p>Setiap contoh mengikuti pola yang sama tetapi menggunakan pustaka OpenTelemetry yang spesifik untuk bahasa tertentu.</p>
-<h2 id="Summary" class="common-anchor-header">Ringkasan<button data-href="#Summary" class="anchor-icon" translate="no">
+    </button></h2><p>Beyond Python, you can implement Milvus tracing in other languages:</p>
+<p>👉<a href="https://github.com/topikachu/milvus-java-otel"><strong>Java</strong></a>: Use the OpenTelemetry Java Agent for zero-code instrumentation
+👉<a href="https://github.com/topikachu/milvus-go-otel"><strong>Go</strong></a>: Leverage the OpenTelemetry Go SDK for native integration
+👉<a href="https://github.com/topikachu/milvus-nodejs-otel"><strong>Node.js</strong></a>: Auto-instrument gRPC calls with the JavaScript SDK</p>
+<p>Each example follows similar patterns but uses language-specific OpenTelemetry libraries.</p>
+<h2 id="Summary" class="common-anchor-header">Summary<button data-href="#Summary" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -397,17 +397,17 @@ tracer = trace.get_tracer(__name__)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Anda telah berhasil mengimplementasikan penelusuran ujung ke ujung untuk operasi Milvus! Inilah yang telah Anda capai:</p>
+    </button></h2><p>You’ve successfully implemented end-to-end tracing for Milvus operations! Here’s what you’ve accomplished:</p>
 <ul>
-<li><p>✅ <strong>Infrastruktur</strong>: Menyiapkan Milvus dan Jaeger dengan jaringan yang tepat</p></li>
-<li><p>✅ <strong>Penelusuran sisi server</strong>: Mengonfigurasi Milvus untuk mengekspor jejak secara otomatis</p></li>
-<li><p>✅ <strong>Penelusuran sisi klien</strong>: Klien Python yang terinstrumentasi dengan OpenTelemetry</p></li>
-<li><p>✅ <strong>Visualisasi</strong>: Menggunakan Jaeger untuk menganalisis kinerja sistem</p></li>
-<li><p><strong>Kesiapan produksi</strong>: Mempelajari praktik terbaik konfigurasi</p></li>
+<li><p>✅ <strong>Infrastructure</strong>: Set up Milvus and Jaeger with proper networking</p></li>
+<li><p>✅ <strong>Server-side tracing</strong>: Configured Milvus to export traces automatically</p></li>
+<li><p>✅ <strong>Client-side tracing</strong>: Instrumented Python client with OpenTelemetry</p></li>
+<li><p>✅ <strong>Visualization</strong>: Used Jaeger to analyze system performance</p></li>
+<li><p>✅ <strong>Production readiness</strong>: Learned configuration best practices</p></li>
 </ul>
-<p>Semua bekerja tanpa perubahan apa pun pada kode sumber Milvus SDK. Hanya dengan beberapa pengaturan konfigurasi dan pipeline penelusuran Anda langsung sederhana, efektif, dan siap untuk produksi.</p>
-<p>Anda dapat melangkah lebih jauh dengan mengintegrasikan log dan metrik untuk membangun solusi pemantauan lengkap untuk penerapan basis data vektor asli AI Anda.</p>
-<h2 id="Learn-More" class="common-anchor-header">Pelajari Lebih Lanjut<button data-href="#Learn-More" class="anchor-icon" translate="no">
+<p>All works without any changes to the Milvus SDK source code. Just a few configuration settings and your tracing pipeline is live—simple, effective, and ready for production.</p>
+<p>You can take it further by integrating logs and metrics to build a complete monitoring solution for your AI-native vector database deployment.</p>
+<h2 id="Learn-More" class="common-anchor-header">Learn More<button data-href="#Learn-More" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -423,8 +423,8 @@ tracer = trace.get_tracer(__name__)
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Dokumentasi Milvus: <a href="https://milvus.io/docs">https://milvus.io/docs</a></p></li>
-<li><p>OpenTelemetry untuk Python: <a href="https://opentelemetry.io/docs/instrumentation/python/">https://opentelemetry.io/docs/instrumentation/python/</a></p></li>
-<li><p>Dokumentasi Jaeger: <a href="https://www.jaegertracing.io/docs/">https://www.jaegertracing.io/docs/</a></p></li>
-<li><p>Demo Integrasi Milvus OpenTelemetry (Python): <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel</a></p></li>
+<li><p>Milvus Documentation: <a href="https://milvus.io/docs">https://milvus.io/docs</a></p></li>
+<li><p>OpenTelemetry for Python: <a href="https://opentelemetry.io/docs/instrumentation/python/">https://opentelemetry.io/docs/instrumentation/python/</a></p></li>
+<li><p>Jaeger Documentation: <a href="https://www.jaegertracing.io/docs/">https://www.jaegertracing.io/docs/</a></p></li>
+<li><p>Milvus OpenTelemetry Integration Demo (Python): <a href="https://github.com/topikachu/milvus-py-otel">https://github.com/topikachu/milvus-py-otel</a></p></li>
 </ul>

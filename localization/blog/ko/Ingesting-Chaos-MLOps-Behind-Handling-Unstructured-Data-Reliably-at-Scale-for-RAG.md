@@ -1,7 +1,9 @@
 ---
 id: >-
   Ingesting-Chaos-MLOps-Behind-Handling-Unstructured-Data-Reliably-at-Scale-for-RAG.md
-title: '카오스 수집: RAG를 위한 대규모 비정형 데이터 안정적 처리를 위한 MLOps'
+title: >
+  Ingesting Chaos: The MLOps Behind Handling Unstructured Data Reliably at Scale
+  for RAG 
 author: David Garnitz
 date: 2023-10-16T00:00:00.000Z
 cover: assets.zilliz.com/Ingesting_Chaos_20231017_110103_54fe2009cb.png
@@ -11,8 +13,9 @@ tags: >-
   Retrieval Augmented Generation, RAG, Unstructured Data
 recommend: true
 desc: >-
-  VectorFlow 및 Milvus와 같은 기술을 통해 팀은 개인 정보 보호 및 보안 요구 사항을 준수하면서 다양한 환경에서 효율적으로
-  테스트할 수 있습니다.
+  With technologies like VectorFlow and Milvus, the team can efficiently test
+  across different environments while complying with privacy and security
+  requirements.
 canonicalUrl: >-
   https://milvus.io/blog/Ingesting-Chaos-MLOps-Behind-Handling-Unstructured-Data-Reliably-at-Scale-for-RAG.md
 ---
@@ -22,17 +25,17 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>데이터는 상상할 수 있는 모든 형태로 그 어느 때보다 빠르게 생성되고 있습니다. 이러한 데이터는 새로운 인공지능 애플리케이션의 원동력이 되는 가솔린이지만, 이러한 생산성 향상 엔진은 이 연료를 섭취하는 데 도움이 필요합니다. 비정형 데이터를 둘러싼 다양한 시나리오와 엣지 케이스는 프로덕션 AI 시스템에서 사용하기 어렵게 만듭니다.</p>
-<p>우선, 방대한 수의 데이터 소스가 존재합니다. 이러한 데이터는 다양한 파일 형식으로 내보내지며, 각 파일 형식마다 고유한 특성이 있습니다. 예를 들어, PDF를 처리하는 방법은 PDF의 출처에 따라 크게 달라집니다. 증권 소송 사건에 대한 PDF를 수집하는 경우 텍스트 데이터에 초점을 맞출 가능성이 높습니다. 반면 로켓 엔지니어를 위한 시스템 설계 사양은 시각적 처리가 필요한 다이어그램으로 가득할 것입니다. 비정형 데이터에는 정의된 스키마가 없기 때문에 복잡성이 더욱 가중됩니다. 데이터를 처리하는 문제를 극복하더라도 대규모로 데이터를 수집하는 문제는 여전히 남아 있습니다. 파일은 크기가 매우 다양하기 때문에 처리 방식이 달라질 수 있습니다. HTTP를 통한 API에서 1MB 업로드는 빠르게 처리할 수 있지만, 단일 파일에서 수십 GB를 읽으려면 스트리밍과 전담 작업자가 필요합니다.</p>
-<p>이러한 전통적인 데이터 엔지니어링 과제를 극복하기 위해서는 <a href="https://github.com/milvus-io/milvus">Milvus와</a> 같은 <a href="https://zilliz.com/learn/what-is-vector-database">벡터 데이터베이스를</a> 통해 원시 데이터를 <a href="https://zilliz.com/glossary/large-language-models-(llms)">LLM에</a> 연결하는 것이 필수적입니다. 그러나 벡터 데이터베이스를 통해 의미론적 유사성 검색을 수행하는 것과 같은 새로운 사용 사례에는 소스 데이터 청크, 하이브리드 검색을 위한 메타데이터 오케스트레이션, 적합한 벡터 임베딩 모델 선택, LLM에 제공할 데이터를 결정하기 위한 검색 매개변수 조정과 같은 새로운 처리 단계가 필요합니다. 이러한 워크플로는 너무 새롭기 때문에 개발자가 따라야 할 확립된 모범 사례가 없습니다. 대신, 개발자는 데이터에 대한 올바른 구성과 사용 사례를 찾기 위해 실험을 해야 합니다. 이 프로세스의 속도를 높이려면 벡터 임베딩 파이프라인을 사용해 벡터 데이터베이스로의 데이터 수집을 처리하는 것이 매우 중요합니다.</p>
-<p><a href="https://github.com/dgarnitz/vectorflow">VectorFlow와</a> 같은 벡터 임베딩 파이프라인은 청킹, 메타데이터 오케스트레이션, 임베딩 및 업로드를 포함하여 원시 데이터를 벡터 데이터베이스에 연결합니다. VectorFlow를 사용하면 엔지니어링 팀은 임베딩 모델, 청킹 전략, 메타데이터 필드, 검색 측면에서 생성된 다양한 검색 파라미터를 실험하여 무엇이 가장 효과적인지 확인하면서 핵심 애플리케이션 로직에 집중할 수 있습니다.</p>
-<p>엔지니어링 팀이 <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">검색 증강 생성(RAG)</a> 시스템을 프로토타입에서 프로덕션으로 전환하는 작업을 지원하면서, 다음과 같은 접근 방식이 RAG 검색 파이프라인의 다양한 파라미터를 성공적으로 테스트하는 데 도움이 되는 것으로 관찰되었습니다:</p>
+<p>Data is being generated faster than ever before in every form imaginable. This data is the gasoline that will power a new wave of artificial intelligence applications, but these productivity enhancement engines need help ingesting this fuel. The wide range of scenarios and edge cases surrounding unstructured data makes it challenging to use in production AI systems.</p>
+<p>For starters, there are a vast number of data sources. These export data in various file formats, each with its eccentricities. For example, how you process a PDF varies greatly depending on where it comes from. Ingesting a PDF for a securities litigation case will likely focus on textual data. In contrast, a system design specification for a rocket engineer will be full of diagrams that require visual processing. The lack of a defined schema in unstructured data further adds complexity. Even when the challenge of processing the data is overcome, the issue of ingesting it at scale remains. Files can vary significantly in size, which changes how they are processed. You can quickly process a 1MB upload on an API over HTTP, but reading in dozens of GBs from a single file requires streaming and a dedicated worker.</p>
+<p>Overcoming these traditional data engineering challenges is table stakes for connecting raw data to <a href="https://zilliz.com/glossary/large-language-models-(llms)">LLMs</a> via <a href="https://zilliz.com/learn/what-is-vector-database">vector databases</a> like <a href="https://github.com/milvus-io/milvus">Milvus</a>. However, emerging use cases such as performing semantic similarity searches with the help of a vector database require new processing steps like chunking the source data, orchestrating metadata for hybrid searches, picking the suitable vector embedding model, and tuning the search parameters to determine what data to feed to the LLM. These workflows are so new that there are no established best practices for developers to follow. Instead, they must experiment to find the correct configuration and use case for their data. To speed up this process, using a vector embedding pipeline to handle the data ingestion into the vector database is invaluable.</p>
+<p>A vector embedding pipeline like <a href="https://github.com/dgarnitz/vectorflow">VectorFlow</a> will connect your raw data to your vector database, including chunking, metadata orchestration, embedding, and upload. VectorFlow enables engineering teams to focus on the core application logic, experimenting with the different retrieval parameters generated from the embedding model, the chunking strategy, the metadata fields, and aspects of the search to see what performs best.</p>
+<p>In our work helping engineering teams move their <a href="https://zilliz.com/use-cases/llm-retrieval-augmented-generation">retrieval augmented generation (RAG)</a> systems from prototype to production, we have observed the following approach to be successful in testing the different parameters of a RAG search pipeline:</p>
 <ol>
-<li>반복 속도를 높이기 위해 검색 쿼리와 관련된 청크가 있는 몇 개의 PDF와 같이 익숙한 작은 데이터 세트를 사용합니다.</li>
-<li>해당 데이터의 하위 집합에 대한 표준 질문과 답변 세트를 만드세요. 예를 들어, PDF를 읽은 후 질문 목록을 작성하고 팀원들이 답변에 동의하도록 하세요.</li>
-<li>각 질문에 대한 검색 결과를 점수화하는 자동화된 평가 시스템을 만드세요. 이를 수행하는 한 가지 방법은 RAG 시스템에서 답을 가져와서 이 RAG 결과가 정답이 주어진 질문에 맞는지 묻는 프롬프트와 함께 LLM을 통해 다시 실행하는 것입니다. 답은 "예" 또는 "아니오"여야 합니다. 예를 들어 문서에 25개의 질문이 있는데 시스템이 20개의 정답을 맞힌다면 이를 다른 접근 방식과 비교하여 벤치마킹하는 데 사용할 수 있습니다.</li>
-<li>평가에는 데이터베이스에 저장된 벡터 임베딩을 인코딩하는 데 사용한 것과는 다른 LLM을 사용해야 합니다. 평가용 LLM은 일반적으로 GPT-4와 같은 모델의 디코더 유형입니다. 한 가지 기억해야 할 점은 이러한 평가가 반복적으로 실행될 때 비용이 많이 든다는 점입니다. 더 작은 단일 GPU에서 실행할 수 있는 Llama2 70B 또는 Deci AI LLM 6B와 같은 오픈 소스 모델은 훨씬 적은 비용으로 거의 동일한 성능을 제공합니다.</li>
-<li>각 테스트를 여러 번 실행하고 점수를 평균하여 LLM의 확률성을 평준화합니다.</li>
+<li>Use a small set of the data you are familiar with for speed of iteration, like a few PDFs where they have relevant chunks for the search queries.</li>
+<li>Make a standard set of questions and answers about that subset of the data. For example, after reading the PDFs, write a list of questions and have your team agree on the answers.</li>
+<li>Create an automated evaluation system that scores how the retrieval does on each question. One way to do this is to take the answer from the RAG system and run it back through the LLM with a prompt that asks if this RAG result answers the question given the correct answer. This should be a “yes” or “no” answer. For example, if you have 25 questions on your documents, and the system gets 20 correct, you can use this to benchmark against other approaches.</li>
+<li>Ensure you use a different LLM for the evaluation than you used to encode the vector embeddings stored in the database. The evaluation LLM is typically a decoder-type of a model like GPT-4. One thing to remember is the cost of these evaluations when run repeatedly. Open-source models like Llama2 70B or the Deci AI LLM 6B, which can run on a single, smaller GPU, have roughly the same performance at a fraction of the cost.</li>
+<li>Run each test multiple times and average the score to smooth out the stochasticity of the LLM.</li>
 </ol>
-<p>한 가지 옵션을 제외한 모든 옵션을 일정하게 유지하면 사용 사례에 가장 적합한 파라미터를 빠르게 결정할 수 있습니다. VectorFlow와 같은 벡터 임베딩 파이프라인을 사용하면 수집 측면에서 특히 쉽게 이 작업을 수행할 수 있으며, 다양한 청킹 전략, 청크 길이, 청크 오버랩, 오픈 소스 임베딩 모델을 빠르게 시도하여 무엇이 최상의 결과를 가져오는지 확인할 수 있습니다. 이 기능은 데이터 세트에 다양한 파일 형식과 사용자 정의 로직이 필요한 데이터 소스가 있을 때 특히 유용합니다.</p>
-<p>팀이 사용 사례에 적합한 것이 무엇인지 알게 되면, 벡터 임베딩 파이프라인을 통해 안정성 및 모니터링 등을 고려하여 시스템을 재설계할 필요 없이 신속하게 프로덕션으로 전환할 수 있습니다. 오픈 소스이며 플랫폼에 구애받지 않는 VectorFlow 및 <a href="https://zilliz.com/what-is-milvus">Milvus와</a> 같은 기술을 통해 팀은 개인 정보 보호 및 보안 요구 사항을 준수하면서 다양한 환경에서 효율적으로 테스트할 수 있습니다.</p>
+<p>Holding every option constant except one, you can quickly determine which parameters work best for your use case. A vector embedding pipeline like VectorFlow makes this especially easy on the ingestion side, where you can quickly try out different chunking strategies, chunk lengths, chunk overlaps, and open-source embedding models to see what leads to the best results. This is especially useful when your dataset has various file types and data sources that require custom logic.</p>
+<p>Once the team knows what works for its use case, the vector embedding pipeline enables them to quickly move to production without having to redesign the system to consider things like reliability and monitoring. With technologies like VectorFlow and <a href="https://zilliz.com/what-is-milvus">Milvus</a>, which are open-source and platform-agnostic, the team can efficiently test across different environments while complying with privacy and security requirements.</p>

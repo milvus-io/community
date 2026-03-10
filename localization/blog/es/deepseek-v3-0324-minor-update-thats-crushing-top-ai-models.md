@@ -1,14 +1,12 @@
 ---
 id: deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md
-title: >-
-  DeepSeek V3-0324: La "actualización menor" que está aplastando a los mejores
-  modelos de IA
+title: |
+  DeepSeek V3-0324: The "Minor Update" That's Crushing Top AI Models
 author: Lumina Wang
 date: 2025-03-25T00:00:00.000Z
 desc: >-
-  DeepSeek v3-0324 se entrena con parámetros más amplios, tiene una ventana de
-  contexto más larga y funciones mejoradas de razonamiento, codificación y
-  matemáticas.
+  DeepSeek v3-0324 is trained with larger parameters, has a longer context
+  window and enhanced Reasoning, Coding, and Math capabilities.
 cover: >-
   assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
 tag: Engineering
@@ -17,10 +15,10 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md
 ---
-<p>DeepSeek dejó caer una bomba anoche. Su última versión,<a href="https://huggingface.co/deepseek-ai/DeepSeek-V3-0324"> DeepSeek v3-0324</a>, fue presentada en el anuncio oficial como una <strong>"actualización menor"</strong> sin cambios en la API. Pero nuestras exhaustivas pruebas en <a href="https://zilliz.com/">Zilliz</a> han revelado algo más significativo: esta actualización representa un salto cuántico en el rendimiento, especialmente en el razonamiento lógico, la programación y la resolución de problemas matemáticos.</p>
-<p>Lo que estamos viendo no es sólo una mejora incremental, sino un cambio fundamental que sitúa a DeepSeek v3-0324 en la élite de los modelos lingüísticos. Y es de código abierto.</p>
-<p><strong>Esta versión merece la atención inmediata de los desarrolladores y las empresas que crean aplicaciones basadas en IA.</strong></p>
-<h2 id="Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="common-anchor-header">¿Qué hay de nuevo en DeepSeek v3-0324 y en qué medida es realmente bueno?<button data-href="#Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="anchor-icon" translate="no">
+<p>DeepSeek quietly dropped a bombshell last night. Their latest release,<a href="https://huggingface.co/deepseek-ai/DeepSeek-V3-0324"> DeepSeek v3-0324</a>, was downplayed in the official announcement as just a <strong>“minor upgrade”</strong> with no API changes. But our extensive testing at <a href="https://zilliz.com/">Zilliz</a> has revealed something more significant: this update represents a quantum leap in performance, particularly in logic reasoning, programming, and mathematical problem-solving.</p>
+<p>What we’re seeing isn’t just incremental improvement – it’s a fundamental shift that positions DeepSeek v3-0324 among the elite tier of language models. And it is open source.</p>
+<p><strong>This release deserves your immediate attention for developers and enterprises building AI-powered applications.</strong></p>
+<h2 id="Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="common-anchor-header">What’s New in DeepSeek v3-0324 and How Good Is It Really?<button data-href="#Whats-New-in-DeepSeek-v3-0324-and-How-Good-Is-It-Really" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,17 +33,17 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DeepSeek v3-0324 introduce tres importantes mejoras con respecto a su predecesor, <a href="https://zilliz.com/blog/why-deepseek-v3-is-taking-the-ai-world-by-storm">DeepSeek v3</a>:</p>
+    </button></h2><p>DeepSeek v3-0324 introduces three major improvements over its predecessor, <a href="https://zilliz.com/blog/why-deepseek-v3-is-taking-the-ai-world-by-storm">DeepSeek v3</a>:</p>
 <ul>
-<li><p><strong>Modelo más grande, más potencia:</strong> el número de parámetros ha aumentado de 671.000 millones a 685.000 millones, lo que permite al modelo manejar razonamientos más complejos y generar respuestas más matizadas.</p></li>
-<li><p><strong>Una ventana de contexto masiva:</strong> Con una longitud de contexto mejorada de 128.000 tokens, DeepSeek v3-0324 puede retener y procesar mucha más información en una sola consulta, lo que lo hace ideal para conversaciones largas, análisis de documentos y aplicaciones de inteligencia artificial basadas en la recuperación.</p></li>
-<li><p><strong>Razonamiento, codificación y matemáticas mejorados:</strong> Esta actualización supone un notable aumento de las capacidades lógicas, de programación y matemáticas, lo que lo convierte en un fuerte competidor para la codificación asistida por IA, la investigación científica y la resolución de problemas a nivel empresarial.</p></li>
+<li><p><strong>Larger Model, More Power:</strong> The parameter count has increased from 671 billion to 685 billion, allowing the model to handle more complex reasoning and generate more nuanced responses.</p></li>
+<li><p><strong>A Massive Context Window:</strong> With an upgraded 128K token context length, DeepSeek v3-0324 can retain and process significantly more information in a single query, making it ideal for long-form conversations, document analysis, and retrieval-based AI applications.</p></li>
+<li><p><strong>Enhanced Reasoning, Coding, and Math:</strong> This update brings a noticeable boost in logic, programming, and mathematical capabilities, making it a strong contender for AI-assisted coding, scientific research, and enterprise-grade problem-solving.</p></li>
 </ul>
-<p>Pero las cifras en bruto no lo dicen todo. Lo verdaderamente impresionante es cómo DeepSeek ha logrado mejorar simultáneamente la capacidad de razonamiento y la eficiencia de generación, algo que normalmente implica concesiones en ingeniería.</p>
-<h3 id="The-Secret-Sauce-Architectural-Innovation" class="common-anchor-header">La salsa secreta: Innovación arquitectónica</h3><p>DeepSeek v3-0324 mantiene su arquitectura <a href="https://arxiv.org/abs/2502.07864">de atención latente multicabezal (MLA </a>), un mecanismo eficaz que comprime cachés de valores clave (KV) mediante vectores latentes para reducir el uso de memoria y la carga computacional durante la inferencia. Además, sustituye las tradicionales <a href="https://zilliz.com/glossary/feedforward-neural-networks-(fnn)">redes de alimentación directa (FFN</a> ) por capas de mezcla de expertos<a href="https://zilliz.com/learn/what-is-mixture-of-experts">(MoE</a>), lo que optimiza la eficiencia computacional activando dinámicamente a los expertos con mejor rendimiento para cada token.</p>
-<p>Sin embargo, la mejora más interesante es la <strong>predicción multi-token (MTP),</strong> que permite a cada token predecir simultáneamente varios tokens futuros. De este modo se supera un importante cuello de botella de los modelos autorregresivos tradicionales, mejorando tanto la precisión como la velocidad de inferencia.</p>
-<p>Juntas, estas innovaciones crean un modelo que no sólo se escala bien, sino que se escala de forma inteligente, poniendo las capacidades de IA de nivel profesional al alcance de más equipos de desarrollo.</p>
-<h2 id="Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="common-anchor-header">Cree un sistema RAG con Milvus y DeepSeek v3-0324 en 5 minutos<button data-href="#Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="anchor-icon" translate="no">
+<p>But the raw numbers don’t tell the whole story. What’s truly impressive is how DeepSeek has managed to simultaneously enhance reasoning capacity and generation efficiency—something that typically involves engineering tradeoffs.</p>
+<h3 id="The-Secret-Sauce-Architectural-Innovation" class="common-anchor-header">The Secret Sauce: Architectural Innovation</h3><p>Under the hood, DeepSeek v3-0324 retains its <a href="https://arxiv.org/abs/2502.07864">Multi-head Latent Attention (MLA) </a>architecture—an efficient mechanism that compresses Key-Value (KV) caches using latent vectors to reduce memory usage and computational overhead during inference. Additionally, it replaces traditional <a href="https://zilliz.com/glossary/feedforward-neural-networks-(fnn)">Feed-Forward Networks (FFN)</a> with Mixture of Experts (<a href="https://zilliz.com/learn/what-is-mixture-of-experts">MoE</a>) layers, optimizing compute efficiency by dynamically activating the best-performing experts for each token.</p>
+<p>However, the most exciting upgrade is <strong>multi-token prediction (MTP),</strong> which allows each token to predict multiple future tokens simultaneously. This overcomes a significant bottleneck in traditional autoregressive models, improving both accuracy and inference speed.</p>
+<p>Together, these innovations create a model that doesn’t just scale well – it scales intelligently, bringing professional-grade AI capabilities within reach of more development teams.</p>
+<h2 id="Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="common-anchor-header">Build a RAG System with Milvus and DeepSeek v3-0324 in 5 Minutes<button data-href="#Build-a-RAG-System-with-Milvus-and-DeepSeek-v3-0324-in-5-Minutes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,21 +58,21 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Las potentes capacidades de razonamiento de DeepSeek v3-0324 lo convierten en un candidato ideal para los sistemas de generación mejorada de recuperación (RAG). En este tutorial, le mostraremos cómo construir una tubería RAG completa utilizando DeepSeek v3-0324 y la base de datos vectorial <a href="https://zilliz.com/what-is-milvus">Milvus</a> en sólo cinco minutos. Aprenderá a recuperar y sintetizar conocimientos de forma eficiente con una configuración mínima.</p>
-<h3 id="Setting-Up-Your-Environment" class="common-anchor-header">Configuración del entorno</h3><p>En primer lugar, vamos a instalar las dependencias necesarias:</p>
+    </button></h2><p>DeepSeek v3-0324’s powerful reasoning capabilities make it an ideal candidate for Retrieval-Augmented Generation (RAG) systems. In this tutorial, we’ll show you how to build a complete RAG pipeline using DeepSeek v3-0324 and the <a href="https://zilliz.com/what-is-milvus">Milvus</a> vector database in just five minutes. You’ll learn how to retrieve and synthesize knowledge efficiently with minimal setup.</p>
+<h3 id="Setting-Up-Your-Environment" class="common-anchor-header">Setting Up Your Environment</h3><p>First, let’s install the necessary dependencies:</p>
 <pre><code translate="no">! pip install --upgrade pymilvus[model] openai requests tqdm
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Nota:</strong> Si estás utilizando Google Colab, tendrás que reiniciar el tiempo de ejecución después de instalar estos paquetes. Haga clic en el menú "Runtime" en la parte superior de la pantalla y seleccione "Reiniciar sesión" en el menú desplegable.</p>
-<p>Como DeepSeek proporciona una API compatible con OpenAI, necesitarás una clave API. Puede obtenerla registrándose en la<a href="https://platform.deepseek.com/api_keys"> plataforma DeepSeek</a>:</p>
+<p><strong>Note:</strong> If you’re using Google Colab, you’ll need to restart the runtime after installing these packages. Click on the “Runtime” menu at the top of the screen and select “Restart session” from the dropdown menu.</p>
+<p>Since DeepSeek provides an OpenAI-compatible API, you’ll need an API key. You can get one by signing up on the<a href="https://platform.deepseek.com/api_keys"> DeepSeek platform</a>:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;DEEPSEEK_API_KEY&quot;</span>] = <span class="hljs-string">&quot;***********&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Preparing-Your-Data" class="common-anchor-header">Preparación de los datos</h3><p>Para este tutorial, utilizaremos las páginas de preguntas frecuentes de la <a href="https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip">Documentación de Milvus 2.4.x</a> como nuestra fuente de conocimiento:</p>
+<h3 id="Preparing-Your-Data" class="common-anchor-header">Preparing Your Data</h3><p>For this tutorial, we’ll use the FAQ pages from the <a href="https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip">Milvus Documentation 2.4.x</a> as our knowledge source:</p>
 <pre><code translate="no">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>Ahora, carguemos y preparemos el contenido de las FAQ a partir de los archivos markdown:</p>
+<p>Now, let’s load and prepare the FAQ content from the markdown files:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 
 <span class="hljs-comment"># Load all markdown files from the FAQ directory</span>
@@ -85,7 +83,7 @@ text_lines = []
         <span class="hljs-comment"># Split on headings to separate content sections</span>
         text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Setting-Up-the-Language-and-Embedding-Models" class="common-anchor-header">Configuración del lenguaje e incrustación de modelos</h3><p>Utilizaremos <a href="https://openrouter.ai/">OpenRouter</a> para acceder a DeepSeek v3-0324. OpenRouter proporciona una API unificada para múltiples modelos de IA, como DeepSeek y Claude. Creando una clave API gratuita de DeepSeek V3 en OpenRouter, podrás probar fácilmente DeepSeek V3 0324.</p>
+<h3 id="Setting-Up-the-Language-and-Embedding-Models" class="common-anchor-header">Setting Up the Language and Embedding Models</h3><p>We’ll use <a href="https://openrouter.ai/">OpenRouter</a> to access DeepSeek v3-0324. OpenRouter provides a unified API for multiple AI models, such as DeepSeek and Claude. By creating a free DeepSeek V3 API key on OpenRouter, you can easily try out DeepSeek V3 0324.</p>
 <p>https://assets.zilliz.com/Setting_Up_the_Language_and_Embedding_Models_8b00595a6b.png</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
 
@@ -94,7 +92,7 @@ deepseek_client = <span class="hljs-title class_">OpenAI</span>(
    base_url=<span class="hljs-string">&quot;https://openrouter.ai/api/v1&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Para la incrustación de texto, utilizaremos el <a href="https://milvus.io/docs/embeddings.md">modelo de incrustación integrado</a> de Milvus, que es ligero y eficaz:</p>
+<p>For text embeddings, we’ll use Milvus’ <a href="https://milvus.io/docs/embeddings.md">built-in embedding model</a>, which is lightweight and effective:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model <span class="hljs-keyword">as</span> milvus_model
 
 <span class="hljs-comment"># Initialize the embedding model</span>
@@ -106,7 +104,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Embedding dimension: <span class="hljs-subst">{embedding_dim}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;First 10 values: <span class="hljs-subst">{test_embedding[:<span class="hljs-number">10</span>]}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Creating-a-Milvus-Collection" class="common-anchor-header">Creación de una colección Milvus</h3><p>Ahora vamos a configurar nuestra base de datos vectorial utilizando Milvus:</p>
+<h3 id="Creating-a-Milvus-Collection" class="common-anchor-header">Creating a Milvus Collection</h3><p>Now let’s set up our vector database using Milvus:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 <span class="hljs-comment"># Initialize Milvus client (using Milvus Lite for simplicity)</span>
@@ -125,13 +123,13 @@ milvus_client.create_collection(
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,  <span class="hljs-comment"># See https://milvus.io/docs/consistency.md for details</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Consejo profesional</strong>: Para diferentes escenarios de despliegue, puede ajustar la configuración de Milvus:</p>
+<p><strong>Pro Tip</strong>: For different deployment scenarios, you can adjust your Milvus setup:</p>
 <ul>
-<li><p>Para el desarrollo local: Utilice <code translate="no">uri=&quot;./milvus.db&quot;</code> con <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a></p></li>
-<li><p>Para conjuntos de datos más grandes: Configure un servidor Milvus a través de <a href="https://milvus.io/docs/quickstart.md">Docker/Kubernetes</a> y utilice <code translate="no">uri=&quot;http://localhost:19530&quot;</code></p></li>
-<li><p>Para producción: Utilice<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> con su punto final de nube y clave API.</p></li>
+<li><p>For local development: Use <code translate="no">uri=&quot;./milvus.db&quot;</code> with <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a></p></li>
+<li><p>For larger datasets: Set up a Milvus server via <a href="https://milvus.io/docs/quickstart.md">Docker/Kubernetes</a> and use <code translate="no">uri=&quot;http://localhost:19530&quot;</code></p></li>
+<li><p>For production: Use<a href="https://zilliz.com/cloud"> Zilliz Cloud</a> with your cloud endpoint and API key.</p></li>
 </ul>
-<h3 id="Loading-Data-into-Milvus" class="common-anchor-header">Carga de datos en Milvus</h3><p>Convirtamos nuestros datos de texto en incrustaciones y almacenémoslos en Milvus:</p>
+<h3 id="Loading-Data-into-Milvus" class="common-anchor-header">Loading Data into Milvus</h3><p>Let’s convert our text data into embeddings and store them in Milvus:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 <span class="hljs-comment"># Create embeddings for all text chunks</span>
@@ -157,7 +155,7 @@ Creating embeddings: 100%|██████████| 72/72 [00:00&lt;00:00,
 
 {<span class="hljs-string">&#x27;insert_count&#x27;</span>: 72, <span class="hljs-string">&#x27;ids&#x27;</span>: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71], <span class="hljs-string">&#x27;cost&#x27;</span>: 0}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Building-the-RAG-Pipeline" class="common-anchor-header">Construir la canalización RAG</h3><h4 id="Step-1-Retrieve-Relevant-Information" class="common-anchor-header">Paso 1: Recuperar información relevante</h4><p>Probemos nuestro sistema RAG con una pregunta común:</p>
+<h3 id="Building-the-RAG-Pipeline" class="common-anchor-header">Building the RAG Pipeline</h3><h4 id="Step-1-Retrieve-Relevant-Information" class="common-anchor-header">Step 1: Retrieve Relevant Information</h4><p>Let’s test our RAG system with a common question:</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 
 <span class="hljs-comment"># Search for relevant information</span>
@@ -191,7 +189,7 @@ retrieved_lines_with_distances = [
     ]
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Step-2-Generate-a-Response-with-DeepSeek" class="common-anchor-header">Paso 2: Generar una respuesta con DeepSeek</h4><p>Ahora vamos a utilizar DeepSeek para generar una respuesta basada en la información recuperada:</p>
+<h4 id="Step-2-Generate-a-Response-with-DeepSeek" class="common-anchor-header">Step 2: Generate a Response with DeepSeek</h4><p>Now let’s use DeepSeek to generate a response based on the retrieved information:</p>
 <pre><code translate="no"><span class="hljs-comment"># Combine retrieved text chunks</span>
 context = <span class="hljs-string">&quot;\n&quot;</span>.join(
     [line_with_distance[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
@@ -233,8 +231,8 @@ response = deepseek_client.chat.completions.create(
 
 Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyword">is</span> inserted, it <span class="hljs-keyword">is</span> first loaded <span class="hljs-keyword">into</span> a message queue, <span class="hljs-keyword">and</span> Milvus returns success at <span class="hljs-keyword">this</span> stage. The data <span class="hljs-keyword">is</span> then written to persistent storage <span class="hljs-keyword">as</span> incremental logs <span class="hljs-keyword">by</span> the data node. If the `<span class="hljs-title">flush</span>()` function <span class="hljs-keyword">is</span> called, the data node <span class="hljs-keyword">is</span> forced to write all data <span class="hljs-keyword">in</span> the message queue to persistent storage immediately.
 </span><button class="copy-code-btn"></button></code></pre>
-<p>¡Y ya está! Ha construido con éxito una tubería RAG completa con DeepSeek v3-0324 y Milvus. Este sistema puede ahora responder a preguntas basadas en la documentación de Milvus con gran precisión y conocimiento contextual.</p>
-<h2 id="Comparing-DeepSeek-V3-0324-Original-vs-RAG-Enhanced-Version" class="common-anchor-header">Comparación de DeepSeek-V3-0324: Versión original frente a la mejorada con RAG<button data-href="#Comparing-DeepSeek-V3-0324-Original-vs-RAG-Enhanced-Version" class="anchor-icon" translate="no">
+<p>And there you have it! You’ve successfully built a complete RAG pipeline with DeepSeek v3-0324 and Milvus. This system can now answer questions based on the Milvus documentation with high accuracy and contextual awareness.</p>
+<h2 id="Comparing-DeepSeek-V3-0324-Original-vs-RAG-Enhanced-Version" class="common-anchor-header">Comparing DeepSeek-V3-0324: Original vs. RAG-Enhanced Version<button data-href="#Comparing-DeepSeek-V3-0324-Original-vs-RAG-Enhanced-Version" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -249,24 +247,24 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La teoría es una cosa, pero lo que importa es el rendimiento en el mundo real. Hemos probado tanto la versión estándar de DeepSeek v3-0324 (con la función "Deep Thinking" desactivada) como nuestra versión mejorada con RAG con la misma pregunta: <em>Escribir código HTML para crear un sitio web elegante sobre Milvus.</em></p>
-<h3 id="Website-Built-with-The-Standard-Models-Output-Code" class="common-anchor-header">Sitio web creado con el código de salida del modelo estándar</h3><p>Este es el aspecto del sitio web:</p>
+    </button></h2><p>Theory is one thing, but real-world performance is what matters. We tested both the standard DeepSeek v3-0324 (with “Deep Thinking” disabled) and our RAG-enhanced version with the same prompt: <em>Write HTML code to create a fancy website about Milvus.</em></p>
+<h3 id="Website-Built-with-The-Standard-Models-Output-Code" class="common-anchor-header">Website Built with The Standard Model’s Output Code</h3><p>Here’s what the website looks like:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Website_Built_with_The_Standard_Model_s_Output_Code_695902b18a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Aunque visualmente es atractivo, el contenido se basa en gran medida en descripciones genéricas y omite muchas de las principales características técnicas de Milvus.</p>
-<h3 id="Website-Built-with-Code-Generated-by-the-RAG-Enhanced-Version" class="common-anchor-header">Sitio web creado con código generado por la versión mejorada de RAG</h3><p>Cuando integramos Milvus como base de conocimientos, los resultados fueron radicalmente diferentes:</p>
+<p>While visually appealing, the content relies heavily on generic descriptions and misses many of Milvus’ core technical features.</p>
+<h3 id="Website-Built-with-Code-Generated-by-the-RAG-Enhanced-Version" class="common-anchor-header">Website Built with Code Generated by the RAG-Enhanced Version</h3><p>When we integrated Milvus as the knowledge base, the results were dramatically different:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Website_2_01341c647c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>El último sitio web no sólo tiene mejor aspecto, sino que demuestra una verdadera comprensión de la arquitectura, los casos de uso y las ventajas técnicas de Milvus.</p>
-<h2 id="Can-DeepSeek-v3-0324-Replace-Dedicated-Reasoning-Models" class="common-anchor-header">¿Puede DeepSeek v3-0324 sustituir a los modelos de razonamiento específicos?<button data-href="#Can-DeepSeek-v3-0324-Replace-Dedicated-Reasoning-Models" class="anchor-icon" translate="no">
+<p>The latter website doesn’t just look better – it demonstrates genuine understanding of Milvus’ architecture, use cases, and technical advantages.</p>
+<h2 id="Can-DeepSeek-v3-0324-Replace-Dedicated-Reasoning-Models" class="common-anchor-header">Can DeepSeek v3-0324 Replace Dedicated Reasoning Models?<button data-href="#Can-DeepSeek-v3-0324-Replace-Dedicated-Reasoning-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -281,11 +279,11 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nuestro descubrimiento más sorprendente se produjo al comparar DeepSeek v3-0324 con modelos de razonamiento especializados como Claude 3.7 Sonnet y GPT-4 Turbo en tareas de razonamiento matemático, lógico y de código.</p>
-<p>Aunque los modelos de razonamiento especializados destacan en la resolución de problemas en varios pasos, a menudo lo hacen a costa de la eficiencia. Nuestras pruebas han demostrado que los modelos de razonamiento intensivo a menudo sobreanalizan peticiones sencillas, generando entre 2 y 3 veces más tokens de los necesarios y aumentando significativamente la latencia y los costes de la API.</p>
-<p>DeepSeek v3-0324 adopta un enfoque diferente. Demuestra una coherencia lógica comparable, pero con una concisión notablemente mayor, produciendo a menudo soluciones correctas con un 40-60% menos de tokens. Esta eficiencia no va en detrimento de la precisión; en nuestras pruebas de generación de código, las soluciones de DeepSeek igualaron o superaron la funcionalidad de las de los competidores centrados en el razonamiento.</p>
-<p>Para los desarrolladores que equilibran el rendimiento con las limitaciones presupuestarias, esta ventaja de eficiencia se traduce directamente en menores costes de API y tiempos de respuesta más rápidos, factores cruciales para las aplicaciones de producción en las que la experiencia del usuario depende de la velocidad percibida.</p>
-<h2 id="The-Future-of-AI-Models-Blurring-the-Reasoning-Divide" class="common-anchor-header">El futuro de los modelos de IA: Desdibujando la división del razonamiento<button data-href="#The-Future-of-AI-Models-Blurring-the-Reasoning-Divide" class="anchor-icon" translate="no">
+    </button></h2><p>Our most surprising discovery came when comparing DeepSeek v3-0324 against specialized reasoning models like Claude 3.7 Sonnet and GPT-4 Turbo across mathematical, logical, and code reasoning tasks.</p>
+<p>While dedicated reasoning models excel at multi-step problem solving, they often do so at the cost of efficiency. Our benchmarks showed that reasoning-heavy models frequently overanalyze simple prompts, generating 2-3x more tokens than necessary and significantly increasing latency and API costs.</p>
+<p>DeepSeek v3-0324 takes a different approach. It demonstrates comparable logical consistency but with remarkably greater conciseness – often producing correct solutions with 40-60% fewer tokens. This efficiency doesn’t come at the expense of accuracy; in our code generation tests, DeepSeek’s solutions matched or exceeded the functionality of those from reasoning-focused competitors.</p>
+<p>For developers balancing performance with budget constraints, this efficiency advantage translates directly to lower API costs and faster response times – crucial factors for production applications where user experience hinges on perceived speed.</p>
+<h2 id="The-Future-of-AI-Models-Blurring-the-Reasoning-Divide" class="common-anchor-header">The Future of AI Models: Blurring the Reasoning Divide<button data-href="#The-Future-of-AI-Models-Blurring-the-Reasoning-Divide" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -300,6 +298,6 @@ Additionally, <span class="hljs-keyword">when</span> data <span class="hljs-keyw
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El rendimiento de DeepSeek v3-0324 pone en entredicho un supuesto básico en el sector de la IA: que el razonamiento y la eficiencia representan un compromiso inevitable. Esto sugiere que nos estamos acercando a un punto de inflexión en el que la distinción entre modelos razonadores y no razonadores empieza a difuminarse.</p>
-<p>Los principales proveedores de IA podrían acabar eliminando por completo esta distinción, desarrollando modelos que ajusten dinámicamente la profundidad de su razonamiento en función de la complejidad de la tarea. Este razonamiento adaptativo optimizaría tanto la eficiencia computacional como la calidad de la respuesta, revolucionando potencialmente la forma en que construimos e implantamos las aplicaciones de IA.</p>
-<p>Para los desarrolladores que construyen sistemas RAG, esta evolución promete soluciones más rentables que ofrecen la profundidad de razonamiento de los modelos premium sin su sobrecarga computacional, ampliando lo que es posible con la IA de código abierto.</p>
+    </button></h2><p>DeepSeek v3-0324’s performance challenges a core assumption in the AI industry: that reasoning and efficiency represent an unavoidable tradeoff. This suggests we may be approaching an inflection point where the distinction between reasoning and non-reasoning models begins to blur.</p>
+<p>Leading AI providers may eventually eliminate this distinction entirely, developing models that dynamically adjust their reasoning depth based on task complexity. Such adaptive reasoning would optimize both computational efficiency and response quality, potentially revolutionizing how we build and deploy AI applications.</p>
+<p>For developers building RAG systems, this evolution promises more cost-effective solutions that deliver the reasoning depth of premium models without their computational overhead – expanding what’s possible with open-source AI.</p>

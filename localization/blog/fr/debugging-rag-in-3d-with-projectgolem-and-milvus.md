@@ -1,8 +1,8 @@
 ---
 id: debugging-rag-in-3d-with-projectgolem-and-milvus.md
-title: >-
-  Et si vous pouviez voir pourquoi RAG échoue ? Débogage de RAG en 3D avec
-  Project_Golem et Milvus
+title: >
+  What If You Could See Why RAG Fails? Debugging RAG in 3D with Project_Golem
+  and Milvus
 author: Min Yin
 date: 2026-02-18T00:00:00.000Z
 cover: assets.zilliz.com/Debugging_RAG_in_3_D_f1b45f9a99_5f98979c06.png
@@ -13,24 +13,23 @@ tags: 'Milvus, vector database, RAG'
 meta_keywords: 'Project_Golem, milvus, RAG'
 meta_title: |
   Debugging RAG in 3D with Project_Golem and Milvus
-desc: >-
-  Découvrez comment Project_Golem et Milvus rendent les systèmes RAG observables
-  en visualisant l'espace vectoriel, en déboguant les erreurs de recherche et en
-  adaptant la recherche vectorielle en temps réel.
+desc: >
+  Learn how Project_Golem and Milvus make RAG systems observable by visualizing
+  vector space, debugging retrieval errors, and scaling real-time vector search.
 origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md'
 ---
-<p>Lorsque la recherche par RAG ne fonctionne pas, vous savez généralement qu'elle est défectueuse - les documents pertinents n'apparaissent pas, ou les documents non pertinents apparaissent. Mais c'est une autre histoire que de comprendre pourquoi. Tout ce dont vous disposez, ce sont des scores de similarité et une liste plate de résultats. Il n'y a aucun moyen de voir comment les documents sont réellement positionnés dans l'espace vectoriel, comment les morceaux sont liés les uns aux autres, ou où votre requête a atterri par rapport au contenu auquel elle aurait dû correspondre. En pratique, cela signifie que le débogage des RAG se fait principalement par essais et erreurs : modifier la stratégie de découpage, changer le modèle d'intégration, ajuster le top-k, et espérer que les résultats s'améliorent.</p>
-<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> est un outil open-source qui rend l'espace vectoriel visible. Il utilise UMAP pour projeter des encastrements à haute dimension en 3D et Three.js pour les rendre interactifs dans le navigateur. Au lieu de deviner pourquoi la recherche a échoué, vous pouvez voir comment les morceaux se regroupent sémantiquement, où votre requête atterrit et quels documents ont été récupérés - le tout dans une seule interface visuelle.</p>
+<p>When RAG retrieval goes wrong, you usually know that it’s broken — relevant documents don’t show up, or irrelevant ones do. But figuring out why is a different story. All you have to work with are similarity scores and a flat list of results. There’s no way to see how documents are actually positioned in the vector space, how chunks relate to each other, or where your query landed relative to the content it should have matched. In practice, this means RAG debugging is mostly trial and error: tweak the chunking strategy, swap the embedding model, adjust the top-k, and hope the results improve.</p>
+<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> is an open-source tool that makes the vector space visible. It uses UMAP to project high-dimensional embeddings into 3D and Three.js to render them interactively in the browser. Instead of guessing why retrieval failed, you can see how chunks cluster semantically, where your query lands, and which documents were retrieved — all in a single visual interface.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/debugging_rag_in_3d_with_projectgolem_and_milvus_1_01de566e04.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>C'est extraordinaire. Cependant, le projet original Project_Golem a été conçu pour de petites démonstrations, et non pour des systèmes réels. Il s'appuie sur des fichiers plats, une recherche brute et des reconstructions de l'ensemble des données, ce qui signifie qu'il s'effondre rapidement lorsque vos données dépassent quelques milliers de documents.</p>
-<p>Pour combler cette lacune, nous avons intégré Project_Golem avec <a href="https://milvus.io/docs/release_notes.md#v268">Milvus</a> (plus précisément la version 2.6.8) en tant qu'épine dorsale vectorielle. Milvus est une base de données vectorielles haute performance open-source qui gère l'ingestion en temps réel, l'indexation évolutive et la recherche à la milliseconde, tandis que Project_Golem reste concentré sur ce qu'il fait de mieux : rendre visible le comportement de la recherche vectorielle. Ensemble, ils transforment la visualisation 3D d'une démo jouet en un outil de débogage pratique pour les systèmes RAG de production.</p>
-<p>Dans ce billet, nous allons présenter Project_Golem et montrer comment nous l'avons intégré à Milvus pour rendre le comportement de recherche vectorielle observable, évolutif et prêt pour la production.</p>
-<h2 id="What-Is-ProjectGolem" class="common-anchor-header">Qu'est-ce que Project_Golem ?<button data-href="#What-Is-ProjectGolem" class="anchor-icon" translate="no">
+<p>This is amazing. However, the original Project_Golem was designed for small demos, not real-world systems. It relies on flat files, brute-force search, and full-dataset rebuilds — which means it breaks down quickly as your data grows beyond a few thousand documents.</p>
+<p>To bridge that gap, we integrated Project_Golem with <a href="https://milvus.io/docs/release_notes.md#v268">Milvus</a> (specifically version 2.6.8) as its vector backbone. Milvus is an open-source high-performance vector database that handles real-time ingestion, scalable indexing, and millisecond-level retrieval, while Project_Golem stays focused on what it does best: making vector retrieval behavior visible. Together, they turn 3D visualization from a toy demo into a practical debugging tool for production RAG systems.</p>
+<p>In this post, we’ll walk through Project_Golem and show how we integrated it with Milvus to make vector search behavior observable, scalable, and production-ready.</p>
+<h2 id="What-Is-ProjectGolem" class="common-anchor-header">What Is Project_Golem?<button data-href="#What-Is-ProjectGolem" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,16 +44,16 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le débogage RAG est difficile pour une raison simple : les espaces vectoriels sont à haute dimension et les humains ne peuvent pas les voir.</p>
-<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> est un outil basé sur un navigateur qui vous permet de voir l'espace vectoriel dans lequel votre système RAG fonctionne. Il prend les encastrements à haute dimension qui alimentent la recherche - typiquement 768 ou 1536 dimensions - et les projette dans une scène interactive en 3D que vous pouvez explorer directement.</p>
-<p>Voici comment cela fonctionne sous le capot :</p>
+    </button></h2><p>RAG debugging is hard for a simple reason: vector spaces are high-dimensional, and humans can’t see them.</p>
+<p><a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> is a browser-based tool that lets you see the vector space your RAG system operates in. It takes the high-dimensional embeddings that drive retrieval — typically 768 or 1536 dimensions — and projects them into an interactive 3D scene you can explore directly.</p>
+<p>Here’s how it works under the hood:</p>
 <ul>
-<li>Réduction de la dimensionnalité avec UMAP. Project_Golem utilise UMAP pour comprimer des vecteurs à haute dimension en trois dimensions tout en préservant leurs distances relatives. Les morceaux qui sont sémantiquement similaires dans l'espace d'origine restent proches les uns des autres dans la projection 3D ; les morceaux qui n'ont pas de rapport entre eux se retrouvent éloignés les uns des autres.</li>
-<li>Rendu 3D avec Three.js. Chaque morceau de document apparaît comme un nœud dans une scène 3D rendue dans le navigateur. Vous pouvez faire pivoter, zoomer et explorer l'espace pour voir comment vos documents se regroupent - quels sujets sont étroitement liés, lesquels se chevauchent et où se situent les limites.</li>
-<li>Mise en évidence au moment de la requête. Lorsque vous lancez une requête, la recherche s'effectue toujours dans l'espace à haute dimension d'origine en utilisant la similarité cosinusoïdale. Mais une fois les résultats obtenus, les morceaux retrouvés s'illuminent dans la vue en 3D. Vous pouvez immédiatement voir où votre requête a atterri par rapport aux résultats - et, ce qui est tout aussi important, par rapport aux documents qu'elle n'a pas retrouvés.</li>
+<li>Dimensionality reduction with UMAP. Project_Golem uses UMAP to compress high-dimensional vectors down to three dimensions while preserving their relative distances. Chunks that are semantically similar in the original space stay close together in the 3D projection; unrelated chunks end up far apart.</li>
+<li>3D rendering with Three.js. Each document chunk appears as a node in a 3D scene rendered in the browser. You can rotate, zoom, and explore the space to see how your documents cluster — which topics group tightly, which ones overlap, and where the boundaries are.</li>
+<li>Query-time highlighting. When you run a query, retrieval still happens in the original high-dimensional space using cosine similarity. But once results come back, the retrieved chunks light up in the 3D view. You can immediately see where your query landed relative to the results — and just as importantly, relative to the documents it didn’t retrieve.</li>
 </ul>
-<p>C'est ce qui rend Project_Golem utile pour le débogage. Au lieu de regarder une liste de résultats classés et de deviner pourquoi un document pertinent n'a pas été retrouvé, vous pouvez voir s'il se trouve dans un groupe éloigné (un problème d'intégration), s'il se superpose à un contenu non pertinent (un problème de regroupement) ou s'il est juste en dehors du seuil de récupération (un problème de configuration). La vue 3D transforme les scores de similarité abstraits en relations spatiales sur lesquelles il est possible de raisonner.</p>
-<h2 id="Why-ProjectGolem-Isnt-Production-Ready" class="common-anchor-header">Pourquoi Project_Golem n'est pas prêt pour la production<button data-href="#Why-ProjectGolem-Isnt-Production-Ready" class="anchor-icon" translate="no">
+<p>This is what makes Project_Golem useful for debugging. Instead of staring at a ranked list of results and guessing why a relevant document was missed, you can see whether it’s sitting in a distant cluster (an embedding issue), overlapping with irrelevant content (a chunking issue), or just barely outside the retrieval threshold (a configuration issue). The 3D view turns abstract similarity scores into spatial relationships you can reason about.</p>
+<h2 id="Why-ProjectGolem-Isnt-Production-Ready" class="common-anchor-header">Why Project_Golem Isn’t Production-Ready<button data-href="#Why-ProjectGolem-Isnt-Production-Ready" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,14 +68,14 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le projet_Golem a été conçu comme un prototype de visualisation, et il fonctionne bien pour cela. Mais son architecture repose sur des hypothèses qui s'effondrent rapidement à grande échelle - d'une manière qui a de l'importance si vous voulez l'utiliser pour le débogage de RAG dans le monde réel.</p>
-<h3 id="Every-Update-Requires-a-Full-Rebuild" class="common-anchor-header">Chaque mise à jour nécessite une reconstruction complète</h3><p>Il s'agit de la limitation la plus fondamentale. Dans la conception originale, l'ajout de nouveaux documents déclenche une reconstruction complète du pipeline : les embeddings sont régénérés et écrits dans des fichiers .npy, UMAP est réexécuté sur l'ensemble du jeu de données et les coordonnées 3D sont réexportées sous forme de JSON.</p>
-<p>Même à l'échelle de 100 000 documents, une exécution UMAP à cœur unique prend de 5 à 10 minutes. À l'échelle du million de documents, cela devient totalement impraticable. Vous ne pouvez pas utiliser cette méthode pour les ensembles de données qui changent continuellement (flux d'actualités, documentation, conversations d'utilisateurs), car chaque mise à jour implique d'attendre un cycle de retraitement complet.</p>
-<h3 id="Brute-Force-Search-Doesnt-Scale" class="common-anchor-header">La recherche musclée n'est pas évolutive</h3><p>La recherche a son propre plafond. L'implémentation originale utilise NumPy pour la recherche brute de similarité cosinus - complexité temporelle linéaire, pas d'indexation. Sur un ensemble de données d'un million de documents, une seule requête peut prendre plus d'une seconde. C'est inutilisable pour un système interactif ou en ligne.</p>
-<p>La pression sur la mémoire aggrave le problème. Chaque vecteur float32 de 768 dimensions occupe environ 3 Ko, de sorte qu'un ensemble de données d'un million de vecteurs nécessite plus de 3 Go de mémoire - le tout chargé dans un tableau NumPy plat sans structure d'indexation pour rendre la recherche efficace.</p>
-<h3 id="No-Metadata-Filtering-No-Multi-Tenancy" class="common-anchor-header">Pas de filtrage des métadonnées, pas de multilocation</h3><p>Dans un système RAG réel, la similarité vectorielle est rarement le seul critère de recherche. Il est presque toujours nécessaire de filtrer par métadonnées, comme le type de document, l'horodatage, les autorisations de l'utilisateur ou les limites de l'application. Un système RAG de support client, par exemple, doit limiter la recherche aux documents d'un locataire spécifique - et non pas à l'ensemble des données.</p>
-<p>Project_Golem ne supporte rien de tout cela. Il n'y a pas d'index ANN (comme HNSW ou IVF), pas de filtrage scalaire, pas d'isolation des locataires et pas de recherche hybride. Il s'agit d'une couche de visualisation sans moteur de recherche de production.</p>
-<h2 id="How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="common-anchor-header">Comment Milvus alimente la couche de recherche de Project_Golem<button data-href="#How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="anchor-icon" translate="no">
+    </button></h2><p>Project_Golem was designed as a visualization prototype, and it works well for that. But its architecture makes assumptions that break down quickly at scale — in ways that matter if you want to use it for real-world RAG debugging.</p>
+<h3 id="Every-Update-Requires-a-Full-Rebuild" class="common-anchor-header">Every Update Requires a Full Rebuild</h3><p>This is the most fundamental limitation. In the original design, adding new documents triggers a complete pipeline rebuild: embeddings are regenerated and written to .npy files, UMAP is rerun across the entire dataset, and 3D coordinates are re-exported as JSON.</p>
+<p>Even at 100,000 documents, a single-core UMAP run takes 5–10 minutes. At the million-document scale, it becomes impractical entirely. You can’t use this for any dataset that changes continuously — news feeds, documentation, user conversations — because every update means waiting for a full reprocessing cycle.</p>
+<h3 id="Brute-Force-Search-Doesnt-Scale" class="common-anchor-header">Brute-Force Search Doesn’t Scale</h3><p>The retrieval side has its own ceiling. The original implementation uses NumPy for brute-force cosine similarity search — linear time complexity, no indexing. On a million-document dataset, a single query can take over a second. That’s unusable for any interactive or online system.</p>
+<p>Memory pressure compounds the problem. Each 768-dimensional float32 vector takes roughly 3 KB, so a million-vector dataset requires over 3 GB in memory — all loaded into a flat NumPy array with no index structure to make search efficient.</p>
+<h3 id="No-Metadata-Filtering-No-Multi-Tenancy" class="common-anchor-header">No Metadata Filtering, No Multi-Tenancy</h3><p>In a real RAG system, vector similarity is rarely the only retrieval criterion. You almost always need to filter by metadata, such as document type, timestamps, user permissions, or application-level boundaries. A customer support RAG system, for example, needs to scope retrieval to a specific tenant’s documents — not search across everyone’s data.</p>
+<p>Project_Golem supports none of this. There are no ANN indexes (like HNSW or IVF), no scalar filtering, no tenant isolation, and no hybrid search. It’s a visualization layer without a production retrieval engine underneath.</p>
+<h2 id="How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="common-anchor-header">How Milvus Powers Project_Golem’s Retrieval Layer<button data-href="#How-Milvus-Powers-ProjectGolem’s-Retrieval-Layer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,34 +90,34 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La section précédente a identifié trois lacunes : les reconstructions complètes à chaque mise à jour, la recherche par force brute et l'absence de récupération tenant compte des métadonnées. Ces trois lacunes ont la même origine : Project_Golem n'a pas de couche de base de données. La récupération, le stockage et la visualisation sont enchevêtrés dans un seul pipeline, de sorte que la modification de n'importe quelle partie oblige à tout reconstruire.</p>
-<p>La solution n'est pas d'optimiser ce pipeline. Il s'agit de le séparer.</p>
-<p>En intégrant Milvus 2.6.8 en tant qu'épine dorsale vectorielle, la récupération devient une couche dédiée, de qualité production, qui fonctionne indépendamment de la visualisation. Milvus gère le stockage, l'indexation et la recherche des vecteurs. Project_Golem se concentre uniquement sur le rendu - en consommant les identifiants de documents de Milvus et en les mettant en évidence dans la vue 3D.</p>
-<p>Cette séparation produit deux flux propres et indépendants :</p>
-<p>Flux de recherche (en ligne, au niveau de la milliseconde)</p>
+    </button></h2><p>The previous section identified three gaps: full rebuilds on every update, brute-force search, and no metadata-aware retrieval. All three stem from the same root cause — Project_Golem has no database layer. Retrieval, storage, and visualization are tangled into a single pipeline, so changing any part forces a rebuild of everything.</p>
+<p>The fix isn’t to optimize that pipeline. It’s to split it apart.</p>
+<p>By integrating Milvus 2.6.8 as the vector backbone, retrieval becomes a dedicated, production-grade layer that operates independently from visualization. Milvus handles vector storage, indexing, and search. Project_Golem focuses purely on rendering — consuming document IDs from Milvus and highlighting them in the 3D view.</p>
+<p>This separation produces two clean, independent flows:</p>
+<p>Retrieval Flow (Online, Millisecond-Level)</p>
 <ul>
-<li>Votre requête est convertie en un vecteur à l'aide des embeddings OpenAI.</li>
-<li>Le vecteur de la requête est envoyé à une collection Milvus.</li>
-<li>Milvus AUTOINDEX sélectionne et optimise l'index approprié.</li>
-<li>Une recherche de similarité cosinus en temps réel renvoie les ID des documents pertinents.</li>
+<li>Your query is converted into a vector using OpenAI embeddings.</li>
+<li>The query vector is sent to a Milvus collection.</li>
+<li>Milvus AUTOINDEX selects and optimizes the appropriate index.</li>
+<li>A real-time cosine similarity search returns the relevant document IDs.</li>
 </ul>
-<p>Flux de visualisation (hors ligne, à l'échelle de la démonstration)</p>
+<p>Visualization Flow (Offline, Demo-Scale)</p>
 <ul>
-<li>UMAP génère des coordonnées 3D pendant l'ingestion des données (n_neighbors=30, min_dist=0.1).</li>
-<li>Les coordonnées sont stockées dans golem_cortex.json.</li>
-<li>Le frontend met en évidence les nœuds 3D correspondants en utilisant les ID des documents renvoyés par Milvus.</li>
+<li>UMAP generates 3D coordinates during data ingestion (n_neighbors=30, min_dist=0.1).</li>
+<li>The coordinates are stored in golem_cortex.json.</li>
+<li>The frontend highlights the corresponding 3D nodes using the document IDs returned by Milvus.</li>
 </ul>
-<p>Le point critique : la recherche n'attend plus la visualisation. Vous pouvez ingérer de nouveaux documents et les rechercher immédiatement - la vue en 3D les rattrape selon son propre calendrier.</p>
-<h3 id="What-Streaming-Nodes-Change" class="common-anchor-header">Ce que les nœuds de streaming changent</h3><p>Cette ingestion en temps réel est assurée par une nouvelle fonctionnalité de Milvus 2.6.8 : les <a href="https://milvus.io/docs/configure_streamingnode.md#streamingNode-related-Configurations">nœuds de diffusion en continu</a>. Dans les versions précédentes, l'ingestion en temps réel nécessitait une file d'attente de messages externe telle que Kafka ou Pulsar. Les nœuds de flux déplacent cette coordination dans Milvus lui-même - les nouveaux vecteurs sont ingérés en continu, les index sont mis à jour de manière incrémentielle et les documents nouvellement ajoutés deviennent immédiatement consultables sans reconstruction complète et sans dépendances externes.</p>
-<p>Pour le Projet_Golem, c'est ce qui rend l'architecture pratique. Vous pouvez continuer à ajouter des documents à votre système RAG - nouveaux articles, documents mis à jour, contenu généré par les utilisateurs - et la recherche reste à jour sans déclencher le coûteux cycle UMAP → JSON → rechargement.</p>
-<h3 id="Extending-Visualization-to-Million-Scale-Future-Path" class="common-anchor-header">Extension de la visualisation à l'échelle du million (voie future)</h3><p>Avec cette configuration soutenue par Milvus, Project_Golem prend actuellement en charge des démonstrations interactives pour environ 10 000 documents. L'extraction s'étend bien au-delà - Milvus gère des millions - mais le pipeline de visualisation repose toujours sur des exécutions UMAP par lots. Pour combler cette lacune, l'architecture peut être étendue avec un pipeline de visualisation incrémental :</p>
+<p>The critical point: retrieval no longer waits on visualization. You can ingest new documents and search them immediately — the 3D view catches up on its own schedule.</p>
+<h3 id="What-Streaming-Nodes-Change" class="common-anchor-header">What Streaming Nodes Change</h3><p>This real-time ingestion is powered by a new capability in Milvus 2.6.8: <a href="https://milvus.io/docs/configure_streamingnode.md#streamingNode-related-Configurations">Streaming Nodes</a>. In earlier versions, real-time ingestion required an external message queue like Kafka or Pulsar. Streaming Nodes move that coordination into Milvus itself — new vectors are ingested continuously, indexes are updated incrementally, and newly added documents become searchable immediately with no full rebuild and no external dependencies.</p>
+<p>For Project_Golem, this is what makes the architecture practical. You can keep adding documents to your RAG system — new articles, updated docs, user-generated content — and retrieval stays current without triggering the expensive UMAP → JSON → reload cycle.</p>
+<h3 id="Extending-Visualization-to-Million-Scale-Future-Path" class="common-anchor-header">Extending Visualization to Million-Scale (Future Path)</h3><p>With this Milvus-backed setup, Project_Golem currently supports interactive demos at around 10,000 documents. Retrieval scales well beyond that — Milvus handles millions — but the visualization pipeline still relies on batch UMAP runs. To close that gap, the architecture can be extended with an incremental visualization pipeline:</p>
 <ul>
-<li><p>Déclencheurs de mise à jour : Le système est à l'écoute des événements d'insertion dans la collection Milvus. Lorsque les documents nouvellement ajoutés atteignent un seuil défini (par exemple, 1 000 éléments), une mise à jour incrémentale est déclenchée.</p></li>
-<li><p>Projection incrémentielle : Au lieu de réexécuter l'UMAP sur l'ensemble du jeu de données, les nouveaux vecteurs sont projetés dans l'espace 3D existant à l'aide de la méthode transform() de l'UMAP. Cela permet de préserver la structure globale tout en réduisant considérablement les coûts de calcul.</p></li>
-<li><p>Synchronisation frontale : Les fragments de coordonnées mis à jour sont transmis au frontend via WebSocket, ce qui permet aux nouveaux nœuds d'apparaître dynamiquement sans avoir à recharger l'ensemble de la scène.</p></li>
+<li><p>Update triggers: The system listens for insert events on the Milvus collection. Once newly added documents reach a defined threshold (for example, 1,000 items), an incremental update is triggered.</p></li>
+<li><p>Incremental projection: Instead of rerunning UMAP across the full dataset, new vectors are projected into the existing 3D space using UMAP’s transform() method. This preserves global structure while dramatically reducing computation cost.</p></li>
+<li><p>Frontend synchronization: Updated coordinate fragments are streamed to the frontend via WebSocket, allowing new nodes to appear dynamically without reloading the entire scene.</p></li>
 </ul>
-<p>Au-delà de l'évolutivité, Milvus 2.6.8 permet une recherche hybride en combinant la similarité vectorielle avec la recherche plein texte et le filtrage scalaire. Cela ouvre la voie à des interactions 3D plus riches, telles que la mise en évidence des mots clés, le filtrage par catégorie et le découpage temporel, offrant aux développeurs des moyens plus puissants d'explorer, de déboguer et de raisonner sur le comportement des RAG.</p>
-<h2 id="How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="common-anchor-header">Comment déployer et explorer Project_Golem avec Milvus<button data-href="#How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="anchor-icon" translate="no">
+<p>Beyond scalability, Milvus 2.6.8 enables hybrid search by combining vector similarity with full-text search and scalar filtering. This opens the door to richer 3D interactions—such as keyword highlighting, category filtering, and time-based slicing—giving developers more powerful ways to explore, debug, and reason about RAG behavior.</p>
+<h2 id="How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="common-anchor-header">How to Deploy and Explore Project_Golem with Milvus<button data-href="#How-to-Deploy-and-Explore-ProjectGolem-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -133,15 +132,15 @@ origin: 'https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le Projet_Golem mis à jour est désormais en open source sur <a href="https://github.com/yinmin2020/Project_Golem_Milvus">GitHub</a>. En utilisant la documentation officielle de Milvus comme ensemble de données, nous parcourons le processus complet de visualisation de l'extraction de RAG en 3D. L'installation utilise Docker et Python et est facile à suivre, même si vous partez de zéro.</p>
-<h3 id="Prerequisites" class="common-anchor-header">Conditions préalables</h3><ul>
+    </button></h2><p>The upgraded Project_Golem is now open source on <a href="https://github.com/yinmin2020/Project_Golem_Milvus">GitHub</a>. Using the Milvus official documentation as our dataset, we walk through the full process of visualizing RAG retrieval in 3D. The setup uses Docker and Python and is easy to follow, even if you’re starting from scratch.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><ul>
 <li>Docker ≥ 20.10</li>
 <li>Docker Compose ≥ 2.0</li>
 <li>Python ≥ 3.11</li>
-<li>Une clé API OpenAI</li>
-<li>Un jeu de données (documentation Milvus au format Markdown).</li>
+<li>An OpenAI API key</li>
+<li>A dataset (Milvus documentation in Markdown format)</li>
 </ul>
-<h3 id="1-Deploy-Milvus" class="common-anchor-header">1. Déployer Milvus</h3><pre><code translate="no">Download docker-compose.yml
+<h3 id="1-Deploy-Milvus" class="common-anchor-header">1. Deploy Milvus</h3><pre><code translate="no">Download docker-compose.yml
 wget https://github.com/milvus-io/milvus/releases/download/v2.6.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
 Start Milvus（verify port mapping：19530:19530）
 docker-compose up -d
@@ -149,8 +148,8 @@ Verify that the services are running
 docker ps | grep milvus
 You should see three containers：milvus-standalone, milvus-etcd, milvus-minio
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Core-Implementation" class="common-anchor-header">2. Mise en œuvre du noyau</h3><p>Intégration de Milvus (ingest.py)</p>
-<p>Remarque : l'implémentation prend en charge jusqu'à huit catégories de documents. Si le nombre de catégories dépasse cette limite, les couleurs sont réutilisées à la ronde.</p>
+<h3 id="2-Core-Implementation" class="common-anchor-header">2. Core Implementation</h3><p>Milvus Integration (ingest.py)</p>
+<p>Note: The implementation supports up to eight document categories. If the number of categories exceeds this limit, colors are reused in a round-robin fashion.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 <span class="hljs-keyword">from</span> pymilvus.milvus_client.index <span class="hljs-keyword">import</span> IndexParams
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
@@ -338,7 +337,7 @@ index_params=index_params
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
 ingest_dense()
 <button class="copy-code-btn"></button></code></pre>
-<p>Visualisation frontale (GolemServer.py)</p>
+<p>Frontend Visualization (GolemServer.py)</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, request, jsonify, send_from_directory
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
@@ -430,7 +429,7 @@ scores = [r[<span class="hljs-string">&#x27;distance&#x27;</span>] <span class="
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;   ✅ SYSTEM ONLINE: http://localhost:8000&quot;</span>)
 app.run(port=<span class="hljs-number">8000</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Télécharger le jeu de données et le placer dans le répertoire spécifié.</p>
+<p>Download the dataset and place it in the specified directory</p>
 <pre><code translate="no">https://github.com/milvus-io/milvus-docs/tree/v2.6.x/site/en
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -439,20 +438,20 @@ app.run(port=<span class="hljs-number">8000</span>)
     <span></span>
   </span>
 </p>
-<h3 id="3-Start-the-project" class="common-anchor-header">3. Démarrer le projet</h3><p>Conversion de l'intégration de texte dans l'espace 3D</p>
+<h3 id="3-Start-the-project" class="common-anchor-header">3. Start the project</h3><p>Converting text embeddings into 3D space</p>
 <pre><code translate="no">python ingest.py
 <button class="copy-code-btn"></button></code></pre>
 <p>[image]</p>
-<p>Démarrer le service frontal</p>
+<p>Start the Frontend Service</p>
 <pre><code translate="no">python GolemServer.py
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="4-Visualization-and-Interaction" class="common-anchor-header">4. Visualisation et interaction</h3><p>Une fois que le frontend a reçu les résultats de la recherche, la luminosité des nœuds est mise à l'échelle sur la base des scores de similarité cosinus, tandis que les couleurs d'origine des nœuds sont conservées pour maintenir des groupes de catégories clairs. Des lignes semi-transparentes sont tracées entre le point d'interrogation et chaque nœud correspondant, et la caméra effectue des panoramiques et des zooms pour se concentrer sur le groupe activé.</p>
-<h4 id="Example-1-In-Domain-Match" class="common-anchor-header">Exemple 1 : Correspondance dans le domaine</h4><p>Requête : "Quels sont les types d'index pris en charge par Milvus ?</p>
-<p>Comportement de visualisation :</p>
+<h3 id="4-Visualization-and-Interaction" class="common-anchor-header">4. Visualization and Interaction</h3><p>After the frontend receives the retrieval results, node brightness is scaled based on cosine similarity scores, while the original node colors are preserved to maintain clear category clusters. Semi-transparent lines are drawn from the query point to each matched node, and the camera smoothly pans and zooms to focus on the activated cluster.</p>
+<h4 id="Example-1-In-Domain-Match" class="common-anchor-header">Example 1: In-Domain Match</h4><p>Query: “Which index types does Milvus support?”</p>
+<p>Visualization behavior:</p>
 <ul>
-<li><p>Dans l'espace 3D, environ 15 nœuds du groupe rouge intitulé INDEXES présentent une augmentation notable de la luminosité (environ 2 à 3 fois).</p></li>
-<li><p>Les nœuds correspondants comprennent des morceaux de documents tels que index_types.md, hnsw_index.md et ivf_index.md.</p></li>
-<li><p>Des lignes semi-transparentes sont tracées entre le vecteur de requête et chaque nœud correspondant, et la caméra se concentre sur le groupe rouge.</p></li>
+<li><p>In the 3D space, approximately 15 nodes within the red cluster labeled INDEXES show a noticeable increase in brightness (about 2–3×).</p></li>
+<li><p>Matched nodes include chunks from documents such as index_types.md, hnsw_index.md, and ivf_index.md.</p></li>
+<li><p>Semi-transparent lines are rendered from the query vector to each matched node, and the camera smoothly focuses on the red cluster.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -460,12 +459,12 @@ app.run(port=<span class="hljs-number">8000</span>)
     <span></span>
   </span>
 </p>
-<h4 id="Example-2-Out-of-Domain-Query-Rejection" class="common-anchor-header">Exemple 2 : Rejet d'une requête hors domaine</h4><p>Requête : "Combien coûte le repas KFC ?"</p>
-<p>Comportement de visualisation :</p>
+<h4 id="Example-2-Out-of-Domain-Query-Rejection" class="common-anchor-header">Example 2: Out-of-Domain Query Rejection</h4><p>Query: “How much is the KFC value meal?”</p>
+<p>Visualization behavior:</p>
 <ul>
-<li><p>Tous les nœuds conservent leur couleur d'origine et leur taille n'est que légèrement modifiée (moins de 1,1×).</p></li>
-<li><p>Les nœuds correspondants sont dispersés dans plusieurs groupes de couleurs différentes, sans concentration sémantique claire.</p></li>
-<li><p>La caméra ne déclenche pas d'action de mise au point, car le seuil de similarité (0,5) n'est pas atteint.</p></li>
+<li><p>All nodes retain their original colors, with only slight size changes (less than 1.1×).</p></li>
+<li><p>Matched nodes are scattered across multiple clusters with different colors, showing no clear semantic concentration.</p></li>
+<li><p>The camera does not trigger a focus action, as the similarity threshold (0.5) is not met.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -488,8 +487,8 @@ app.run(port=<span class="hljs-number">8000</span>)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Project_Golem associé à Milvus ne remplacera pas votre pipeline d'évaluation RAG existant - mais il ajoute quelque chose qui manque totalement à la plupart des pipelines : la possibilité de voir ce qui se passe dans l'espace vectoriel.</p>
-<p>Avec cette configuration, vous pouvez faire la différence entre un échec de récupération causé par un mauvais encastrement, un échec causé par un mauvais découpage et un échec causé par un seuil juste un peu trop serré. Ce type de diagnostic nécessitait auparavant de deviner et d'itérer. Aujourd'hui, vous pouvez le voir.</p>
-<p>L'intégration actuelle prend en charge le débogage interactif à l'échelle de la démonstration (~10 000 documents), la base de données vectorielle de Milvus se chargeant de la récupération de niveau production en coulisses. Le chemin vers la visualisation à l'échelle du million est tracé mais pas encore construit - c'est donc le bon moment pour s'impliquer.</p>
-<p>Consultez <a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> sur GitHub, essayez-le avec votre propre jeu de données et voyez à quoi ressemble votre espace vectoriel.</p>
-<p>Si vous avez des questions ou souhaitez partager vos découvertes, rejoignez notre <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal Slack</a> ou réservez une session <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> pour obtenir des conseils pratiques sur votre installation.</p>
+    </button></h2><p>Project_Golem paired with Milvus won’t replace your existing RAG evaluation pipeline — but it adds something most pipelines lack entirely: the ability to see what’s happening inside the vector space.</p>
+<p>With this setup, you can tell the difference between a retrieval failure caused by a bad embedding, one caused by poor chunking, and one caused by a threshold that’s just slightly too tight. That kind of diagnosis used to require guessing and iterating. Now you can see it.</p>
+<p>The current integration supports interactive debugging at demo scale (~10,000 documents), with Milvus vector database handling production-grade retrieval behind the scenes. The path to million-scale visualization is mapped out but not yet built — which makes this a good time to get involved.</p>
+<p>Check out <a href="https://github.com/CyberMagician/Project_Golem">Project_Golem</a> on GitHub, try it with your own dataset, and see what your vector space actually looks like.</p>
+<p>If you have questions or want to share what you find, join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a>, or book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session for hands-on guidance on your setup.</p>

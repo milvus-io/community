@@ -1,7 +1,9 @@
 ---
 id: >-
   milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md
-title: Milvus Ngram 索引介绍：针对 Agents 工作负载的更快关键词匹配和 LIKE 查询
+title: >
+  Introducing the Milvus Ngram Index: Faster Keyword Matching and LIKE Queries
+  for Agent Workloads
 author: Chenjie Tang
 date: 2025-12-16T00:00:00.000Z
 cover: assets.zilliz.com/Ngram_Index_cover_9e6063c638.png
@@ -13,26 +15,29 @@ meta_keywords: 'Milvus, Ngram Index, n-gram search, LIKE queries, full-text sear
 meta_title: >
   Milvus Ngram Index: Faster Keyword Matching and LIKE Queries for Agent
   Workloads
-desc: 了解 Milvus 中的 Ngram 索引如何通过将子串匹配转化为高效的 n-gram 查找来加速 LIKE 查询，从而提供快 100 倍的性能。
+desc: >-
+  Learn how the Ngram Index in Milvus accelerates LIKE queries by turning
+  substring matching into efficient n-gram lookups, delivering 100× faster
+  performance.
 origin: >-
   https://milvus.io/blog/milvus-ngram-index-faster-keyword-matching-and-like-queries-for-agent-workloads.md
 ---
-<p>在 Agents 系统中，<strong>上下文检索</strong>是整个管道的基础构件，为下游推理、规划和行动提供了基础。向量搜索可以帮助 Agents 检索语义相关的上下文，从而在大型非结构化数据集中捕捉意图和意义。然而，仅有语义相关性往往是不够的。Agents 管道还依赖全文搜索来执行精确的关键字限制，例如产品名称、功能调用、错误代码或具有法律意义的术语。这一支持层可确保检索到的上下文不仅相关，而且明确满足硬性文本要求。</p>
-<p>实际工作负载始终反映了这一需求：</p>
+<p>In agent systems, <strong>context retrieval</strong> is a foundational building block across the entire pipeline, providing the basis for downstream reasoning, planning, and action. Vector search helps agents retrieve semantically relevant context that captures intent and meaning across large and unstructured datasets. However, semantic relevance alone is often not enough. Agent pipelines also rely on full-text search to enforce exact keyword constraints—such as product names, function calls, error codes, or legally significant terms. This supporting layer ensures that retrieved context is not only relevant, but also explicitly satisfies hard textual requirements.</p>
+<p>Real workloads consistently reflect this need:</p>
 <ul>
-<li><p>客户支持助理必须找到提及特定产品或成分的对话。</p></li>
-<li><p>编码副驾驶员需要查找包含精确函数名、API 调用或错误字符串的片段。</p></li>
-<li><p>法律、医疗和学术 Agents 会过滤文档中必须逐字出现的条款或引文。</p></li>
+<li><p>Customer support assistants must find conversations mentioning a specific product or ingredient.</p></li>
+<li><p>Coding copilots look for snippets containing an exact function name, API call, or error string.</p></li>
+<li><p>Legal, medical, and academic agents filter documents for clauses or citations that must appear verbatim.</p></li>
 </ul>
-<p>传统上，系统都是通过 SQL<code translate="no">LIKE</code> 操作符来处理的。<code translate="no">name LIKE '%rod%'</code> 这样的查询简单，支持范围也很广，但在高并发和大数据量的情况下，这种简单性会带来很大的性能代价。</p>
+<p>Traditionally, systems have handled this with the SQL <code translate="no">LIKE</code> operator. A query such as <code translate="no">name LIKE '%rod%'</code> is simple and widely supported, but under high concurrency and large data volumes, this simplicity carries major performance costs.</p>
 <ul>
-<li><p><strong>如果没有索引</strong>，<code translate="no">LIKE</code> 查询会扫描整个上下文存储，并逐行应用模式匹配。在数百万条记录的情况下，即使是单次查询也需要数秒时间，对于实时代理交互来说，速度实在太慢了。</p></li>
-<li><p><strong>即使使用传统的倒排索引</strong>，通配符模式（如<code translate="no">%rod%</code> ）仍然难以优化，因为引擎仍然必须遍历整个字典，并对每个条目进行模式匹配。这种操作符避免了行扫描，但从根本上说仍然是线性的，因此只能带来微不足道的改进。</p></li>
+<li><p><strong>Without an index</strong>, a <code translate="no">LIKE</code> query scans the entire context store and applies pattern matching row by row. At millions of records, even a single query can take seconds—far too slow for real-time agent interactions.</p></li>
+<li><p><strong>Even with a conventional inverted index</strong>, wildcard patterns such as <code translate="no">%rod%</code> remain hard to optimize because the engine must still traverse the entire dictionary and run pattern matching on each entry. The operation avoids row scans but remains fundamentally linear, resulting in only marginal improvements.</p></li>
 </ul>
-<p>这在混合检索系统中造成了明显的差距：向量搜索能有效处理语义相关性，但精确关键词过滤往往成为管道中最慢的步骤。</p>
-<p>Milvus 本机支持带元数据过滤的混合向量和全文检索。为了解决关键字匹配的局限性，Milvus 引入了<a href="https://milvus.io/docs/ngram.md"><strong>Ngram 索引</strong></a>，通过将文本拆分成小的子字符串并编制索引以实现高效查找，从而提高了<code translate="no">LIKE</code> 的性能。这大大减少了查询执行过程中检查的数据量，使<code translate="no">LIKE</code> 查询在实际 Agents 工作负载中的<strong>速度提高了数十到数百倍</strong>。</p>
-<p>本篇文章的其余部分将介绍 Ngram 索引在 Milvus 中的工作原理，并评估其在实际应用场景中的性能。</p>
-<h2 id="What-Is-the-Ngram-Index" class="common-anchor-header">什么是 Ngram 索引？<button data-href="#What-Is-the-Ngram-Index" class="anchor-icon" translate="no">
+<p>This creates a clear gap in hybrid retrieval systems: vector search handles semantic relevance efficiently, but exact keyword filtering often becomes the slowest step in the pipeline.</p>
+<p>Milvus natively supports hybrid vector and full-text search with metadata filtering. To address the limitations of keyword matching, Milvus introduces the <a href="https://milvus.io/docs/ngram.md"><strong>Ngram Index</strong></a>, which improves <code translate="no">LIKE</code> performance by splitting text into small substrings and indexing them for efficient lookup. This dramatically reduces the amount of data examined during query execution, delivering <strong>tens to hundreds of times faster</strong> <code translate="no">LIKE</code> queries in real agentic workloads.</p>
+<p>The rest of this post walks through how the Ngram Index works in Milvus and evaluates its performance in real-world scenarios.</p>
+<h2 id="What-Is-the-Ngram-Index" class="common-anchor-header">What Is the Ngram Index?<button data-href="#What-Is-the-Ngram-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,23 +52,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在数据库中，文本过滤通常使用<strong>SQL</strong> 来表达，这是一种用于检索和管理数据的标准查询语言。其最广泛使用的文本操作符之一是<code translate="no">LIKE</code> ，它支持基于模式的字符串匹配。</p>
-<p>根据通配符的使用方式，LIKE 表达式可大致分为四种常见的模式类型：</p>
+    </button></h2><p>In databases, text filtering is commonly expressed using <strong>SQL</strong>, the standard query language used to retrieve and manage data. One of its most widely used text operators is <code translate="no">LIKE</code>, which supports pattern-based string matching.</p>
+<p>LIKE expressions can be broadly grouped into four common pattern types, depending on how wildcards are used:</p>
 <ul>
-<li><p><strong>Infix match</strong>(<code translate="no">name LIKE '%rod%'</code>)：匹配子串 rod 出现在文本中任何位置的记录。</p></li>
-<li><p><strong>前缀匹配</strong>(<code translate="no">name LIKE 'rod%'</code>)：匹配文本以 rod 开头的记录。</p></li>
-<li><p><strong>后缀匹配</strong>(<code translate="no">name LIKE '%rod'</code>)：匹配文本以 rod 结尾的记录。</p></li>
-<li><p><strong>通配符匹配</strong>(<code translate="no">name LIKE '%rod%aab%bc_de'</code>)：将多个子字符串条件 (<code translate="no">%</code>) 与单字符通配符 (<code translate="no">_</code>) 组合在一个模式中。</p></li>
+<li><p><strong>Infix match</strong> (<code translate="no">name LIKE '%rod%'</code>): Matches records where the substring rod appears anywhere in the text.</p></li>
+<li><p><strong>Prefix match</strong> (<code translate="no">name LIKE 'rod%'</code>): Matches records whose text starts with rod.</p></li>
+<li><p><strong>Suffix match</strong> (<code translate="no">name LIKE '%rod'</code>): Matches records whose text ends with rod.</p></li>
+<li><p><strong>Wildcard match</strong> (<code translate="no">name LIKE '%rod%aab%bc_de'</code>): Combines multiple substring conditions (<code translate="no">%</code>) with single-character wildcards (<code translate="no">_</code>) in a single pattern.</p></li>
 </ul>
-<p>虽然这些模式在外观和表现力上各不相同，但 Milvus 中的<strong>Ngram 索引</strong>使用相同的基本方法对所有模式进行了加速。</p>
-<p>在建立索引之前，Milvus 会将每个文本值分割成固定长度的重叠短子串，即<em>n-gram</em>。例如，当 n = 3 时，单词<strong>"Milvus "</strong>被分解成以下 3 个词组：<strong>"Mil"、</strong> <strong>"ilv"、"</strong> <strong>lvu "</strong>和<strong>"vus"。</strong>然后将每个 n-gram 保存在一个反向索引中，该索引将子串映射到出现该子串的文档 ID 集。在查询时，<code translate="no">LIKE</code> 条件被转化为 n-gram 查找的组合，从而使 Milvus 能够快速过滤掉大部分不匹配的记录，并根据更小的候选集评估模式。这就是将昂贵的字符串扫描转化为高效的基于索引查询的原因。</p>
-<p>有两个参数可以控制 Ngram 索引的构建方式：<code translate="no">min_gram</code> 和<code translate="no">max_gram</code> 。它们共同定义了 Milvus 生成和索引的子串长度范围。</p>
+<p>While these patterns differ in appearance and expressiveness, the <strong>Ngram Index</strong> in Milvus accelerates all of them using the same underlying approach.</p>
+<p>Before building the index, Milvus splits each text value into short, overlapping substrings of fixed lengths, known as <em>n-grams</em>. For example, when n = 3, the word <strong>“Milvus”</strong> is decomposed into the following 3-grams: <strong>“Mil”</strong>, <strong>“ilv”</strong>, <strong>“lvu”</strong>, and <strong>“vus”</strong>. Each n-gram is then stored in an inverted index that maps the substring to the set of document IDs in which it appears. At query time, <code translate="no">LIKE</code> conditions are translated into combinations of n-gram lookups, allowing Milvus to quickly filter out most non-matching records and evaluate the pattern against a much smaller candidate set. This is what turns expensive string scans into efficient index-based queries.</p>
+<p>Two parameters control how the Ngram Index is constructed: <code translate="no">min_gram</code> and <code translate="no">max_gram</code>. Together, they define the range of substring lengths that Milvus generates and indexes.</p>
 <ul>
-<li><p><strong><code translate="no">min_gram</code></strong>:要索引的最短子串长度。在实践中，这也设定了可从 Ngram 索引中获益的最小查询子串长度。</p></li>
-<li><p><strong><code translate="no">max_gram</code></strong>:要索引的最长子串长度。在查询时，它还决定了将较长的查询字符串分割成 n-gram 时使用的最大窗口大小。</p></li>
+<li><p><strong><code translate="no">min_gram</code></strong>: The shortest substring length to index. In practice, this also sets the minimum query substring length that can benefit from the Ngram Index</p></li>
+<li><p><strong><code translate="no">max_gram</code></strong>: The longest substring length to index. At query time, it additionally determines the maximum window size used when splitting longer query strings into n-grams.</p></li>
 </ul>
-<p>通过索引长度在<code translate="no">min_gram</code> 和<code translate="no">max_gram</code> 之间的所有连续子串，Milvus 为加速所有支持的<code translate="no">LIKE</code> 模式类型奠定了一致、高效的基础。</p>
-<h2 id="How-Does-the-Ngram-Index-Work" class="common-anchor-header">Ngram 索引如何工作？<button data-href="#How-Does-the-Ngram-Index-Work" class="anchor-icon" translate="no">
+<p>By indexing all contiguous substrings whose lengths fall between <code translate="no">min_gram</code> and <code translate="no">max_gram</code>, Milvus establishes a consistent and efficient foundation for accelerating all supported <code translate="no">LIKE</code> pattern types.</p>
+<h2 id="How-Does-the-Ngram-Index-Work" class="common-anchor-header">How Does the Ngram Index Work?<button data-href="#How-Does-the-Ngram-Index-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,36 +83,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 分两个阶段实现 Ngram 索引：</p>
+    </button></h2><p>Milvus implements the Ngram Index in a two-phase process:</p>
 <ul>
-<li><p><strong>建立索引：</strong>为每个文档生成 N-grams，并在数据摄取过程中建立反转索引。</p></li>
-<li><p><strong>加速查询：</strong>使用索引将搜索范围缩小到一个小的候选集，然后在这些候选集上验证精确的<code translate="no">LIKE</code> 匹配。</p></li>
+<li><p><strong>Build the index:</strong> Generate n-grams for each document and build an inverted index during data ingestion.</p></li>
+<li><p><strong>Accelerate queries:</strong> Use the index to narrow the search to a small candidate set, then verify exact <code translate="no">LIKE</code> matches on those candidates.</p></li>
 </ul>
-<p>一个具体的例子可以让我们更容易理解这一过程。</p>
-<h3 id="Phase-1-Build-the-index" class="common-anchor-header">第 1 阶段：建立索引</h3><p><strong>将文本分解为 n 个词组：</strong></p>
-<p>假设我们用以下设置为文本<strong>"Apple "</strong>建立索引：</p>
+<p>A concrete example makes this process easier to understand.</p>
+<h3 id="Phase-1-Build-the-index" class="common-anchor-header">Phase 1: Build the index</h3><p><strong>Decompose text into n-grams:</strong></p>
+<p>Assume we index the text <strong>“Apple”</strong> with the following settings:</p>
 <ul>
 <li><p><code translate="no">min_gram = 2</code></p></li>
 <li><p><code translate="no">max_gram = 3</code></p></li>
 </ul>
-<p>在此设置下，Milvus 会生成长度为 2 和 3 的所有连续子串：</p>
+<p>Under this setting, Milvus generates all contiguous substrings of length 2 and 3:</p>
 <ul>
-<li><p>2-grams：<code translate="no">Ap</code>,<code translate="no">pp</code>,<code translate="no">pl</code> 、<code translate="no">le</code></p></li>
-<li><p>3-grams：<code translate="no">App</code>,<code translate="no">ppl</code> 、<code translate="no">ple</code></p></li>
+<li><p>2-grams: <code translate="no">Ap</code>, <code translate="no">pp</code>, <code translate="no">pl</code>, <code translate="no">le</code></p></li>
+<li><p>3-grams: <code translate="no">App</code>, <code translate="no">ppl</code>, <code translate="no">ple</code></p></li>
 </ul>
-<p><strong>建立倒排索引：</strong></p>
-<p>现在考虑一个由五条记录组成的小型数据集：</p>
+<p><strong>Build an inverted index:</strong></p>
+<p>Now consider a small dataset of five records:</p>
 <ul>
-<li><p><strong>文档 0</strong>：<code translate="no">Apple</code></p></li>
-<li><p><strong>文档 1</strong>：<code translate="no">Pineapple</code></p></li>
-<li><p><strong>文档 2</strong>：<code translate="no">Maple</code></p></li>
-<li><p><strong>文档 3</strong>：<code translate="no">Apply</code></p></li>
-<li><p><strong>文档 4</strong>：<code translate="no">Snapple</code></p></li>
+<li><p><strong>Document 0</strong>: <code translate="no">Apple</code></p></li>
+<li><p><strong>Document 1</strong>: <code translate="no">Pineapple</code></p></li>
+<li><p><strong>Document 2</strong>: <code translate="no">Maple</code></p></li>
+<li><p><strong>Document 3</strong>: <code translate="no">Apply</code></p></li>
+<li><p><strong>Document 4</strong>: <code translate="no">Snapple</code></p></li>
 </ul>
-<p>在摄取过程中，Milvus 会为每条记录生成 n 个词组，并将它们插入一个倒排索引。在这个索引中</p>
+<p>During ingestion, Milvus generates n-grams for each record and inserts them into an inverted index. In this index:</p>
 <ul>
-<li><p><strong>键</strong>是 n 字符（子串）</p></li>
-<li><p><strong>值</strong>是出现 n-gram 的文档 ID 列表</p></li>
+<li><p><strong>Keys</strong> are n-grams (substrings)</p></li>
+<li><p><strong>Values</strong> are lists of document IDs where the n-gram appears</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-string">&quot;Ap&quot;</span>  -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">3</span>]
 <span class="hljs-string">&quot;App&quot;</span> -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">3</span>]
@@ -136,44 +141,44 @@ origin: >-
 <span class="hljs-string">&quot;pp&quot;</span>  -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
 <span class="hljs-string">&quot;ppl&quot;</span> -&gt; [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>现在，索引已完全建立。</p>
-<h3 id="Phase-2-Accelerate-queries" class="common-anchor-header">第二阶段：加速查询</h3><p>当执行<code translate="no">LIKE</code> 过滤器时，Milvus 使用 Ngram 索引通过以下步骤加速查询评估：</p>
-<p><strong>1.提取查询词：</strong>从<code translate="no">LIKE</code> 表达式中提取不含通配符的连续子串（例如，<code translate="no">'%apple%'</code> 变成<code translate="no">apple</code> ）。</p>
-<p><strong>2.分解查询词：</strong>根据查询词的长度 (<code translate="no">L</code>) 以及配置的<code translate="no">min_gram</code> 和<code translate="no">max_gram</code> ，将查询词分解为 n 个词组。</p>
-<p><strong>3.查找每个语法并进行交集：</strong>Milvus 在倒排索引中查找查询的 n 个语法，并与它们的文档 ID 列表进行交集，从而生成一个小的候选集。</p>
-<p><strong>4.验证并返回结果：</strong>最初的<code translate="no">LIKE</code> 条件只适用于这个候选集，以确定最终结果。</p>
-<p>实际上，将查询分割成 n-gram 的方式取决于模式本身的形状。为了解其工作原理，我们将重点讨论两种常见情况：后缀匹配和通配符匹配。前缀和后缀匹配的行为与后缀匹配相同，因此我们不再单独介绍。</p>
-<p><strong>词缀匹配</strong></p>
-<p>对于词缀匹配，执行取决于字面子串 (<code translate="no">L</code>) 相对于<code translate="no">min_gram</code> 和<code translate="no">max_gram</code> 的长度。</p>
-<p><strong> <code translate="no">min_gram ≤ L ≤ max_gram</code></strong>（如<code translate="no">strField LIKE '%ppl%'</code>)</p>
-<p>字面子串<code translate="no">ppl</code> 完全位于配置的 n-gram 范围内。Milvus 直接在倒排索引中查找 n-gram<code translate="no">&quot;ppl&quot;</code> ，生成候选文档 ID<code translate="no">[0, 1, 3, 4]</code> 。</p>
-<p>由于字面意思本身就是一个有索引的 n-gram，因此所有候选文档都已满足下位条件。最后的验证步骤不会删除任何记录，结果仍然是<code translate="no">[0, 1, 3, 4]</code> 。</p>
-<p><strong>2.<code translate="no">L &gt; max_gram</code></strong>（例如，<code translate="no">strField LIKE '%pple%'</code>)</p>
-<p>字面子字符串<code translate="no">pple</code> 比<code translate="no">max_gram</code> 长，因此使用<code translate="no">max_gram</code> 的窗口大小将其分解为重叠的 n 个字符串。加上<code translate="no">max_gram = 3</code> ，就产生了 n 个字符串<code translate="no">&quot;ppl&quot;</code> 和<code translate="no">&quot;ple&quot;</code> 。</p>
-<p>Milvus 在倒排索引中查找每个 n-gram：</p>
+<p>Now the index is fully built.</p>
+<h3 id="Phase-2-Accelerate-queries" class="common-anchor-header">Phase 2: Accelerate queries</h3><p>When a <code translate="no">LIKE</code> filter is executed, Milvus uses the Ngram Index to speed up query evaluation through the following steps:</p>
+<p><strong>1. Extract the query term:</strong> Contiguous substrings without wildcards are extracted from the <code translate="no">LIKE</code> expression (for example, <code translate="no">'%apple%'</code> becomes <code translate="no">apple</code>).</p>
+<p><strong>2. Decompose the query term:</strong> The query term is decomposed into n-grams based on its length (<code translate="no">L</code>) and the configured <code translate="no">min_gram</code> and <code translate="no">max_gram</code>.</p>
+<p><strong>3. Look for each gram &amp; intersect:</strong> Milvus looks up query n-grams in the inverted index and intersects their document ID lists to produce a small candidate set.</p>
+<p><strong>4. Verify and return results:</strong> The original <code translate="no">LIKE</code> condition is applied only to this candidate set to determine the final result.</p>
+<p>In practice, the way a query is split into n-grams depends on the shape of the pattern itself. To see how this works, we’ll focus on two common cases: infix matches and wildcard matches. Prefix and suffix matches behave the same as infix matches, so we won’t cover them separately.</p>
+<p><strong>Infix match</strong></p>
+<p>For an infix match, execution depends on the length of the literal substring (<code translate="no">L</code>) relative to <code translate="no">min_gram</code> and <code translate="no">max_gram</code>.</p>
+<p><strong>1. <code translate="no">min_gram ≤ L ≤ max_gram</code></strong> (e.g., <code translate="no">strField LIKE '%ppl%'</code>)</p>
+<p>The literal substring <code translate="no">ppl</code> falls entirely within the configured n-gram range. Milvus directly looks up the n-gram <code translate="no">&quot;ppl&quot;</code> in the inverted index, producing the candidate document IDs <code translate="no">[0, 1, 3, 4]</code>.</p>
+<p>Because the literal itself is an indexed n-gram, all candidates already satisfy the infix condition. The final verification step does not eliminate any records, and the result remains <code translate="no">[0, 1, 3, 4]</code>.</p>
+<p><strong>2. <code translate="no">L &gt; max_gram</code></strong> (e.g., <code translate="no">strField LIKE '%pple%'</code>)</p>
+<p>The literal substring <code translate="no">pple</code> is longer than <code translate="no">max_gram</code>, so it is decomposed into overlapping n-grams using a window size of <code translate="no">max_gram</code>. With <code translate="no">max_gram = 3</code>, this produces the n-grams <code translate="no">&quot;ppl&quot;</code> and <code translate="no">&quot;ple&quot;</code>.</p>
+<p>Milvus looks up each n-gram in the inverted index:</p>
 <ul>
-<li><p><code translate="no">&quot;ppl&quot;</code> →<code translate="no">[0, 1, 3, 4]</code></p></li>
-<li><p><code translate="no">&quot;ple&quot;</code> →<code translate="no">[0, 1, 2, 4]</code></p></li>
+<li><p><code translate="no">&quot;ppl&quot;</code> → <code translate="no">[0, 1, 3, 4]</code></p></li>
+<li><p><code translate="no">&quot;ple&quot;</code> → <code translate="no">[0, 1, 2, 4]</code></p></li>
 </ul>
-<p>将这些列表相交，得到候选集<code translate="no">[0, 1, 4]</code> 。然后，原始的<code translate="no">LIKE '%pple%'</code> 过滤器将应用于这些候选集。三者都满足条件，因此最终结果仍然是<code translate="no">[0, 1, 4]</code> 。</p>
-<p><strong>3.<code translate="no">L &lt; min_gram</code></strong>（例如，<code translate="no">strField LIKE '%pp%'</code>)</p>
-<p>字面子串短于<code translate="no">min_gram</code> ，因此无法分解为索引 n-gram。在这种情况下，不能使用 Ngram 索引，Milvus 会退回到默认执行路径，通过模式匹配的全扫描来评估<code translate="no">LIKE</code> 条件。</p>
-<p><strong>通配符匹配</strong>（如<code translate="no">strField LIKE '%Ap%pple%'</code>)</p>
-<p>该模式包含多个通配符，因此 Milvus 首先将其拆分为连续的字面：<code translate="no">&quot;Ap&quot;</code> 和<code translate="no">&quot;pple&quot;</code> 。</p>
-<p>然后，Milvus 对每个字面进行独立处理：</p>
+<p>Intersecting these lists yields the candidate set <code translate="no">[0, 1, 4]</code>. The original <code translate="no">LIKE '%pple%'</code> filter is then applied to these candidates. All three satisfy the condition, so the final result remains <code translate="no">[0, 1, 4]</code>.</p>
+<p><strong>3. <code translate="no">L &lt; min_gram</code></strong> (e.g., <code translate="no">strField LIKE '%pp%'</code>)</p>
+<p>The literal substring is shorter than <code translate="no">min_gram</code> and therefore cannot be decomposed into indexed n-grams. In this case, the Ngram Index cannot be used, and Milvus falls back to the default execution path, evaluating the <code translate="no">LIKE</code> condition through a full scan with pattern matching.</p>
+<p><strong>Wildcard match</strong> (e.g., <code translate="no">strField LIKE '%Ap%pple%'</code>)</p>
+<p>This pattern contains multiple wildcards, so Milvus first splits it into contiguous literals: <code translate="no">&quot;Ap&quot;</code> and <code translate="no">&quot;pple&quot;</code>.</p>
+<p>Milvus then processes each literal independently:</p>
 <ul>
-<li><p><code translate="no">&quot;Ap&quot;</code> 长度为 2，属于 n-gram 范围。</p></li>
-<li><p><code translate="no">&quot;pple&quot;</code> 比<code translate="no">max_gram</code> 长，分解为<code translate="no">&quot;ppl&quot;</code> 和<code translate="no">&quot;ple&quot;</code> 。</p></li>
+<li><p><code translate="no">&quot;Ap&quot;</code> has length 2 and falls within the n-gram range.</p></li>
+<li><p><code translate="no">&quot;pple&quot;</code> is longer than <code translate="no">max_gram</code> and is decomposed into <code translate="no">&quot;ppl&quot;</code> and <code translate="no">&quot;ple&quot;</code>.</p></li>
 </ul>
-<p>这就将查询缩减为以下 n 个词组：</p>
+<p>This reduces the query to the following n-grams:</p>
 <ul>
-<li><p><code translate="no">&quot;Ap&quot;</code> →<code translate="no">[0, 3]</code></p></li>
-<li><p><code translate="no">&quot;ppl&quot;</code> →<code translate="no">[0, 1, 3, 4]</code></p></li>
-<li><p><code translate="no">&quot;ple&quot;</code> →<code translate="no">[0, 1, 2, 4]</code></p></li>
+<li><p><code translate="no">&quot;Ap&quot;</code> → <code translate="no">[0, 3]</code></p></li>
+<li><p><code translate="no">&quot;ppl&quot;</code> → <code translate="no">[0, 1, 3, 4]</code></p></li>
+<li><p><code translate="no">&quot;ple&quot;</code> → <code translate="no">[0, 1, 2, 4]</code></p></li>
 </ul>
-<p>将这些列表相交会产生一个候选词：<code translate="no">[0]</code> 。</p>
-<p>最后，原始<code translate="no">LIKE '%Ap%pple%'</code> 过滤器被应用于文档 0 (<code translate="no">&quot;Apple&quot;</code>)。由于它不符合完整模式，最终结果集为空。</p>
-<h2 id="Limitations-and-Trade-offs-of-the-Ngram-Index" class="common-anchor-header">Ngram 索引的局限与权衡<button data-href="#Limitations-and-Trade-offs-of-the-Ngram-Index" class="anchor-icon" translate="no">
+<p>Intersecting these lists produces a single candidate: <code translate="no">[0]</code>.</p>
+<p>Finally, the original <code translate="no">LIKE '%Ap%pple%'</code> filter is applied to document 0 (<code translate="no">&quot;Apple&quot;</code>). Since it does not satisfy the full pattern, the final result set is empty.</p>
+<h2 id="Limitations-and-Trade-offs-of-the-Ngram-Index" class="common-anchor-header">Limitations and Trade-offs of the Ngram Index<button data-href="#Limitations-and-Trade-offs-of-the-Ngram-Index" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -188,16 +193,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>虽然 Ngram 索引可以显著提高<code translate="no">LIKE</code> 的查询性能，但它也引入了一些权衡因素，在实际部署中应加以考虑。</p>
+    </button></h2><p>While the Ngram Index can significantly improve <code translate="no">LIKE</code> query performance, it introduces trade-offs that should be considered in real-world deployments.</p>
 <ul>
-<li><strong>索引规模增大</strong></li>
+<li><strong>Increased index size</strong></li>
 </ul>
-<p>Ngram 索引的主要成本是更高的存储开销。由于索引存储的是长度在<code translate="no">min_gram</code> 和<code translate="no">max_gram</code> 之间的所有连续子串，因此随着这一范围的扩大，生成的 n-gram 数量也会迅速增加。每增加一个 n-gram 长度，就会有效地为每个文本值增加一整套重叠子串，从而增加索引键及其发布列表的数量。实际上，与标准的倒排索引相比，只需扩展一个字符的范围，索引的大小就会增加大约一倍。</p>
+<p>The primary cost of the Ngram Index is higher storage overhead. Because the index stores all contiguous substrings whose lengths fall between <code translate="no">min_gram</code> and <code translate="no">max_gram</code>, the number of generated n-grams grows quickly as this range expands. Each additional n-gram length effectively adds another full set of overlapping substrings for every text value, increasing both the number of index keys and their posting lists. In practice, expanding the range by just one character can roughly double the index size compared to a standard inverted index.</p>
 <ul>
-<li><strong>并非对所有工作负载都有效</strong></li>
+<li><strong>Not effective for all workloads</strong></li>
 </ul>
-<p>Ngram 索引并非对所有工作负载都有效。如果查询模式非常不规则，包含非常短的字面意义，或者在过滤阶段未能将数据集缩小到一个小的候选集，那么性能优势可能会受到限制。在这种情况下，即使存在索引，查询执行的成本仍可能接近全扫描的成本。</p>
-<h2 id="Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="common-anchor-header">评估 LIKE 查询中的 Ngram 索引性能<button data-href="#Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="anchor-icon" translate="no">
+<p>The Ngram Index does not accelerate every workload. If query patterns are highly irregular, contain very short literals, or fail to reduce the dataset to a small candidate set in the filtering phase, the performance benefit may be limited. In such cases, query execution can still approach the cost of a full scan, even though the index is present.</p>
+<h2 id="Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="common-anchor-header">Evaluating Ngram Index Performance on LIKE Queries<button data-href="#Evaluating-Ngram-Index-Performance-on-LIKE-Queries" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -212,76 +217,76 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>本基准测试的目的是评估 Ngram 索引在实践中如何有效地加速<code translate="no">LIKE</code> 查询。</p>
-<h3 id="Test-Methodology" class="common-anchor-header">测试方法</h3><p>为了使其性能符合实际情况，我们将其与两种基准执行模式进行了比较：</p>
+    </button></h2><p>The goal of this benchmark is to evaluate how effectively the Ngram Index accelerates <code translate="no">LIKE</code> queries in practice.</p>
+<h3 id="Test-Methodology" class="common-anchor-header">Test Methodology</h3><p>To put its performance in context, we compare it against two baseline execution modes:</p>
 <ul>
-<li><p><strong>主模式</strong>：不带任何索引的强制执行。</p></li>
-<li><p><strong>主-倒置</strong>：使用传统的反转索引执行。</p></li>
+<li><p><strong>Master</strong>: Brute-force execution without any index.</p></li>
+<li><p><strong>Master-inverted</strong>: Execution using a conventional inverted index.</p></li>
 </ul>
-<p>我们设计了两个测试场景，以涵盖不同的数据特征：</p>
+<p>We designed two test scenarios to cover different data characteristics:</p>
 <ul>
-<li><p><strong>维基文本数据集</strong>：100,000 行，每个文本字段截断为 1 KB。</p></li>
-<li><p><strong>单字数据集</strong>：1,000,000 行，每行包含一个单词。</p></li>
+<li><p><strong>Wiki text dataset</strong>: 100,000 rows, with each text field truncated to 1 KB.</p></li>
+<li><p><strong>Single-word dataset</strong>: 1,000,000 rows, where each row contains a single word.</p></li>
 </ul>
-<p>在这两种情况下，均采用一致的以下设置：</p>
+<p>Across both scenarios, the following settings are applied consistently:</p>
 <ul>
-<li><p>查询使用<strong>后缀匹配模式</strong>(<code translate="no">%xxx%</code>)</p></li>
-<li><p>语法索引配置为<code translate="no">min_gram = 2</code> 和<code translate="no">max_gram = 4</code></p></li>
-<li><p>为了隔离查询执行成本并避免结果实体化开销，所有查询都返回<code translate="no">count(*)</code> ，而不是完整的结果集。</p></li>
+<li><p>Queries use the <strong>infix match pattern</strong> (<code translate="no">%xxx%</code>)</p></li>
+<li><p>The Ngram Index is configured with <code translate="no">min_gram = 2</code> and <code translate="no">max_gram = 4</code></p></li>
+<li><p>To isolate query execution cost and avoid result materialization overhead, all queries return <code translate="no">count(*)</code> instead of full result sets.</p></li>
 </ul>
-<h3 id="Results" class="common-anchor-header">查询结果</h3><p><strong>维基测试，每行是内容长度截断为 1000 的维基文本，100K 行</strong></p>
+<h3 id="Results" class="common-anchor-header">Results</h3><p><strong>Test for wiki, each line is a wiki text with content length truncated by 1000, 100K rows</strong></p>
 <table>
 <thead>
-<tr><th></th><th>字面意思</th><th>时间（毫秒）</th><th>加速</th><th>计数</th></tr>
+<tr><th></th><th>Literal</th><th>Time(ms)</th><th>Speedup</th><th>Count</th></tr>
 </thead>
 <tbody>
-<tr><td>主人</td><td>体育场</td><td>207.8</td><td></td><td>335</td></tr>
-<tr><td>主-倒置</td><td></td><td>2095</td><td></td><td>335</td></tr>
+<tr><td>Master</td><td>stadium</td><td>207.8</td><td></td><td>335</td></tr>
+<tr><td>Master-inverted</td><td></td><td>2095</td><td></td><td>335</td></tr>
 <tr><td>Ngram</td><td></td><td>1.09</td><td>190 / 1922</td><td>335</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>硕士</td><td>中学</td><td>204.8</td><td></td><td>340</td></tr>
-<tr><td>硕士转正</td><td></td><td>2000</td><td></td><td>340</td></tr>
+<tr><td>Master</td><td>secondary school</td><td>204.8</td><td></td><td>340</td></tr>
+<tr><td>Master-inverted</td><td></td><td>2000</td><td></td><td>340</td></tr>
 <tr><td>Ngram</td><td></td><td>1.26</td><td>162.5 / 1587</td><td>340</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>大师</td><td>是一所男女同校的中学。</td><td>223.9</td><td></td><td>1</td></tr>
-<tr><td>硕士-转制</td><td></td><td>2100</td><td></td><td>1</td></tr>
+<tr><td>Master</td><td>is a coeducational, secondary school sponsore</td><td>223.9</td><td></td><td>1</td></tr>
+<tr><td>Master-inverted</td><td></td><td>2100</td><td></td><td>1</td></tr>
 <tr><td>Ngram</td><td></td><td>1.69</td><td>132.5 / 1242.6</td><td>1</td></tr>
 </tbody>
 </table>
-<p><strong>单词测试，1M 行</strong></p>
+<p><strong>Test for single words, 1M rows</strong></p>
 <table>
 <thead>
-<tr><th></th><th>字面</th><th>时间（毫秒）</th><th>加速</th><th>计数</th></tr>
+<tr><th></th><th>Literal</th><th>Time(ms)</th><th>Speedup</th><th>Count</th></tr>
 </thead>
 <tbody>
-<tr><td>主控</td><td>na</td><td>128.6</td><td></td><td>40430</td></tr>
-<tr><td>主-倒置</td><td></td><td>66.5</td><td></td><td>40430</td></tr>
+<tr><td>Master</td><td>na</td><td>128.6</td><td></td><td>40430</td></tr>
+<tr><td>Master-inverted</td><td></td><td>66.5</td><td></td><td>40430</td></tr>
 <tr><td>Ngram</td><td></td><td>1.38</td><td>93.2 / 48.2</td><td>40430</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>主</td><td>态</td><td>122</td><td></td><td>5200</td></tr>
-<tr><td>主-反转</td><td></td><td>65.1</td><td></td><td>5200</td></tr>
+<tr><td>Master</td><td>nat</td><td>122</td><td></td><td>5200</td></tr>
+<tr><td>Master-inverted</td><td></td><td>65.1</td><td></td><td>5200</td></tr>
 <tr><td>Ngram</td><td></td><td>1.27</td><td>96 / 51.3</td><td>5200</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>主</td><td>国家</td><td>118.8</td><td></td><td>1630</td></tr>
-<tr><td>主-反转</td><td></td><td>66.9</td><td></td><td>1630</td></tr>
+<tr><td>Master</td><td>nati</td><td>118.8</td><td></td><td>1630</td></tr>
+<tr><td>Master-inverted</td><td></td><td>66.9</td><td></td><td>1630</td></tr>
 <tr><td>Ngram</td><td></td><td>1.21</td><td>98.2 / 55.3</td><td>1630</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>主</td><td>国家</td><td>118.4</td><td></td><td>1100</td></tr>
-<tr><td>主逆变</td><td></td><td>65.1</td><td></td><td>1100</td></tr>
+<tr><td>Master</td><td>natio</td><td>118.4</td><td></td><td>1100</td></tr>
+<tr><td>Master-inverted</td><td></td><td>65.1</td><td></td><td>1100</td></tr>
 <tr><td>Ngram</td><td></td><td>1.33</td><td>89 / 48.9</td><td>1100</td></tr>
 <tr><td></td><td></td><td></td><td></td><td></td></tr>
-<tr><td>主</td><td>国家</td><td>118</td><td></td><td>1100</td></tr>
-<tr><td>主国倒置</td><td></td><td>63.3</td><td></td><td>1100</td></tr>
+<tr><td>Master</td><td>nation</td><td>118</td><td></td><td>1100</td></tr>
+<tr><td>Master-inverted</td><td></td><td>63.3</td><td></td><td>1100</td></tr>
 <tr><td>Ngram</td><td></td><td>1.4</td><td>84.3 / 45.2</td><td>1100</td></tr>
 </tbody>
 </table>
-<p><strong>注：</strong>这些结果基于 5 月份进行的基准测试。从那时起，主分支进行了更多性能优化，因此在当前版本中观察到的性能差距有望缩小。</p>
-<p>基准测试结果凸显了一个清晰的模式：在所有情况下，Ngram 索引都能显著加快 LIKE 查询的速度，而查询运行速度的快慢在很大程度上取决于底层文本数据的结构和长度。</p>
+<p><strong>Note:</strong> These results are based on benchmarks conducted in May. Since then, the Master branch has undergone additional performance optimizations, so the performance gap observed here is expected to be smaller in current versions.</p>
+<p>The benchmark results highlight a clear pattern: the Ngram Index significantly accelerates LIKE queries in all cases, and how much faster the queries run depends strongly on the structure and length of the underlying text data.</p>
 <ul>
-<li><p>对于<strong>长文本字段</strong>，如截断为 1,000 字节的维基风格文档，性能提升尤为明显。与没有索引的强制执行相比，Ngram 索引的速度提高了约<strong>100-200倍</strong>。与传统的倒排索引相比，改进幅度更大，达到了<strong>1,200-1,900 倍</strong>。这是因为对传统索引方法来说，对长文本进行 LIKE 查询的成本特别高，而 N-gram 查找可以迅速将搜索空间缩小到很小的候选集。</p></li>
-<li><p>在由<strong>单词条目</strong>组成的数据集上，收益较小，但仍然可观。在这种情况下，N-gram 索引的运行速度比强制执行快约<strong>80-100 倍</strong>，比传统的倒排索引快<strong>45-55 倍</strong>。虽然较短文本的扫描成本较低，但基于 ngram 的方法仍能避免不必要的比较，并持续降低查询成本。</p></li>
+<li><p>For <strong>long text fields</strong>, such as Wiki-style documents truncated to 1,000 bytes, the performance gains are especially pronounced. Compared to brute-force execution with no index, the Ngram Index achieves speedups of roughly <strong>100–200×</strong>. When compared against a conventional inverted index, the improvement is even more dramatic, reaching <strong>1,200–1,900×</strong>. This is because LIKE queries on long text are particularly expensive for traditional indexing approaches, while n-gram lookups can quickly narrow the search space to a very small set of candidates.</p></li>
+<li><p>On datasets consisting of <strong>single-word entries</strong>, the gains are smaller but still substantial. In this scenario, the Ngram Index runs approximately <strong>80–100×</strong> faster than brute-force execution and <strong>45–55×</strong> faster than a conventional inverted index. Although shorter text is inherently cheaper to scan, the n-gram–based approach still avoids unnecessary comparisons and consistently reduces query cost.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -296,15 +301,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ngram 索引通过将文本分解为固定长度的 n-gram，并使用倒置结构为其编制索引，从而加快了<code translate="no">LIKE</code> 查询的速度。这种设计将昂贵的子串匹配转化为高效的 n-gram 查找，然后进行最少的验证。因此，既避免了全文扫描，又保留了<code translate="no">LIKE</code> 的准确语义。</p>
-<p>在实践中，这种方法在各种工作负载中都很有效，尤其是在长文本字段的模糊匹配中效果显著。因此，Ngram 索引非常适合代码搜索、客户支持 Agents、法律和医学文档检索、企业知识库和学术搜索等实时场景，在这些场景中，精确的关键词匹配仍然至关重要。</p>
-<p>同时，Ngram 索引还得益于精心的配置。选择合适的<code translate="no">min_gram</code> 和<code translate="no">max_gram</code> 值对于平衡索引大小和查询性能至关重要。根据实际查询模式进行调整后，Ngram 索引可为生产系统中的高性能<code translate="no">LIKE</code> 查询提供实用、可扩展的解决方案。</p>
-<p>有关 Ngram 索引的更多信息，请查看下面的文档：</p>
+    </button></h2><p>The Ngram Index accelerates <code translate="no">LIKE</code> queries by breaking text into fixed-length n-grams and indexing them using an inverted structure. This design turns expensive substring matching into efficient n-gram lookups followed by minimal verification. As a result, full-text scans are avoided while the exact semantics of <code translate="no">LIKE</code> are preserved.</p>
+<p>In practice, this approach is effective across a wide range of workloads, with especially strong results for fuzzy matching on long text fields. The Ngram Index is therefore well suited for real-time scenarios such as code search, customer support agents, legal and medical document retrieval, enterprise knowledge bases, and academic search, where precise keyword matching remains essential.</p>
+<p>At the same time, the Ngram Index benefits from careful configuration. Choosing appropriate <code translate="no">min_gram</code> and <code translate="no">max_gram</code> values is critical to balancing index size and query performance. When tuned to reflect real query patterns, the Ngram Index provides a practical, scalable solution for high-performance <code translate="no">LIKE</code> queries in production systems.</p>
+<p>For more information about the Ngram Index, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/ngram.md">Ngram 索引 | Milvus 文档</a></li>
+<li><a href="https://milvus.io/docs/ngram.md">Ngram Index | Milvus Documentation</a></li>
 </ul>
-<p>对最新 Milvus 的任何功能有疑问或想深入了解？加入我们的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 频道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提交问题。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 预订 20 分钟的一对一课程，以获得见解、指导和问题解答。</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">了解有关 Milvus 2.6 功能的更多信息<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -320,15 +325,15 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">介绍 Milvus 2.6：十亿规模的经济型向量搜索</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">介绍 Embeddings 功能：Milvus 2.6 如何简化矢量化和语义搜索</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Milvus中的JSON粉碎功能：快88.9倍的灵活JSON过滤功能</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">解锁真正的实体级检索：Milvus 中新的结构阵列和 MAX_SIM 功能</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Milvus 2.6 将地理空间过滤和向量搜索与几何字段和 RTREE 结合在一起</a></p></li>
-<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">介绍 Milvus 中的 AISAQ：十亿规模向量搜索的内存成本降低了 3,200 倍</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">在 Milvus 中优化英伟达™（NVIDIA®）CAGRA：GPU-CPU 混合方法实现更快的索引和更低的查询成本</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">Milvus 中的 MinHash LSH：打击 LLM 训练数据中重复数据的秘密武器 </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">将向量压缩发挥到极致：Milvus 如何利用 RaBitQ 提供多 3 倍的查询服务</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">基准会说谎--向量数据库需要真正的测试 </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">我们为 Milvus 用啄木鸟取代了 Kafka/Pulsar </a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6</a></p></li>
+<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200× Cheaper on Memory</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster Indexing and Cheaper Queries</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus </a></p></li>
 </ul>

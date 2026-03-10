@@ -1,12 +1,15 @@
 ---
 id: >-
   hands-on-tutorial-build-rag-power-document-assistant-in-10-minutes-with-dify-and-milvus.md
-title: ハンズオンチュートリアル：Difyとmilvusを使って10分でRAGパワー文書アシスタントを構築する
+title: >
+  Hands-on Tutorial: Build a RAG-Powered Document Assistant in 10 Minutes with
+  Dify and Milvus
 author: Ruben Winastwan
 date: 2025-04-28T00:00:00.000Z
 desc: >-
-  DifyとMilvusを使用したRAG（Retrieval Augmented
-  Generation）を使って、AIを搭載したドキュメントアシスタントを作成する方法を、このハンズオン開発者向けチュートリアルで学びましょう。
+  Learn how to create an AI-powered document assistant using Retrieval Augmented
+  Generation (RAG) with Dify and Milvus in this quick, hands-on developer
+  tutorial.
 cover: assets.zilliz.com/build_rag_with_dify_and_milvus_2ab76c6afd.png
 tag: Tutorials
 recommend: false
@@ -24,26 +27,26 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>技術仕様書、社内Wiki、コード・ドキュメントなど数千ページに及ぶドキュメント・ライブラリ全体を、特定の質問に即座に答えるインテリジェントなAIアシスタントに変えられるとしたらどうだろう？</p>
-<p>さらに良いことに、マージの衝突を修正するのにかかる時間よりも短い時間でそれを構築できるとしたら？</p>
-<p>それが、正しい方法で実装された場合の<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>（<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation：検索拡張世代</a>）の約束だ。</p>
-<p>ChatGPTや他のLLMは印象的ですが、あなたの会社の特定のドキュメント、コードベース、ナレッジベースについて質問されると、すぐに限界に達します。RAGは、貴社独自のデータを会話に統合することで、このギャップを埋め、貴社の業務に直接関連するAI機能を提供します。</p>
-<p>問題は？従来のRAGの実装は次のようなものでした：</p>
+<p>What if you could turn your entire documentation library—thousands of pages of technical specs, internal wikis, and code documentation—into an intelligent AI assistant that instantly answers specific questions?</p>
+<p>Even better, what if you could build it in less time than it takes to fix a merge conflict?</p>
+<p>That’s the promise of <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation</a> (RAG) when implemented the right way.</p>
+<p>While ChatGPT and other LLMs are impressive, they quickly hit their limits when asked about your company’s specific documentation, codebase, or knowledge base. RAG bridges this gap by integrating your proprietary data into the conversation, providing you with AI capabilities that are directly relevant to your work.</p>
+<p>The problem? Traditional RAG implementation looks like this:</p>
 <ul>
-<li><p>カスタム埋め込み生成パイプラインの作成</p></li>
-<li><p>ベクター・データベースの設定とデプロイ</p></li>
-<li><p>複雑なプロンプト・テンプレートの設計</p></li>
-<li><p>検索ロジックと類似度閾値の構築</p></li>
-<li><p>使いやすいインターフェースの作成</p></li>
+<li><p>Write custom embedding generation pipelines</p></li>
+<li><p>Configure and deploy a vector database</p></li>
+<li><p>Engineer complex prompt templates</p></li>
+<li><p>Build retrieval logic and similarity thresholds</p></li>
+<li><p>Create a usable interface</p></li>
 </ul>
-<p>しかし、もし結果に直接ジャンプできるとしたらどうでしょう？</p>
-<p>このチュートリアルでは、開発者向けの2つのツールを使って簡単なRAGアプリケーションを構築します：</p>
+<p>But what if you could skip straight to the results?</p>
+<p>In this tutorial, we’ll build a simple RAG application using two developer-focused tools:</p>
 <ul>
-<li><p><a href="https://github.com/langgenius/dify">Dify</a>：最小限のコンフィギュレーションでRAGオーケストレーションを処理するオープンソースのプラットフォーム</p></li>
-<li><p><a href="https://milvus.io/docs/overview.md">Milvus</a>：類似検索とAI検索のために作られた、非常に高速なオープンソースのベクトルデータベース。</p></li>
+<li><p><a href="https://github.com/langgenius/dify">Dify</a>: An open-source platform that handles the RAG orchestration with minimal configuration</p></li>
+<li><p><a href="https://milvus.io/docs/overview.md">Milvus</a>: A blazing-fast open-source vector database purpose-built for similarity search and AI searches</p></li>
 </ul>
-<p>この10分間のガイドが終わるころには、機械学習の学位は必要なく、あなたが投げかけたあらゆる文書コレクションに関する詳細な質問に答えることができる、実用的なAIアシスタントを手に入れることができるだろう。</p>
-<h2 id="What-Youll-Build" class="common-anchor-header">何を作るか<button data-href="#What-Youll-Build" class="anchor-icon" translate="no">
+<p>By the end of this 10-minute guide, you’ll have a working AI assistant that can answer detailed questions about any document collection you throw at it - no machine learning degree required.</p>
+<h2 id="What-Youll-Build" class="common-anchor-header">What You’ll Build<button data-href="#What-Youll-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -58,15 +61,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>わずか数分のアクティブな作業で、あなたは以下を作成します：</p>
+    </button></h2><p>In just a few minutes of active work, you’ll create:</p>
 <ul>
-<li><p>あらゆるPDFをクエリ可能な知識に変換する文書処理パイプライン</p></li>
-<li><p>適切な情報を正確に見つけるベクトル検索システム</p></li>
-<li><p>技術的な質問にピンポイントで回答するチャットボット・インターフェース</p></li>
-<li><p>既存のツールと統合可能な展開可能なソリューション</p></li>
+<li><p>A document processing pipeline that converts any PDF into queryable knowledge</p></li>
+<li><p>A vector search system that finds exactly the right information</p></li>
+<li><p>A chatbot interface that answers technical questions with pinpoint accuracy</p></li>
+<li><p>A deployable solution you can integrate with your existing tools</p></li>
 </ul>
-<p>最大の特徴は？カスタムコードではなく、シンプルなユーザーインターフェース（UI）で設定できること。</p>
-<h2 id="What-Youll-Need" class="common-anchor-header">必要なもの<button data-href="#What-Youll-Need" class="anchor-icon" translate="no">
+<p>The best part? Most of it is configured through a simple user interface (UI) instead of custom code.</p>
+<h2 id="What-Youll-Need" class="common-anchor-header">What You’ll Need<button data-href="#What-Youll-Need" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -82,12 +85,12 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>基本的なDockerの知識(<code translate="no">docker-compose up -d</code> レベル)</p></li>
-<li><p>OpenAI APIキー</p></li>
-<li><p>実験するためのPDFドキュメント（研究論文を使います）</p></li>
+<li><p>Basic Docker knowledge (just <code translate="no">docker-compose up -d</code> level)</p></li>
+<li><p>An OpenAI API key</p></li>
+<li><p>A PDF document to experiment with (we’ll use a research paper)</p></li>
 </ul>
-<p>実際に役立つものを記録的な速さで作る準備はできていますか？さっそく始めましょう！</p>
-<h2 id="Building-Your-RAG-Application-with-Milvus-and-Dify" class="common-anchor-header">MilvusとDifyを使ってRAGアプリケーションを作る<button data-href="#Building-Your-RAG-Application-with-Milvus-and-Dify" class="anchor-icon" translate="no">
+<p>Ready to build something actually useful in record time? Let’s get started!</p>
+<h2 id="Building-Your-RAG-Application-with-Milvus-and-Dify" class="common-anchor-header">Building Your RAG Application with Milvus and Dify<button data-href="#Building-Your-RAG-Application-with-Milvus-and-Dify" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,22 +105,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>このセクションでは、Difyを使って簡単なRAGアプリを作ります。研究論文には、どのような論文を使っても構いませんが、今回は、Transformerアーキテクチャを紹介した有名な論文、<a href="https://arxiv.org/abs/1706.03762">&quot;Attention is All You Need</a>&quot;を使います。</p>
-<p>Milvusをベクトルストレージとして使用し、必要なコンテキストをすべて保存する。埋め込みモデルとLLMには、OpenAIのモデルを使う。そのため、まずOpenAIのAPIキーを設定する必要があります。設定方法については<a href="https://platform.openai.com/docs/quickstart"> こちらを</a>参照してください。</p>
-<h3 id="Step-1-Starting-Dify-and-Milvus-Containers" class="common-anchor-header">ステップ1：DifyとMilvusコンテナの起動</h3><p>この例では、Docker Composeを使ってDifyをセルフホストします。そのため、始める前にローカルマシンにDockerがインストールされていることを確認してください。インストールされていない場合は、<a href="https://docs.docker.com/desktop/"> Dockerのインストールページを</a>参照してインストールしてください。</p>
-<p>Dockerをインストールしたら、以下のコマンドでDifyのソースコードをローカルマシンにクローンする必要がある：</p>
+    </button></h2><p>In this section, we will build a simple RAG app with Dify, where we can ask questions about the information contained in a research paper. For the research paper, you can use any paper you want; however, in this case, we will use the famous paper that introduced us to the Transformer architecture, &quot;<a href="https://arxiv.org/abs/1706.03762">Attention is All You Need</a>.&quot;</p>
+<p>We will use Milvus as our vector storage, where we will store all the necessary contexts. For the embedding model and the LLM, we’ll use models from OpenAI. Therefore, we need to set up an OpenAI API key first. You can learn more about setting it up<a href="https://platform.openai.com/docs/quickstart"> here</a>.</p>
+<h3 id="Step-1-Starting-Dify-and-Milvus-Containers" class="common-anchor-header">Step 1: Starting Dify and Milvus Containers</h3><p>In this example, we’ll self-host Dify with Docker Compose. Therefore, before we begin, ensure that Docker is installed on your local machine. If you haven’t, install Docker by referring to<a href="https://docs.docker.com/desktop/"> its installation page</a>.</p>
+<p>Once we have Docker installed, we need to clone the Dify source code into our local machine with the following command:</p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> &lt;&lt;<span class="hljs-string">https://github.com/langgenius/dify.git&gt;&gt;
 </span><button class="copy-code-btn"></button></code></pre>
-<p>次に、クローンしたソースコードの<code translate="no">docker</code> ディレクトリに行く。そこで、<code translate="no">.env</code> ファイルを以下のコマンドでコピーする必要がある：</p>
+<p>Next, go to the <code translate="no">docker</code> directory inside of the source code that you’ve just cloned. There, you need to copy the <code translate="no">.env</code> file with the following command:</p>
 <pre><code translate="no"><span class="hljs-built_in">cd</span> dify/docker
 <span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">.env</code> ファイルには、ベクターデータベースの選択、ベクターデータベースへのアクセスに必要な認証情報、Difyアプリのアドレスなど、Difyアプリの起動に必要な設定が含まれています。</p>
-<p>ここではMilvusをベクターデータベースとして使用しますので、<code translate="no">.env</code> ファイル内の変数<code translate="no">VECTOR_STORE</code> の値を<code translate="no">milvus</code> に変更する必要があります。また、デプロイ後にDockerコンテナ間で通信の問題が発生しないように、<code translate="no">MILVUS_URI</code> 変数を<code translate="no">http://host.docker.internal:19530</code> に変更する必要があります。</p>
+<p>In a nutshell, <code translate="no">.env</code> file contains the configurations needed to set your Dify app up and running, such as the selection of vector databases, the credentials necessary to access your vector database, the address of your Dify app, etc.</p>
+<p>Since we’re going to use Milvus as our vector database, then we need to change the value of <code translate="no">VECTOR_STORE</code> variable inside <code translate="no">.env</code> file to <code translate="no">milvus</code>. Also, we need to change the <code translate="no">MILVUS_URI</code> variable to <code translate="no">http://host.docker.internal:19530</code> to ensure that there’s no communication issue between Docker containers later on after deployment.</p>
 <pre><code translate="no"><span class="hljs-variable constant_">VECTOR_STORE</span>=milvus
 <span class="hljs-variable constant_">MILVUS_URI</span>=<span class="hljs-attr">http</span>:<span class="hljs-comment">//host.docker.internal:19530</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>これでDockerコンテナを起動する準備ができた。そのために必要なのは、<code translate="no">docker compose up -d</code> コマンドを実行することだけだ。終了後、ターミナルに以下のような出力が表示される：</p>
+<p>Now we are ready to start the Docker containers. To do so, all we need to do is to run the <code translate="no">docker compose up -d</code> command. After it finishes, you’ll see similar output in your terminal as below:</p>
 <pre><code translate="no">docker compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -126,7 +129,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>すべてのコンテナのステータスを確認し、<code translate="no">docker compose ps</code> コマンドで健全に稼働しているかどうかを確認できる。すべてのコンテナが健全であれば、以下のような出力が表示される：</p>
+<p>We can check the status of all containers and see if they’re up and running healthily with <code translate="no">docker compose ps</code> command. If they’re all healthy, you’ll see an output as below:</p>
 <pre><code translate="no">docker compose ps
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -135,84 +138,84 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>最後に、<a href="http://localhost/install"> </a>http://localhost/install にアクセスすると、Difyのランディングページが表示され、すぐにサインアップしてRAGアプリケーションの構築を開始することができる。</p>
+<p>And finally, if we head up to<a href="http://localhost/install"> </a>http://localhost/install, you’ll see a Dify landing page where we can sign up and start building our RAG application in no time.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_login_d2bf4d4468.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>サインアップしたら、あとは認証情報を使ってDifyにログインするだけだ。</p>
+<p>Once you’ve signed up, then you can just log into Dify with your credentials.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/difi_login_2_5a8ea9c2d6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Setting-Up-OpenAI-API-Key" class="common-anchor-header">ステップ 2: OpenAI API キーの設定</h3><p>Difyにサインアップした後、最初にしなければならないことは、エンベッディングモデルとLLMを呼び出すために使用するAPIキーを設定することです。OpenAIのモデルを使うので、OpenAIのAPIキーをプロファイルに挿入する必要があります。そのためには、下のスクリーンショットのように、UIの右上にあるプロフィールにカーソルを合わせて、"Settings" に行く：</p>
+<h3 id="Step-2-Setting-Up-OpenAI-API-Key" class="common-anchor-header">Step 2: Setting Up OpenAI API Key</h3><p>The first thing we need to do after signing up for Dify is to set up our API keys that we’ll use to call the embedding model as well as the LLM. Since we’re going to use models from OpenAI, we need to insert our OpenAI API key into our profile. To do so, go to “Settings” by hovering your cursor over your profile on the top right of the UI, as you can see in the screenshot below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_settings_8ff08fab97.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>次に、"Model Provider" に行き、OpenAI にカーソルを合わせ、"Setup" をクリックします。すると、OpenAIのAPIキーを入力するポップアップ画面が表示されます。これで、OpenAIのモデルを埋め込みモデルとLLMとして使う準備ができました。</p>
+<p>Next, go to “Model Provider,” hover your cursor on OpenAI, and then click “Setup.” You’ll then see a pop-up screen where you’re prompted to enter your OpenAI API key. Once we’re done, we’re ready to use models from OpenAI as our embedding model and LLM.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_model_providers_491b313b12.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Inserting-Documents-into-Knowledge-Base" class="common-anchor-header">ステップ 3: ナレッジベースへのドキュメントの挿入</h3><p>それでは、RAGアプリの知識ベースを保存しましょう。知識ベースは、LLMがより正確な応答を生成するのに役立つ、関連するコンテキストとして使用できる内部文書やテキストのコレクションで構成されています。</p>
-<p>私たちのユースケースでは、知識ベースは基本的に「注意がすべて」という論文です。しかし、複数の理由から論文をそのまま保存することはできない。第一に、この論文は長すぎるし、LLMに長すぎるコンテキストを与えても、コンテキストが広すぎるので役に立たない。第二に、入力が生テキストの場合、最も関連性の高いコンテキストを取り出すために類似検索を行うことができない。</p>
-<p>したがって、論文を知識ベースに格納する前に、少なくとも2つのステップを踏む必要がある。まず、論文をテキストチャンクに分割し、埋め込みモデルを使って各チャンクを埋め込みに変換する。最後に、これらの埋め込みをベクトルデータベースとしてMilvusに格納します。</p>
-<p>Difyを使えば、論文のテキストをチャンクに分割し、埋め込みに変換するのは簡単です。論文のPDFファイルをアップロードし、チャンクの長さを設定し、埋め込みモデルをスライダーで選択するだけです。これらのステップをすべて行うには、&quot;Knowledge &quot;に行き、&quot;Create Knowledge &quot;をクリックする。次に、ローカル・コンピューターからPDFファイルをアップロードするよう促されます。したがって、まずArXivから論文をダウンロードし、コンピュータに保存しておくとよいでしょう。</p>
+<h3 id="Step-3-Inserting-Documents-into-Knowledge-Base" class="common-anchor-header">Step 3: Inserting Documents into Knowledge Base</h3><p>Now let’s store the knowledge base for our RAG app. The knowledge base consists of a collection of internal documents or texts that can be used as relevant contexts to help the LLM generates more accurate responses.</p>
+<p>In our use case, our knowledge base is essentially the “Attention is All You Need” paper. However, we can’t store the paper as it is due to multiple reasons. First, the paper is too long, and giving an overly long context to the LLM wouldn’t help as the context is too broad. Second, we can’t perform similarity searches to fetch the most relevant context if our input is raw text.</p>
+<p>Therefore, there are at least two steps we need to take before storing our paper into the knowledge base. First, we need to divide the paper into text chunks, and then transform each chunk into an embedding via an embedding model. Finally, we can store these embeddings into Milvus as our vector database.</p>
+<p>Dify makes it easy for us to split the texts in the paper into chunks and turn them into embeddings. All we need to do is upload the PDF file of the paper, set the chunk length, and choose the embedding model via a slider. To do all these steps, go to “Knowledge” and then click &quot;Create Knowledge&quot;. Next, you’ll be prompted to upload the PDF file from your local computer. Therefore, it’s better if you download the paper from ArXiv and save it on your computer first.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_knowledge_cc21a5c430.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ファイルをアップロードしたら、チャンクの長さ、インデックス作成方法、使用する埋め込みモデル、検索設定を行う。</p>
-<p>チャンク設定」では、チャンクの最大長を任意の数字で設定できる（今回の使用例では100に設定する）。次に、"Index Method "では、"High Quality "を選択する必要がある。"High Quality "を選択すると、関連するコンテキストを見つけるために類似検索を実行できるようになるからだ。埋め込みモデル」は、OpenAIのどの埋め込みモデルを選んでも良いが、この例では、text-embedding-3-smallモデルを使う。最後に、"Retrieval Setting "では、最も関連性の高いコンテキストを見つけるために類似検索を行いたいので、"Vector Search "を選択する必要がある。</p>
+<p>Once we’ve uploaded the file, we can set the chunk length, indexing method, the embedding model we want to use, and retrieval settings.</p>
+<p>In the “Chunk Setting” area, you can choose any number as the maximum chunk length (in our use case, we’ll set it to 100). Next, for “Index Method,” we need to choose the “High Quality” option as it’ll enable us to perform similarity searches to find relevant contexts. For “Embedding Model,” you can choose any embedding model from OpenAI you want, but in this example, we’re going to use the text-embedding-3-small model. Lastly, for “Retrieval Setting,” we need to choose “Vector Search” as we want to perform similarity searches to find the most relevant contexts.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Dify_save_837dbc0cf6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Save &amp; Process "をクリックし、すべてがうまくいくと、次のスクリーンショットのように緑色のチェックマークが表示されます：</p>
+<p>Now if you click on “Save &amp; Process” and everything goes well, you’ll see a green tick appear as shown in the following screenshot:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_knowledge_created_d46b96385f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Creating-the-RAG-App" class="common-anchor-header">ステップ4：RAGアプリの作成</h3><p>ここまでで、ナレッジベースの作成とMilvusデータベースへの保存が完了しました。これでRAGアプリを作成する準備ができました。</p>
-<p>DifyでRAGアプリを作成するのはとても簡単です。先ほどの "Knowledge "ではなく、"Studio "に移動し、"Create from Blank "をクリックします。次に、アプリのタイプとして "チャットボット "を選択し、アプリの名前を入力欄に入力します。完了したら、"Create" をクリックします。次のページが表示されます：</p>
+<h3 id="Step-4-Creating-the-RAG-App" class="common-anchor-header">Step 4: Creating the RAG App</h3><p>Up until this point, we have successfully created a knowledge base and stored it inside our Milvus database. Now we’re ready to create the RAG app.</p>
+<p>Creating the RAG app with Dify is very straightforward. We need to go to “Studio” instead of “Knowledge” like before, and then click on “Create from Blank.” Next, choose “Chatbot” as the app type and give your App a name inside the provided field. Once you’re done, click “Create.” Now you’ll see the following page:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_create_f5691f193d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Instruction"（指示）フィールドには、"Answer the query from the user concisely"（ユーザーからの問い合わせに簡潔に答える）のようなシステム・プロンプトを書くことができる。次に、"Context "として、"Add "マークをクリックし、先ほど作成したナレッジベースを追加します。こうすることで、RAGアプリはユーザーのクエリに答えるために、この知識ベースから可能性のあるコンテキストを取得します。</p>
-<p>さて、知識ベースをRAGアプリに追加したので、最後にやるべきことは、OpenAIからLLMを選択することです。そのためには、下のスクリーンショットにあるように、右上のモデルリストをクリックします：</p>
+<p>Under the “Instruction” field, we can write a system prompt such as “Answer the query from the user concisely.” Next, as “Context,” we need to click on the “Add” symbol, and then add the knowledge base that we’ve just created. This way, our RAG app will fetch possible contexts from this knowledge base to answer the user’s query.</p>
+<p>Now that we’ve added the knowledge base to our RAG app, the last thing we need to do is choose the LLM from OpenAI. To do so, you can click on the model list available in the upper right corner, as you can see in the screenshot below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/dify_llm_c3b79ded37.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>これでRAGアプリケーションを公開する準備ができました！右上の "Publish "をクリックすると、RAGアプリを公開する様々な方法が表示されます：単純にブラウザで実行したり、ウェブサイトに埋め込んだり、API経由でアプリにアクセスしたりできます。この例では、ブラウザでアプリを実行し、&quot;Run App &quot;をクリックします。</p>
-<p>これで完了です！これで、あなたはLLMに「Attention is All You Need」論文やナレッジベースに含まれる文書に関連することを何でも質問できるようになります。</p>
+<p>And now we’re ready to publish our RAG application! In the upper right-hand corner, click “Publish,” and there you can find many ways to publish our RAG app: we can simply run it in a browser, embed it on our website, or access the app via API. In this example, we’ll just run our app in a browser, so we can click on &quot;Run App&quot;.</p>
+<p>And that’s it! Now you can ask the LLM anything related to the “Attention is All You Need” paper or any documents included in our knowledge base.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/rag_attention_is_all_you_need_8582d3a69a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">まとめ<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -227,20 +230,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>DifyとMilvusを使い、最小限のコードと設定で動作するRAGアプリケーションを構築することができました。このアプローチにより、ベクターデータベースやLLM統合の深い専門知識を必要とすることなく、複雑なRAGアーキテクチャを開発者が利用できるようになります。 重要なポイント</p>
+    </button></h2><p>You’ve now built a working RAG application using Dify and Milvus, with minimal code and configuration. This approach makes the complex RAG architecture accessible to developers without requiring deep expertise in vector databases or LLM integration.
+Key takeaways:</p>
 <ol>
-<li><strong>セットアップのオーバーヘッドが少ない</strong>：Docker Composeを使用することでデプロイを簡素化</li>
-<li><strong>ノーコード/ローコード・オーケストレーション</strong>：DifyがRAGパイプラインの大部分を処理</li>
-<li><strong>プロダクション対応のベクターデータベース</strong>：Milvusは効率的な埋め込みストレージと検索を提供します。</li>
-<li><strong>拡張可能なアーキテクチャ</strong>：ドキュメントの追加やパラメーターの調整が容易 本番環境への導入にあたっては、以下の点を考慮してください：</li>
+<li><strong>Low setup overhead</strong>: Using Docker Compose simplifies deployment</li>
+<li><strong>No-code/low-code orchestration</strong>: Dify handles most of the RAG pipeline</li>
+<li><strong>Production-ready vector database</strong>: Milvus provides efficient embedding storage and retrieval</li>
+<li><strong>Extensible architecture</strong>: Easy to add documents or adjust parameters
+For production deployment, consider:</li>
 </ol>
 <ul>
-<li>アプリケーションの認証設定</li>
-<li>Milvusの適切なスケーリング設定(特に大規模なドキュメントコレクション)</li>
-<li>DifyとMilvusインスタンスのモニタリングの実装</li>
-<li>最適なパフォーマンスを得るための検索パラメータの微調整 DifyとMilvusを組み合わせることで、最新の大規模言語モデル(LLM)を用いて、組織内部の知識を効果的に活用することができるRAGアプリケーションを迅速に開発することができます。 構築をお楽しみください！</li>
+<li>Setting up authentication for your application</li>
+<li>Configuring proper scaling for Milvus (especially for larger document collections)</li>
+<li>Implementing monitoring for your Dify and Milvus instances</li>
+<li>Fine-tuning retrieval parameters for optimal performance
+The combination of Dify and Milvus enables the rapid development of RAG applications that can effectively leverage your organization’s internal knowledge with modern large language models (LLMs).
+Happy building!</li>
 </ul>
-<h2 id="Additional-Resources" class="common-anchor-header">その他のリソース<button data-href="#Additional-Resources" class="anchor-icon" translate="no">
+<h2 id="Additional-Resources" class="common-anchor-header">Additional Resources<button data-href="#Additional-Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -256,8 +263,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://docs.dify.ai/">Dify ドキュメント</a></li>
-<li><a href="https://milvus.io/docs">Milvusドキュメント</a></li>
-<li><a href="https://zilliz.com/learn/vector-database">ベクターデータベースの基礎</a></li>
-<li><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG実装パターン</a></li>
+<li><a href="https://docs.dify.ai/">Dify Documentation</a></li>
+<li><a href="https://milvus.io/docs">Milvus Documentation</a></li>
+<li><a href="https://zilliz.com/learn/vector-database">Vector Database Fundamentals</a></li>
+<li><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG Implementation Patterns</a></li>
 </ul>

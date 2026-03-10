@@ -1,9 +1,9 @@
 ---
 id: >-
   zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
-title: >-
-  Мы обучили и выложили в открытый доступ двуязычную модель семантического
-  выделения для производственного RAG и ИИ-поиска
+title: >
+  We Trained and Open-Sourced a Bilingual Semantic Highlighting Model for
+  Production RAG and AI Search
 author: Cheney Zhang
 date: 2026-01-06T00:00:00.000Z
 cover: assets.zilliz.com/semantic_highlight_cover_f35a98fc58.png
@@ -15,21 +15,21 @@ meta_keywords: 'Semantic Highlighting, RAG, semantic search, Milvus, bilingual m
 meta_title: |
   Open-sourcing a Bilingual Semantic Highlighting Model for Production AI
 desc: >-
-  Погрузитесь глубоко в семантическое выделение, узнайте, как строится
-  двуязычная модель Zilliz и как она работает в английских и китайских эталонах
-  для систем RAG.
+  Dive deep into semantic highlighting, learn how Zilliz’s bilingual model is
+  built, and how it performs across English and Chinese benchmarks for RAG
+  systems.
 origin: >-
   https://milvus.io/blog/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
 ---
-<p>Независимо от того, создаете ли вы поиск по продукту, конвейер RAG или агент искусственного интеллекта, пользователям в конечном итоге нужно одно и то же: быстрый способ понять, почему результат релевантен. <strong>Выделение</strong> помогает отметить точный текст, который подтверждает соответствие, поэтому пользователям не нужно сканировать весь документ.</p>
-<p>Большинство систем по-прежнему полагаются на выделение по ключевым словам. Если пользователь ищет "производительность iPhone", система выделяет именно лексемы "iPhone" и "производительность". Но этот способ перестает работать, как только в тексте одна и та же идея выражается разными формулировками. Описание вроде "Чип A15 Bionic, более миллиона бенчмарков, плавная работа без задержек" явно относится к производительности, но при этом ничего не выделяется, потому что ключевые слова не появляются.</p>
-<p><strong>Семантическое выделение</strong> решает эту проблему. Вместо того чтобы искать точные строки, она определяет участки текста, которые семантически соответствуют запросу. Для систем RAG, поиска с использованием искусственного интеллекта и агентов, где релевантность зависит от смысла, а не от поверхностной формы, это дает более точные и надежные объяснения того, почему был получен тот или иной документ.</p>
-<p>Однако существующие методы выделения семантики не предназначены для производственных нагрузок ИИ. Проанализировав все доступные решения, мы обнаружили, что ни один из них не обеспечивает точности, задержки, многоязычного покрытия и надежности, необходимых для конвейеров RAG, агентских систем или крупномасштабного веб-поиска. <strong>Поэтому мы разработали собственную двуязычную модель семантического выделения и выложили ее в открытый доступ.</strong></p>
+<p>Whether you’re building a product search, a RAG pipeline, or an AI agent, users ultimately need the same thing: a fast way to see why a result is relevant. <strong>Highlighting</strong> helps by marking the exact text that supports the match, so users don’t have to scan the entire document.</p>
+<p>Most systems still rely on keyword-based highlighting. If a user searches for “iPhone performance,” the system highlights the exact tokens “iPhone” and “performance.” But this breaks down as soon as the text expresses the same idea using different wording. A description like “A15 Bionic chip, over one million in benchmarks, smooth with no lag” clearly addresses performance, yet nothing is highlighted because the keywords never appear.</p>
+<p><strong>Semantic highlighting</strong> solves this problem. Instead of matching exact strings, it identifies text spans that are semantically aligned with the query. For RAG systems, AI search, and agents—where relevance depends on meaning rather than surface form—this yields more precise, more reliable explanations of why a document was retrieved.</p>
+<p>However, existing semantic highlighting methods aren’t designed for production AI workloads. After evaluating all available solutions, we found that none delivered the precision, latency, multilingual coverage, or robustness required for RAG pipelines, agent systems, or large-scale web search. <strong>So we trained our own bilingual semantic highlighting model—and open-sourced it.</strong></p>
 <ul>
-<li><p>Наша модель семантического выделения: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p>Расскажите нам о своем мнении - присоединяйтесь к нашему <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, следите за нами на <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> или запишитесь на <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">20-минутную</a> сессию <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> с нами.</p></li>
+<li><p>Our semantic highlighting model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p>Tell us what you think—join our <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, follow us on <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a>, or book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">20-minute Milvus Office Hours</a> session with us.</p></li>
 </ul>
-<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">Как работает выделение на основе ключевых слов - и почему оно не работает в современных системах искусственного интеллекта<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
+<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">How Keyword-Based Highlighting Works — and Why It Fails in Modern AI Systems<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,25 +44,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Традиционные поисковые системы реализуют выделение с помощью простого подбора ключевых слов</strong>. Когда результаты возвращаются, движок находит точные позиции лексем, которые соответствуют запросу, и упаковывает их в разметку (обычно это теги <code translate="no">&lt;em&gt;</code> ), оставляя фронтенду возможность отобразить подсветку. Это отлично работает, когда термины запроса встречаются в тексте дословно.</p>
-<p>Проблема в том, что эта модель предполагает, что релевантность связана с точным совпадением ключевых слов. Как только это предположение нарушается, надежность быстро падает. Любой результат, выражающий правильную идею в другой формулировке, в итоге вообще не будет выделен, даже если шаг поиска был правильным.</p>
-<p>Эта слабость становится очевидной в современных приложениях ИИ. В конвейерах RAG и рабочих процессах агентов ИИ запросы становятся более абстрактными, документы длиннее, а релевантная информация не может повторно использовать одни и те же слова. Выделение ключевых слов больше не может показать разработчикам или конечным пользователям, где<em>на самом деле находится ответ</em>, что делает систему в целом менее точной, даже если поиск работает так, как нужно.</p>
-<p>Предположим, пользователь спрашивает: <em>"Как повысить эффективность выполнения кода Python?".</em> Система извлекает технический документ из векторной базы данных. Традиционная подсветка может отмечать только буквальные совпадения, такие как <em>"Python",</em> <em>"код",</em> <em>"выполнение"</em> и <em>"эффективность".</em></p>
-<p>Однако наиболее полезными частями документа могут быть:</p>
+    </button></h2><p><strong>Traditional search systems implement highlighting through simple keyword matching</strong>. When results are returned, the engine locates the exact token positions that match the query and wraps them in markup (usually <code translate="no">&lt;em&gt;</code> tags), leaving the frontend to render the highlight. This works fine when the query terms appear verbatim in the text.</p>
+<p>The problem is that this model assumes relevance is tied to exact keyword overlap. Once that assumption breaks, reliability drops fast. Any result that expresses the right idea with different wording ends up with no highlight at all, even if the retrieval step was correct.</p>
+<p>This weakness becomes obvious in modern AI applications. In RAG pipelines and AI agent workflows, queries are more abstract, documents are longer, and relevant information may not reuse the same words. Keyword-based highlighting can no longer show developers—or end users—<em>where the answer actually is</em>, which makes the overall system feel less accurate even when retrieval is working as intended.</p>
+<p>Suppose a user asks: <em>“How can I improve the execution efficiency of Python code?”</em> The system retrieves a technical document from a vector database. Traditional highlighting can only mark literal matches such as <em>“Python”</em>, <em>“code”</em>, <em>“execution”</em>, and <em>“efficiency”</em>.</p>
+<p>However, the most useful parts of the document might be:</p>
 <ul>
-<li><p>Используйте векторные операции NumPy вместо явных циклов</p></li>
-<li><p>Избегайте многократного создания объектов внутри циклов.</p></li>
+<li><p>Use NumPy vectorized operations instead of explicit loops</p></li>
+<li><p>Avoid repeatedly creating objects inside loops</p></li>
 </ul>
-<p>Эти предложения напрямую отвечают на вопрос, но не содержат ни одного из терминов запроса. В результате традиционное выделение не работает. Документ может быть релевантным, но пользователю все равно приходится сканировать его строка за строкой, чтобы найти реальный ответ.</p>
-<p>Проблема становится еще более очевидной при работе с агентами искусственного интеллекта. Поисковый запрос агента - это зачастую не исходный вопрос пользователя, а производная инструкция, полученная в результате рассуждений и декомпозиции задачи. Например, если пользователь спрашивает: <em>"Можете ли вы проанализировать последние тенденции рынка?",</em> агент может сгенерировать запрос типа "Получить данные о продажах бытовой электроники за 4 квартал 2024 года, темпы роста за год, изменения доли рынка основных конкурентов и колебания стоимости цепочки поставок".</p>
-<p>Этот запрос охватывает множество измерений и содержит сложное намерение. Однако традиционное выделение на основе ключевых слов может лишь механически отмечать буквальные совпадения, такие как <em>"2024",</em> <em>"данные о продажах"</em> или <em>"темпы роста".</em></p>
-<p>Между тем, наиболее ценные сведения могут выглядеть следующим образом:</p>
+<p>These sentences directly answer the question, but they contain none of the query terms. As a result, traditional highlighting fails completely. The document may be relevant, but the user still has to scan it line by line to locate the actual answer.</p>
+<p>The problem becomes even more pronounced with AI agents. An agent’s search query is often not the user’s original question, but a derived instruction produced through reasoning and task decomposition. For example, if a user asks, <em>“Can you analyze recent market trends?”</em>, the agent might generate a query like “Retrieve Q4 2024 consumer electronics sales data, year-over-year growth rates, changes in major competitors’ market share, and supply chain cost fluctuations”.</p>
+<p>This query spans multiple dimensions and encodes complex intent. Traditional keyword-based highlighting, however, can only mechanically mark literal matches such as <em>“2024”</em>, <em>“sales data”</em>, or <em>“growth rate”</em>.</p>
+<p>Meanwhile, the most valuable insights may look like:</p>
 <ul>
-<li><p>Серия iPhone 15 способствовала более широкому восстановлению рынка.</p></li>
-<li><p>Ограничение поставок микросхем привело к росту стоимости на 15 %.</p></li>
+<li><p>The iPhone 15 series drove a broader market recovery</p></li>
+<li><p>Chip supply constraints pushed costs up by 15%</p></li>
 </ul>
-<p>Эти выводы могут не иметь ни одного общего ключевого слова с запросом, даже если это именно то, что агент пытается извлечь. Агентам необходимо быстро выявлять действительно полезную информацию из больших объемов найденного контента, а выделение по ключевым словам не дает реальной помощи.</p>
-<h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">Что такое семантическое выделение и болевые точки современных решений<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
+<p>These conclusions may not share a single keyword with the query, even though they are exactly what the agent is trying to extract. Agents need to quickly identify truly useful information from large volumes of retrieved content—and keyword-based highlighting offers no real help.</p>
+<h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">What Is Semantic Highlighting, and Pain Points in Today’s Solutions<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,42 +77,42 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Семантическое выделение основывается на той же идее, что и семантический поиск: подбор по смыслу, а не по точным словам</strong>. В семантическом поиске модели встраивания преобразуют текст в векторы, поэтому поисковая система - обычно опирающаяся на векторную базу данных, например <a href="https://milvus.io/">Milvus, - может</a>получить отрывки, передающие ту же идею, что и запрос, даже если формулировки отличаются. Семантическое выделение применяет этот принцип на более тонком уровне. Вместо того чтобы отмечать дословные совпадения ключевых слов, он выделяет конкретные фрагменты в документе, которые семантически релевантны намерениям пользователя.</p>
+    </button></h2><p><strong>Semantic highlighting builds on the same idea behind semantic search: matching based on meaning rather than exact words</strong>. In semantic search, embedding models map text into vectors so a search system—typically backed by a vector database like <a href="https://milvus.io/">Milvus</a>—can retrieve passages that convey the same idea as the query, even if the wording is different. Semantic highlighting applies this principle at a finer granularity. Instead of marking literal keyword hits, it highlights the specific spans inside a document that are semantically relevant to the user’s intent.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vs_20ec73c4a7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Такой подход решает основную проблему традиционного выделения, которое работает только в том случае, если термины запроса встречаются дословно. Если пользователь ищет "производительность iPhone", выделение по ключевым словам игнорирует такие фразы, как "чип A15 Bionic", "более миллиона бенчмарков" или "плавная работа без задержек", даже если эти строки явно отвечают на вопрос. Семантическое выделение улавливает эти смысловые связи и выводит на поверхность те части текста, которые действительно важны для пользователей.</p>
-<p>Теоретически, это простая задача семантического сопоставления. Современные модели встраивания уже хорошо кодируют сходство, так что концептуальные части уже на месте. Сложность заключается в реальных ограничениях: выделение происходит при каждом запросе, часто по многим полученным документам, что делает задержку, пропускную способность и междоменную устойчивость необсуждаемыми требованиями. Большие языковые модели просто слишком медленные и дорогие, чтобы работать в таком высокочастотном режиме.</p>
-<p>Именно поэтому для практического семантического выделения требуется легкая специализированная модель - достаточно маленькая, чтобы разместиться рядом с поисковой инфраструктурой, и достаточно быстрая, чтобы возвращать результаты за несколько миллисекунд. Именно в этом месте большинство существующих решений терпят крах. Тяжелые модели обеспечивают точность, но не могут работать в масштабе; легкие модели работают быстро, но теряют точность или не справляются с многоязычными данными или данными, специфичными для конкретной области.</p>
+<p>This approach solves a core problem with traditional highlighting, which only works when the query terms appear verbatim. If a user searches for “iPhone performance,” keyword-based highlighting ignores phrases like “A15 Bionic chip,” “over one million in benchmarks,” or “smooth with no lag,” even though these lines clearly answer the question. Semantic highlighting captures these meaning-driven connections and surfaces the parts of the text users actually care about.</p>
+<p>In theory, this is a straightforward semantic matching problem. Modern embedding models already encode similarity well, so the conceptual pieces are already in place. The challenge comes from real-world constraints: highlighting occurs on every query, often across many retrieved documents, making latency, throughput, and cross-domain robustness non-negotiable requirements. Large language models are simply too slow and too expensive to run in this high-frequency path.</p>
+<p>That is why practical semantic highlighting requires a lightweight, specialized model—small enough to sit alongside search infrastructure and fast enough to return results in a few milliseconds. This is where most existing solutions break down. Heavy models deliver accuracy but cannot run at scale; lighter models are fast but lose precision or fail on multilingual or domain-specific data.</p>
 <h3 id="opensearch-semantic-highlighter" class="common-anchor-header">opensearch-semantic-highlighter</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/opensearch_en_aea06a2114.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>В прошлом году OpenSearch выпустил специальную модель для семантического выделения: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. Хотя это осмысленная попытка решить проблему, у нее есть два критических недостатка.</p>
+<p>Last year, OpenSearch released a dedicated model for semantic highlighting: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. While it is a meaningful attempt at the problem, it has two critical limitations.</p>
 <ul>
-<li><p><strong>Маленькое контекстное окно:</strong> Модель основана на архитектуре BERT и поддерживает максимум 512 лексем - примерно 300-400 китайских иероглифов или 400-500 английских слов. В реальных сценариях описания продуктов и технические документы часто состоят из тысяч слов. Контент, выходящий за пределы первого окна, просто обрезается, заставляя модель определять основные моменты на основе лишь небольшой части документа.</p></li>
-<li><p><strong>Плохое обобщение за пределами области:</strong> Модель хорошо работает только на распределениях данных, схожих с обучающим набором. При применении к данным, выходящим за пределы домена, например, при использовании модели, обученной на новостных статьях, для выделения контента электронной коммерции или технической документации, эффективность резко снижается. В наших экспериментах модель достигает оценки F1 около 0,72 на доменных данных, но падает примерно до 0,46 на внедоменных наборах данных. Такой уровень нестабильности проблематичен в производстве. Кроме того, модель не поддерживает китайский язык.</p></li>
+<li><p><strong>Small context window:</strong> The model is based on a BERT architecture and supports a maximum of 512 tokens—roughly 300–400 Chinese characters or 400–500 English words. In real-world scenarios, product descriptions and technical documents often span thousands of words. Content beyond the first window is simply truncated, forcing the model to identify highlights based on only a small fraction of the document.</p></li>
+<li><p><strong>Poor out-of-domain generalization:</strong> The model performs well only on data distributions similar to its training set. When applied to out-of-domain data—such as using a model trained on news articles to highlight e-commerce content or technical documentation—performance degrades sharply. In our experiments, the model achieves an F1 score of around 0.72 on in-domain data, but drops to approximately 0.46 on out-of-domain datasets. This level of instability is problematic in production. In addition, the model does not support Chinese.</p></li>
 </ul>
-<h3 id="Provence--XProvence" class="common-anchor-header">Прованс / XProvence</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a> - это модель, разработанная компанией <a href="https://zilliz.com/customers/naver">Naver</a>, которая изначально обучалась для <strong>обрезки контекста -</strong>задачи, тесно связанной с семантическим выделением.</p>
-<p>Обе задачи построены на одной и той же базовой идее: использование семантического соответствия для выявления релевантного контента и отсеивания нерелевантных частей. По этой причине Provence может быть перепрофилирован для семантического выделения с относительно небольшой адаптацией.</p>
+<h3 id="Provence--XProvence" class="common-anchor-header">Provence / XProvence</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a> is a model developed by <a href="https://zilliz.com/customers/naver">Naver</a> and was initially trained for <strong>context pruning</strong>—a task that is closely related to semantic highlighting.</p>
+<p>Both tasks are built on the same underlying idea: using semantic matching to identify relevant content and filter out irrelevant parts. For this reason, Provence can be repurposed for semantic highlighting with relatively little adaptation.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/provence_053cd3bccc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Provence - это модель только для английского языка, и она достаточно хорошо работает в этом режиме. <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a> - его многоязычный вариант, поддерживающий более дюжины языков, включая китайский, японский и корейский. На первый взгляд, это делает XProvence хорошим кандидатом для двуязычных или многоязычных сценариев семантического выделения.</p>
-<p>Однако на практике и Provence, и XProvence имеют несколько заметных недостатков:</p>
+<p>Provence is an English-only model and performs reasonably well in that setting. <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a> is its multilingual variant, supporting more than a dozen languages, including Chinese, Japanese, and Korean. At first glance, this makes XProvence appear to be a good candidate for bilingual or multilingual semantic highlighting scenarios.</p>
+<p>In practice, however, both Provence and XProvence have several notable limitations:</p>
 <ul>
-<li><p><strong>Более слабая производительность английского языка в многоязычной модели:</strong> XProvence не соответствует производительности Provence на английских эталонах. Это обычный компромисс в многоязычных моделях: мощности распределяются между языками, что часто приводит к снижению производительности на языках с высоким уровнем ресурсов, таких как английский. Это ограничение имеет значение в реальных системах, где английский язык остается основной или доминирующей рабочей нагрузкой.</p></li>
-<li><p><strong>Ограниченная производительность на китайском языке:</strong> XProvence поддерживает множество языков. В процессе многоязычного обучения данные и возможности модели распределяются по языкам, что ограничивает возможности модели по специализации на каком-либо одном из них. В результате производительность на китайском языке оказывается лишь незначительно приемлемой и часто недостаточной для случаев использования высокоточного выделения.</p></li>
-<li><p><strong>Несоответствие между целями обрезки и выделения:</strong> Provence оптимизирован для контекстной обрезки, где приоритетом является запоминание - сохранение как можно большего количества потенциально полезного контента, чтобы не потерять критическую информацию. Семантическое выделение, напротив, делает акцент на точности: выделяются только наиболее релевантные предложения, а не большие фрагменты документа. Когда для выделения применяются модели в стиле Прованса, это несоответствие часто приводит к слишком широкому или шумному выделению.</p></li>
-<li><p><strong>Ограничительное лицензирование:</strong> И Provence, и XProvence выпускаются под лицензией CC BY-NC 4.0, которая не допускает коммерческого использования. Уже одно это ограничение делает их непригодными для многих производственных развертываний.</p></li>
+<li><p><strong>Weaker English performance in the multilingual model:</strong> XProvence does not match Provence’s performance on English benchmarks. This is a common trade-off in multilingual models: capacity is shared across languages, often leading to weaker performance in high-resource languages such as English. This limitation matters in real-world systems where English remains a primary or dominant workload.</p></li>
+<li><p><strong>Limited Chinese performance:</strong>  XProvence supports many languages. During multilingual training, data and model capacity are spread across languages, which limits how well the model can specialize in any single one. As a result, its Chinese performance is only marginally acceptable and often insufficient for high-precision highlighting use cases.</p></li>
+<li><p><strong>Mismatch between pruning and highlighting objectives:</strong> Provence is optimized for context pruning, where the priority is recall—keeping as much potentially useful content as possible to avoid losing critical information. Semantic highlighting, by contrast, emphasizes precision: highlighting only the most relevant sentences, not large portions of the document. When Provence-style models are applied to highlighting, this mismatch often leads to overly broad or noisy highlights.</p></li>
+<li><p><strong>Restrictive licensing:</strong> Both Provence and XProvence are released under the CC BY-NC 4.0 license, which does not permit commercial use. This restriction alone makes them unsuitable for many production deployments.</p></li>
 </ul>
 <h3 id="Open-Provence" class="common-anchor-header">Open Provence</h3><p>
   <span class="img-wrapper">
@@ -120,10 +120,10 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><a href="https://github.com/hotchpotch/open_provence"><strong>Open Provence</strong></a> - это проект, реализуемый сообществом, который перестраивает конвейер обучения Provence открытым и прозрачным способом. Он предоставляет не только сценарии обучения, но и рабочие процессы обработки данных, инструменты оценки и предварительно обученные модели в различных масштабах.</p>
-<p>Ключевым преимуществом Open Provence является его <strong>разрешительная лицензия MIT</strong>. В отличие от Provence и XProvence, его можно смело использовать в коммерческих средах без юридических ограничений, что делает его привлекательным для команд, ориентированных на производство.</p>
-<p>Тем не менее, Open Provence в настоящее время поддерживает только <strong>английский и японский языки</strong>, что делает его непригодным для наших двуязычных случаев использования.</p>
-<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Мы обучили и выложили в открытый доступ двуязычную модель семантического выделения<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p><a href="https://github.com/hotchpotch/open_provence"><strong>Open Provence</strong></a> is a community-driven project that reimplements the Provence training pipeline in an open and transparent way. It provides not only training scripts, but also data processing workflows, evaluation tools, and pretrained models at multiple scales.</p>
+<p>A key advantage of Open Provence is its <strong>permissive MIT license</strong>. Unlike Provence and XProvence, it can be safely used in commercial environments without legal restrictions, which makes it attractive for production-oriented teams.</p>
+<p>That said, Open Provence currently supports only <strong>English and Japanese</strong>, which makes it unsuitable for our bilingual use cases.</p>
+<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">We Trained and Open-Sourced a Bilingual Semantic Highlighting Model<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,40 +138,40 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Модель семантического выделения, разработанная для реальных рабочих нагрузок, должна обладать несколькими основными возможностями:</p>
+    </button></h2><p>A semantic highlighting model designed for real-world workloads must deliver a few essential capabilities:</p>
 <ul>
-<li><p>Высокая многоязычная производительность</p></li>
-<li><p>Достаточно большое контекстное окно для работы с длинными документами</p></li>
-<li><p>Надежное обобщение вне области</p></li>
-<li><p>Высокая точность в задачах семантического выделения</p></li>
-<li><p>Разрешительная, удобная для производства лицензия (MIT или Apache 2.0).</p></li>
+<li><p>Strong multilingual performance</p></li>
+<li><p>A context window large enough to support long documents</p></li>
+<li><p>Robust out-of-domain generalization</p></li>
+<li><p>High precision in semantic highlighting tasks</p></li>
+<li><p>A permissive, production-friendly license (MIT or Apache 2.0)</p></li>
 </ul>
-<p>Проанализировав существующие решения, мы обнаружили, что ни одна из доступных моделей не отвечает требованиям, необходимым для использования в производстве. Поэтому мы решили обучить нашу собственную модель семантического выделения: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>.</p>
+<p>After evaluating existing solutions, we found that none of the available models met the requirements needed for production use. So we decided to train our own semantic highlight model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hugging_face_56eca8f423.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Для достижения всех этих целей мы применили простой подход: используем большие языковые модели для создания высококачественных маркированных данных, а затем обучаем на их основе легкую модель семантического выделения, используя инструменты с открытым исходным кодом. Это позволяет нам объединить силу рассуждений LLM с эффективностью и низкой задержкой, необходимой в производственных системах.</p>
-<p><strong>Наиболее сложной частью этого процесса является создание данных</strong>. Во время аннотирования мы просим LLM (Qwen3 8B) выводить не только выделенные фрагменты, но и все рассуждения, лежащие в их основе. Этот дополнительный сигнал рассуждений обеспечивает более точный и последовательный контроль и значительно повышает качество результирующей модели.</p>
-<p>На высоком уровне конвейер аннотирования работает следующим образом: <strong>LLM-рассуждения → выделение меток → фильтрация → конечная обучающая выборка.</strong></p>
+<p>To achieve all of these, we adopted a straightforward approach: use large language models to generate high-quality labeled data, then train a lightweight semantic highlighting model on top of it using open-source tooling. This lets us combine the reasoning strength of LLMs with the efficiency and low latency required in production systems.</p>
+<p><strong>The most challenging part of this process is data construction</strong>. During annotation, we prompt an LLM (Qwen3 8B) to output not only the highlight spans but also the whole reasoning behind them. This additional reasoning signal produces more accurate, consistent supervision and significantly improves the quality of the resulting model.</p>
+<p>At a high level, the annotation pipeline works as follows: <strong>LLM reasoning → highlight labels → filtering → final training sample.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/pipeline_en_2e917fe1ce.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>На практике такая схема дает три конкретных преимущества:</p>
+<p>This design delivers three concrete benefits in practice:</p>
 <ul>
-<li><p><strong>Более высокое качество маркировки</strong>: Модель побуждают <em>сначала думать, а потом отвечать</em>. Этот промежуточный шаг рассуждений служит встроенной самопроверкой, снижая вероятность неглубоких или непоследовательных меток.</p></li>
-<li><p><strong>Улучшенная наблюдаемость и отлаживаемость</strong>: Поскольку каждая метка сопровождается трассировкой рассуждений, ошибки становятся видимыми. Это облегчает диагностику случаев сбоя и позволяет быстро корректировать подсказки, правила или фильтры данных в конвейере.</p></li>
-<li><p><strong>Многократно используемые данные</strong>: Трассировка рассуждений обеспечивает ценный контекст для будущих повторных маркировок. При изменении требований одни и те же данные можно пересмотреть и уточнить, не начиная работу с нуля.</p></li>
+<li><p><strong>Higher labeling quality</strong>: The model is prompted to <em>think first, then answer</em>. This intermediate reasoning step serves as a built-in self-check, reducing the likelihood of shallow or inconsistent labels.</p></li>
+<li><p><strong>Improved observability and debuggability</strong>: Because each label is accompanied by a reasoning trace, errors become visible. This makes it easier to diagnose failure cases and quickly adjust prompts, rules, or data filters in the pipeline.</p></li>
+<li><p><strong>Reusable data</strong>: Reasoning traces provide valuable context for future re-labeling. As requirements change, the same data can be revisited and refined without starting from scratch.</p></li>
 </ul>
-<p>Используя этот конвейер, мы создали более миллиона двуязычных обучающих образцов, разделив их примерно поровну между английским и китайским языками.</p>
-<p>Для обучения модели мы начали с BGE-M3 Reranker v2 (0,6 ББ параметров, контекстное окно на 8 192 ток-ена), использовали фреймворк обучения Open Provence и обучались в течение трех эпох на 8× A100 GPU, завершив обучение примерно за пять часов.</p>
-<p>Более подробно об этих технических решениях, в том числе о том, почему мы полагаемся на следы рассуждений, как мы выбрали базовую модель и как был создан набор данных, мы расскажем в следующем посте.</p>
-<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Бенчмаркинг двуязычной модели семантического выделения Zilliz<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Using this pipeline, we generated more than one million bilingual training samples, split roughly evenly between English and Chinese.</p>
+<p>For model training, we started from BGE-M3 Reranker v2 (0.6B parameters, 8,192-token context window), adopted the Open Provence training framework, and trained for three epochs on 8× A100 GPUs, completing training in approximately five hours.</p>
+<p>We will dive deeper into these technical choices—including why we rely on reasoning traces, how we selected the base model, and how the dataset was constructed—in a follow-up post.</p>
+<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Benchmarking Zilliz’s Bilingual Semantic Highlighting Model<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -186,93 +186,93 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Чтобы оценить реальную производительность, мы проанализировали несколько моделей семантического выделения на различных наборах данных. Эталоны охватывают как внутридоменные, так и внедоменные сценарии, на английском и китайском языках, чтобы отразить разнообразие контента, встречающегося в производственных системах.</p>
-<h3 id="Datasets" class="common-anchor-header">Наборы данных</h3><p>В нашей оценке мы использовали следующие наборы данных:</p>
+    </button></h2><p>To assess real-world performance, we evaluated multiple semantic highlighting models across a diverse set of datasets. The benchmarks cover both in-domain and out-of-domain scenarios, in English and Chinese, to reflect the variety of content encountered in production systems.</p>
+<h3 id="Datasets" class="common-anchor-header">Datasets</h3><p>We used the following datasets in our evaluation:</p>
 <ul>
-<li><p><strong>MultiSpanQA (английский)</strong> - набор данных для многопространственных ответов на вопросы в домене.</p></li>
-<li><p><strong>WikiText-2 (английский)</strong> - внедоменный корпус Википедии</p></li>
-<li><p><strong>MultiSpanQA-ZH (китайский)</strong> - китайский многопространственный набор данных для ответов на вопросы</p></li>
-<li><p><strong>WikiText-2-ZH (китайский)</strong> - внедоменный корпус китайской Википедии</p></li>
+<li><p><strong>MultiSpanQA (English)</strong> – an in-domain multi-span question answering dataset</p></li>
+<li><p><strong>WikiText-2 (English)</strong> – an out-of-domain Wikipedia corpus</p></li>
+<li><p><strong>MultiSpanQA-ZH (Chinese)</strong> – a Chinese multi-span question answering dataset</p></li>
+<li><p><strong>WikiText-2-ZH (Chinese)</strong> – an out-of-domain Chinese Wikipedia corpus</p></li>
 </ul>
-<h3 id="Models-Compared" class="common-anchor-header">Сравниваемые модели</h3><p>В сравнении участвовали следующие модели:</p>
+<h3 id="Models-Compared" class="common-anchor-header">Models Compared</h3><p>The models included in the comparison are:</p>
 <ul>
-<li><p><strong>Открытые модели Provence</strong></p></li>
-<li><p><strong>Provence / XProvence</strong> (выпущена компанией Naver)</p></li>
+<li><p><strong>Open Provence models</strong></p></li>
+<li><p><strong>Provence / XProvence</strong> (released by Naver)</p></li>
 <li><p><strong>OpenSearch Semantic Highlighter</strong></p></li>
-<li><p><strong>Двуязычная модель семантического выделения Zilliz</strong></p></li>
+<li><p><strong>Zilliz’s bilingual semantic highlighting model</strong></p></li>
 </ul>
-<h3 id="Results-and-Analysis" class="common-anchor-header">Результаты и анализ</h3><p><strong>Английские наборы данных:</strong></p>
+<h3 id="Results-and-Analysis" class="common-anchor-header">Results and Analysis</h3><p><strong>English Datasets:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/en_dataset_fce4cbc747.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Китайские данные:</strong></p>
+<p><strong>Chinese Datasets:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zh_dataset_ac7760e0b5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>На всех двуязычных эталонах наша модель достигает <strong>самых высоких средних результатов F1</strong>, превосходя все ранее оцененные модели и подходы. Особенно заметен выигрыш на <strong>китайских наборах данных</strong>, где наша модель значительно превосходит XProvence - единственную другую оцененную модель с поддержкой китайского языка.</p>
-<p>Что еще более важно, наша модель обеспечивает сбалансированную производительность как на английском, так и на китайском языках, чего с трудом удается достичь существующим решениям:</p>
+<p>Across the bilingual benchmarks, our model achieves <strong>state-of-the-art average F1 scores</strong>, outperforming all previously evaluated models and approaches. The gains are especially pronounced on the <strong>Chinese datasets</strong>, where our model significantly outperforms XProvence—the only other evaluated model with Chinese support.</p>
+<p>More importantly, our model delivers balanced performance across both English and Chinese, a property that existing solutions struggle to achieve:</p>
 <ul>
-<li><p><strong>Open Provence</strong> поддерживает только английский язык.</p></li>
-<li><p><strong>XProvence</strong> жертвует производительностью на английском языке по сравнению с Provence</p></li>
-<li><p><strong>OpenSearch Semantic Highlighter</strong> не поддерживает китайский язык и демонстрирует слабую обобщенность.</p></li>
+<li><p><strong>Open Provence</strong> supports English only</p></li>
+<li><p><strong>XProvence</strong> sacrifices English performance compared to Provence</p></li>
+<li><p><strong>OpenSearch Semantic Highlighter</strong> lacks Chinese support and shows weak generalization</p></li>
 </ul>
-<p>В результате наша модель позволяет избежать распространенного компромисса между языковым охватом и производительностью, что делает ее более подходящей для реальных двуязычных развертываний.</p>
-<h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">Конкретный пример на практике</h3><p>Помимо эталонных оценок, зачастую более показательным является рассмотрение конкретного примера. Следующий пример показывает, как наша модель ведет себя в реальном сценарии семантического выделения и почему точность имеет значение.</p>
-<p><strong>Запрос:</strong> Кто написал фильм <em>"Убийство священного оленя"</em>?</p>
-<p><strong>Контекст (5 предложений):</strong></p>
+<p>As a result, our model avoids the common trade-offs between language coverage and performance, making it better suited for real-world bilingual deployments.</p>
+<h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">A Concrete Example in Practice</h3><p>Beyond benchmark scores, it is often more revealing to examine a concrete example. The following case shows how our model behaves in a real semantic highlighting scenario and why precision matters.</p>
+<p><strong>Query:</strong> Who wrote the film <em>The Killing of a Sacred Deer</em>?</p>
+<p><strong>Context (5 sentences):</strong></p>
 <ol>
-<li><p><em>Убийство священного оленя"</em> - психологический триллер 2017 года режиссера Йоргоса Лантимоса, сценарий которого написали Лантимос и Эфтимис Филиппу.</p></li>
-<li><p>В фильме снимались Колин Фаррелл, Николь Кидман, Барри Кеоган, Рэффи Кэссиди, Санни Сульджич, Алисия Сильверстоун, Билл Кэмп.</p></li>
-<li><p>Сюжет основан на древнегреческой пьесе Еврипида <em>"Ифигения в Аулисе"</em>.</p></li>
-<li><p>Фильм рассказывает о кардиохирурге, который завязывает тайную дружбу с подростком, связанным с его прошлым.</p></li>
-<li><p>Он знакомит мальчика со своей семьей, после чего с ним начинают происходить загадочные болезни.</p></li>
+<li><p><em>The Killing of a Sacred Deer</em> is a 2017 psychological thriller film directed by Yorgos Lanthimos, with the screenplay written by Lanthimos and Efthymis Filippou.</p></li>
+<li><p>The film stars Colin Farrell, Nicole Kidman, Barry Keoghan, Raffey Cassidy, Sunny Suljic, Alicia Silverstone, and Bill Camp.</p></li>
+<li><p>The story is based on the ancient Greek play <em>Iphigenia in Aulis</em> by Euripides.</p></li>
+<li><p>The film follows a cardiac surgeon who forms a secret friendship with a teenage boy connected to his past.</p></li>
+<li><p>He introduces the boy to his family, after which mysterious illnesses begin to occur.</p></li>
 </ol>
-<p><strong>Правильный ответ: Предложение 1</strong> - правильный ответ, поскольку в нем прямо указано, что сценарий написали Йоргос Лантимос и Эфтимис Филиппу.</p>
-<p>Этот пример содержит тонкую ловушку. В <strong>предложении 3</strong> упоминается Еврипид, автор оригинальной греческой пьесы, на которой в общих чертах основана эта история. Однако в вопросе спрашивается, кто написал <em>фильм</em>, а не древний первоисточник. Поэтому правильный ответ - сценаристы фильма, а не драматург тысячелетней давности.</p>
-<p><strong>Результаты:</strong></p>
-<p>В таблице ниже представлены результаты работы различных моделей в этом примере.</p>
+<p><strong>Correct highlight: Sentence 1</strong> is the correct answer, as it explicitly states that the screenplay was written by Yorgos Lanthimos and Efthymis Filippou.</p>
+<p>This example contains a subtle trap. <strong>Sentence 3</strong> mentions Euripides, the author of the original Greek play on which the story is loosely based. However, the question asks who wrote the <em>film</em>, not the ancient source material. The correct answer is therefore the screenwriters of the movie, not the playwright from thousands of years ago.</p>
+<p><strong>Results:</strong></p>
+<p>The table below summarizes how different models performed on this example.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Модель</strong></th><th style="text-align:center"><strong>Определен правильный ответ</strong></th><th style="text-align:center"><strong>Результат</strong></th></tr>
+<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Correct Answer Identified</strong></th><th style="text-align:center"><strong>Outcome</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>Наша (двуязычная M3)</strong></td><td style="text-align:center">✓</td><td style="text-align:center">Выбрали предложение 1 (правильно) и предложение 3</td></tr>
-<tr><td style="text-align:center"><strong>XProvence v1</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Выбрал только предложение 3, пропустил правильный ответ</td></tr>
-<tr><td style="text-align:center"><strong>XProvence v2</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Выбрал только предложение 3, пропустил правильный ответ</td></tr>
+<tr><td style="text-align:center"><strong>Ours (Bilingual M3)</strong></td><td style="text-align:center">✓</td><td style="text-align:center">Selected sentence 1 (correct) and sentence 3</td></tr>
+<tr><td style="text-align:center"><strong>XProvence v1</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Selected sentence 3 only, missed the correct answer</td></tr>
+<tr><td style="text-align:center"><strong>XProvence v2</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Selected sentence 3 only, missed the correct answer</td></tr>
 </tbody>
 </table>
-<p><strong>Сравнение баллов на уровне предложения</strong></p>
+<p><strong>Sentence-Level Score Comparison</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Предложение</strong></th><th><strong>Наши (двуязычный M3)</strong></th><th style="text-align:center"><strong>XProvence v1</strong></th><th style="text-align:center"><strong>XProvence v2</strong></th></tr>
+<tr><th style="text-align:center"><strong>Sentence</strong></th><th><strong>Ours (Bilingual M3)</strong></th><th style="text-align:center"><strong>XProvence v1</strong></th><th style="text-align:center"><strong>XProvence v2</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Предложение 1 (сценарий фильма, <strong>правильный</strong>)</td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
-<tr><td style="text-align:center">Предложение 3 (оригинальная пьеса, дистрактор)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
+<tr><td style="text-align:center">Sentence 1 (film screenplay, <strong>correct</strong>)</td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
+<tr><td style="text-align:center">Sentence 3 (original play, distractor)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
 </tbody>
 </table>
-<p><strong>Где XProvence не справляется</strong></p>
+<p><strong>Where XProvence falls short</strong></p>
 <ul>
-<li><p>XProvence сильно привлекают ключевые слова <em>"Еврипид"</em> и <em>"написал",</em> присваивая предложению 3 почти идеальный балл (0,947 и 0,802).</p></li>
-<li><p>В то же время он в значительной степени игнорирует правильный ответ в предложении 1, присваивая ему крайне низкие баллы (0,133 и 0,081).</p></li>
-<li><p>Даже после снижения порога принятия решения с 0,5 до 0,2 модель по-прежнему не обнаруживает правильного ответа.</p></li>
+<li><p>XProvence is strongly attracted to the keywords <em>“Euripides”</em> and <em>“wrote”</em>, assigning sentence 3 an almost perfect score (0.947 and 0.802).</p></li>
+<li><p>At the same time, it largely ignores the correct answer in sentence 1, assigning extremely low scores (0.133 and 0.081).</p></li>
+<li><p>Even after lowering the decision threshold from 0.5 to 0.2, the model still fails to surface the correct answer.</p></li>
 </ul>
-<p>Другими словами, модель в первую очередь руководствуется поверхностными ассоциациями ключевых слов, а не реальным смыслом вопроса.</p>
-<p><strong>Как наша модель ведет себя по-другому</strong></p>
+<p>In other words, the model is primarily driven by surface-level keyword associations rather than the question’s actual intent.</p>
+<p><strong>How our model behaves differently</strong></p>
 <ul>
-<li><p>Наша модель присваивает высокий балл (0,915) правильному ответу в предложении 1, верно указывая <em>сценаристов фильма</em>.</p></li>
-<li><p>Она также присваивает умеренный балл (0,719) предложению 3, поскольку в этом предложении упоминается понятие, связанное со сценарием.</p></li>
-<li><p>Очень важно, что разделение является четким и осмысленным: <strong>0,915 против 0,719</strong>, разрыв почти 0,2.</p></li>
+<li><p>Our model assigns a high score (0.915) to the correct answer in sentence 1, correctly identifying the <em>film’s screenwriters</em>.</p></li>
+<li><p>It also assigns a moderate score (0.719) to sentence 3, since that sentence does mention a screenplay-related concept.</p></li>
+<li><p>Crucially, the separation is clear and meaningful: <strong>0.915 vs. 0.719</strong>, a gap of nearly 0.2.</p></li>
 </ul>
-<p>Этот пример подчеркивает основную сильную сторону нашего подхода: выход за рамки ассоциаций, основанных на ключевых словах, для правильной интерпретации намерений пользователя. Даже когда появляется несколько концепций "автор", модель последовательно выделяет ту, к которой на самом деле относится вопрос.</p>
-<p>Мы поделимся более подробным отчетом об оценке и дополнительными примерами из практики в одном из следующих постов.</p>
-<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Попробуйте и скажите нам, что вы думаете.<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
+<p>This example highlights the core strength of our approach: moving beyond keyword-driven associations to correctly interpret user intent. Even when multiple “author” concepts appear, the model consistently highlights the one the question actually refers to.</p>
+<p>We will share a more detailed evaluation report and additional case studies in a follow-up post.</p>
+<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Try It Out and Tell Us What You Think<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -287,7 +287,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Мы разместили нашу двуязычную модель семантического выделения на <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a> в открытом доступе, и все веса модели находятся в открытом доступе, так что вы можете сразу же начать экспериментировать. Мы будем рады услышать, как она работает для вас - пожалуйста, делитесь любыми отзывами, проблемами или идеями по улучшению, пока вы ее пробуете.</p>
-<p>Параллельно мы работаем над готовым к выпуску сервисом вывода и интегрируем модель непосредственно в <a href="https://milvus.io/">Milvus</a> в качестве встроенного API Semantic Highlighting. Эта интеграция уже осуществляется и скоро будет доступна.</p>
-<p>Семантическое выделение открывает дверь к более интуитивному RAG и агентскому ИИ. Когда Milvus извлекает несколько длинных документов, система может сразу вывести на экран наиболее релевантные предложения, давая понять, где находится ответ. Это не только улучшает работу конечного пользователя, но и помогает разработчикам отлаживать конвейеры поиска, точно показывая, на какие части контекста опирается система.</p>
-<p>Мы уверены, что семантическая подсветка станет стандартной возможностью в системах поиска и RAG нового поколения. Если у вас есть идеи, предложения или примеры использования двуязычной семантической подсветки, присоединяйтесь к нашему <a href="https://discord.com/invite/8uyFbECzPX">каналу Discord</a> и делитесь своими мыслями. Вы также можете записаться на 20-минутную индивидуальную сессию, чтобы получить знания, рекомендации и ответы на свои вопросы в <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>
+    </button></h2><p>We’ve open-sourced our bilingual semantic highlighting model on <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a>, with all model weights publicly available so you can start experimenting right away. We’d love to hear how it works for you—please share any feedback, issues, or improvement ideas as you try it out.</p>
+<p>In parallel, we’re working on a production-ready inference service and integrating the model directly into <a href="https://milvus.io/">Milvus</a> as a native Semantic Highlighting API. This integration is already underway and will be available soon.</p>
+<p>Semantic highlighting opens the door to a more intuitive RAG and agentic AI experience. When Milvus retrieves several long documents, the system can immediately surface the most relevant sentences, making it clear where the answer is. This doesn’t just improve the end-user experience—it also helps developers debug retrieval pipelines by showing exactly which parts of the context the system relies on.</p>
+<p>We believe semantic highlighting will become a standard capability in next-generation search and RAG systems. If you have ideas, suggestions, or use cases for bilingual semantic highlighting, join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> and share your thoughts. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>

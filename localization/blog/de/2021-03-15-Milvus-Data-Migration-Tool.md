@@ -1,56 +1,58 @@
 ---
 id: Milvus-Data-Migration-Tool.md
-title: Einführung des Milvus-Datenmigrations-Tools
+title: Introducing Milvus Data Migration Tool
 author: Zilliz
 date: 2021-03-15T10:19:51.125Z
 desc: >-
-  Erfahren Sie, wie Sie mit dem Datenmigrationstool von Milvus die Effizienz der
-  Datenverwaltung erheblich verbessern und die DevOps-Kosten senken können.
+  Learn how to use Milvus data migration tool to greatly improve efficiency of
+  data management and reduce DevOps costs.
 cover: assets.zilliz.com/Generic_Tool_Announcement_97eb04a898.jpg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
 ---
-<custom-h1>Einführung in das Milvus Datenmigrations-Tool</custom-h1><p><em><strong>Wichtiger Hinweis</strong>: Das Mivus Data Migration Tool ist veraltet. Für die Datenmigration von anderen Datenbanken zu Milvus empfehlen wir Ihnen, das fortschrittlichere Milvus-Migrations-Tool zu verwenden.</em></p>
-<p>Das Milvus-Migrations-Tool unterstützt derzeit:</p>
+<custom-h1>Introducing Milvus Data Migration Tool</custom-h1><p><em><strong>Important Note</strong>: The Mivus Data Migration Tool has been deprecated. For data migration from other databases to Milvus, we recommend that you use the more advanced Milvus-migration Tool.</em></p>
+<p>The Milvus-migration tool currently supprots:</p>
 <ul>
-<li>Elasticsearch zu Milvus 2.x</li>
-<li>Faiss nach Milvus 2.x</li>
-<li>Milvus 1.x nach Milvus 2.x</li>
-<li>Milvus 2.3.x nach Milvus 2.3.x oder höher</li>
+<li>Elasticsearch to Milvus 2.x</li>
+<li>Faiss to Milvus 2.x</li>
+<li>Milvus 1.x to Milvus 2.x</li>
+<li>Milvus 2.3.x to Milvus 2.3.x or above</li>
 </ul>
-<p>Wir werden die Migration von weiteren Vektordatenquellen wie Pinecone, Chroma und Qdrant unterstützen. Bleiben Sie dran.</p>
-<p><strong>Weitere Informationen finden Sie in der <a href="https://milvus.io/docs/migrate_overview.md">Milvus-Migrationsdokumentation</a> oder im <a href="https://github.com/zilliztech/milvus-migration">GitHub-Repository</a>.</strong></p>
-<p>--------------------------------- <strong>Mivus Data Migration Tool ist veraltet</strong> ----------------------</p>
-<h3 id="Overview" class="common-anchor-header">Überblick</h3><p><a href="https://github.com/milvus-io/milvus-tools">MilvusDM</a> (Milvus Data Migration) ist ein Open-Source-Tool, das speziell für das Importieren und Exportieren von Datendateien mit Milvus entwickelt wurde. MilvusDM kann die Effizienz der Datenverwaltung erheblich verbessern und die DevOps-Kosten auf folgende Weise reduzieren:</p>
+<p>We will support migration from more vector data sources such as Pinecone, Chroma, and Qdrant. Stay tuned.</p>
+<p><strong>For more information, see the <a href="https://milvus.io/docs/migrate_overview.md">Milvus-migration documentation</a> or its <a href="https://github.com/zilliztech/milvus-migration">GitHub repository</a>.</strong></p>
+<p>--------------------------------- <strong>Mivus Data Migration Tool has been deprecated</strong> ----------------------</p>
+<h3 id="Overview" class="common-anchor-header">Overview</h3><p><a href="https://github.com/milvus-io/milvus-tools">MilvusDM</a> (Milvus Data Migration) is an open-source tool designed specifically for importing and exporting data files with Milvus. MilvusDM can greatly improve data mangement efficiency and reduce DevOps costs in the following ways:</p>
 <ul>
-<li><p><a href="#faiss-to-milvus">Faiss zu Milvus</a>: Importieren Sie ungezippte Daten von Faiss zu Milvus.</p></li>
-<li><p><a href="#hdf5-to-milvus">HDF5 nach Milvus</a>: Importieren Sie HDF5-Dateien in Milvus.</p></li>
-<li><p><a href="#milvus-to-milvus">Milvus zu Milvus</a>: Migrieren Sie Daten von einem Quell-Milvus zu einem anderen Ziel-Milvus.</p></li>
-<li><p><a href="#milvus-to-hdf5">Milvus zu HDF5</a>: Speichern von Daten in Milvus als HDF5-Dateien.</p></li>
+<li><p><a href="#faiss-to-milvus">Faiss to Milvus</a>: Import unzipped data from Faiss to Milvus.</p></li>
+<li><p><a href="#hdf5-to-milvus">HDF5 to Milvus</a>: Import HDF5 files to Milvus.</p></li>
+<li><p><a href="#milvus-to-milvus">Milvus to Milvus</a>: Migrate data from a source Milvus to a different target Milvus.</p></li>
+<li><p><a href="#milvus-to-hdf5">Milvus to HDF5</a>: Save data in Milvus as HDF5 files.</p></li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_1_199cbdebe7.png" alt="milvusdm blog 1.png" class="doc-image" id="milvusdm-blog-1.png" />
-   </span> <span class="img-wrapper"> <span>milvusdm blog 1.png</span> </span></p>
-<p>MilvusDM wird auf <a href="https://github.com/milvus-io/milvus-tools">Github</a> gehostet und kann einfach durch Ausführen der Befehlszeile <code translate="no">pip3 install pymilvusdm</code> installiert werden. MilvusDM ermöglicht es Ihnen, Daten in einer bestimmten Sammlung oder Partition zu migrieren. In den folgenden Abschnitten wird erklärt, wie man die einzelnen Datenmigrationsarten verwendet.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_1_199cbdebe7.png" alt="milvusdm blog 1.png" class="doc-image" id="milvusdm-blog-1.png" />
+    <span>milvusdm blog 1.png</span>
+  </span>
+</p>
+<p>MilvusDM is hosted on <a href="https://github.com/milvus-io/milvus-tools">Github</a> and can be easily installed by running the command line <code translate="no">pip3 install pymilvusdm</code>. MilvusDM allows you to migrate data in a specific collection or partition. In the following sections, we will explain how to use each data migration type.</p>
 <p><br/></p>
-<h3 id="Faiss-to-Milvus" class="common-anchor-header">Faiss nach Milvus</h3><h4 id="Steps" class="common-anchor-header">Schritte</h4><p>1.laden Sie <strong>F2M.yaml</strong> herunter:</p>
+<h3 id="Faiss-to-Milvus" class="common-anchor-header">Faiss to Milvus</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>F2M.yaml</strong>:</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/F2</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2. Setzen Sie die folgenden Parameter:</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">data_path</code>: Datenpfad (Vektoren und ihre entsprechenden IDs) in Faiss.</p></li>
-<li><p><code translate="no">dest_host</code>: Adresse des Milvus-Servers.</p></li>
-<li><p><code translate="no">dest_port</code>: Port des Milvus-Servers.</p></li>
-<li><p><code translate="no">mode</code>: Daten können mit den folgenden Modi in Milvus importiert werden:</p>
+<li><p><code translate="no">data_path</code>: Data path (vectors and their corresponding IDs) in Faiss.</p></li>
+<li><p><code translate="no">dest_host</code>: Milvus server address.</p></li>
+<li><p><code translate="no">dest_port</code>: Milvus server port.</p></li>
+<li><p><code translate="no">mode</code>: Data can be imported to Milvus using the following modes:</p>
 <ul>
-<li><p>Überspringen: Daten ignorieren, wenn die Sammlung oder Partition bereits existiert.</p></li>
-<li><p>Anhängen: Daten anhängen, wenn die Sammlung oder Partition bereits vorhanden ist.</p></li>
-<li><p>Überschreiben: Daten vor dem Einfügen löschen, wenn die Sammlung oder Partition bereits vorhanden ist.</p></li>
+<li><p>Skip: Ignore data if the collection or partition already exists.</p></li>
+<li><p>Append: Append data if the collection or partition already exists.</p></li>
+<li><p>Overwrite: Delete data before insertion if the collection or partition already exists.</p></li>
 </ul></li>
-<li><p><code translate="no">dest_collection_name</code>: Name der empfangenden Sammlung für den Datenimport.</p></li>
-<li><p><code translate="no">dest_partition_name</code>: Name der empfangenden Partition für den Datenimport.</p></li>
-<li><p><code translate="no">collection_parameter</code>: Sammlungsspezifische Informationen wie Vektordimension, Größe der Indexdatei und Abstandsmetrik.</p></li>
+<li><p><code translate="no">dest_collection_name</code>: Name of receiving collection for data import.</p></li>
+<li><p><code translate="no">dest_partition_name</code>: Name of receiving partition for data import.</p></li>
+<li><p><code translate="no">collection_parameter</code>: Collection-specific information such as vector dimension, index file size, and distance metric.</p></li>
 </ul>
 <pre><code translate="no">F2M:
   milvus_version: <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
@@ -65,37 +67,37 @@ canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
     index_file_size: <span class="hljs-number">1024</span>
     metric_type: <span class="hljs-string">&#x27;L2&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3. führen Sie <strong>F2M.yaml</strong> aus:</p>
+<p>3.Run <strong>F2M.yaml:</strong></p>
 <pre><code translate="no">$ milvusdm --yaml F2M.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">Beispielcode</h4><p>1.liest Faiss-Dateien, um Vektoren und ihre entsprechenden IDs abzurufen.</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.Read Faiss files to retrieve vectors and their corresponding IDs.</p>
 <pre><code translate="no">ids, vectors = faiss_data.read_faiss_data()
 <button class="copy-code-btn"></button></code></pre>
-<p>2. die abgerufenen Daten in Milvus einfügen:</p>
+<p>2.Insert the retrieved data into Milvus:</p>
 <pre><code translate="no">insert_milvus.insert_data(vectors, <span class="hljs-variable language_">self</span>.dest_collection_name, <span class="hljs-variable language_">self</span>.collection_parameter, <span class="hljs-variable language_">self</span>.mode, ids, <span class="hljs-variable language_">self</span>.dest_partition_name)
 <button class="copy-code-btn"></button></code></pre>
 <p><br/></p>
-<h3 id="HDF5-to-Milvus" class="common-anchor-header">HDF5 nach Milvus</h3><h4 id="Steps" class="common-anchor-header">Schritte</h4><p>1.laden Sie <strong>H2M.yaml</strong> herunter.</p>
+<h3 id="HDF5-to-Milvus" class="common-anchor-header">HDF5 to Milvus</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>H2M.yaml</strong>.</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/H2M.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2.setzen Sie die folgenden Parameter:</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">data_path</code>: Pfad zu den HDF5-Dateien.</p></li>
-<li><p><code translate="no">data_dir</code>: Verzeichnis mit den HDF5-Dateien.</p></li>
-<li><p><code translate="no">dest_host</code>: Adresse des Milvus-Servers.</p></li>
-<li><p><code translate="no">dest_port</code>: Anschluss des Milvus-Servers.</p></li>
-<li><p><code translate="no">mode</code>: Daten können mit den folgenden Modi in Milvus importiert werden:</p>
+<li><p><code translate="no">data_path</code>: Path to the HDF5 files.</p></li>
+<li><p><code translate="no">data_dir</code>: Directory holding the HDF5 files.</p></li>
+<li><p><code translate="no">dest_host</code>: Milvus server address.</p></li>
+<li><p><code translate="no">dest_port</code>: Milvus server port.</p></li>
+<li><p><code translate="no">mode</code>: Data can be imported to Milvus using the following modes:</p>
 <ul>
-<li><p>Überspringen: Daten ignorieren, wenn die Sammlung oder Partition bereits existiert.</p></li>
-<li><p>Anhängen: Daten anhängen, wenn die Sammlung oder Partition bereits vorhanden ist.</p></li>
-<li><p>Überschreiben: Daten vor dem Einfügen löschen, wenn die Sammlung oder Partition bereits vorhanden ist.</p></li>
+<li><p>Skip: Ignore data if the collection or partition already exists.</p></li>
+<li><p>Append: Append data if the collection or partition already exists.</p></li>
+<li><p>Overwrite: Delete data before insertion if the collection or partition already exists.</p></li>
 </ul></li>
-<li><p><code translate="no">dest_collection_name</code>: Name der empfangenden Sammlung für den Datenimport.</p></li>
-<li><p><code translate="no">dest_partition_name</code>: Name der empfangenden Partition für den Datenimport.</p></li>
-<li><p><code translate="no">collection_parameter</code>: Sammlungsspezifische Informationen wie Vektordimension, Indexdateigröße und Abstandsmetrik.</p></li>
+<li><p><code translate="no">dest_collection_name</code>: Name of receiving collection for data import.</p></li>
+<li><p><code translate="no">dest_partition_name</code>: Name of receiving partition for data import.</p></li>
+<li><p><code translate="no">collection_parameter</code>: Collection-specific information such as vector dimension, index file size, and distance metric.</p></li>
 </ul>
 <blockquote>
-<p>Geben Sie entweder <code translate="no">data_path</code> oder <code translate="no">data_dir</code> an. Setzen Sie <strong>nicht</strong> beides. Verwenden Sie <code translate="no">data_path</code>, um mehrere Dateipfade anzugeben, oder <code translate="no">data_dir</code>, um das Verzeichnis mit Ihrer Datendatei anzugeben.</p>
+<p>Set either <code translate="no">data_path</code> or <code translate="no">data_dir</code>. Do <strong>not</strong> set both. Use <code translate="no">data_path</code> to specify multiple file paths, or <code translate="no">data_dir</code> to specify the directory holding your data file.</p>
 </blockquote>
 <pre><code translate="no">H2M:
   milvus-version: 1.0.0
@@ -113,31 +115,31 @@ canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
     index_file_size: 1024
     metric_type: <span class="hljs-string">&#x27;L2&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3. führen Sie <strong>H2M.yaml aus:</strong></p>
+<p>3.Run <strong>H2M.yaml:</strong></p>
 <pre><code translate="no">$ milvusdm --yaml H2M.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">Beispielcode</h4><p>1) Lesen Sie die HDF5-Dateien, um die Vektoren und ihre entsprechenden IDs abzurufen:</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.Read the HDF5 files to retrieve vectors and their corresponding IDs:</p>
 <pre><code translate="no">vectors, ids = <span class="hljs-variable language_">self</span>.file.read_hdf5_data()
 <button class="copy-code-btn"></button></code></pre>
-<p>2. fügen Sie die abgerufenen Daten in Milvus ein:</p>
+<p>2.Insert the retrieved data into Milvus:</p>
 <pre><code translate="no">ids = insert_milvus.insert_data(vectors, <span class="hljs-variable language_">self</span>.c_name, <span class="hljs-variable language_">self</span>.c_param, <span class="hljs-variable language_">self</span>.mode, ids,<span class="hljs-variable language_">self</span>.p_name)
 <button class="copy-code-btn"></button></code></pre>
 <p><br/></p>
-<h3 id="Milvus-to-Milvus" class="common-anchor-header">Milvus zu Milvus</h3><h4 id="Steps" class="common-anchor-header">Schritte</h4><p>1.laden Sie <strong>M2M.yaml</strong> herunter.</p>
+<h3 id="Milvus-to-Milvus" class="common-anchor-header">Milvus to Milvus</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>M2M.yaml</strong>.</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2M.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2.setzen Sie die folgenden Parameter:</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">source_milvus_path</code>: Quell-Milvus-Arbeitspfad.</p></li>
-<li><p><code translate="no">mysql_parameter</code>: Quell-Milvus-MySQL-Einstellungen. Wenn MySQL nicht verwendet wird, setzen Sie mysql_parameter auf ''.</p></li>
-<li><p><code translate="no">source_collection</code>: Namen der Sammlung und ihrer Partitionen in der Milvus-Quelle.</p></li>
-<li><p><code translate="no">dest_host</code>: Milvus-Server-Adresse.</p></li>
-<li><p><code translate="no">dest_port</code>: Port des Milvus-Servers.</p></li>
-<li><p><code translate="no">mode</code>: Daten können mit den folgenden Modi in Milvus importiert werden:</p>
+<li><p><code translate="no">source_milvus_path</code>: Source Milvus work path.</p></li>
+<li><p><code translate="no">mysql_parameter</code>: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as '’.</p></li>
+<li><p><code translate="no">source_collection</code>: Names of the collection and its partitions in the source Milvus.</p></li>
+<li><p><code translate="no">dest_host</code>: Milvus server address.</p></li>
+<li><p><code translate="no">dest_port</code>: Milvus server port.</p></li>
+<li><p><code translate="no">mode</code>: Data can be imported to Milvus using the following modes:</p>
 <ul>
-<li><p>Überspringen: Daten ignorieren, wenn die Sammlung oder Partition bereits existiert.</p></li>
-<li><p>Anhängen: Daten anhängen, wenn die Sammlung oder Partition bereits vorhanden ist.</p></li>
-<li><p>Überschreiben: Löschen Sie die Daten vor dem Einfügen, wenn die Sammlung oder Partition bereits existiert.</p></li>
+<li><p>Skip: Ignore data if the collection or partition already exists.</p></li>
+<li><p>Append: Append data if the collection or partition already exists.</p></li>
+<li><p>Overwrite: If the collection or partition already exists, delete the data before inserting it.Delete data before insertion if the collection or partition already exists.</p></li>
 </ul></li>
 </ul>
 <pre><code translate="no">M2M:
@@ -157,26 +159,26 @@ canonicalUrl: 'https://zilliz.com/blog/Milvus-Data-Migration-Tool'
   dest_port: 19530
   mode: <span class="hljs-string">&#x27;skip&#x27;</span> <span class="hljs-comment"># &#x27;skip/append/overwrite&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3. führen Sie <strong>M2M.yaml aus.</strong></p>
+<p>3.Run <strong>M2M.yaml.</strong></p>
 <pre><code translate="no">$ milvusdm --yaml M2M.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">Beispielcode</h4><p>1. entsprechend den Metadaten einer bestimmten Sammlung oder Partition die Dateien unter <strong>milvus/db</strong> auf Ihrem lokalen Laufwerk lesen, um Vektoren und ihre entsprechenden IDs aus der Milvus-Quelle abzurufen.</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.According to a specified collection or partition’s metadata, read the files under <strong>milvus/db</strong> on your local drive to retrieve vectors and their corresponding IDs from the source Milvus.</p>
 <pre><code translate="no">collection_parameter, _ = milvus_meta.get_collection_info(collection_name)
 r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(<span class="hljs-variable language_">self</span>.milvus_meta, collection_name, partition_tag)
 <button class="copy-code-btn"></button></code></pre>
-<p>2. fügen Sie die abgerufenen Daten in das Ziel-Milvus ein.</p>
+<p>2.Insert the retrieved data into the target Milvus.</p>
 <pre><code translate="no">milvus_insert.insert_data(r_vectors, collection_name, collection_parameter, <span class="hljs-variable language_">self</span>.mode, r_ids, partition_tag)
 <button class="copy-code-btn"></button></code></pre>
 <p><br/></p>
-<h3 id="Milvus-to-HDF5" class="common-anchor-header">Milvus zu HDF5</h3><h4 id="Steps" class="common-anchor-header">Schritte</h4><p>1.laden Sie <strong>M2H.yaml</strong> herunter:</p>
+<h3 id="Milvus-to-HDF5" class="common-anchor-header">Milvus to HDF5</h3><h4 id="Steps" class="common-anchor-header">Steps</h4><p>1.Download <strong>M2H.yaml</strong>:</p>
 <pre><code translate="no">$ wget <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/milvus-io/milvus-tools/main/yamls/M2H.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>2. Setzen Sie die folgenden Parameter:</p>
+<p>2.Set the following parameters:</p>
 <ul>
-<li><p><code translate="no">source_milvus_path</code>: Quell-Milvus-Arbeitspfad.</p></li>
-<li><p><code translate="no">mysql_parameter</code>: Quell-Milvus-MySQL-Einstellungen. Wenn MySQL nicht verwendet wird, setzen Sie mysql_parameter auf ''.</p></li>
-<li><p><code translate="no">source_collection</code>: Namen der Sammlung und ihrer Partitionen in der Milvus-Quelle.</p></li>
-<li><p><code translate="no">data_dir</code>: Verzeichnis, in dem die HDF5-Dateien gespeichert werden.</p></li>
+<li><p><code translate="no">source_milvus_path</code>: Source Milvus work path.</p></li>
+<li><p><code translate="no">mysql_parameter</code>: Source Milvus MySQL settings. If MySQL is not used, set mysql_parameter as '’.</p></li>
+<li><p><code translate="no">source_collection</code>: Names of the collection and its partitions in the source Milvus.</p></li>
+<li><p><code translate="no">data_dir</code>: Directory for holding the saved HDF5 files.</p></li>
 </ul>
 <pre><code translate="no">M2H:
   milvus_version: <span class="hljs-number">1.0</span><span class="hljs-number">.0</span>
@@ -193,52 +195,54 @@ r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(<span class="hljs-variable 
       - <span class="hljs-string">&#x27;partition_2&#x27;</span>
   data_dir: <span class="hljs-string">&#x27;/home/user/data&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>3. <strong>M2H.yaml</strong> ausführen:</p>
+<p>3.Run <strong>M2H.yaml</strong>:</p>
 <pre><code translate="no">$ milvusdm --yaml M2H.yaml
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Sample-Code" class="common-anchor-header">Beispielcode</h4><p>1. entsprechend den Metadaten einer bestimmten Sammlung oder Partition die Dateien unter <strong>milvus/db</strong> auf Ihrem lokalen Laufwerk lesen, um die Vektoren und ihre entsprechenden IDs abzurufen.</p>
+<h4 id="Sample-Code" class="common-anchor-header">Sample Code</h4><p>1.According to a specified collection or partition’s metadata, read the files under <strong>milvus/db</strong> on your local drive to retrieve vectors and their corresponding IDs.</p>
 <pre><code translate="no">collection_parameter, version = milvus_meta.get_collection_info(collection_name)
 r_vectors, r_ids, r_rows = milvusdb.read_milvus_file(<span class="hljs-variable language_">self</span>.milvus_meta, collection_name, partition_tag)
 <button class="copy-code-btn"></button></code></pre>
-<p>2. speichern Sie die abgerufenen Daten als HDF5-Dateien.</p>
+<p>2.Save the retrieved data as HDF5 files.</p>
 <pre><code translate="no">data_save.save_yaml(collection_name, partition_tag, collection_parameter, version, save_hdf5_name)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="MilvusDM-File-Structure" class="common-anchor-header">MilvusDM Dateistruktur</h3><p>Das folgende Flussdiagramm zeigt, wie MilvusDM verschiedene Aufgaben entsprechend der empfangenen YAML-Datei durchführt:</p>
+<h3 id="MilvusDM-File-Structure" class="common-anchor-header">MilvusDM File Structure</h3><p>The flow chart below shows how MilvusDM performs different tasks according to the YAML file it receives:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_2_7824b16e5e.png" alt="milvusdm blog 2.png" class="doc-image" id="milvusdm-blog-2.png" />
-   </span> <span class="img-wrapper"> <span>milvusdm blog 2.png</span> </span></p>
-<p>MilvusDM Dateistruktur:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvusdm_blog_2_7824b16e5e.png" alt="milvusdm blog 2.png" class="doc-image" id="milvusdm-blog-2.png" />
+    <span>milvusdm blog 2.png</span>
+  </span>
+</p>
+<p>MilvusDM file structure:</p>
 <ul>
 <li><p>pymilvusdm</p>
 <ul>
-<li><p>Kern</p>
+<li><p>core</p>
 <ul>
-<li><p><strong>milvus_client.py</strong>: Führt Client-Operationen in Milvus durch.</p></li>
-<li><p><strong>read_data.py</strong>: Liest die HDF5-Datendateien auf Ihrem lokalen Laufwerk. (Fügen Sie hier Ihren Code hinzu, um das Lesen von Datendateien in anderen Formaten zu unterstützen).</p></li>
-<li><p><strong>read_faiss_data.py</strong>: Liest die Datendateien in Faiss.</p></li>
-<li><p><strong>read_milvus_data.py</strong>: Liest die Datendateien in Milvus.</p></li>
-<li><p><strong>read_milvus_meta.py</strong>: Liest die Metadaten in Milvus.</p></li>
-<li><p><strong>data_to_milvus.py</strong>: Erzeugt Kollektionen oder Partitionen auf Basis von Parametern in YAML-Dateien und importiert die Vektoren und die entsprechenden Vektor-IDs in Milvus.</p></li>
-<li><p><strong>save_data.py</strong>: Speichert die Daten als HDF5-Dateien.</p></li>
-<li><p><strong>write_logs.py</strong>: Schreibt Protokolle während der Laufzeit.</p></li>
+<li><p><strong>milvus_client.py</strong>: Performs client operations in Milvus.</p></li>
+<li><p><strong>read_data.py</strong>: Reads the HDF5 data files on your local drive. (Add your code here to support reading data files in other formats.)</p></li>
+<li><p><strong>read_faiss_data.py</strong>: Reads the data files in Faiss.</p></li>
+<li><p><strong>read_milvus_data.py</strong>: Reads the data files in Milvus.</p></li>
+<li><p><strong>read_milvus_meta.py</strong>: Reads the metadata in Milvus.</p></li>
+<li><p><strong>data_to_milvus.py</strong>: Creates collections or partitions based on parameters in YAML files and imports the vectors and the corresponding vector IDs into Milvus.</p></li>
+<li><p><strong>save_data.py</strong>: Saves the data as HDF5 files.</p></li>
+<li><p><strong>write_logs.py</strong>: Writes logs during runtime.</p></li>
 </ul></li>
-<li><p><strong>faiss_to_milvus.py</strong>: Importiert Daten aus Faiss in Milvus.</p></li>
-<li><p><strong>hdf5_to_milvus.py</strong>: Importiert Daten in HDF5-Dateien in Milvus.</p></li>
-<li><p><strong>milvus_to_milvus.py</strong>: Migriert Daten von einem Quell-Milvus zum Ziel-Milvus.</p></li>
-<li><p><strong>milvus_to_hdf5.py</strong>: Exportiert Daten in Milvus und speichert sie als HDF5-Dateien.</p></li>
-<li><p><strong>main.py</strong>: Führt entsprechende Aufgaben gemäß der empfangenen YAML-Datei aus.</p></li>
-<li><p><strong>setting.py</strong>: Konfigurationen, die sich auf die Ausführung des MilvusDM-Codes beziehen.</p></li>
+<li><p><strong>faiss_to_milvus.py</strong>: Imports data from Faiss into Milvus.</p></li>
+<li><p><strong>hdf5_to_milvus.py</strong>: Imports data in HDF5 files into Milvus.</p></li>
+<li><p><strong>milvus_to_milvus.py</strong>: Migrates data from a source Milvus to the target Milvus.</p></li>
+<li><p><strong>milvus_to_hdf5.p</strong>y: Exports data in Milvus and saves them as HDF5 files.</p></li>
+<li><p><strong>main.py</strong>: Performs corresponding tasks according to the received YAML file.</p></li>
+<li><p><strong>setting.py</strong>: Configurations relating to running the MilvusDM code.</p></li>
 </ul></li>
-<li><p><strong>setup.py</strong>: Erzeugt <strong>pymilvusdm-Dateipakete</strong> und lädt sie in PyPI (Python Package Index) hoch.</p></li>
+<li><p><strong>setup.py</strong>: Creates <strong>pymilvusdm</strong> file packages and uploads them to PyPI (Python Package Index).</p></li>
 </ul>
 <p><br/></p>
-<h3 id="Recap" class="common-anchor-header">Rekapitulation</h3><p>MilvusDM kümmert sich hauptsächlich um die Migration von Daten in und aus Milvus, einschließlich Faiss nach Milvus, HDF5 nach Milvus, Milvus nach Milvus und Milvus nach HDF5.</p>
-<p>Die folgenden Funktionen sind für kommende Versionen geplant:</p>
+<h3 id="Recap" class="common-anchor-header">Recap</h3><p>MilvusDM primarily handles migrating data in and out of Milvus, which includes Faiss to Milvus, HDF5 to Milvus, Milvus to Milvus, and Milvus to HDF5.</p>
+<p>The following features are planned for upcoming releases:</p>
 <ul>
-<li><p>Importieren von Binärdaten von Faiss nach Milvus.</p></li>
-<li><p>Blockliste und Erlaubnisliste für die Datenmigration zwischen Milvus-Quelle und Milvus-Ziel.</p></li>
-<li><p>Zusammenführen und Importieren von Daten aus mehreren Sammlungen oder Partitionen im Quell-Milvus in eine neue Sammlung im Ziel-Milvus.</p></li>
-<li><p>Sicherung und Wiederherstellung der Milvus-Daten.</p></li>
+<li><p>Import binary data from Faiss to Milvus.</p></li>
+<li><p>Blocklist and allowlist for data migration between source Milvus and target Milvus.</p></li>
+<li><p>Merge and import data from multiple colletions or partitions in source Milvus into a new collection in target Milvus.</p></li>
+<li><p>Backup and recovery of the Milvus data.</p></li>
 </ul>
-<p>Das MilvusDM-Projekt ist ein Open-Source-Projekt auf <a href="https://github.com/milvus-io/milvus-tools">Github</a>. Alle Beiträge zum Projekt sind willkommen. Geben Sie ihm einen Stern 🌟, und fühlen Sie sich frei, einen <a href="https://github.com/milvus-io/milvus-tools/issues">Fehler</a> zu melden oder Ihren eigenen Code einzureichen!</p>
+<p>The MilvusDM project is open sourced on <a href="https://github.com/milvus-io/milvus-tools">Github</a>. Any and all contributions to the project are welcome. Give it a star 🌟, and feel free to file an <a href="https://github.com/milvus-io/milvus-tools/issues">issue</a> or submit your own code!</p>

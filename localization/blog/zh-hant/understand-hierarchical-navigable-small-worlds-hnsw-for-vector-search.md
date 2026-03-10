@@ -1,9 +1,12 @@
 ---
 id: understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md
-title: 瞭解向量搜尋的 Hierarchical Navigable Small Worlds (HNSW)
+title: |
+  Understanding Hierarchical Navigable Small Worlds (HNSW) for Vector Search
 author: Stefan Webb
 date: 2025-05-21T00:00:00.000Z
-desc: HNSW (Hierarchical Navigable Small World) 是一種使用分層圖結構進行近似近鄰搜尋的有效演算法。
+desc: >-
+  HNSW (Hierarchical Navigable Small World) is an efficient algorithm for
+  approximate nearest neighbor search using a layered graph structure.
 cover: assets.zilliz.com/Chat_GPT_Image_May_26_2025_11_56_17_AM_1a84d31090.png
 tag: Engineering
 recommend: false
@@ -15,17 +18,17 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/understand-hierarchical-navigable-small-worlds-hnsw-for-vector-search.md
 ---
-<p><a href="https://milvus.io/blog/what-is-a-vector-database.md">向量資料庫</a>的關鍵作業是<em>相似性搜尋</em>，這包括在資料庫中找出與查詢向量最近的鄰居，例如以歐氏距離（Euclidean distance）來搜尋。最簡單的方法是計算查詢向量與資料庫中儲存的每個向量之間的距離，然後取最接近的前 K 個向量。然而，這顯然無法隨著資料庫大小的增加而擴展。實際上，只有少於 100 萬個向量的資料庫才會採用簡單的相似性搜尋。我們要如何將搜尋的規模擴大到 1,000 萬或 1 億向量，甚至數十億向量呢？</p>
+<p>The key operation of <a href="https://milvus.io/blog/what-is-a-vector-database.md">vector databases</a> is <em>similarity search</em>, which involves finding the nearest neighbors in the database to a query vector, for example, by Euclidean distance. A naive method would calculate the distance from the query vector to every vector stored in the database and take the top-K closest. However, this clearly does not scale as the size of the database grows. In practice, a naive similarity search is practical only for databases with fewer than around 1 million vectors. How are we to scale our search to the 10s and 100s of millions, or even to the billions of vectors?</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Descending_a_hierarchy_of_vector_search_indices_cf9fb8060a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>圖：向量搜尋索引的層級遞降</em></p>
-<p>我們已經開發了許多演算法和資料結構，可以將高維向量空間中的相似性搜尋擴大到次線性時間複雜度。在這篇文章中，我們將解釋並實作一種流行且有效的方法，稱為 Hierarchical Navigable Small Worlds (HNSW)，它經常是中型向量資料集的預設選擇。它屬於在向量上建構圖表的搜尋方法系列，其中頂點表示向量，邊表示向量之間的相似性。搜尋是透過瀏覽圖表來執行，在最簡單的情況下，貪婪地遍歷與查詢最接近的目前節點的鄰居，並重複直到達到局部最小值為止。</p>
-<p>我們將詳細解釋如何建構搜尋圖表，以及圖表如何啟用搜尋，最後，我們將連結到 HNSW 的實作，由您親自以簡單的 Python 來實作。</p>
-<h2 id="Navigable-Small-Worlds" class="common-anchor-header">可導航的小世界<button data-href="#Navigable-Small-Worlds" class="anchor-icon" translate="no">
+<p><em>Figure: Descending a hierarchy of vector search indices</em></p>
+<p>Many algorithms and data structures have been developed to scale similarity search in high-dimensional vector spaces to sub-linear time complexity. In this article, we’ll explain and implement a popular and effective method called Hierarchical Navigable Small Worlds (HNSW), which is frequently the default choice for medium-sized vector datasets. It belongs to the family of search methods that construct a graph over the vectors, where vertices denote vectors and edges denote similarity between them. Search is performed by navigating the graph, in the simplest case, greedily traversing to the neighbor of the current node that is closest to the query and repeating until a local minimum is reached.</p>
+<p>We will explain in more detail how the search graph is constructed, how the graph enables search, and at the end, link to an HNSW implementation, by yours truly, in simple Python.</p>
+<h2 id="Navigable-Small-Worlds" class="common-anchor-header">Navigable Small Worlds<button data-href="#Navigable-Small-Worlds" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,9 +49,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><em>圖：由 100 個隨機定位的 2D 點所建立的 NSW 圖形。</em></p>
-<p>如前所述，HNSW 會在我們執行查詢之前，離線建構搜尋圖形。這個演算法建立在先前工作的基礎上，這種方法稱為「可導航的小世界」（Navigable Small Worlds，簡稱 NSW）。我們會先解釋 NSW，接下來就可以淺顯地介紹<em>Hierarchical</em>NSW。上圖是在 2 維向量上為 NSW 建構的搜尋圖。在以下的所有範例中，我們都以 2 維向量為限，以便將它們形象化。</p>
-<h2 id="Constructing-the-Graph" class="common-anchor-header">建構圖形<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
+<p><em>Figure: NSW graph created from 100 randomly located 2D points.</em></p>
+<p>As mentioned, HNSW constructs a search graph offline before we can perform a query. The algorithm builds on top of prior work, a method called Navigable Small Worlds (NSW). We will explain NSW first and it will then be trivial to go from there to <em>Hierarchical</em> NSW. The illustration above is of a constructed search graph for NSW over 2-dimensional vectors. In all examples below, we restrict ourselves to 2-dimensional vectors so as to be able to visualize them.</p>
+<h2 id="Constructing-the-Graph" class="common-anchor-header">Constructing the Graph<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,9 +66,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>NSW 是一個圖形，其中的頂點代表向量，而邊是根據向量之間的相似性啟發式地建構出來的，因此大多數的向量都可以從任何地方透過少量的跳躍達到。這就是所謂的「小世界」特性，它允許快速導航。請看上圖。</p>
-<p>圖形初始化為空。我們會遍歷向量，依序將每個向量加入圖表。對於每個向量，從隨機的入口節點開始，我們貪婪地<em>在目前建構的圖表中</em>找到從入口點到達的最近 R 節點。然後將這些 R 節點連接到代表插入向量的新節點，並選擇性地修剪任何鄰近節點，因為這些節點現在有超過 R 個鄰近節點。對所有向量重複這個程序，就會得到 NSW 圖形。請參閱上面可視化演算法的插圖，並參閱文章末尾的資源，以瞭解對如此建構的圖表特性的理論分析。</p>
-<h2 id="Searching-the-Graph" class="common-anchor-header">搜尋圖<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
+    </button></h2><p>An NSW is a graph where the vertices represent vectors and the edges are constructed heuristically from the similarity between vectors so that most vectors are reachable from anywhere via a small number of hops. This is the so-called “small world” property that permits quick navigation. See the above figure.</p>
+<p>The graph is initialized to be empty. We iterate through the vectors, adding each to the graph in turn. For each vector, starting at a random entry node, we greedily find the closest R nodes reachable from the entry point <em>in the graph so far constructed</em>. These R nodes are then connected to a new node representing the vector being inserted, optionally pruning any neighboring nodes that now have more than R neighbors. Repeating this process for all vectors will result in the NSW graph. See the above illustration visualizing the algorithm, and refer to the resources at the end of the article for a theoretical analysis of the properties of a graph constructed like this.</p>
+<h2 id="Searching-the-Graph" class="common-anchor-header">Searching the Graph<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,22 +83,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我們已經從圖表建構中的使用看到搜尋演算法。不過，在這種情況下，查詢節點是由使用者提供，而不是插入圖表的節點。我們從隨機的入口筆記開始，貪婪地導航到與查詢最接近的鄰居，並維護目前遇到的最接近向量的動態集。請參閱上面的說明。請注意，我們可以透過從多個隨機入口點開始搜尋並彙總結果，以及在每一步考慮多個鄰居，來提高搜尋準確度。然而，這些改進的代價是延遲時間的增加。</p>
-<custom-h1>增加層級結構</custom-h1><p>
+    </button></h2><p>We have already seen the search algorithm from its use in graph construction. In this case, however, the query node is provided by the user, rather than being one for insertion into the graph. Starting from a random entry note, we greedily navigate to its neighbor closest to the query, maintaining a dynamic set of the closest vectors encountered so far. See the illustration above. Note that we can enhance search accuracy by initiating searches from multiple random entry points and aggregating the results, along with considering multiple neighbors at each step. However, these improvements come at the cost of increased latency.</p>
+<custom-h1>Adding Hierarchy</custom-h1><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/adding_hierarchy_0101234812.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>到目前為止，我們已經描述了 NSW 演算法和資料結構，可以幫助我們擴大在高維空間的搜尋。儘管如此，這個方法仍有嚴重的缺點，包括在低維空間失敗、搜尋收斂緩慢，以及容易陷入局部最小值。</p>
-<p>HNSW 的作者對 NSW 做了三項修改，修正了這些缺點：</p>
+<p>So far, we have described the NSW algorithm and data structure that can help us scale up search in high-dimensional space. Nonetheless, the method suffers serious shortcomings, including failure in low dimensions, slow search convergence, and a tendency to be trapped in local minima.</p>
+<p>The authors of HNSW fix these shortcomings with three modifications to NSW:</p>
 <ul>
-<li><p>在建构和搜索过程中明确选择入口节点；</p></li>
-<li><p>以不同尺度分離邊緣；以及</p></li>
-<li><p>使用先進的啟發式來選擇鄰居。</p></li>
+<li><p>Explicit selection of the entry nodes during construction and search;</p></li>
+<li><p>Separation of edges by different scales; and,</p></li>
+<li><p>Use of an advanced heuristic to select the neighbors.</p></li>
 </ul>
-<p>前兩項是以一個簡單的想法來實現：建立<em>搜尋圖的層次結構</em>。HNSW 不採用 NSW 中的單一圖形，而是建構圖形的層次結構。每個圖形或圖層都會以與 NSW 相同的方式進行個別搜尋。首先搜尋的頂層包含極少的節點，而更深的層次會逐漸包含越來越多的節點，最底層則包含所有節點。這表示頂層在向量空間中包含較長的跳躍，允許一種從軌道到精細的搜尋。請參閱上面的說明。</p>
-<h2 id="Constructing-the-Graph" class="common-anchor-header">建構圖<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
+<p>The first two are realized with a simple idea: building <em>a hierarchy of search graphs</em>. Instead of a single graph, as in NSW, HNSW constructs a hierarchy of graphs. Each graph, or layer, is individually searched in the same way as NSW. The top layer, which is searched first, contains very few nodes, and deeper layers progressively include more and more nodes, with the bottom layer including all nodes. This means that the top layers contain longer hops across the vector space, permitting a sort of course-to-fine search. See above for an illustration.</p>
+<h2 id="Constructing-the-Graph" class="common-anchor-header">Constructing the Graph<button data-href="#Constructing-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,10 +113,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>建構演算法的運作如下：我們事先固定一個層數<em>L</em>。l=1 的值對應於最粗的層，也就是搜尋開始的地方，而 l=L 則對應於最密集的層，也就是搜尋結束的地方。我們會遍歷每個要插入的向量，並依據截斷的<a href="https://en.wikipedia.org/wiki/Geometric_distribution">幾何分佈</a>(拒絕<em>l &gt; L</em>或設定<em>l' =</em>min_(l，L)_) 抽樣插入層。假設我們對目前的向量採樣<em>1 &lt; l &lt; L</em>。我們在頂層 L 執行貪婪搜尋，直到達到其局部最小值。接著，我們沿著 _L_th 層的局部最小值到 _(L-1)_th 層對應向量的邊緣，並以它作為入口點，貪婪地搜尋 _(L-1)_th 層。</p>
-<p>這個過程重複進行，直到我們到達第 _l_ 層。然後，我們開始為要插入的向量建立節點，將其連接到目前所建立的 _l_th 層中透過貪婪搜尋找到的最接近的鄰居，再導航到 _(l-1)_th 層，如此重複，直到我們將向量插入 _1_st 層。上面的動畫說明了這一點</p>
-<p>我們可以看到，這個分層圖的建構方法巧妙地為每個向量明確選擇插入節點。我們會搜尋目前所建構的插入層之上的各層，從航線到細小距離進行有效率的搜尋。與此相關的是，此方法在每一層中以不同的尺度分隔連結：最上層提供跨越搜尋空間的長尺度跳躍，而到最下層的尺度則逐層遞減。這兩項修改都有助於避免陷入次優極限，並在增加記憶體的代價下加速搜尋收斂。</p>
-<h2 id="Searching-the-Graph" class="common-anchor-header">搜尋圖<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
+    </button></h2><p>The construction algorithm works as follows: we fix a number of layers, <em>L</em>, in advance. The value l=1 will correspond to the coarsest layer, where search begins, and l=L will correspond to the densest layer, where search finishes. We iterate through each vector to be inserted and sample an insertion layer following a truncated <a href="https://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a> (either rejecting <em>l &gt; L</em> or setting <em>l’ =</em> min_(l, L)_). Say we sample <em>1 &lt; l &lt; L</em> for the current vector. We perform a greedy search on the top layer, L, until we reach its local minimum. Then, we follow an edge from the local minimum in the _L_th layer to the corresponding vector in the _(L-1)_th layer and use it as the entry point to greedily search the _(L-1)_th layer.</p>
+<p>This process is repeated until we reach the _l_th layer. We then begin to create nodes for the vector to be inserted, connecting it to its closest neighbors found by greedy search in the _l_th layer so far constructed, navigating to the _(l-1)_th layer and repeating until we have inserted the vector into the _1_st layer. An animation above makes this clear</p>
+<p>We can see that this hierarchical graph construction method uses a clever explicit selection of the insertion node for each vector. We search the layers above the insertion layer constructed so far, searching efficiently from course-to-fine distances. Relatedly, the method separates links by different scales in each layer: the top layer affords long-scale hops across the search space, with the scale diminishing down to the bottom layer. Both of these modifications help avoid being trapped in sub-optimal minima and hasten search convergence at the cost of additional memory.</p>
+<h2 id="Searching-the-Graph" class="common-anchor-header">Searching the Graph<button data-href="#Searching-the-Graph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -128,8 +131,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>搜尋程序的運作方式與內部圖形建構步驟很相似。從頂層開始，我們貪婪地導航到最接近查詢的一個或多個節點。然後，我們跟隨該節點到下一層，並重複這個過程。我們的答案是由最底層的<em>R 個</em>最接近鄰居的清單所得到的，如上圖的動畫所示。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>The search procedure works much like the inner graph construction step. Starting from the top layer, we greedily navigate to the node or nodes closest to the query. Then we follow that node(s) down to the next layer and repeat the process. Our answer is obtained by the list of <em>R</em> closest neighbors in the bottom layer, as illustrated by the animation above this.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,13 +147,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>像 Milvus 之類的向量資料庫提供高度最佳化和調整的 HNSW 實作，而且它通常是適用於記憶體的資料集的最佳預設搜尋索引。</p>
-<p>我們對 HNSW 的運作方式和原因做了高層次的概述，比起理論和數學，我們更偏好可視化和直覺。因此，我們省略了對建構與搜尋演算法的精確描述<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; Alg 1-3]、搜尋與建構複雜度分析<a href="https://arxiv.org/abs/1603.09320">[</a><a href="https://arxiv.org/abs/1603.09320">Malkov</a><a href="https://arxiv.org/abs/1603.09320">and</a><a href="https://arxiv.org/abs/1603.09320">Yashushin</a><a href="https://arxiv.org/abs/1603.09320">, 2016</a>; §4.2]，以及較不重要的細節，例如在建構過程中更有效選擇鄰居節點的啟發式<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; Alg 5]。此外，我們省略了對演算法超參數、其意義以及它們如何影響延遲/速度/記憶體權衡的討論<a href="https://arxiv.org/abs/1603.09320">[Malkov and Yashushin, 2016</a>; §4.1]。了解這一點對於在實踐中使用 HNSW 非常重要。</p>
-<p>以下資源包含這些主題的進一步閱讀，以及 NSW 和 HNSW 的完整 Python 教學實作 (由我自己撰寫)，包括產生本文動畫的程式碼。</p>
-<custom-h1>資源</custom-h1><ul>
-<li><p>GitHub："<a href="https://github.com/stefanwebb/hnsw-illustrated">HNSW-Illustrated：Hierarchical Navigable Small Worlds (HNSW)（一種向量搜尋演算法）的小型實作，用於學習目的</a>"</p></li>
-<li><p><a href="https://milvus.io/docs/hnsw.md#HNSW">HNSW | Milvus 文件</a></p></li>
-<li><p><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">瞭解 Hierarchical Navigable Small Worlds (HNSW) - Zilliz Learn</a></p></li>
-<li><p>HNSW 論文：<a href="https://arxiv.org/abs/1603.09320">"使用 Hierarchical Navigable Small World 圖表進行高效且穩健的近似近鄰搜尋</a></p></li>
-<li><p>NSW 論文：<a href="https://publications.hse.ru/pubs/share/folder/x5p6h7thif/128296059.pdf">「基於可導航小型世界圖的近似近鄰演算法</a>」</p></li>
+    </button></h2><p>Vector databases like Milvus provide highly optimized and tuned implementations of HNSW, and it is often the best default search index for datasets that fit in memory.</p>
+<p>We have sketched a high-level overview of how and why HNSW works, preferring visualizations and intuition over theory and mathematics. Consequently, we have omitted an exact description of the construction and search algorithms[<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; Alg 1-3], analysis of search and construction complexity [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; §4.2], and less essential details like a heuristic for more effectively choosing neighbor nodes during construction [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; Alg 5]. Moreover, we have omitted discussion of the algorithm’s hyperparameters, their meaning and how they affect the latency/speed/memory trade-off [<a href="https://arxiv.org/abs/1603.09320">Malkov and Yashushin, 2016</a>; §4.1]. An understanding of this is important for using HNSW in practice.</p>
+<p>The resources below contain further reading on these topics and a full Python pedagogical implementation (written by myself) for NSW and HNSW, including code to produce the animations in this article.</p>
+<custom-h1>Resources</custom-h1><ul>
+<li><p>GitHub: “<a href="https://github.com/stefanwebb/hnsw-illustrated">HNSW-Illustrated: A small implementation of Hierarchical Navigable Small Worlds (HNSW), a vector search algorithm, for learning purposes</a>”</p></li>
+<li><p><a href="https://milvus.io/docs/hnsw.md#HNSW">HNSW | Milvus Documentation</a></p></li>
+<li><p><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW">Understanding Hierarchical Navigable Small Worlds (HNSW) - Zilliz Learn</a></p></li>
+<li><p>HNSW paper: “<a href="https://arxiv.org/abs/1603.09320">Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs</a>”</p></li>
+<li><p>NSW paper: “<a href="https://publications.hse.ru/pubs/share/folder/x5p6h7thif/128296059.pdf">Approximate nearest neighbor algorithm based on navigable small world graphs</a>”</p></li>
 </ul>

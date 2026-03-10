@@ -1,15 +1,14 @@
 ---
 id: >-
   hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
-title: >-
-  Практическая работа с VDBBench: Бенчмаркинг векторных баз данных для
-  POC-тестов, которые соответствуют производственным
+title: >
+  Hands-On with VDBBench: Benchmarking Vector Databases for POCs That Match
+  Production
 author: Yifan Cai
 date: 2025-08-15T00:00:00.000Z
 desc: >-
-  Узнайте, как тестировать векторные базы данных на реальных производственных
-  данных с помощью VDBBench. Пошаговое руководство по созданию пользовательских
-  наборов данных POC, предсказывающих реальную производительность.
+  Learn how to test vector databases with real production data using VDBBench.
+  Step-by-step guide to custom dataset POCs that predict actual performance.
 cover: assets.zilliz.com/vdbbench_cover_min_2f86466839.png
 tag: Tutorials
 recommend: false
@@ -23,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
 ---
-<p>Векторные базы данных сегодня являются основной частью инфраструктуры искусственного интеллекта, обеспечивая работу различных приложений на базе LLM для обслуживания клиентов, создания контента, поиска, рекомендаций и т. д.</p>
-<p>На рынке представлено множество вариантов, от специально разработанных векторных баз данных, таких как Milvus и Zilliz Cloud, до традиционных баз данных с векторным поиском в качестве дополнения, и <strong>выбрать подходящий вариант не так просто, как прочитать графики контрольных показателей.</strong></p>
-<p>Большинство команд, прежде чем принять решение, проводят пробное тестирование (POC), что в теории разумно, но на практике многие эталоны поставщиков, которые выглядят впечатляюще на бумаге, рушатся в реальных условиях.</p>
-<p>Одна из главных причин заключается в том, что большинство заявлений о производительности основаны на устаревших наборах данных 2006-2012 годов (SIFT, GloVe, LAION), которые ведут себя совсем не так, как современные вкрапления. Например, в SIFT используются 128-мерные векторы, в то время как современные модели ИИ имеют гораздо более высокую размерность - 3 072 для последней модели OpenAI и 1 024 для модели Cohere - это серьезный сдвиг, который влияет на производительность, стоимость и масштабируемость.</p>
-<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">Решение: тестируйте на своих данных, а не на готовых бенчмарках<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
+<p>Vector databases are now a core part of AI infrastructure, powering various LLM-powered applications for customer service, content generation, search, recommendations, and more.</p>
+<p>With so many options in the market, from purpose-built vector databases like Milvus and Zilliz Cloud to traditional databases with vector search as an add-on, <strong>choosing the right one isn’t as simple as reading benchmark charts.</strong></p>
+<p>Most teams run a Proof of Concept (POC) before committing, which is smart in theory — but in practice, many vendor benchmarks that look impressive on paper collapse under real-world conditions.</p>
+<p>One of the main reasons is that most performance claims are based on outdated datasets from 2006–2012 (SIFT, GloVe, LAION) that behave very differently from modern embeddings. For example, SIFT uses 128-dimensional vectors, while today’s AI models produce far higher dimensions — 3,072 for OpenAI’s latest, 1,024 for Cohere’s —  a big shift that impacts performance, cost, and scalability.</p>
+<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">The Fix: Test with Your Data, Not Canned Benchmarks<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,19 +41,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Самое простое и эффективное решение: проводите POC-оценку с векторами, которые действительно генерирует ваше приложение. Это означает использование ваших моделей встраивания, ваших реальных запросов и вашего реального распределения данных.</p>
-<p>Именно для этого создан <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> - инструмент бенчмаркинга векторных баз данных с открытым исходным кодом. Он поддерживает оценку и сравнение любых векторных баз данных, включая Milvus, Elasticsearch, pgvector и другие, и моделирует реальные производственные рабочие нагрузки.</p>
-<p><a href="https://github.com/zilliztech/VectorDBBench">Скачать VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> Посмотреть таблицу лидеров →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">Что такое VDBBench</a></p>
-<p>VDBbench позволяет вам:</p>
+    </button></h2><p>The simplest and most effective solution: run your POC evaluation with the vectors your application actually generates. That means using your embedding models, your real queries, and your actual data distribution.</p>
+<p>This is exactly what <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> — an open-source vector database benchmarking tool — is built for. It supports the evaluation and comparison of any vector database, including Milvus, Elasticsearch, pgvector, and more, and simulates real production workloads.</p>
+<p><a href="https://github.com/zilliztech/VectorDBBench">Download VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> View Leaderboard →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">What is VDBBench</a></p>
+<p>VDBbench lets you:</p>
 <ul>
-<li><p><strong>Проводить тестирование с использованием собственных данных</strong> из ваших моделей встраивания.</p></li>
-<li><p>Моделировать <strong>одновременные вставки, запросы и потоковое вхождение</strong></p></li>
-<li><p>Измерение <strong>задержек P95/P99, устойчивой пропускной способности и точности запоминания</strong>.</p></li>
-<li><p>Проведение бенчмарков для нескольких баз данных в одинаковых условиях.</p></li>
-<li><p>Позволяет <strong>тестировать пользовательские наборы данных</strong>, чтобы результаты действительно соответствовали производственным.</p></li>
+<li><p><strong>Test with your own data</strong> from your embedding models</p></li>
+<li><p>Simulate <strong>concurrent inserts, queries, and streaming ingestion</strong></p></li>
+<li><p>Measure <strong>P95/P99 latency, sustained throughput, and recall accuracy</strong></p></li>
+<li><p>Benchmark across multiple databases under identical conditions</p></li>
+<li><p>Allows <strong>custom dataset testing</strong> so results actually match production</p></li>
 </ul>
-<p>Далее мы расскажем вам о том, как провести POC-тестирование производственного уровня с помощью VDBBench и ваших реальных данных, чтобы вы могли сделать уверенный и надежный выбор.</p>
-<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">Как оценить VectorDB с вашими пользовательскими наборами данных с помощью VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
+<p>Next, we’ll walk you through how to run a production-grade POC with VDBBench and your real data — so you can make a confident, future-proof choice.</p>
+<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">How to Evaluate VectorDBs with Your Custom Datasets with VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,96 +68,96 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем приступить к работе, убедитесь, что у вас установлен Python 3.11 или выше. Вам понадобятся векторные данные в формате CSV или NPY, примерно 2-3 часа на полную настройку и тестирование, а также промежуточные знания Python для устранения неполадок в случае необходимости.</p>
-<h3 id="Installation-and-Configuration" class="common-anchor-header">Установка и настройка</h3><p>Если вы оцениваете одну базу данных, выполните эту команду:</p>
+    </button></h2><p>Before getting started, ensure you have Python 3.11 or higher installed. You’ll need vector data in CSV or NPY format, approximately 2-3 hours for complete setup and testing, and intermediate Python knowledge for troubleshooting if needed.</p>
+<h3 id="Installation-and-Configuration" class="common-anchor-header">Installation and Configuration</h3><p>If you’re evaluating one database, run this command:</p>
 <pre><code translate="no">pip install vectordb-bench
 <button class="copy-code-btn"></button></code></pre>
-<p>Если вы хотите сравнить все поддерживаемые базы данных, выполните эту команду:</p>
+<p>If you’re to compare all supported databases, run the command:</p>
 <pre><code translate="no">pip install vectordb-bench[<span class="hljs-built_in">all</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>Для конкретных клиентов баз данных (например, Elasticsearch):</p>
+<p>For specific database clients (eg: Elasticsearch):</p>
 <pre><code translate="no">pip install vectordb-bench[elastic]
 <button class="copy-code-btn"></button></code></pre>
-<p>Проверьте эту <a href="https://github.com/zilliztech/VectorDBBench">страницу GitHub</a> для всех поддерживаемых баз данных и команд их установки.</p>
-<h3 id="Launching-VDBBench" class="common-anchor-header">Запуск VDBBench</h3><p>Запустите <strong>VDBBench</strong> с помощью:</p>
+<p>Check this <a href="https://github.com/zilliztech/VectorDBBench">GitHub page</a> for all the supported databases and their install commands.</p>
+<h3 id="Launching-VDBBench" class="common-anchor-header">Launching VDBBench</h3><p>Start <strong>VDBBench</strong> with:</p>
 <pre><code translate="no">init_bench
 <button class="copy-code-btn"></button></code></pre>
-<p>Ожидаемый вывод консоли: 
+<p>Expected console output: 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_expected_console_output_66e1a218b7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Веб-интерфейс будет доступен локально:</p>
+<p>The web interface will be available locally:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_2e4dd7ea69.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Подготовка данных и преобразование формата</h3><p>VDBBench требует структурированных файлов Parquet с определенными схемами для обеспечения последовательного тестирования различных баз данных и наборов данных.</p>
+<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Data Preparation and Format Conversion</h3><p>VDBBench requires structured Parquet files with specific schemas to ensure consistent testing across different databases and datasets.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Имя файла</strong></th><th style="text-align:center"><strong>Назначение</strong></th><th style="text-align:center"><strong>Требуемый</strong></th><th style="text-align:center"><strong>Содержание Пример</strong></th></tr>
+<tr><th style="text-align:center"><strong>File Name</strong></th><th style="text-align:center"><strong>Purpose</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Content Example</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Коллекция векторов для вставки в базу данных</td><td style="text-align:center">✅</td><td style="text-align:center">Идентификатор вектора + данные вектора (список[float])</td></tr>
-<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Коллекция векторов для запросов</td><td style="text-align:center">✅</td><td style="text-align:center">Векторный идентификатор + векторные данные (список[float])</td></tr>
-<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">Истина для векторов запросов (список идентификаторов ближайших соседей)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k список ID ближайших соседей]</td></tr>
-<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Метки (метаданные, описывающие сущности, отличные от векторов)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
+<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Vector collection for database insertion</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Vector collection for queries</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">Ground Truth for query vectors (actual nearest neighbor ID list)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k similar ID list]</td></tr>
+<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Labels (metadata describing entities other than vectors)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
 </tbody>
 </table>
-<p>Необходимые спецификации файлов:</p>
+<p>Required File Specifications:</p>
 <ul>
-<li><p><strong>Файл обучающего вектора (train.parquet)</strong> должен содержать колонку ID с инкрементными целыми числами и колонку вектора, содержащую массивы float32. Названия столбцов настраиваются, но столбец ID должен использовать целочисленные типы для правильной индексации.</p></li>
-<li><p><strong>Файл тестовых векторов (test.parquet)</strong> имеет ту же структуру, что и обучающие данные. Имя столбца ID должно быть "id", а имена столбцов вектора могут быть настроены в соответствии со схемой данных.</p></li>
-<li><p><strong>Файл истины (neighbors.parquet)</strong> содержит эталонные ближайшие соседи для каждого тестового запроса. Он требует столбца ID, соответствующего идентификаторам тестовых векторов, и столбца массива neighbors, содержащего правильные идентификаторы ближайших соседей из обучающего набора.</p></li>
-<li><p><strong>Файл скалярных меток (scalar_labels.parquet)</strong> является необязательным и содержит метки метаданных, связанные с обучающими векторами, полезные для тестирования фильтрованного поиска.</p></li>
+<li><p><strong>Training Vector File (train.parquet)</strong> must contain an ID column with incremental integers and a vector column containing float32 arrays. Column names are configurable, but the ID column must use integer types for proper indexing.</p></li>
+<li><p><strong>Test Vector File (test.parquet)</strong> follows the same structure as the training data. The ID column name must be “id” while vector column names can be customized to match your data schema.</p></li>
+<li><p><strong>Ground Truth File (neighbors.parquet)</strong> contains the reference nearest neighbors for each test query. It requires an ID column corresponding to test vector IDs and a neighbors array column containing the correct nearest neighbor IDs from the training set.</p></li>
+<li><p><strong>Scalar Labels File (scalar_labels.parquet)</strong> is optional and contains metadata labels associated with training vectors, useful for filtered search testing.</p></li>
 </ul>
-<h3 id="Data-Format-Challenges" class="common-anchor-header">Проблемы с форматами данных</h3><p>Большинство производственных векторных данных существует в форматах, которые не соответствуют требованиям VDBBench. Файлы CSV обычно хранят вкрапления в виде строковых представлений массивов, файлы NPY содержат необработанные числовые матрицы без метаданных, а экспорт баз данных часто использует JSON или другие структурированные форматы.</p>
-<p>Преобразование этих форматов вручную включает несколько сложных этапов: разбор строковых представлений в числовые массивы, вычисление точных ближайших соседей с помощью библиотек типа FAISS, правильное разбиение наборов данных с сохранением согласованности идентификаторов и обеспечение соответствия всех типов данных спецификациям Parquet.</p>
-<h3 id="Automated-Format-Conversion" class="common-anchor-header">Автоматизированное преобразование форматов</h3><p>Чтобы упростить процесс преобразования, мы разработали скрипт на Python, который автоматически справляется с преобразованием форматов, вычислением истинности и правильной структуризацией данных.</p>
-<p><strong>Входной формат CSV:</strong></p>
+<h3 id="Data-Format-Challenges" class="common-anchor-header">Data Format Challenges</h3><p>Most production vector data exists in formats that don’t directly match VDBBench requirements. CSV files typically store embeddings as string representations of arrays, NPY files contain raw numerical matrices without metadata, and database exports often use JSON or other structured formats.</p>
+<p>Converting these formats manually involves several complex steps: parsing string representations into numerical arrays, computing exact nearest neighbors using libraries like FAISS, properly splitting datasets while maintaining ID consistency, and ensuring all data types match Parquet specifications.</p>
+<h3 id="Automated-Format-Conversion" class="common-anchor-header">Automated Format Conversion</h3><p>To streamline the conversion process, we’ve developed a Python script that handles format conversion, ground truth computation, and proper data structuring automatically.</p>
+<p><strong>CSV Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">id</span>,emb,label
 <span class="hljs-number">1</span>,<span class="hljs-string">&quot;[0.12,0.56,0.89,...]&quot;</span>,A
 <span class="hljs-number">2</span>,<span class="hljs-string">&quot;[0.33,0.48,0.90,...]&quot;</span>,B
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Входной формат NPY:</strong></p>
+<p><strong>NPY Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 vectors = np.<span class="hljs-property">random</span>.<span class="hljs-title function_">rand</span>(<span class="hljs-number">10000</span>, <span class="hljs-number">768</span>).<span class="hljs-title function_">astype</span>(<span class="hljs-string">&#x27;float32&#x27;</span>)
 np.<span class="hljs-title function_">save</span>(<span class="hljs-string">&quot;vectors.npy&quot;</span>, vectors)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Реализация сценария преобразования</h3><p><strong>Установите необходимые зависимости:</strong></p>
+<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Conversion Script Implementation</h3><p><strong>Install required dependencies:</strong></p>
 <pre><code translate="no">pip install numpy pandas faiss-cpu
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Выполнить преобразование:</strong></p>
+<p><strong>Execute the conversion:</strong></p>
 <pre><code translate="no">python convert_to_vdb_format.py \
   --train data/train.csv \
   --<span class="hljs-built_in">test</span> data/test.csv \
   --out datasets/custom \
   --topk 10
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Ссылка на параметр:</strong></p>
+<p><strong>Parameter Reference:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Имя параметра</strong></th><th style="text-align:center"><strong>Требуется</strong></th><th style="text-align:center"><strong>Тип</strong></th><th style="text-align:center"><strong>Описание</strong></th><th style="text-align:center"><strong>Значение по умолчанию</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Type</strong></th><th style="text-align:center"><strong>Description</strong></th><th style="text-align:center"><strong>Default Value</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Да</td><td style="text-align:center">Строка</td><td style="text-align:center">Путь к тренировочным данным, поддерживается формат CSV или NPY. CSV должен содержать столбец emb, если столбец id отсутствует, будет произведена автогенерация</td><td style="text-align:center">Нет</td></tr>
-<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Да</td><td style="text-align:center">Строка</td><td style="text-align:center">Путь к данным запроса, поддерживает формат CSV или NPY. Формат такой же, как у данных для обучения</td><td style="text-align:center">Нет</td></tr>
-<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Да</td><td style="text-align:center">Строка</td><td style="text-align:center">Путь к выходному каталогу, сохраняет преобразованные паркетные файлы и файлы индексов соседей</td><td style="text-align:center">Нет</td></tr>
-<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">Нет</td><td style="text-align:center">Строка</td><td style="text-align:center">Путь к CSV-файлу с метками, должен содержать колонку labels (отформатированную как массив строк), используется для сохранения меток</td><td style="text-align:center">Нет</td></tr>
-<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">Нет</td><td style="text-align:center">Integer</td><td style="text-align:center">Количество ближайших соседей, которое нужно вернуть при вычислении</td><td style="text-align:center">10</td></tr>
+<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Training data path, supports CSV or NPY format. CSV must contain emb column, if no id column will auto-generate</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Query data path, supports CSV or NPY format. Format same as training data</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Output directory path, saves converted parquet files and neighbor index files</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">No</td><td style="text-align:center">String</td><td style="text-align:center">Label CSV path, must contain labels column (formatted as string array), used for saving labels</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">No</td><td style="text-align:center">Integer</td><td style="text-align:center">Number of nearest neighbors to return when computing</td><td style="text-align:center">10</td></tr>
 </tbody>
 </table>
-<p><strong>Структура выходного каталога:</strong></p>
+<p><strong>Output Directory Structure:</strong></p>
 <pre><code translate="no">datasets/custom/
 ├── train.parquet        <span class="hljs-comment"># Training vectors</span>
 ├── test.parquet         <span class="hljs-comment"># Query vectors  </span>
 ├── neighbors.parquet    <span class="hljs-comment"># Ground Truth</span>
 └── scalar_labels.parquet <span class="hljs-comment"># Optional scalar labels</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Complete-Conversion-Script" class="common-anchor-header">Полный сценарий преобразования</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="Complete-Conversion-Script" class="common-anchor-header">Complete Conversion Script</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> argparse
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
@@ -242,88 +241,88 @@ name
     args = parser.parse_args()
     main(args.train, args.test, args.out, args.labels, args.topk)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Выходные данные процесса преобразования:</strong> 
+<p><strong>Conversion Process Output:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_conversion_process_output_0827ba75c9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Сгенерированные файлы Проверка:</strong> 
+<p><strong>Generated Files Verification:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_f02cd2964e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Конфигурация пользовательских наборов данных</h3><p>Перейдите в раздел конфигурации пользовательских наборов данных в веб-интерфейсе:</p>
+<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Custom Dataset Configuration</h3><p>Navigate to the Custom Dataset configuration section in the web interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_aa14b75b5d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Интерфейс конфигурации предоставляет поля для метаданных набора данных и указания пути к файлу:</p>
+<p>The configuration interface provides fields for dataset metadata and file path specification:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/6_1b64832990.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Параметры конфигурации:</strong></p>
+<p><strong>Configuration Parameters:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Имя параметра</strong></th><th style="text-align:center"><strong>Значение</strong></th><th style="text-align:center"><strong>Предложения по конфигурации</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Meaning</strong></th><th style="text-align:center"><strong>Configuration Suggestions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Имя</td><td style="text-align:center">Имя набора данных (уникальный идентификатор)</td><td style="text-align:center">Любое имя, например, <code translate="no">my_custom_dataset</code></td></tr>
-<tr><td style="text-align:center">Путь к папке</td><td style="text-align:center">Путь к каталогу файлов набора данных</td><td style="text-align:center">например, <code translate="no">/data/datasets/custom</code></td></tr>
-<tr><td style="text-align:center">dim</td><td style="text-align:center">Размеры вектора</td><td style="text-align:center">Должны соответствовать файлам данных, например, 768</td></tr>
-<tr><td style="text-align:center">размер</td><td style="text-align:center">Количество векторов (необязательно)</td><td style="text-align:center">Можно оставить пустым, система автоматически определит</td></tr>
-<tr><td style="text-align:center">тип метрики</td><td style="text-align:center">Метод измерения сходства</td><td style="text-align:center">Обычно используется L2 (евклидово расстояние) или IP (внутреннее произведение).</td></tr>
-<tr><td style="text-align:center">имя файла train</td><td style="text-align:center">Имя файла обучающего набора (без расширения .parquet).</td><td style="text-align:center">Если <code translate="no">train.parquet</code>, заполните <code translate="no">train</code>. Для нескольких файлов используйте разделение запятыми, например, <code translate="no">train1,train2</code></td></tr>
-<tr><td style="text-align:center">имя файла test</td><td style="text-align:center">Имя файла набора запросов (без расширения .parquet)</td><td style="text-align:center">Если <code translate="no">test.parquet</code>, заполните <code translate="no">test</code></td></tr>
-<tr><td style="text-align:center">имя файла грунтовой истины</td><td style="text-align:center">Имя файла Ground Truth (без расширения .parquet)</td><td style="text-align:center">Если <code translate="no">neighbors.parquet</code>, заполните <code translate="no">neighbors</code></td></tr>
-<tr><td style="text-align:center">train id name</td><td style="text-align:center">Имя столбца ID обучающих данных</td><td style="text-align:center">Обычно <code translate="no">id</code></td></tr>
-<tr><td style="text-align:center">имя вектора тренировки</td><td style="text-align:center">Имя столбца вектора обучающих данных</td><td style="text-align:center">Если сгенерированное скриптом имя столбца <code translate="no">emb</code>, заполните <code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">имя столбца test emb</td><td style="text-align:center">Имя столбца вектора тестовых данных</td><td style="text-align:center">Обычно совпадает с именем столбца train emb, например, <code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">ground truth emb name</td><td style="text-align:center">Имя столбца ближайших соседей в Ground Truth</td><td style="text-align:center">Если имя столбца <code translate="no">neighbors_id</code>, заполните <code translate="no">neighbors_id</code></td></tr>
-<tr><td style="text-align:center">имя файла скалярных меток</td><td style="text-align:center">(Необязательно) Имя файла меток (без расширения .parquet).</td><td style="text-align:center">Если был сгенерирован файл <code translate="no">scalar_labels.parquet</code>, заполните файл <code translate="no">scalar_labels</code>, в противном случае оставьте пустым</td></tr>
-<tr><td style="text-align:center">процентное соотношение меток</td><td style="text-align:center">(Необязательно) Коэффициент фильтрации меток</td><td style="text-align:center">например, <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, оставить пустым, если фильтрация меток не требуется</td></tr>
-<tr><td style="text-align:center">описание</td><td style="text-align:center">Описание набора данных</td><td style="text-align:center">Нельзя указывать бизнес-контекст или метод генерации</td></tr>
+<tr><td style="text-align:center">Name</td><td style="text-align:center">Dataset name (unique identifier)</td><td style="text-align:center">Any name, e.g., <code translate="no">my_custom_dataset</code></td></tr>
+<tr><td style="text-align:center">Folder Path</td><td style="text-align:center">Dataset file directory path</td><td style="text-align:center">e.g., <code translate="no">/data/datasets/custom</code></td></tr>
+<tr><td style="text-align:center">dim</td><td style="text-align:center">Vector dimensions</td><td style="text-align:center">Must match data files, e.g., 768</td></tr>
+<tr><td style="text-align:center">size</td><td style="text-align:center">Vector count (optional)</td><td style="text-align:center">Can be left empty, system will auto-detect</td></tr>
+<tr><td style="text-align:center">metric type</td><td style="text-align:center">Similarity measurement method</td><td style="text-align:center">Commonly use L2 (Euclidean distance) or IP (inner product)</td></tr>
+<tr><td style="text-align:center">train file name</td><td style="text-align:center">Training set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">train.parquet</code>, fill <code translate="no">train</code>. Multiple files use comma separation, e.g., <code translate="no">train1,train2</code></td></tr>
+<tr><td style="text-align:center">test file name</td><td style="text-align:center">Query set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">test.parquet</code>, fill <code translate="no">test</code></td></tr>
+<tr><td style="text-align:center">ground truth file name</td><td style="text-align:center">Ground Truth filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">neighbors.parquet</code>, fill <code translate="no">neighbors</code></td></tr>
+<tr><td style="text-align:center">train id name</td><td style="text-align:center">Training data ID column name</td><td style="text-align:center">Usually <code translate="no">id</code></td></tr>
+<tr><td style="text-align:center">train emb name</td><td style="text-align:center">Training data vector column name</td><td style="text-align:center">If script-generated column name is <code translate="no">emb</code>, fill <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">test emb name</td><td style="text-align:center">Test data vector column name</td><td style="text-align:center">Usually same as train emb name, e.g., <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">ground truth emb name</td><td style="text-align:center">Nearest neighbor column name in Ground Truth</td><td style="text-align:center">If column name is <code translate="no">neighbors_id</code>, fill <code translate="no">neighbors_id</code></td></tr>
+<tr><td style="text-align:center">scalar labels file name</td><td style="text-align:center">(Optional) Label filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">scalar_labels.parquet</code> was generated, fill <code translate="no">scalar_labels</code>, otherwise leave empty</td></tr>
+<tr><td style="text-align:center">label percentages</td><td style="text-align:center">(Optional) Label filter ratio</td><td style="text-align:center">e.g., <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, leave empty if no label filtering needed</td></tr>
+<tr><td style="text-align:center">description</td><td style="text-align:center">Dataset description</td><td style="text-align:center">Cannot note business context or generation method</td></tr>
 </tbody>
 </table>
-<p>Сохраните конфигурацию, чтобы продолжить настройку теста.</p>
-<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Выполнение теста и конфигурация базы данных</h3><p>Войдите в интерфейс конфигурации теста:</p>
+<p>Save the configuration to proceed with the test setup.</p>
+<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Test Execution and Database Configuration</h3><p>Access the test configuration interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/7_3ecdcb1034.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Выбор и настройка базы данных (на примере Milvus):</strong> 
+<p><strong>Database Selection and Configuration (Milvus as an Example):</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/8_356a2d8c39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Назначение наборов данных:</strong> 
+<p><strong>Dataset Assignment:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/9_dataset_assignment_85ba7b24ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Тестовые метаданные и маркировка:</strong> 
+<p><strong>Test Metadata and Labeling:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/10_test_metadata_and_labeling_293f6f2b99.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Выполнение тестов:</strong> 
+<p><strong>Test Execution:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/11_test_execution_76acb42c98.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Анализ результатов и оценка производительности<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
+<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Results Analysis and Performance Evaluation<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -338,22 +337,22 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Интерфейс результатов предоставляет исчерпывающую аналитику производительности:</p>
+    </button></h2><p>The results interface provides comprehensive performance analytics:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_993c536c20.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Test-Configuration-Summary" class="common-anchor-header">Сводка тестовой конфигурации</h3><p>В ходе оценки были протестированы уровни параллелизма 1, 5 и 10 одновременных операций (ограниченные доступными аппаратными ресурсами), размер вектора 768, размер набора данных 3 000 обучающих векторов и 3 000 тестовых запросов, при этом фильтрация скалярных меток была отключена в этом тестовом цикле.</p>
-<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Важнейшие соображения по реализации</h3><ul>
-<li><p><strong>Согласованность размеров:</strong> Несоответствие размерности векторов в обучающем и тестовом наборах данных приведет к немедленному отказу в тестировании. Чтобы избежать ошибок во время выполнения, проверьте согласованность размеров во время подготовки данных.</p></li>
-<li><p><strong>Точность исходных данных:</strong> неправильные расчеты исходных данных приводят к недействительности измерений коэффициента отзыва. Предоставленный сценарий преобразования использует FAISS с расстоянием L2 для точного вычисления ближайших соседей, что обеспечивает точность эталонных результатов.</p></li>
-<li><p><strong>Требования к масштабу набора данных:</strong> Небольшие наборы данных (менее 10 000 векторов) могут привести к несоответствующим измерениям QPS из-за недостаточной генерации нагрузки. Рассмотрите возможность увеличения размера набора данных для более надежного тестирования пропускной способности.</p></li>
-<li><p><strong>Распределение ресурсов:</strong> Ограничения памяти и процессора контейнера Docker могут искусственно ограничить производительность базы данных во время тестирования. Следите за использованием ресурсов и при необходимости корректируйте ограничения контейнеров для точного измерения производительности.</p></li>
-<li><p><strong>Мониторинг ошибок:</strong> <strong>VDBBench</strong> может записывать ошибки в консольный вывод, которые не отображаются в веб-интерфейсе. Отслеживайте журналы терминала во время выполнения теста для получения полной диагностической информации.</p></li>
+<h3 id="Test-Configuration-Summary" class="common-anchor-header">Test Configuration Summary</h3><p>The evaluation tested concurrency levels of 1, 5, and 10 concurrent operations (constrained by available hardware resources), vector dimensions of 768, dataset size of 3,000 training vectors and 3,000 test queries, with scalar label filtering disabled for this test run.</p>
+<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Critical Implementation Considerations</h3><ul>
+<li><p><strong>Dimensional Consistency:</strong> Vector dimension mismatches between training and test datasets will cause immediate test failures. Verify dimensional alignment during data preparation to avoid runtime errors.</p></li>
+<li><p><strong>Ground Truth Accuracy:</strong> Incorrect ground truth calculations invalidate recall rate measurements. The provided conversion script uses FAISS with L2 distance for exact nearest neighbor computation, ensuring accurate reference results.</p></li>
+<li><p><strong>Dataset Scale Requirements:</strong> Small datasets (below 10,000 vectors) may produce inconsistent QPS measurements due to insufficient load generation. Consider scaling the dataset size for more reliable throughput testing.</p></li>
+<li><p><strong>Resource Allocation:</strong> Docker container memory and CPU constraints can artificially limit database performance during testing. Monitor resource utilization and adjust container limits as needed for accurate performance measurement.</p></li>
+<li><p><strong>Error Monitoring:</strong> <strong>VDBBench</strong> may log errors to console output that don’t appear in the web interface. Monitor terminal logs during test execution for complete diagnostic information.</p></li>
 </ul>
-<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Дополнительные инструменты: Генерация тестовых данных<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
+<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Supplemental Tools: Test Data Generation<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -368,7 +367,7 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Для разработки и стандартных сценариев тестирования можно генерировать синтетические наборы данных с контролируемыми характеристиками:</p>
+    </button></h2><p>For development and standardized testing scenarios, you can generate synthetic datasets with controlled characteristics:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_csv</span>(<span class="hljs-params">num_records: <span class="hljs-built_in">int</span>, dim: <span class="hljs-built_in">int</span>, filename: <span class="hljs-built_in">str</span></span>):
@@ -390,8 +389,8 @@ name
     generate_csv(num_records, dim, <span class="hljs-string">&quot;train.csv&quot;</span>)
     generate_csv(num_records, dim, <span class="hljs-string">&quot;test.csv&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта утилита генерирует наборы данных с заданными размерами и количеством записей для прототипирования и базовых сценариев тестирования.</p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This utility generates datasets with specified dimensions and record counts for prototyping and baseline testing scenarios.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -406,12 +405,12 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Вы только что узнали, как освободиться от "театра эталонов", который ввел в заблуждение множество решений в области векторных баз данных. С помощью VDBBench и собственного набора данных вы можете генерировать производственные показатели QPS, задержки и запоминания - больше никаких догадок на основе академических данных десятилетней давности.</p>
-<p>Перестаньте полагаться на консервированные эталоны, которые не имеют ничего общего с вашими реальными рабочими нагрузками. Всего за несколько часов, а не недель, вы увидите, как именно работает база данных с <em>вашими</em> векторами, запросами и ограничениями. Это значит, что вы можете с уверенностью принимать решения, избегать болезненных переписываний в дальнейшем и создавать системы, которые действительно работают в производстве.</p>
+    </button></h2><p>You’ve just learned how to break free from the “benchmark theater” that’s misled countless vector database decisions. With VDBBench and your own dataset, you can generate production-grade QPS, latency, and recall metrics—no more guesswork from decades-old academic data.</p>
+<p>Stop relying on canned benchmarks that have nothing to do with your real workloads. In just hours—not weeks—you’ll see precisely how a database performs with <em>your</em> vectors, <em>your</em> queries, and <em>your</em> constraints. That means you can make the call with confidence, avoid painful rewrites later, and ship systems that actually work in production.</p>
 <ul>
-<li><p>Попробуйте VDBBench с вашими рабочими нагрузками: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a>.</p></li>
-<li><p>Посмотрите результаты тестирования основных векторных баз данных: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
+<li><p>Try VDBBench with your workloads: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
+<li><p>View testing results of major vector databases: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
 </ul>
-<p>У вас есть вопросы или вы хотите поделиться своими результатами? Присоединяйтесь к обсуждению на<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> или общайтесь с нашим сообществом в <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
 <hr>
-<p><em>Это первый пост в нашей серии VectorDB POC Guide - практические, проверенные разработчиками методы создания инфраструктуры искусственного интеллекта, работающей в условиях реальной нагрузки. Следите за новостями!</em></p>
+<p><em>This is the first post in our VectorDB POC Guide series—hands-on, developer-tested methods for building AI infrastructure that performs under real-world pressure. Stay tuned for more!</em></p>

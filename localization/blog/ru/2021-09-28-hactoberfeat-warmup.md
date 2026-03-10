@@ -1,20 +1,22 @@
 ---
 id: 2021-09-28-hactoberfest-warmup.md
-title: Всем рады
+title: Everyone is welcome
 author: Zilliz
 date: 2021-09-28T00:00:00.000Z
-desc: Приглашаем всех!
+desc: Everyone is welcome!
 cover: assets.zilliz.com/Hacktoberfest_89c929cace.png
 tag: Events
 ---
-<custom-h1>Milvus примет участие в Hacktoberfest 2021</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Hacktoberfest_89c929cace.png" alt="hacktoberfestCover" class="doc-image" id="hacktoberfestcover" />
-   </span> <span class="img-wrapper"> <span>hacktoberfestОбложка</span> </span></p>
-<p><strong>Milvus, векторная база данных, расширяющая возможности приложений искусственного интеллекта, объявила сегодня о своем участии в 8-м ежегодном мероприятии Hacktoberfest, спонсируемом DigitalOcean!</strong></p>
-<p>В 2014 году компания DigitalOcean инициировала <a href="https://hacktoberfest.digitalocean.com/">Hacktoberfest</a> с целью отметить проекты с открытым исходным кодом. За прошедшие годы число участников мероприятия неуклонно росло от десятков до тысяч.  В этом году мероприятие, длящееся целый месяц, планирует увеличить число активных участников до 200 000!</p>
-<p>Начиная с 1 октября, все - от опытных разработчиков до студентов, от новичков в коде и технических писателей до UX-дизайнеров - смогут внести свой вклад в сообщества разработчиков открытого ПО и развить свои навыки, а также выиграть ограниченное количество товаров и многое другое.</p>
-<h2 id="Everyone-is-welcome" class="common-anchor-header">Всем рады<button data-href="#Everyone-is-welcome" class="anchor-icon" translate="no">
+<custom-h1>Milvus To Participate In Hacktoberfest 2021</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Hacktoberfest_89c929cace.png" alt="hacktoberfestCover" class="doc-image" id="hacktoberfestcover" />
+    <span>hacktoberfestCover</span>
+  </span>
+</p>
+<p><strong>Milvus, the vector database empowering AI applications, announced today its participation in the 8th annual Hacktoberfest event sponsored by DigitalOcean!</strong></p>
+<p>In 2014, DigitalOcean initiated <a href="https://hacktoberfest.digitalocean.com/">Hacktoberfest</a> with the idea of celebrating open source software projects. Through the years, the event has steadily grown from tens to thousands of participants.  This, years the month-long event looks to grow to over 200,000 active participants!</p>
+<p>Starting October 1st, everyone from seasoned developers to students, code newbies and tech writers to UX designers, can contribute to open source communities and develop their skills, with the perks of winning limited edition swag and more.</p>
+<h2 id="Everyone-is-welcome" class="common-anchor-header">Everyone is welcome<button data-href="#Everyone-is-welcome" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,9 +31,9 @@ tag: Events
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Существует множество способов внести свой вклад в проект Milvus - вам не нужно быть суперзвездой кода, чтобы внести свой вклад! На самом деле, вам даже не нужно иметь обширный опыт или длинный список навыков, чтобы помочь. Вы отличный писатель или редактор - отлично!  Вы любите создавать графику или иллюстрации - отлично!  Вот несколько способов, которыми вы можете внести свой вклад во время мероприятия, а также список "проблем" на GitHub для новых участников!</p>
-<p>Ознакомьтесь с деталями <a href="https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#how-to-participate-1">здесь</a>.</p>
-<h2 id="Contribute-get-noticed--earn-swag" class="common-anchor-header">Внесите свой вклад, станьте заметным и получите награду<button data-href="#Contribute-get-noticed--earn-swag" class="anchor-icon" translate="no">
+    </button></h2><p>There are a lot of ways to contribute to the Milvus project - you don’t have to be a code superstar to contribute! In fact, you don’t even need an extensive background or long list of skills in order to help out. Are you a great writer or editor, awesome!  Do you like to create graphics or illustrations -  perfect!  Here are a few ways you can make a contribution during the event, along with a list of GitHub “issues” for new contributors to tackle!</p>
+<p>Check out the details <a href="https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#how-to-participate-1">here</a>.</p>
+<h2 id="Contribute-get-noticed--earn-swag" class="common-anchor-header">Contribute, get noticed &amp; earn swag<button data-href="#Contribute-get-noticed--earn-swag" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,12 +49,14 @@ tag: Events
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/swag_cae44023e8.png" alt="swag" class="doc-image" id="swag" />
-   </span> <span class="img-wrapper"> <span>swag</span> </span></p>
-<p>Конечно, вклад в открытый исходный код или концепцию открытого исходного кода по сути является воплощением альтруизма, но немного крутых сувениров не помешает. Мы разыгрываем эксклюзивные наклейки, футболки, клавиатуры и дрон! Узнайте подробности на <a href="https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#prizes-8">странице</a> нашего <a href="https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#prizes-8">форума</a>.</p>
-<p>DigitalOcean также предоставляет награду для участников, ознакомьтесь с правилами на официальном сайте Hacktoberfest.</p>
-<h2 id="Whats-next" class="common-anchor-header">Что дальше<button data-href="#Whats-next" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/swag_cae44023e8.png" alt="swag" class="doc-image" id="swag" />
+    <span>swag</span>
+  </span>
+</p>
+<p>Certainly contributing to open source, or the concept of open source, is in esence an embodiment of altruism, but some cool swag doesn’t hurt. We have up for grabs exclusive stickers, t-shirts, keyboards and a drone too! Check out the details on our <a href="https://discuss.milvus.io/t/join-hacktoberfest-2021-with-us/72#prizes-8">forum page</a>.</p>
+<p>DigitalOcean also provides swag for participants, check out the rules from the official Hacktoberfest website.</p>
+<h2 id="Whats-next" class="common-anchor-header">What’s next<button data-href="#Whats-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,12 +72,12 @@ tag: Events
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Недавно мы провели виртуальную встречу в формате "вопрос-ответ", посвященную Хактоберфесту.  Запись можно посмотреть <a href="https://www.youtube.com/watch?v=cHjSTEHoiF8">здесь</a>.</p></li>
-<li><p>Чтобы принять участие в мероприятии, мы рекомендуем зайти на нашу страницу milvus.io Hacktoberfest и ознакомиться с <a href="https://hacktoberfest.com/">руководством "Быстрый старт"</a>.</p></li>
-<li><p>Загляните в наш <a href="https://github.com/milvus-io">репозиторий на GitHub</a> (и поставьте нам звезду)!</p></li>
-<li><p>Ознакомьтесь с нашим списком курируемых <a href="https://github.com/milvus-io/milvus/issues?q=is%3Aopen+is%3Aissue+label%3AHacktoberfest">"проблем"</a> для участников, которые помогут вам стать рок-звездой!</p></li>
+<li><p>We recently hosted a virtual Q&amp;A call about Hacktoberfest.  You can view the recording <a href="https://www.youtube.com/watch?v=cHjSTEHoiF8">here</a>.</p></li>
+<li><p>To participate in the event, we recommend starting on our milvus.io Hacktoberfest page and checking out the <a href="https://hacktoberfest.com/">“Quick Start” Guide</a></p></li>
+<li><p>Check out our <a href="https://github.com/milvus-io">GitHub repo</a> (and give us a star)!</p></li>
+<li><p>View our list of curated <a href="https://github.com/milvus-io/milvus/issues?q=is%3Aopen+is%3Aissue+label%3AHacktoberfest">“issues”</a> for participants that can help you become a rockstar!</p></li>
 </ul>
-<h2 id="Helpful-links" class="common-anchor-header">Полезные ссылки<button data-href="#Helpful-links" class="anchor-icon" translate="no">
+<h2 id="Helpful-links" class="common-anchor-header">Helpful links<button data-href="#Helpful-links" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -89,7 +93,7 @@ tag: Events
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://hacktoberfest.com/"><strong>Страница мероприятия Milvus x Hactoberfest</strong></a></p></li>
-<li><p><a href="https://discuss.milvus.io/c/hacktoberfest/9"><strong>Форум Milvus</strong></a> - присоединяйтесь к нашему форуму Milvus, чтобы быть в курсе релизов Milvus, общаться с другими пользователями и задавать вопросы во время мероприятия.</p></li>
-<li><p><strong>Следите за нами в <a href="https://twitter.com/milvusio">Twitter</a></strong>, и если ваш вклад будет отмечен во время мероприятия, вы сможете получить специальный приз!</p></li>
+<li><p><a href="https://hacktoberfest.com/"><strong>Milvus x Hactoberfest event page</strong></a></p></li>
+<li><p><a href="https://discuss.milvus.io/c/hacktoberfest/9"><strong>Milvus Discussion Forum</strong></a> - Join our Milvus forum to stay up-to-date on Milvus releases, interact with other users, and ask questions during the event.</p></li>
+<li><p><strong>Follow us on <a href="https://twitter.com/milvusio">Twitter</a></strong> and if your contribution is highlighted during the event you could earn special swag!</p></li>
 </ul>

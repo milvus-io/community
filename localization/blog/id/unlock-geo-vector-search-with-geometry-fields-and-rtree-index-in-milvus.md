@@ -1,8 +1,8 @@
 ---
 id: unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
-title: >-
-  Menyatukan Pemfilteran Geospasial dan Pencarian Vektor dengan Bidang Geometri
-  dan RTREE di Milvus 2.6
+title: >
+  Bringing Geospatial Filtering and Vector Search Together with Geometry Fields
+  and RTREE in Milvus 2.6
 author: Cai Zhang
 date: 2025-12-08T00:00:00.000Z
 cover: assets.zilliz.com/rtree_new_cover_1_a0439d3adf.png
@@ -14,29 +14,29 @@ meta_keywords: 'Milvus 2.6, Geometry field, RTREE index, Geo-Vector Search'
 meta_title: |
   Geospatial Filtering + Vector Search in Milvus with Geometry Fields and RTREE
 desc: >-
-  Pelajari bagaimana Milvus 2.6 menyatukan pencarian vektor dengan pengindeksan
-  geospasial menggunakan bidang Geometri dan indeks RTREE, yang memungkinkan
-  pencarian AI yang akurat dan sadar lokasi.
+  Learn how Milvus 2.6 unifies vector search with geospatial indexing using
+  Geometry fields and the RTREE index, enabling accurate, location-aware AI
+  retrieval.
 origin: >-
   https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md
 ---
-<p>Karena sistem AI semakin banyak diterapkan pada pengambilan keputusan secara real-time, data geospasial menjadi semakin penting dalam serangkaian aplikasi yang terus berkembang-terutama aplikasi yang beroperasi di dunia nyata atau melayani pengguna di lokasi nyata.</p>
-<p>Pertimbangkan platform pengantaran makanan seperti DoorDash atau Uber Eats. Ketika pengguna melakukan pemesanan, sistem tidak hanya menghitung jarak terpendek antara dua titik. Sistem ini mengevaluasi kualitas restoran, ketersediaan kurir, kondisi lalu lintas langsung, area layanan, dan semakin banyak, penyematan pengguna dan barang yang mewakili preferensi pribadi. Demikian pula, kendaraan otonom harus melakukan perencanaan jalur, deteksi rintangan, dan pemahaman semantik tingkat pemandangan di bawah batasan latensi yang ketat - seringkali dalam hitungan milidetik. Dalam domain ini, keputusan yang efektif bergantung pada penggabungan kendala spasial dengan kesamaan semantik, daripada memperlakukannya sebagai langkah yang berdiri sendiri-sendiri.</p>
-<p>Namun, pada lapisan data, data spasial dan semantik secara tradisional ditangani oleh sistem yang terpisah.</p>
+<p>As AI systems are increasingly applied to real-time decision-making, geospatial data becomes increasingly important in a growing set of applications—particularly those that operate in the physical world or serve users across real locations.</p>
+<p>Consider food delivery platforms like DoorDash or Uber Eats. When a user places an order, the system isn’t simply calculating the shortest distance between two points. It evaluates restaurant quality, courier availability, live traffic conditions, service areas, and increasingly, user and item embeddings that represent personal preferences. Similarly, autonomous vehicles must perform path planning, obstacle detection, and scene-level semantic understanding under strict latency constraints—often within milliseconds. In these domains, effective decisions depend on combining spatial constraints with semantic similarity, rather than treating them as independent steps.</p>
+<p>At the data layer, however, spatial and semantic data have traditionally been handled by separate systems.</p>
 <ul>
-<li><p>Basis data geospasial dan ekstensi spasial dirancang untuk menyimpan koordinat, poligon, dan hubungan spasial seperti penahanan atau jarak.</p></li>
-<li><p>Basis data vektor menangani penyematan vektor yang mewakili makna semantik data.</p></li>
+<li><p>Geospatial databases and spatial extensions are designed to store coordinates, polygons, and spatial relationships such as containment or distance.</p></li>
+<li><p>Vector databases handle vector embeddings that represent the data’s semantic meaning.</p></li>
 </ul>
-<p>Ketika aplikasi membutuhkan keduanya, mereka sering kali dipaksa masuk ke dalam pipeline kueri multi-tahap-memfilter berdasarkan lokasi di satu sistem, lalu melakukan pencarian vektor di sistem lain. Pemisahan ini meningkatkan kompleksitas sistem, menambah latensi kueri, dan menyulitkan untuk melakukan penalaran spasial-semantik secara efisien dalam skala besar.</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> mengatasi masalah ini dengan memperkenalkan <a href="https://milvus.io/docs/geometry-field.md">Bidang Geometri</a>, yang memungkinkan pencarian kemiripan vektor digabungkan secara langsung dengan batasan spasial. Hal ini memungkinkan kasus penggunaan seperti:</p>
+<p>When applications need both, they are often forced into multi-stage query pipelines—filtering by location in one system, then performing vector search in another. This separation increases system complexity, adds query latency, and makes it difficult to perform spatial–semantic reasoning efficiently at scale.</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> addresses this problem by introducing the <a href="https://milvus.io/docs/geometry-field.md">Geometry Field</a>, which allows vector similarity search to be combined directly with spatial constraints. This enables use cases such as:</p>
 <ul>
-<li><p>Layanan Berbasis Lokasi (LBS): "temukan POI yang mirip dalam blok kota ini"</p></li>
-<li><p>Pencarian multi-modal: "mengambil foto yang serupa dalam jarak 1 km dari titik ini"</p></li>
-<li><p>Peta &amp; logistik: "aset di dalam suatu wilayah" atau "rute yang berpotongan dengan jalur"</p></li>
+<li><p>Location-Base Service (LBS): “find similar POIs within this city block”</p></li>
+<li><p>Multi‑modal search: “retrieve similar photos within 1km of this point”</p></li>
+<li><p>Maps &amp; logistics: “assets inside a region” or “routes intersecting a path”</p></li>
 </ul>
-<p>Dipasangkan dengan <a href="https://milvus.io/docs/rtree.md">indeks RTREE yang baru-sebuah</a>struktur berbasis pohon yang dioptimalkan untuk penyaringan spasial-Milvus kini mendukung operator geospasial yang efisien seperti <code translate="no">st_contains</code>, <code translate="no">st_within</code>, dan <code translate="no">st_dwithin</code> di samping pencarian vektor berdimensi tinggi. Bersama-sama, mereka membuat pencarian cerdas yang sadar spasial tidak hanya memungkinkan, tetapi juga praktis.</p>
-<p>Dalam artikel ini, kita akan membahas cara kerja Geometry Field dan indeks RTREE, dan bagaimana keduanya digabungkan dengan pencarian kemiripan vektor untuk memungkinkan aplikasi spasial-semantik di dunia nyata.</p>
-<h2 id="What-Is-a-Geometry-Field-in-Milvus" class="common-anchor-header">Apa yang dimaksud dengan Bidang Geometri di Milvus?<button data-href="#What-Is-a-Geometry-Field-in-Milvus" class="anchor-icon" translate="no">
+<p>Paired with the new <a href="https://milvus.io/docs/rtree.md">RTREE index</a>—a tree-based structure optimized for spatial filtering—Milvus now supports efficient geospatial operators like <code translate="no">st_contains</code>, <code translate="no">st_within</code>, and <code translate="no">st_dwithin</code> alongside high-dimensional vector search. Together, they make spatially aware intelligent retrieval not just possible, but practical.</p>
+<p>In this post, we’ll walk through how the Geometry Field and RTREE index work, and how they combine with vector similarity search to enable real-world, spatial-semantic applications.</p>
+<h2 id="What-Is-a-Geometry-Field-in-Milvus" class="common-anchor-header">What Is a Geometry Field in Milvus?<button data-href="#What-Is-a-Geometry-Field-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,9 +51,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Bidang Geometri</strong> adalah sebuah tipe data yang ditentukan oleh skema (<code translate="no">DataType.GEOMETRY</code>) di Milvus yang digunakan untuk menyimpan data geometri. Tidak seperti sistem yang hanya menangani koordinat mentah, Milvus mendukung berbagai struktur spasial-termasuk <strong>Point</strong>, <strong>LineString</strong>, dan <strong>Poligon</strong>.</p>
-<p>Hal ini memungkinkan untuk merepresentasikan konsep dunia nyata seperti lokasi restoran (Point), zona pengantaran (Polygon), atau lintasan kendaraan otonom (LineString), semuanya dalam basis data yang sama yang menyimpan vektor semantik. Dengan kata lain, Milvus menjadi sistem terpadu untuk mengetahui <em>letak</em> sesuatu dan <em>artinya</em>.</p>
-<p>Nilai geometri disimpan menggunakan format <a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">Well-Known Text (WKT</a> ), sebuah standar yang dapat dibaca manusia untuk memasukkan dan menanyakan data geometri. Hal ini menyederhanakan pemasukan dan permintaan data karena string WKT dapat dimasukkan secara langsung ke dalam catatan Milvus. Sebagai contoh:</p>
+    </button></h2><p>A <strong>Geometry field</strong> is a schema-defined data type (<code translate="no">DataType.GEOMETRY</code>) in Milvus used to store geometric data. Unlike systems that handle only raw coordinates, Milvus supports a range of spatial structures—including <strong>Point</strong>, <strong>LineString</strong>, and <strong>Polygon</strong>.</p>
+<p>This makes it possible to represent real-world concepts such as restaurant locations (Point), delivery zones (Polygon), or autonomous-vehicle trajectories (LineString), all within the same database that stores semantic vectors. In other words, Milvus becomes a unified system for both <em>where</em> something is and <em>what it means</em>.</p>
+<p>Geometry values are stored using the <a href="https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry">Well-Known Text (WKT)</a> format, a human-readable standard for inserting and querying geometric data. This simplifies data ingestion and querying because WKT strings can be inserted directly into a Milvus record. For example:</p>
 <pre><code translate="no">data = [
     { 
         <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>,
@@ -62,7 +62,7 @@ origin: >-
     }
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="What-Is-the-RTREE-Index-and-How-Does-It-Work" class="common-anchor-header">Apa itu Indeks RTREE dan Bagaimana Cara Kerjanya?<button data-href="#What-Is-the-RTREE-Index-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<h2 id="What-Is-the-RTREE-Index-and-How-Does-It-Work" class="common-anchor-header">What Is the RTREE Index and How Does It Work?<button data-href="#What-Is-the-RTREE-Index-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -77,62 +77,62 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah Milvus memperkenalkan tipe data Geometri, Milvus juga membutuhkan cara yang efisien untuk menyaring objek-objek spasial. Milvus menangani hal ini dengan menggunakan pipeline penyaringan spasial dua tahap:</p>
+    </button></h2><p>Once Milvus introduces the Geometry data type, it also needs an efficient way to filter spatial objects. Milvus handles this using a two-stage spatial filtering pipeline:</p>
 <ul>
-<li><p><strong>Pemfilteran kasar:</strong> Mempersempit kandidat dengan cepat menggunakan indeks spasial seperti RTREE.</p></li>
-<li><p><strong>Penyaringan halus:</strong> Menerapkan pemeriksaan geometri yang tepat pada kandidat yang tersisa, memastikan ketepatan pada batas-batas.</p></li>
+<li><p><strong>Coarse filtering:</strong> Quickly narrows down candidates using spatial indexes such as RTREE.</p></li>
+<li><p><strong>Fine filtering:</strong> Applies exact geometry checks on the candidates that remain, ensuring correctness at boundaries.</p></li>
 </ul>
-<p>Desain ini menyeimbangkan antara kinerja dan akurasi. Indeks spasial secara agresif memangkas data yang tidak relevan, sementara pemeriksaan geometri yang tepat memastikan hasil yang benar untuk operator seperti penahanan, persimpangan, dan ambang batas jarak.</p>
-<p>Inti dari pipeline ini adalah <strong>RTREE (Rectangle Tree)</strong>, struktur pengindeksan spasial yang dirancang untuk mempercepat kueri atas data geometris. RTREE bekerja dengan mengatur objek secara hirarkis menggunakan <strong>Minimum Bounding Rectangles (MBR)</strong>, yang memungkinkan sebagian besar ruang pencarian dilewati selama eksekusi kueri.</p>
-<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Tahap 1: Membangun Indeks RTREE</h3><p>Konstruksi RTREE mengikuti proses dari bawah ke atas yang mengelompokkan objek spasial yang berdekatan ke dalam wilayah yang semakin besar:</p>
-<p><strong>1. Buatlah simpul-simpul daun (leaf nodes):</strong> Untuk setiap objek geometri, hitung <strong>Minimum Bounding Rectangle (MBR</strong>) - persegi panjang terkecil yang sepenuhnya berisi objek tersebut - dan simpan sebagai leaf node.</p>
-<p><strong>2. Kelompokkan ke dalam kotak yang lebih besar:</strong> Kelompokkan node daun yang berdekatan dan bungkus setiap kelompok di dalam MBR baru, sehingga menghasilkan node internal.</p>
-<p><strong>3. Tambahkan simpul akar:</strong> Buat simpul akar yang MBR-nya mencakup semua kelompok internal, membentuk struktur pohon yang seimbang.</p>
+<p>This design balances performance and accuracy. The spatial index aggressively prunes irrelevant data, while precise geometric checks ensure correct results for operators such as containment, intersection, and distance thresholds.</p>
+<p>At the core of this pipeline is <strong>RTREE (Rectangle Tree)</strong>, a spatial indexing structure designed to accelerate queries over geometric data. RTREE works by organizing objects hierarchically using <strong>Minimum Bounding Rectangles (MBRs)</strong>, allowing large portions of the search space to be skipped during query execution.</p>
+<h3 id="Phase-1-Building-the-RTREE-Index" class="common-anchor-header">Phase 1: Building the RTREE Index</h3><p>RTREE construction follows a bottom-up process that groups nearby spatial objects into increasingly larger bounding regions:</p>
+<p><strong>1. Create leaf nodes:</strong> For each geometry object, calculate its <strong>Minimum Bounding Rectangle (MBR)</strong>—the smallest rectangle that fully contains the object—and store it as a leaf node.</p>
+<p><strong>2. Group into larger boxs:</strong> Cluster nearby leaf nodes and wrap each group inside a new MBR, producing internal nodes.</p>
+<p><strong>3. Add the root node:</strong> Create a root node whose MBR covers all internal groups, forming a height-balanced tree structure.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/RTREE_Index_11b5d09e07.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Tahap 2: Mempercepat kueri</strong></p>
-<p><strong>1. Membentuk kueri MBR:</strong> Hitung MBR untuk geometri yang digunakan dalam kueri Anda.</p>
-<p><strong>2. Pangkas cabang:</strong> Mulai dari akar, bandingkan MBR kueri dengan setiap simpul internal. Lewati setiap cabang yang MBR-nya tidak bersinggungan dengan MBR kueri.</p>
-<p><strong>3. Kumpulkan kandidat:</strong> Turun ke cabang-cabang yang berpotongan dan kumpulkan simpul-simpul daun kandidat.</p>
-<p><strong>4. Lakukan pencocokan yang tepat:</strong> Untuk setiap kandidat, jalankan predikat spasial untuk mendapatkan hasil yang tepat.</p>
-<h3 id="Why-RTREE-Is-Fast" class="common-anchor-header">Mengapa RTREE Cepat</h3><p>RTREE memberikan kinerja yang kuat dalam penyaringan spasial karena beberapa fitur desain utama:</p>
+<p><strong>Phase 2: Accelerate queries</strong></p>
+<p><strong>1. Form the query MBR:</strong> Calculate the MBR for the geometry used in your query.</p>
+<p><strong>2. Prune branches:</strong> Starting from the root, compare the query MBR with each internal node. Skip any branch whose MBR does not intersect with the query MBR.</p>
+<p><strong>3. Collect candidates:</strong> Descend into intersecting branches and gather the candidate leaf nodes.</p>
+<p><strong>4. Perform exact matching:</strong> For each candidate, run the spatial predicate to get precise results.</p>
+<h3 id="Why-RTREE-Is-Fast" class="common-anchor-header">Why RTREE Is Fast</h3><p>RTREE delivers strong performance in spatial filtering because of several key design features:</p>
 <ul>
-<li><p><strong>Setiap node menyimpan MBR:</strong> Setiap node memperkirakan area dari semua geometri di dalam sub-pohonnya. Hal ini memudahkan untuk memutuskan apakah sebuah cabang harus dieksplorasi selama kueri.</p></li>
-<li><p><strong>Pemangkasan cepat:</strong> Hanya sub-pohon yang MBR-nya memotong wilayah kueri yang dieksplorasi. Area yang tidak relevan diabaikan sepenuhnya.</p></li>
-<li><p><strong>Skala dengan ukuran data:</strong> RTREE mendukung pencarian spasial dalam waktu <strong>O(log N)</strong>, memungkinkan kueri yang cepat bahkan ketika dataset berkembang.</p></li>
-<li><p><strong>Implementasi Boost.Geometry:</strong> Milvus membangun indeks RTREE menggunakan <a href="https://www.boost.org/library/latest/geometry/">Boost.Geometry</a>, pustaka C++ yang banyak digunakan yang menyediakan algoritme geometri yang dioptimalkan dan implementasi RTREE yang aman bagi thread yang cocok untuk beban kerja yang bersamaan.</p></li>
+<li><p><strong>Every node stores an MBR:</strong> Each node approximates the area of all geometries in its subtree. This makes it easy to decide whether a branch should be explored during a query.</p></li>
+<li><p><strong>Fast pruning:</strong> Only subtrees whose MBR intersects the query region are explored. Irrelevant areas are ignored entirely.</p></li>
+<li><p><strong>Scales with data size:</strong> RTREE supports spatial searches in <strong>O(log N)</strong> time, enabling fast queries even as the dataset expands.</p></li>
+<li><p><strong>Boost.Geometry implementation:</strong> Milvus builds its RTREE index using <a href="https://www.boost.org/library/latest/geometry/">Boost.Geometry</a>, a widely used C++ library that provides optimized geometry algorithms and a thread-safe RTREE implementation suitable for concurrent workloads.</p></li>
 </ul>
-<h3 id="Supported-geometry-operators" class="common-anchor-header">Operator geometri yang didukung</h3><p>Milvus menyediakan seperangkat operator spasial yang memungkinkan Anda untuk memfilter dan mengambil entitas berdasarkan hubungan geometris. Operator-operator ini sangat penting untuk beban kerja yang perlu memahami bagaimana objek-objek berhubungan satu sama lain dalam ruang.</p>
-<p>Tabel berikut mencantumkan <a href="https://milvus.io/docs/geometry-operators.md">operator geometri</a> yang saat ini tersedia di Milvus.</p>
+<h3 id="Supported-geometry-operators" class="common-anchor-header">Supported geometry operators</h3><p>Milvus provides a set of spatial operators that allow you to filter and retrieve entities based on geometric relationships. These operators are essential for workloads that need to understand how objects relate to one another in space.</p>
+<p>The following table lists the <a href="https://milvus.io/docs/geometry-operators.md">geometry operators</a> currently available in Milvus.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Operator</strong></th><th style="text-align:center"><strong>Deskripsi</strong></th></tr>
+<tr><th style="text-align:center"><strong>Operator</strong></th><th style="text-align:center"><strong>Description</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>st_intersects(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A dan B memiliki setidaknya satu titik yang sama.</td></tr>
-<tr><td style="text-align:center"><strong>st_berisi(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A sepenuhnya berisi geometri B (tidak termasuk batas).</td></tr>
-<tr><td style="text-align:center"><strong>st_dalam(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A sepenuhnya terkandung di dalam geometri B. Ini adalah kebalikan dari st_contains(A, B).</td></tr>
-<tr><td style="text-align:center"><strong>st_menutupi(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A menutupi geometri B (termasuk batas).</td></tr>
-<tr><td style="text-align:center"><strong>st_menyentuh(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A dan B bersentuhan pada batas-batasnya tetapi tidak berpotongan secara internal.</td></tr>
-<tr><td style="text-align:center"><strong>st_equals(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A dan B identik secara spasial.</td></tr>
-<tr><td style="text-align:center"><strong>st_overlap(A, B)</strong></td><td style="text-align:center">Mengembalikan TRUE jika geometri A dan B tumpang tindih sebagian dan tidak ada yang sepenuhnya berisi yang lain.</td></tr>
-<tr><td style="text-align:center"><strong>st_dwithin(A, B, d)</strong></td><td style="text-align:center">Mengembalikan TRUE jika jarak antara A dan B kurang dari <em>d</em>.</td></tr>
+<tr><td style="text-align:center"><strong>st_intersects(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometries A and B share at least one common point.</td></tr>
+<tr><td style="text-align:center"><strong>st_contains(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometry A completely contains geometry B (excluding the boundary).</td></tr>
+<tr><td style="text-align:center"><strong>st_within(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometry A is completely contained within geometry B. This is the inverse of st_contains(A, B).</td></tr>
+<tr><td style="text-align:center"><strong>st_covers(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometry A covers geometry B (including the boundary).</td></tr>
+<tr><td style="text-align:center"><strong>st_touches(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometries A and B touch at their boundaries but do not intersect internally.</td></tr>
+<tr><td style="text-align:center"><strong>st_equals(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometries A and B are spatially identical.</td></tr>
+<tr><td style="text-align:center"><strong>st_overlaps(A, B)</strong></td><td style="text-align:center">Returns TRUE if geometries A and B partially overlap and neither fully contains the other.</td></tr>
+<tr><td style="text-align:center"><strong>st_dwithin(A, B, d)</strong></td><td style="text-align:center">Returns TRUE if the distance between A and B is less than <em>d</em>.</td></tr>
 </tbody>
 </table>
-<h3 id="How-to-Combine-Geolocation-Index-and-Vector-Index" class="common-anchor-header">Cara Menggabungkan Indeks Geolokasi dan Indeks Vektor</h3><p>Dengan dukungan Geometri dan indeks RTREE, Milvus dapat menggabungkan pemfilteran geospasial dengan pencarian kemiripan vektor dalam satu alur kerja. Proses ini bekerja dalam dua langkah:</p>
-<p><strong>1. Memfilter berdasarkan lokasi menggunakan RTREE:</strong> Milvus pertama-tama menggunakan indeks RTREE untuk mempersempit pencarian ke entitas dalam rentang geografis yang ditentukan (misalnya, "dalam jarak 2 km").</p>
-<p><strong>2. Beri peringkat berdasarkan semantik menggunakan pencarian vektor:</strong> Dari kandidat yang tersisa, indeks vektor memilih hasil Top-N yang paling mirip berdasarkan kemiripan semantik.</p>
+<h3 id="How-to-Combine-Geolocation-Index-and-Vector-Index" class="common-anchor-header">How to Combine Geolocation Index and Vector Index</h3><p>With Geometry support and the RTREE index, Milvus can combine geospatial filtering with vector similarity search in a single workflow. The process works in two steps:</p>
+<p><strong>1. Filter by location using RTREE:</strong> Milvus first uses the RTREE index to narrow the search to entities within the specified geographic range (e.g., “within 2 km”).</p>
+<p><strong>2. Rank by semantics using vector search:</strong> From the remaining candidates, the vector index selects the Top-N most similar results based on embedding similarity.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Geometry_R_Tree_f1d88fc252.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">Kasus Penggunaan Dunia Nyata dari Pengambilan Vektor Geografis<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
+<h2 id="Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="common-anchor-header">Real-World Use Cases of Geo-Vector Retrieval<button data-href="#Real-World-Use-Cases-of-Geo-Vector-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,24 +147,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Delivery-Services-Smarter-Location-Aware-Recommendations" class="common-anchor-header">1. Layanan Pengiriman: Rekomendasi yang Lebih Cerdas dan Sadar Lokasi</h3><p>Platform seperti DoorDash atau Uber Eats menangani ratusan juta permintaan setiap harinya. Pada saat pengguna membuka aplikasi, sistem harus menentukan-berdasarkan lokasi pengguna, waktu, preferensi rasa, estimasi waktu pengantaran, lalu lintas waktu nyata, dan ketersediaan kurir-restoran atau kurir mana yang paling cocok untuk saat <em>ini</em>.</p>
-<p>Biasanya, hal ini membutuhkan permintaan database geospasial dan mesin rekomendasi yang terpisah, diikuti dengan beberapa kali penyaringan dan pemeringkatan ulang. Dengan Indeks Geolokasi, Milvus sangat menyederhanakan alur kerja ini:</p>
+    </button></h2><h3 id="1-Delivery-Services-Smarter-Location-Aware-Recommendations" class="common-anchor-header">1. Delivery Services: Smarter, Location-Aware Recommendations</h3><p>Platforms such as DoorDash or Uber Eats handle hundreds of millions of requests each day. The moment a user opens the app, the system must determine—based on the user’s location, time of day, taste preferences, estimated delivery times, real-time traffic, and courier availability—which restaurants or couriers are the best match <em>right now</em>.</p>
+<p>Traditionally, this requires querying a geospatial database and a separate recommendation engine, followed by multiple rounds of filtering and re-ranking. With the Geolocation Index, Milvus greatly simplifies this workflow:</p>
 <ul>
-<li><p><strong>Penyimpanan terpadu</strong> - Koordinat restoran, lokasi kurir, dan penyematan preferensi pengguna, semuanya berada dalam satu sistem.</p></li>
-<li><p><strong>Pengambilan bersama</strong> - Pertama-tama terapkan filter spasial (misalnya, <em>restoran dalam jarak 3 km</em>), lalu gunakan pencarian vektor untuk menentukan peringkat berdasarkan kesamaan, preferensi rasa, atau kualitas.</p></li>
-<li><p><strong>Pengambilan keputusan yang dinamis</strong> - Menggabungkan distribusi kurir secara real-time dan sinyal lalu lintas untuk dengan cepat menentukan kurir terdekat yang paling sesuai.</p></li>
+<li><p><strong>Unified storage</strong> — Restaurant coordinates, courier locations, and user preference embeddings all live in one system.</p></li>
+<li><p><strong>Joint retrieval</strong> — First apply a spatial filter (e.g., <em>restaurants within 3 km</em>), then use vector search to rank by similarity, taste preference, or quality.</p></li>
+<li><p><strong>Dynamic decision-making</strong> — Combine real-time courier distribution and traffic signals to quickly assign the nearest, most suitable courier.</p></li>
 </ul>
-<p>Pendekatan terpadu ini memungkinkan platform untuk melakukan penalaran spasial dan semantik dalam satu kueri. Misalnya, ketika pengguna mencari "nasi kari," Milvus mengambil restoran yang relevan secara semantik <em>dan</em> memprioritaskan restoran yang terdekat, mengantarkan dengan cepat, dan sesuai dengan profil selera pengguna.</p>
-<h3 id="2-Autonomous-Driving-More-Intelligent-Decisions" class="common-anchor-header">2. Mengemudi secara otonom: Keputusan yang Lebih Cerdas</h3><p>Dalam pengemudian otonom, pengindeksan geospasial sangat penting untuk persepsi, pelokalan, dan pengambilan keputusan. Kendaraan harus terus menerus menyelaraskan diri dengan peta definisi tinggi, mendeteksi rintangan, dan merencanakan lintasan yang aman-semuanya hanya dalam beberapa milidetik.</p>
-<p>Dengan Milvus, tipe Geometri dan indeks RTREE dapat menyimpan dan meminta struktur spasial yang kaya seperti:</p>
+<p>This unified approach allows the platform to perform spatial and semantic reasoning in a single query. For example, when a user searches “curry rice,” Milvus retrieves restaurants that are semantically relevant <em>and</em> prioritizes those that are nearby, deliver quickly, and match the user’s historical taste profile.</p>
+<h3 id="2-Autonomous-Driving-More-Intelligent-Decisions" class="common-anchor-header">2. Autonomous Driving: More Intelligent Decisions</h3><p>In autonomous driving, geospatial indexing is fundamental to perception, localization, and decision-making. Vehicles must continuously align themselves to high-definition maps, detect obstacles, and plan safe trajectories—all within just a few milliseconds.</p>
+<p>With Milvus, the Geometry type and RTREE index can store and query rich spatial structures such as:</p>
 <ul>
-<li><p><strong>Batas-batas jalan</strong> (LineString)</p></li>
-<li><p><strong>Zona pengaturan lalu lintas</strong> (Poligon)</p></li>
-<li><p><strong>Rintangan</strong> yang<strong>terdeteksi</strong> (Titik)</p></li>
+<li><p><strong>Road boundaries</strong> (LineString)</p></li>
+<li><p><strong>Traffic regulation zones</strong> (Polygon)</p></li>
+<li><p><strong>Detected obstacles</strong> (Point)</p></li>
 </ul>
-<p>Struktur ini dapat diindeks secara efisien, sehingga data geospasial dapat mengambil bagian secara langsung dalam lingkaran keputusan AI. Sebagai contoh, kendaraan otonom dapat dengan cepat menentukan apakah koordinat saat ini berada di jalur tertentu atau bersinggungan dengan area terlarang, cukup melalui predikat spasial RTREE.</p>
-<p>Ketika dikombinasikan dengan penyematan vektor yang dihasilkan oleh sistem persepsi-seperti penyematan pemandangan yang menangkap lingkungan mengemudi saat ini-Milvus dapat mendukung kueri yang lebih canggih, seperti mengambil skenario mengemudi historis yang mirip dengan yang sekarang dalam radius 50 meter. Hal ini membantu model menginterpretasikan lingkungan dengan lebih cepat dan membuat keputusan yang lebih baik.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>These structures can be indexed efficiently, allowing geospatial data to take part directly in the AI decision loop. For example, an autonomous vehicle can quickly determine whether its current coordinates fall within a specific lane or intersect with a restricted area, simply through an RTREE spatial predicate.</p>
+<p>When combined with vector embeddings generated by the perception system—such as scene embeddings that capture the current driving environment—Milvus can support more advanced queries, like retrieving historical driving scenarios similar to the current one within a 50-meter radius. This helps models interpret the environment faster and make better decisions.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -179,16 +179,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Geolokasi lebih dari sekadar garis lintang dan garis bujur. Dalam aplikasi yang peka terhadap lokasi, geolokasi memberikan konteks penting tentang <strong>di mana peristiwa terjadi, bagaimana entitas berhubungan secara spasial, dan bagaimana hubungan tersebut membentuk perilaku sistem</strong>. Ketika digabungkan dengan sinyal semantik dari model pembelajaran mesin, data geospasial memungkinkan kelas kueri yang lebih kaya yang sulit untuk diekspresikan - atau tidak efisien untuk dieksekusi - ketika data spasial dan vektor ditangani secara terpisah.</p>
-<p>Dengan diperkenalkannya Bidang Geometri dan indeks RTREE, Milvus menghadirkan pencarian kesamaan vektor dan penyaringan spasial ke dalam satu mesin kueri. Hal ini memungkinkan aplikasi untuk melakukan pengambilan bersama di seluruh <strong>vektor, data geospasial, dan waktu</strong>, mendukung kasus penggunaan seperti sistem rekomendasi yang sadar secara spasial, pencarian berbasis lokasi multimodal, dan analisis yang dibatasi wilayah atau jalur. Lebih penting lagi, hal ini mengurangi kompleksitas arsitektur dengan menghilangkan jalur pipa multi-tahap yang memindahkan data di antara sistem khusus.</p>
-<p>Karena sistem AI terus bergerak lebih dekat dengan pengambilan keputusan di dunia nyata, pemahaman tentang konten <strong><em>apa</em></strong> yang relevan akan semakin perlu dipasangkan dengan <strong><em>tempat</em></strong> konten tersebut berlaku dan <strong><em>kapan</em></strong> konten tersebut penting. Milvus menyediakan blok bangunan untuk kelas beban kerja spasial-semantik ini dengan cara yang ekspresif dan praktis untuk beroperasi dalam skala besar.</p>
-<p>Untuk informasi lebih lanjut mengenai Geometry Field dan indeks RTREE, lihat dokumentasi di bawah ini:</p>
+    </button></h2><p>Geolocation is more than latitude and longitude. In location-sensitive applications, it provides essential context about <strong>where events occur, how entities relate spatially, and how those relationships shape system behavior</strong>. When combined with semantic signals from machine learning models, geospatial data enables a richer class of queries that are difficult to express—or inefficient to execute—when spatial and vector data are handled separately.</p>
+<p>With the introduction of the Geometry Field and the RTREE index, Milvus brings vector similarity search and spatial filtering into a single query engine. This allows applications to perform joint retrieval across <strong>vectors, geospatial data, and time</strong>, supporting use cases such as spatially aware recommendation systems, multimodal location-based search, and region- or path-constrained analytics. More importantly, it reduces architectural complexity by eliminating multi-stage pipelines that move data between specialized systems.</p>
+<p>As AI systems continue to move closer to real-world decision-making, understanding <strong><em>what</em></strong> content is relevant will increasingly need to be paired with <strong><em>where</em></strong> it applies and <strong><em>when</em></strong> it matters. Milvus provides the building blocks for this class of spatial-semantic workloads in a way that is both expressive and practical for operating at scale.</p>
+<p>For more information about the Geometry Field and the RTREE index, check the documentation below:</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/geometry-field.md">Bidang Geometri | Dokumentasi Milvus</a></p></li>
-<li><p><a href="https://milvus.io/docs/rtree.md">RTREE | Dokumentasi Milvus</a></p></li>
+<li><p><a href="https://milvus.io/docs/geometry-field.md">Geometry Field | Milvus Documentation</a></p></li>
+<li><p><a href="https://milvus.io/docs/rtree.md">RTREE | Milvus Documentation</a></p></li>
 </ul>
-<p>Ada pertanyaan atau ingin mendalami fitur Milvus terbaru? Bergabunglah dengan<a href="https://discord.com/invite/8uyFbECzPX"> saluran Discord</a> kami atau ajukan pertanyaan di<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Anda juga dapat memesan sesi tatap muka selama 20 menit untuk mendapatkan wawasan, panduan, dan jawaban atas pertanyaan Anda melalui<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Pelajari Lebih Lanjut tentang Fitur Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -204,13 +204,13 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Memperkenalkan Milvus 2.6: Pencarian Vektor yang Terjangkau dalam Skala Miliaran</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Memperkenalkan Fungsi Penyematan: Bagaimana Milvus 2.6 Menyederhanakan Vektorisasi dan Pencarian Semantik</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Penghancuran JSON di Milvus: Pemfilteran JSON 88,9x Lebih Cepat dengan Fleksibilitas</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Membuka Pengambilan Tingkat Entitas yang Sebenarnya: Kemampuan Array-of-Structs dan MAX_SIM Baru di Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH di Milvus: Senjata Rahasia untuk Memerangi Duplikat dalam Data Pelatihan LLM </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Membawa Kompresi Vektor ke Tingkat Ekstrim: Bagaimana Milvus Melayani Kueri 3× Lebih Banyak dengan RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmark Bohong - DB Vektor Layak Mendapat Ujian Nyata </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Kami Mengganti Kafka/Pulsar dengan Burung Pelatuk untuk Milvus </a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Pencarian Vektor di Dunia Nyata: Cara Memfilter Secara Efisien Tanpa Membunuh Recall</a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Vector Search in the Real World: How to Filter Efficiently Without Killing Recall</a></p></li>
 </ul>

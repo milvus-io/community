@@ -1,44 +1,49 @@
 ---
 id: deep-dive-1-milvus-architecture-overview.md
-title: Costruire un database vettoriale per una ricerca di similarità scalabile
+title: Building a Vector Database for Scalable Similarity Search
 author: Xiaofan Luan
 date: 2022-03-14T00:00:00.000Z
 desc: >-
-  Il primo di una serie di blog che analizzano da vicino il processo di pensiero
-  e i principi di progettazione alla base della costruzione del più popolare
-  database vettoriale open-source.
+  The first one in a blog series to take a closer look at the thought process
+  and design principles behind the building of the most popular open-source
+  vector database.
 cover: assets.zilliz.com/20220705_102717_dd4124dee3.png
 tag: Engineering
 tags: 'Data science, Database, Technology, Artificial Intelligence, Vector Management'
 canonicalUrl: 'https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md'
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/20220705_102717_dd4124dee3.png" alt="Cover image" class="doc-image" id="cover-image" />
-   </span> <span class="img-wrapper"> <span>Immagine di copertina</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/20220705_102717_dd4124dee3.png" alt="Cover image" class="doc-image" id="cover-image" />
+    <span>Cover image</span>
+  </span>
+</p>
 <blockquote>
-<p>Questo articolo è stato scritto da Xiaofan Luan e trascritto da Angela Ni e Claire Yu.</p>
+<p>This article is written by Xiaofan Luan and transcreated by Angela Ni and Claire Yu.</p>
 </blockquote>
-<p>Secondo le <a href="https://mitsloan.mit.edu/ideas-made-to-matter/tapping-power-unstructured-data">statistiche</a>, circa l'80%-90% dei dati mondiali è non strutturato. Alimentata dalla rapida crescita di Internet, nei prossimi anni si prevede un'esplosione di dati non strutturati. Di conseguenza, le aziende hanno urgentemente bisogno di un database potente che le aiuti a gestire e comprendere meglio questo tipo di dati. Tuttavia, sviluppare un database è sempre più facile a dirsi che a farsi. Questo articolo si propone di condividere il processo di pensiero e i principi di progettazione della costruzione di Milvus, un database vettoriale open-source e cloud-native per la ricerca scalabile di similarità. Questo articolo spiega anche l'architettura di Milvus in dettaglio.</p>
-<p>Vai a:</p>
+<p>According to <a href="https://mitsloan.mit.edu/ideas-made-to-matter/tapping-power-unstructured-data">statistics</a>, about 80%-90% of the world’s data is unstructured. Fueled by the rapid growth of the Internet, an explosion of unstructured data is expected in the coming years. Consequently, companies are in urgent need of a powerful database that can help them better handle and understand such kind of data. However, developing a database is always easier said than done. This article aims to share the thinking process and design principles of building Milvus, an open-source, cloud-native vector database for scalable similarity search. This article also explains the Milvus architecture in detail.</p>
+<p>Jump to:</p>
 <ul>
-<li><a href="#Unstructured-data-requires-a-complete-basic-software-stack">I dati non strutturati richiedono uno stack software di base completo</a><ul>
-<li><a href="#Vectors-and-scalars">Vettori e scalari</a></li>
-<li><a href="#From-vector-search-engine-to-vector-database">Da motore di ricerca vettoriale a database vettoriale</a></li>
-<li><a href="#A-cloud-native-first-approach">Un approccio cloud-nativo</a></li>
+<li><a href="#Unstructured-data-requires-a-complete-basic-software-stack">Unstructured data requires a complete basic software stack</a>
+<ul>
+<li><a href="#Vectors-and-scalars">Vectors and scalars</a></li>
+<li><a href="#From-vector-search-engine-to-vector-database">From vector search engine to vector database</a></li>
+<li><a href="#A-cloud-native-first-approach">A cloud-native first approach</a></li>
 </ul></li>
-<li><a href="#The-design-principles-of-Milvus-20">I principi di progettazione di Milvus 2.0</a><ul>
-<li><a href="#Log-as-data">Il log come dato</a></li>
-<li><a href="#Duality-of-table-and-log">Dualità tra tabella e log</a></li>
-<li><a href="#Log-persistency">Persistenza dei log</a></li>
+<li><a href="#The-design-principles-of-Milvus-20">The design principles of Milvus 2.0</a>
+<ul>
+<li><a href="#Log-as-data">Log as data</a></li>
+<li><a href="#Duality-of-table-and-log">Duality of table and log</a></li>
+<li><a href="#Log-persistency">Log persistency</a></li>
 </ul></li>
-<li><a href="#Building-a-vector-database-for-scalable-similarity-search">Costruire un database vettoriale per la ricerca scalabile di similarità</a><ul>
-<li><a href="#Standalone-and-cluster">Standalone e cluster</a></li>
-<li><a href="#A-bare-bones-skeleton-of-the-Milvus-architecture">Uno scheletro essenziale dell'architettura Milvus</a></li>
-<li><a href="#Data-Model">Modello di dati</a></li>
+<li><a href="#Building-a-vector-database-for-scalable-similarity-search">Building a vector database for scalable similarity search</a>
+<ul>
+<li><a href="#Standalone-and-cluster">Standalone and cluster</a></li>
+<li><a href="#A-bare-bones-skeleton-of-the-Milvus-architecture">A bare-bones skeleton of the Milvus architecture</a></li>
+<li><a href="#Data-Model">Data model</a></li>
 </ul></li>
 </ul>
-<h2 id="Unstructured-data-requires-a-complete-basic-software-stack" class="common-anchor-header">I dati non strutturati richiedono uno stack di software di base completo<button data-href="#Unstructured-data-requires-a-complete-basic-software-stack" class="anchor-icon" translate="no">
+<h2 id="Unstructured-data-requires-a-complete-basic-software-stack" class="common-anchor-header">Unstructured data requires a complete basic software stack<button data-href="#Unstructured-data-requires-a-complete-basic-software-stack" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -53,44 +58,52 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con la crescita e l'evoluzione di Internet, i dati non strutturati sono diventati sempre più comuni: e-mail, documenti, dati dei sensori IoT, foto di Facebook, strutture proteiche e molto altro. Affinché i computer possano comprendere ed elaborare i dati non strutturati, questi vengono convertiti in vettori utilizzando <a href="https://zilliz.com/learn/embedding-generation">tecniche di incorporazione</a>.</p>
-<p>Milvus memorizza e indicizza questi vettori e analizza la correlazione tra due vettori calcolandone la distanza di similarità. Se i due vettori di incorporazione sono molto simili, significa che anche le fonti di dati originali sono simili.</p>
+    </button></h2><p>As the Internet grew and evolved, unstructured data became more and more common, including emails, papers, IoT sensor data, Facebook photos, protein structures, and much more. In order for computers to understand and process unstructured data, these are converted into vectors using <a href="https://zilliz.com/learn/embedding-generation">embedding techniques</a>.</p>
+<p>Milvus stores and indexes these vectors, and analyzes the correlation between two vectors by calculating their similarity distance. If the two embedding vectors are very similar, it means that the original data sources are similar as well.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_6_5e0ab80f2c.png" alt="The workflow of processing unstructured data." class="doc-image" id="the-workflow-of-processing-unstructured-data." />
-   </span> <span class="img-wrapper"> <span>Il flusso di lavoro dell'elaborazione dei dati non strutturati</span>. </span></p>
-<h3 id="Vectors-and-scalars" class="common-anchor-header">Vettori e scalari</h3><p>Uno scalare è una quantità che è descritta solo da una misura - la grandezza. Uno scalare può essere rappresentato come un numero. Per esempio, un'automobile viaggia alla velocità di 80 km/h. La velocità (80 km/h) è uno scalare. Un vettore, invece, è una grandezza descritta da almeno due misure: la grandezza e la direzione. Se un'auto viaggia verso ovest alla velocità di 80 km/h, la velocità (80 km/h ovest) è un vettore. L'immagine seguente è un esempio di scalari e vettori comuni.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_6_5e0ab80f2c.png" alt="The workflow of processing unstructured data." class="doc-image" id="the-workflow-of-processing-unstructured-data." />
+    <span>The workflow of processing unstructured data.</span>
+  </span>
+</p>
+<h3 id="Vectors-and-scalars" class="common-anchor-header">Vectors and scalars</h3><p>A scalar is a quantity that is described only in one measurement - magnitude. A scalar can be represented as a number. For instance, a car is traveling at the speed of 80 km/h. Here, the speed (80km/h) is a scalar. Meanwhile, a vector is a quantity that is described in at least two measurements - magnitude and direction. If a car is traveling towards west at the speed of 80 km/h, here the velocity (80 km/h west) is a vector. The image below is an example of common scalars and vectors.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_7_90a142ab5b.png" alt="Scalars vs. Vectors" class="doc-image" id="scalars-vs.-vectors" />
-   </span> <span class="img-wrapper"> <span>Scalari e vettori</span> </span></p>
-<p>Poiché la maggior parte dei dati importanti ha più di un attributo, possiamo comprenderli meglio se li convertiamo in vettori. Un modo comune per manipolare i dati vettoriali è quello di calcolare la distanza tra i vettori utilizzando <a href="https://milvus.io/docs/v2.0.x/metric.md">metriche</a> come la distanza euclidea, il prodotto interno, la distanza di Tanimoto, la distanza di Hamming, ecc. Più la distanza è vicina, più i vettori sono simili. Per interrogare in modo efficiente un enorme set di dati vettoriali, possiamo organizzare i dati vettoriali costruendo indici su di essi. Una volta indicizzato il set di dati, le query possono essere indirizzate verso i cluster, o sottoinsiemi di dati, che hanno maggiori probabilità di contenere vettori simili alla query di input.</p>
-<p>Per saperne di più sugli indici, consultare <a href="https://milvus.io/docs/v2.0.x/index.md">Vector Index</a>.</p>
-<h3 id="From-vector-search-engine-to-vector-database" class="common-anchor-header">Da motore di ricerca vettoriale a database vettoriale</h3><p>Fin dall'inizio, Milvus 2.0 è stato progettato per servire non solo come motore di ricerca, ma soprattutto come potente database vettoriale.</p>
-<p>Un modo per farvi capire la differenza è quello di fare un'analogia tra <a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-introduction.html">InnoDB</a> e <a href="https://www.mysql.com/">MySQL</a>, o <a href="https://lucene.apache.org/">Lucene</a> ed <a href="https://www.elastic.co/">Elasticsearch</a>.</p>
-<p>Proprio come MySQL ed Elasticsearch, anche Milvus è costruito sulla base di librerie open-source come <a href="https://github.com/facebookresearch/faiss">Faiss</a>, <a href="https://github.com/nmslib/hnswlib">HNSW</a>, <a href="https://github.com/spotify/annoy">Annoy</a>, che si concentrano sulla fornitura di funzionalità di ricerca e sulla garanzia di prestazioni di ricerca. Tuttavia, sarebbe ingiusto degradare Milvus a mero strato superiore a Faiss, poiché memorizza, recupera e analizza vettori e, proprio come qualsiasi altro database, fornisce anche un'interfaccia standard per le operazioni CRUD. Inoltre, Milvus vanta anche caratteristiche quali:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_7_90a142ab5b.png" alt="Scalars vs. Vectors" class="doc-image" id="scalars-vs.-vectors" />
+    <span>Scalars vs. Vectors</span>
+  </span>
+</p>
+<p>Since most of the important data have more than one attribute, we can understand these data better if we convert them into vectors. One common way for us to manipulate vector data is to calculate the  distance between vectors using <a href="https://milvus.io/docs/v2.0.x/metric.md">metrics</a> such as Euclidean distance, inner product, Tanimoto distance, Hamming distance, etc. The closer the distance, the more similar the vectors are. To query a massive vector dataset efficiently, we can organize vector data by building indexes on them. After the dataset is indexed, queries can be routed to clusters, or subsets of data, that are most likely to contain vectors similar to an input query.</p>
+<p>To learn more about the indexes, refer to <a href="https://milvus.io/docs/v2.0.x/index.md">Vector Index</a>.</p>
+<h3 id="From-vector-search-engine-to-vector-database" class="common-anchor-header">From vector search engine to vector database</h3><p>From the very beginning, Milvus 2.0 is designed to serve not only as a search engine, but more importantly, as a powerful vector database.</p>
+<p>One way to help you understand the difference here is by drawing an analogy between <a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-introduction.html">InnoDB</a> and <a href="https://www.mysql.com/">MySQL</a>, or <a href="https://lucene.apache.org/">Lucene</a> and <a href="https://www.elastic.co/">Elasticsearch</a>.</p>
+<p>Just like MySQL and Elasticsearch, Milvus is also built on top of open-source libraries such as <a href="https://github.com/facebookresearch/faiss">Faiss</a>, <a href="https://github.com/nmslib/hnswlib">HNSW</a>, <a href="https://github.com/spotify/annoy">Annoy</a>, which focus on providing search functionalities and ensuring search performance. However, it would be unfair to degrade Milvus to merely a layer atop Faiss as it stores, retrieves, analyzes vectors, and, just as with any other database, also provides a standard interface for CRUD operations. In addition, Milvus also boasts features including:</p>
 <ul>
-<li>Sharding e partizionamento</li>
-<li>Replica</li>
-<li>Recupero di emergenza</li>
-<li>Bilanciamento del carico</li>
-<li>Parser o ottimizzatore di query</li>
+<li>Sharding and partitioning</li>
+<li>Replication</li>
+<li>Disaster recovery</li>
+<li>Load balance</li>
+<li>Query parser or optimizer</li>
 </ul>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/database_d912320ea7.png" alt="Vector database" class="doc-image" id="vector-database" />
-   </span> <span class="img-wrapper"> <span>Database vettoriale</span> </span></p>
-<p>Per una comprensione più completa di cosa sia un database vettoriale, leggete il blog <a href="https://zilliz.com/learn/what-is-vector-database">qui</a>.</p>
-<h3 id="A-cloud-native-first-approach" class="common-anchor-header">Un approccio cloud-nativo</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image_2_be82d762db.png" alt="Could-native approach" class="doc-image" id="could-native-approach" />
-   </span> <span class="img-wrapper"> <span>Approccio cloud-nativo</span> </span></p>
-<h4 id="From-shared-nothing-to-shared-storage-then-to-shared-something" class="common-anchor-header">Dal nulla condiviso, allo storage condiviso, quindi al qualcosa condiviso</h4><p>I database tradizionali adottavano un'architettura "shared nothing" in cui i nodi dei sistemi distribuiti sono indipendenti ma collegati in rete. La memoria o lo storage non sono condivisi tra i nodi. Tuttavia, <a href="https://docs.snowflake.com/en/user-guide/intro-key-concepts.html">Snowflake</a> ha rivoluzionato il settore introducendo un'architettura "shared storage" in cui l'elaborazione (query processing) è separata dalla memorizzazione (database storage). Con un'architettura di storage condiviso, i database possono ottenere una maggiore disponibilità, scalabilità e riduzione della duplicazione dei dati. Ispirandosi a Snowflake, molte aziende hanno iniziato a sfruttare l'infrastruttura basata sul cloud per la persistenza dei dati, utilizzando lo storage locale per il caching. Questo tipo di architettura di database è chiamata "shared something" (qualcosa di condiviso) ed è diventata oggi l'architettura mainstream nella maggior parte delle applicazioni.</p>
-<p>Oltre all'architettura "shared something", Milvus supporta la scalabilità flessibile di ogni componente utilizzando Kubernetes per gestire il motore di esecuzione e separando i servizi di lettura, scrittura e altri servizi con microservizi.</p>
-<h4 id="Database-as-a-service-DBaaS" class="common-anchor-header">Database come servizio (DBaaS)</h4><p>Il database as a service è una tendenza molto diffusa, poiché molti utenti non si preoccupano solo delle normali funzionalità del database, ma desiderano anche servizi più vari. Ciò significa che, oltre alle tradizionali operazioni CRUD, il nostro database deve arricchire il tipo di servizi che può fornire, come la gestione del database, il trasporto dei dati, il caricamento, la visualizzazione, ecc.</p>
-<h4 id="Synergy-with-the-broader-open-source-ecosystem" class="common-anchor-header">Sinergia con il più ampio ecosistema open-source</h4><p>Un'altra tendenza nello sviluppo dei database è quella di sfruttare la sinergia tra il database e altre infrastrutture cloud-native. Nel caso di Milvus, esso si basa su alcuni sistemi open-source. Ad esempio, Milvus utilizza <a href="https://etcd.io/">etcd</a> per la memorizzazione dei metadati. Adotta anche la coda di messaggi, un tipo di comunicazione asincrona da servizio a servizio utilizzata nell'architettura a microservizi, che può aiutare a esportare dati incrementali.</p>
-<p>In futuro, speriamo di costruire Milvus in cima a infrastrutture di AI come <a href="https://spark.apache.org/">Spark</a> o <a href="https://www.tensorflow.org/">Tensorflow</a> e di integrare Milvus con motori di streaming, in modo da poter supportare meglio l'elaborazione unificata di stream e batch per soddisfare le varie esigenze degli utenti di Milvus.</p>
-<h2 id="The-design-principles-of-Milvus-20" class="common-anchor-header">I principi di progettazione di Milvus 2.0<button data-href="#The-design-principles-of-Milvus-20" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/database_d912320ea7.png" alt="Vector database" class="doc-image" id="vector-database" />
+    <span>Vector database</span>
+  </span>
+</p>
+<p>For a more comprehensive understanding of what a vector database is, read the blog <a href="https://zilliz.com/learn/what-is-vector-database">here</a>.</p>
+<h3 id="A-cloud-native-first-approach" class="common-anchor-header">A cloud-native first approach</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image_2_be82d762db.png" alt="Could-native approach" class="doc-image" id="could-native-approach" />
+    <span>Could-native approach</span>
+  </span>
+</p>
+<h4 id="From-shared-nothing-to-shared-storage-then-to-shared-something" class="common-anchor-header">From shared nothing, to shared storage, then to shared something</h4><p>Traditional databases used to adopt a “shared nothing” architecture in which nodes in the distributed systems are independent but connected by a network. No memory or storage are shared among the nodes. However, <a href="https://docs.snowflake.com/en/user-guide/intro-key-concepts.html">Snowflake</a> revolutionized the industry by introducing a “shared storage” architecture in which compute (query processing) is separated from storage (database storage). With a shared storage architecture, databases can achieve greater availability, scalability, and a reduction of data duplication. Inspired by Snowflake, many companies started to leverage cloud-based infrastructure for data persistence while using local storage for caching. This type of database architecture is called “shared something” and has become the mainstream architecture in most applications today.</p>
+<p>Apart from the “shared something” architecture, Milvus supports flexible scaling of each component by using Kubernetes to manage its execution engine and separating read, write and other services with microservices.</p>
+<h4 id="Database-as-a-service-DBaaS" class="common-anchor-header">Database as a service (DBaaS)</h4><p>Database as a service is a hot trend as many users not only care about regular database functionalities but also yearn for more varied services. This means that apart from the traditional CRUD operations, our database has to enrich the type of services it can provide, such as database management, data transport, charging, visualization, etc.</p>
+<h4 id="Synergy-with-the-broader-open-source-ecosystem" class="common-anchor-header">Synergy with the broader open-source ecosystem</h4><p>Another trend in database development is leveraging the synergy between the database and other cloud-native infrastructure. In the case of Milvus, it relies on some open-source systems. For instance, Milvus uses <a href="https://etcd.io/">etcd</a> for storing metadata. It also adopts message queue, a type of asynchronous service-to-service communication used in microservices architecture, which can help export incremental data.</p>
+<p>In the future, we hope to build Milvus on top of AI infrastructures such as <a href="https://spark.apache.org/">Spark</a> or <a href="https://www.tensorflow.org/">Tensorflow</a>, and integrate Milvus with streaming engines so that we can better support unified stream and batch processing to meet the various needs of Milvus users.</p>
+<h2 id="The-design-principles-of-Milvus-20" class="common-anchor-header">The design principles of Milvus 2.0<button data-href="#The-design-principles-of-Milvus-20" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,21 +118,25 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Come database vettoriale cloud-nativo di nuova generazione, Milvus 2.0 si basa sui tre principi seguenti.</p>
-<h3 id="Log-as-data" class="common-anchor-header">Registro come dati</h3><p>Un log in un database registra in serie tutte le modifiche apportate ai dati. Come mostrato nella figura seguente, da sinistra a destra ci sono i &quot;vecchi dati&quot; e i &quot;nuovi dati&quot;. I registri sono in ordine temporale. Milvus ha un meccanismo di timer globale che assegna un timestamp unico a livello globale e autoincrementale.</p>
+    </button></h2><p>As our next-generation cloud-native vector database, Milvus 2.0 is built around the following three principles.</p>
+<h3 id="Log-as-data" class="common-anchor-header">Log as data</h3><p>A log in a database serially records all the changes made to data. As shown in the figure below, from left to right are “old data” and &quot;new data&quot;. And the logs are in time order. Milvus has a global timer mechanism assigning one globally unique and auto-incremental timestamp.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Frame_1_8_6e40211f44.png" alt="Logs" class="doc-image" id="logs" />
-   </span> <span class="img-wrapper"> <span>I registri</span> </span></p>
-<p>In Milvus 2.0, il log broker funge da spina dorsale del sistema: tutte le operazioni di inserimento e aggiornamento dei dati devono passare attraverso il log broker, e i nodi worker eseguono le operazioni CRUD sottoscrivendo e consumando i log.</p>
-<h3 id="Duality-of-table-and-log" class="common-anchor-header">Dualità di tabella e log</h3><p>Sia la tabella che il log sono dati e sono solo due forme diverse. Le tabelle sono dati vincolati, mentre i log non sono vincolati. I log possono essere convertiti in tabelle. Nel caso di Milvus, esso aggrega i registri utilizzando una finestra di elaborazione di TimeTick. In base alla sequenza dei registri, più registri vengono aggregati in un piccolo file chiamato snapshot di registro. Poi queste istantanee di log vengono combinate per formare un segmento, che può essere usato individualmente per il bilanciamento del carico.</p>
-<h3 id="Log-persistency" class="common-anchor-header">Persistenza dei log</h3><p>La persistenza dei registri è uno dei problemi più spinosi per molti database. L'archiviazione dei log in un sistema distribuito dipende solitamente da algoritmi di replica.</p>
-<p>A differenza di database come <a href="https://aws.amazon.com/rds/aurora/">Aurora</a>, <a href="https://hbase.apache.org/">HBase</a>, <a href="https://www.cockroachlabs.com/">Cockroach DB</a> e <a href="https://en.pingcap.com/">TiDB</a>, Milvus adotta un approccio innovativo e introduce un sistema publish-subscribe (pub/sub) per l'archiviazione e la persistenza dei log. Un sistema pub/sub è analogo alla coda di messaggi di <a href="https://kafka.apache.org/">Kafka</a> o <a href="https://pulsar.apache.org/">Pulsar</a>. Tutti i nodi del sistema possono consumare i log. In Milvus, questo tipo di sistema è chiamato log broker. Grazie al log broker, i log sono disaccoppiati dal server, assicurando che Milvus sia esso stesso stateless e meglio posizionato per recuperare rapidamente da un guasto del sistema.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Frame_1_8_6e40211f44.png" alt="Logs" class="doc-image" id="logs" />
+    <span>Logs</span>
+  </span>
+</p>
+<p>In Milvus 2.0, the log broker serves as the system’s backbone: all data insert and update operations must go through the log broker, and worker nodes execute CRUD operations by subscribing to and consuming logs.</p>
+<h3 id="Duality-of-table-and-log" class="common-anchor-header">Duality of table and log</h3><p>Both the table and the log are data, and they are but just two different forms. Tables are bounded data while logs are unbounded. Logs can be converted into tables. In the case of Milvus, it aggregates logs using a processing window from TimeTick. Based on log sequence, multiple logs are aggregated into one small file called log snapshot. Then these log snapshots are combined to form a segment, which can be used individually for load balance.</p>
+<h3 id="Log-persistency" class="common-anchor-header">Log persistency</h3><p>Log persistency is one of the tricky issues faced by many databases. The storage of logs in a distributed system usually depends on replication algorithms.</p>
+<p>Unlike databases such as <a href="https://aws.amazon.com/rds/aurora/">Aurora</a>, <a href="https://hbase.apache.org/">HBase</a>, <a href="https://www.cockroachlabs.com/">Cockroach DB</a>, and <a href="https://en.pingcap.com/">TiDB</a>, Milvus takes a ground-breaking approach and introduces a publish-subscribe (pub/sub) system for log storage and persistency. A pub/sub system is analogous to the message queue in <a href="https://kafka.apache.org/">Kafka</a> or <a href="https://pulsar.apache.org/">Pulsar</a>. All nodes within the system can consume the logs. In Milvus, this kind of system is called a log broker. Thanks to the log broker, logs are decoupled from the server, ensuring that Milvus is itself stateless and better positioned to quickly recover from system failure.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/log_broker_cafe889835.png" alt="Log broker" class="doc-image" id="log-broker" />
-   </span> <span class="img-wrapper"> <span>Broker di log</span> </span></p>
-<h2 id="Building-a-vector-database-for-scalable-similarity-search" class="common-anchor-header">Creazione di un database vettoriale per la ricerca di similarità scalabile<button data-href="#Building-a-vector-database-for-scalable-similarity-search" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/log_broker_cafe889835.png" alt="Log broker" class="doc-image" id="log-broker" />
+    <span>Log broker</span>
+  </span>
+</p>
+<h2 id="Building-a-vector-database-for-scalable-similarity-search" class="common-anchor-header">Building a vector database for scalable similarity search<button data-href="#Building-a-vector-database-for-scalable-similarity-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,43 +151,51 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Costruito sulla base delle più diffuse librerie di ricerca vettoriale, tra cui Faiss, ANNOY, HNSW e altre, Milvus è stato progettato per la ricerca di similarità su insiemi di dati vettoriali densi, contenenti milioni, miliardi o addirittura trilioni di vettori.</p>
-<h3 id="Standalone-and-cluster" class="common-anchor-header">Standalone e cluster</h3><p>Milvus offre due modalità di implementazione: standalone o cluster. In Milvus standalone, poiché tutti i nodi sono distribuiti insieme, possiamo vedere Milvus come un unico processo. Attualmente, Milvus standalone si affida a MinIO ed etcd per la persistenza dei dati e la memorizzazione dei metadati. Nelle versioni future, speriamo di eliminare queste due dipendenze di terze parti per garantire la semplicità del sistema Milvus. Il cluster Milvus comprende otto componenti di microservizi e tre dipendenze di terze parti: MinIO, etcd e Pulsar. Pulsar funge da log broker e fornisce servizi di log pub/sub.</p>
+    </button></h2><p>Built on top of popular vector search libraries including Faiss, ANNOY, HNSW, and more, Milvus was designed for similarity search on dense vector datasets containing millions, billions, or even trillions of vectors.</p>
+<h3 id="Standalone-and-cluster" class="common-anchor-header">Standalone and cluster</h3><p>Milvus offers two ways of deployment - standalone or cluster. In Milvus standalone, since all nodes are deployed together, we can see Milvus as one single process. Currently, Milvus standalone relies on MinIO and etcd for data persistence and metadata storage. In future releases, we hope to eliminate these two third-party dependencies to ensure the simplicity of the Milvus system. Milvus cluster includes eight microservice components and three third-party dependencies: MinIO, etcd, and Pulsar. Pulsar serves as the log broker and provides log pub/sub services.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/standalone_and_cluster_7558f56e8c.png" alt="Standalone and cluster" class="doc-image" id="standalone-and-cluster" />
-   </span> <span class="img-wrapper"> <span>Standalone e cluster</span> </span></p>
-<h3 id="A-bare-bones-skeleton-of-the-Milvus-architecture" class="common-anchor-header">Uno scheletro essenziale dell'architettura Milvus</h3><p>Milvus separa il flusso di dati dal flusso di controllo ed è suddiviso in quattro livelli indipendenti in termini di scalabilità e disaster recovery.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/standalone_and_cluster_7558f56e8c.png" alt="Standalone and cluster" class="doc-image" id="standalone-and-cluster" />
+    <span>Standalone and cluster</span>
+  </span>
+</p>
+<h3 id="A-bare-bones-skeleton-of-the-Milvus-architecture" class="common-anchor-header">A bare-bones skeleton of the Milvus architecture</h3><p>Milvus separates data flow from control flow, and is divided into four layers that are independent in terms of scalability and disaster recovery.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_b7743a4a7f.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
-   </span> <span class="img-wrapper"> <span>Architettura Milvus</span> </span></p>
-<h4 id="Access-layer" class="common-anchor-header">Livello di accesso</h4><p>Il livello di accesso funge da facciata del sistema, esponendo il punto finale della connessione del cliente al mondo esterno. È responsabile dell'elaborazione delle connessioni client, dell'esecuzione di verifiche statiche, di controlli dinamici di base per le richieste degli utenti, dell'inoltro delle richieste e della raccolta e restituzione dei risultati al client. Il proxy stesso è stateless e fornisce indirizzi di accesso e servizi unificati al mondo esterno attraverso componenti di bilanciamento del carico (Nginx, Kubernetess Ingress, NodePort e LVS). Milvus utilizza un'architettura di elaborazione massicciamente parallela (MPP), in cui i proxy restituiscono i risultati raccolti dai nodi worker dopo l'aggregazione globale e la post-elaborazione.</p>
-<h4 id="Coordinator-service" class="common-anchor-header">Servizio coordinatore</h4><p>Il servizio coordinatore è il cervello del sistema, responsabile della gestione dei nodi della topologia del cluster, del bilanciamento del carico, della generazione dei timestamp, della dichiarazione dei dati e della gestione dei dati. Per una spiegazione dettagliata della funzione di ciascun servizio di coordinamento, leggere la <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Coordinator-service">documentazione tecnica</a> di <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Coordinator-service">Milvus</a>.</p>
-<h4 id="Worker-nodes" class="common-anchor-header">Nodi worker</h4><p>Il nodo worker, o di esecuzione, agisce come arti del sistema, eseguendo le istruzioni emesse dal servizio coordinatore e i comandi del linguaggio di manipolazione dei dati (DML) avviati dal proxy. Un nodo worker in Milvus è simile a un nodo dati in <a href="https://hadoop.apache.org/">Hadoop</a> o a un region server in HBase. Ogni tipo di nodo worker corrisponde a un servizio coord. Per una spiegazione dettagliata della funzione di ciascun nodo worker, leggere la <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Worker-nodes">documentazione tecnica</a> di <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Worker-nodes">Milvus</a>.</p>
-<h4 id="Storage" class="common-anchor-header">Archiviazione</h4><p>Lo storage è la pietra angolare di Milvus, responsabile della persistenza dei dati. Il livello di archiviazione è diviso in tre parti:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_architecture_b7743a4a7f.png" alt="Milvus architecture" class="doc-image" id="milvus-architecture" />
+    <span>Milvus architecture</span>
+  </span>
+</p>
+<h4 id="Access-layer" class="common-anchor-header">Access layer</h4><p>The access layer acts as the system’s face, exposing the endpoint of the client connection to the outside world. It is responsible for processing client connections, carrying out static verification, basic dynamic checks for user requests, forwarding requests, and gathering and returning results to the client. The proxy itself is stateless and provides unified access addresses and services to the outside world through load balancing components (Nginx, Kubernetess Ingress, NodePort, and LVS). Milvus uses a massively parallel processing (MPP) architecture, where proxies return results gathered from worker nodes after global aggregation and post-processing.</p>
+<h4 id="Coordinator-service" class="common-anchor-header">Coordinator service</h4><p>The coordinator service is the system’s brain, responsible for cluster topology node management, load balancing, timestamp generation, data declaration, and data management. For a detailed explanation of the function of each coordinator service, read the <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Coordinator-service">Milvus technical documentation</a>.</p>
+<h4 id="Worker-nodes" class="common-anchor-header">Worker nodes</h4><p>The worker, or execution, node acts as the limbs of the system, executing instructions issued by the coordinator service and the data manipulation language (DML) commands initiated by the proxy. A worker node in Milvus is similar to a data node in <a href="https://hadoop.apache.org/">Hadoop</a>, or a region server in HBase. Each type of worker node corresponds to a coord service. For a detailed explanation of the function of each worker node, read the <a href="https://milvus.io/docs/v2.0.x/four_layers.md#Worker-nodes">Milvus technical documentation</a>.</p>
+<h4 id="Storage" class="common-anchor-header">Storage</h4><p>Storage is the cornerstone of Milvus, responsible for data persistence. The storage layer is divided into three parts:</p>
 <ul>
-<li><strong>Meta store:</strong> Responsabile della memorizzazione di istantanee di meta-dati come lo schema di raccolta, lo stato dei nodi, i checkpoint di consumo dei messaggi, ecc. Milvus si affida a etcd per queste funzioni ed Etcd si assume anche la responsabilità della registrazione dei servizi e dei controlli di salute.</li>
-<li><strong>Broker di log:</strong> Un sistema pub/sub che supporta la riproduzione ed è responsabile della persistenza dei dati in streaming, dell'esecuzione affidabile di query asincrone, delle notifiche di eventi e della restituzione dei risultati delle query. Quando i nodi eseguono il recupero dei tempi di inattività, il log broker assicura l'integrità dei dati incrementali attraverso la riproduzione del log broker. Il cluster Milvus utilizza Pulsar come log broker, mentre la modalità standalone utilizza RocksDB. Anche i servizi di archiviazione in streaming, come Kafka e Pravega, possono essere utilizzati come log broker.</li>
-<li><strong>Storage a oggetti:</strong> Memorizza i file snapshot dei log, i file degli indici scalari/vettoriali e i risultati intermedi dell'elaborazione delle query. Milvus supporta <a href="https://aws.amazon.com/s3/">AWS S3</a> e <a href="https://azure.microsoft.com/en-us/services/storage/blobs/">Azure Blob</a>, oltre a <a href="https://min.io/">MinIO</a>, un servizio di archiviazione a oggetti leggero e open-source. A causa dell'elevata latenza di accesso e della fatturazione per query dei servizi di storage a oggetti, Milvus supporterà presto pool di cache basati su memoria/SSD e la separazione dei dati caldi/freddi per migliorare le prestazioni e ridurre i costi.</li>
+<li><strong>Meta store:</strong> Responsible for storing snapshots of meta data such as collection schema, node status, message consumption checkpoints, etc. Milvus relies on etcd for these functions and Etcd also assumes the responsibility of service registration and health checks.</li>
+<li><strong>Log broker:</strong> A pub/sub system that supports playback and is responsible for streaming data persistence, reliable asynchronous query execution, event notifications, and returning query results. When nodes are performing downtime recovery, the log broker ensures the integrity of incremental data through log broker playback. Milvus cluster uses Pulsar as its log broker, while the standalone mode uses RocksDB. Streaming storage services such as Kafka and Pravega can also be used as log brokers.</li>
+<li><strong>Object storage:</strong> Stores snapshot files of logs, scalar/vector index files, and intermediate query processing results. Milvus supports <a href="https://aws.amazon.com/s3/">AWS S3</a> and <a href="https://azure.microsoft.com/en-us/services/storage/blobs/">Azure Blob</a>, as well as <a href="https://min.io/">MinIO</a>, a lightweight, open-source object storage service. Due to the high access latency and billing per query of object storage services, Milvus will soon support memory/SSD-based cache pools and hot/cold data separation to improve performance and reduce costs.</li>
 </ul>
-<h3 id="Data-Model" class="common-anchor-header">Modello dei dati</h3><p>Il modello dei dati organizza i dati in un database. In Milvus, tutti i dati sono organizzati per collezione, shard, partizione, segmento ed entità.</p>
+<h3 id="Data-Model" class="common-anchor-header">Data Model</h3><p>The data model organizes the data in a database. In Milvus, all data are organized by collection, shard, partition, segment, and entity.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Data_model_1_5d6bb43673.png" alt="Data model 1" class="doc-image" id="data-model-1" />
-   </span> <span class="img-wrapper"> <span>Modello di dati 1</span> </span></p>
-<h4 id="Collection" class="common-anchor-header">Raccolta</h4><p>Una collezione in Milvus può essere paragonata a una tabella in un sistema di archiviazione relazionale. La collezione è l'unità di dati più grande in Milvus.</p>
-<h4 id="Shard" class="common-anchor-header">Shard</h4><p>Per sfruttare appieno la potenza di calcolo parallelo dei cluster durante la scrittura dei dati, le collezioni in Milvus devono distribuire le operazioni di scrittura dei dati su diversi nodi. Per impostazione predefinita, una singola raccolta contiene due shard. A seconda del volume del dataset, è possibile avere più shard in una raccolta. Milvus utilizza un metodo di hashing a chiave master per lo sharding.</p>
-<h4 id="Partition" class="common-anchor-header">Partizione</h4><p>In uno shard ci sono anche più partizioni. Una partizione in Milvus si riferisce a un insieme di dati contrassegnati dalla stessa etichetta in una raccolta. I metodi di partizionamento più comuni includono il partizionamento per data, sesso, età dell'utente e altro ancora. La creazione di partizioni può favorire il processo di interrogazione, in quanto i dati possono essere filtrati in base all'etichetta della partizione.</p>
-<p>In confronto, lo sharding si occupa più che altro di scalare le capacità in fase di scrittura dei dati, mentre il partizionamento si occupa più che altro di migliorare le prestazioni del sistema in fase di lettura dei dati.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Data_model_1_5d6bb43673.png" alt="Data model 1" class="doc-image" id="data-model-1" />
+    <span>Data model 1</span>
+  </span>
+</p>
+<h4 id="Collection" class="common-anchor-header">Collection</h4><p>A collection in Milvus can be likened to a table in a relational storage system. Collection is the biggest data unit in Milvus.</p>
+<h4 id="Shard" class="common-anchor-header">Shard</h4><p>To take full advantage of the parallel computing power of clusters when writing data, collections in Milvus must spread data writing operations to different nodes. By default, a single collection contains two shards. Depending on your dataset volume, you can have more shards in a collection. Milvus uses a master key hashing method for sharding.</p>
+<h4 id="Partition" class="common-anchor-header">Partition</h4><p>There are also multiple partitions in a shard. A partition in Milvus refers to a set of data marked with the same label in a collection. Common partitioning methods including partitioning by date, gender, user age, and more. Creating partitions can benefit the query process as tremendous data can be filtered by partition tag.</p>
+<p>In comparison, sharding is more of scaling capabilities when writing data, while partitioning is more of enhancing system performance when reading data.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Data_model_2_044a443751.png" alt="Data model 2" class="doc-image" id="data-model-2" />
-   </span> <span class="img-wrapper"> <span>Modello di dati 2</span> </span></p>
-<h4 id="Segments" class="common-anchor-header">Segmenti</h4><p>All'interno di ogni partizione, ci sono più segmenti di piccole dimensioni. Un segmento è l'unità più piccola per la pianificazione del sistema in Milvus. Esistono due tipi di segmenti: quelli in crescita e quelli sigillati. I segmenti in crescita sono sottoscritti dai nodi di interrogazione. L'utente di Milvus continua a scrivere dati in segmenti crescenti. Quando la dimensione di un segmento in crescita raggiunge un limite superiore (512 MB per impostazione predefinita), il sistema non consente di scrivere altri dati in questo segmento in crescita, sigillandolo. Gli indici sono costruiti su segmenti sigillati.</p>
-<p>Per accedere ai dati in tempo reale, il sistema legge i dati sia nei segmenti in crescita che nei segmenti sigillati.</p>
-<h4 id="Entity" class="common-anchor-header">Entità</h4><p>Ogni segmento contiene una quantità enorme di entità. Un'entità in Milvus è equivalente a una riga in un database tradizionale. Ogni entità ha un campo chiave primario unico, che può anche essere generato automaticamente. Le entità devono anche contenere un timestamp (ts) e un campo vettoriale - il cuore di Milvus.</p>
-<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">Informazioni sulla serie Deep Dive<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Data_model_2_044a443751.png" alt="Data model 2" class="doc-image" id="data-model-2" />
+    <span>Data model 2</span>
+  </span>
+</p>
+<h4 id="Segments" class="common-anchor-header">Segments</h4><p>Within each partition, there are multiple small segments. A segment is the smallest unit for system scheduling in Milvus. There are two types of segments, growing and sealed. Growing segments are subscribed by query nodes. The Milvus user keeps writing data into growing segments. When the size of a growing segment reaches an upper limit (512 MB by default), the system will not allow writing extra data into this growing segment, hence sealing this segment. Indexes are built on sealed segments.</p>
+<p>To access data in real time, the system reads data in both growing segments and sealed segments.</p>
+<h4 id="Entity" class="common-anchor-header">Entity</h4><p>Each segment contains massive amount of entities. An entity in Milvus is equivalent to a row in a traditional database. Each entity has a unique primary key field, which can also be automatically generated. Entities must also contain timestamp (ts), and vector field - the core of Milvus.</p>
+<h2 id="About-the-Deep-Dive-Series" class="common-anchor-header">About the Deep Dive Series<button data-href="#About-the-Deep-Dive-Series" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -185,14 +210,14 @@ canonicalUrl: 'https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con l'<a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">annuncio ufficiale della disponibilità generale</a> di Milvus 2.0, abbiamo organizzato questa serie di blog Milvus Deep Dive per fornire un'interpretazione approfondita dell'architettura e del codice sorgente di Milvus. Gli argomenti trattati in questa serie di blog includono:</p>
+    </button></h2><p>With the <a href="https://milvus.io/blog/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">official announcement of general availability</a> of Milvus 2.0, we orchestrated this Milvus Deep Dive blog series to provide an in-depth interpretation of the Milvus architecture and source code. Topics covered in this blog series include:</p>
 <ul>
-<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Panoramica dell'architettura Milvus</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">API e SDK Python</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Elaborazione dei dati</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Gestione dei dati</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Interrogazione in tempo reale</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Motore di esecuzione scalare</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">Sistema QA</a></li>
-<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Motore di esecuzione vettoriale</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-1-milvus-architecture-overview.md">Milvus architecture overview</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-2-milvus-sdk-and-api.md">APIs and Python SDKs</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-3-data-processing.md">Data processing</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-4-data-insertion-and-data-persistence.md">Data management</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-5-real-time-query.md">Real-time query</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-7-query-expression.md">Scalar execution engine</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-6-oss-qa.md">QA system</a></li>
+<li><a href="https://milvus.io/blog/deep-dive-8-knowhere.md">Vector execution engine</a></li>
 </ul>

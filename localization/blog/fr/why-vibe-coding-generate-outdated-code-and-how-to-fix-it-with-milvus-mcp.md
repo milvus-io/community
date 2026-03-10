@@ -1,8 +1,7 @@
 ---
 id: why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md
-title: >-
-  Pourquoi votre codage Vibe génère un code obsolète et comment y remédier avec
-  Milvus MCP
+title: |
+  Why Your Vibe Coding Generates Outdated Code and How to Fix It with Milvus MCP
 author: Cheney Zhang
 date: 2025-06-13T00:00:00.000Z
 cover: assets.zilliz.com/milvus_mcp_b1dab2a00c.jpg
@@ -14,14 +13,13 @@ meta_keywords: 'Vibe coding, mcp, Milvus, model context protocol'
 meta_title: |
   Why Your Vibe Coding Generates Outdated Code and How to Fix It with Milvus MCP
 desc: >-
-  Le problème de l'hallucination dans Vibe Coding est un frein à la
-  productivité. Milvus MCP montre comment les serveurs MCP spécialisés peuvent
-  résoudre ce problème en fournissant un accès en temps réel à la documentation
-  actuelle.
+  The hallucination problem in Vibe Coding is a productivity killer. Milvus MCP
+  shows how specialized MCP servers can solve this by providing real-time access
+  to current documentation.
 origin: >-
   https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md
 ---
-<h2 id="The-One-Thing-Breaking-Your-Vibe-Coding-Flow" class="common-anchor-header">La seule chose qui casse votre flux de codage vibratoire<button data-href="#The-One-Thing-Breaking-Your-Vibe-Coding-Flow" class="anchor-icon" translate="no">
+<h2 id="The-One-Thing-Breaking-Your-Vibe-Coding-Flow" class="common-anchor-header">The One Thing Breaking Your Vibe Coding Flow<button data-href="#The-One-Thing-Breaking-Your-Vibe-Coding-Flow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,22 +34,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le Vibe Coding a le vent en poupe. Des outils comme Cursor et Windsurf redéfinissent la façon dont nous écrivons des logiciels, en rendant le développement sans effort et intuitif. Demandez une fonction et obtenez un extrait. Vous avez besoin d'un appel rapide à l'API ? Il est généré avant même que vous ayez fini de le taper.</p>
-<p><strong>Cependant, voici le problème qui gâche l'ambiance : les assistants d'IA génèrent souvent du code obsolète qui ne fonctionne pas en production.</strong> En effet, les LLM qui alimentent ces outils s'appuient souvent sur des données de formation obsolètes. Même le copilote d'IA le plus intelligent peut suggérer un code qui a un an ou trois ans de retard. Vous pouvez vous retrouver avec une syntaxe qui ne fonctionne plus, des appels d'API obsolètes ou des pratiques que les frameworks d'aujourd'hui découragent activement.</p>
-<p>Prenons l'exemple suivant : J'ai demandé à Cursor de générer du code de connexion Milvus et il a produit ceci :</p>
+    </button></h2><p>Vibe Coding is having its moment. Tools like Cursor and Windsurf are redefining how we write software, making development feel effortless and intuitive. Ask for a function and get a snippet. Need a quick API call? It’s generated before you finish typing.</p>
+<p><strong>However, here’s the catch that’s ruining the vibe: AI assistants often generate outdated code that breaks in production.</strong> This is because LLMs powering these tools often rely on outdated training data. Even the slickest AI copilot can suggest code that’s a year—or three—behind the curve. You might end up with a syntax that no longer works, deprecated API calls, or practices that today’s frameworks actively discourage.</p>
+<p>Consider this example: I asked Cursor to generate Milvus connection code, and it produced this:</p>
 <pre><code translate="no">connections.<span class="hljs-title function_">connect</span>(<span class="hljs-string">&quot;default&quot;</span>, host=<span class="hljs-string">&quot;localhost&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Cela fonctionnait parfaitement, mais le SDK pymilvus actuel recommande d'utiliser <code translate="no">MilvusClient</code> pour toutes les connexions et opérations. L'ancienne méthode n'est plus considérée comme une bonne pratique, mais les assistants d'IA continuent de la suggérer parce que leurs données de formation sont souvent périmées depuis des mois ou des années.</p>
-<p>Pire encore, lorsque j'ai demandé le code de l'API OpenAI, Cursor a généré un extrait utilisant <code translate="no">gpt-3.5-turbo</code>- un modèle désormais marqué <em>Legacy</em> par OpenAI, qui coûte trois fois le prix de son successeur tout en produisant des résultats inférieurs. Le code s'appuyait également sur <code translate="no">openai.ChatCompletion</code>, une API obsolète à partir de mars 2024.</p>
-<p><span class="img-wrapper">
+<p>This used to work perfectly, but the current pymilvus SDK recommends using <code translate="no">MilvusClient</code> for all connections and operations. The old method is no longer considered best practice, yet AI assistants continue to suggest it because their training data is often months or years out of date.</p>
+<p>Even worse, when I requested OpenAI API code, Cursor generated a snippet using <code translate="no">gpt-3.5-turbo</code>—a model now marked <em>Legacy</em> by OpenAI, costing triple the price of its successor while delivering inferior results. The code also relied on <code translate="no">openai.ChatCompletion</code>, an API deprecated as of March 2024.</p>
+<p>​​
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/gpt_pricing_6bfa92d83b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Il ne s'agit pas seulement d'un code défectueux, mais aussi d'un <strong>flux défectueux</strong>. La promesse de Vibe Coding est que le développement doit être fluide et intuitif. Mais lorsque votre assistant IA génère des API obsolètes et des modèles périmés, l'ambiance n'est plus au rendez-vous. Vous revenez à Stack Overflow, à la recherche de documentation, à l'ancienne façon de faire les choses.</p>
-<p>Malgré tous les progrès des outils de Vibe Coding, les développeurs passent encore beaucoup de temps à franchir le "dernier kilomètre" entre le code généré et les solutions prêtes à être produites. L'ambiance est là, mais la précision n'est pas au rendez-vous.</p>
-<p><strong>Jusqu'à présent.</strong></p>
-<h2 id="Meet-Milvus-MCP-Vibe-Coding-with-Always-Up-to-Date-Docs" class="common-anchor-header">Découvrez Milvus MCP : Vibe Coding avec des documents toujours à jour<button data-href="#Meet-Milvus-MCP-Vibe-Coding-with-Always-Up-to-Date-Docs" class="anchor-icon" translate="no">
+<p>This isn’t just about broken code—it’s about <strong>broken flow</strong>. The whole promise of Vibe Coding is that development should feel smooth and intuitive. But when your AI assistant generates deprecated APIs and outdated patterns, the vibe dies. You’re back to Stack Overflow, back to documentation hunting, back to the old way of doing things.</p>
+<p>Despite all the progress in Vibe Coding tools, developers still spend significant time bridging the “last mile” between generated code and production-ready solutions. The vibe is there, but the accuracy isn’t.</p>
+<p><strong>Until now.</strong></p>
+<h2 id="Meet-Milvus-MCP-Vibe-Coding-with-Always-Up-to-Date-Docs" class="common-anchor-header">Meet Milvus MCP: Vibe Coding with Always-Up-to-Date Docs<button data-href="#Meet-Milvus-MCP-Vibe-Coding-with-Always-Up-to-Date-Docs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,23 +65,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Existe-t-il un moyen de combiner le puissant codegen d'outils tels que Cursor <em>avec une</em> documentation actualisée, afin de générer un code précis au sein même de l'IDE ?</p>
-<p>Absolument. En combinant le protocole de contexte de modèle (MCP) avec la génération assistée par récupération (RAG), nous avons créé une solution améliorée appelée <strong>Milvus MCP.</strong> Elle aide les développeurs qui utilisent le SDK Milvus à accéder automatiquement à la documentation la plus récente, ce qui permet à leur IDE de produire le code correct. Ce service sera bientôt disponible - voici un aperçu de l'architecture qui le sous-tend.</p>
-<h3 id="How-It-Works" class="common-anchor-header">Comment cela fonctionne-t-il ?</h3><p>
+    </button></h2><p>So, is there a way to combine the powerful codegen of tools like Cursor <em>with</em> fresh documentation, so we can generate accurate code right inside the IDE?</p>
+<p>Absolutely. By combining the Model Context Protocol (MCP) with Retrieval-Augmented Generation (RAG), we’ve created an enhanced solution called <strong>Milvus MCP</strong>. It helps developers using the Milvus SDK to automatically access the latest docs, enabling their IDE to produce the correct code. This service will be available soon—here’s a sneak peek at the architecture behind it.</p>
+<h3 id="How-It-Works" class="common-anchor-header">How It Works</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/The_Architecture_Behind_MCP_c9093162b6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Le diagramme ci-dessus montre un système hybride qui combine les architectures MCP (Model Context Protocol) et RAG (Retrieval-Augmented Generation) pour aider les développeurs à produire un code précis.</p>
-<p>Sur le côté gauche, les développeurs travaillant dans des IDE dotés d'IA comme Cursor ou Windsurf interagissent par le biais d'une interface de discussion, qui déclenche des appels d'outils MCP. Ces demandes sont envoyées au serveur MCP sur le côté droit, qui héberge des outils spécialisés pour les tâches de codage quotidiennes telles que la génération de code et le remaniement.</p>
-<p>Le composant RAG fonctionne du côté du serveur MCP, où la documentation Milvus a été prétraitée et stockée sous forme de vecteurs dans une base de données Milvus. Lorsqu'un outil reçoit une requête, il effectue une recherche sémantique pour récupérer les extraits de documentation et les exemples de code les plus pertinents. Ces informations contextuelles sont ensuite renvoyées au client, où un LLM les utilise pour générer des suggestions de code précises et actualisées.</p>
-<h3 id="MCP-transport-mechanism" class="common-anchor-header">Mécanisme de transport MCP</h3><p>MCP prend en charge deux mécanismes de transport : <code translate="no">stdio</code> et <code translate="no">SSE</code>:</p>
+<p>The diagram above shows a hybrid system that combines MCP (Model Context Protocol) and RAG (Retrieval-Augmented Generation) architectures to help developers generate accurate code.</p>
+<p>On the left side, developers working in AI-powered IDEs like Cursor or Windsurf interact through a chat interface, which triggers MCP tool calls. These requests are sent to the MCP Server on the right side, which hosts specialized tools for everyday coding tasks like code generation and refactoring.</p>
+<p>The RAG component operates on the MCP server side, where the Milvus documentation has been pre-processed and stored as vectors in a Milvus database. When a tool receives a query, it performs a semantic search to retrieve the most relevant documentation snippets and code examples. This contextual information is then sent back to the client, where an LLM uses it to generate accurate, up-to-date code suggestions.</p>
+<h3 id="MCP-transport-mechanism" class="common-anchor-header">MCP transport mechanism</h3><p>MCP supports two transport mechanisms: <code translate="no">stdio</code> and <code translate="no">SSE</code>:</p>
 <ul>
-<li><p>Entrée/sortie standard (stdio) : Le transport <code translate="no">stdio</code> permet de communiquer sur des flux d'entrée/sortie standard. Il est particulièrement utile pour les outils locaux ou les intégrations en ligne de commande.</p></li>
-<li><p>Événements envoyés par le serveur (SSE) : SSE prend en charge les flux serveur-client en utilisant des requêtes HTTP POST pour la communication client-serveur.</p></li>
+<li><p>Standard Input/Output (stdio): The <code translate="no">stdio</code> transport allows communication over standard input/output streams. It’s particularly useful for local tools or command-line integrations.</p></li>
+<li><p>Server-Sent Events (SSE): SSE supports server-to-client streaming using HTTP POST requests for client-to-server communication.</p></li>
 </ul>
-<p>Comme <code translate="no">stdio</code> repose sur une infrastructure locale, les utilisateurs doivent gérer eux-mêmes l'ingestion des documents. Dans notre cas, <strong>SSE est mieux adapté : le</strong>serveur gère automatiquement le traitement et la mise à jour des documents. Par exemple, les documents peuvent être réindexés quotidiennement. Les utilisateurs n'ont qu'à ajouter cette configuration JSON à leur configuration MCP :</p>
+<p>Because <code translate="no">stdio</code> relies on local infrastructure, users must manage document ingestion themselves. In our case, <strong>SSE is a better fit</strong>—the server handles all document processing and updates automatically. For example, docs can be re-indexed daily. Users only need to add this JSON config to their MCP setup:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;milvus-code-generate-helper&quot;</span>: {
@@ -91,8 +90,8 @@ origin: >-
   }
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>Une fois cette configuration en place, votre IDE (tel que Cursor ou Windsurf) peut commencer à communiquer avec les outils côté serveur, en récupérant automatiquement la dernière documentation Milvus pour une génération de code plus intelligente et actualisée.</p>
-<h2 id="Milvus-MCP-in-Action" class="common-anchor-header">Milvus MCP en action<button data-href="#Milvus-MCP-in-Action" class="anchor-icon" translate="no">
+<p>Once this is in place, your IDE (such as Cursor or Windsurf) can start communicating with the server-side tools—automatically retrieving the latest Milvus documentation for smarter, up-to-date code generation.</p>
+<h2 id="Milvus-MCP-in-Action" class="common-anchor-header">Milvus MCP in Action<button data-href="#Milvus-MCP-in-Action" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -107,37 +106,37 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pour montrer comment ce système fonctionne en pratique, nous avons créé trois outils prêts à l'emploi sur le serveur Milvus MCP auxquels vous pouvez accéder directement à partir de votre IDE. Chaque outil résout un problème courant auquel les développeurs sont confrontés lorsqu'ils travaillent avec Milvus :</p>
+    </button></h2><p>To show how this system works in practice, we’ve created three ready-to-use tools on the Milvus MCP Server that you can access directly from your IDE. Each tool solves a common problem developers face when working with Milvus:</p>
 <ul>
-<li><p><strong>pymilvus-code-generator</strong>: Il écrit le code Python pour vous lorsque vous devez effectuer des opérations Milvus courantes telles que la création de collections, l'insertion de données ou l'exécution de recherches à l'aide du SDK pymilvus.</p></li>
-<li><p><strong>convertisseur de code client orm</strong>: Modernise votre code Python existant en remplaçant les modèles ORM (Object Relational Mapping) obsolètes par la syntaxe plus simple et plus récente de MilvusClient.</p></li>
-<li><p><strong>traducteur de langue</strong>: Convertit votre code SDK Milvus entre les langages de programmation. Par exemple, si vous avez un code SDK Python fonctionnel mais que vous en avez besoin dans le SDK TypeScript, cet outil le traduit pour vous.</p></li>
+<li><p><strong>pymilvus-code-generator</strong>: Writes Python code for you when you need to perform common Milvus operations like creating collections, inserting data, or running searches using the pymilvus SDK.</p></li>
+<li><p><strong>orm-client-code-convertor</strong>: Modernizes your existing Python code by replacing outdated ORM (Object Relational Mapping) patterns with the simpler, newer MilvusClient syntax.</p></li>
+<li><p><strong>language-translator</strong>: Converts your Milvus SDK code between programming languages. For instance, if you have working Python SDK code but need it in TypeScript SDK, this tool translates it for you.</p></li>
 </ul>
-<p>Voyons maintenant comment ils fonctionnent.</p>
+<p>Now, let’s take a look at how they work.</p>
 <h3 id="pymilvus-code-generator" class="common-anchor-header">pymilvus-code-generator</h3><div style="padding:66.98% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1093504910?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="pymilvus-code-generator"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-<p>Dans cette démo, j'ai demandé à Cursor de générer du code de recherche plein texte en utilisant <code translate="no">pymilvus</code>. Cursor invoque avec succès le bon outil MCP et produit un code conforme aux spécifications. La plupart des cas d'utilisation de <code translate="no">pymilvus</code> fonctionnent parfaitement avec cet outil.</p>
-<p>Voici une comparaison côte à côte avec et sans cet outil.</p>
-<p><strong>Avec MCP MCP :</strong></p>
+<p>In this demo, I asked Cursor to generate full-text search code using <code translate="no">pymilvus</code>. Cursor successfully invokes the correct MCP tool and outputs spec-compliant code. Most <code translate="no">pymilvus</code> use cases work seamlessly with this tool.</p>
+<p>Here’s a side-by-side comparison with and without this tool.</p>
+<p><strong>With MCP MCP:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/With_Milvus_MCP_f72ad4cfb6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>→ Cursor with Milvus MCP utilise la dernière interface <code translate="no">MilvusClient</code> pour créer une collection.</p>
-<p><strong>Sans MCP :</strong></p>
+<p>→ Cursor with Milvus MCP uses the latest <code translate="no">MilvusClient</code> interface to create a collection.</p>
+<p><strong>Without MCP:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Without_Milvus_MCP_3336d956a4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>→ Le Cursor sans le serveur Milvus MCP utilise une syntaxe ORM obsolète, qui n'est plus conseillée.</p>
-<h3 id="orm-client-code-convertor" class="common-anchor-header">convertisseur de code orm-client</h3><div style="padding:66.98% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1093504859?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="orm-client-code-convertor"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-<p>Dans cet exemple, l'utilisateur met en évidence du code de type ORM et demande une conversion. L'outil réécrit correctement la logique de connexion et de schéma en utilisant une instance <code translate="no">MilvusClient</code>. L'utilisateur peut accepter tous les changements en un seul clic.</p>
-<h3 id="language-translator" class="common-anchor-header"><strong>traducteur de langues</strong></h3><div style="padding:66.98% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1093504885?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="tool3 ts-1"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-<p>Ici, l'utilisateur sélectionne un fichier <code translate="no">.py</code> et demande une traduction TypeScript. L'outil appelle le bon point de terminaison MCP, récupère la dernière documentation TypeScript SDK et produit un fichier <code translate="no">.ts</code> équivalent avec la même logique métier. Cette solution est idéale pour les migrations inter-langues.</p>
-<h2 id="Comparing-Milvus-MCP-with-Context7-DeepWiki-and-Other-Tools" class="common-anchor-header">Comparaison de Milvus MCP avec Context7, DeepWiki et d'autres outils<button data-href="#Comparing-Milvus-MCP-with-Context7-DeepWiki-and-Other-Tools" class="anchor-icon" translate="no">
+<p>→ The Cursor without the Milvus MCP server uses outdated ORM syntax—no longer advised.</p>
+<h3 id="orm-client-code-convertor" class="common-anchor-header">orm-client-code-convertor</h3><div style="padding:66.98% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1093504859?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="orm-client-code-convertor"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+<p>In this example, the user highlights some ORM-style code and requests a conversion. The tool correctly rewrites the connection and schema logic using a <code translate="no">MilvusClient</code> instance. The user can accept all changes with one click.</p>
+<h3 id="language-translator" class="common-anchor-header"><strong>language-translator</strong></h3><div style="padding:66.98% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/1093504885?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="tool3 ts-1"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+<p>Here, the user selects a <code translate="no">.py</code> file and asks for a TypeScript translation. The tool calls the correct MCP endpoint, retrieves the latest TypeScript SDK docs, and outputs an equivalent <code translate="no">.ts</code> file with the same business logic. This is ideal for cross-language migrations.</p>
+<h2 id="Comparing-Milvus-MCP-with-Context7-DeepWiki-and-Other-Tools" class="common-anchor-header">Comparing Milvus MCP with Context7, DeepWiki, and Other Tools<button data-href="#Comparing-Milvus-MCP-with-Context7-DeepWiki-and-Other-Tools" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -152,53 +151,53 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nous avons abordé le problème de l'hallucination du "dernier kilomètre" dans Vibe Coding. Outre notre MCP Milvus, de nombreux autres outils visent également à résoudre ce problème, tels que Context7 et DeepWiki. Ces outils, souvent alimentés par MCP ou RAG, permettent d'injecter des documents et des échantillons de code à jour dans la fenêtre contextuelle du modèle.</p>
+    </button></h2><p>We’ve discussed the “last mile” hallucination problem in Vibe Coding. Beyond our Milvus MCP, many other tools also aim to solve this issue, such as Context7 and DeepWiki. These tools, often powered by MCP or RAG, help inject up-to-date docs and code samples into the model’s context window.</p>
 <h3 id="Context7" class="common-anchor-header">Context7</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Context7_fc32b53a0e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Figure : La page Milvus de Context7 permet aux utilisateurs de rechercher et de personnaliser des extraits de documentation<a href="https://context7.com/milvus-io/milvus">(https://context7.com/milvus-io/milvus).</a></p>
-<p>Context7 fournit une documentation et des exemples de code actualisés et spécifiques à la version pour les LLM et les éditeurs de code d'IA. Le problème principal auquel il répond est que les LLM s'appuient sur des informations obsolètes ou génériques concernant les bibliothèques que vous utilisez, vous donnant des exemples de code qui sont obsolètes et basés sur des données d'entraînement vieilles d'un an.</p>
-<p>Context7 MCP extrait de la source une documentation et des exemples de code actualisés et spécifiques à la version, et les place directement dans votre invite. Il prend en charge les importations de repo GitHub et les fichiers <code translate="no">llms.txt</code>, y compris les formats tels que <code translate="no">.md</code>, <code translate="no">.mdx</code>, <code translate="no">.txt</code>, <code translate="no">.rst</code>, et <code translate="no">.ipynb</code> (mais pas les fichiers <code translate="no">.py</code> ).</p>
-<p>Les utilisateurs peuvent soit copier manuellement le contenu du site, soit utiliser l'intégration MCP de Context7 pour une récupération automatisée.</p>
+<p>Figure: Context7’s Milvus page lets users search and customize doc snippets (<a href="https://context7.com/milvus-io/milvus">https://context7.com/milvus-io/milvus</a>)</p>
+<p>Context7 provides up-to-date, version-specific documentation and code examples for LLMs and AI code editors. The core problem it addresses is that LLMs rely on outdated or generic information about the libraries you use, giving you code examples that are outdated and based on year-old training data.</p>
+<p>Context7 MCP pulls up-to-date, version-specific documentation and code examples straight from the source and places them directly into your prompt. It supports GitHub repo imports and <code translate="no">llms.txt</code> files, including formats like <code translate="no">.md</code>, <code translate="no">.mdx</code>, <code translate="no">.txt</code>, <code translate="no">.rst</code>, and <code translate="no">.ipynb</code> (not <code translate="no">.py</code> files).</p>
+<p>Users can either manually copy content from the site or use Context7’s MCP integration for automated retrieval.</p>
 <h3 id="DeepWiki" class="common-anchor-header"><strong>DeepWiki</strong></h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Deep_Wiki_bebe01aa6f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Figure : DeepWiki fournit des résumés auto-générés de Milvus, y compris la logique et l'architecture<a href="https://deepwiki.com/milvus-io/milvus">(https://deepwiki.com/milvus-io/milvus).</a></p>
-<p>DeepWiki analyse automatiquement les projets GitHub à code source ouvert pour créer des documents techniques, des diagrammes et des organigrammes lisibles. Il comprend une interface de chat pour les questions et réponses en langage naturel. Cependant, il donne la priorité aux fichiers de code plutôt qu'à la documentation, ce qui fait qu'il peut négliger des éléments clés de la documentation. Il n'y a pas encore d'intégration MCP.</p>
-<h3 id="Cursor-Agent-Mode" class="common-anchor-header">Mode agent de Cursor</h3><p>
+<p>Figure: DeepWiki provides auto-generated summaries of Milvus, including logic and architecture (<a href="https://deepwiki.com/milvus-io/milvus">https://deepwiki.com/milvus-io/milvus</a>)</p>
+<p>DeepWiki auto-parses open-source GitHub projects to create readable technical docs, diagrams, and flowcharts. It includes a chat interface for natural language Q&amp;A. However, it prioritizes code files over documentation, so it may overlook key doc insights. It currently lacks MCP integration.</p>
+<h3 id="Cursor-Agent-Mode" class="common-anchor-header">Cursor Agent Mode</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Cursor_Agent_Mode_fba8ef66af.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Le mode agent de Cursor permet d'effectuer des recherches sur le web, d'appeler des MCP et d'activer des plugins. Bien que puissant, il est parfois incohérent. Vous pouvez utiliser <code translate="no">@</code> pour insérer manuellement des documents, mais vous devez d'abord trouver et joindre le contenu.</p>
-<h3 id="llmstxt" class="common-anchor-header">llms.txt</h3><p><code translate="no">llms.txt</code> n'est pas un outil, c'est une norme proposée pour fournir aux LLM un contenu de site web structuré. Habituellement, en Markdown, il est placé dans le répertoire racine d'un site et organise les titres, les arborescences de documents, les tutoriels, les liens vers les API, etc.</p>
-<p>Ce n'est pas un outil en soi, mais il s'associe bien avec ceux qui le prennent en charge.</p>
-<h3 id="Side-by-Side-Feature-Comparison-Milvus-MCP-vs-Context7-vs-DeepWiki-vs-Cursor-Agent-Mode-vs-llmstxt" class="common-anchor-header">Comparaison côte à côte des fonctionnalités : Milvus MCP vs Context7 vs DeepWiki vs Cursor Agent Mode vs llms.txt</h3><table>
+<p>Agent mode in Cursor enables web search, MCP calls, and plugin toggles. While powerful, it’s sometimes inconsistent. You can use <code translate="no">@</code> to manually insert docs, but that requires you to find and attach the content first.</p>
+<h3 id="llmstxt" class="common-anchor-header">llms.txt</h3><p><code translate="no">llms.txt</code> isn’t a tool—it’s a proposed standard to provide LLMs with structured website content. Usually, in Markdown, it goes in a site’s root directory and organizes titles, doc trees, tutorials, API links, and more.</p>
+<p>It’s not a tool on its own, but it pairs well with those that support it.</p>
+<h3 id="Side-by-Side-Feature-Comparison-Milvus-MCP-vs-Context7-vs-DeepWiki-vs-Cursor-Agent-Mode-vs-llmstxt" class="common-anchor-header">Side-by-Side Feature Comparison: Milvus MCP vs. Context7 vs. DeepWiki vs Cursor Agent Mode vs llms.txt</h3><table>
 <thead>
 <tr><th style="text-align:center"></th><th style="text-align:center"></th><th style="text-align:center"></th><th style="text-align:center"></th><th style="text-align:center"></th><th style="text-align:center"></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>Fonctionnalité</strong></td><td style="text-align:center"><strong>Context7</strong></td><td style="text-align:center"><strong>DeepWiki</strong></td><td style="text-align:center"><strong>Mode curseur-agent</strong></td><td style="text-align:center"><strong>llms.txt</strong></td><td style="text-align:center"><strong>Milvus MCP</strong></td></tr>
-<tr><td style="text-align:center"><strong>Traitement des documents</strong></td><td style="text-align:center">Docs uniquement, pas de code</td><td style="text-align:center">Axé sur le code, peut manquer des documents</td><td style="text-align:center">Sélectionné par l'utilisateur</td><td style="text-align:center">Markdown structuré</td><td style="text-align:center">Documents officiels de Milvus uniquement</td></tr>
-<tr><td style="text-align:center"><strong>Récupération du contexte</strong></td><td style="text-align:center">Injection automatique</td><td style="text-align:center">Copier/coller manuel</td><td style="text-align:center">Mixte, moins précis</td><td style="text-align:center">Pré-étiquetage structuré</td><td style="text-align:center">Récupération automatique à partir de la base de données vectorielles</td></tr>
-<tr><td style="text-align:center"><strong>Importation personnalisée</strong></td><td style="text-align:center">✅ GitHub, llms.txt</td><td style="text-align:center">✅ GitHub (y compris privé)</td><td style="text-align:center">❌ Sélection manuelle uniquement</td><td style="text-align:center">✅ Manually authored</td><td style="text-align:center">❌ Maintenu par le serveur</td></tr>
-<tr><td style="text-align:center"><strong>Effort manuel</strong></td><td style="text-align:center">Partiel (MCP vs. manuel)</td><td style="text-align:center">Copie manuelle</td><td style="text-align:center">Semi-manuelle</td><td style="text-align:center">Admin uniquement</td><td style="text-align:center">Aucune action de l'utilisateur n'est nécessaire</td></tr>
-<tr><td style="text-align:center"><strong>Intégration MCP</strong></td><td style="text-align:center">Oui</td><td style="text-align:center">❌ Non</td><td style="text-align:center">Oui (avec configuration)</td><td style="text-align:center">Pas d'outil</td><td style="text-align:center">✅ Nécessaire</td></tr>
-<tr><td style="text-align:center"><strong>Avantages</strong></td><td style="text-align:center">Mises à jour en direct, prêt pour l'IDE</td><td style="text-align:center">Diagrammes visuels, soutien à l'assurance qualité</td><td style="text-align:center">Flux de travail personnalisés</td><td style="text-align:center">Données structurées pour l'IA</td><td style="text-align:center">Maintenu par Milvus/Zilliz</td></tr>
-<tr><td style="text-align:center"><strong>Limitations</strong></td><td style="text-align:center">Pas de prise en charge des fichiers de code</td><td style="text-align:center">Ne tient pas compte des documents</td><td style="text-align:center">S'appuie sur la précision du web</td><td style="text-align:center">Nécessite d'autres outils</td><td style="text-align:center">Axé uniquement sur Milvus</td></tr>
+<tr><td style="text-align:center"><strong>Feature</strong></td><td style="text-align:center"><strong>Context7</strong></td><td style="text-align:center"><strong>DeepWiki</strong></td><td style="text-align:center"><strong>Cursor Agent Mode</strong></td><td style="text-align:center"><strong>llms.txt</strong></td><td style="text-align:center"><strong>Milvus MCP</strong></td></tr>
+<tr><td style="text-align:center"><strong>Doc Handling</strong></td><td style="text-align:center">Docs only, no code</td><td style="text-align:center">Code-focused, may miss docs</td><td style="text-align:center">User-selected</td><td style="text-align:center">Structured Markdown</td><td style="text-align:center">Official Milvus docs only</td></tr>
+<tr><td style="text-align:center"><strong>Context Retrieval</strong></td><td style="text-align:center">Auto-inject</td><td style="text-align:center">Manual copy/paste</td><td style="text-align:center">Mixed, less accurate</td><td style="text-align:center">Structured pre-labeling</td><td style="text-align:center">Auto-retrieve from vector store</td></tr>
+<tr><td style="text-align:center"><strong>Custom Import</strong></td><td style="text-align:center">✅ GitHub, llms.txt</td><td style="text-align:center">✅ GitHub (incl. private)</td><td style="text-align:center">❌ Manual selection only</td><td style="text-align:center">✅ Manually authored</td><td style="text-align:center">❌ Server-maintained</td></tr>
+<tr><td style="text-align:center"><strong>Manual Effort</strong></td><td style="text-align:center">Partial (MCP vs. manual)</td><td style="text-align:center">Manual copy</td><td style="text-align:center">Semi-manual</td><td style="text-align:center">Admin only</td><td style="text-align:center">No user action needed</td></tr>
+<tr><td style="text-align:center"><strong>MCP Integration</strong></td><td style="text-align:center">✅ Yes</td><td style="text-align:center">❌ No</td><td style="text-align:center">✅ Yes (with setup)</td><td style="text-align:center">❌ Not a tool</td><td style="text-align:center">✅ Required</td></tr>
+<tr><td style="text-align:center"><strong>Advantages</strong></td><td style="text-align:center">Live updates, IDE-ready</td><td style="text-align:center">Visual diagrams, QA support</td><td style="text-align:center">Custom workflows</td><td style="text-align:center">Structured data for AI</td><td style="text-align:center">Maintained by Milvus/Zilliz</td></tr>
+<tr><td style="text-align:center"><strong>Limitations</strong></td><td style="text-align:center">No code file support</td><td style="text-align:center">Skips docs</td><td style="text-align:center">Relies on web accuracy</td><td style="text-align:center">Requires other tools</td><td style="text-align:center">Focused solely on Milvus</td></tr>
 </tbody>
 </table>
-<p>Milvus MCP est conçu spécifiquement pour le développement de bases de données Milvus. Il obtient automatiquement la dernière documentation officielle et fonctionne de manière transparente avec votre environnement de codage. Si vous travaillez avec Milvus, c'est votre meilleure option.</p>
-<p>D'autres outils comme Context7, DeepWiki et Cursor Agent Mode fonctionnent avec de nombreuses technologies différentes, mais ils ne sont pas aussi spécialisés ou précis pour le travail spécifique à Milvus.</p>
-<p>Choisissez en fonction de vos besoins. La bonne nouvelle, c'est que ces outils fonctionnent bien ensemble - vous pouvez en utiliser plusieurs à la fois pour obtenir les meilleurs résultats pour différentes parties de votre projet.</p>
-<h2 id="Milvus-MCP-is-Coming-Soon" class="common-anchor-header">Milvus MCP est bientôt disponible !<button data-href="#Milvus-MCP-is-Coming-Soon" class="anchor-icon" translate="no">
+<p>Milvus MCP is built specifically for Milvus database development. It automatically gets the latest official documentation and works seamlessly with your coding environment. If you’re working with Milvus, this is your best option.</p>
+<p>Other tools like Context7, DeepWiki, and Cursor Agent Mode work with many different technologies, but they’re not as specialized or accurate for Milvus-specific work.</p>
+<p>Choose based on what you need. The good news is these tools work well together - you can use several at once to get the best results for different parts of your project.</p>
+<h2 id="Milvus-MCP-is-Coming-Soon" class="common-anchor-header">Milvus MCP is Coming Soon!<button data-href="#Milvus-MCP-is-Coming-Soon" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -213,6 +212,6 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le problème de l'hallucination dans Vibe Coding n'est pas seulement un inconvénient mineur - c'est un tueur de productivité qui oblige les développeurs à revenir à des flux de travail de vérification manuelle. Milvus MCP démontre comment les serveurs MCP spécialisés peuvent résoudre ce problème en fournissant un accès en temps réel à la documentation actuelle.</p>
-<p>Pour les développeurs Milvus, cela signifie qu'il n'est plus nécessaire de déboguer les appels <code translate="no">connections.connect()</code> obsolètes ou de se battre avec des modèles ORM dépassés. Les trois outils -ymilvus-code-generator, orm-client-code-convertor et language-translator - traitent automatiquement les points les plus problématiques.</p>
-<p>Prêt à l'essayer ? Le service sera bientôt disponible pour des tests en accès anticipé. Restez à l'écoute.</p>
+    </button></h2><p>The hallucination problem in Vibe Coding isn’t just a minor inconvenience—it’s a productivity killer that forces developers back into manual verification workflows. Milvus MCP demonstrates how specialized MCP servers can solve this by providing real-time access to current documentation.</p>
+<p>For Milvus developers, this means no more debugging deprecated <code translate="no">connections.connect()</code> calls or wrestling with outdated ORM patterns. The three tools—pymilvus-code-generator, orm-client-code-convertor, and language-translator—handle the most common pain points automatically.</p>
+<p>Ready to try it? The service will be available soon for early access testing. Stay tuned.</p>

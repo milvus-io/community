@@ -1,10 +1,9 @@
 ---
 id: >-
   milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
-title: >-
-  Ne payez plus pour des données froides : Réduction des coûts de 80 % grâce au
-  chargement de données chaudes et froides à la demande dans le système de
-  stockage hiérarchisé de Milvus
+title: >
+  Stop Paying for Cold Data: 80% Cost Reduction with On-Demand Hot–Cold Data
+  Loading in Milvus Tiered Storage
 author: Buqian Zheng
 date: 2025-12-15T00:00:00.000Z
 cover: assets.zilliz.com/tiered_storage_cover_38237a3bda.png
@@ -17,28 +16,27 @@ meta_title: >
   Milvus Tiered Storage: 80% Less Vector Search Cost with On-Demand Hot–Cold
   Data Loading
 desc: >-
-  Découvrez comment le stockage hiérarchisé dans Milvus permet le chargement à
-  la demande des données chaudes et froides, ce qui permet de réduire les coûts
-  de 80 % et d'accélérer les temps de chargement à l'échelle.
+  Learn how Tiered Storage in Milvus enables on-demand loading for hot and cold
+  data, delivering up to 80% cost reduction and faster load times at scale.
 origin: >-
   https://milvus.io/blog/milvus-tiered-storage-80-less-vector-search-cost-with-on-demand-hot–cold-data-loading.md
 ---
-<p><strong>Combien d'entre vous paient encore des factures d'infrastructure élevées pour des données que votre système touche à peine ? Honnêtement, c'est le cas de la plupart des équipes.</strong></p>
-<p>Si vous exécutez une recherche vectorielle en production, vous l'avez probablement constaté de première main. Vous prévoyez de grandes quantités de mémoire et de disques SSD pour que tout soit prêt pour les requêtes, même si seule une petite partie de votre ensemble de données est réellement active. Et vous n'êtes pas le seul. Nous avons vu beaucoup de cas similaires :</p>
+<p><strong>How many of you are still paying premium infrastructure bills for data your system barely touches? Be honest — most teams are.</strong></p>
+<p>If you run vector search in production, you’ve probably seen this firsthand. You provision large amounts of memory and SSDs so everything stays “query-ready,” even though only a small slice of your dataset is actually active. And you’re not alone. We’ve seen a lot of similar cases as well:</p>
 <ul>
-<li><p><strong>Plateformes SaaS multi-locataires :</strong> Des centaines de locataires inscrits, mais seulement 10 à 15 % d'entre eux sont actifs chaque jour. Les autres restent inactifs mais continuent d'occuper des ressources.</p></li>
-<li><p><strong>Systèmes de recommandation pour le commerce électronique :</strong> Un million d'UGS, mais les 8 % de produits les plus vendus génèrent la plupart des recommandations et du trafic de recherche.</p></li>
-<li><p><strong>Recherche en IA :</strong> De vastes archives d'encastrements, même si 90 % des requêtes des utilisateurs portent sur des articles datant de la semaine dernière.</p></li>
+<li><p><strong>Multi-tenant SaaS platforms:</strong> Hundreds of onboarded tenants, but only 10–15% active on any given day. The rest sit cold but still occupy resources.</p></li>
+<li><p><strong>E-commerce recommendation systems:</strong> A million SKUs, yet the top 8% of products generate most of the recommendations and search traffic.</p></li>
+<li><p><strong>AI search:</strong> Vast archives of embeddings, even though 90% of user queries hit items from the past week.</p></li>
 </ul>
-<p>C'est la même chose dans tous les secteurs : <strong>moins de 10 % de vos données sont interrogées fréquemment, mais elles consomment souvent 80 % de votre espace de stockage et de votre mémoire.</strong> Tout le monde sait que ce déséquilibre existe, mais jusqu'à récemment, il n'existait pas de solution architecturale propre pour y remédier.</p>
-<p><strong>Cela change avec</strong> <a href="https://milvus.io/docs/release_notes.md">Milvus 2.6</a><strong>.</strong></p>
-<p>Avant cette version, Milvus (comme la plupart des bases de données vectorielles) dépendait d'<strong>un modèle de chargement complet</strong>: si les données devaient être consultables, elles devaient être chargées sur les nœuds locaux. Peu importe que ces données soient consultées un millier de fois par minute ou une fois par trimestre, <strong>elles devaient rester chaudes</strong>. Ce choix de conception garantissait des performances prévisibles, mais il impliquait également de surdimensionner les clusters et de payer pour des ressources que les données froides ne méritaient tout simplement pas.</p>
-<p><strong>Le</strong><a href="https://milvus.io/docs/tiered-storage-overview.md">stockage hiérarchisé</a> <strong>est notre réponse.</strong></p>
-<p>Milvus 2.6 introduit une nouvelle architecture de stockage hiérarchisé avec un <strong>véritable chargement à la demande</strong>, permettant au système de différencier automatiquement les données chaudes des données froides :</p>
+<p>It’s the same story across industries: <strong>less than 10% of your data gets queried frequently, but it often consumes 80% of your storage and memory.</strong> Everyone knows the imbalance exists — but until recently, there hasn’t been a clean architectural way to fix it.</p>
+<p><strong>That changes with</strong> <a href="https://milvus.io/docs/release_notes.md">Milvus 2.6</a><strong>.</strong></p>
+<p>Before this release, Milvus (like most vector databases) depended on <strong>a full-load model</strong>: if data needed to be searchable, it had to be loaded onto local nodes. It didn’t matter whether that data was hit a thousand times a minute or once a quarter — <strong>it all had to stay hot.</strong> That design choice ensured predictable performance, but it also meant oversizing clusters and paying for resources that cold data simply didn’t deserve.</p>
+<p><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage</a> <strong>is our answer.</strong></p>
+<p>Milvus 2.6 introduces a new tiered storage architecture with <strong>true on-demand loading</strong>, letting the system differentiate between hot and cold data automatically:</p>
 <ul>
-<li><p>les segments chauds restent mis en cache à proximité de l'ordinateur</p></li>
-<li><p>Les segments froids sont stockés à moindre coût dans le stockage d'objets distants.</p></li>
-<li><p>Les données <strong>ne</strong> sont transférées vers les nœuds locaux <strong>que lorsqu'une requête en a réellement besoin.</strong></p></li>
+<li><p>Hot segments stay cached close to the compute</p></li>
+<li><p>Cold segments live cheaply in remote object storage</p></li>
+<li><p>Data is pulled into local nodes <strong>only when a query actually needs it</strong></p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -46,9 +44,9 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>La structure des coûts passe ainsi de "la quantité de données dont vous disposez" à <strong>"la quantité de données que vous utilisez réellement".</strong> Dans les premiers déploiements en production, ce simple changement permet de <strong>réduire de 80 % les coûts de stockage et de mémoire</strong>.</p>
-<p>Dans la suite de ce billet, nous allons voir comment fonctionne le stockage hiérarchisé, partager des résultats de performance réels et montrer où ce changement a le plus d'impact.</p>
-<h2 id="Why-Full-Loading-Breaks-Down-at-Scale" class="common-anchor-header">Pourquoi le chargement complet s'effondre à grande échelle<button data-href="#Why-Full-Loading-Breaks-Down-at-Scale" class="anchor-icon" translate="no">
+<p>This shifts your cost structure from “how much data you have” to <strong>“how much data you actually use.”</strong> And in early production deployments, this simple shift delivers <strong>up to an 80% reduction in storage and memory cost</strong>.</p>
+<p>In the rest of this post, we’ll walk through how Tiered Storage works, share real performance results, and show where this change delivers the biggest impact.</p>
+<h2 id="Why-Full-Loading-Breaks-Down-at-Scale" class="common-anchor-header">Why Full Loading Breaks Down at Scale<button data-href="#Why-Full-Loading-Breaks-Down-at-Scale" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,47 +61,47 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Avant de plonger dans la solution, il convient d'examiner de plus près pourquoi le <strong>mode de chargement complet</strong> utilisé dans Milvus 2.5 et les versions antérieures est devenu un facteur limitant à mesure que les charges de travail évoluaient.</p>
-<p>Dans Milvus 2.5 et les versions antérieures, lorsqu'un utilisateur émettait une requête <code translate="no">Collection.load()</code>, chaque QueryNode mettait en cache l'ensemble de la collection localement, y compris les métadonnées, les données de champ et les index. Ces composants sont téléchargés à partir du stockage d'objets et stockés soit entièrement en mémoire, soit en mémoire mappée (mmap) sur le disque local. Ce n'est que lorsque <em>toutes ces</em> données sont disponibles localement que la collection est considérée comme chargée et prête à répondre aux requêtes.</p>
-<p>En d'autres termes, la collection n'est pas interrogeable tant que l'ensemble des données - chaudes ou froides - n'est pas présent sur le nœud.</p>
+    </button></h2><p>Before diving into the solution, it’s worth taking a closer look at why the <strong>full-load mode</strong> used in Milvus 2.5 and earlier releases became a limiting factor as workloads scaled.</p>
+<p>In Milvus 2.5 and earlier, when a user issued a <code translate="no">Collection.load()</code> request, each QueryNode cached the entire collection locally, including metadata, field data, and indexes. These components are downloaded from object storage and stored either fully in memory or memory-mapped (mmap) to local disk. Only after <em>all</em> of this data is available locally is the collection marked as loaded and ready to serve queries.</p>
+<p>In other words, the collection is not queryable until the full dataset—hot or cold—is present on the node.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_5_en_3adca38b7e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Remarque :</strong> Pour les types d'index qui intègrent des données vectorielles brutes, Milvus ne charge que les fichiers d'index, et non le champ vectoriel séparément. Malgré cela, l'index doit être entièrement chargé pour répondre aux requêtes, quelle que soit la quantité de données réellement accédée.</p>
-<p>Pour comprendre pourquoi cela devient problématique, prenons un exemple concret :</p>
-<p>Supposons que vous disposiez d'un ensemble de données vectorielles de taille moyenne comprenant</p>
+<p><strong>Note:</strong> For index types that embed raw vector data, Milvus loads only the index files, not the vector field separately. Even so, the index must be fully loaded to serve queries, regardless of how much of the data is actually accessed.</p>
+<p>To see why this becomes problematic, consider a concrete example:</p>
+<p>Suppose you have a mid-sized vector dataset with:</p>
 <ul>
-<li><p><strong>100 millions de vecteurs</strong></p></li>
+<li><p><strong>100 million vectors</strong></p></li>
 <li><p><strong>768 dimensions</strong> (BERT embeddings)</p></li>
-<li><p>précision<strong>float32</strong> (4 octets par dimension)</p></li>
-<li><p>Un <strong>index HNSW</strong></p></li>
+<li><p><strong>float32</strong> precision (4 bytes per dimension)</p></li>
+<li><p>An <strong>HNSW index</strong></p></li>
 </ul>
-<p>Dans cette configuration, l'index HNSW seul - y compris les vecteurs bruts intégrés - occupe environ 430 Go de mémoire. Après l'ajout de champs scalaires communs tels que les identifiants des utilisateurs, les horodatages ou les étiquettes de catégorie, l'utilisation totale des ressources locales dépasse facilement les 500 Go.</p>
-<p>Cela signifie que même si 80 % des données sont rarement ou jamais interrogées, le système doit toujours provisionner et conserver plus de 500 Go de mémoire locale ou de disque simplement pour maintenir la collection en ligne.</p>
-<p>Pour certaines charges de travail, ce comportement est acceptable :</p>
+<p>In this setup, the HNSW index alone—including the embedded raw vectors—consumes approximately 430 GB of memory. After adding common scalar fields such as user IDs, timestamps, or category labels, total local resource usage easily exceeds 500 GB.</p>
+<p>This means that even if 80% of the data is rarely or never queried, the system must still provision and hold more than 500 GB of local memory or disk just to keep the collection online.</p>
+<p>For some workloads, this behavior is acceptable:</p>
 <ul>
-<li><p>Si presque toutes les données sont fréquemment consultées, le chargement complet de toutes les données permet d'obtenir la latence de requête la plus faible possible, au coût le plus élevé.</p></li>
-<li><p>Si les données peuvent être divisées en sous-ensembles chauds et tièdes, le mappage en mémoire des données tièdes sur le disque peut réduire partiellement la pression de la mémoire.</p></li>
+<li><p>If nearly all data is frequently accessed, fully loading everything delivers the lowest possible query latency—at the highest cost.</p></li>
+<li><p>If data can be divided into hot and warm subsets, memory-mapping warm data to disk can partially reduce memory pressure.</p></li>
 </ul>
-<p>Toutefois, dans les charges de travail où 80 % ou plus des données se trouvent dans la longue traîne, les inconvénients du chargement complet apparaissent rapidement, tant au niveau des <strong>performances</strong> que des <strong>coûts</strong>.</p>
-<h3 id="Performance-bottlenecks" class="common-anchor-header">Goulets d'étranglement des performances</h3><p>Dans la pratique, le chargement complet n'affecte pas seulement les performances des requêtes et ralentit souvent les processus opérationnels de routine :</p>
+<p>However, in workloads where 80% or more of the data sits in the long tail, the drawbacks of full loading surface quickly, across both <strong>performance</strong> and <strong>cost</strong>.</p>
+<h3 id="Performance-bottlenecks" class="common-anchor-header">Performance bottlenecks</h3><p>In practice, full loading affects more than query performance and often slows down routine operational workflows:</p>
 <ul>
-<li><p><strong>Des mises à niveau plus longues :</strong> Dans les grands clusters, les mises à niveau en continu peuvent prendre des heures, voire une journée entière, car chaque nœud doit recharger l'ensemble des données avant de redevenir disponible.</p></li>
-<li><p><strong>Récupération plus lente après les pannes :</strong> Lorsqu'un QueryNode redémarre, il ne peut pas servir le trafic tant que toutes les données n'ont pas été rechargées, ce qui prolonge considérablement le temps de reprise et amplifie l'impact des pannes de nœuds.</p></li>
-<li><p><strong>Ralentissement de l'itération et de l'expérimentation :</strong> Le chargement complet ralentit les flux de développement, obligeant les équipes d'intelligence artificielle à attendre des heures pour que les données se chargent lorsqu'elles testent de nouveaux ensembles de données ou de nouvelles configurations d'index.</p></li>
+<li><p><strong>Longer rolling upgrades:</strong> In large clusters, rolling upgrades can take hours or even a full day, as each node must reload the entire dataset before becoming available again.</p></li>
+<li><p><strong>Slower recovery after failures:</strong> When a QueryNode restarts, it cannot serve traffic until all data is reloaded, significantly prolonging recovery time and amplifying the impact of node failures.</p></li>
+<li><p><strong>Slower iteration and experimentation:</strong> Full loading slows down development workflows, forcing AI teams to wait hours for data to load when testing new datasets or index configurations.</p></li>
 </ul>
-<h3 id="Cost-inefficiencies" class="common-anchor-header">Inefficacité des coûts</h3><p>Le chargement complet fait également grimper les coûts d'infrastructure. Par exemple, sur les instances optimisées pour la mémoire du cloud grand public, le stockage de 1 To de données en local coûte environ<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>**70</mn></mrow></semantics></math></span></span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>000 par</mn><mo>an∗</mo><mo separator="true">,</mo><mi>sur</mi><mi>la base d'une tarification</mi></mrow><annotation encoding="application/x-tex">conservatrice</annotation><mrow><mo stretchy="false">(</mo></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">AWSr6i</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>:</mo></mrow></semantics></math></span></span><mtext> </mtext><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">70 000 par an**, sur la base d'une tarification conservatrice (AWS r6i : ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">70</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">000par</span><span class="mord mathnormal" style="margin-right:0.02778em;">an</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span> ∗</span></span></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">sur la</span><span class="mord mathnormal" style="margin-right:0.03588em;">base</span><span class="mord mathnormal">d'une tarification conservatrice</span><span class="mopen">(</span><span class="mord mathnormal">AWSr6i</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span>:<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace nobreak"> </span> 5.74 / Go / mois ; GCP n4-highmem : ~5</span></span></span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>.</mn><mi>68/GB/mois</mi><mo separator="true">;</mo><mi>AzureE-series</mi><mo>:</mo></mrow></semantics></math></span></span><mtext> </mtext> 5<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">.68 / GB / mois ; Azure E-series :</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">~</span><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"></span></span></span></span>5<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord mathnormal">68/GB/mois</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">AzureE</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span> <span class="mord mathnormal">series</span><span class="mspace" style="margin-right:0.2778em;"></span></span></span></span>:<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace nobreak"> </span> 5,67 / GB / mois).</span></span></span></p>
-<p>Considérons maintenant un modèle d'accès plus réaliste, où 80 % de ces données sont froides et pourraient être stockées dans le stockage objet à la place (à environ 0,023 $ / Go / mois) :</p>
+<h3 id="Cost-inefficiencies" class="common-anchor-header">Cost inefficiencies</h3><p>Full loading also drives up infrastructure costs. For example, on mainstream cloud memory-optimized instances, storing 1 TB of data locally costs roughly **<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>70</mn><mo separator="true">,</mo><mn>000</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi><mo>∗</mo><mo>∗</mo><mo separator="true">,</mo><mi>b</mi><mi>a</mi><mi>s</mi><mi>e</mi><mi>d</mi><mi>o</mi><mi>n</mi><mi>c</mi><mi>o</mi><mi>n</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>v</mi><mi>a</mi><mi>t</mi><mi>i</mi><mi>v</mi><mi>e</mi><mi>p</mi><mi>r</mi><mi>i</mi><mi>c</mi><mi>i</mi><mi>n</mi><mi>g</mi><mo stretchy="false">(</mo><mi>A</mi><mi>W</mi><mi>S</mi><mi>r</mi><mn>6</mn><mi>i</mi><mo>:</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">70,000 per year**, based on conservative pricing (AWS r6i: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">70</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">000</span><span class="mord mathnormal">p</span><span class="mord mathnormal">erye</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∗</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">ba</span><span class="mord mathnormal">se</span><span class="mord mathnormal">d</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">co</span><span class="mord mathnormal">n</span><span class="mord mathnormal" style="margin-right:0.02778em;">ser</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">e</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">i</span><span class="mord mathnormal">c</span><span class="mord mathnormal">in</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord">6</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace nobreak"> </span></span></span></span>5.74 / GB / month; GCP n4-highmem: ~<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5.68</mn><mi mathvariant="normal">/</mi><mi>G</mi><mi>B</mi><mi mathvariant="normal">/</mi><mi>m</mi><mi>o</mi><mi>n</mi><mi>t</mi><mi>h</mi><mo separator="true">;</mo><mi>A</mi><mi>z</mi><mi>u</mi><mi>r</mi><mi>e</mi><mi>E</mi><mo>−</mo><mi>s</mi><mi>e</mi><mi>r</mi><mi>i</mi><mi>e</mi><mi>s</mi><mo>:</mo><mtext> </mtext></mrow><annotation encoding="application/x-tex">5.68 / GB / month; Azure E-series: ~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">5.68/</span><span class="mord mathnormal" style="margin-right:0.05017em;">GB</span><span class="mord">/</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">t</span><span class="mord mathnormal">h</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.04398em;">z</span><span class="mord mathnormal">u</span><span class="mord mathnormal">re</span><span class="mord mathnormal" style="margin-right:0.05764em;">E</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal" style="margin-right:0.02778em;">ser</span><span class="mord mathnormal">i</span><span class="mord mathnormal">es</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:</span><span class="mspace nobreak"> </span></span></span></span>5.67 / GB / month).</p>
+<p>Now consider a more realistic access pattern, where 80% of that data is cold and could be stored in object storage instead (at roughly $0.023 / GB / month):</p>
 <ul>
-<li><p>200 Go de données chaudes × 5,68</p></li>
-<li><p>800 Go de données froides × 0,023</p></li>
+<li><p>200 GB hot data × $5.68</p></li>
+<li><p>800 GB cold data × $0.023</p></li>
 </ul>
-<p>Coût annuel : (200×5,68+800×0,023)×12≈$14<strong> 000</strong></p>
-<p>Il s'agit d'une <strong>réduction de 80 %</strong> du coût total du stockage, sans sacrifier les performances là où elles sont réellement importantes.</p>
-<h2 id="What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="common-anchor-header">Qu'est-ce que le stockage hiérarchisé et comment fonctionne-t-il ?<button data-href="#What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<p>Annual cost: (200×5.68+800×0.023)×12≈<strong>$14,000</strong></p>
+<p>That’s an <strong>80% reduction</strong> in total storage cost, without sacrificing performance where it actually matters.</p>
+<h2 id="What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="common-anchor-header">What Is the Tiered Storage and How Does It Work?<button data-href="#What-Is-the-Tiered-Storage-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,66 +116,66 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pour supprimer ce compromis, Milvus 2.6 a introduit le <strong>stockage hiérarchisé</strong>, qui équilibre les performances et les coûts en traitant le stockage local comme un cache plutôt que comme un conteneur pour l'ensemble des données.</p>
-<p>Dans ce modèle, les QueryNodes ne chargent que des métadonnées légères au démarrage. Les données de champ et les index sont récupérés à la demande à partir du stockage d'objets distant lorsqu'une requête les requiert, et mis en cache localement si l'on y accède fréquemment. Les données inactives peuvent être expulsées pour libérer de l'espace.</p>
-<p>Ainsi, les données chaudes restent à proximité de la couche de calcul pour les requêtes à faible latence, tandis que les données froides restent dans le stockage d'objets jusqu'à ce qu'elles soient nécessaires. Cela réduit le temps de chargement, améliore l'efficacité des ressources et permet aux QueryNodes d'interroger des ensembles de données bien plus importants que la capacité de leur mémoire locale ou de leur disque.</p>
-<p>En pratique, le stockage hiérarchisé fonctionne comme suit :</p>
+    </button></h2><p>To remove the trade-off, Milvus 2.6 introduced <strong>Tiered Storage</strong>, which balances performance and cost by treating local storage as a cache rather than a container for the entire dataset.</p>
+<p>In this model, QueryNodes load only lightweight metadata at startup. Field data and indexes are fetched on demand from remote object storage when a query requires them, and cached locally if they are accessed frequently. Inactive data can be evicted to free up space.</p>
+<p>As a result, hot data stays close to the compute layer for low-latency queries, while cold data remains in object storage until needed. This reduces load time, improves resource efficiency, and allows QueryNodes to query datasets far larger than their local memory or disk capacity.</p>
+<p>In practice, Tiered Storage works as follows:</p>
 <ul>
-<li><p><strong>Garder les données chaudes au niveau local :</strong> Environ 20 % des données fréquemment consultées restent résidentes sur les nœuds locaux, ce qui garantit une faible latence pour les 80 % de requêtes les plus importantes.</p></li>
-<li><p><strong>Chargement des données froides à la demande :</strong> Les 80 % restants de données rarement consultées ne sont récupérées qu'en cas de besoin, ce qui libère la majeure partie de la mémoire locale et des ressources du disque.</p></li>
-<li><p><strong>S'adapter dynamiquement grâce à l'éviction basée sur la méthode LRU :</strong> Milvus utilise une stratégie d'éviction LRU (Least Recently Used) pour ajuster en permanence les données considérées comme chaudes ou froides. Les données inactives sont automatiquement éliminées pour faire de la place aux données nouvellement accédées.</p></li>
+<li><p><strong>Keep hot data local:</strong> Roughly 20% of frequently accessed data remains resident on local nodes, ensuring low latency for the 80% of queries that matter most.</p></li>
+<li><p><strong>Load cold data on demand:</strong> The remaining 80% of rarely accessed data is fetched only when needed, freeing up the majority of local memory and disk resources.</p></li>
+<li><p><strong>Adapt dynamically with LRU-based eviction:</strong> Milvus uses an LRU (Least Recently Used) eviction strategy to continuously adjust which data is considered hot or cold. Inactive data is automatically evicted to make room for newly accessed data.</p></li>
 </ul>
-<p>Grâce à cette conception, Milvus n'est plus contraint par la capacité fixe de la mémoire locale et du disque. Au lieu de cela, les ressources locales fonctionnent comme un cache géré dynamiquement, où l'espace est continuellement récupéré des données inactives et réattribué aux charges de travail actives.</p>
-<p>Sous le capot, ce comportement est rendu possible par trois mécanismes techniques fondamentaux :</p>
-<h3 id="1-Lazy-Load" class="common-anchor-header">1. Chargement paresseux</h3><p>Lors de l'initialisation, Milvus ne charge que les métadonnées minimales au niveau du segment, ce qui permet aux collections d'être interrogeables presque immédiatement après le démarrage. Les données de champ et les fichiers d'index restent dans le stockage distant et sont récupérés à la demande pendant l'exécution de la requête, ce qui permet de limiter l'utilisation de la mémoire locale et du disque.</p>
-<p><strong>Fonctionnement du chargement des collections dans Milvus 2.5</strong></p>
+<p>With this design, Milvus is no longer constrained by the fixed capacity of local memory and disk. Instead, local resources function as a dynamically managed cache, where space is continuously reclaimed from inactive data and reallocated to active workloads.</p>
+<p>Under the hood, this behavior is enabled by three core technical mechanisms:</p>
+<h3 id="1-Lazy-Load" class="common-anchor-header">1. Lazy Load</h3><p>At initialization, Milvus loads only minimal segment-level metadata, allowing collections to become queryable almost immediately after startup. Field data and index files remain in remote storage and are fetched on demand during query execution, keeping local memory and disk usage low.</p>
+<p><strong>How collection loading worked in Milvus 2.5</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_5_en_aa89de3570.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Fonctionnement du chargement paresseux dans Milvus 2.6 et versions ultérieures</strong></p>
+<p><strong>How lazy loading works in Milvus 2.6 and later</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_6_en_049fa45540.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Les métadonnées chargées lors de l'initialisation se répartissent en quatre catégories principales :</p>
+<p>The metadata loaded during initialization falls into four key categories:</p>
 <ul>
-<li><p><strong>Statistiques de segment</strong> (informations de base telles que le nombre de lignes, la taille du segment et les métadonnées de schéma)</p></li>
-<li><p><strong>Horodatage</strong> (utilisé pour prendre en charge les requêtes temporelles)</p></li>
-<li><p><strong>Insertion et suppression d'enregistrements</strong> (nécessaires pour maintenir la cohérence des données pendant l'exécution de la requête)</p></li>
-<li><p><strong>Filtres de Bloom</strong> (utilisés pour un pré-filtrage rapide afin d'éliminer rapidement les segments non pertinents)</p></li>
+<li><p><strong>Segment statistics</strong> (Basic information such as row count, segment size, and schema metadata)</p></li>
+<li><p><strong>Timestamps</strong> (Used to support time-travel queries)</p></li>
+<li><p><strong>Insert and delete records</strong> (Required to maintain data consistency during query execution)</p></li>
+<li><p><strong>Bloom filters</strong> (Used for fast pre-filtering to quickly eliminate irrelevant segments)</p></li>
 </ul>
-<h3 id="2-Partial-Load" class="common-anchor-header">2. Chargement partiel</h3><p>Alors que le chargement paresseux contrôle le <em>moment où</em> les données sont chargées, le chargement partiel contrôle la <em>quantité de</em> données chargées. Lorsque les requêtes ou les recherches commencent, le QueryNode effectue un chargement partiel, en récupérant uniquement les morceaux de données ou les fichiers d'index nécessaires dans le stockage d'objets.</p>
-<p><strong>Index vectoriels : Chargement en fonction du locataire</strong></p>
-<p>L'une des fonctionnalités les plus importantes introduites dans Milvus 2.6+ est le chargement des index vectoriels en fonction du locataire, conçu spécifiquement pour les charges de travail multi-locataires.</p>
-<p>Lorsqu'une requête accède aux données d'un seul locataire, Milvus charge uniquement la partie de l'index vectoriel appartenant à ce locataire, en ignorant les données d'index pour tous les autres locataires. Les ressources locales restent ainsi concentrées sur les locataires actifs.</p>
-<p>Cette conception présente plusieurs avantages :</p>
+<h3 id="2-Partial-Load" class="common-anchor-header">2. Partial Load</h3><p>While Lazy loading controls <em>when</em> data is loaded, partial loading controls <em>how much</em> data is loaded. Once queries or searches begin, the QueryNode performs a partial load, fetching only the required data chunks or index files from object storage.</p>
+<p><strong>Vector indexes: Tenant-aware loading</strong></p>
+<p>One of the most impactful capabilities introduced in Milvus 2.6+ is tenant-aware loading of vector indexes, designed specifically for multi-tenant workloads.</p>
+<p>When a query accesses data from a single tenant, Milvus loads only the portion of the vector index belonging to that tenant, skipping index data for all other tenants. This keeps local resources focused on active tenants.</p>
+<p>This design provides several benefits:</p>
 <ul>
-<li><p>Les index vectoriels des locataires inactifs ne consomment pas de mémoire locale ni de disque.</p></li>
-<li><p>Les données d'index pour les locataires actifs restent en cache pour un accès à faible latence.</p></li>
-<li><p>Une politique d'éviction LRU au niveau du locataire garantit une utilisation équitable du cache entre les locataires.</p></li>
+<li><p>Vector indexes for inactive tenants do not consume local memory or disk</p></li>
+<li><p>Index data for active tenants stays cached for low-latency access</p></li>
+<li><p>A tenant-level LRU eviction policy ensures fair cache usage across tenants</p></li>
 </ul>
-<p><strong>Champs scalaires : Chargement partiel au niveau des colonnes</strong></p>
-<p>Le chargement partiel s'applique également aux <strong>champs scalaires</strong>, ce qui permet à Milvus de charger uniquement les colonnes explicitement référencées par une requête.</p>
-<p>Considérons une collection comportant <strong>50 champs de schéma</strong>, tels que <code translate="no">id</code>, <code translate="no">vector</code>, <code translate="no">title</code>, <code translate="no">description</code>, <code translate="no">category</code>, <code translate="no">price</code>, <code translate="no">stock</code>, et <code translate="no">tags</code>, et vous n'avez besoin de renvoyer que trois champs :<code translate="no">id</code>, <code translate="no">title</code>, et <code translate="no">price</code>.</p>
+<p><strong>Scalar fields: Column-level partial loading</strong></p>
+<p>Partial loading also applies to <strong>scalar fields</strong>, allowing Milvus to load only the columns explicitly referenced by a query.</p>
+<p>Consider a collection with <strong>50 schema fields</strong>, such as <code translate="no">id</code>, <code translate="no">vector</code>, <code translate="no">title</code>, <code translate="no">description</code>, <code translate="no">category</code>, <code translate="no">price</code>, <code translate="no">stock</code>, and <code translate="no">tags</code>, and you only need to return three fields—<code translate="no">id</code>, <code translate="no">title</code>, and <code translate="no">price</code>.</p>
 <ul>
-<li><p>Dans <strong>Milvus 2.5</strong>, les 50 champs scalaires sont chargés indépendamment des exigences de la requête.</p></li>
-<li><p>Dans <strong>Milvus 2.6+</strong>, seuls les trois champs demandés sont chargés. Les 47 champs restants ne sont pas chargés et ne sont récupérés paresseusement que s'ils sont consultés ultérieurement.</p></li>
+<li><p>In <strong>Milvus 2.5</strong>, all 50 scalar fields are loaded regardless of query requirements.</p></li>
+<li><p>In <strong>Milvus 2.6+</strong>, only the three requested fields are loaded. The remaining 47 fields stay unloaded and are fetched lazily only if they are accessed later.</p></li>
 </ul>
-<p>Les économies de ressources peuvent être substantielles. Si chaque champ scalaire occupe 20 Go, le chargement de tous les champs nécessite 1 000 Go :</p>
+<p>The resource savings can be substantial. If each scalar field occupies 20 GB:</p>
 <ul>
-<li><p>le chargement de tous les champs nécessite <strong>1 000 Go</strong> (50 × 20 Go)</p></li>
-<li><p>Le chargement des trois champs requis seulement utilise <strong>60 Go</strong></p></li>
+<li><p>Loading all fields requires <strong>1,000 GB</strong> (50 × 20 GB)</p></li>
+<li><p>Loading only the three required fields uses <strong>60 GB</strong></p></li>
 </ul>
-<p>Cela représente une <strong>réduction de 94 %</strong> du chargement des données scalaires, sans affecter l'exactitude de la requête ou les résultats.</p>
-<p><strong>Remarque : le</strong> chargement partiel des champs scalaires et des index vectoriels en fonction du locataire sera officiellement introduit dans une prochaine version. Une fois disponible, il permettra de réduire davantage la latence de chargement et d'améliorer les performances des requêtes à froid dans les grands déploiements multi-locataires.</p>
-<h3 id="3-LRU-Based-Cache-Eviction" class="common-anchor-header">3. Eviction du cache basée sur LRU</h3><p>Le chargement paresseux et le chargement partiel réduisent considérablement la quantité de données introduites dans la mémoire locale et sur le disque. Toutefois, dans les systèmes fonctionnant depuis longtemps, le cache continue de s'agrandir au fur et à mesure que de nouvelles données sont consultées. Lorsque la capacité locale est atteinte, l'éviction du cache basée sur la méthode LRU prend effet.</p>
-<p>L'éviction LRU (Least Recently Used) suit une règle simple : les données auxquelles on n'a pas accédé récemment sont évincées en premier. Cela permet de libérer de l'espace local pour les données nouvellement accédées tout en conservant les données fréquemment utilisées dans la mémoire cache.</p>
-<h2 id="Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="common-anchor-header">Évaluation des performances : Stockage hiérarchisé vs. chargement complet<button data-href="#Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="anchor-icon" translate="no">
+<p>This represents a <strong>94% reduction</strong> in scalar data loading, without affecting query correctness or results.</p>
+<p><strong>Note:</strong> Tenant-aware partial loading for scalar fields and vector indexes will be officially introduced in an upcoming release. Once available, it will further reduce load latency and improve cold-query performance in large multi-tenant deployments.</p>
+<h3 id="3-LRU-Based-Cache-Eviction" class="common-anchor-header">3. LRU-Based Cache Eviction</h3><p>Lazy loading and partial loading significantly reduce how much data is brought into local memory and disk. However, in long-running systems, the cache will still grow as new data is accessed over time. When local capacity is reached, LRU-based cache eviction takes effect.</p>
+<p>LRU (Least Recently Used) eviction follows a simple rule: data that has not been accessed recently is evicted first. This frees up local space for newly accessed data while keeping frequently used data resident in the cache.</p>
+<h2 id="Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="common-anchor-header">Performance Evaluation: Tiered Storage vs. Full Loading<button data-href="#Performance-Evaluation-Tiered-Storage-vs-Full-Loading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -192,91 +190,91 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pour évaluer l'impact réel du <strong>stockage hiérarchisé</strong>, nous avons mis en place un environnement de test qui reproduit fidèlement les charges de travail de production. Nous avons comparé Milvus avec et sans stockage hiérarchisé sur cinq dimensions : le temps de chargement, l'utilisation des ressources, les performances des requêtes, la capacité effective et la rentabilité.</p>
-<h3 id="Experimental-setup" class="common-anchor-header">Configuration expérimentale</h3><p><strong>Jeu de données</strong></p>
+    </button></h2><p>To evaluate the real-world impact of <strong>Tiered Storage</strong>, we set up a test environment that closely mirrors production workloads. We compared Milvus with and without Tiered Storage across five dimensions: load time, resource usage, query performance, effective capacity, and cost efficiency.</p>
+<h3 id="Experimental-setup" class="common-anchor-header">Experimental setup</h3><p><strong>Dataset</strong></p>
 <ul>
-<li><p>100 millions de vecteurs avec 768 dimensions (BERT embeddings)</p></li>
-<li><p>Taille de l'index vectoriel : environ 430 Go</p></li>
-<li><p>10 champs scalaires, dont l'ID, l'horodatage et la catégorie</p></li>
+<li><p>100 million vectors with 768 dimensions (BERT embeddings)</p></li>
+<li><p>Vector index size: approximately 430 GB</p></li>
+<li><p>10 scalar fields, including ID, timestamp, and category</p></li>
 </ul>
-<p><strong>Configuration matérielle</strong></p>
+<p><strong>Hardware configuration</strong></p>
 <ul>
-<li><p>1 QueryNode avec 4 vCPU, 32 Go de mémoire et 1 TB NVMe SSD</p></li>
-<li><p>Réseau 10 Gbps</p></li>
-<li><p>Cluster de stockage d'objets MinIO en tant que backend de stockage distant</p></li>
+<li><p>1 QueryNode with 4 vCPUs, 32 GB memory, and 1 TB NVMe SSD</p></li>
+<li><p>10 Gbps network</p></li>
+<li><p>MinIO object storage cluster as the remote storage backend</p></li>
 </ul>
-<p><strong>Modèle d'accès</strong></p>
-<p>Les requêtes suivent une distribution réaliste d'accès chaud-froid :</p>
+<p><strong>Access pattern</strong></p>
+<p>Queries follow a realistic hot–cold access distribution:</p>
 <ul>
-<li><p>80 % des requêtes ciblent les données des 30 derniers jours (≈20 % des données totales)</p></li>
-<li><p>15 % des requêtes portent sur des données datant de 30 à 90 jours (≈30 % du total des données)</p></li>
-<li><p>5 % ciblent des données datant de plus de 90 jours (≈50 % du total des données).</p></li>
+<li><p>80% of queries target data from the most recent 30 days (≈20% of total data)</p></li>
+<li><p>15% target data from 30–90 days (≈30% of total data)</p></li>
+<li><p>5% target data older than 90 days (≈50% of total data)</p></li>
 </ul>
-<h3 id="Key-results" class="common-anchor-header">Principaux résultats</h3><p><strong>1. Temps de chargement 33 fois plus rapide</strong></p>
+<h3 id="Key-results" class="common-anchor-header">Key results</h3><p><strong>1. 33× faster load time</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Phase</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Accélération</strong></th></tr>
+<tr><th style="text-align:center"><strong>Stage</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Speedup</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Téléchargement des données</td><td style="text-align:center">22 minutes</td><td style="text-align:center">28 secondes</td><td style="text-align:center">47×</td></tr>
-<tr><td style="text-align:center">Chargement de l'index</td><td style="text-align:center">3 minutes</td><td style="text-align:center">17 secondes</td><td style="text-align:center">10.5×</td></tr>
-<tr><td style="text-align:center"><strong>Total</strong></td><td style="text-align:center"><strong>25 minutes</strong></td><td style="text-align:center"><strong>45 secondes</strong></td><td style="text-align:center"><strong>33×</strong></td></tr>
+<tr><td style="text-align:center">Data download</td><td style="text-align:center">22 minutes</td><td style="text-align:center">28 seconds</td><td style="text-align:center">47×</td></tr>
+<tr><td style="text-align:center">Index loading</td><td style="text-align:center">3 minutes</td><td style="text-align:center">17 seconds</td><td style="text-align:center">10.5×</td></tr>
+<tr><td style="text-align:center"><strong>Total</strong></td><td style="text-align:center"><strong>25 minutes</strong></td><td style="text-align:center"><strong>45 seconds</strong></td><td style="text-align:center"><strong>33×</strong></td></tr>
 </tbody>
 </table>
-<p>Dans Milvus 2.5, le chargement de la collection prenait <strong>25 minutes</strong>. Avec le stockage hiérarchisé dans Milvus 2.6+, la même charge de travail s'exécute en <strong>45 secondes</strong> seulement, ce qui représente une amélioration considérable de l'efficacité de la charge.</p>
-<p><strong>2. Réduction de 80 % de l'utilisation des ressources locales</strong></p>
+<p>In Milvus 2.5, loading the collection took <strong>25 minutes</strong>. With Tiered Storage in Milvus 2.6+, the same workload completes in just <strong>45 seconds</strong>, representing a step-change improvement in load efficiency.</p>
+<p><strong>2. 80% Reduction in Local Resource Usage</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Phase</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (stockage hiérarchisé)</strong></th><th style="text-align:center"><strong>Réduction</strong></th></tr>
+<tr><th style="text-align:center"><strong>Stage</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Reduction</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Après chargement</td><td style="text-align:center">430 GO</td><td style="text-align:center">12 GO</td><td style="text-align:center">-97%</td></tr>
-<tr><td style="text-align:center">Après 1 heure</td><td style="text-align:center">430 GO</td><td style="text-align:center">68 GO</td><td style="text-align:center">-84%</td></tr>
-<tr><td style="text-align:center">Après 24 heures</td><td style="text-align:center">430 GO</td><td style="text-align:center">85 GO</td><td style="text-align:center">-80%</td></tr>
-<tr><td style="text-align:center">État stable</td><td style="text-align:center">430 GO</td><td style="text-align:center">85-95 GB</td><td style="text-align:center">~80%</td></tr>
+<tr><td style="text-align:center">After load</td><td style="text-align:center">430 GB</td><td style="text-align:center">12 GB</td><td style="text-align:center">–97%</td></tr>
+<tr><td style="text-align:center">After 1 hour</td><td style="text-align:center">430 GB</td><td style="text-align:center">68 GB</td><td style="text-align:center">–84%</td></tr>
+<tr><td style="text-align:center">After 24 hours</td><td style="text-align:center">430 GB</td><td style="text-align:center">85 GB</td><td style="text-align:center">–80%</td></tr>
+<tr><td style="text-align:center">Steady state</td><td style="text-align:center">430 GB</td><td style="text-align:center">85–95 GB</td><td style="text-align:center">~80%</td></tr>
 </tbody>
 </table>
-<p>Dans Milvus 2.5, l'utilisation des ressources locales reste constante à <strong>430 Go</strong>, quelle que soit la charge de travail ou la durée d'exécution. En revanche, Milvus 2.6+ démarre avec seulement <strong>12 Go</strong> immédiatement après le chargement.</p>
-<p>Au fur et à mesure de l'exécution des requêtes, les données fréquemment consultées sont mises en cache localement et l'utilisation des ressources augmente progressivement. Après environ 24 heures, le système se stabilise à <strong>85-95 Go</strong>, reflétant l'ensemble des données chaudes. Sur le long terme, cela se traduit par une <strong> réduction d'environ 80 %</strong> de la mémoire locale et de l'utilisation du disque, sans sacrifier la disponibilité des requêtes.</p>
-<p><strong>3. Impact quasi nul sur les performances des données chaudes</strong></p>
+<p>In Milvus 2.5, local resource usage remains constant at <strong>430 GB</strong>, regardless of workload or runtime. In contrast, Milvus 2.6+ starts with just <strong>12 GB</strong> immediately after loading.</p>
+<p>As queries run, frequently accessed data is cached locally and resource usage gradually increases. After approximately 24 hours, the system stabilizes at <strong>85–95 GB</strong>, reflecting the working set of hot data. Over the long term, this results in an <strong>~80% reduction</strong> in local memory and disk usage, without sacrificing query availability.</p>
+<p><strong>3. Near-zero impact on hot data performance</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Type de requête</strong></th><th style="text-align:center"><strong>Milvus 2.5 P99 latence</strong></th><th style="text-align:center"><strong>Milvus 2.6+ P99 latency</strong></th><th style="text-align:center"><strong>Changement</strong></th></tr>
+<tr><th style="text-align:center"><strong>Query type</strong></th><th style="text-align:center"><strong>Milvus 2.5 P99 latency</strong></th><th style="text-align:center"><strong>Milvus 2.6+ P99 latency</strong></th><th style="text-align:center"><strong>Change</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Requêtes de données chaudes</td><td style="text-align:center">15 ms</td><td style="text-align:center">16 ms</td><td style="text-align:center">+6.7%</td></tr>
-<tr><td style="text-align:center">Requêtes de données chaudes</td><td style="text-align:center">15 ms</td><td style="text-align:center">28 ms</td><td style="text-align:center">+86%</td></tr>
-<tr><td style="text-align:center">Requêtes de données froides (premier accès)</td><td style="text-align:center">15 ms</td><td style="text-align:center">120 ms</td><td style="text-align:center">+700%</td></tr>
-<tr><td style="text-align:center">Requêtes de données froides (en cache)</td><td style="text-align:center">15 ms</td><td style="text-align:center">18 ms</td><td style="text-align:center">+20%</td></tr>
+<tr><td style="text-align:center">Hot data queries</td><td style="text-align:center">15 ms</td><td style="text-align:center">16 ms</td><td style="text-align:center">+6.7%</td></tr>
+<tr><td style="text-align:center">Warm data queries</td><td style="text-align:center">15 ms</td><td style="text-align:center">28 ms</td><td style="text-align:center">+86%</td></tr>
+<tr><td style="text-align:center">Cold data queries (first access)</td><td style="text-align:center">15 ms</td><td style="text-align:center">120 ms</td><td style="text-align:center">+700%</td></tr>
+<tr><td style="text-align:center">Cold data queries (cached)</td><td style="text-align:center">15 ms</td><td style="text-align:center">18 ms</td><td style="text-align:center">+20%</td></tr>
 </tbody>
 </table>
-<p>Pour les données chaudes, qui représentent environ 80 % de toutes les requêtes, la latence P99 n'augmente que de 6,7 %, ce qui n'a pratiquement aucun impact perceptible en production.</p>
-<p>Les requêtes de données froides présentent une latence plus élevée lors du premier accès en raison du chargement à la demande à partir du stockage d'objets. Cependant, une fois mises en cache, leur latence n'augmente que de 20 %. Étant donné la faible fréquence d'accès aux données froides, ce compromis est généralement acceptable pour la plupart des charges de travail réelles.</p>
-<p><strong>4. Une capacité effective 4,3 fois supérieure</strong></p>
-<p>Avec le même budget matériel - huit serveurs dotés de 64 Go de mémoire chacun (512 Go au total) - Milvus 2.5 peut charger au maximum 512 Go de données, ce qui équivaut à environ 136 millions de vecteurs.</p>
-<p>Avec le stockage hiérarchisé activé dans Milvus 2.6+, le même matériel peut prendre en charge 2,2 To de données, soit environ 590 millions de vecteurs. Cela représente une augmentation de 4,3 fois de la capacité effective, ce qui permet de servir des ensembles de données beaucoup plus importants sans augmenter la mémoire locale.</p>
-<p><strong>5. Réduction des coûts de 80,1</strong></p>
-<p>En prenant pour exemple un ensemble de données vectorielles de 2 To dans un environnement AWS, et en supposant que 20 % des données sont chaudes (400 Go), la comparaison des coûts est la suivante :</p>
+<p>For hot data, which accounts for roughly 80% of all queries, P99 latency increases by only 6.7%, resulting in virtually no perceptible impact in production.</p>
+<p>Cold data queries show higher latency on first access due to on-demand loading from object storage. However, once cached, their latency increases by only 20%. Given the low access frequency of cold data, this trade-off is generally acceptable for most real-world workloads.</p>
+<p><strong>4. 4.3× Larger Effective Capacity</strong></p>
+<p>Under the same hardware budget—eight servers with 64 GB of memory each (512 GB total)—Milvus 2.5 can load at most 512 GB of data, equivalent to approximately 136 million vectors.</p>
+<p>With Tiered Storage enabled in Milvus 2.6+, the same hardware can support 2.2 TB of data, or roughly 590 million vectors. This represents a 4.3× increase in effective capacity, enabling significantly larger datasets to be served without expanding local memory.</p>
+<p><strong>5. 80.1% Cost Reduction</strong></p>
+<p>Using a 2 TB vector dataset in an AWS environment as an example, and assuming 20% of the data is hot (400 GB), the cost comparison is as follows:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>Article</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Stockage hiérarchisé)</strong></th><th style="text-align:center"><strong>Économies</strong></th></tr>
+<tr><th style="text-align:center"><strong>Item</strong></th><th style="text-align:center"><strong>Milvus 2.5</strong></th><th style="text-align:center"><strong>Milvus 2.6+ (Tiered Storage)</strong></th><th style="text-align:center"><strong>Savings</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">Coût mensuel</td><td style="text-align:center">$11,802</td><td style="text-align:center">$2,343</td><td style="text-align:center">$9,459</td></tr>
-<tr><td style="text-align:center">Coût annuel</td><td style="text-align:center">$141,624</td><td style="text-align:center">$28,116</td><td style="text-align:center">$113,508</td></tr>
-<tr><td style="text-align:center">Taux d'économie</td><td style="text-align:center">-</td><td style="text-align:center">-</td><td style="text-align:center"><strong>80.1%</strong></td></tr>
+<tr><td style="text-align:center">Monthly cost</td><td style="text-align:center">$11,802</td><td style="text-align:center">$2,343</td><td style="text-align:center">$9,459</td></tr>
+<tr><td style="text-align:center">Annual cost</td><td style="text-align:center">$141,624</td><td style="text-align:center">$28,116</td><td style="text-align:center">$113,508</td></tr>
+<tr><td style="text-align:center">Savings rate</td><td style="text-align:center">–</td><td style="text-align:center">–</td><td style="text-align:center"><strong>80.1%</strong></td></tr>
 </tbody>
 </table>
-<h3 id="Benchmark-Summary" class="common-anchor-header">Résumé de l'analyse comparative</h3><p>Dans tous les tests, le stockage hiérarchisé apporte des améliorations constantes et mesurables :</p>
+<h3 id="Benchmark-Summary" class="common-anchor-header">Benchmark Summary</h3><p>Across all tests, Tiered Storage delivers consistent and measurable improvements:</p>
 <ul>
-<li><p><strong>Temps de chargement 33 fois plus rapides :</strong> Le temps de chargement des collections est passé de <strong>25 minutes à 45 secondes</strong>.</p></li>
-<li><p><strong>Réduction de 80 % de l'utilisation des ressources locales :</strong> En fonctionnement continu, l'utilisation de la mémoire et du disque local diminue d'environ <strong>80 %</strong>.</p></li>
-<li><p><strong>Impact quasi nul sur les performances des données chaudes :</strong> La latence P99 pour les données chaudes augmente de <strong>moins de 10 %</strong>, ce qui préserve les performances des requêtes à faible latence.</p></li>
-<li><p><strong>Latence contrôlée pour les données froides :</strong> Les données froides subissent une latence plus élevée lors du premier accès, mais cela est acceptable compte tenu de leur faible fréquence d'accès.</p></li>
-<li><p><strong>Capacité effective 4,3 fois plus élevée :</strong> Le même matériel peut servir <strong>4 à 5 fois plus de données</strong> sans mémoire supplémentaire.</p></li>
-<li><p><strong>Réduction des coûts de plus de 80 % :</strong> Les coûts annuels d'infrastructure sont réduits de <strong>plus de 80 %</strong>.</p></li>
+<li><p><strong>33× faster load times:</strong> Collection load time is reduced from <strong>25 minutes to 45 seconds</strong>.</p></li>
+<li><p><strong>80% lower local resource usage:</strong> In steady-state operation, memory and local disk usage drop by approximately <strong>80%</strong>.</p></li>
+<li><p><strong>Near-zero impact on hot data performance:</strong> P99 latency for hot data increases by <strong>less than 10%</strong>, preserving low-latency query performance.</p></li>
+<li><p><strong>Controlled latency for cold data:</strong> Cold data incurs higher latency on first access, but this is acceptable given its low access frequency.</p></li>
+<li><p><strong>4.3× higher effective capacity:</strong> The same hardware can serve <strong>4–5× more data</strong> without additional memory.</p></li>
+<li><p><strong>Over 80% cost reduction:</strong> Annual infrastructure costs are reduced by <strong>more than 80%</strong>.</p></li>
 </ul>
-<h2 id="When-to-Use-Tiered-Storage-in-Milvus" class="common-anchor-header">Quand utiliser le stockage hiérarchisé dans Milvus ?<button data-href="#When-to-Use-Tiered-Storage-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="When-to-Use-Tiered-Storage-in-Milvus" class="common-anchor-header">When to Use Tiered Storage in Milvus<button data-href="#When-to-Use-Tiered-Storage-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -291,48 +289,48 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sur la base des résultats de l'analyse comparative et des cas de production réels, nous regroupons les cas d'utilisation du stockage hiérarchisé en trois catégories pour vous aider à décider s'il convient à votre charge de travail.</p>
-<h3 id="Best-Fit-Use-Cases" class="common-anchor-header">Cas d'utilisation les mieux adaptés</h3><p><strong>1. Plates-formes de recherche vectorielle multi-locataires</strong></p>
+    </button></h2><p>Based on benchmark results and real-world production cases, we group Tiered Storage use cases into three categories to help you decide whether it is a good fit for your workload.</p>
+<h3 id="Best-Fit-Use-Cases" class="common-anchor-header">Best-Fit Use Cases</h3><p><strong>1. Multi-tenant vector search platforms</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Grand nombre de locataires avec une activité très inégale ; la recherche vectorielle est la charge de travail principale.</p></li>
-<li><p><strong>Modèle d'accès :</strong> Moins de 20 % des locataires génèrent plus de 80 % des requêtes vectorielles.</p></li>
-<li><p><strong>Avantages escomptés :</strong> Réduction des coûts de 70 à 80 % ; augmentation de la capacité de 3 à 5 fois.</p></li>
+<li><p><strong>Characteristics:</strong> Large number of tenants with highly uneven activity; vector search is the core workload.</p></li>
+<li><p><strong>Access pattern:</strong> Fewer than 20% of tenants generate over 80% of vector queries.</p></li>
+<li><p><strong>Expected benefits:</strong> 70–80% cost reduction; 3–5× capacity expansion.</p></li>
 </ul>
-<p><strong>2. Systèmes de recommandation pour le commerce électronique (charges de travail de recherche vectorielle)</strong></p>
+<p><strong>2. E-commerce recommendation systems (vector search workloads)</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Forte asymétrie de popularité entre les produits phares et la longue traîne.</p></li>
-<li><p><strong>Modèle d'accès :</strong> Les 10 % de produits les plus populaires représentent ~80 % du trafic de recherche vectorielle.</p></li>
-<li><p><strong>Avantages attendus :</strong> Pas de besoin de capacité supplémentaire pendant les périodes de pointe ; réduction des coûts de 60 à 70 %.</p></li>
+<li><p><strong>Characteristics:</strong> Strong popularity skew between top products and the long tail.</p></li>
+<li><p><strong>Access pattern:</strong> Top 10% of products account for ~80% of vector search traffic.</p></li>
+<li><p><strong>Expected benefits:</strong> No need for extra capacity during peak events; 60–70% cost reduction</p></li>
 </ul>
-<p><strong>3. Ensembles de données à grande échelle avec une séparation claire entre le chaud et le froid (dominance vectorielle)</strong></p>
+<p><strong>3. Large-scale datasets with clear hot–cold separation (vector-dominant)</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Ensembles de données à l'échelle du TB ou plus, avec un accès fortement biaisé vers les données récentes.</p></li>
-<li><p><strong>Schéma d'accès :</strong> Une distribution classique 80/20 : 20 % des données répondent à 80 % des requêtes.</p></li>
-<li><p><strong>Avantages escomptés :</strong> Réduction des coûts de 75 à 85</p></li>
+<li><p><strong>Characteristics:</strong> TB-scale or larger datasets, with access heavily biased toward recent data.</p></li>
+<li><p><strong>Access pattern:</strong> A classic 80/20 distribution: 20% of data serves 80% of queries</p></li>
+<li><p><strong>Expected benefits:</strong> 75–85% cost reduction</p></li>
 </ul>
-<h3 id="Good-Fit-Use-Cases" class="common-anchor-header">Cas d'utilisation appropriés</h3><p><strong>1. Charges de travail sensibles aux coûts</strong></p>
+<h3 id="Good-Fit-Use-Cases" class="common-anchor-header">Good-Fit Use Cases</h3><p><strong>1. Cost-sensitive workloads</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Budgets serrés avec une certaine tolérance pour des compromis mineurs en matière de performances.</p></li>
-<li><p><strong>Modèle d'accès :</strong> Les requêtes vectorielles sont relativement concentrées.</p></li>
-<li><p><strong>Avantages attendus :</strong> Réduction des coûts de 50 à 70 % ; les données froides peuvent entraîner une latence d'environ 500 ms lors du premier accès, ce qui doit être évalué en fonction des exigences de l'accord de niveau de service (SLA).</p></li>
+<li><p><strong>Characteristics:</strong> Tight budgets with some tolerance for minor performance trade-offs.</p></li>
+<li><p><strong>Access pattern:</strong> Vector queries are relatively concentrated.</p></li>
+<li><p><strong>Expected benefits:</strong> 50–70% cost reduction; Cold data may incur ~500 ms latency on first access, which should be evaluated against SLA requirements.</p></li>
 </ul>
-<p><strong>2. Conservation des données historiques et recherche dans les archives</strong></p>
+<p><strong>2. Historical data retention and archival search</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Gros volumes de vecteurs historiques avec une très faible fréquence d'interrogation.</p></li>
-<li><p><strong>Modèle d'accès :</strong> Environ 90 % des requêtes portent sur des données récentes.</p></li>
-<li><p><strong>Avantages escomptés :</strong> Conservation de l'ensemble des données historiques ; coûts d'infrastructure prévisibles et contrôlés.</p></li>
+<li><p><strong>Characteristics:</strong> Large volumes of historical vectors with very low query frequency.</p></li>
+<li><p><strong>Access pattern:</strong> Around 90% of queries target recent data.</p></li>
+<li><p><strong>Expected benefits:</strong> Retain full historical datasets; Keep infrastructure costs predictable and controlled</p></li>
 </ul>
-<h3 id="Poor-Fit-Use-Cases" class="common-anchor-header">Cas d'utilisation mal adaptés</h3><p><strong>1. Charges de travail avec des données uniformément chaudes</strong></p>
+<h3 id="Poor-Fit-Use-Cases" class="common-anchor-header">Poor-Fit Use Cases</h3><p><strong>1. Uniformly hot data workloads</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Toutes les données sont consultées à une fréquence similaire, sans distinction claire entre chaud et froid.</p></li>
-<li><p><strong>Raisons de l'inadéquation :</strong> Avantages limités pour le cache ; complexité accrue du système sans gains significatifs.</p></li>
+<li><p><strong>Characteristics:</strong> All data is accessed at a similar frequency, with no clear hot–cold distinction.</p></li>
+<li><p><strong>Why unfit:</strong> Limited cache benefit; Added system complexity without meaningful gains</p></li>
 </ul>
-<p><strong>2. Charges de travail à très faible latence</strong></p>
+<p><strong>2. Ultra–low-latency workloads</strong></p>
 <ul>
-<li><p><strong>Caractéristiques :</strong> Systèmes extrêmement sensibles à la latence, tels que les transactions financières ou les enchères en temps réel.</p></li>
-<li><p><strong>Raisons de l'inadaptation :</strong> Les variations de latence, même minimes, sont inacceptables ; le chargement complet offre des performances plus prévisibles.</p></li>
+<li><p><strong>Characteristics:</strong> Extremely latency-sensitive systems, such as financial trading or real-time bidding</p></li>
+<li><p><strong>Why unfit:</strong> Even small latency variations are unacceptable; Full loading provides more predictable performance</p></li>
 </ul>
-<h2 id="Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="common-anchor-header">Démarrage rapide : Essayez le stockage hiérarchisé dans Milvus 2.6+.<button data-href="#Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="anchor-icon" translate="no">
+<h2 id="Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="common-anchor-header">Quick Start: Try Tiered Storage in Milvus 2.6+<button data-href="#Quick-Start-Try-Tiered-Storage-in-Milvus-26+" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -376,14 +374,14 @@ $ docker-compose up -d
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le stockage hiérarchisé dans Milvus 2.6 répond à une inadéquation courante entre la manière dont les données vectorielles sont stockées et la manière dont on y accède réellement. Dans la plupart des systèmes de production, seule une petite fraction des données est interrogée fréquemment, alors que les modèles de chargement traditionnels traitent toutes les données comme étant aussi chaudes les unes que les autres. En passant au chargement à la demande et en gérant la mémoire locale et le disque comme un cache, Milvus aligne la consommation des ressources sur le comportement réel des requêtes plutôt que sur les hypothèses les plus pessimistes.</p>
-<p>Cette approche permet aux systèmes d'évoluer vers des ensembles de données plus importants sans augmentation proportionnelle des ressources locales, tout en maintenant les performances des requêtes à chaud largement inchangées. Les données froides restent accessibles en cas de besoin, avec une latence prévisible et limitée, ce qui rend le compromis explicite et contrôlable. À mesure que la recherche vectorielle s'implante dans les environnements de production sensibles aux coûts, multi-locataires et à long terme, le stockage hiérarchisé constitue une base pratique pour un fonctionnement efficace à grande échelle.</p>
-<p>Pour plus d'informations sur le stockage hiérarchisé, consultez la documentation ci-dessous :</p>
+    </button></h2><p>Tiered Storage in Milvus 2.6 addresses a common mismatch between how vector data is stored and how it is actually accessed. In most production systems, only a small fraction of data is queried frequently, yet traditional loading models treat all data as equally hot. By shifting to on-demand loading and managing local memory and disk as a cache, Milvus aligns resource consumption with real query behavior rather than worst-case assumptions.</p>
+<p>This approach allows systems to scale to larger datasets without proportional increases in local resources, while keeping hot-query performance largely unchanged. Cold data remains accessible when needed, with predictable and bounded latency, making the trade-off explicit and controllable. As vector search moves deeper into cost-sensitive, multi-tenant, and long-running production environments, Tiered Storage provides a practical foundation for operating efficiently at scale.</p>
+<p>For more information about the Tiered Storage, check the documentation below:</p>
 <ul>
 <li><a href="https://milvus.io/docs/tiered-storage-overview.md">Tiered Storage | Milvus Documentation</a></li>
 </ul>
-<p>Vous avez des questions ou souhaitez approfondir une fonctionnalité de la dernière version de Milvus ? Rejoignez notre<a href="https://discord.com/invite/8uyFbECzPX"> canal Discord</a> ou déposez des questions sur<a href="https://github.com/milvus-io/milvus"> GitHub</a>. Vous pouvez également réserver une session individuelle de 20 minutes pour obtenir des informations, des conseils et des réponses à vos questions dans le cadre des<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">En savoir plus sur les fonctionnalités de Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -399,15 +397,15 @@ $ docker-compose up -d
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Présentation de Milvus 2.6 : recherche vectorielle abordable à l'échelle du milliard</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Présentation de la fonction d'intégration : Comment Milvus 2.6 rationalise la vectorisation et la recherche sémantique</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">Déchiquetage JSON dans Milvus : filtrage JSON 88,9 fois plus rapide et flexible</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Déverrouiller la véritable recherche au niveau de l'entité : Nouvelles fonctionnalités Array-of-Structs et MAX_SIM dans Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Rapprocher le filtrage géospatial et la recherche vectorielle avec les champs géométriques et RTREE dans Milvus 2.6</a></p></li>
-<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Présentation d'AISAQ dans Milvus : la recherche vectorielle à l'échelle du milliard vient d'être 3 200 fois moins coûteuse en mémoire</a></p></li>
-<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimisation de NVIDIA CAGRA dans Milvus : une approche hybride GPU-CPU pour une indexation plus rapide et des requêtes moins coûteuses</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH dans Milvus : l'arme secrète pour lutter contre les doublons dans les données d'entraînement LLM </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">La compression vectorielle à l'extrême : comment Milvus répond à 3× plus de requêtes avec RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Les benchmarks mentent - les bases de données vectorielles méritent un vrai test </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">Nous avons remplacé Kafka/Pulsar par un Woodpecker pour Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlock-geo-vector-search-with-geometry-fields-and-rtree-index-in-milvus.md">Bringing Geospatial Filtering and Vector Search Together with Geometry Fields and RTREE in Milvus 2.6</a></p></li>
+<li><p><a href="https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md">Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200× Cheaper on Memory</a></p></li>
+<li><p><a href="https://milvus.io/blog/faster-index-builds-and-scalable-queries-with-gpu-cagra-in-milvus.md">Optimizing NVIDIA CAGRA in Milvus: A Hybrid GPU–CPU Approach to Faster Indexing and Cheaper Queries</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus</a></p></li>
 </ul>

@@ -1,7 +1,9 @@
 ---
 id: >-
   zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
-title: 我们为生产型 RAG 和人工智能搜索训练并开源了一个双语语义突出显示模型
+title: >
+  We Trained and Open-Sourced a Bilingual Semantic Highlighting Model for
+  Production RAG and AI Search
 author: Cheney Zhang
 date: 2026-01-06T00:00:00.000Z
 cover: assets.zilliz.com/semantic_highlight_cover_f35a98fc58.png
@@ -12,19 +14,22 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Semantic Highlighting, RAG, semantic search, Milvus, bilingual model'
 meta_title: |
   Open-sourcing a Bilingual Semantic Highlighting Model for Production AI
-desc: 深入了解语义高亮，了解 Zilliz 的双语模型是如何建立的，以及它在 RAG 系统的中英文基准测试中的表现如何。
+desc: >-
+  Dive deep into semantic highlighting, learn how Zilliz’s bilingual model is
+  built, and how it performs across English and Chinese benchmarks for RAG
+  systems.
 origin: >-
   https://milvus.io/blog/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
 ---
-<p>无论您是在构建产品搜索、RAG 管道还是人工智能代理，用户最终都需要同样的东西：一种快速查看结果为何相关的方法。<strong>高亮功能</strong>通过标记支持匹配的准确文本来帮助用户，这样用户就不必扫描整个文档。</p>
-<p>大多数系统仍然依赖于基于关键字的高亮显示。如果用户搜索 "iPhone 性能"，系统就会突出显示 "iPhone "和 "性能 "这两个确切的标记。但是，一旦文本用不同的措辞表达了相同的意思，系统就会崩溃。像 "A15 仿生芯片，基准测试超过 100 万次，流畅无延迟 "这样的描述显然是针对性能的，但却没有突出显示任何内容，因为关键词从未出现过。</p>
-<p><strong>语义高亮</strong>可以解决这个问题。它不是匹配精确的字符串，而是识别与查询语义一致的文本跨度。对于 RAG 系统、人工智能搜索和 Agents（相关性取决于意义而非表面形式）来说，这可以更精确、更可靠地解释检索文档的原因。</p>
-<p>然而，现有的语义高亮方法并不是为生产型人工智能工作负载而设计的。在对所有可用解决方案进行评估后，我们发现没有一种方案能提供 RAG 管道、Agent 系统或大规模网络搜索所需的精确度、延迟、多语言覆盖率或稳健性。<strong>因此，我们训练了自己的双语语义高亮模型，并将其开源。</strong></p>
+<p>Whether you’re building a product search, a RAG pipeline, or an AI agent, users ultimately need the same thing: a fast way to see why a result is relevant. <strong>Highlighting</strong> helps by marking the exact text that supports the match, so users don’t have to scan the entire document.</p>
+<p>Most systems still rely on keyword-based highlighting. If a user searches for “iPhone performance,” the system highlights the exact tokens “iPhone” and “performance.” But this breaks down as soon as the text expresses the same idea using different wording. A description like “A15 Bionic chip, over one million in benchmarks, smooth with no lag” clearly addresses performance, yet nothing is highlighted because the keywords never appear.</p>
+<p><strong>Semantic highlighting</strong> solves this problem. Instead of matching exact strings, it identifies text spans that are semantically aligned with the query. For RAG systems, AI search, and agents—where relevance depends on meaning rather than surface form—this yields more precise, more reliable explanations of why a document was retrieved.</p>
+<p>However, existing semantic highlighting methods aren’t designed for production AI workloads. After evaluating all available solutions, we found that none delivered the precision, latency, multilingual coverage, or robustness required for RAG pipelines, agent systems, or large-scale web search. <strong>So we trained our own bilingual semantic highlighting model—and open-sourced it.</strong></p>
 <ul>
-<li><p>我们的语义高亮模型：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
-<li><p>请告诉我们您的想法--加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord</a>，在<a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> 上关注我们，或与我们预约一次<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">20 分钟的 Milvus Office Hours</a>会议。</p></li>
+<li><p>Our semantic highlighting model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p>Tell us what you think—join our <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, follow us on <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a>, or book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">20-minute Milvus Office Hours</a> session with us.</p></li>
 </ul>
-<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">基于关键词的高亮是如何工作的--以及它在现代人工智能系统中失败的原因<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
+<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">How Keyword-Based Highlighting Works — and Why It Fails in Modern AI Systems<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,25 +44,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>传统的搜索系统通过简单的关键词匹配来实现高亮功能</strong>。当返回结果时，引擎会找到与查询相匹配的确切标记位置，并将其封装在标记中（通常是<code translate="no">&lt;em&gt;</code> 标记），然后让前端来呈现高亮显示。当查询词逐字出现在文本中时，这种方法很有效。</p>
-<p>问题在于，这种模型假定相关性与精确的关键词重叠相关。一旦这一假设被打破，可靠性就会迅速下降。任何以不同措辞表达正确想法的结果，即使检索步骤是正确的，最终也没有高亮显示。</p>
-<p>这一弱点在现代人工智能应用中变得非常明显。在 RAG 管道和人工智能 Agents 工作流程中，查询更加抽象，文档更长，相关信息可能不会重复使用相同的词语。基于关键字的高亮显示无法再向开发人员或最终用户显示<em>答案的实际</em>位置，这使得整个系统即使在检索按预期运行的情况下也感觉不够准确。</p>
-<p>假设用户问<em>"如何提高 Python 代码的执行效率？</em>系统从向量数据库中检索到一份技术文档。传统的高亮功能只能标记字面匹配，如<em>"Python"、</em> <em>"代码"、"</em> <em>执行 "</em>和<em>"效率"。</em></p>
-<p>然而，文档中最有用的部分可能是</p>
+    </button></h2><p><strong>Traditional search systems implement highlighting through simple keyword matching</strong>. When results are returned, the engine locates the exact token positions that match the query and wraps them in markup (usually <code translate="no">&lt;em&gt;</code> tags), leaving the frontend to render the highlight. This works fine when the query terms appear verbatim in the text.</p>
+<p>The problem is that this model assumes relevance is tied to exact keyword overlap. Once that assumption breaks, reliability drops fast. Any result that expresses the right idea with different wording ends up with no highlight at all, even if the retrieval step was correct.</p>
+<p>This weakness becomes obvious in modern AI applications. In RAG pipelines and AI agent workflows, queries are more abstract, documents are longer, and relevant information may not reuse the same words. Keyword-based highlighting can no longer show developers—or end users—<em>where the answer actually is</em>, which makes the overall system feel less accurate even when retrieval is working as intended.</p>
+<p>Suppose a user asks: <em>“How can I improve the execution efficiency of Python code?”</em> The system retrieves a technical document from a vector database. Traditional highlighting can only mark literal matches such as <em>“Python”</em>, <em>“code”</em>, <em>“execution”</em>, and <em>“efficiency”</em>.</p>
+<p>However, the most useful parts of the document might be:</p>
 <ul>
-<li><p>使用 NumPy 向量操作符代替显式循环</p></li>
-<li><p>避免在循环内重复创建对象</p></li>
+<li><p>Use NumPy vectorized operations instead of explicit loops</p></li>
+<li><p>Avoid repeatedly creating objects inside loops</p></li>
 </ul>
-<p>这些句子直接回答了问题，但它们不包含任何查询术语。因此，传统的高亮功能完全失效。文档可能是相关的，但用户仍需逐行扫描才能找到真正的答案。</p>
-<p>对于人工智能 Agents 来说，这个问题变得更加突出。Agents 的搜索查询往往不是用户的原始问题，而是通过推理和任务分解产生的派生指令。例如，如果用户问<em>"能否分析一下最近的市场趋势？"，</em>Agents 可能会生成类似 "检索 2024 年第四季度消费电子产品的销售数据、同比增长率、主要竞争对手的市场份额变化以及供应链成本波动 "的查询。</p>
-<p>这一查询跨越多个维度，编码了复杂的意图。然而，传统的基于关键字的高亮功能只能机械地标记<em>"2024"、</em> <em>"销售数据 "</em>或<em>"增长率 "</em>等字面匹配<em>。</em></p>
-<p>与此同时，最有价值的洞察可能是这样的</p>
+<p>These sentences directly answer the question, but they contain none of the query terms. As a result, traditional highlighting fails completely. The document may be relevant, but the user still has to scan it line by line to locate the actual answer.</p>
+<p>The problem becomes even more pronounced with AI agents. An agent’s search query is often not the user’s original question, but a derived instruction produced through reasoning and task decomposition. For example, if a user asks, <em>“Can you analyze recent market trends?”</em>, the agent might generate a query like “Retrieve Q4 2024 consumer electronics sales data, year-over-year growth rates, changes in major competitors’ market share, and supply chain cost fluctuations”.</p>
+<p>This query spans multiple dimensions and encodes complex intent. Traditional keyword-based highlighting, however, can only mechanically mark literal matches such as <em>“2024”</em>, <em>“sales data”</em>, or <em>“growth rate”</em>.</p>
+<p>Meanwhile, the most valuable insights may look like:</p>
 <ul>
-<li><p>iPhone 15 系列推动了更广泛的市场复苏</p></li>
-<li><p>芯片供应紧张导致成本上升 15</p></li>
+<li><p>The iPhone 15 series drove a broader market recovery</p></li>
+<li><p>Chip supply constraints pushed costs up by 15%</p></li>
 </ul>
-<p>这些结论可能与查询没有一个共同的关键词，尽管它们正是代理商试图提取的内容。Agents 需要从大量的检索内容中快速识别出真正有用的信息，而基于关键字的高亮功能并不能提供真正的帮助。</p>
-<h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">什么是语义高亮以及当今解决方案的痛点<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
+<p>These conclusions may not share a single keyword with the query, even though they are exactly what the agent is trying to extract. Agents need to quickly identify truly useful information from large volumes of retrieved content—and keyword-based highlighting offers no real help.</p>
+<h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">What Is Semantic Highlighting, and Pain Points in Today’s Solutions<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,53 +77,53 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>语义高亮基于语义搜索背后的相同理念：基于意义而非精确词进行匹配</strong>。在语义搜索中，Embeddings 模型将文本映射为向量，这样搜索系统--通常由<a href="https://milvus.io/">Milvus</a>这样的向量数据库提供支持--<a href="https://milvus.io/">就能</a>检索到与查询表达相同意思的段落，即使措辞有所不同。语义高亮将这一原则应用到更细的粒度上。它不是标记字面的关键词命中，而是突出显示文档中与用户意图在语义上相关的特定段落。</p>
+    </button></h2><p><strong>Semantic highlighting builds on the same idea behind semantic search: matching based on meaning rather than exact words</strong>. In semantic search, embedding models map text into vectors so a search system—typically backed by a vector database like <a href="https://milvus.io/">Milvus</a>—can retrieve passages that convey the same idea as the query, even if the wording is different. Semantic highlighting applies this principle at a finer granularity. Instead of marking literal keyword hits, it highlights the specific spans inside a document that are semantically relevant to the user’s intent.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vs_20ec73c4a7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>这种方法解决了传统高亮的一个核心问题，即只有当查询词逐字出现时，高亮才会起作用。如果用户搜索 "iPhone 性能"，基于关键字的高亮显示就会忽略 "A15 仿生芯片"、"超过 100 万的基准测试 "或 "流畅无延迟 "等短语，即使这些短语明显回答了问题。语义高亮可以捕捉这些意义驱动的关联，并显示用户真正关心的文本部分。</p>
-<p>理论上，这是一个简单明了的语义匹配问题。现代嵌入模型已经对相似性进行了很好的编码，因此概念部分已经到位。挑战来自于现实世界的限制：每次查询都会出现高亮显示，而且往往跨越许多检索文档，因此对延迟、吞吐量和跨域鲁棒性的要求不容商量。大型语言模型速度太慢、成本太高，根本无法在这种高频路径中运行。</p>
-<p>这就是为什么实用的语义高亮需要一个轻量级的专用模型--小到可以与搜索基础设施并存，快到可以在几毫秒内返回结果。这正是大多数现有解决方案的缺陷所在。重型模型精度高，但无法大规模运行；轻型模型速度快，但精度低，或者无法处理多语言或特定领域的数据。</p>
-<h3 id="opensearch-semantic-highlighter" class="common-anchor-header">开放搜索语义高亮器</h3><p>
+<p>This approach solves a core problem with traditional highlighting, which only works when the query terms appear verbatim. If a user searches for “iPhone performance,” keyword-based highlighting ignores phrases like “A15 Bionic chip,” “over one million in benchmarks,” or “smooth with no lag,” even though these lines clearly answer the question. Semantic highlighting captures these meaning-driven connections and surfaces the parts of the text users actually care about.</p>
+<p>In theory, this is a straightforward semantic matching problem. Modern embedding models already encode similarity well, so the conceptual pieces are already in place. The challenge comes from real-world constraints: highlighting occurs on every query, often across many retrieved documents, making latency, throughput, and cross-domain robustness non-negotiable requirements. Large language models are simply too slow and too expensive to run in this high-frequency path.</p>
+<p>That is why practical semantic highlighting requires a lightweight, specialized model—small enough to sit alongside search infrastructure and fast enough to return results in a few milliseconds. This is where most existing solutions break down. Heavy models deliver accuracy but cannot run at scale; lighter models are fast but lose precision or fail on multilingual or domain-specific data.</p>
+<h3 id="opensearch-semantic-highlighter" class="common-anchor-header">opensearch-semantic-highlighter</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/opensearch_en_aea06a2114.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>去年，OpenSearch 发布了一个专门用于语义高亮的模型：<a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>。 虽然这是一个有意义的尝试，但它有两个关键的局限性。</p>
+<p>Last year, OpenSearch released a dedicated model for semantic highlighting: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. While it is a meaningful attempt at the problem, it has two critical limitations.</p>
 <ul>
-<li><p><strong>上下文窗口小：</strong>该模型基于 BERT 架构，最多支持 512 个标记--大约 300-400 个汉字或 400-500 个英文单词。在实际应用中，产品描述和技术文档往往长达数千字。超出第一个窗口的内容会被简单截断，从而迫使模型只能根据文档的一小部分内容来识别亮点。</p></li>
-<li><p><strong>域外泛化能力差：</strong>该模型仅在与其训练集类似的数据分布上表现良好。当应用到域外数据时，例如使用在新闻文章中训练的模型来突出显示电子商务内容或技术文档，性能就会急剧下降。在我们的实验中，该模型在域内数据上的 F1 得分为 0.72 左右，但在域外数据集上则降至 0.46 左右。这种不稳定性在生产中很成问题。此外，该模型不支持中文。</p></li>
+<li><p><strong>Small context window:</strong> The model is based on a BERT architecture and supports a maximum of 512 tokens—roughly 300–400 Chinese characters or 400–500 English words. In real-world scenarios, product descriptions and technical documents often span thousands of words. Content beyond the first window is simply truncated, forcing the model to identify highlights based on only a small fraction of the document.</p></li>
+<li><p><strong>Poor out-of-domain generalization:</strong> The model performs well only on data distributions similar to its training set. When applied to out-of-domain data—such as using a model trained on news articles to highlight e-commerce content or technical documentation—performance degrades sharply. In our experiments, the model achieves an F1 score of around 0.72 on in-domain data, but drops to approximately 0.46 on out-of-domain datasets. This level of instability is problematic in production. In addition, the model does not support Chinese.</p></li>
 </ul>
-<h3 id="Provence--XProvence" class="common-anchor-header">普罗旺斯/XProvence</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a>是由<a href="https://zilliz.com/customers/naver">Naver</a>开发的一个模型，最初是为<strong>上下文剪枝</strong>任务而训练的，该任务与语义高亮密切相关。</p>
-<p>这两项任务都基于相同的基本理念：使用语义匹配来识别相关内容并过滤掉不相关的部分。因此，Provence 只需进行相对较少的调整，就可用于语义高亮。</p>
+<h3 id="Provence--XProvence" class="common-anchor-header">Provence / XProvence</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a> is a model developed by <a href="https://zilliz.com/customers/naver">Naver</a> and was initially trained for <strong>context pruning</strong>—a task that is closely related to semantic highlighting.</p>
+<p>Both tasks are built on the same underlying idea: using semantic matching to identify relevant content and filter out irrelevant parts. For this reason, Provence can be repurposed for semantic highlighting with relatively little adaptation.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/provence_053cd3bccc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Provence 是一种纯英语模型，在这种情况下表现相当出色。<a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a>是其多语言变体，支持包括中文、日文和韩文在内的十几种语言。乍一看，XProvence 似乎是双语或多语种语义高亮场景的理想选择。</p>
-<p>但实际上，Provence 和 XProvence 都有几个明显的局限性：</p>
+<p>Provence is an English-only model and performs reasonably well in that setting. <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a> is its multilingual variant, supporting more than a dozen languages, including Chinese, Japanese, and Korean. At first glance, this makes XProvence appear to be a good candidate for bilingual or multilingual semantic highlighting scenarios.</p>
+<p>In practice, however, both Provence and XProvence have several notable limitations:</p>
 <ul>
-<li><p><strong>在多语言模型中英语性能较弱：</strong>XProvence 在英语基准测试中的表现无法与 Provence 相提并论。这是多语种模型中常见的权衡问题：容量在不同语言间共享，往往导致英语等高资源语言的性能较弱。在现实世界的系统中，英语仍然是主要或主导的工作负载，这种限制很重要。</p></li>
-<li><p><strong>中文性能有限：</strong> XProvence 支持多种语言。在多语言训练过程中，数据和模型容量会分散到不同的语言中，这就限制了模型在任何一种语言中的专业化程度。因此，XProvence 的中文性能只能勉强接受，通常无法满足高精度高亮使用案例的要求。</p></li>
-<li><p><strong>剪枝和高亮目标不匹配：</strong>Provence 针对上下文剪枝进行了优化，在这种情况下，优先考虑的是回忆--保留尽可能多的潜在有用内容，以避免丢失关键信息。相比之下，语义高亮则强调精确性：只高亮最相关的句子，而不是文档的大部分内容。当普罗旺斯风格的模型应用于高亮时，这种不匹配往往会导致过于宽泛或嘈杂的高亮。</p></li>
-<li><p><strong>限制性许可：</strong>普罗旺斯和 XProvence 都是根据 CC BY-NC 4.0 许可发布的，不允许用于商业用途。仅这一限制就使它们不适合许多生产部署。</p></li>
+<li><p><strong>Weaker English performance in the multilingual model:</strong> XProvence does not match Provence’s performance on English benchmarks. This is a common trade-off in multilingual models: capacity is shared across languages, often leading to weaker performance in high-resource languages such as English. This limitation matters in real-world systems where English remains a primary or dominant workload.</p></li>
+<li><p><strong>Limited Chinese performance:</strong>  XProvence supports many languages. During multilingual training, data and model capacity are spread across languages, which limits how well the model can specialize in any single one. As a result, its Chinese performance is only marginally acceptable and often insufficient for high-precision highlighting use cases.</p></li>
+<li><p><strong>Mismatch between pruning and highlighting objectives:</strong> Provence is optimized for context pruning, where the priority is recall—keeping as much potentially useful content as possible to avoid losing critical information. Semantic highlighting, by contrast, emphasizes precision: highlighting only the most relevant sentences, not large portions of the document. When Provence-style models are applied to highlighting, this mismatch often leads to overly broad or noisy highlights.</p></li>
+<li><p><strong>Restrictive licensing:</strong> Both Provence and XProvence are released under the CC BY-NC 4.0 license, which does not permit commercial use. This restriction alone makes them unsuitable for many production deployments.</p></li>
 </ul>
-<h3 id="Open-Provence" class="common-anchor-header">开放式普罗旺斯</h3><p>
+<h3 id="Open-Provence" class="common-anchor-header">Open Provence</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/openprovence_en_c4f0aa8b65.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><a href="https://github.com/hotchpotch/open_provence"><strong>Open Provence</strong></a>是一个社区驱动的项目，它以开放和透明的方式重新实现了 Provence 培训管道。它不仅提供训练脚本，还提供数据处理工作流、评估工具和多种规模的预训练模型。</p>
-<p>Open Provence 的一个关键优势是其<strong>MIT 许可</strong>。与普罗旺斯和 XProvence 不同，它可以在商业环境中安全使用，不受法律限制，因此对面向生产的团队很有吸引力。</p>
-<p>尽管如此，Open Provence 目前只支持<strong>英语和日语</strong>，因此不适合我们的双语使用案例。</p>
-<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">我们训练并开源了一个双语语义高亮模型<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p><a href="https://github.com/hotchpotch/open_provence"><strong>Open Provence</strong></a> is a community-driven project that reimplements the Provence training pipeline in an open and transparent way. It provides not only training scripts, but also data processing workflows, evaluation tools, and pretrained models at multiple scales.</p>
+<p>A key advantage of Open Provence is its <strong>permissive MIT license</strong>. Unlike Provence and XProvence, it can be safely used in commercial environments without legal restrictions, which makes it attractive for production-oriented teams.</p>
+<p>That said, Open Provence currently supports only <strong>English and Japanese</strong>, which makes it unsuitable for our bilingual use cases.</p>
+<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">We Trained and Open-Sourced a Bilingual Semantic Highlighting Model<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -133,40 +138,40 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>为实际工作负载而设计的语义高亮模型必须具备一些基本功能：</p>
+    </button></h2><p>A semantic highlighting model designed for real-world workloads must deliver a few essential capabilities:</p>
 <ul>
-<li><p>强大的多语言性能</p></li>
-<li><p>足够大的上下文窗口以支持长文档</p></li>
-<li><p>强大的域外泛化能力</p></li>
-<li><p>语义高亮任务的高精度</p></li>
-<li><p>允许使用、便于生产的许可证（MIT 或 Apache 2.0）</p></li>
+<li><p>Strong multilingual performance</p></li>
+<li><p>A context window large enough to support long documents</p></li>
+<li><p>Robust out-of-domain generalization</p></li>
+<li><p>High precision in semantic highlighting tasks</p></li>
+<li><p>A permissive, production-friendly license (MIT or Apache 2.0)</p></li>
 </ul>
-<p>在对现有解决方案进行评估后，我们发现现有的模型都无法满足生产使用的要求。因此，我们决定训练我们自己的语义高亮模型：<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>。</p>
+<p>After evaluating existing solutions, we found that none of the available models met the requirements needed for production use. So we decided to train our own semantic highlight model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hugging_face_56eca8f423.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>为了实现所有这些，我们采用了一种简单直接的方法：使用大型语言模型生成高质量的标注数据，然后在此基础上使用开源工具训练一个轻量级的语义高亮模型。这样，我们就能将 LLM 的推理优势与生产系统所需的高效率和低延迟结合起来。</p>
-<p><strong>这一过程中最具挑战性的部分是数据构建</strong>。在注释过程中，我们促使 LLM（Qwen3 8B）不仅输出高亮跨度，而且输出其背后的全部推理。这种额外的推理信号能产生更准确、更一致的监督，并显著提高所生成模型的质量。</p>
-<p>在高层次上，注释管道的工作原理如下：<strong>LLM 推理 → 高亮标签 → 筛选 → 最终训练样本。</strong></p>
+<p>To achieve all of these, we adopted a straightforward approach: use large language models to generate high-quality labeled data, then train a lightweight semantic highlighting model on top of it using open-source tooling. This lets us combine the reasoning strength of LLMs with the efficiency and low latency required in production systems.</p>
+<p><strong>The most challenging part of this process is data construction</strong>. During annotation, we prompt an LLM (Qwen3 8B) to output not only the highlight spans but also the whole reasoning behind them. This additional reasoning signal produces more accurate, consistent supervision and significantly improves the quality of the resulting model.</p>
+<p>At a high level, the annotation pipeline works as follows: <strong>LLM reasoning → highlight labels → filtering → final training sample.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/pipeline_en_2e917fe1ce.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>这种设计在实践中有三个具体优势：</p>
+<p>This design delivers three concrete benefits in practice:</p>
 <ul>
-<li><p><strong>更高的标签质量</strong>：促使模型<em>先思考，后回答</em>。这一中间推理步骤可作为内置的自我检查，降低标签浅薄或不一致的可能性。</p></li>
-<li><p><strong>提高可观察性和可调试性</strong>：由于每个标签都附有推理轨迹，因此错误变得清晰可见。这使得诊断失败案例和快速调整管道中的提示、规则或数据过滤器变得更加容易。</p></li>
-<li><p><strong>可重复使用的数据</strong>：推理跟踪为未来的重新标记提供了宝贵的上下文。随着需求的变化，同样的数据可以重新审视和完善，而无需从头开始。</p></li>
+<li><p><strong>Higher labeling quality</strong>: The model is prompted to <em>think first, then answer</em>. This intermediate reasoning step serves as a built-in self-check, reducing the likelihood of shallow or inconsistent labels.</p></li>
+<li><p><strong>Improved observability and debuggability</strong>: Because each label is accompanied by a reasoning trace, errors become visible. This makes it easier to diagnose failure cases and quickly adjust prompts, rules, or data filters in the pipeline.</p></li>
+<li><p><strong>Reusable data</strong>: Reasoning traces provide valuable context for future re-labeling. As requirements change, the same data can be revisited and refined without starting from scratch.</p></li>
 </ul>
-<p>利用这一管道，我们生成了 100 多万个双语训练样本，其中英文和中文样本各占一半。</p>
-<p>在模型训练方面，我们从 BGE-M3 Reranker v2（0.6B 参数，8,192 个代词上下文窗口）开始，采用 Open Provence 训练框架，并在 8×A100 GPU 上进行了三个历元的训练，在大约五个小时内完成了训练。</p>
-<p>我们将在后续文章中深入探讨这些技术选择，包括为什么要依赖推理轨迹、如何选择基础模型以及如何构建数据集。</p>
-<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Zilliz双语语义突出模型的基准测试<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Using this pipeline, we generated more than one million bilingual training samples, split roughly evenly between English and Chinese.</p>
+<p>For model training, we started from BGE-M3 Reranker v2 (0.6B parameters, 8,192-token context window), adopted the Open Provence training framework, and trained for three epochs on 8× A100 GPUs, completing training in approximately five hours.</p>
+<p>We will dive deeper into these technical choices—including why we rely on reasoning traces, how we selected the base model, and how the dataset was constructed—in a follow-up post.</p>
+<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Benchmarking Zilliz’s Bilingual Semantic Highlighting Model<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,93 +186,93 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>为了评估实际性能，我们在不同的数据集上评估了多个语义高亮模型。这些基准测试涵盖了域内和域外的中英文场景，以反映生产系统中遇到的各种内容。</p>
-<h3 id="Datasets" class="common-anchor-header">数据集</h3><p>我们在评估中使用了以下数据集：</p>
+    </button></h2><p>To assess real-world performance, we evaluated multiple semantic highlighting models across a diverse set of datasets. The benchmarks cover both in-domain and out-of-domain scenarios, in English and Chinese, to reflect the variety of content encountered in production systems.</p>
+<h3 id="Datasets" class="common-anchor-header">Datasets</h3><p>We used the following datasets in our evaluation:</p>
 <ul>
-<li><p><strong>MultiSpanQA（英文）</strong>--域内多跨度问题解答数据集</p></li>
-<li><p><strong>WikiText-2（英文）</strong>--域外维基百科语料库</p></li>
-<li><p><strong>MultiSpanQA-ZH（中文）</strong>--中文多跨度问题解答数据集</p></li>
-<li><p><strong>WikiText-2-ZH（中文）</strong>--域外中文维基百科语料库</p></li>
+<li><p><strong>MultiSpanQA (English)</strong> – an in-domain multi-span question answering dataset</p></li>
+<li><p><strong>WikiText-2 (English)</strong> – an out-of-domain Wikipedia corpus</p></li>
+<li><p><strong>MultiSpanQA-ZH (Chinese)</strong> – a Chinese multi-span question answering dataset</p></li>
+<li><p><strong>WikiText-2-ZH (Chinese)</strong> – an out-of-domain Chinese Wikipedia corpus</p></li>
 </ul>
-<h3 id="Models-Compared" class="common-anchor-header">比较模型</h3><p>参与比较的模型包括</p>
+<h3 id="Models-Compared" class="common-anchor-header">Models Compared</h3><p>The models included in the comparison are:</p>
 <ul>
-<li><p><strong>开放式普罗旺斯模型</strong></p></li>
-<li><p><strong>Provence / XProvence</strong>（由 Naver 发布）</p></li>
+<li><p><strong>Open Provence models</strong></p></li>
+<li><p><strong>Provence / XProvence</strong> (released by Naver)</p></li>
 <li><p><strong>OpenSearch Semantic Highlighter</strong></p></li>
-<li><p><strong>Zilliz 的双语语义高亮模型</strong></p></li>
+<li><p><strong>Zilliz’s bilingual semantic highlighting model</strong></p></li>
 </ul>
-<h3 id="Results-and-Analysis" class="common-anchor-header">结果与分析</h3><p><strong>英文数据集</strong></p>
+<h3 id="Results-and-Analysis" class="common-anchor-header">Results and Analysis</h3><p><strong>English Datasets:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/en_dataset_fce4cbc747.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>中文数据集</strong></p>
+<p><strong>Chinese Datasets:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zh_dataset_ac7760e0b5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>在所有双语基准测试中，我们的模型都取得了<strong>最先进的平均F1分数</strong>，超过了所有之前评估过的模型和方法。在<strong>中文数据集上</strong>，我们的模型明显优于 XProvence（唯一支持中文的其他评估模型）。</p>
-<p>更重要的是，我们的模型在中英文两种语言中都能提供均衡的性能，这是现有解决方案难以达到的：</p>
+<p>Across the bilingual benchmarks, our model achieves <strong>state-of-the-art average F1 scores</strong>, outperforming all previously evaluated models and approaches. The gains are especially pronounced on the <strong>Chinese datasets</strong>, where our model significantly outperforms XProvence—the only other evaluated model with Chinese support.</p>
+<p>More importantly, our model delivers balanced performance across both English and Chinese, a property that existing solutions struggle to achieve:</p>
 <ul>
-<li><p><strong>Open Provence</strong>仅支持英文</p></li>
-<li><p>与普罗旺斯相比，<strong>XProvence</strong>牺牲了英文性能</p></li>
-<li><p><strong>OpenSearch Semantic Highlighter</strong>缺乏中文支持，泛化能力较弱</p></li>
+<li><p><strong>Open Provence</strong> supports English only</p></li>
+<li><p><strong>XProvence</strong> sacrifices English performance compared to Provence</p></li>
+<li><p><strong>OpenSearch Semantic Highlighter</strong> lacks Chinese support and shows weak generalization</p></li>
 </ul>
-<p>因此，我们的模型避免了语言覆盖范围和性能之间的常见权衡，使其更适合现实世界中的双语部署。</p>
-<h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">实践中的具体实例</h3><p>除了基准分数之外，研究一个具体的例子往往更能说明问题。下面的案例展示了我们的模型在实际语义高亮场景中的表现，以及为什么精确度很重要。</p>
-<p><strong>查询：</strong>电影<em>《杀死一只圣鹿》</em>是谁写的？</p>
-<p><strong>上下文（5 句）：</strong></p>
+<p>As a result, our model avoids the common trade-offs between language coverage and performance, making it better suited for real-world bilingual deployments.</p>
+<h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">A Concrete Example in Practice</h3><p>Beyond benchmark scores, it is often more revealing to examine a concrete example. The following case shows how our model behaves in a real semantic highlighting scenario and why precision matters.</p>
+<p><strong>Query:</strong> Who wrote the film <em>The Killing of a Sacred Deer</em>?</p>
+<p><strong>Context (5 sentences):</strong></p>
 <ol>
-<li><p><em>杀死一只圣鹿》</em>是 2017 年由约里奥斯-兰斯莫斯（Yorgos Lanthimos）执导的心理惊悚电影，剧本由兰斯莫斯和 Efthymis Filippou 共同创作。</p></li>
-<li><p>影片由科林-法瑞尔、妮可-基德曼、巴里-基欧汉、拉菲-卡西迪、桑尼-苏尔吉奇、艾丽西亚-西尔维斯通、比尔-坎普等主演。</p></li>
-<li><p>故事改编自欧里庇得斯的古希腊戏剧《<em>奥利斯的伊菲革涅亚</em>》。</p></li>
-<li><p>影片讲述了一名心脏外科医生与一名与他的过去有关的少年建立了秘密友谊。</p></li>
-<li><p>他将男孩介绍给自己的家人，之后神秘的疾病开始出现。</p></li>
+<li><p><em>The Killing of a Sacred Deer</em> is a 2017 psychological thriller film directed by Yorgos Lanthimos, with the screenplay written by Lanthimos and Efthymis Filippou.</p></li>
+<li><p>The film stars Colin Farrell, Nicole Kidman, Barry Keoghan, Raffey Cassidy, Sunny Suljic, Alicia Silverstone, and Bill Camp.</p></li>
+<li><p>The story is based on the ancient Greek play <em>Iphigenia in Aulis</em> by Euripides.</p></li>
+<li><p>The film follows a cardiac surgeon who forms a secret friendship with a teenage boy connected to his past.</p></li>
+<li><p>He introduces the boy to his family, after which mysterious illnesses begin to occur.</p></li>
 </ol>
-<p><strong>正确亮点：第 1 句</strong>是正确答案，因为它明确指出剧本是由 Yorgos Lanthimos 和 Efthymis Filippou 创作的。</p>
-<p>本例包含一个微妙的陷阱。<strong>第 3 句</strong>提到了欧里庇得斯，他是希腊戏剧原著的作者，而故事正是松散地根据希腊戏剧改编的。然而，问题问的是谁写了这部<em>电影</em>，而不是古代的原始材料。因此，正确答案是电影的编剧，而不是几千年前的剧作家。</p>
-<p><strong>结果：</strong></p>
-<p>下表总结了不同模型在此示例中的表现。</p>
+<p><strong>Correct highlight: Sentence 1</strong> is the correct answer, as it explicitly states that the screenplay was written by Yorgos Lanthimos and Efthymis Filippou.</p>
+<p>This example contains a subtle trap. <strong>Sentence 3</strong> mentions Euripides, the author of the original Greek play on which the story is loosely based. However, the question asks who wrote the <em>film</em>, not the ancient source material. The correct answer is therefore the screenwriters of the movie, not the playwright from thousands of years ago.</p>
+<p><strong>Results:</strong></p>
+<p>The table below summarizes how different models performed on this example.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>模型</strong></th><th style="text-align:center"><strong>确定的正确答案</strong></th><th style="text-align:center"><strong>结果</strong></th></tr>
+<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Correct Answer Identified</strong></th><th style="text-align:center"><strong>Outcome</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>我们的（双语 M3）</strong></td><td style="text-align:center">✓</td><td style="text-align:center">选择句子 1（正确）和句子 3</td></tr>
-<tr><td style="text-align:center"><strong>XProvence v1</strong></td><td style="text-align:center">✗</td><td style="text-align:center">只选择了句子 3，错过了正确答案</td></tr>
-<tr><td style="text-align:center"><strong>XProvence v2</strong></td><td style="text-align:center">✗</td><td style="text-align:center">只选择了句子 3，错过了正确答案</td></tr>
+<tr><td style="text-align:center"><strong>Ours (Bilingual M3)</strong></td><td style="text-align:center">✓</td><td style="text-align:center">Selected sentence 1 (correct) and sentence 3</td></tr>
+<tr><td style="text-align:center"><strong>XProvence v1</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Selected sentence 3 only, missed the correct answer</td></tr>
+<tr><td style="text-align:center"><strong>XProvence v2</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Selected sentence 3 only, missed the correct answer</td></tr>
 </tbody>
 </table>
-<p><strong>句子得分比较</strong></p>
+<p><strong>Sentence-Level Score Comparison</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>句子</strong></th><th><strong>我们的（双语 M3）</strong></th><th style="text-align:center"><strong>XProvence v1</strong></th><th style="text-align:center"><strong>XProvence v2</strong></th></tr>
+<tr><th style="text-align:center"><strong>Sentence</strong></th><th><strong>Ours (Bilingual M3)</strong></th><th style="text-align:center"><strong>XProvence v1</strong></th><th style="text-align:center"><strong>XProvence v2</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">句子 1（电影剧本，<strong>正确）</strong></td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
-<tr><td style="text-align:center">句子 3（原创剧本，干扰项）</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
+<tr><td style="text-align:center">Sentence 1 (film screenplay, <strong>correct</strong>)</td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
+<tr><td style="text-align:center">Sentence 3 (original play, distractor)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
 </tbody>
 </table>
-<p><strong>XProvence 的不足之处</strong></p>
+<p><strong>Where XProvence falls short</strong></p>
 <ul>
-<li><p>XProvence 对关键词<em>"欧里庇得斯 "</em>和<em>"写的</em> <em>"</em>具有强烈的吸引力，给句子 3 打出了几乎满分（0.947 和 0.802）。</p></li>
-<li><p>同时，它在很大程度上忽略了句子 1 中的正确答案，给出了极低的分数（0.133 和 0.081）。</p></li>
-<li><p>即使将判定阈值从 0.5 降到 0.2，该模型仍未能浮现出正确答案。</p></li>
+<li><p>XProvence is strongly attracted to the keywords <em>“Euripides”</em> and <em>“wrote”</em>, assigning sentence 3 an almost perfect score (0.947 and 0.802).</p></li>
+<li><p>At the same time, it largely ignores the correct answer in sentence 1, assigning extremely low scores (0.133 and 0.081).</p></li>
+<li><p>Even after lowering the decision threshold from 0.5 to 0.2, the model still fails to surface the correct answer.</p></li>
 </ul>
-<p>换句话说，该模型主要是由表层关键词关联驱动的，而不是问题的实际意图。</p>
-<p><strong>我们的模型有哪些不同表现</strong></p>
+<p>In other words, the model is primarily driven by surface-level keyword associations rather than the question’s actual intent.</p>
+<p><strong>How our model behaves differently</strong></p>
 <ul>
-<li><p>我们的模型为句子 1 中的正确答案打出了高分（0.915），正确识别了<em>电影的编剧</em>。</p></li>
-<li><p>同时，它也给句子 3 打出了中等分数（0.719），因为该句子确实提到了与编剧相关的概念。</p></li>
-<li><p>最重要的是，这种区分是明确而有意义的：<strong>0.915 与 0.719 相比</strong>，差距接近 0.2。</p></li>
+<li><p>Our model assigns a high score (0.915) to the correct answer in sentence 1, correctly identifying the <em>film’s screenwriters</em>.</p></li>
+<li><p>It also assigns a moderate score (0.719) to sentence 3, since that sentence does mention a screenplay-related concept.</p></li>
+<li><p>Crucially, the separation is clear and meaningful: <strong>0.915 vs. 0.719</strong>, a gap of nearly 0.2.</p></li>
 </ul>
-<p>这个例子凸显了我们方法的核心优势：超越关键词驱动的关联，正确解读用户意图。即使出现多个 "作者 "概念，模型也能始终突出问题实际所指的那个概念。</p>
-<p>我们将在后续文章中分享更详细的评估报告和其他案例研究。</p>
-<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">试用并告诉我们您的想法<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
+<p>This example highlights the core strength of our approach: moving beyond keyword-driven associations to correctly interpret user intent. Even when multiple “author” concepts appear, the model consistently highlights the one the question actually refers to.</p>
+<p>We will share a more detailed evaluation report and additional case studies in a follow-up post.</p>
+<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Try It Out and Tell Us What You Think<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -282,7 +287,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我们已经在<a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a> 上开源了我们的双语语义高亮模型，并公开了所有模型权重，因此您可以立即开始尝试。我们很想听听您对它的评价--请在试用过程中分享任何反馈、问题或改进意见。</p>
-<p>与此同时，我们还在开发可投入生产的推理服务，并将该模型直接集成到<a href="https://milvus.io/">Milvus</a>中，成为原生的语义高亮应用程序接口（Semantic Highlighting API）。这种集成已经在进行中，很快就会推出。</p>
-<p>语义高亮为更直观的 RAG 和 Agents 人工智能体验打开了大门。当Milvus检索几个长文档时，系统可以立即浮现出最相关的句子，让人一目了然答案在哪里。这不仅改善了终端用户的体验，还通过准确显示系统所依赖的上下文部分，帮助开发人员调试检索管道。</p>
-<p>我们相信语义高亮将成为下一代搜索和 RAG 系统的标准功能。如果您有关于双语语义高亮的想法、建议或使用案例，请加入我们的<a href="https://discord.com/invite/8uyFbECzPX">Discord 频道</a>并分享您的想法。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>预约20分钟的一对一会议，以获得见解、指导和问题解答。</p>
+    </button></h2><p>We’ve open-sourced our bilingual semantic highlighting model on <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a>, with all model weights publicly available so you can start experimenting right away. We’d love to hear how it works for you—please share any feedback, issues, or improvement ideas as you try it out.</p>
+<p>In parallel, we’re working on a production-ready inference service and integrating the model directly into <a href="https://milvus.io/">Milvus</a> as a native Semantic Highlighting API. This integration is already underway and will be available soon.</p>
+<p>Semantic highlighting opens the door to a more intuitive RAG and agentic AI experience. When Milvus retrieves several long documents, the system can immediately surface the most relevant sentences, making it clear where the answer is. This doesn’t just improve the end-user experience—it also helps developers debug retrieval pipelines by showing exactly which parts of the context the system relies on.</p>
+<p>We believe semantic highlighting will become a standard capability in next-generation search and RAG systems. If you have ideas, suggestions, or use cases for bilingual semantic highlighting, join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> and share your thoughts. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>

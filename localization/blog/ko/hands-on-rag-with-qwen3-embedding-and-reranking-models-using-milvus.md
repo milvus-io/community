@@ -1,9 +1,11 @@
 ---
 id: hands-on-rag-with-qwen3-embedding-and-reranking-models-using-milvus.md
-title: Milvus를 사용한 Qwen3 임베딩 및 재랭크 모델을 사용한 실습 RAG
+title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
 author: Lumina
 date: 2025-6-30
-desc: 새로 출시된 Qwen3 임베딩 및 리랭크 모델을 사용하여 RAG 시스템을 구축하는 튜토리얼입니다.
+desc: >-
+  A tutorial to build an RAG system with the newly-released Qwen3 embedding and
+  reranking models.
 cover: assets.zilliz.com/Chat_GPT_Image_Jun_30_2025_07_41_03_PM_e049bf71fb.png
 tag: Tutorials
 recommend: false
@@ -14,16 +16,16 @@ meta_title: Hands-on RAG with Qwen3 Embedding and Reranking Models using Milvus
 origin: >-
   https://milvus.io/blog/hands-on-rag-with-qwen3-embedding-and-reranking-models-using-milvus.md
 ---
-<p>임베딩 모델 분야를 주시해 왔다면, Alibaba가 <a href="https://qwenlm.github.io/blog/qwen3-embedding/">Qwen3 임베딩 시리즈를</a> 출시했다는 사실을 눈치채셨을 것입니다. 임베딩 모델과 리랭크 모델은 각각 세 가지 크기(0.6B, 4B, 8B)로 출시되었으며, 모두 Qwen3 기반 모델을 기반으로 하고 검색 작업을 위해 특별히 설계되었습니다.</p>
-<p>Qwen3 시리즈에는 제가 흥미로웠던 몇 가지 기능이 있습니다:</p>
+<p>If you’ve been keeping an eye on the embedding model space, you’ve probably noticed Alibaba just dropped their <a href="https://qwenlm.github.io/blog/qwen3-embedding/">Qwen3 Embedding series</a>. They released both embedding and reranking models in three sizes each (0.6B, 4B, 8B), all built on the Qwen3 foundation models and designed specifically for retrieval tasks.</p>
+<p>The Qwen3 series has a few features I found interesting:</p>
 <ul>
-<li><p><strong>다국어 임베딩</strong> - 100개 이상의 언어에 걸쳐 통합된 의미 공간을 지원합니다.</p></li>
-<li><p><strong>명령 프롬프트</strong> - 임베딩 동작을 수정하기 위해 사용자 지정 명령을 전달할 수 있습니다.</p></li>
-<li><p><strong>가변</strong> 크기 - Matryoshka 표현 학습을 통해 다양한 임베딩 크기 지원</p></li>
-<li><p><strong>32K 컨텍스트 길이</strong> - 긴 입력 시퀀스 처리 가능</p></li>
-<li><p><strong>표준 듀얼/크로스 인코더 설정</strong> - 임베딩 모델은 듀얼 인코더를 사용하고, 리랭커는 크로스 인코더를 사용합니다.</p></li>
+<li><p><strong>Multilingual embeddings</strong> - they claim a unified semantic space across 100+ languages</p></li>
+<li><p><strong>Instruction prompting</strong> - you can pass custom instructions to modify embedding behavior</p></li>
+<li><p><strong>Variable dimensions</strong> - supports different embedding sizes via Matryoshka Representation Learning</p></li>
+<li><p><strong>32K context length</strong> - can process longer input sequences</p></li>
+<li><p><strong>Standard dual/cross-encoder setup</strong> - embedding model uses dual-encoder, reranker uses cross-encoder</p></li>
 </ul>
-<p>벤치마크를 살펴보면, Qwen3-Embedding-8B는 MTEB 다국어 리더보드에서 70.58점을 획득하여 BGE, E5, 심지어 Google Gemini를 뛰어넘는 점수를 기록했습니다. Qwen3-Reranker-8B는 다국어 순위 작업에서 69.02점을 기록했습니다. 이는 단순히 "오픈 소스 모델 중 꽤 괜찮은 수준"이 아니라 주류 상용 API와 포괄적으로 일치하거나 심지어 이를 능가하는 수준입니다. 특히 중국어 맥락에서 RAG 검색, 교차 언어 검색, 코드 검색 시스템에서 이러한 모델은 이미 프로덕션에 바로 사용할 수 있는 기능을 갖추고 있습니다.</p>
+<p>Looking at the benchmarks, Qwen3-Embedding-8B achieved a score of 70.58 on the MTEB multilingual leaderboard, surpassing BGE, E5, and even Google Gemini. The Qwen3-Reranker-8B hit 69.02 on multilingual ranking tasks. These aren’t just “pretty good among open-source models” - they’re comprehensively matching or even surpassing mainstream commercial APIs. In RAG retrieval, cross-language search, and code search systems, especially in Chinese contexts, these models already have production-ready capabilities.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdZCKoPqf8mpxwQ_s-gGbdHYvw_HhWn6Ib62v8C_VEZF8AOSnY1yLEEv1ztkINpmwgHAVC5kZw6rWplfx5OkISf_gL4VvoqlXxSfs8s_qd8mdBuA0HBhP9kEdipXy0QVuPmEyOJRg?key=nqzZfIwgkzdlEZQ2MYSMGQ" alt="" class="doc-image" id="" />
@@ -36,8 +38,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>일반적인 용의자(OpenAI의 임베딩, BGE, E5)를 다뤄본 적이 있는 사람이라면 이런 것들이 시간을 투자할 가치가 있는지 궁금할 것입니다. 스포일러: 그럴 가치가 있습니다.</p>
-<h2 id="What-Were-Building" class="common-anchor-header">구축 대상<button data-href="#What-Were-Building" class="anchor-icon" translate="no">
+<p>As someone who’s likely dealt with the usual suspects (OpenAI’s embeddings, BGE, E5), you might be wondering if these are worth your time. Spoiler: they are.</p>
+<h2 id="What-Were-Building" class="common-anchor-header">What We’re Building<button data-href="#What-Were-Building" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,14 +54,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이 튜토리얼에서는 Milvus와 함께 Qwen3-Embedding-0.6B 및 Qwen3-Reranker-0.6B를 사용하여 완전한 RAG 시스템을 구축하는 과정을 안내합니다. 2단계 검색 파이프라인을 구현해 보겠습니다:</p>
+    </button></h2><p>This tutorial walks through building a complete RAG system using Qwen3-Embedding-0.6B and Qwen3-Reranker-0.6B with Milvus. We’ll implement a two-stage retrieval pipeline:</p>
 <ol>
-<li><p>빠른 후보 선정을 위한 Qwen3 임베딩을 사용한<strong>고밀도 검색</strong> </p></li>
-<li><p>정밀한 개선을 위해 Qwen3 크로스 인코더를 사용한<strong>재순위</strong> 조정</p></li>
-<li><p>최종 응답을 위해 OpenAI의 GPT-4로<strong>생성</strong> </p></li>
+<li><p><strong>Dense retrieval</strong> with Qwen3 embeddings for fast candidate selection</p></li>
+<li><p><strong>Reranking</strong> with Qwen3 cross-encoder for precision refinement</p></li>
+<li><p><strong>Generation</strong> with OpenAI’s GPT-4 for final responses</p></li>
 </ol>
-<p>최종적으로 다국어 쿼리를 처리하고, 도메인 튜닝을 위해 명령 프롬프트를 사용하며, 지능형 재랭킹을 통해 속도와 정확성의 균형을 맞추는 작업 시스템을 갖추게 됩니다.</p>
-<h2 id="Environment-Setup" class="common-anchor-header">환경 설정<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
+<p>By the end, you’ll have a working system that handles multilingual queries, uses instruction prompting for domain tuning, and balances speed with accuracy through intelligent reranking.</p>
+<h2 id="Environment-Setup" class="common-anchor-header">Environment Setup<button data-href="#Environment-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -74,16 +76,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>종속성부터 시작하겠습니다. 최소 버전 요구 사항은 호환성을 위해 중요합니다:</p>
+    </button></h2><p>Let’s start with the dependencies. Note the minimum version requirements - they’re important for compatibility:</p>
 <pre><code translate="no">pip install --upgrade pymilvus openai requests tqdm sentence-transformers transformers
 <button class="copy-code-btn"></button></code></pre>
-<p><em>트랜스포머&gt;=4.51.0 및 문장-트랜스포머&gt;=2.7.0이 필요합니다.</em></p>
-<p>이 튜토리얼에서는 OpenAI를 생성 모델로 사용하겠습니다. API 키를 설정합니다:</p>
+<p><em>Requires transformers&gt;=4.51.0 and sentence-transformers&gt;=2.7.0</em></p>
+<p>For this tutorial, we’ll use OpenAI as our generation model. Set up your API key:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;OPENAI_API_KEY&quot;</span>] = <span class="hljs-string">&quot;sk-***********&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Data-Preparation" class="common-anchor-header"><strong>데이터 준비</strong><button data-href="#Data-Preparation" class="anchor-icon" translate="no">
+<h2 id="Data-Preparation" class="common-anchor-header"><strong>Data Preparation</strong><button data-href="#Data-Preparation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,12 +100,12 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;OP
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>검색과 생성 품질을 모두 테스트하는 기술 콘텐츠가 잘 조합되어 있는 Milvus 문서를 지식 베이스로 사용하겠습니다.</p>
-<p>문서를 다운로드하여 압축을 풉니다:</p>
+    </button></h2><p>We’ll use Milvus documentation as our knowledge base - it’s a good mix of technical content that tests both retrieval and generation quality.</p>
+<p>Download and extract the documentation:</p>
 <pre><code translate="no">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>마크다운 파일을 로드하고 청크합니다. 여기서는 간단한 헤더 기반 분할 전략을 사용하고 있습니다. 프로덕션 시스템의 경우 보다 정교한 청크 접근 방식을 고려하세요:</p>
+<p>Load and chunk the markdown files. We’re using a simple header-based splitting strategy here - for production systems, consider more sophisticated chunking approaches:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 
 text_lines = []
@@ -114,7 +116,7 @@ text_lines = []
 
     text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Model-Setup" class="common-anchor-header"><strong>모델 설정</strong><button data-href="#Model-Setup" class="anchor-icon" translate="no">
+<h2 id="Model-Setup" class="common-anchor-header"><strong>Model Setup</strong><button data-href="#Model-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -129,7 +131,7 @@ text_lines = []
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이제 모델을 초기화해 보겠습니다. 여기서는 성능과 리소스 요구 사항의 균형이 잘 잡힌 경량 0.6B 버전을 사용합니다:</p>
+    </button></h2><p>Now let’s initialize our models. We’re using the lightweight 0.6B versions, which offer a good balance of performance and resource requirements:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> sentence_transformers <span class="hljs-keyword">import</span> SentenceTransformer
 <span class="hljs-keyword">import</span> torch
@@ -155,14 +157,14 @@ suffix = <span class="hljs-string">&quot;&lt;|im_end|&gt;\n&lt;|im_start|&gt;ass
 prefix_tokens = reranker_tokenizer.encode(prefix, add_special_tokens=<span class="hljs-literal">False</span>)
 suffix_tokens = reranker_tokenizer.encode(suffix, add_special_tokens=<span class="hljs-literal">False</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>예상 출력입니다:</p>
+<p>The expected output:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdaUrXQrAs2W8-rGT9njJHEKnQ8YwREmULO6xYJnpPy7bwsmZImDRt_3EMwJuVM3k3zI7pbNvY1fDsqMKYq-rrNArx_gxOA4ZTi0g1tkRIlUqJfx1z2nZ60ATPW0L5t6I_XLTVf?key=nqzZfIwgkzdlEZQ2MYSMGQ" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Embedding-Function" class="common-anchor-header">임베딩 기능<button data-href="#Embedding-Function" class="anchor-icon" translate="no">
+<h2 id="Embedding-Function" class="common-anchor-header">Embedding Function<button data-href="#Embedding-Function" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -177,7 +179,7 @@ suffix_tokens = reranker_tokenizer.encode(suffix, add_special_tokens=<span class
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Qwen3 임베딩의 핵심 인사이트는 쿼리와 문서에 서로 다른 프롬프트를 사용할 수 있다는 점입니다. 사소해 보이는 이 디테일이 검색 성능을 크게 향상시킬 수 있습니다:</p>
+    </button></h2><p>The key insight with Qwen3 embeddings is the ability to use different prompts for queries versus documents. This seemingly small detail can significantly improve retrieval performance:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">emb_text</span>(<span class="hljs-params">text, is_query=<span class="hljs-literal">False</span></span>):
     <span class="hljs-string">&quot;&quot;&quot;
     Generate text embeddings using Qwen3-Embedding-0.6B model.
@@ -198,17 +200,17 @@ suffix_tokens = reranker_tokenizer.encode(suffix, add_special_tokens=<span class
     
     <span class="hljs-keyword">return</span> embeddings[<span class="hljs-number">0</span>].tolist()
 <button class="copy-code-btn"></button></code></pre>
-<p>임베딩 기능을 테스트하고 출력 크기를 확인해 보겠습니다:</p>
+<p>Let’s test the embedding function and check the output dimensions:</p>
 <pre><code translate="no">test_embedding = emb_text(<span class="hljs-string">&quot;This is a test&quot;</span>)
 embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Embedding dimension: <span class="hljs-subst">{embedding_dim}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;First 10 values: <span class="hljs-subst">{test_embedding[:<span class="hljs-number">10</span>]}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>예상 출력</p>
+<p>Expected output:</p>
 <pre><code translate="no">Embedding dimension: 1024
 First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.011494234204292297, ...]
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Reranking-Implementation" class="common-anchor-header">재랭크 구현<button data-href="#Reranking-Implementation" class="anchor-icon" translate="no">
+<h2 id="Reranking-Implementation" class="common-anchor-header">Reranking Implementation<button data-href="#Reranking-Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -223,8 +225,8 @@ First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.0114942342042
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>재랭커는 교차 인코더 아키텍처를 사용하여 쿼리-문서 쌍을 평가합니다. 이는 이중 인코더 임베딩 모델보다 계산 비용이 더 많이 들지만 훨씬 더 미묘한 연관성 점수를 제공합니다.</p>
-<p>다음은 전체 재랭크 파이프라인입니다:</p>
+    </button></h2><p>The reranker uses a cross-encoder architecture to evaluate query-document pairs. This is more computationally expensive than the dual-encoder embedding model, but provides much more nuanced relevance scoring.</p>
+<p>Here’s the complete reranking pipeline:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">format_instruction</span>(<span class="hljs-params">instruction, query, doc</span>):
     <span class="hljs-string">&quot;&quot;&quot;Format instruction for reranker input&quot;&quot;&quot;</span>
     <span class="hljs-keyword">if</span> instruction <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
@@ -286,7 +288,7 @@ First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.0114942342042
     
     <span class="hljs-keyword">return</span> doc_scores
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Setting-Up-Milvus-Vector-Database" class="common-anchor-header">밀버스 벡터 데이터베이스 설정<button data-href="#Setting-Up-Milvus-Vector-Database" class="anchor-icon" translate="no">
+<h2 id="Setting-Up-Milvus-Vector-Database" class="common-anchor-header">Setting Up Milvus Vector Database<button data-href="#Setting-Up-Milvus-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -301,20 +303,20 @@ First 10 values: [-0.009923271834850311, -0.030248118564486504, -0.0114942342042
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이제 벡터 데이터베이스를 설정해 보겠습니다. 간소화를 위해 Milvus Lite를 사용하고 있지만, 전체 Milvus 배포에서도 동일한 코드가 작동합니다:</p>
+    </button></h2><p>Now let’s set up our vector database. We’re using Milvus Lite for simplicity, but the same code works with full Milvus deployments:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>배포 옵션:</strong></p>
+<p><strong>Deployment Options:</strong></p>
 <ul>
-<li><p><strong>로컬 파일</strong> (예: <code translate="no">./milvus.db</code>): Milvus Lite를 사용하며, 개발에 적합합니다.</p></li>
-<li><p><strong>도커/쿠버네티스</strong>: 프로덕션에는 <code translate="no">http://localhost:19530</code> 와 같은 서버 URI 사용</p></li>
-<li><p><strong>질리즈 클라우드</strong>: 관리형 서비스용 클라우드 엔드포인트 및 API 키 사용</p></li>
+<li><p><strong>Local file</strong> (like <code translate="no">./milvus.db</code>): Uses Milvus Lite, perfect for development</p></li>
+<li><p><strong>Docker/Kubernetes</strong>: Use server URI like <code translate="no">http://localhost:19530</code> for production</p></li>
+<li><p><strong>Zilliz Cloud</strong>: Use cloud endpoint and API key for managed service</p></li>
 </ul>
-<p>기존 컬렉션을 정리하고 새 컬렉션을 생성합니다:</p>
+<p>Clean up any existing collection and create a new one:</p>
 <pre><code translate="no"><span class="hljs-comment"># Remove existing collection if it exists</span>
 <span class="hljs-keyword">if</span> milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
@@ -327,7 +329,7 @@ milvus_client.create_collection(
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,  <span class="hljs-comment"># Ensure data consistency</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Loading-Data-into-Milvus" class="common-anchor-header">밀버스에 데이터 불러오기<button data-href="#Loading-Data-into-Milvus" class="anchor-icon" translate="no">
+<h2 id="Loading-Data-into-Milvus" class="common-anchor-header">Loading Data into Milvus<button data-href="#Loading-Data-into-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -342,7 +344,7 @@ milvus_client.create_collection(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이제 문서를 처리하여 벡터 데이터베이스에 삽입해 보겠습니다:</p>
+    </button></h2><p>Now let’s process our documents and insert them into the vector database:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 data = []
@@ -352,11 +354,11 @@ data = []
 
 milvus_client.insert(collection_name=collection_name, data=data)
 <button class="copy-code-btn"></button></code></pre>
-<p>예상 출력</p>
+<p>Expected output:</p>
 <pre><code translate="no">Creating embeddings: 100%|████████████| 72/72 [00:08&lt;00:00, 8.68it/s]
 Inserted 72 documents
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Enhancing-RAG-with-Reranking-Technology" class="common-anchor-header">리랭크 기술로 RAG 강화하기<button data-href="#Enhancing-RAG-with-Reranking-Technology" class="anchor-icon" translate="no">
+<h2 id="Enhancing-RAG-with-Reranking-Technology" class="common-anchor-header">Enhancing RAG with Reranking Technology<button data-href="#Enhancing-RAG-with-Reranking-Technology" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -371,8 +373,8 @@ Inserted 72 documents
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이제 이 모든 것을 완전한 검색 증강 생성 시스템으로 통합하는 흥미로운 부분이 시작됩니다.</p>
-<h3 id="Step-1-Query-and-Initial-Retrieval" class="common-anchor-header"><strong>1단계: 쿼리 및 초기 검색</strong></h3><p>Milvus에 대한 일반적인 질문으로 테스트해 보겠습니다:</p>
+    </button></h2><p>Now comes the exciting part - putting it all together into a complete retrieval-augmented generation system.</p>
+<h3 id="Step-1-Query-and-Initial-Retrieval" class="common-anchor-header"><strong>Step 1: Query and Initial Retrieval</strong></h3><p>Let’s test with a common question about Milvus:</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 
 <span class="hljs-comment"># Perform initial dense retrieval to get top candidates</span>
@@ -386,7 +388,7 @@ search_res = milvus_client.search(
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Found <span class="hljs-subst">{<span class="hljs-built_in">len</span>(search_res[<span class="hljs-number">0</span>])}</span> initial candidates&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Reranking-for-Precision" class="common-anchor-header"><strong>2단계: 정밀도를 위한 재랭크</strong></h3><p>후보 문서를 추출하고 재랭킹을 적용합니다:</p>
+<h3 id="Step-2-Reranking-for-Precision" class="common-anchor-header"><strong>Step 2: Reranking for Precision</strong></h3><p>Extract candidate documents and apply reranking:</p>
 <pre><code translate="no"><span class="hljs-comment"># Extract candidate documents</span>
 candidate_docs = [res[<span class="hljs-string">&quot;entity&quot;</span>][<span class="hljs-string">&quot;text&quot;</span>] <span class="hljs-keyword">for</span> res <span class="hljs-keyword">in</span> search_res[<span class="hljs-number">0</span>]]
 
@@ -398,7 +400,7 @@ reranked_docs = rerank_documents(question, candidate_docs)
 top_reranked_docs = reranked_docs[:<span class="hljs-number">3</span>]
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Selected top <span class="hljs-subst">{<span class="hljs-built_in">len</span>(top_reranked_docs)}</span> documents after reranking&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Compare-Results" class="common-anchor-header"><strong>3단계: 결과 비교</strong></h3><p>재랭크가 결과에 어떤 변화를 가져오는지 살펴봅시다:</p>
+<h3 id="Step-3-Compare-Results" class="common-anchor-header"><strong>Step 3: Compare Results</strong></h3><p>Let’s examine how reranking changes the results:</p>
 <pre><code translate="no"><span class="hljs-function">Reranked <span class="hljs-title">results</span> (<span class="hljs-params">top <span class="hljs-number">3</span></span>):
 [
     [
@@ -432,14 +434,14 @@ Original embedding-<span class="hljs-function">based <span class="hljs-title">re
     ]
 ]
 </span><button class="copy-code-btn"></button></code></pre>
-<p>일반적으로 재랭킹은 유사도 점수를 임베딩할 때보다 훨씬 더 높은 판별 점수(관련 문서의 경우 1.0에 가까움)를 보여줍니다.</p>
-<h3 id="Step-4-Generate-Final-Response" class="common-anchor-header"><strong>4단계: 최종 응답 생성</strong></h3><p>이제 검색된 문맥을 사용하여 종합적인 답변을 생성해 보겠습니다:</p>
-<p>먼저 먼저 검색된 문서를 문자열 형식으로 변환합니다.</p>
+<p>The reranking typically shows much higher discriminative scores (closer to 1.0 for relevant documents) compared to embedding similarity scores.</p>
+<h3 id="Step-4-Generate-Final-Response" class="common-anchor-header"><strong>Step 4: Generate Final Response</strong></h3><p>Now let’s use the retrieved context to generate a comprehensive answer:</p>
+<p>First: Convert the retrieved documents to string format.</p>
 <pre><code translate="no">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>대규모 언어 모델에 대한 시스템 프롬프트와 사용자 프롬프트를 제공합니다. 이 프롬프트는 Milvus에서 검색된 문서에서 생성됩니다.</p>
+<p>Provide system prompt and user prompt for the large language model. This prompt is generated from documents retrieved from Milvus.</p>
 <pre><code translate="no">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 Human: You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -453,7 +455,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>GPT-4o를 사용하여 프롬프트에 따라 응답을 생성합니다.</p>
+<p>Use GPT-4o to generate a response based on the prompts.</p>
 <pre><code translate="no">response = openai_client.chat.completions.create(
     model=<span class="hljs-string">&quot;gpt-4o&quot;</span>,
     messages=[
@@ -463,7 +465,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 )
 <span class="hljs-built_in">print</span>(response.choices[<span class="hljs-number">0</span>].message.content)
 <button class="copy-code-btn"></button></code></pre>
-<p>예상 출력입니다:</p>
+<p>Expected output:</p>
 <pre><code translate="no">In Milvus, data <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> two main forms: inserted data <span class="hljs-keyword">and</span> metadata. 
 Inserted data, which includes vector data, scalar data, <span class="hljs-keyword">and</span> collection-specific 
 schema, <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> persistent storage <span class="hljs-keyword">as</span> incremental logs. Milvus supports 
@@ -472,7 +474,7 @@ Google Cloud Storage, Azure Blob Storage, Alibaba Cloud OSS, <span class="hljs-k
 Cloud Object Storage. Metadata <span class="hljs-keyword">for</span> Milvus <span class="hljs-keyword">is</span> generated <span class="hljs-keyword">by</span> its various modules 
 <span class="hljs-keyword">and</span> stored <span class="hljs-keyword">in</span> etcd.
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Wrapping-Up" class="common-anchor-header"><strong>마무리</strong><button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
+<h2 id="Wrapping-Up" class="common-anchor-header"><strong>Wrapping Up</strong><button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -487,12 +489,12 @@ Cloud Object Storage. Metadata <span class="hljs-keyword">for</span> Milvus <spa
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>이 튜토리얼에서는 Qwen3의 임베딩 및 재랭크 모델을 사용하여 완전한 RAG 구현을 시연했습니다. 주요 요점은 다음과 같습니다:</p>
+    </button></h2><p>This tutorial demonstrated a complete RAG implementation using Qwen3’s embedding and reranking models. The key takeaways:</p>
 <ol>
-<li><p><strong>2단계 검색</strong> (밀도 + 재랭크)은 임베딩 전용 접근 방식에 비해 지속적으로 정확도를 향상시킵니다.</p></li>
-<li><p><strong>명령 프롬프트를</strong> 통해 재교육 없이 도메인별 튜닝 가능</p></li>
-<li><p>추가적인 복잡성 없이 자연스럽게 작동하는<strong>다국어 기능</strong> </p></li>
-<li><p>0.6B 모델로<strong>로컬 배포</strong> 가능</p></li>
+<li><p><strong>Two-stage retrieval</strong> (dense + reranking) consistently improves accuracy over embedding-only approaches</p></li>
+<li><p><strong>Instruction prompting</strong> allows domain-specific tuning without retraining</p></li>
+<li><p><strong>Multilingual capabilities</strong> work naturally without additional complexity</p></li>
+<li><p><strong>Local deployment</strong> is feasible with the 0.6B models</p></li>
 </ol>
-<p>Qwen3 시리즈는 가벼운 오픈 소스 패키지로 견고한 성능을 제공합니다. 혁신적인 것은 아니지만, 점진적인 개선과 함께 프로덕션 시스템에 실질적인 변화를 가져올 수 있는 명령 프롬프트와 같은 유용한 기능을 제공합니다.</p>
-<p>특정 데이터 및 사용 사례에 대해 이러한 모델을 테스트해 보세요. 콘텐츠, 쿼리 패턴, 성능 요구 사항에 따라 가장 적합한 모델은 항상 달라집니다.</p>
+<p>The Qwen3 series offers solid performance in a lightweight, open-source package. While not revolutionary, they provide incremental improvements and useful features like instruction prompting that can make a real difference in production systems.</p>
+<p>Test these models against your specific data and use cases - what works best always depends on your content, query patterns, and performance requirements.</p>

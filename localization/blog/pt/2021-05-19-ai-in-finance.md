@@ -1,47 +1,49 @@
 ---
 id: ai-in-.md
-title: >-
-  Acelerar a IA nas finanças com Milvus, uma base de dados vetorial de código
-  aberto
+title: 'Accelerating AI in Finance with Milvus, an Open-Source Vector Database'
 author: milvus
 date: 2021-05-19T03:41:20.776Z
 desc: >-
-  O Milvus pode ser utilizado para criar aplicações de IA para o sector
-  financeiro, incluindo chatbots, sistemas de recomendação e muito mais.
+  Milvus can be used to build AI applications for the finance industry including
+  chatbots, recommender systems, and more.
 cover: assets.zilliz.com/03_1_1e5aaf7dd1.jpg
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/ai-in-finance'
 ---
-<custom-h1>Acelerar a IA nas finanças com Milvus, uma base de dados vetorial de código aberto</custom-h1><p>Há muito que os bancos e outras instituições financeiras são os primeiros a adotar software de código aberto para processamento e análise de grandes volumes de dados. Em 2010, o Morgan Stanley <a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">começou a utilizar</a> a estrutura de código aberto Apache Hadoop como parte de uma pequena experiência. A empresa estava a ter dificuldades em dimensionar com êxito as bases de dados tradicionais para os volumes maciços de dados que os seus cientistas queriam aproveitar, pelo que decidiu explorar soluções alternativas. Atualmente, o Hadoop é um elemento básico na Morgan Stanley, ajudando em tudo, desde a gestão de dados de CRM à análise de carteiras. Outros softwares de bases de dados relacionais de código aberto, como o MySQL, o MongoDB e o PostgreSQL, têm sido ferramentas indispensáveis para dar sentido aos grandes volumes de dados no sector financeiro.</p>
-<p>A tecnologia é o que dá ao sector dos serviços financeiros uma vantagem competitiva e a inteligência artificial (IA) está a tornar-se rapidamente a abordagem padrão para extrair informações valiosas de grandes volumes de dados e analisar a atividade em tempo real nos sectores bancário, de gestão de activos e de seguros. Ao utilizar algoritmos de IA para converter dados não estruturados, como imagens, áudio ou vídeo, em vectores, um formato de dados numéricos legível por máquina, é possível efetuar pesquisas de semelhança em conjuntos de dados vectoriais maciços de milhões, mil milhões ou mesmo triliões. Os dados vectoriais são armazenados num espaço de elevada dimensão e os vectores semelhantes são encontrados utilizando a pesquisa por semelhança, que requer uma infraestrutura dedicada denominada base de dados vetorial.</p>
+<custom-h1>Accelerating AI in Finance with Milvus, an Open-Source Vector Database</custom-h1><p>Banks and other financial institutions have long been early adopters of open-source software for big data processing and analytics. In 2010, Morgan Stanley <a href="https://www.forbes.com/sites/tomgroenfeldt/2012/05/30/morgan-stanley-takes-on-big-data-with-hadoop/?sh=19f4f8cd16db">began using</a> the open-source Apache Hadoop framework as part of a small experiment. The company was struggling to successfully scale traditional databases to the massive volumes of data its scientists wanted to leverage, so it decided to explore alternative solutions. Hadoop is now a staple at Morgan Stanley, helping with everything from managing CRM data to portfolio analysis. Other open-source relational database software such as MySQL, MongoDB, and PostgreSQL have been indispensable tools for making sense of big data in the finance industry.</p>
+<p>Technology is what gives the financial services industry a competitive edge, and artificial intelligence (AI) is rapidly becoming the standard approach to extracting valuable insights from big data and analyzing activity in real-time across the banking, asset management, and insurance sectors. By using AI algorithms to convert unstructured data such as images, audio, or video to vectors, a machine-readable numeric data format, it is possible to run similarity searches on massive million, billion, or even trillion vector datasets. Vector data is stored in high-dimensional space, and similar vectors are found using similarity search, which requires a dedicated infrastructure called a vector database.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/01_1_cb99f15886.jpg" alt="01 (1).jpg" class="doc-image" id="01-(1).jpg" />
-   </span> <span class="img-wrapper"> <span>01 (1).jpg</span> </span></p>
-<p><a href="https://github.com/milvus-io/milvus">A Milvus</a> é uma base de dados vetorial de código aberto criada especificamente para gerir dados vectoriais, o que significa que os engenheiros e cientistas de dados podem concentrar-se na criação de aplicações de IA ou na realização de análises, em vez de se preocuparem com a infraestrutura de dados subjacente. A plataforma foi criada em torno de fluxos de trabalho de desenvolvimento de aplicações de IA e está optimizada para simplificar as operações de aprendizagem automática (MLOps). Para obter mais informações sobre o Milvus e a sua tecnologia subjacente, consulte o nosso <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">blogue</a>.</p>
-<p>As aplicações comuns de IA no sector dos serviços financeiros incluem negociação algorítmica, composição e otimização de carteiras, validação de modelos, backtesting, aconselhamento robótico, assistentes virtuais de clientes, análise do impacto no mercado, conformidade regulamentar e testes de stress. Este artigo aborda três áreas específicas em que os dados vectoriais são aproveitados como um dos activos mais valiosos para as empresas bancárias e financeiras:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/01_1_cb99f15886.jpg" alt="01 (1).jpg" class="doc-image" id="01-(1).jpg" />
+    <span>01 (1).jpg</span>
+  </span>
+</p>
+<p><a href="https://github.com/milvus-io/milvus">Milvus</a> is an open-source vector database built specifically for managing vector data, which means engineers and data scientists can focus on building AI applications or conducting analysis—instead of the underlying data infrastructure. The platform was built around AI application development workflows and is optimized to streamline machine learning operations (MLOps). For more information about Milvus and its underlying technology, check out our <a href="https://zilliz.com/blog/Vector-Similarity-Search-Hides-in-Plain-View">blog</a>.</p>
+<p>Common applications of AI in the financial services industry include algorithmic trading, portfolio composition and optimization, model validation, backtesting, Robo-advising, virtual customer assistants, market impact analysis, regulatory compliance, and stress testing. This article covers three specific areas where vector data is leveraged as one of the most valuable assets for banking and financial companies:</p>
 <ol>
-<li>Melhorar a experiência do cliente com chatbots bancários</li>
-<li>Aumentar as vendas de serviços financeiros e muito mais com sistemas de recomendação</li>
-<li>Analisar relatórios de ganhos e outros dados financeiros não estruturados com extração de texto semântico</li>
+<li>Enhancing customer experience with banking chatbots</li>
+<li>Boosting financial services sales and more with recommender systems</li>
+<li>Analyzing earnings reports and other unstructured financial data with semantic text mining</li>
 </ol>
 <p><br/></p>
-<h3 id="Enhancing-customer-experience-with-banking-chatbots" class="common-anchor-header">Melhorar a experiência do cliente com chatbots bancários</h3><p>Os chatbots bancários podem melhorar a experiência dos clientes, ajudando-os a selecionar investimentos, produtos bancários e apólices de seguro. A popularidade dos serviços digitais está a aumentar rapidamente, em parte devido às tendências aceleradas pela pandemia do coronavírus. Os chatbots funcionam utilizando o processamento de linguagem natural (PNL) para converter as perguntas enviadas pelos utilizadores em vectores semânticos para procurar respostas correspondentes. Os chatbots bancários modernos oferecem uma experiência natural personalizada aos utilizadores e falam num tom de conversa. O Milvus fornece um tecido de dados adequado para a criação de chatbots utilizando a pesquisa de semelhança de vectores em tempo real.</p>
-<p>Saiba mais na nossa demonstração que aborda a criação de <a href="https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus">chatbots com Milvus</a>.</p>
+<h3 id="Enhancing-customer-experience-with-banking-chatbots" class="common-anchor-header">Enhancing customer experience with banking chatbots</h3><p>Banking chatbots can improve customer experiences by helping consumers select investments, banking products, and insurance policies. Digital services are rising rapidly in popularity in part due to trends accelerated by the coronavirus pandemic. Chatbots work by using natural language processing (NLP) to convert user-submitted questions into semantic vectors to search for matching answers. Modern banking chatbots offer a personalized natural experience for users and speak in a conversational tone. Milvus provides a data fabric well suited for creating chatbots using real-time vector similarity search.</p>
+<p>Learn more in our demo that covers building <a href="https://zilliz.com/blog/building-intelligent-chatbot-with-nlp-and-milvus">chatbots with Milvus</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/02_1_8c298c45e5.jpg" alt="02 (1).jpg" class="doc-image" id="02-(1).jpg" />
-   </span> <span class="img-wrapper"> <span>02 (1).jpg</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/02_1_8c298c45e5.jpg" alt="02 (1).jpg" class="doc-image" id="02-(1).jpg" />
+    <span>02 (1).jpg</span>
+  </span>
+</p>
 <p><br/></p>
-<h4 id="Boosting-financial-services-sales-and-more-with-recommender-systems" class="common-anchor-header">Aumentar as vendas de serviços financeiros e muito mais com sistemas de recomendação:</h4><p>O sector da banca privada utiliza sistemas de recomendação para aumentar as vendas de produtos financeiros através de recomendações personalizadas baseadas nos perfis dos clientes. Os sistemas de recomendação podem também ser utilizados em investigação financeira, notícias de negócios, seleção de acções e sistemas de apoio à negociação. Graças aos modelos de aprendizagem profunda, cada utilizador e item é descrito como um vetor de incorporação. Uma base de dados vetorial oferece um espaço de incorporação onde as semelhanças entre utilizadores e itens podem ser calculadas.</p>
-<p>Saiba mais na nossa <a href="https://zilliz.com/blog/graph-based-recommendation-system-with-milvus">demonstração</a> sobre sistemas de recomendação baseados em gráficos com o Milvus.</p>
+<h4 id="Boosting-financial-services-sales-and-more-with-recommender-systems" class="common-anchor-header">Boosting financial services sales and more with recommender systems:</h4><p>The private banking sector uses recommender systems to increase sales of financial products through personalized recommendations based on customer profiles. Recommender systems can also be leveraged in financial research, business news, stock selection, and trading support systems. Thanks to deep learning models, every user and item is described as an embedding vector. A vector database offers an embedding space where similarities between users and items can be calculated.</p>
+<p>Learn more from our <a href="https://zilliz.com/blog/graph-based-recommendation-system-with-milvus">demo</a> covering graph-based recommendation systems with Milvus.</p>
 <p><br/></p>
-<h4 id="Analyzing-earnings-reports-and-other-unstructured-financial-data-with-semantic-text-mining" class="common-anchor-header">Analisar relatórios de ganhos e outros dados financeiros não estruturados com extração de texto semântico:</h4><p>As técnicas de extração de texto tiveram um impacto substancial no sector financeiro. À medida que os dados financeiros crescem exponencialmente, a extração de texto surgiu como um importante campo de investigação no domínio das finanças.</p>
-<p>Os modelos de aprendizagem profunda são atualmente aplicados para representar relatórios financeiros através de vectores de palavras capazes de captar numerosos aspectos semânticos. Uma base de dados de vectores como a Milvus é capaz de armazenar vectores de palavras semânticas maciças de milhões de relatórios e, em seguida, efetuar pesquisas de semelhança em milissegundos.</p>
-<p>Saiba mais sobre como <a href="https://medium.com/deepset-ai/semantic-search-with-milvus-knowledge-graph-qa-web-crawlers-and-more-837451eae9fa">utilizar o Haystack da deepset com o Milvus</a>.</p>
+<h4 id="Analyzing-earnings-reports-and-other-unstructured-financial-data-with-semantic-text-mining" class="common-anchor-header">Analyzing earnings reports and other unstructured financial data with semantic text mining:</h4><p>Text mining techniques had a substantial impact on the financial industry. As financial data grows exponentially, text mining has emerged as an important field of research in the domain of finance.</p>
+<p>Deep learning models are currently applied to represent financial reports through word vectors capable of capturing numerous semantic aspects. A vector database like Milvus is able to store massive semantic word vectors from millions of reports, then conduct similarity searches on them in milliseconds.</p>
+<p>Learn more about how to <a href="https://medium.com/deepset-ai/semantic-search-with-milvus-knowledge-graph-qa-web-crawlers-and-more-837451eae9fa">use deepset’s Haystack with Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Não seja um estranho</h3><ul>
-<li>Encontre ou contribua para o Milvus no <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>Interaja com a comunidade através do <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Conecte-se conosco no <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<h3 id="Don’t-be-a-stranger" class="common-anchor-header">Don’t be a stranger</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

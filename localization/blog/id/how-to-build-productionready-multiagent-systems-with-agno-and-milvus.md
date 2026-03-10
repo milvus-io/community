@@ -1,6 +1,7 @@
 ---
 id: how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md
-title: Cara Membangun Sistem Multi-Agen yang Siap Produksi dengan Agno dan Milvus
+title: |
+  How to Build Production-Ready Multi-Agent Systems with Agno and Milvus
 author: Min Yin
 date: 2026-02-10T00:00:00.000Z
 cover: assets.zilliz.com/cover_b5fc8a3c48.png
@@ -13,19 +14,18 @@ meta_keywords: >-
   AgentOS deployment, LLM agent architecture
 meta_title: |
   How to Build Production-Ready Multi-Agent Systems with Agno and Milvus
-desc: >-
-  Pelajari cara membangun, menerapkan, dan menskalakan sistem multi-agen yang
-  siap produksi menggunakan Agno, AgentOS, dan Milvus untuk beban kerja di dunia
-  nyata.
+desc: >
+  Learn how to build, deploy, and scale production-ready multi-agent systems
+  using Agno, AgentOS, and Milvus for real-world workloads.
 origin: >-
   https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md
 ---
-<p>Jika Anda telah membuat agen AI, Anda mungkin pernah mengalami hal ini: demo Anda bekerja dengan baik, tetapi membuatnya menjadi produksi adalah cerita yang sama sekali berbeda.</p>
-<p>Kami telah membahas manajemen memori agen dan pemeringkatan ulang di postingan sebelumnya. Sekarang mari kita bahas tantangan yang lebih besar-membangun agen yang benar-benar bertahan dalam produksi.</p>
-<p>Inilah kenyataannya: lingkungan produksi berantakan. Agen tunggal jarang sekali dapat menyelesaikannya, itulah sebabnya sistem multi-agen ada di mana-mana. Tetapi kerangka kerja yang tersedia saat ini cenderung terbagi menjadi dua kubu: kerangka kerja ringan yang dapat melakukan demo dengan baik tetapi rusak di bawah beban nyata, atau kerangka kerja kuat yang membutuhkan waktu lama untuk dipelajari dan dibangun.</p>
-<p>Saya telah bereksperimen dengan <a href="https://github.com/agno-agi/agno">Agno</a> baru-baru ini, dan tampaknya <a href="https://github.com/agno-agi/agno">Agno</a> berada di tengah-tengah yang masuk akal - berfokus pada kesiapan produksi tanpa kerumitan yang berlebihan. Proyek ini telah mendapatkan lebih dari 37.000 bintang GitHub dalam beberapa bulan, menunjukkan bahwa pengembang lain juga akan merasakan manfaatnya.</p>
-<p>Dalam tulisan ini, saya akan membagikan apa yang saya pelajari saat membangun sistem multi-agen menggunakan Agno dengan <a href="https://milvus.io/">Milvus</a> sebagai lapisan memori. Kita akan melihat bagaimana Agno dibandingkan dengan alternatif lain seperti LangGraph dan melihat implementasi lengkap yang dapat Anda coba sendiri.</p>
-<h2 id="What-Is-Agno" class="common-anchor-header">Apa itu Agno?<button data-href="#What-Is-Agno" class="anchor-icon" translate="no">
+<p>If you’ve been building AI agents, you’ve probably hit this wall: your demo works great, but getting it into production is a whole different story.</p>
+<p>We’ve covered agent memory management and reranking in earlier posts. Now let’s tackle the bigger challenge—building agents that actually hold up in production.</p>
+<p>Here’s the reality: production environments are messy. A single agent rarely cuts it, which is why multi-agent systems are everywhere. But the frameworks available today tend to fall into two camps: lightweight ones that demo well but break under real load, or powerful ones that take forever to learn and build with.</p>
+<p>I’ve been experimenting with <a href="https://github.com/agno-agi/agno">Agno</a> recently, and it seems to strike a reasonable middle ground—focused on production readiness without excessive complexity. The project has gained over 37,000 GitHub stars in a few months, suggesting other developers find it useful as well.</p>
+<p>In this post, I’ll share what I learned while building a multi-agent system using Agno with <a href="https://milvus.io/">Milvus</a> as the memory layer. We’ll look at how Agno compares to alternatives such as LangGraph and walk through a complete implementation you can try yourself.</p>
+<h2 id="What-Is-Agno" class="common-anchor-header">What Is Agno?<button data-href="#What-Is-Agno" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,36 +40,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/agno-agi/agno">Agno</a> adalah kerangka kerja multi-agen yang dibangun khusus untuk penggunaan produksi. Ini memiliki dua lapisan yang berbeda:</p>
+    </button></h2><p><a href="https://github.com/agno-agi/agno">Agno</a> is a multi-agent framework built specifically for production use. It has two distinct layers:</p>
 <ul>
-<li><p><strong>Lapisan kerangka kerja Agno</strong>: Tempat Anda mendefinisikan logika agen Anda</p></li>
-<li><p><strong>Lapisan runtime AgentOS</strong>: Mengubah logika tersebut menjadi layanan HTTP yang dapat Anda gunakan</p></li>
+<li><p><strong>Agno framework layer</strong>: Where you define your agent logic</p></li>
+<li><p><strong>AgentOS runtime layer</strong>: Turns that logic into HTTP services you can actually deploy</p></li>
 </ul>
-<p>Pikirkan seperti ini: lapisan kerangka kerja mendefinisikan <em>apa yang</em> harus dilakukan oleh agen Anda, sementara AgentOS menangani <em>bagaimana</em> pekerjaan itu dijalankan dan dilayani.</p>
-<h3 id="The-Framework-Layer" class="common-anchor-header">Lapisan Kerangka Kerja</h3><p>Inilah yang Anda kerjakan secara langsung. Lapisan ini memperkenalkan tiga konsep inti:</p>
+<p>Think of it this way: the framework layer defines <em>what</em> your agents should do, while AgentOS handles <em>how</em> that work gets executed and served.</p>
+<h3 id="The-Framework-Layer" class="common-anchor-header">The Framework Layer</h3><p>This is what you work with directly. It introduces three core concepts:</p>
 <ul>
-<li><p><strong>Agen</strong>: Menangani jenis tugas tertentu</p></li>
-<li><p><strong>Tim</strong>: Mengkoordinasikan beberapa agen untuk memecahkan masalah yang kompleks</p></li>
-<li><p><strong>Alur kerja</strong>: Mendefinisikan urutan dan struktur eksekusi</p></li>
+<li><p><strong>Agent</strong>: Handles a specific type of task</p></li>
+<li><p><strong>Team</strong>: Coordinates multiple agents to solve complex problems</p></li>
+<li><p><strong>Workflow</strong>: Defines execution order and structure</p></li>
 </ul>
-<p>Satu hal yang saya hargai: Anda tidak perlu mempelajari DSL baru atau menggambar diagram alur. Perilaku agen didefinisikan menggunakan pemanggilan fungsi Python standar. Kerangka kerja ini menangani pemanggilan LLM, eksekusi alat, dan manajemen memori.</p>
-<h3 id="The-AgentOS-Runtime-Layer" class="common-anchor-header">Lapisan Runtime AgentOS</h3><p>AgentOS dirancang untuk volume permintaan yang tinggi melalui eksekusi asinkronisasi, dan arsitekturnya yang tanpa kewarganegaraan membuat penskalaan menjadi mudah.</p>
-<p>Fitur utamanya meliputi:</p>
+<p>One thing I appreciated: you don’t need to learn a new DSL or draw flowcharts. Agent behavior is defined using standard Python function calls. The framework handles LLM invocation, tool execution, and memory management.</p>
+<h3 id="The-AgentOS-Runtime-Layer" class="common-anchor-header">The AgentOS Runtime Layer</h3><p>AgentOS is designed for high request volumes through async execution, and its stateless architecture makes scaling straightforward.</p>
+<p>Key features include:</p>
 <ul>
-<li><p>Integrasi FastAPI bawaan untuk mengekspos agen sebagai titik akhir HTTP</p></li>
-<li><p>Manajemen sesi dan respons streaming</p></li>
-<li><p>Memantau titik akhir</p></li>
-<li><p>Dukungan penskalaan horizontal</p></li>
+<li><p>Built-in FastAPI integration for exposing agents as HTTP endpoints</p></li>
+<li><p>Session management and streaming responses</p></li>
+<li><p>Monitoring endpoints</p></li>
+<li><p>Horizontal scaling support</p></li>
 </ul>
-<p>Dalam praktiknya, AgentOS menangani sebagian besar pekerjaan infrastruktur, yang memungkinkan Anda fokus pada logika agen itu sendiri.</p>
-<p>Tampilan tingkat tinggi dari arsitektur Agno ditunjukkan di bawah ini.</p>
+<p>In practice, AgentOS handles most of the infrastructure work, which lets you focus on the agent logic itself.</p>
+<p>A high-level view of Agno’s architecture is shown below.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_dfbf444ee6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Agno-vs-LangGraph" class="common-anchor-header">Agno vs LangGraph<button data-href="#Agno-vs-LangGraph" class="anchor-icon" translate="no">
+<h2 id="Agno-vs-LangGraph" class="common-anchor-header">Agno vs. LangGraph<button data-href="#Agno-vs-LangGraph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,24 +84,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Untuk memahami di mana posisi Agno, mari kita bandingkan dengan LangGraph-salah satu kerangka kerja multi-agen yang paling banyak digunakan.</p>
-<p><a href="https://www.langchain.com/langgraph"><strong>LangGraph</strong></a> menggunakan mesin state berbasis grafik. Anda memodelkan seluruh alur kerja agen Anda sebagai sebuah graf: langkah-langkah adalah simpul, jalur eksekusi adalah sisi. Ini bekerja dengan baik ketika proses Anda tetap dan terurut secara ketat. Tetapi untuk skenario yang bersifat terbuka atau percakapan, hal ini dapat terasa membatasi. Ketika interaksi menjadi lebih dinamis, mempertahankan graf yang bersih menjadi lebih sulit.</p>
-<p><strong>Agno</strong> mengambil pendekatan yang berbeda. Alih-alih menjadi lapisan orkestrasi murni, ini adalah sistem ujung ke ujung. Tentukan perilaku agen Anda, dan AgentOS secara otomatis mengeksposnya sebagai layanan HTTP siap produksi - dengan pemantauan, skalabilitas, dan dukungan percakapan multi-putaran yang sudah ada di dalamnya. Tidak ada gateway API terpisah, tidak ada manajemen sesi khusus, tidak ada perkakas operasional tambahan.</p>
-<p>Inilah perbandingan singkatnya:</p>
+    </button></h2><p>To understand where Agno fits, let’s compare it with LangGraph—one of the most widely used multi-agent frameworks.</p>
+<p><a href="https://www.langchain.com/langgraph"><strong>LangGraph</strong></a> uses a graph-based state machine. You model your entire agent workflow as a graph: steps are nodes, execution paths are edges. This works well when your process is fixed and strictly ordered. But for open-ended or conversational scenarios, it can feel restrictive. As interactions get more dynamic, maintaining a clean graph gets harder.</p>
+<p><strong>Agno</strong> takes a different approach. Instead of being a pure orchestration layer, it’s an end-to-end system. Define your agent behavior, and AgentOS automatically exposes it as a production-ready HTTP service—with monitoring, scalability, and multi-turn conversation support built in. No separate API gateway, no custom session management, no extra operational tooling.</p>
+<p>Here’s a quick comparison:</p>
 <table>
 <thead>
-<tr><th>Dimensi</th><th>LangGraph</th><th>Agno</th></tr>
+<tr><th>Dimension</th><th>LangGraph</th><th>Agno</th></tr>
 </thead>
 <tbody>
-<tr><td>Model orkestrasi</td><td>Definisi graf eksplisit menggunakan simpul dan sisi</td><td>Alur kerja deklaratif yang didefinisikan dalam Python</td></tr>
-<tr><td>Manajemen status</td><td>Kelas state khusus yang didefinisikan dan dikelola oleh pengembang</td><td>Sistem memori bawaan</td></tr>
-<tr><td>Debugging &amp; observabilitas</td><td>LangSmith (berbayar)</td><td>UI AgentOS (sumber terbuka)</td></tr>
-<tr><td>Model runtime</td><td>Terintegrasi ke dalam runtime yang sudah ada</td><td>Layanan berbasis FastAPI mandiri</td></tr>
-<tr><td>Kompleksitas penerapan</td><td>Membutuhkan pengaturan tambahan melalui LangServe</td><td>Bekerja di luar kotak</td></tr>
+<tr><td>Orchestration model</td><td>Explicit graph definition using nodes and edges</td><td>Declarative workflows defined in Python</td></tr>
+<tr><td>State management</td><td>Custom state classes defined and managed by developers</td><td>Built-in memory system</td></tr>
+<tr><td>Debugging &amp; observability</td><td>LangSmith (paid)</td><td>AgentOS UI (open source)</td></tr>
+<tr><td>Runtime model</td><td>Integrated into an existing runtime</td><td>Standalone FastAPI-based service</td></tr>
+<tr><td>Deployment complexity</td><td>Requires additional setup via LangServe</td><td>Works out of the box</td></tr>
 </tbody>
 </table>
-<p>LangGraph memberi Anda lebih banyak fleksibilitas dan kontrol yang halus. Agno mengoptimalkan untuk waktu produksi yang lebih cepat. Pilihan yang tepat tergantung pada tahap proyek Anda, infrastruktur yang ada, dan tingkat penyesuaian yang Anda butuhkan. Jika Anda tidak yakin, menjalankan bukti konsep kecil dengan keduanya mungkin merupakan cara yang paling dapat diandalkan untuk memutuskan.</p>
-<h2 id="Choosing-Milvus-for-the-Agent-Memory-Layer" class="common-anchor-header">Memilih Milvus untuk Lapisan Memori Agen<button data-href="#Choosing-Milvus-for-the-Agent-Memory-Layer" class="anchor-icon" translate="no">
+<p>LangGraph gives you more flexibility and fine-grained control. Agno optimizes for faster time-to-production. The right choice depends on your project stage, existing infrastructure, and the level of customization you need. If you’re unsure, running a small proof of concept with both is probably the most reliable way to decide.</p>
+<h2 id="Choosing-Milvus-for-the-Agent-Memory-Layer" class="common-anchor-header">Choosing Milvus for the Agent Memory Layer<button data-href="#Choosing-Milvus-for-the-Agent-Memory-Layer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,22 +116,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Setelah Anda memilih kerangka kerja, keputusan selanjutnya adalah bagaimana menyimpan memori dan pengetahuan. Kami menggunakan Milvus untuk ini. <a href="https://milvus.io/">Milvus</a> adalah basis data vektor sumber terbuka paling populer yang dibuat untuk beban kerja AI dengan lebih dari <a href="https://github.com/milvus-io/milvus">42.000+</a> bintang <a href="https://github.com/milvus-io/milvus">GitHub</a>.</p>
-<p><strong>Agno memiliki dukungan Milvus asli.</strong> Modul <code translate="no">agno.vectordb.milvus</code> membungkus fitur-fitur produksi seperti manajemen koneksi, percobaan ulang otomatis, penulisan batch, dan pembuatan embedding. Anda tidak perlu membangun kumpulan koneksi atau menangani kegagalan jaringan sendiri-beberapa baris Python memberi Anda lapisan memori vektor yang berfungsi.</p>
-<p><strong>Milvus menyesuaikan dengan kebutuhan Anda.</strong> Ini mendukung tiga <a href="https://milvus.io/docs/install-overview.md">mode penyebaran</a>:</p>
+    </button></h2><p>Once you’ve chosen a framework, the next decision is how to store memory and knowledge. We use Milvus for this. <a href="https://milvus.io/">Milvus</a> is the most popular open-source vector database built for AI workloads with more than <a href="https://github.com/milvus-io/milvus">42,000+ GitHub</a> stars.</p>
+<p><strong>Agno has native Milvus support.</strong> The <code translate="no">agno.vectordb.milvus</code> module wraps production features like connection management, automatic retries, batch writes, and embedding generation. You don’t need to build connection pools or handle network failures yourself—a few lines of Python give you a working vector memory layer.</p>
+<p><strong>Milvus scales with your needs.</strong> It supports three <a href="https://milvus.io/docs/install-overview.md">deployment modes:</a></p>
 <ul>
-<li><p><strong>Milvus Lite</strong>: Ringan, berbasis file-sangat bagus untuk pengembangan dan pengujian lokal</p></li>
-<li><p><strong>Standalone</strong>: Penerapan server tunggal untuk beban kerja produksi</p></li>
-<li><p><strong>Terdistribusi</strong>: Cluster penuh untuk skenario skala tinggi</p></li>
+<li><p><strong>Milvus Lite</strong>: Lightweight, file-based—great for local development and testing</p></li>
+<li><p><strong>Standalone</strong>: Single-server deployment for production workloads</p></li>
+<li><p><strong>Distributed</strong>: Full cluster for high-scale scenarios</p></li>
 </ul>
-<p>Anda bisa memulai dengan Milvus Lite untuk memvalidasi memori agen Anda secara lokal, lalu beralih ke standalone atau terdistribusi seiring dengan meningkatnya lalu lintas-tanpa mengubah kode aplikasi Anda. Fleksibilitas ini sangat berguna ketika Anda melakukan iterasi dengan cepat pada tahap awal, tetapi membutuhkan jalur yang jelas untuk meningkatkan skala di kemudian hari.</p>
+<p>You can start with Milvus Lite to validate your agent memory locally, then move to standalone or distributed as traffic grows—without changing your application code. This flexibility is especially useful when you’re iterating quickly in early stages but need a clear path to scale later.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_1_1en_e0294d0ffa.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="common-anchor-header">Langkah demi Langkah: Membangun Agen Agno Siap Produksi dengan Milvus<button data-href="#Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="anchor-icon" translate="no">
+<h2 id="Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="common-anchor-header">Step-by-Step: Building a Production-Ready Agno Agent with Milvus<button data-href="#Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -146,13 +146,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mari kita membangun agen siap produksi dari awal.</p>
-<p>Kita akan mulai dengan contoh agen tunggal sederhana untuk menunjukkan alur kerja secara keseluruhan. Kemudian kita akan mengembangkannya menjadi sistem multi-agen. AgentOS akan secara otomatis mengemas semuanya sebagai layanan HTTP yang dapat dipanggil.</p>
-<h3 id="1-Deploying-Milvus-Standalone-with-Docker" class="common-anchor-header">1. Menerapkan Milvus Standalone dengan Docker</h3><p><strong>(1) Unduh berkas penerapan</strong></p>
+    </button></h2><p>Let’s build a production-ready agent from scratch.</p>
+<p>We’ll start with a simple single-agent example to show the full workflow. Then we’ll expand it into a multi-agent system. AgentOS will automatically package everything as a callable HTTP service.</p>
+<h3 id="1-Deploying-Milvus-Standalone-with-Docker" class="common-anchor-header">1. Deploying Milvus Standalone with Docker</h3><p><strong>(1) Download the Deployment Files</strong></p>
 <pre><code translate="no">**wget** **
 &lt;https://github.com/Milvus-io/Milvus/releases/download/v2.****5****.****12****/Milvus-standalone-docker-compose.yml&gt; -O docker-compose.yml**
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) Mulai Layanan Milvus</strong></p>
+<p><strong>(2) Start the Milvus Service</strong></p>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">docker-compose ps -a
@@ -163,7 +163,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="2-Core-Implementation" class="common-anchor-header">2. Implementasi Inti</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="2-Core-Implementation" class="common-anchor-header">2. Core Implementation</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
 <span class="hljs-keyword">from</span> agno.os <span class="hljs-keyword">import</span> AgentOS
 <span class="hljs-keyword">from</span> agno.agent <span class="hljs-keyword">import</span> Agent
@@ -213,7 +213,7 @@ app = agent_os.get_app()
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;💡 Please upload documents to the knowledge base in the UI\n&quot;</span>)
     agent_os.serve(app=<span class="hljs-string">&quot;knowledge_agent:app&quot;</span>, port=<span class="hljs-number">7777</span>, reload=<span class="hljs-literal">False</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(1) Menjalankan Agen</strong></p>
+<p><strong>(1) Running the Agent</strong></p>
 <pre><code translate="no">**python** **knowledge_agent.py**
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -222,29 +222,29 @@ app = agent_os.get_app()
     <span></span>
   </span>
 </p>
-<h3 id="3-Connecting-to-the-AgentOS-Console" class="common-anchor-header">3. Menghubungkan ke Konsol AgentOS</h3><p>https://os.agno.com/</p>
-<p><strong>(1) Membuat Akun dan Masuk</strong></p>
+<h3 id="3-Connecting-to-the-AgentOS-Console" class="common-anchor-header">3. Connecting to the AgentOS Console</h3><p>https://os.agno.com/</p>
+<p><strong>(1) Create an Account and Sign In</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_db0af51e58.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(2) Hubungkan Agen Anda ke AgentOS</strong></p>
+<p><strong>(2) Connect Your Agent to AgentOS</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_0a8c6f9436.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(3) Konfigurasikan Port yang Terbuka dan Nama Agen</strong></p>
+<p><strong>(3) Configure the Exposed Port and Agent Name</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_3844011799.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(4) Menambahkan Dokumen dan Mengindeksnya di Milvus</strong></p>
+<p><strong>(4) Add Documents and Index Them in Milvus</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_776ea7ca11.png" alt="" class="doc-image" id="" />
@@ -269,17 +269,17 @@ app = agent_os.get_app()
     <span></span>
   </span>
 </p>
-<p><strong>(5) Menguji Agen dari Ujung ke Ujung</strong></p>
+<p><strong>(5) Test the Agent End to End</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/_6e61038ba5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Dalam penyiapan ini, Milvus menangani pengambilan semantik berkinerja tinggi. Ketika asisten basis pengetahuan menerima pertanyaan teknis, asisten akan menggunakan alat <code translate="no">search_knowledge</code> untuk menyematkan kueri, mengambil potongan dokumen yang paling relevan dari Milvus, dan menggunakan hasil tersebut sebagai dasar tanggapannya.</p>
-<p>Milvus menawarkan tiga opsi penerapan, yang memungkinkan Anda untuk memilih arsitektur yang sesuai dengan kebutuhan operasional Anda sambil menjaga API tingkat aplikasi tetap konsisten di semua mode penerapan.</p>
-<p>Demo di atas menunjukkan alur pengambilan dan pembuatan inti. Namun, untuk memindahkan desain ini ke dalam lingkungan produksi, beberapa aspek arsitektur perlu didiskusikan secara lebih rinci.</p>
-<h2 id="How-Retrieval-Results-Are-Shared-Across-Agents" class="common-anchor-header">Bagaimana Hasil Pengambilan Dibagikan ke Seluruh Agen<button data-href="#How-Retrieval-Results-Are-Shared-Across-Agents" class="anchor-icon" translate="no">
+<p>In this setup, Milvus handles high-performance semantic retrieval. When the knowledge-base assistant receives a technical question, it invokes the <code translate="no">search_knowledge</code> tool to embed the query, retrieves the most relevant document chunks from Milvus, and uses those results as the basis for its response.</p>
+<p>Milvus offers three deployment options, allowing you to choose an architecture that fits your operational requirements while keeping the application-level APIs consistent across all deployment modes.</p>
+<p>The demo above shows the core retrieval and generation flow. To move this design into a production environment, however, several architectural aspects need to be discussed in more detail.</p>
+<h2 id="How-Retrieval-Results-Are-Shared-Across-Agents" class="common-anchor-header">How Retrieval Results Are Shared Across Agents<button data-href="#How-Retrieval-Results-Are-Shared-Across-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -294,13 +294,13 @@ app = agent_os.get_app()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mode Tim Agno memiliki opsi <code translate="no">share_member_interactions=True</code> yang memungkinkan agen-agen yang datang kemudian untuk mewarisi riwayat interaksi penuh dari agen-agen sebelumnya. Dalam praktiknya, ini berarti bahwa ketika agen pertama mengambil informasi dari Milvus, agen berikutnya dapat menggunakan kembali hasil tersebut alih-alih menjalankan pencarian yang sama lagi.</p>
+    </button></h2><p>Agno’s Team mode has a <code translate="no">share_member_interactions=True</code> option that allows later agents to inherit the full interaction history of earlier agents. In practice, this means that when the first agent retrieves information from Milvus, subsequent agents can reuse those results instead of running the same search again.</p>
 <ul>
-<li><p><strong>Kebalikannya:</strong> Biaya pencarian diamortisasi di seluruh tim. Satu pencarian vektor mendukung banyak agen, mengurangi permintaan yang berlebihan.</p></li>
-<li><p><strong>Kelemahannya:</strong> Kualitas pencarian akan meningkat. Jika pencarian awal menghasilkan hasil yang tidak lengkap atau tidak akurat, kesalahan tersebut akan menyebar ke setiap agen yang bergantung padanya.</p></li>
+<li><p><strong>The upside:</strong> Retrieval costs are amortized across the team. One vector search supports multiple agents, reducing redundant queries.</p></li>
+<li><p><strong>The downside:</strong> Retrieval quality gets amplified. If the initial search returns incomplete or inaccurate results, that error propagates to every agent that depends on it.</p></li>
 </ul>
-<p>Inilah sebabnya mengapa akurasi pencarian menjadi lebih penting dalam sistem multi-agen. Pencarian yang buruk tidak hanya menurunkan respons satu agen, tetapi juga memengaruhi seluruh tim.</p>
-<p>Berikut adalah contoh pengaturan Tim:</p>
+<p>This is why retrieval accuracy matters even more in multi-agent systems. A bad retrieval doesn’t just degrade one agent’s response—it affects the entire team.</p>
+<p>Here’s an example Team setup:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> agno.team <span class="hljs-keyword">import</span> Team
 analyst = Agent(
     name=<span class="hljs-string">&quot;Data Analyst&quot;</span>,
@@ -321,7 +321,7 @@ team = Team(
     share_member_interactions=<span class="hljs-literal">True</span>,  *<span class="hljs-comment"># Share knowledge retrieval results*</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Why-Agno-and-Milvus-Are-Layered-Separately" class="common-anchor-header">Mengapa Agno dan Milvus Diletakkan Secara Terpisah<button data-href="#Why-Agno-and-Milvus-Are-Layered-Separately" class="anchor-icon" translate="no">
+<h2 id="Why-Agno-and-Milvus-Are-Layered-Separately" class="common-anchor-header">Why Agno and Milvus Are Layered Separately<button data-href="#Why-Agno-and-Milvus-Are-Layered-Separately" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -336,15 +336,15 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam arsitektur ini, <strong>Agno</strong> berada di lapisan percakapan dan orkestrasi. Ia bertanggung jawab untuk mengelola aliran dialog, mengoordinasikan agen, dan mempertahankan status percakapan, dengan riwayat sesi yang disimpan dalam basis data relasional. Pengetahuan domain sistem yang sebenarnya-seperti dokumentasi produk dan laporan teknis-ditangani secara terpisah dan disimpan sebagai penyematan vektor di <strong>Milvus</strong>. Pembagian yang jelas ini membuat logika percakapan dan penyimpanan pengetahuan sepenuhnya terpisah.</p>
-<p>Mengapa ini penting secara operasional:</p>
+    </button></h2><p>In this architecture, <strong>Agno</strong> sits at the conversation and orchestration layer. It is responsible for managing dialogue flow, coordinating agents, and maintaining conversational state, with session history persisted in a relational database. The system’s actual domain knowledge—such as product documentation and technical reports—is handled separately and stored as vector embeddings in <strong>Milvus</strong>. This clear division keeps conversational logic and knowledge storage fully decoupled.</p>
+<p>Why this matters operationally:</p>
 <ul>
-<li><p><strong>Penskalaan independen</strong>: Seiring dengan meningkatnya permintaan Agno, tambahkan lebih banyak instance Agno. Seiring bertambahnya volume kueri, perluas Milvus dengan menambahkan node kueri. Setiap lapisan berskala secara terpisah.</p></li>
-<li><p><strong>Kebutuhan perangkat keras yang berbeda</strong>: Agno terikat pada CPU dan memori (inferensi LLM, eksekusi alur kerja). Milvus dioptimalkan untuk pengambilan vektor dengan throughput tinggi (disk I/O, terkadang akselerasi GPU). Memisahkan keduanya mencegah perebutan sumber daya.</p></li>
-<li><p><strong>Optimalisasi biaya</strong>: Anda dapat menyetel dan mengalokasikan sumber daya untuk setiap lapisan secara independen.</p></li>
+<li><p><strong>Independent scaling</strong>: As Agno demand grows, add more Agno instances. As query volume grows, expand Milvus by adding query nodes. Each layer scales in isolation.</p></li>
+<li><p><strong>Different hardware needs</strong>: Agno is CPU- and memory-bound (LLM inference, workflow execution). Milvus is optimized for high-throughput vector retrieval (disk I/O, sometimes GPU acceleration). Separating them prevents resource contention.</p></li>
+<li><p><strong>Cost optimization</strong>: You can tune and allocate resources for each layer independently.</p></li>
 </ul>
-<p>Pendekatan berlapis ini memberi Anda arsitektur yang lebih efisien, tangguh, dan siap produksi.</p>
-<h2 id="What-to-Monitor-When-Using-Agno-with-Milvus" class="common-anchor-header">Apa yang Harus Dipantau Saat Menggunakan Agno dengan Milvus<button data-href="#What-to-Monitor-When-Using-Agno-with-Milvus" class="anchor-icon" translate="no">
+<p>This layered approach gives you a more efficient, resilient, and production-ready architecture.</p>
+<h2 id="What-to-Monitor-When-Using-Agno-with-Milvus" class="common-anchor-header">What to Monitor When Using Agno with Milvus<button data-href="#What-to-Monitor-When-Using-Agno-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -359,14 +359,14 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agno memiliki kemampuan evaluasi bawaan, tetapi dengan menambahkan Milvus, Anda bisa memperluas apa yang harus Anda pantau. Berdasarkan pengalaman kami, fokuslah pada tiga area:</p>
+    </button></h2><p>Agno has built-in evaluation capabilities, but adding Milvus expands what you should watch. Based on our experience, focus on three areas:</p>
 <ul>
-<li><p><strong>Kualitas pengambilan</strong>: Apakah dokumen yang dikembalikan Milvus benar-benar relevan dengan kueri, atau hanya mirip secara dangkal pada tingkat vektor?</p></li>
-<li><p><strong>Kesesuaian jawaban</strong>: Apakah jawaban akhir didasarkan pada konten yang diambil, atau apakah LLM menghasilkan klaim yang tidak didukung?</p></li>
-<li><p><strong>Perincian latensi ujung ke ujung</strong>: Jangan hanya melacak waktu respons total. Perinci berdasarkan tahap-pembuatan embedding, pencarian vektor, perakitan konteks, inferensi LLM-sehingga Anda dapat mengidentifikasi di mana perlambatan terjadi.</p></li>
+<li><p><strong>Retrieval quality</strong>: Are the documents Milvus returns actually relevant to the query, or just superficially similar at the vector level?</p></li>
+<li><p><strong>Answer faithfulness</strong>: Is the final response grounded in the retrieved content, or is the LLM generating unsupported claims?</p></li>
+<li><p><strong>End-to-end latency breakdown</strong>: Don’t just track total response time. Break it down by stage—embedding generation, vector search, context assembly, LLM inference—so you can identify where slowdowns occur.</p></li>
 </ul>
-<p><strong>Contoh praktis:</strong> Ketika koleksi Milvus Anda bertambah dari 1 juta menjadi 10 juta vektor, Anda mungkin akan melihat latensi pengambilan yang meningkat. Itu biasanya merupakan sinyal untuk menyetel parameter indeks (seperti <code translate="no">nlist</code> dan <code translate="no">nprobe</code>) atau mempertimbangkan untuk berpindah dari penerapan mandiri ke penerapan terdistribusi.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><strong>A practical example:</strong> When your Milvus collection grows from 1 million to 10 million vectors, you might notice retrieval latency creeping up. That’s usually a signal to tune index parameters (like <code translate="no">nlist</code> and <code translate="no">nprobe</code>) or consider moving from standalone to a distributed deployment.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -381,7 +381,7 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Membangun sistem agen yang siap produksi membutuhkan lebih dari sekadar menyambungkan panggilan LLM dan demo pengambilan. Anda membutuhkan batasan arsitektur yang jelas, infrastruktur yang dapat berkembang secara mandiri, dan kemampuan pengamatan untuk menangkap masalah lebih awal.</p>
-<p>Dalam artikel ini, saya menjelaskan bagaimana Agno dan Milvus dapat bekerja sama: Agno untuk orkestrasi multi-agen, Milvus untuk memori yang dapat diskalakan dan pengambilan semantik. Dengan memisahkan lapisan-lapisan ini, Anda dapat berpindah dari prototipe ke produksi tanpa menulis ulang logika inti-dan menskalakan setiap komponen sesuai kebutuhan.</p>
-<p>Jika Anda bereksperimen dengan pengaturan serupa, saya ingin tahu apa yang berhasil untuk Anda.</p>
-<p><strong>Ada pertanyaan tentang Milvus?</strong> Bergabunglah dengan <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">saluran Slack</a> kami atau pesan sesi <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Jam Kantor Milvus</a> selama 20 menit.</p>
+    </button></h2><p>Building production-ready agent systems takes more than wiring together LLM calls and retrieval demos. You need clear architectural boundaries, infrastructure that scales independently, and observability to catch issues early.</p>
+<p>In this post, I walked through how Agno and Milvus can work together: Agno for multi-agent orchestration, Milvus for scalable memory and semantic retrieval. By keeping these layers separate, you can move from prototype to production without rewriting core logic—and scale each component as needed.</p>
+<p>If you’re experimenting with similar setups, I’d be curious to hear what’s working for you.</p>
+<p><strong>Questions about Milvus?</strong> Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session.</p>

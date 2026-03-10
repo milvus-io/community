@@ -1,18 +1,18 @@
 ---
 id: 2022-01-20-story-of-smartnews.md
-title: SmartNewsの物語 - Milvusユーザーから積極的な貢献者へ
+title: The Story of SmartNews - from a Milvus User to an Active Contributor
 author: Milvus
 date: 2022-01-20T00:00:00.000Z
-desc: Milvusのユーザーであり、貢献者でもあるSmartNewsのストーリーをご覧ください。
+desc: 'Learn about the story of SmartNews, both a Milvus user and contributor.'
 cover: assets.zilliz.com/Smartnews_user_to_contributor_f219e6e008.png
 tag: Scenarios
 ---
-<p>この記事の翻訳：<a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">アンジェラ・ニー</a></p>
-<p>情報は私たちの生活のいたるところにある。メタ（旧名フェイスブック）、インスタグラム、ツイッター、その他のソーシャルメディア・プラットフォームは、情報ストリームをよりユビキタスなものにしている。そのため、このような情報ストリームを扱うエンジンは、ほとんどのシステム・アーキテクチャにおいて必須となっている。しかし、ソーシャルメディア・プラットフォームや関連アプリのユーザーであれば、記事やニュース、ミームなどの重複に悩まされたことがあるに違いない。重複コンテンツに触れることは、情報検索のプロセスを妨げ、悪いユーザーエクスペリエンスにつながる。</p>
-<p>情報ストリームを扱う製品にとって、同一のニュースや広告を重複排除するために、システムアーキテクチャにシームレスに統合できる柔軟なデータプロセッサを見つけることは、開発者にとって最優先事項である。</p>
-<p>評価額<a href="https://techcrunch.com/2021/09/15/news-aggregator-smartnews-raises-230-million-valuing-its-business-at-2-billion/">20億</a>ドルの<a href="https://www.smartnews.com/en/">SmartNewsは</a>、米国で最も評価の高いニュースアプリ企業である。同社は、オープンソースのベクトル・データベースであるMilvusのユーザーであったが、その後Milvusプロジェクトに積極的に貢献するようになった。</p>
-<p>この記事では、SmartNewsのストーリーを紹介し、同社がなぜMilvusプロジェクトに貢献することにしたのかについて述べる。</p>
-<h2 id="An-overview-of-SmartNews" class="common-anchor-header">SmartNewsの概要<button data-href="#An-overview-of-SmartNews" class="anchor-icon" translate="no">
+<p>This article is translated by <a href="https://www.linkedin.com/in/yiyun-n-2aa713163/">Angela Ni</a>.</p>
+<p>Information is everywhere in our lives. Meta (formerly known as Facebook), Instagram, Twitter, and other social media platforms make information streams all the more ubiquitous. Therefore, engines dealing with such information streams have become a must-have in most system architecture. However, as a user of social media platforms and relevant apps, I bet you must have been bothered by duplicate articles, news, memes, and more. Exposure to duplicate content hampers the process of information retrieval and leads to bad user experience.</p>
+<p>For a product dealing with information streams, it is a high priority for the developers to find a flexible data processor that can be integrated seamlessly into the system architecture to deduplicate identical news or advertisements.</p>
+<p><a href="https://www.smartnews.com/en/">SmartNews</a>, valued at <a href="https://techcrunch.com/2021/09/15/news-aggregator-smartnews-raises-230-million-valuing-its-business-at-2-billion/">2 billion US dollars</a>, is the most highly-valued news app company in the US. Noticeably, it used to be a user of Milvus, an open-source vector database, but later transformed into an active contributor to the Milvus project.</p>
+<p>This article shares the story of SmartNews and tells why it decided to make contributions to the Milvus project.</p>
+<h2 id="An-overview-of-SmartNews" class="common-anchor-header">An overview of SmartNews<button data-href="#An-overview-of-SmartNews" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,10 +27,10 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>SmartNewsは2012年に設立され、東京に本社を置いている。SmartNewsが開発するニュースアプリは、日本市場で常に<a href="https://www.businessinsider.com/guides/smartnews-free-news-app-2018-9">トップクラスの評価を得て</a>いる。SmartNewsは<a href="https://about.smartnews.com/en/2019/06/12/smartnews-builds-global-momentum-with-over-500-us-growth-new-executives-and-three-new-offices/">最も急成長している</a>ニュースアプリであり、米国市場でも<a href="https://about.smartnews.com/en/2018/07/21/smartnews-reaches-more-than-10-million-monthly-active-users-in-the-united-states-and-japan/">高いユーザー粘度を誇って</a>いる。<a href="https://www.appannie.com/en/">APP Annieの</a>統計によると、SmartNewsの月間平均セッション時間は、2021年7月末までにすべてのニュースアプリの中で1位となり、AppleNewsやGoogle Newsの累積セッション時間を上回りました。</p>
-<p>SmartNewsは、ユーザーベースと粘度の急速な増加に伴い、レコメンデーションメカニズムとAIアルゴリズムの面でより多くの課題に直面しなければならない。そのような課題には、大規模な機械学習（ML）における膨大な離散的特徴の活用、ベクトル類似性検索による非構造化データクエリの高速化などが含まれます。</p>
-<p>2021年の初め、SmartNewsのダイナミック広告アルゴリズムチームは、AIインフラチームに、広告のリコールとクエリの機能を最適化する必要があるとのリクエストを送った。AIインフラエンジニアのシュウは、2カ月にわたる調査の結果、複数のインデックスと類似性メトリクス、オンラインデータ更新をサポートするオープンソースのベクトルデータベース、Milvusの使用を決定した。Milvusは世界中の1000以上の組織から信頼されている。</p>
-<h2 id="Advertisement-recommendation-powered-by-vector-similarity-search" class="common-anchor-header">ベクトル類似検索による広告推薦<button data-href="#Advertisement-recommendation-powered-by-vector-similarity-search" class="anchor-icon" translate="no">
+    </button></h2><p>SmartNews, founded in 2012, is headquartered in Tokyo, Japan. The news app developed by SmartNews has always been <a href="https://www.businessinsider.com/guides/smartnews-free-news-app-2018-9">top-rated</a> in the Japanese market. SmartNews is the <a href="https://about.smartnews.com/en/2019/06/12/smartnews-builds-global-momentum-with-over-500-us-growth-new-executives-and-three-new-offices/">fastest growing</a> news app and also boasts <a href="https://about.smartnews.com/en/2018/07/21/smartnews-reaches-more-than-10-million-monthly-active-users-in-the-united-states-and-japan/">high user viscosity</a> in the US market. According to the statistics from <a href="https://www.appannie.com/en/">APP Annie</a>, the monthly average session duration of SmartNews ranked first among all news apps by the end of July, 2021, greater than the accumulated session duration of AppleNews and Google News.</p>
+<p>With the rapid growth of user base and viscosity, SmartNews has to face more challenges in terms of recommendation mechanism and AI algorithm. Such challenges include utilizing massive discrete features in large-scale machine learning (ML), accelerating unstructured data query with vector similarity search, and more.</p>
+<p>At the beginning of 2021, the dynamic Ad algorithm team at SmartNews sent a request to AI infrastructure team that the functions of recalling and querying advertisements need to be optimized. After two months of research, AI infrastructure engineer Shu decided to use Milvus, an open-source vector database that supports multiple indexes and similarity metrics and online data updates. Milvus is trusted by more than a thousand organizations worldwide.</p>
+<h2 id="Advertisement-recommendation-powered-by-vector-similarity-search" class="common-anchor-header">Advertisement recommendation powered by vector similarity search<button data-href="#Advertisement-recommendation-powered-by-vector-similarity-search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,15 +45,17 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>オープンソースのベクトルデータベースMilvusは、SmartNewsの広告システムに採用され、10ミリオンスケールのデータセットからダイナミックな広告をマッチングし、ユーザーに推薦します。そうすることで、SmartNewsは、ユーザーデータと広告データという、これまでマッチングできなかった2つのデータセットの間にマッピング関係を作り出すことができる。2021年第2四半期、シュウはKubernetes上にMilvus 1.0をデプロイすることに成功した。<a href="https://milvus.io/docs">Milvusのデプロイ</a>方法についてはこちらをご覧ください。</p>
+    </button></h2><p>The open-source vector database Milvus is adopted in the SmartNews Ad system to match and recommend dynamic ads from a 10-milllion-scale dataset to its users. By doing so, SmartNews can create a mapping relationship between two previously unmatchable datasets - user data and advertisement data. In the second quarter of 2021, Shu managed to deploy Milvus 1.0 on Kubernetes. Learn more about how to <a href="https://milvus.io/docs">deploy Milvus</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image1_2a88ed162f.png" alt="img" class="doc-image" id="img" />
-   </span> <span class="img-wrapper"> <span>img</span> </span></p>
-<p>Milvus 1.0のデプロイが成功した後、Milvusを使用する最初のプロジェクトは、SmartNewsの広告チームが開始した広告リコールプロジェクトだった。初期段階では、広告データセットは100万規模であった。一方、P99のレイテンシーは10ミリ秒未満に厳密に制御されていた。</p>
-<p>2021年6月、シュウとアルゴリズムチームの同僚たちは、Milvusをより多くのビジネスシナリオに適用し、リアルタイムでのデータ集約とオンラインデータ/インデックス更新を試みた。</p>
-<p>現在までに、オープンソースのベクトルデータベースであるMilvusは、広告推薦を含むSmartNewsの様々なビジネスシナリオで使用されている。</p>
-<h2 id="From-a-user-to-an-active-contributor" class="common-anchor-header"><strong>ユーザーから積極的な貢献者へ</strong><button data-href="#From-a-user-to-an-active-contributor" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image1_2a88ed162f.png" alt="img" class="doc-image" id="img" />
+    <span>img</span>
+  </span>
+</p>
+<p>After the successful deployment of Milvus 1.0, the first project to use Milvus was the advertisement recall project initiated by the Ad team at SmartNews. During the initial stage, the advertisement dataset was on a million scale. Meanwhile, the P99 latency was strictly controlled within less than 10 milliseconds.</p>
+<p>In June, 2021, Shu and his colleagues in the algorithm team applied Milvus to more business scenarios and attempted data aggregation and online data/index update in real time.</p>
+<p>By now, Milvus, the open-source vector database has been used in various business scenarios at SmartNews, including ad recommendation.</p>
+<h2 id="From-a-user-to-an-active-contributor" class="common-anchor-header"><strong>From a user to an active contributor</strong><button data-href="#From-a-user-to-an-active-contributor" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,27 +70,29 @@ tag: Scenarios
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MilvusをSmartnewsの製品アーキテクチャに統合していく中で、シュウをはじめとする開発者から、ホットリロード、アイテムのTTL（time-to-live）、アイテムの更新／置換などの機能の要望が出てきました。これらは、milvusコミュニティの多くのユーザーが望んでいた機能でもある。そこで、SmartNewsのAIインフラストラクチャチームの責任者であるデニス・ザオは、ホットリロード機能を開発し、コミュニティに貢献することを決めた。デニスは、"SmartNewsチームはMilvusコミュニティから恩恵を受けており、コミュニティと共有できるものがあれば喜んで貢献したい "と考えていた。</p>
-<p>データリロードは、コード実行中のコード編集をサポートします。データリロードの助けを借りて、開発者はブレークポイントで停止したり、アプリケーションを再起動したりする必要がなくなりました。代わりに、コードを直接編集し、その結果をリアルタイムで見ることができる。</p>
-<p>7月下旬、SmartNewsのエンジニアであるYusup氏は、ホット・リロードを実現するために<a href="https://milvus.io/docs/v2.0.x/collection_alias.md#Collection-Alias">コレクション・エイリアスを</a>使用するアイデアを提案した。</p>
-<p>コレクションエイリアスの作成とは、コレクションにエイリアス名を指定することである。コレクションは複数のエイリアスを持つことができる。しかし、エイリアスは最大1つのコレクションに対応する。コレクションとロッカーを比較してみましょう。ロッカーは、コレクションのように、それ自身の番号と位置を持ち、それは常に変更されません。しかし、ロッカーから常に異なるものを入れたり引き出したりすることができる。同様に、コレクションの名前は固定ですが、コレクション内のデータは動的です。Milvusの<a href="https://milvus.io/docs/v2.0.x/release_notes.md#v200-PreGA">GA以前のバージョンでは</a>、データ削除がサポートされているため、コレクション内のベクターの挿入や削除はいつでも可能です。</p>
-<p>SmartNews広告ビジネスの場合、新しいダイナミック広告ベクターが生成されると、1億近いベクターが挿入または更新されます。これにはいくつかの解決策がある：</p>
+    </button></h2><p>While integrating Milvus into the Smartnews product architecture, Shu and other developers came up with requests of functions such as hot reload, item TTL (time-to-live), item update/replace, and more. These are also functions desired by many users in the Milvus community. Therefore, Dennis Zhao, head of the AI infrastructure team at SmartNews decided to develop and contribute the hot reload function to the community. Dennis believed that “SmartNews team has been benefiting from the Milvus community, therefore, we are more than willing to contribute if we have something to share with the community.”</p>
+<p>Data reload supports code editing while running the code. With the help of data reload, developers no longer need to stop at a breakpoint or restart the application. Instead, they can edit the code directly and see the result in real time.</p>
+<p>In late July, Yusup, engineer at SmartNews proposed an idea of using <a href="https://milvus.io/docs/v2.0.x/collection_alias.md#Collection-Alias">collection alias</a> to achieve hot reload.</p>
+<p>Creating collection alias refers to specifying alias names for a collection. A collection can have multiple aliases. However, an alias corresponds to a maximum of one collection. Simply draw an analogy between a collection and a locker. A locker, like a collection, has its own number and position, which will always remain unchanged. However, you can always put in and draw out different things from the locker. Similarly, the name of the collection is fixed but the data in the collection is dynamic. You can always insert or delete vectors in a collection, as data deletion is supported in the Milvus <a href="https://milvus.io/docs/v2.0.x/release_notes.md#v200-PreGA">pre-GA version</a>.</p>
+<p>In the case of SmartNews advertisement business, nearly 100 million vectors are inserted or updated as new dynamic ad vectors are generated. There are several solutions to this:</p>
 <ul>
-<li>解決策1：まず古いデータを削除し、新しいデータを挿入する。</li>
-<li>解決策2：新しいデータ用に新しいコレクションを作成する。</li>
-<li>解決策3：コレクションエイリアスを使用する。</li>
+<li>Solution 1: delete old data first and insert new ones.</li>
+<li>Solution 2: create a new collection for new data.</li>
+<li>Solution 3: use collection alias.</li>
 </ul>
-<p>解決策1について、最も端的な欠点は、特に更新するデータセットが膨大な場合、非常に時間がかかることである。億単位のデータセットを更新するには、一般的に数時間かかる。</p>
-<p>解決策2に関しては、新しいコレクションがすぐに検索できないことが問題である。つまり、ロード中はコレクションを検索できない。さらに、Milvusは2つのコレクションが同じコレクション名を使うことを許さない。新しいコレクションに切り替えるには、常にユーザーがクライアント側のコードを手動で修正する必要があります。つまり、コレクションを切り替える必要があるたびに、<code translate="no">collection_name</code> パラメータの値を修正しなければなりません。</p>
-<p>解決策3は特効薬です。新しいコレクションに新しいデータを挿入し、コレクションエイリアスを使用するだけです。そうすることで、検索を行うためにコレクションを切り替える必要があるたびに、コレクションエイリアスを入れ替えるだけでよい。コードを修正するための余分な労力は必要ありません。この解決策を使えば、前の2つの解決策で述べたような手間が省けます。</p>
-<p>Yusupは、この要望からスタートし、SmartNewsチーム全体がMilvusのアーキテクチャを理解する手助けをした。1ヶ月半後、MilvusプロジェクトはYusupからホットリロードに関するPRを受け取った。そしてその後、この機能はMilvus 2.0.0-RC7のリリースとともに正式に利用できるようになった。</p>
-<p>現在、AIインフラチームが中心となり、Milvus 2.0の導入と、Milvus 1.0から2.0への全データの移行を順次進めている。</p>
+<p>For solution 1, one of the most straightforward shortcoming is that it is extremely time-consuming, especially when the dataset to be updated is tremendous. It generally takes hours to update a dataset on a 100-million-scale.</p>
+<p>As for solution 2, the problem is that the new collection is not immediately available for search. That is to say, a collection is not searchable during load. Plus, Milvus does not allow two collections to use the same collection name. Switching to a new collection would always require users to manually modify the client side code. That is to say, users have to revise the value of the parameter <code translate="no">collection_name</code> every time they need to switch between collections.</p>
+<p>Solution 3 would be the silver bullet. You only need to insert the new data in a new collection and use collection alias. By doing so, you only need to swap the collection alias every time you need to switch the collection to conduct the search. You do not need extra efforts to revise the code. This solution saves you the troubles mentioned in the previous two solutions.</p>
+<p>Yusup started from this request and helped the whole SmartNews team understand the Milvus architecture. After one and half months, the Milvus project received a PR about hot reload from Yusup. And later, this function is officially available along with the release of Milvus 2.0.0-RC7.</p>
+<p>Currently, the AI infrastructure team is taking the lead to deploy Milvus 2.0 and migrate all data gradually from Milvus 1.0 to 2.0.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/image2_96c064a627.png" alt="img_collection alias" class="doc-image" id="img_collection-alias" />
-   </span> <span class="img-wrapper"> <span>img_collection エイリアス</span> </span></p>
-<p>コレクションエイリアスのサポートは、特に大量のユーザーリクエストを抱える大規模なインターネット企業にとって、ユーザーエクスペリエンスを大幅に向上させることができる。MilvusとSmartnewsの架け橋となったMilvusコミュニティのデータエンジニアであるChenglong Liは、「コレクションエイリアス機能は、MilvusユーザーであるSmartNewsの実際のビジネスリクエストから生まれました。そしてSmartNewsは、Milvusコミュニティにコードを提供してくれました。この互恵的な行為は、コミュニティからコミュニティのためにというオープンソース精神の素晴らしい例です。我々は、SmartNewsのような貢献者が増え、共同でより繁栄したMilvusコミュニティを構築することを望んでいる。"</p>
-<p>"現在、広告ビジネスの一部がオフラインベクターデータベースとしてMilvusを採用している。Milvus 2.0の正式リリースが近づいており、Milvusを使ってより信頼性の高いシステムを構築し、より多くのビジネスシーンにリアルタイムサービスを提供できることを期待しています」とデニスは語った。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/image2_96c064a627.png" alt="img_collection alias" class="doc-image" id="img_collection-alias" />
+    <span>img_collection alias</span>
+  </span>
+</p>
+<p>Support for collection alias can greatly improve user experience, especially for those large Internet companies with great volumes of user requests. Chenglong Li, data engineer from the Milvus community, who helped build the bridge between Milvus and Smartnews, said, “The collection alias function arises from the real business request of SmartNews, a Milvus user. And SmartNews contributed the code to the Milvus community. This act of reciprocity is a great example of the open-source spirit: from the community and for the community. We hope to see more contributors like SmartNews and jointly build a more prosperous Milvus community.”</p>
+<p>“Currently, part of the ad business is adopting Milvus as the offline vector database. The official release of Mivus 2.0 is approaching, and we hope that we can use Milvus to build more reliable systems and provide real-time services for more business scenarios.” said Dennis.</p>
 <blockquote>
-<p>更新: Milvus 2.0は現在一般公開されています！<a href="/blog/ja/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">詳細はこちら</a></p>
+<p>Update: Milvus 2.0 is now general available! <a href="/blog/ja/2022-1-25-annoucing-general-availability-of-milvus-2-0.md">Learn more</a></p>
 </blockquote>

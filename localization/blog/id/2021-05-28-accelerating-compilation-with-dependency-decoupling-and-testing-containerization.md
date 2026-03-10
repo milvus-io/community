@@ -2,86 +2,93 @@
 id: >-
   accelerating-compilation-with-dependency-decoupling-and-testing-containerization.md
 title: >-
-  Mempercepat Kompilasi 2.5X dengan Pemisahan Ketergantungan &amp;
-  Kontainerisasi Pengujian
+  Accelerating Compilation 2.5X with Dependency Decoupling & Testing
+  Containerization
 author: Zhifeng Zhang
 date: 2021-05-28T00:00:00.000Z
 desc: >-
-  Temukan bagaimana zilliz mengurangi waktu kompilasi 2,5x menggunakan teknik
-  pemisahan ketergantungan dan kontainerisasi untuk proyek AI dan MLOps berskala
-  besar.
+  Discover how zilliz to reduce compile times 2.5x using dependency decoupling
+  and containerization techniques for large-scale AI and MLOps projects.
 cover: assets.zilliz.com/cover_20e3cddb96.jpeg
 tag: Engineering
 canonicalUrl: >-
   https://zilliz.com/blog/accelerating-compilation-with-dependency-decoupling-and-testing-containerization
 ---
-<custom-h1>Mempercepat Kompilasi 2,5X dengan Pemisahan Ketergantungan &amp; Kontainerisasi Pengujian</custom-h1><p>Waktu kompilasi dapat diperparah dengan ketergantungan internal dan eksternal yang kompleks yang berkembang selama proses pengembangan, serta perubahan lingkungan kompilasi seperti sistem operasi atau arsitektur perangkat keras. Berikut ini adalah masalah umum yang mungkin ditemui saat mengerjakan proyek AI atau MLOps berskala besar:</p>
-<p><strong>Kompilasi yang sangat lama</strong> - Integrasi kode dilakukan ratusan kali setiap hari. Dengan ratusan ribu baris kode yang ada, bahkan perubahan kecil pun dapat menghasilkan kompilasi penuh yang biasanya memakan waktu satu jam atau lebih.</p>
-<p><strong>Lingkungan kompilasi yang kompleks</strong> - Kode proyek perlu dikompilasi di bawah lingkungan yang berbeda, yang melibatkan sistem operasi yang berbeda, seperti CentOS dan Ubuntu, ketergantungan yang mendasarinya, seperti GCC, LLVM, dan CUDA, dan arsitektur perangkat keras. Dan kompilasi di bawah lingkungan tertentu biasanya tidak dapat bekerja di lingkungan yang berbeda.</p>
-<p><strong>Ketergantungan yang kompleks</strong> - Kompilasi proyek melibatkan lebih dari 30 ketergantungan antar-komponen dan pihak ketiga. Pengembangan proyek sering kali menyebabkan perubahan pada ketergantungan, yang pasti menyebabkan konflik ketergantungan. Kontrol versi antara dependensi sangat kompleks sehingga memperbarui versi dependensi akan dengan mudah mempengaruhi komponen lain.</p>
-<p>Pengunduhan<strong>dependensi pihak ketiga lambat atau gagal</strong> - Penundaan jaringan atau pustaka dependensi pihak ketiga yang tidak stabil menyebabkan pengunduhan sumber daya yang lambat atau kegagalan akses, yang secara serius mempengaruhi integrasi kode.</p>
-<p>Dengan memisahkan ketergantungan dan menerapkan kontainerisasi pengujian, kami berhasil mengurangi waktu kompilasi rata-rata sebesar 60% saat mengerjakan proyek pencarian kesamaan embedding sumber terbuka <a href="https://milvus.io/">Milvus</a>.</p>
+<custom-h1>Accelerating Compilation 2.5X with Dependency Decoupling &amp; Testing Containerization</custom-h1><p>Compile time can be compounded by complex internal and external dependencies that evolve throughout the development process, as well as changes in compilation environments such as the operating system or hardware architectures. Following are common issues one may encounter when working on large-scale AI or MLOps projects:</p>
+<p><strong>Prohibitively long compilation</strong> - Code integration is done hundreds of times each day. With hundreds of thousands of lines of code in place, even a small change could result in a full compilation that typically takes one or more hours.</p>
+<p><strong>Complex compilation environment</strong> - The project code needs to be compiled under different environments, which involve different operating systems, such as CentOS and Ubuntu, underlying dependencies, such as GCC, LLVM, and CUDA, and hardware architectures. And compilation under a specific environment normally may not work under a different environment.</p>
+<p><strong>Complex dependencies</strong> - Project compilation involves more than 30 between-component and third-party dependencies. Project development often leads to changes in dependencies, inevitably causing dependency conflicts. The version control between dependencies is so complex that updating version of dependencies will easily affect other components.</p>
+<p><strong>Third-party dependency download is slow or fails</strong> - Network delays or unstable third-party dependency libraries cause slow resource downloads or access failures, seriously affecting code integration.</p>
+<p>By decoupling dependencies and implementing testing containerization, we managed to decrease average compile time by 60% while working on the open-source embeddings similarity search project <a href="https://milvus.io/">Milvus</a>.</p>
 <p><br/></p>
-<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Memisahkan ketergantungan proyek</h3><p>Kompilasi proyek biasanya melibatkan sejumlah besar ketergantungan komponen internal dan eksternal. Semakin banyak ketergantungan yang dimiliki sebuah proyek, semakin rumit untuk mengelolanya. Seiring dengan pertumbuhan perangkat lunak, akan semakin sulit dan mahal untuk mengubah atau menghapus ketergantungan, serta mengidentifikasi efek dari hal tersebut. Pemeliharaan rutin diperlukan selama proses pengembangan untuk memastikan dependensi berfungsi dengan baik. Pemeliharaan yang buruk, dependensi yang kompleks, atau dependensi yang salah dapat menyebabkan konflik yang memperlambat atau menghentikan pengembangan. Dalam praktiknya, hal ini dapat berarti pengunduhan sumber daya yang lambat, kegagalan akses yang berdampak negatif pada integrasi kode, dan banyak lagi. Memisahkan dependensi proyek dapat mengurangi cacat dan mengurangi waktu kompilasi, mempercepat pengujian sistem, dan menghindari hambatan yang tidak perlu pada pengembangan perangkat lunak.</p>
-<p>Oleh karena itu, kami merekomendasikan untuk memisahkan ketergantungan proyek Anda:</p>
+<h3 id="Decouple-the-dependencies-of-the-project" class="common-anchor-header">Decouple the dependencies of the project</h3><p>Project compilation usually involves a large number of internal and external component dependencies. The more dependencies a project has, the more complex it becomes to manage them. As software grows, it becomes more difficult and costly to change or remove dependencies, as well as identify the effects of doing so. Regular maintenance is required throughout the development process to ensure the dependencies functions properly.
+Poor maintenance, complex dependencies, or faulty dependencies can cause conflicts that slow or stall development. In practice, this can mean lagging resource downloads, access failures that negatively impact code integration, and more. Decoupling project dependencies can mitigate defects and reduce compile time, accelerating system testing and avoiding unnecessary drag on software development.</p>
+<p>Therefore, we recommend decouple dependencies your project:</p>
 <ul>
-<li>Pisahkan komponen dengan ketergantungan yang kompleks</li>
-<li>Gunakan repositori yang berbeda untuk manajemen versi.</li>
-<li>Gunakan file konfigurasi untuk mengelola informasi versi, opsi kompilasi, ketergantungan, dll.</li>
-<li>Tambahkan file konfigurasi ke pustaka komponen sehingga mereka diperbarui saat proyek beriterasi.</li>
+<li>Split up components with complex dependencies</li>
+<li>Use different repositories for version management.</li>
+<li>Use configuration files to manage version information, compilation options, dependencies, etc.</li>
+<li>Add the configuration files to the component libraries so that they are updated as the project iterates.</li>
 </ul>
-<p>Kompilasi<strong>optimasi antar komponen</strong> - Tarik dan kompilasi komponen yang relevan sesuai dengan ketergantungan dan opsi kompilasi yang dicatat dalam file konfigurasi. Tandai dan kemas hasil kompilasi biner dan berkas manifes yang sesuai, lalu unggah ke repositori pribadi Anda. Jika tidak ada perubahan yang dilakukan pada komponen atau komponen yang bergantung padanya, mainkan hasil kompilasi sesuai dengan file manifes. Untuk masalah seperti penundaan jaringan atau pustaka ketergantungan pihak ketiga yang tidak stabil, coba siapkan repositori internal atau gunakan repositori cermin.</p>
-<p>Untuk mengoptimalkan kompilasi antar komponen:</p>
-<p>1. Buat grafik hubungan ketergantungan - Gunakan file konfigurasi di pustaka komponen untuk membuat grafik hubungan ketergantungan. Gunakan hubungan ketergantungan untuk mengambil informasi versi (Cabang Git, Tag, dan ID komit Git) dan opsi kompilasi serta lebih banyak lagi dari komponen yang bergantung pada hulu dan hilir.</p>
+<p><strong>Compile optimization between components</strong> — Pull and compile the relevant component according to the dependencies and the compile options recorded in the configuration files. Tag and pack the binary compilation results and the corresponding manifest files, and then upload them to your private repository. If no change is made to a component or the components it depends on, playback its compilation results according to the manifest files. For issues such as network delays or unstable third-party dependency libraries, try setting up an internal repository or using mirrored repositories.</p>
+<p>To optimize compilation between components:</p>
+<p>1.Create dependency relationship graph — Use the configuration files in the component libraries to create dependency relationship graph. Use the dependency relationship to retrieve the version information (Git Branch, Tag, and Git commit ID) and compilation options and more of both upstream and downstream dependent components.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
-   </span> <span class="img-wrapper"> <span>1.png</span> </span></p>
-<p>2<strong>. Periksa ketergantungan</strong> - Menghasilkan peringatan untuk ketergantungan melingkar, konflik versi, dan masalah lain yang muncul di antara komponen.</p>
-<p>3<strong>. Ratakan depend</strong> ensi - Urutkan dependensi berdasarkan Depth First Search (DFS) dan gabungkan komponen dengan dependensi duplikat untuk membentuk grafik dependensi.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/1_949dffec32.png" alt="1.png" class="doc-image" id="1.png" />
+    <span>1.png</span>
+  </span>
+</p>
+<p>2.<strong>Check for dependencies</strong> — Generate alerts for circular dependencies, version conflicts, and other issues that arise between components.</p>
+<p>3.<strong>Flatten dependencies</strong> — Sort dependencies by Depth First Search (DFS) and front-merge components with duplicate dependencies to form a dependency graph.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>4. Gunakan algoritma MerkleTree untuk menghasilkan hash (Root Hash) yang berisi dependensi setiap komponen berdasarkan informasi versi, opsi kompilasi, dan banyak lagi. Dikombinasikan dengan informasi seperti nama komponen, algoritme ini membentuk tag unik untuk setiap komponen.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_45130c55e4.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>4.Use MerkleTree algorithm to generate a hash (Root Hash) containing dependencies of each component based on version information, compilation options, and more. Combined with information such as component name, the algorithm forms a unique tag for each component.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<p>5. Berdasarkan informasi tag unik komponen, periksa apakah arsip kompilasi yang sesuai ada di repo pribadi. Jika arsip kompilasi diambil, unzip untuk mendapatkan berkas manifes untuk pemutaran; jika tidak, kompilasi komponen, tandai berkas objek kompilasi dan berkas manifes yang dihasilkan, lalu unggah ke repo pribadi.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_6a4fcdf4e3.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<p>5.Based on the component’s unique tag information, check if a corresponding compilation archive exists in the private repo. If a compilation archive is retrieved, unzip it to get the manifest file for playback; if not, compile the component, mark up the generated compilation object files and manifest file, and upload them to the private repo.</p>
 <p><br/></p>
-<p><strong>Menerapkan pengoptimalan kompilasi di dalam komponen</strong> - Pilih alat cache kompilasi khusus bahasa untuk menyimpan file objek yang dikompilasi, lalu unggah dan simpan di repositori pribadi Anda. Untuk kompilasi C/C++, pilih alat cache kompilasi seperti CCache untuk menyimpan cache file perantara kompilasi C/C++, dan kemudian mengarsipkan cache CCache lokal setelah kompilasi. Alat cache kompilasi semacam itu hanya menyimpan file kode yang diubah satu per satu setelah kompilasi, dan menyalin komponen yang dikompilasi dari file kode yang tidak berubah sehingga mereka dapat langsung terlibat dalam kompilasi akhir. Optimalisasi kompilasi dalam komponen mencakup langkah-langkah berikut:</p>
+<p><strong>Implement compilation optimizations within components</strong> — Choose a language-specific compilation cache tool to cache the compiled object files, and upload and store them in your private repository. For C/C++ compilation, choose a compilation cache tool like CCache to cache the C/C++ compilation intermediate files, and then archive the local CCache cache after compilation. Such compile cache tools simply cache the changed code files one by one after compilation, and copy the compiled components of the unchanged code file so that they can be directly involved in the final compilation.
+Optimization of the compilation within components includes the following steps:</p>
 <ol>
-<li>Tambahkan dependensi kompilasi yang diperlukan ke Dockerfile. Gunakan Hadolint untuk melakukan pemeriksaan kepatuhan pada Dockerfile untuk memastikan bahwa citra sesuai dengan praktik terbaik Docker.</li>
-<li>Cerminkan lingkungan kompilasi sesuai dengan versi sprint proyek (versi + build), sistem operasi, dan informasi lainnya.</li>
-<li>Jalankan kontainer lingkungan kompilasi yang dicerminkan, dan transfer ID citra ke kontainer sebagai variabel lingkungan. Berikut ini contoh perintah untuk mendapatkan ID citra: "docker inspect ' - type=image' - format '{{.ID}}' repository/build-env:v0.1-centos7".</li>
-<li>Pilih alat cache kompilasi yang sesuai: Masukkan penampung Anda untuk mengintegrasikan dan mengkompilasi kode-kode Anda dan periksa di repositori pribadi Anda apakah cache kompilasi yang sesuai tersedia. Jika ya, unduh dan ekstrak ke direktori yang ditentukan. Setelah semua komponen dikompilasi, cache yang dihasilkan oleh alat compile cache akan dikemas dan diunggah ke repositori pribadi Anda berdasarkan versi proyek dan ID gambar.</li>
+<li>Add the necessary compilation dependencies to Dockerfile. Use Hadolint to perform compliance checks on Dockerfile to ensure that the image conforms to Docker’s best practices.</li>
+<li>Mirror the compilation environment according to the project sprint version (version + build), operating system, and other information.</li>
+<li>Run the mirrored compilation environment container, and transfer the image ID to the container as an environment variable. Here’s an example command for getting image ID: “docker inspect ‘ — type=image’ — format ‘{{.ID}}’ repository/build-env:v0.1-centos7”.</li>
+<li>Choose the appropriate compile cache tool: Enter your containter to integrate and compile your codes and check in your private repository if an appropriate compile cache exists. If yes, download and extract it to the specified directory. After all components are compiled, the cache generated by the compile cache tool is packaged and uploaded to your private repository based on the project version and image ID.</li>
 </ol>
 <p><br/></p>
-<h3 id="Further-compilation-optimization" class="common-anchor-header">Pengoptimalan kompilasi lebih lanjut</h3><p>Pada awalnya, kompilasi yang kami buat menghabiskan terlalu banyak ruang disk dan bandwidth jaringan, serta membutuhkan waktu yang lama untuk digunakan, sehingga kami mengambil langkah-langkah berikut ini:</p>
+<h3 id="Further-compilation-optimization" class="common-anchor-header">Further compilation optimization</h3><p>Our initially-built occupies too much disk space and network bandwidth, and takes a long time to deploy, we took the following measures:</p>
 <ol>
-<li>Pilih gambar dasar yang paling ramping untuk mengurangi ukuran gambar, misalnya alpine, busybox, dll.</li>
-<li>Kurangi jumlah lapisan gambar. Gunakan kembali dependensi sebanyak mungkin. Gabungkan beberapa perintah dengan "&amp;&amp;".</li>
-<li>Bersihkan produk antara selama pembuatan gambar.</li>
-<li>Gunakan cache gambar untuk membangun gambar sebanyak mungkin.</li>
+<li>Choose the leanest base image to reduce the image size, e.g. alpine, busybox, etc.</li>
+<li>Reduce the number of image layers. Reuse dependencies as much as possible. Merge multiple commands with “&amp;&amp;”.</li>
+<li>Clean up the intermediate products during image building.</li>
+<li>Use image cache to build image as much as possible.</li>
 </ol>
-<p>Saat proyek kami terus berjalan, penggunaan disk dan sumber daya jaringan mulai melonjak seiring bertambahnya cache kompilasi, sementara beberapa cache kompilasi kurang dimanfaatkan. Kami kemudian melakukan penyesuaian berikut ini:</p>
-<p>Bersihkan<strong>file cache secara teratur</strong> - Periksa repositori pribadi secara teratur (menggunakan skrip misalnya), dan bersihkan file cache yang tidak berubah selama beberapa saat atau tidak banyak diunduh.</p>
-<p>Tembolok<strong>kompilasi secara selektif</strong> - Hanya tembolok kompilasi yang membutuhkan sumber daya, dan lewati tembolok kompilasi yang tidak membutuhkan banyak sumber daya.</p>
+<p>As our project continues to progress, disk usage and network resource began to soar as the compilation cache increases, while some of the compilation caches are underutilized. We then made the following adjustments:</p>
+<p><strong>Regularly clean up cache files</strong> — Regularly check the private repository (using scripts for example), and clean up cache files that have not changed for a while or have not been downloaded much.</p>
+<p><strong>Selective compile caching</strong> — Only cache resource-demanding compiles, and skip caching compiles that do not require much resource.</p>
 <p><br/></p>
-<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Memanfaatkan pengujian dalam kontainer untuk mengurangi kesalahan, meningkatkan stabilitas dan keandalan</h3><p>Kode harus dikompilasi di lingkungan yang berbeda, yang melibatkan berbagai sistem operasi (misalnya CentOS dan Ubuntu), ketergantungan yang mendasari (misalnya GCC, LLVM, dan CUDA), dan arsitektur perangkat keras tertentu. Kode yang berhasil dikompilasi di lingkungan tertentu akan gagal di lingkungan yang berbeda. Dengan menjalankan pengujian di dalam kontainer, proses pengujian menjadi lebih cepat dan akurat.</p>
-<p>Kontainerisasi memastikan bahwa lingkungan pengujian konsisten, dan aplikasi bekerja seperti yang diharapkan. Pendekatan pengujian dalam kontainer mengemas pengujian sebagai kontainer gambar dan membangun lingkungan pengujian yang benar-benar terisolasi. Penguji kami menemukan bahwa pendekatan ini sangat berguna, yang pada akhirnya mengurangi waktu kompilasi sebanyak 60%.</p>
-<p><strong>Memastikan lingkungan kompilasi yang konsisten</strong> - Karena produk yang dikompilasi sensitif terhadap perubahan lingkungan sistem, kesalahan yang tidak diketahui dapat terjadi pada sistem operasi yang berbeda. Kami harus menandai dan mengarsipkan cache produk yang dikompilasi sesuai dengan perubahan lingkungan kompilasi, tetapi sulit untuk dikategorikan. Jadi kami memperkenalkan teknologi kontainerisasi untuk menyatukan lingkungan kompilasi untuk menyelesaikan masalah tersebut.</p>
+<h3 id="Leveraging-containerized-testing-to-reduce-errors-improve-stability-and-reliability" class="common-anchor-header">Leveraging containerized testing to reduce errors, improve stability and reliability</h3><p>Codes have to be compiled in different environments, which involve variety of operating systems (e.g. CentOS and Ubuntu), underlying dependencies (e.g. GCC, LLVM, and CUDA), and specific hardware architectures. Code that successfully compiles under a specific environment fail in a different environment. By running tests inside containers, the testing process becomes faster and more accurate.</p>
+<p>Containerization ensures that the test environment is consistent, and that an application is working as expected. The containerized testing approach packages tests as image containers and builds a truly-isolated test environment. Our testers found that this approach pretty useful, which ended up reducing compile times by as much as 60%.</p>
+<p><strong>Ensure a consistent compile environment</strong> — As the compiled products are sensitive to changes in the system environment, unknown errors may occur in different operating systems. We have to tag and archive the compiled product cache according to the changes in the compile environment, but they are difficult to categorize. So we introduced containerization technology to unify the compile environment to solve such issues.</p>
 <p><br/></p>
-<h3 id="Conclusion" class="common-anchor-header">Kesimpulan</h3><p>Dengan menganalisis ketergantungan proyek, artikel ini memperkenalkan berbagai metode untuk pengoptimalan kompilasi di antara dan di dalam komponen, memberikan ide dan praktik terbaik untuk membangun integrasi kode berkelanjutan yang stabil dan efisien. Metode-metode ini membantu mengatasi integrasi kode yang lambat yang disebabkan oleh ketergantungan yang kompleks, menyatukan operasi di dalam kontainer untuk memastikan konsistensi lingkungan, dan meningkatkan efisiensi kompilasi melalui pemutaran hasil kompilasi dan penggunaan alat cache kompilasi untuk menyimpan hasil kompilasi antara.</p>
-<p>Praktik-praktik yang disebutkan di atas telah mengurangi waktu kompilasi proyek sebesar rata-rata 60%, sehingga meningkatkan efisiensi integrasi kode secara keseluruhan. Ke depannya, kami akan terus memparalelkan kompilasi antara dan di dalam komponen untuk mengurangi waktu kompilasi lebih lanjut.</p>
+<h3 id="Conclusion" class="common-anchor-header">Conclusion</h3><p>By analyzing project dependencies, this article introduces different methods for compilation optimization between and within components, providing ideas and best practices for building stable and efficient continuous code integration. These methods helped solve slow code integration caused by complex dependencies, unify operations inside the container to ensure the consistency of the environment, and improve compilation efficiency through the playback of the compilation results and the use of compilation cache tools to cache the intermediate compilation results.</p>
+<p>This above-mentioned practices have reduced the compile time of the project by 60% on average, greatly improving the overall efficiency of code integration. Moving forward, we will continue parallelizing compilation between and within components to further reduce compilation times.</p>
 <p><br/></p>
-<p><em>Sumber-sumber berikut digunakan untuk artikel ini:</em></p>
+<p><em>The following sources were used for this article:</em></p>
 <ul>
-<li>"Memisahkan Pohon Sumber ke dalam Komponen Tingkat Pembuatan"</li>
-<li>"<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Faktor-faktor yang perlu dipertimbangkan ketika menambahkan dependensi pihak ketiga ke dalam sebuah proyek</a>"</li>
-<li>"<a href="https://queue.acm.org/detail.cfm?id=3344149">Ketergantungan Perangkat Lunak yang Bertahan</a>"</li>
-<li>"<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Memahami Ketergantungan: Sebuah Studi tentang Tantangan Koordinasi dalam Pengembangan Perangkat Lunak</a>"</li>
+<li>“Decoupling Source Trees into Build-Level Components”</li>
+<li>“<a href="https://dev.to/brpaz/factors-to-consider-when-adding-third-party-dependencies-to-a-project-46hf">Factors to consider when adding third party dependencies to a project</a>”</li>
+<li>“<a href="https://queue.acm.org/detail.cfm?id=3344149">Surviving Software Dependencies</a>”</li>
+<li>“<a href="https://www.cc.gatech.edu/~beki/t1.pdf">Understanding Dependencies: A Study of the Coordination Challenges in Software Development</a>”</li>
 </ul>
 <p><br/></p>
-<h3 id="About-the-author" class="common-anchor-header">Tentang penulis</h3><p>Zhifeng Zhang adalah insinyur senior DevOps di Zilliz.com yang bekerja di Milvus, database vektor sumber terbuka, dan instruktur resmi universitas perangkat lunak sumber terbuka LF di Tiongkok. Ia menerima gelar sarjana di bidang Internet of Things (IOT) dari Institut Rekayasa Perangkat Lunak Guangzhou. Dia menghabiskan karirnya dengan berpartisipasi dan memimpin proyek-proyek di bidang CI/CD, DevOps, manajemen infrastruktur TI, perangkat Cloud-Native, kontainerisasi, dan pengoptimalan proses kompilasi.</p>
+<h3 id="About-the-author" class="common-anchor-header">About the author</h3><p>Zhifeng Zhang is a senior DevOps engineer at Zilliz.com working on Milvus, an open-source vector database, and authorized instructor of the LF open-source software university in China. He received his bachelor’s degree in Internet of Things (IOT) from Software Engineering Institute of Guangzhou. He spends his career participating in and leading projects in the area of CI/CD, DevOps, IT infrastructure management, Cloud-Native toolkit, containerization, and compilation process optimization.</p>

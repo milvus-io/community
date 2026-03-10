@@ -1,18 +1,18 @@
 ---
 id: 2021-10-10-milvus-helps-analyze-videos.md
-title: Deteção de objectos
+title: Object detection
 author: Shiyu Chen
 date: 2021-10-11T00:00:00.000Z
-desc: Saiba como Milvus potencia a análise de IA de conteúdos de vídeo.
+desc: Learn how Milvus powers the AI analysis of video contents.
 cover: assets.zilliz.com/Who_is_it_e9d4510ace.png
 tag: Scenarios
 canonicalUrl: 'https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently'
 ---
-<custom-h1>Criação de um sistema de análise de vídeo com a base de dados vetorial Milvus</custom-h1><p><em>Shiyu Chen, engenheira de dados na Zilliz, licenciou-se em Ciências Informáticas na Universidade de Xidian. Desde que se juntou à Zilliz, tem vindo a explorar soluções para o Milvus em vários domínios, como a análise de áudio e vídeo, a recuperação de fórmulas de moléculas, etc., o que enriqueceu bastante os cenários de aplicação da comunidade. Atualmente, está a explorar mais soluções interessantes. No seu tempo livre, adora desporto e leitura.</em></p>
-<p>Quando estava a ver o <em>Free Guy</em> no fim de semana passado, senti que já tinha visto o ator que faz de Buddy, o segurança, algures, mas não me lembrava de nenhum dos seus trabalhos. A minha cabeça estava cheia de "quem é este gajo?". Tinha a certeza de ter visto aquela cara e estava a esforçar-me por me lembrar do seu nome. Um caso semelhante é o de uma vez que vi o ator principal de um vídeo a beber uma bebida de que gostava muito, mas acabei por não me lembrar do nome da marca.</p>
-<p>A resposta estava na ponta da língua, mas o meu cérebro estava completamente bloqueado.</p>
-<p>O fenómeno da ponta da língua (TOT) deixa-me louco quando vejo filmes. Se ao menos existisse um motor de pesquisa de imagens invertido para vídeos que me permitisse encontrar vídeos e analisar o seu conteúdo. Antes, criei um <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">motor de pesquisa de imagens invertido utilizando o Milvus</a>. Considerando que a análise de conteúdos de vídeo se assemelha de alguma forma à análise de imagens, decidi criar um motor de análise de conteúdos de vídeo com base no Milvus.</p>
-<h2 id="Object-detection" class="common-anchor-header">Deteção de objectos<button data-href="#Object-detection" class="anchor-icon" translate="no">
+<custom-h1>Building a Video Analysis System with Milvus Vector Database</custom-h1><p><em>Shiyu Chen, a data engineer at Zilliz, graduated from Xidian University with a degree in Computer Science. Since joining Zilliz, she has been exploring solutions for Milvus in various fields, such as audio and video analysis, molecule formula retrieval, etc., which has greatly enriched the application scenarios of the community. She is currently exploring more interesting solutions. In her spare time, she loves sports and reading.</em></p>
+<p>When I was watching <em>Free Guy</em> last weekend, I felt that I’d seen the actor who plays Buddy, the security guard, somewhere before, yet couldn’t recall any of his works. My head was stuffed with “who’s this guy?” I was sure about having seen that face and was trying so hard to remember his name. A similar case is that once I saw the leading actor in a video having a drink I used to like a lot, but I ended up failing to recall the brand name.</p>
+<p>The answer was on the tip of my tongue, but my brain felt completely stuck.</p>
+<p>The tip of the tongue (TOT) phenomenon drives me crazy when watching movies. If only there was a reverse image search engine for videos that enables me to find videos and analyze video content. Before, I built a <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/reverse_image_search/quick_deploy">reverse image search engine using Milvus</a>. Considering that video content analysis somehow resembles image analysis, I decided to build a video content analysis engine based on Milvus.</p>
+<h2 id="Object-detection" class="common-anchor-header">Object detection<button data-href="#Object-detection" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,26 +27,26 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Overview" class="common-anchor-header">Visão geral</h3><p>Antes de serem analisados, os objectos de um vídeo devem ser detectados. Detetar objectos num vídeo de forma eficaz e precisa é o principal desafio da tarefa. É também uma tarefa importante para aplicações como o piloto automático, dispositivos portáteis e IoT.</p>
-<p>Desenvolvidos a partir de algoritmos tradicionais de processamento de imagem para redes neurais profundas (DNN), os principais modelos actuais para deteção de objectos incluem R-CNN, FRCNN, SSD e YOLO. O sistema de análise de vídeo de aprendizagem profunda baseado em Milvus apresentado neste tópico pode detetar objectos de forma inteligente e rápida.</p>
-<h3 id="Implementation" class="common-anchor-header">Implementação</h3><p>Para detetar e reconhecer objectos num vídeo, o sistema deve, em primeiro lugar, extrair fotogramas de um vídeo e detetar objectos nas imagens dos fotogramas utilizando a deteção de objectos; em segundo lugar, extrair vectores de caraterísticas dos objectos detectados e, por último, analisar o objeto com base nos vectores de caraterísticas.</p>
+    </button></h2><h3 id="Overview" class="common-anchor-header">Overview</h3><p>Before being analyzed, objects in a video should be detected first. Detecting objects in a video effectively and accurately is the main challenge of the task. It is also an important task for applications such as autopilot, wearable devices, and IoT.</p>
+<p>Developed from traditional image processing algorithms to deep neural networks (DNN), today’s mainstream models for object detection include R-CNN, FRCNN, SSD, and YOLO. The Milvus-based deep learning video analysis system introduced in this topic can detect objects intelligently and quickly.</p>
+<h3 id="Implementation" class="common-anchor-header">Implementation</h3><p>To detect and recognize objects in a video, the system should first extract frames from a video and detect objects in the frame images using object detection, secondly, extract feature vectors from detected objects, and lastly, analyze the object based on the feature vectors.</p>
 <ul>
-<li>Extração de fotogramas</li>
+<li>Frame extraction</li>
 </ul>
-<p>A análise de vídeo é convertida em análise de imagem através da extração de fotogramas. Atualmente, a tecnologia de extração de fotogramas está muito madura. Programas como o FFmpeg e o OpenCV suportam a extração de fotogramas em intervalos específicos. Este artigo apresenta como extrair fotogramas de um vídeo a cada segundo utilizando o OpenCV.</p>
+<p>Video analysis is converted to image analysis using frame extraction. Currently, frame extraction technology is very mature. Programs such as FFmpeg and OpenCV support extracting frames at specified intervals. This article introduces how to extract frames from a video every second using OpenCV.</p>
 <ul>
-<li>Deteção de objectos</li>
+<li>Object detection</li>
 </ul>
-<p>A deteção de objectos consiste em encontrar objectos nos fotogramas extraídos e extrair imagens dos objectos de acordo com as suas posições. Como se pode ver nas figuras seguintes, foram detectados uma bicicleta, um cão e um carro. Este tópico apresenta a forma de detetar objectos utilizando o YOLOv3, que é normalmente utilizado para a deteção de objectos.</p>
+<p>Object detection is about finding objects in extracted frames and extracting screenshots of the objects according to their positions. As shown in the following figures, a bike, a dog, and a car were detected. This topic introduces how to detect objects using YOLOv3, which is commonly used for object detection.</p>
 <ul>
-<li>Extração de caraterísticas</li>
+<li>Feature extraction</li>
 </ul>
-<p>A extração de caraterísticas refere-se à conversão de dados não estruturados, que são difíceis de reconhecer pelas máquinas, em vectores de caraterísticas. Por exemplo, as imagens podem ser convertidas em vectores de caraterísticas multidimensionais utilizando modelos de aprendizagem profunda. Atualmente, os modelos de IA de reconhecimento de imagem mais populares incluem VGG, GNN e ResNet. Este tópico apresenta como extrair caraterísticas de objectos detectados utilizando o ResNet-50.</p>
+<p>Feature extraction refers to converting unstructured data, which is difficult for machines to recognize, to feature vectors. For example, images can be converted to multi-dimensional feature vectors using deep learning models. Currently, the most popular image recognition AI models include VGG, GNN, and ResNet. This topic introduces how to extract features from detected objects using ResNet-50.</p>
 <ul>
-<li>Análise de vectores</li>
+<li>Vector analysis</li>
 </ul>
-<p>Os vectores de caraterísticas extraídos são comparados com os vectores da biblioteca, sendo devolvidas as informações correspondentes aos vectores mais semelhantes. Para conjuntos de dados de vectores de caraterísticas em grande escala, o cálculo é um enorme desafio. Este tópico apresenta a forma de analisar vectores de caraterísticas utilizando o Milvus.</p>
-<h2 id="Key-technologies" class="common-anchor-header">Tecnologias-chave<button data-href="#Key-technologies" class="anchor-icon" translate="no">
+<p>Extracted feature vectors are compared with library vectors, and the corresponding information to the most similar vectors is returned. For large-scale feature vector datasets, calculation is a huge challenge. This topic introduces how to analyze feature vectors using Milvus.</p>
+<h2 id="Key-technologies" class="common-anchor-header">Key technologies<button data-href="#Key-technologies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,8 +61,8 @@ canonicalUrl: 'https://zilliz.com/blog/milvus-helps-analyze-videos-intelligently
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="OpenCV" class="common-anchor-header">OpenCV</h3><p>A Open Source Computer Vision Library (OpenCV) é uma biblioteca de visão computacional multiplataforma que fornece muitos algoritmos universais para processamento de imagem e visão computacional. O OpenCV é normalmente utilizado no domínio da visão computacional.</p>
-<p>O exemplo seguinte mostra como capturar fotogramas de vídeo em intervalos especificados e guardá-los como imagens utilizando o OpenCV com Python.</p>
+    </button></h2><h3 id="OpenCV" class="common-anchor-header">OpenCV</h3><p>Open Source Computer Vision Library (OpenCV) is a cross-platform computer vision library, which provides many universal algorithms for image processing and computer vision. OpenCV is commonly used in the computer vision field.</p>
+<p>The following example shows how to capture video frames at specified intervals and save them as images using OpenCV with Python.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> cv2 
 <span class="hljs-built_in">cap</span> = cv2.VideoCapture(file_path)   
 framerate = <span class="hljs-built_in">cap</span>.get(cv2.CAP_PROP_FPS)   
@@ -70,16 +70,16 @@ allframes = <span class="hljs-type">int</span>(cv2.VideoCapture.get(<span cl
 success, image = <span class="hljs-built_in">cap</span>.read() 
 cv2.imwrite(file_name, image)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="YOLOv3" class="common-anchor-header">YOLOv3</h3><p>You Only Look Once, Version 3 (YOLOv3 [5]) é um algoritmo de deteção de objectos de uma fase proposto nos últimos anos. Em comparação com os algoritmos tradicionais de deteção de objectos com a mesma precisão, o YOLOv3 é duas vezes mais rápido. O YOLOv3 mencionado neste tópico é a versão melhorada do PaddlePaddle [6]. Utiliza múltiplos métodos de otimização com uma maior velocidade de inferência.</p>
-<h3 id="ResNet-50" class="common-anchor-header">ResNet-50</h3><p>A ResNet [7] é a vencedora do ILSVRC 2015 na classificação de imagens devido à sua simplicidade e praticidade. Como base de muitos métodos de análise de imagens, o ResNet prova ser um modelo popular especializado em deteção, segmentação e reconhecimento de imagens.</p>
-<h3 id="Milvus" class="common-anchor-header">Milvus</h3><p><a href="https://milvus.io/">O Milvus</a> é uma base de dados vetorial de código aberto, nativa da nuvem, criada para gerir vectores de incorporação gerados por modelos de aprendizagem automática e redes neurais. Ele é amplamente usado em cenários como visão computacional, processamento de linguagem natural, química computacional, sistemas de recomendação personalizados e muito mais.</p>
-<p>Os procedimentos seguintes descrevem o funcionamento do Milvus.</p>
+<h3 id="YOLOv3" class="common-anchor-header">YOLOv3</h3><p>You Only Look Once, Version 3 (YOLOv3 [5]) is a one-stage object detection algorithm proposed in recent years. Compared to the traditional object detection algorithms with the same accuracy, YOLOv3 is twice as fast. YOLOv3 mentioned in this topic is the enhanced version from PaddlePaddle [6]. It uses multiple optimization methods with a higher inference speed.</p>
+<h3 id="ResNet-50" class="common-anchor-header">ResNet-50</h3><p>ResNet [7] is the winner of ILSVRC 2015 in image classification because of its simplicity and practicality. As the basis of many image analysis methods, ResNet proves to be a popular model specialized in image detection, segmentation, and recognition.</p>
+<h3 id="Milvus" class="common-anchor-header">Milvus</h3><p><a href="https://milvus.io/">Milvus</a> is a cloud-native, open-source vector database built to manage embedding vectors generated by machine learning models and neural networks. It is widely used in scenarios such as computer vision, natural language processing, computational chemistry, personalized recommender systems, and more.</p>
+<p>The following procedures describe how Milvus works.</p>
 <ol>
-<li>Os dados não estruturados são convertidos em vectores de caraterísticas utilizando modelos de aprendizagem profunda e são importados para o Milvus.</li>
-<li>O Milvus armazena e indexa os vectores de caraterísticas.</li>
-<li>O Milvus devolve os vectores mais semelhantes ao vetor consultado pelos utilizadores.</li>
+<li>Unstructured data is converted to feature vectors by using deep learning models and is imported to Milvus.</li>
+<li>Milvus stores and indexes the feature vectors.</li>
+<li>Milvus returns the most similar vectors to the vector queried by users.</li>
 </ol>
-<h2 id="Deployment" class="common-anchor-header">Implementação<button data-href="#Deployment" class="anchor-icon" translate="no">
+<h2 id="Deployment" class="common-anchor-header">Deployment<button data-href="#Deployment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,20 +94,20 @@ cv2.imwrite(file_name, image)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agora já sabe o que são os sistemas de análise de vídeo baseados em Milvus. O sistema é composto principalmente por duas partes, como mostra a figura seguinte.</p>
+    </button></h2><p>Now you have some understanding of Milvus-based video analysis systems. The system mainly consists of two parts, as shown in the following figure.</p>
 <ul>
-<li><p>As setas vermelhas indicam o processo de importação de dados. Utilize o ResNet-50 para extrair vectores de caraterísticas do conjunto de dados de imagens e importe os vectores de caraterísticas para o Milvus.</p></li>
-<li><p>As setas pretas indicam o processo de análise de vídeo. Em primeiro lugar, extrair fotogramas de um vídeo e guardar os fotogramas como imagens. Em segundo lugar, detetar e extrair objectos nas imagens utilizando o YOLOv3. Em seguida, utiliza o ResNet-50 para extrair vectores de caraterísticas das imagens. Por fim, o Milvus procura e devolve as informações dos objectos com os vectores de caraterísticas correspondentes.</p></li>
+<li><p>The red arrows indicate the data import process. Use ResNet-50 to extract feature vectors from the image dataset and import the feature vectors to Milvus.</p></li>
+<li><p>The black arrows indicate the video analysis process. First, extract frames from a video and save the frames as images. Second, detect and extract objects in the images using YOLOv3. Then, use ResNet-50 to extract feature vectors from the images. Lastly, Milvus searches and returns the information of the objects with the corresponding feature vectors.</p></li>
 </ul>
-<p>Para mais informações, consulte <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search/object_detection">Milvus Bootcamp: Sistema de deteção de objectos de vídeo</a>.</p>
-<p><strong>Importação de dados</strong></p>
-<p>O processo de importação de dados é simples. Converta os dados em vectores de 2.048 dimensões e importe os vectores para o Milvus.</p>
+<p>For more information, see <a href="https://github.com/milvus-io/bootcamp/tree/master/solutions/video_similarity_search/object_detection">Milvus Bootcamp: Video Object Detection System</a>.</p>
+<p><strong>Data import</strong></p>
+<p>The data import process is simple. Convert the data into 2,048-dimensional vectors and import the vectors into Milvus.</p>
 <pre><code translate="no" class="language-python">vector = image_encoder.execute(filename)
 entities = [vector]
 collection.insert(data=entities)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Análise de vídeo</strong></p>
-<p>Tal como referido anteriormente, o processo de análise de vídeo inclui a captura de fotogramas de vídeo, a deteção de objectos em cada fotograma, a extração de vectores dos objectos, o cálculo da similaridade dos vectores com a métrica da distância euclidiana (L2) e a pesquisa de resultados utilizando o Milvus.</p>
+<p><strong>Video analysis</strong></p>
+<p>As introduced above, the video analysis process includes capturing video frames, detecting objects in each frame, extracting vectors from the objects, calculating vector similarity with Euclidean distance (L2) metrics, and searching for results using Milvus.</p>
 <pre><code translate="no" class="language-python">images = extract_frame(filename, 1, prefix)   
 detector = Detector()   
 run(detector, DATA_PATH)       
@@ -115,7 +115,7 @@ vectors = get_object_vector(image_encoder, DATA_PATH)
 search_params = {<span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;L2&quot;</span>, <span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: 10}}
 results = collection.search(vectors, param=search_params, <span class="hljs-built_in">limit</span>=10)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,10 +130,10 @@ results = collection.search(vectors, param=search_params, <span class="hljs-buil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Atualmente, mais de 80% dos dados não estão estruturados. Com o rápido desenvolvimento da IA, foi desenvolvido um número crescente de modelos de aprendizagem profunda para analisar dados não estruturados. Tecnologias como a deteção de objectos e o processamento de imagens alcançaram grandes avanços tanto no meio académico como na indústria. Graças a estas tecnologias, cada vez mais plataformas de IA satisfazem requisitos práticos.</p>
-<p>O sistema de análise de vídeo abordado neste tópico foi criado com o Milvus, que pode analisar rapidamente conteúdos de vídeo.</p>
-<p>Sendo uma base de dados vetorial de código aberto, o Milvus suporta vectores de caraterísticas extraídos através de vários modelos de aprendizagem profunda. Integrado com bibliotecas como Faiss, NMSLIB e Annoy, o Milvus fornece um conjunto de APIs intuitivas, suportando a mudança de tipos de índice de acordo com os cenários. Além disso, o Milvus suporta filtragem escalar, o que aumenta a taxa de recuperação e a flexibilidade da pesquisa. O Milvus tem sido aplicado em muitas áreas, como processamento de imagem, visão computacional, processamento de linguagem natural, reconhecimento de fala, sistema de recomendação e descoberta de novos medicamentos.</p>
-<h2 id="References" class="common-anchor-header">Referências<button data-href="#References" class="anchor-icon" translate="no">
+    </button></h2><p>Currently, more than 80% of the data is unstructured. With the rapid development of AI, an increasing number of deep learning models have been developed for analyzing unstructured data. Technologies such as object detection and image processing have achieved great breakthroughs in both academia and industry. Empowered by these technologies, more and more AI platforms have fulfilled practical requirements.</p>
+<p>The video analysis system discussed in this topic is built with Milvus, which can quickly analyze video content.</p>
+<p>As an open-source vector database, Milvus supports feature vectors extracted using various deep learning models. Integrated with libraries such as Faiss, NMSLIB, and Annoy, Milvus provides a set of intuitive APIs, supporting switching index types according to scenarios. Additionally, Milvus supports scalar filtering, which increases recall rate and search flexibility. Milvus has been applied to many fields such as image processing, computer vision, natural language processing, speech recognition, recommender system, and new drug discovery.</p>
+<h2 id="References" class="common-anchor-header">References<button data-href="#References" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,10 +148,10 @@ results = collection.search(vectors, param=search_params, <span class="hljs-buil
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>[1] A. D. Bagdanov, L. Ballan, M. Bertini, A. Del Bimbo. "Correspondência e recuperação de marcas comerciais em bases de dados de vídeos desportivos". Actas do workshop internacional sobre Workshop sobre recuperação de informação multimédia, ACM, 2007. https://www.researchgate.net/publication/210113141_Trademark_matching_and_retrieval_in_sports_video_databases</p>
-<p>[2] J. Kleban, X. Xie, W.-Y. Ma. "Spatial pyramid mining for logo detection in natural scenes" [Extração de pirâmides espaciais para deteção de logótipos em cenas naturais]. Conferência Internacional do IEEE, 2008. https://ieeexplore.ieee.org/document/4607625</p>
-<p>[3] R. Boia, C. Florea, L. Florea, R. Dogaru. "Localização e reconhecimento de logótipos em imagens naturais utilizando gráficos de classes homográficas". Machine Vision and Applications 27 (2), 2016. https://link.springer.com/article/10.1007/s00138-015-0741-7</p>
-<p>[4] R. Boia, C. Florea, L. Florea. "Aglomeração de asift elíptico em protótipo de classe para deteção de logotipo". BMVC, 2015. http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=5C87F52DE38AB0C90F8340DFEBB841F7?doi=10.1.1.707.9371&amp;rep=rep1&amp;type=pdf</p>
+    </button></h2><p>[1] A. D. Bagdanov, L. Ballan, M. Bertini, A. Del Bimbo. “Trademark matching and retrieval in sports video databases.” Proceedings of the international workshop on Workshop on multimedia information retrieval, ACM, 2007. https://www.researchgate.net/publication/210113141_Trademark_matching_and_retrieval_in_sports_video_databases</p>
+<p>[2] J. Kleban, X. Xie, W.-Y. Ma. “Spatial pyramid mining for logo detection in natural scenes.” IEEE International Conference, 2008. https://ieeexplore.ieee.org/document/4607625</p>
+<p>[3] R. Boia, C. Florea, L. Florea, R. Dogaru. “Logo localization and recognition in natural images using homographic class graphs.” Machine Vision and Applications 27 (2), 2016. https://link.springer.com/article/10.1007/s00138-015-0741-7</p>
+<p>[4] R. Boia, C. Florea, L. Florea. “Elliptical asift agglomeration in class prototype for logo detection.” BMVC, 2015. http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=5C87F52DE38AB0C90F8340DFEBB841F7?doi=10.1.1.707.9371&amp;rep=rep1&amp;type=pdf</p>
 <p>[5] https://arxiv.org/abs/1804.02767</p>
 <p>[6] https://paddlepaddle.org.cn/modelbasedetail/yolov3</p>
 <p>[7] https://arxiv.org/abs/1512.03385</p>

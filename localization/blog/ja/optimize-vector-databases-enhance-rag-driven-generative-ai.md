@@ -1,10 +1,13 @@
 ---
 id: optimize-vector-databases-enhance-rag-driven-generative-ai.md
-title: ベクターデータベースを最適化し、RAG駆動型生成AIを強化する
+title: 'Optimize Vector Databases, Enhance RAG-Driven Generative AI'
 author: 'Cathy Zhang, Dr. Malini Bhandaru'
 date: 2024-05-13T00:00:00.000Z
 desc: >-
-  この記事では、ベクターデータベースとそのベンチマークフレームワーク、さまざまな側面に取り組むためのデータセット、パフォーマンス分析に使用するツールについて詳しく説明します。
+  In this article, you’ll learn more about vector databases and their
+  benchmarking frameworks, datasets to tackle different aspects, and the tools
+  used for performance analysis — everything you need to start optimizing vector
+  databases.
 cover: >-
   assets.zilliz.com/Optimize_Vector_Databases_Enhance_RAG_Driven_Generative_AI_6e3b370f25.png
 tag: Engineering
@@ -15,21 +18,22 @@ recommend: true
 canonicalUrl: >-
   https://medium.com/intel-tech/optimize-vector-databases-enhance-rag-driven-generative-ai-90c10416cb9c
 ---
-<p><em>この投稿は<a href="https://medium.com/intel-tech/optimize-vector-databases-enhance-rag-driven-generative-ai-90c10416cb9c">IntelのMedium Channelに</a>掲載されたもので、許可を得てここに再掲載しています。</em></p>
+<p><em>This post was originally published on <a href="https://medium.com/intel-tech/optimize-vector-databases-enhance-rag-driven-generative-ai-90c10416cb9c">Intel’s Medium Channel</a> and is reposted here with permission.</em></p>
 <p><br></p>
-<p>RAG使用時にベクターデータベースを最適化する2つの方法</p>
+<p>Two methods to optimize your vector database when using RAG</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://miro.medium.com/v2/resize:fit:1400/1*FRWBVwOHPYFDIVTp_ylZNQ.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>写真：<a href="https://unsplash.com/@ilyapavlov?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash">Ilya Pavlov</a>on<a href="https://unsplash.com/photos/monitor-showing-java-programming-OqtafYT5kTw?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash">Unsplash</a></p>
-<p>Cathy ZhangとDr. Malini Bhandaruによる寄稿：Lin Yang、Changyan Liu</p>
-<p>生成AI（GenAI）モデルは、私たちの日常生活で急激に採用されつつあり、外部ソースから事実をフェッチすることによって応答精度と信頼性を高めるために使用される技術である<a href="https://www.techtarget.com/searchenterpriseai/definition/retrieval-augmented-generation">検索拡張生成（RAG</a>）によって改善されつつある。RAGは、通常の<a href="https://www.techtarget.com/whatis/definition/large-language-model-LLM">大規模言語モデル（LLM）が</a>コンテキストを理解し、ベクトルとして保存された非構造化データの巨大なデータベースを活用することで<a href="https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)">幻覚を</a>減らすのを助ける。</p>
-<p>RAGは、より多くの文脈情報を取得し、より良い応答を生成するのに役立つが、依拠するベクトル・データベースは、豊富なコンテンツを提供するためにますます大きくなっている。兆パラメータのLLMが目前に迫っているように、数十億のベクトル・データベースもそう遠くはない。最適化エンジニアとして、私たちはベクターデータベースのパフォーマンスを向上させ、データのロードを高速化し、インデックスの作成を高速化することで、新しいデータが追加されても検索速度を確保できないかと考えました。そうすることで、ユーザーの待ち時間を短縮できるだけでなく、RAGベースのAIソリューションをもう少し持続可能なものにすることができます。</p>
-<p>この記事では、ベクターデータベースとそのベンチマークフレームワーク、さまざまな側面に取り組むためのデータセット、パフォーマンス分析に使用するツールについて詳しく説明します。また、パフォーマンスと持続可能性に影響を与える最適化の旅でインスピレーションを得るために、人気のある2つのベクトルデータベースソリューションにおける最適化の成果を紹介します。</p>
-<h2 id="Understanding-Vector-Databases" class="common-anchor-header">ベクトルデータベースを理解する<button data-href="#Understanding-Vector-Databases" class="anchor-icon" translate="no">
+<p>Photo by <a href="https://unsplash.com/@ilyapavlov?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash">Ilya Pavlov</a> on <a href="https://unsplash.com/photos/monitor-showing-java-programming-OqtafYT5kTw?utm_content=creditCopyText&amp;utm_medium=referral&amp;utm_source=unsplash">Unsplash</a></p>
+<p>By Cathy Zhang and Dr. Malini Bhandaru
+Contributors: Lin Yang and Changyan Liu</p>
+<p>Generative AI (GenAI) models, which are seeing exponential adoption in our daily lives, are being improved by <a href="https://www.techtarget.com/searchenterpriseai/definition/retrieval-augmented-generation">retrieval-augmented generation (RAG)</a>, a technique used to enhance response accuracy and reliability by fetching facts from external sources. RAG helps a regular <a href="https://www.techtarget.com/whatis/definition/large-language-model-LLM">large language model (LLM)</a> understand context and reduce <a href="https://en.wikipedia.org/wiki/Hallucination_(artificial_intelligence)">hallucinations</a> by leveraging a giant database of unstructured data stored as vectors — a mathematical presentation that helps capture context and relationships between data.</p>
+<p>RAG helps to retrieve more contextual information and thus generate better responses, but the vector databases they rely on are getting ever larger to provide rich content to draw upon. Just as trillion-parameter LLMs are on the horizon, vector databases of billions of vectors are not far behind. As optimization engineers, we were curious to see if we could make vector databases more performant, load data faster, and create indices faster to ensure retrieval speed even as new data is added. Doing so would not only result in reduced user wait time, but also make RAG-based AI solutions a little more sustainable.</p>
+<p>In this article, you’ll learn more about vector databases and their benchmarking frameworks, datasets to tackle different aspects, and the tools used for performance analysis — everything you need to start optimizing vector databases. We will also share our optimization achievements on two popular vector database solutions to inspire you on your optimization journey of performance and sustainability impact.</p>
+<h2 id="Understanding-Vector-Databases" class="common-anchor-header">Understanding Vector Databases<button data-href="#Understanding-Vector-Databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,19 +48,19 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>データが構造化された方法で保存される従来のリレーショナルデータベースや非リレーショナルデータベースとは異なり、ベクトルデータベースには、埋め込み関数または変換関数を使用して構築されたベクトルと呼ばれる個々のデータ項目の数学的表現が含まれます。ベクトルは一般的に特徴や意味的な意味を表し、短くても長くてもよい。ベクトルデータベースは、<a href="https://www.pinecone.io/learn/vector-similarity/">ユークリッド類似度、ドット積類似度、余弦類似度などの</a>距離メトリック（距離が近いほど類似度が高いことを意味する）を用いた類似度検索によってベクトル検索を行う。</p>
-<p>検索プロセスを高速化するために、ベクトルデータはインデックス作成メカニズムを使って整理される。これらの構成方法の例としては、フラット構造、<a href="https://arxiv.org/abs/2002.09094">インバーテッド・ファイル（IVF）、</a> <a href="https://arxiv.org/abs/1603.09320">階層的ナビゲーシブル・スモール・ワールド（HNSW）</a>、<a href="https://en.wikipedia.org/wiki/Locality-sensitive_hashing">ローカリティ・センシティブ・ハッシング（LSH）などが</a>ある。これらの方法はそれぞれ、必要なときに類似したベクトルを取り出す効率性と有効性に貢献している。</p>
-<p>GenAIシステムでベクターデータベースをどのように使うかを検証してみよう。図1は、ベクターデータベースへのデータのロードと、GenAIアプリケーションのコンテキストでの使用の両方を示しています。プロンプトを入力すると、データベースでベクトルを生成するのと同じ変換処理が行われます。この変換されたベクトルプロンプトは、ベクトルデータベースから類似のベクトルを検索するために使用されます。これらの検索された項目は、基本的に会話の記憶として機能し、LLMの動作と同様に、プロンプトのコンテキスト履歴を提供する。この機能は、自然言語処理、コンピュータビジョン、レコメンデーションシステムなど、意味理解やデータマッチングを必要とする領域で特に有利である。最初のプロンプトは、その後、検索された要素と「マージ」され、コンテキストが提供され、LLMが元の学習データだけに頼るのではなく、提供されたコンテキストに基づいて応答を策定するのを支援する。</p>
+    </button></h2><p>Unlike traditional relational or non-relational databases where data is stored in a structured manner, a vector database contains a mathematical representation of individual data items, called a vector, constructed using an embedding or transformation function. The vector commonly represents features or semantic meanings and can be short or long. Vector databases do vector retrieval by similarity search using a distance metric (where closer means the results are more similar) such as <a href="https://www.pinecone.io/learn/vector-similarity/">Euclidean, dot product, or cosine similarity</a>.</p>
+<p>To accelerate the retrieval process, the vector data is organized using an indexing mechanism. Examples of these organization methods include flat structures, <a href="https://arxiv.org/abs/2002.09094">inverted file (IVF),</a> <a href="https://arxiv.org/abs/1603.09320">Hierarchical Navigable Small Worlds (HNSW),</a> and <a href="https://en.wikipedia.org/wiki/Locality-sensitive_hashing">locality-sensitive hashing (LSH)</a>, among others. Each of these methods contributes to the efficiency and effectiveness of retrieving similar vectors when needed.</p>
+<p>Let’s examine how you would use a vector database in a GenAI system. Figure 1 illustrates both the loading of data into a vector database and using it in the context of a GenAI application. When you input your prompt, it undergoes a transformation process identical to the one used to generate vectors in the database. This transformed vector prompt is then used to retrieve similar vectors from the vector database. These retrieved items essentially serve as conversational memory, furnishing contextual history for prompts, akin to how LLMs operate. This feature proves particularly advantageous in natural language processing, computer vision, recommendation systems, and other domains requiring semantic comprehension and data matching. Your initial prompt is subsequently “merged” with the retrieved elements, supplying context, and assisting the LLM in formulating responses based on the provided context rather than solely relying on its original training data.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://miro.medium.com/v2/resize:fit:1400/1*zQj_YJdWc2xKB6Vv89lzDQ.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図1.RAGアプリケーションのアーキテクチャ。</p>
-<p>ベクトルは高速検索のために保存され、インデックスが付けられる。ベクトルデータベースには、ベクトルを格納するために拡張された従来のデータベースと、専用に構築されたベクトルデータベースの2種類がある。ベクトルをサポートする従来のデータベースの例としては、<a href="https://redis.io/">Redis</a>、<a href="https://github.com/pgvector/pgvector">pgvector</a>、<a href="https://www.elastic.co/elasticsearch">Elasticsearch</a>、<a href="https://opensearch.org/">OpenSearchなどが</a>あります。専用のベクターデータベースの例としては、プロプライエタリなソリューションである<a href="https://zilliz.com/">Zillizや</a> <a href="https://www.pinecone.io/">Pinecone</a>、オープンソースプロジェクトである<a href="https://milvus.io/">Milvus</a>、<a href="https://weaviate.io/">Weaviate</a>、<a href="https://qdrant.tech/">Qdrant</a>、<a href="https://github.com/facebookresearch/faiss">Faiss</a>、<a href="https://www.trychroma.com/">Chromaなどが</a>あります。ベクターデータベースについては、GitHubの<a href="https://github.com/langchain-ai/langchain/tree/master/libs/langchain/langchain/vectorstores">LangChainと </a> <a href="https://github.com/openai/openai-cookbook/tree/main/examples/vector_databases">OpenAI Cookbookで</a>学ぶことができる。</p>
-<p>ここでは、MilvusとRedisというそれぞれのカテゴリーから1つずつ詳しく見ていこう。</p>
-<h2 id="Improving-Performance" class="common-anchor-header">パフォーマンスの改善<button data-href="#Improving-Performance" class="anchor-icon" translate="no">
+<p>Figure 1. A RAG application architecture.</p>
+<p>Vectors are stored and indexed for speedy retrieval. Vector databases come in two main flavors, traditional databases that have been extended to store vectors, and purpose-built vector databases. Some examples of traditional databases that provide vector support are <a href="https://redis.io/">Redis</a>, <a href="https://github.com/pgvector/pgvector">pgvector</a>, <a href="https://www.elastic.co/elasticsearch">Elasticsearch</a>, and <a href="https://opensearch.org/">OpenSearch</a>. Examples of purpose-built vector databases include proprietary solutions <a href="https://zilliz.com/">Zilliz</a> and <a href="https://www.pinecone.io/">Pinecone</a>, and open source projects <a href="https://milvus.io/">Milvus</a>, <a href="https://weaviate.io/">Weaviate</a>, <a href="https://qdrant.tech/">Qdrant</a>, <a href="https://github.com/facebookresearch/faiss">Faiss</a>, and <a href="https://www.trychroma.com/">Chroma</a>. You can learn more about vector databases on GitHub via <a href="https://github.com/langchain-ai/langchain/tree/master/libs/langchain/langchain/vectorstores">LangChain </a>and <a href="https://github.com/openai/openai-cookbook/tree/main/examples/vector_databases">OpenAI Cookbook</a>.</p>
+<p>We’ll take a closer look at one from each category, Milvus and Redis.</p>
+<h2 id="Improving-Performance" class="common-anchor-header">Improving Performance<button data-href="#Improving-Performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,24 +75,24 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最適化に入る前に、ベクターデータベースがどのように評価されるのか、いくつかの評価フレームワーク、利用可能なパフォーマンス分析ツールについておさらいしましょう。</p>
-<h3 id="Performance-Metrics" class="common-anchor-header">パフォーマンス指標</h3><p>ベクターデータベースのパフォーマンス測定に役立つ主なメトリクスを見てみましょう。</p>
+    </button></h2><p>Before diving into the optimizations, let’s review how vector databases are evaluated, some evaluation frameworks, and available performance analysis tools.</p>
+<h3 id="Performance-Metrics" class="common-anchor-header">Performance Metrics</h3><p>Let’s look at key metrics that can help you measure vector database performance.</p>
 <ul>
-<li><strong>ロードレイテンシは</strong>、ベクトルデータベースのメモリにデータをロードし、インデックスを構築するのに必要な時間を測定します。インデックスとは、類似性や距離に基づいてベクトルデータを効率的に整理し、検索するために使用されるデータ構造です。<a href="https://milvus.io/docs/index.md#In-memory-Index">インメモリインデックスの</a>種類には、<a href="https://thedataquarry.com/posts/vector-db-3/#flat-indexes">フラットインデックス</a>、<a href="https://supabase.com/docs/guides/ai/vector-indexes/ivf-indexes">IVF_FLAT</a>、<a href="https://towardsdatascience.com/ivfpq-hnsw-for-billion-scale-similarity-search-89ff2f89d90e">IVF_PQ、HNSW</a>、<a href="https://github.com/google-research/google-research/tree/master/scann">スケーラブル最近傍（ScaNN）、</a> <a href="https://milvus.io/docs/disk_index.md">DiskANNなどが</a>あります。</li>
-<li><strong>Recallとは</strong>、検索アルゴリズムによって検索された<a href="https://redis.io/docs/data-types/probabilistic/top-k/">上位K個の</a>結果の中で、真の一致、つまり関連する項目が見つかった割合のことである。Recall 値が高いほど、関連アイテムの検索が優れていることを示す。</li>
-<li><strong>Queries per second (QPS)</strong>は、ベクトルデータベースが入力されたクエリを処理できる速度である。QPS値が高いほど、クエリ処理能力とシステムスループットが優れていることを意味する。</li>
+<li><strong>Load latency</strong> measures the time required to load data into the vector database’s memory and build an index. An index is a data structure used to efficiently organize and retrieve vector data based on its similarity or distance. Types of <a href="https://milvus.io/docs/index.md#In-memory-Index">in-memory indices</a> include <a href="https://thedataquarry.com/posts/vector-db-3/#flat-indexes">flat index</a>, <a href="https://supabase.com/docs/guides/ai/vector-indexes/ivf-indexes">IVF_FLAT</a>, <a href="https://towardsdatascience.com/ivfpq-hnsw-for-billion-scale-similarity-search-89ff2f89d90e">IVF_PQ, HNSW</a>, <a href="https://github.com/google-research/google-research/tree/master/scann">scalable nearest neighbors (ScaNN),</a>and <a href="https://milvus.io/docs/disk_index.md">DiskANN</a>.</li>
+<li><strong>Recall</strong> is the proportion of true matches, or relevant items, found in the <a href="https://redis.io/docs/data-types/probabilistic/top-k/">Top K</a> results retrieved by the search algorithm. Higher recall values indicate better retrieval of relevant items.</li>
+<li><strong>Queries per second (QPS)</strong> is the rate at which the vector database can process incoming queries. Higher QPS values imply better query processing capability and system throughput.</li>
 </ul>
-<h3 id="Benchmarking-Frameworks" class="common-anchor-header">ベンチマークフレームワーク</h3><p>
+<h3 id="Benchmarking-Frameworks" class="common-anchor-header">Benchmarking Frameworks</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://miro.medium.com/v2/resize:fit:920/1*mssEjZAuXg6nf-pad67rHA.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図2.ベクトルデータベースベンチマーキングのフレームワーク</p>
-<p>ベクトルデータベースのベンチマークには、ベクトルデータベースサーバーとクライアントが必要です。性能テストでは、2つの有名なオープンソースツールを使用した。</p>
+<p>Figure 2. The vector database benchmarking framework.</p>
+<p>Benchmarking a vector database requires a vector database server and clients. In our performance tests, we used two popular open source tools.</p>
 <ul>
-<li><a href="https://github.com/zilliztech/VectorDBBench/tree/main"><strong>VectorDBBench</strong></a><strong>：</strong>Zillizによって開発され、オープンソース化されたVectorDBBenchは、様々なインデックスタイプを持つ様々なベクトルデータベースのテストを支援し、便利なウェブインターフェースを提供する。</li>
-<li><a href="https://github.com/qdrant/vector-db-benchmark/tree/master"><strong>vector-db-benchmark</strong></a><strong>：</strong>Qdrantによって開発されオープンソース化されたvector-db-benchmarkは、<a href="https://www.datastax.com/guides/hierarchical-navigable-small-worlds">HNSW</a>インデックスタイプの典型的なベクトルデータベースのテストを支援する。コマンドラインでテストを実行し、<a href="https://docs.docker.com/compose/">Docker Compose</a>__fileを提供してサーバコンポーネントの起動を簡素化します。</li>
+<li><a href="https://github.com/zilliztech/VectorDBBench/tree/main"><strong>VectorDBBench</strong></a><strong>:</strong> Developed and open sourced by Zilliz, VectorDBBench helps test different vector databases with different index types and provides a convenient web interface.</li>
+<li><a href="https://github.com/qdrant/vector-db-benchmark/tree/master"><strong>vector-db-benchmark</strong></a><strong>:</strong> Developed and open sourced by Qdrant, vector-db-benchmark helps test several typical vector databases for the <a href="https://www.datastax.com/guides/hierarchical-navigable-small-worlds">HNSW</a> index type. It runs tests through the command line and provides a <a href="https://docs.docker.com/compose/">Docker Compose</a> __file to simplify starting server components.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -96,14 +100,14 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>図3.ベンチマークテストの実行に使用されるvector-db-benchmarkコマンドの例。</p>
-<p>しかし、ベンチマークフレームワークは方程式の一部に過ぎません。大量のデータを扱う能力、さまざまなベクトルサイズ、検索速度など、ベクトル・データベース・ソリューション自体のさまざまな側面を検証するデータが必要です。そこで、利用可能な公開データセットをいくつか見てみましょう。</p>
-<h3 id="Open-Datasets-to-Exercise-Vector-Databases" class="common-anchor-header">ベクターデータベースを試すための公開データセット</h3><p>大規模なデータセットは、負荷の待ち時間やリソースの割り当てをテストするのに適しています。データセットの中には高次元のデータもあり、類似性の計算速度をテストするのに適しています。</p>
-<p>25次元から2048次元までのデータセットがある。オープンな画像コレクションである<a href="https://laion.ai/">LAION</a>データセットは、安定拡散生成モデルのような非常に大規模な視覚・言語ディープニューラルモデルの学習に使用されている。OpenAIのデータセットである5Mベクトル（それぞれ1536次元）は、VectorDBBenchが<a href="https://huggingface.co/datasets/allenai/c4">生データに対して</a>OpenAIを実行することで作成された。各ベクトルの要素がFLOAT型であることを考えると、ベクトルだけを保存するために約29GB（5M * 1536 * 4）のメモリが必要で、さらにインデックスやその他のメタデータを保持するために同程度のメモリが追加され、合計58GBのメモリがテスト用に必要です。vector-db-benchmarkツールを使う場合は、結果を保存するのに十分なディスクストレージを確保する。</p>
-<p>ロード・レイテンシーをテストするには、<a href="https://docs.hippo.transwarp.io/docs/performance-dataset">deep-image-96-angularが</a>提供する大規模なベクター・コレクションが必要である。インデックス生成と類似度計算のパフォーマンスをテストするためには、高次元のベクトルがより大きなストレスとなる。このため、我々は1536次元ベクトルからなる500Kデータセットを選択した。</p>
-<h3 id="Performance-Tools" class="common-anchor-header">パフォーマンス・ツール</h3><p>注目すべきメトリクスを特定するためにシステムにストレスを与える方法について説明したが、より低いレベルで何が起きているかを検証してみよう。これらはデータベースの挙動を知る手がかりとなり、特に問題箇所を特定するのに役立ちます。</p>
-<p>Linux の<a href="https://www.redhat.com/sysadmin/interpret-top-output">top</a>ユーティリティはシステム性能情報を提供します。しかし、Linuxの<a href="https://perf.wiki.kernel.org/index.php/Main_Page">perf</a>ツールはより深い洞察を提供します。詳細については、<a href="https://www.brendangregg.com/perf.html">Linux perf の例</a>や<a href="https://www.intel.com/content/www/us/en/docs/vtune-profiler/cookbook/2023-0/top-down-microarchitecture-analysis-method.html">Intel トップダウン・マイクロアーキテクチャー解析</a>法を読むことをお勧めします。さらにもう1つのツールは<a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/vtune-profiler.html">Intel® vTune™ Profilerで</a>、アプリケーションだけでなく、HPC、クラウド、IoT、メディア、ストレージなど様々なワークロードのシステム性能と構成を最適化する際に役立ちます。</p>
-<h2 id="Milvus-Vector-Database-Optimizations" class="common-anchor-header">Milvusベクター・データベースの最適化<button data-href="#Milvus-Vector-Database-Optimizations" class="anchor-icon" translate="no">
+<p>Figure 3. An example vector-db-benchmark command used to run the benchmark test.</p>
+<p>But the benchmark framework is only part of the equation. We need data that exercises different aspects of the vector database solution itself, such as its ability to handle large volumes of data, various vector sizes, and speed of retrieval.With that, let’s look at some available public datasets.</p>
+<h3 id="Open-Datasets-to-Exercise-Vector-Databases" class="common-anchor-header">Open Datasets to Exercise Vector Databases</h3><p>Large datasets are good candidates to test load latency and resource allocation. Some datasets have high dimensional data and are good for testing speed of computing similarity.</p>
+<p>Datasets range from a dimension of 25 to a dimension of 2048. The <a href="https://laion.ai/">LAION</a> dataset, an open image collection, has been used for training very large visual and language deep-neural models like stable diffusion generative models. OpenAI’s dataset of 5M vectors, each with a dimension of 1536, was created by VectorDBBench by running OpenAI on <a href="https://huggingface.co/datasets/allenai/c4">raw data</a>. Given each vector element is of type FLOAT, to save the vectors alone, approximately 29 GB (5M * 1536 * 4) of memory is needed, plus a similar amount extra to hold indices and other metadata for a total of 58 GB of memory for testing. When using the vector-db-benchmark tool, ensure adequate disk storage to save results.</p>
+<p>To test for load latency, we needed a large collection of vectors, which <a href="https://docs.hippo.transwarp.io/docs/performance-dataset">deep-image-96-angular</a> offers. To test performance of index generation and similarity computation, high dimensional vectors provide more stress. To this end we chose the 500K dataset of 1536 dimension vectors.</p>
+<h3 id="Performance-Tools" class="common-anchor-header">Performance Tools</h3><p>We’ve covered ways to stress the system to identify metrics of interest, but let’s examine what’s happening at a lower level: How busy is the computing unit, memory consumption, waits on locks, and more? These provide clues to databasebehavior, particularly useful in identifying problem areas.</p>
+<p>The Linux <a href="https://www.redhat.com/sysadmin/interpret-top-output">top</a> utility provides system-performance information. However, the <a href="https://perf.wiki.kernel.org/index.php/Main_Page">perf</a> tool in Linux provides a deeper set of insights. To learn more, we also recommend reading <a href="https://www.brendangregg.com/perf.html">Linux perf examples</a> and the <a href="https://www.intel.com/content/www/us/en/docs/vtune-profiler/cookbook/2023-0/top-down-microarchitecture-analysis-method.html">Intel top-down microarchitecture analysis method</a>. Yet another tool is the <a href="https://www.intel.com/content/www/us/en/developer/tools/oneapi/vtune-profiler.html">Intel® vTune™ Profiler</a>, which is useful when optimizing not just application but also system performance and configuration for a variety of workloads spanning HPC, cloud, IoT, media, storage, and more.</p>
+<h2 id="Milvus-Vector-Database-Optimizations" class="common-anchor-header">Milvus Vector Database Optimizations<button data-href="#Milvus-Vector-Database-Optimizations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,28 +122,28 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusベクトルデータベースの性能向上を試みたいくつかの例を見ていきましょう。</p>
-<h3 id="Reducing-Memory-Movement-Overhead-in-Datanode-Buffer-Write" class="common-anchor-header">データノード・バッファ書き込みにおけるメモリ移動オーバーヘッドの削減</h3><p>Milvusの書き込みパスのプロキシは<em>MsgStreamを介して</em>ログブローカにデータを書き込みます。その後、データノードがデータを消費し、セグメントに変換して保存します。セグメントは新しく挿入されたデータをマージします。マージロジックは、古いデータと挿入される新しいデータの両方を保持/移動するために新しいバッファを割り当て、次のデータマージのために新しいバッファを古いデータとして返します。この結果、古いデータは徐々に大きくなり、データ移動が遅くなる。Perf プロファイルでは、このロジックのオーバーヘッドが高いことが示された。</p>
+    </button></h2><p>Let’s walk through some examples of how we attempted to improve the performance of the Milvus vector database.</p>
+<h3 id="Reducing-Memory-Movement-Overhead-in-Datanode-Buffer-Write" class="common-anchor-header">Reducing Memory Movement Overhead in Datanode Buffer Write</h3><p>Milvus’s write path proxies write data into a log broker via <em>MsgStream</em>. The data nodes then consume the data, converting and storing it into segments. Segments will merge the newly inserted data. The merge logic allocates a new buffer to hold/move both the old data and the new data to be inserted and then returns the new buffer as old data for the next data merge. This results in the old data getting successively larger, which in turn makes data movement slower. Perf profiles showed a high overhead for this logic.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://miro.medium.com/v2/resize:fit:1400/1*Az4dMVBcGmdeyKNrwpR19g.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図4.ベクター・データベースにおけるデータのマージと移動は、高いパフォーマンス・オーバーヘッドを発生させる。</p>
-<p>私たちは<em>マージ・バッファの</em>ロジックを変更し、挿入する新しいデータを古いデータに直接追加することで、新しいバッファの確保と大きな古いデータの移動を回避しました。Perf プロファイルは、このロジックにオーバーヘッドがないことを確認しています。マイクロコードメトリクスの<em>metric_CPU operating frequency</em>と<em>metric_CPU utilization</em>は、システムが長いメモリ移動を待つ必要がなくなったことと一致する改善を示しています。ロードレイテンシは60％以上改善した。この改善は<a href="https://github.com/milvus-io/milvus/pull/26839">GitHubに</a>掲載されている。</p>
+<p>Figure 4. Merging and moving data in the vector database generates a high-performance overhead.</p>
+<p>We changed the <em>merge buffer</em> logic to directly append the new data to be inserted into the old data, avoiding allocating a new buffer and moving the large old data. Perf profiles confirm that there is no overhead to this logic. The microcode metrics <em>metric_CPU operating frequency</em> and <em>metric_CPU utilization</em> indicate an improvement that is consistent with the system not having to wait for the long memory movement anymore. Load latency improved by more than 60 percent. The improvement is captured on <a href="https://github.com/milvus-io/milvus/pull/26839">GitHub</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://miro.medium.com/v2/resize:fit:1400/1*MmaUtBTdqmMvC5MlQ8V0wQ.jpeg" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>図5.コピーを減らすことで、ロード・レイテンシが50パーセント以上改善された。</p>
-<h3 id="Inverted-Index-Building-with-Reduced-Memory-Allocation-Overhead" class="common-anchor-header">メモリ割り当てのオーバーヘッドを削減した反転インデックス構築</h3><p>Milvusの検索エンジンである<a href="https://milvus.io/docs/knowhere.md">Knowhereは</a>、<a href="https://milvus.io/docs/v1.1.1/index.md">転置ファイル（IVF）インデックスを</a>作成するためのクラスタデータのトレーニングに<a href="https://www.vlfeat.org/api/kmeans-fundamentals.html#kmeans-elkan">Elkan k-meansアルゴリズムを</a>採用しています。データトレーニングの各ラウンドは反復回数を定義します。このカウントが大きいほど、学習結果が良くなります。しかし、これはElkanアルゴリズムがより頻繁に呼び出されることを意味します。</p>
-<p>Elkanアルゴリズムは、実行のたびにメモリの確保と解放を行う。具体的には、対角要素を除いた対称行列データの半分のサイズのメモリを確保します。Knowhereでは、Elkanアルゴリズムが使用する対称行列の次元は1024に設定されており、その結果、メモリサイズは約2MBになります。これは、各トレーニングラウンドでElkanが2MBのメモリの確保と解放を繰り返すことを意味します。</p>
-<p>Perf プロファイリングデータは、頻繁に大きなメモリ割り当てアクティビティを示していた。実際、<a href="https://www.oreilly.com/library/view/linux-device-drivers/9781785280009/4759692f-43fb-4066-86b2-76a90f0707a2.xhtml">仮想メモリ領域（VMA）の</a>割り当て、物理ページの割り当て、ページマップのセットアップ、カーネル内のメモリcgroup統計の更新がトリガーされました。このような大規模なメモリアロケーション／デアロケーション活動のパターンは、状況によっては、メモリの断片化を悪化させる可能性もある。これは重大な税金である。</p>
-<p><em>IndexFlatElkan</em>構造体は、Elkanアルゴリズムをサポートするために特別に設計・構築されています。各データトレーニング処理では、<em>IndexFlatElkan</em>インスタンスが初期化されます。Elkanアルゴリズムにおける頻繁なメモリ割り当てと割り当て解除によるパフォーマンスへの影響を軽減するため、コードロジックをリファクタリングし、Elkanアルゴリズム関数の外側にあるメモリ管理を<em>IndexFlatElkanの</em>構築プロセスに移しました。これにより、メモリ割り当てが初期化フェーズで一度だけ行われ、その後のElkanアルゴリズム関数の呼び出しはすべて現在のデータトレーニングプロセスから行われるようになり、ロードレイテンシが約3%改善されました。<a href="https://github.com/zilliztech/knowhere/pull/280">Knowhereパッチはこちら</a>。</p>
-<h2 id="Redis-Vector-Search-Acceleration-through-Software-Prefetch" class="common-anchor-header">ソフトウェア・プリフェッチによるRedisベクトル検索の高速化<button data-href="#Redis-Vector-Search-Acceleration-through-Software-Prefetch" class="anchor-icon" translate="no">
+<p>Figure 5. With less copying we see a performance improvement of more than 50 percent in load latency.</p>
+<h3 id="Inverted-Index-Building-with-Reduced-Memory-Allocation-Overhead" class="common-anchor-header">Inverted Index Building with Reduced Memory Allocation Overhead</h3><p>The Milvus search engine, <a href="https://milvus.io/docs/knowhere.md">Knowhere</a>, employs the <a href="https://www.vlfeat.org/api/kmeans-fundamentals.html#kmeans-elkan">Elkan k-means algorithm</a> to train cluster data for creating <a href="https://milvus.io/docs/v1.1.1/index.md">inverted file (IVF) indices</a>. Each round of data training defines an iteration count. The larger the count, the better the training results. However, it also implies that the Elkan algorithm will be called more frequently.</p>
+<p>The Elkan algorithm handles memory allocation and deallocation each time it’s executed. Specifically, it allocates memory to store half the size of symmetric matrix data, excluding the diagonal elements. In Knowhere, the symmetric matrix dimension used by the Elkan algorithm is set to 1024, resulting in a memory size of approximately 2 MB. This means for each training round Elkan repeatedly allocates and deallocates 2 MB memory.</p>
+<p>Perf profiling data indicated frequent large memory allocation activity. In fact, it triggered <a href="https://www.oreilly.com/library/view/linux-device-drivers/9781785280009/4759692f-43fb-4066-86b2-76a90f0707a2.xhtml">virtual memory area (VMA)</a>allocation, physical page allocation, page map setup, and updating of memory cgroup statistics in the kernel. This pattern of large memory allocation/deallocation activity can, in some situations, also aggravate memory fragmentation. This is a significant tax.</p>
+<p>The <em>IndexFlatElkan</em> structure is specifically designed and constructed to support the Elkan algorithm. Each data training process will have an <em>IndexFlatElkan</em> instance initialized. To mitigate the performance impact resulting from frequent memory allocation and deallocation in the Elkan algorithm, we refactored the code logic, moving the memory management outside of the Elkan algorithm function up into the construction process of <em>IndexFlatElkan</em>. This enables memory allocation to occur only once during the initialization phase while serving all subsequent Elkan algorithm function calls from the current data training process and helps to improve load latency by around 3 percent. Find the <a href="https://github.com/zilliztech/knowhere/pull/280">Knowhere patch here</a>.</p>
+<h2 id="Redis-Vector-Search-Acceleration-through-Software-Prefetch" class="common-anchor-header">Redis Vector Search Acceleration through Software Prefetch<button data-href="#Redis-Vector-Search-Acceleration-through-Software-Prefetch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -154,10 +158,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>従来のインメモリ・キーバリュー・データストアとして人気の高いRedisは、最近ベクトル検索のサポートを開始しました。典型的なキー・バリュー・ストアを超えるために、<a href="https://github.com/RediSearch/RediSearch">Redisは</a>拡張モジュールを提供しており、<a href="https://github.com/RediSearch/RediSearch">RediSearch</a>モジュールはRedis内で直接ベクトルの保存と検索を容易にします。</p>
-<p>Redisは、ベクトル類似検索のために、ブルートフォースとHNSWという2つのアルゴリズムをサポートしています。HNSWアルゴリズムは、高次元空間の近似最近傍を効率的に見つけるために特別に作られています。<em>candidate_setという</em>優先キューを使って、距離計算のためのすべてのベクトル候補を管理します。</p>
-<p>各ベクトル候補は、ベクトルデータに加えて実質的なメタデータを含む。その結果、候補をメモリからロードする際にデータキャッシュのミスが発生し、処理遅延が発生することがある。我々の最適化では、ソフトウェアプリフェッチを導入し、現在の候補を処理中に次の候補をプロアクティブにロードします。この改良により、シングルインスタンスのRedisセットアップにおけるベクトル類似検索のスループットが2～3パーセント向上しました。このパッチは現在アップストリーム化中である。</p>
-<h2 id="GCC-Default-Behavior-Change-to-Prevent-Mixed-Assembly-Code-Penalties" class="common-anchor-header">混合アセンブリ・コードのペナルティを防ぐためのGCCデフォルト動作の変更<button data-href="#GCC-Default-Behavior-Change-to-Prevent-Mixed-Assembly-Code-Penalties" class="anchor-icon" translate="no">
+    </button></h2><p>Redis, a popular traditional in-memory key-value data store, recently began supporting vector search. To go beyond a typical key-value store, it offers extensibility modules; the <a href="https://github.com/RediSearch/RediSearch">RediSearch</a> module facilitates the storage and search of vectors directly within Redis.</p>
+<p>For vector similarity search, Redis supports two algorithms, namely brute force and HNSW. The HNSW algorithm is specifically crafted for efficiently locating approximate nearest neighbors in high-dimensional spaces. It uses a priority queue named <em>candidate_set</em> to manage all vector candidates for distance computing.</p>
+<p>Each vector candidate encompasses substantial metadata in addition to the vector data. As a result, when loading a candidate from memory it can cause data cache misses, which incur processing delays. Our optimization introduces software prefetching to proactively load the next candidate while processing the current one. This enhancement has resulted in a 2 to 3 percent throughput improvement for vector similarity searches in a single instance Redis setup. The patch is in the process of being upstreamed.</p>
+<h2 id="GCC-Default-Behavior-Change-to-Prevent-Mixed-Assembly-Code-Penalties" class="common-anchor-header">GCC Default Behavior Change to Prevent Mixed Assembly Code Penalties<button data-href="#GCC-Default-Behavior-Change-to-Prevent-Mixed-Assembly-Code-Penalties" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,10 +176,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>パフォーマンスを最大化するために、頻繁に使用されるコード・セクションはアセンブリで手書きされることが多い。しかし、コードの異なるセグメントが異なる人または異なる時点で書かれた場合、<a href="https://www.intel.com/content/www/us/en/architecture-and-technology/avx-512-overview.html">インテル® Advanced Vector Extensions 512 (インテル® AVX-512)</a>や<a href="https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions">ストリーミング SIMD 拡張命令 (SSE)</a> などの互換性のないアセンブリー命令セットが使用されることがあります。適切にコンパイルされないと、混合コードはパフォーマンス・ペナルティになります。<a href="https://www.intel.com/content/dam/develop/external/us/en/documents/11mc12-avoiding-2bavx-sse-2btransition-2bpenalties-2brh-2bfinal-809104.pdf">インテル® AVX 命令と SSE 命令の混在については、こちらを参照して</a>ください。</p>
-<p>混合モードのアセンブリー・コードを使用していて、<em>VZEROUPPER</em> でコンパイルされておらず、パフォーマンス・ペナルティが発生しているかどうかは簡単に判断できます。これは、<em>sudo perf stat -e 'assists.sse_avx_mix/event/event=0xc1,umask=0x10/' &lt;workload&gt;の</em>ようなperfコマンドで確認できます。OSがイベントをサポートしていない場合は、<em>cpu/event=0xc1,umask=0x10,name=assists_sse_avx_mix</em>/を使用してください。</p>
-<p>Clangコンパイラーはデフォルトで<em>VZEROUPPERを</em>挿入し、混合モードのペナルティーを回避します。しかし、GCCコンパイラは-O2または-O3コンパイラ・フラグが指定されたときだけ<em>VZEROUPPERを</em>挿入します。我々はGCCチームに連絡し、この問題を説明したところ、現在ではデフォルトで混合モードのアセンブリ・コードを正しく処理するようになった。</p>
-<h2 id="Start-Optimizing-Your-Vector-Databases" class="common-anchor-header">ベクター・データベースの最適化開始<button data-href="#Start-Optimizing-Your-Vector-Databases" class="anchor-icon" translate="no">
+    </button></h2><p>To drive maximum performance, frequently used sections of code are often handwritten in assembly. However, when different segments of code are written either by different people or at different points in time, the instructions used may come from incompatible assembly instruction sets such as <a href="https://www.intel.com/content/www/us/en/architecture-and-technology/avx-512-overview.html">Intel® Advanced Vector Extensions 512 (Intel® AVX-512)</a> and <a href="https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions">Streaming SIMD Extensions (SSE)</a>. If not compiled appropriately, the mixed code results in a performance penalty. <a href="https://www.intel.com/content/dam/develop/external/us/en/documents/11mc12-avoiding-2bavx-sse-2btransition-2bpenalties-2brh-2bfinal-809104.pdf">Learn more about mixing Intel AVX and SSE instructions here</a>.</p>
+<p>You can easily determine if you’re using mixed-mode assembly code and have not compiled the code with <em>VZEROUPPER</em>, incurring the performance penalty. It can be observed through a perf command like <em>sudo perf stat -e ‘assists.sse_avx_mix/event/event=0xc1,umask=0x10/’ &lt;workload&gt;</em>. If your OS doesn’t have support for the event, use <em>cpu/event=0xc1,umask=0x10,name=assists_sse_avx_mix/</em>.</p>
+<p>The Clang compiler by default inserts <em>VZEROUPPER</em>, avoiding any mixed mode penalty. But the GCC compiler only inserted <em>VZEROUPPER</em> when the -O2 or -O3 compiler flags were specified. We contacted the GCC team and explained the issue and they now, by default, correctly handle mixed mode assembly code.</p>
+<h2 id="Start-Optimizing-Your-Vector-Databases" class="common-anchor-header">Start Optimizing Your Vector Databases<button data-href="#Start-Optimizing-Your-Vector-Databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,5 +194,5 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベクターデータベースはGenAIにおいて不可欠な役割を果たしており、より高品質な応答を生成するためにますます大きくなっている。最適化に関して、AIアプリケーションは、ベンチマークフレームワークやストレス入力とともに標準的なパフォーマンス分析ツールを使用したときにその秘密が明らかになるという点で、他のソフトウェアアプリケーションと変わりません。</p>
-<p>これらのツールを使用して、不要なメモリ割り当て、命令のプリフェッチの失敗、および不正なコンパイラオプションの使用に関連するパフォーマンスの罠を発見しました。この発見に基づいて、Milvus、Knowhere、Redis、およびGCCコンパイラのアップストリーム機能強化を行い、AIのパフォーマンスと持続可能性を少しでも向上させることに貢献した。ベクトル・データベースは、最適化に取り組む価値のある重要なアプリケーション・クラスです。本記事がその一助となれば幸いである。</p>
+    </button></h2><p>Vector databases are playing an integral role in GenAI, and they are growing ever larger to generate higher-quality responses. With respect to optimization, AI applications are no different from other software applications in that they reveal their secrets when one employs standard performance analysis tools along with benchmark frameworks and stress input.</p>
+<p>Using these tools, we uncovered performance traps pertaining to unnecessary memory allocation, failing to prefetch instructions, and using incorrect compiler options. Based on our findings, we upstreamed enhancements to Milvus, Knowhere, Redis, and the GCC compiler to help make AI a little more performant and sustainable. Vector databases are an important class of applications worthy of your optimization efforts. We hope this article helps you get started.</p>

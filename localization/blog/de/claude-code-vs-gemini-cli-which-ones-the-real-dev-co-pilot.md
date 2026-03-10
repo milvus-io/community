@@ -1,12 +1,12 @@
 ---
 id: claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md
-title: 'Claude Code vs. Gemini CLI: Welcher ist der echte Dev Co-Pilot?'
+title: |
+  Claude Code vs Gemini CLI: Which One’s the Real Dev Co-Pilot?
 author: Min Yin
 date: 2025-07-09T00:00:00.000Z
 desc: >-
-  Vergleichen Sie Gemini CLI und Claude Code, zwei KI-Codierungstools, die
-  Terminal-Workflows verändern. Welches Tool sollte Ihr nächstes Projekt
-  unterstützen?
+  Compare Gemini CLI and Claude Code, two AI coding tools transforming terminal
+  workflows. Which one should power your next project?
 cover: assets.zilliz.com/Claude_Code_vs_Gemini_CLI_e3a04a49cf.jpeg
 tag: Engineering
 recommend: false
@@ -20,17 +20,17 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/claude-code-vs-gemini-cli-which-ones-the-real-dev-co-pilot.md
 ---
-<p>Ihre IDE ist aufgebläht. Ihr Kodierassistent ist veraltet. Und Sie müssen zum Refactoring immer noch mit der rechten Maustaste klicken? Willkommen bei der CLI-Renaissance.</p>
-<p>KI-Code-Assistenten entwickeln sich von einer Spielerei zu beliebten Tools, und die Entwickler ergreifen Partei. Neben der Startup-Sensation Cursor sorgt <a href="https://www.anthropic.com/claude-code"><strong>Claude Code</strong></a> <strong>von Anthropic</strong> für Präzision und Feinschliff. Googles <a href="https://github.com/google-gemini/gemini-cli"><strong>Gemini CLI</strong></a>? Schnell, kostenlos und hungrig nach Kontext. Beide versprechen, natürliche Sprache zum neuen Shell-Scripting zu machen. Wem sollten <em>Sie</em> also beim Refactoring Ihres nächsten Repo vertrauen?</p>
-<p>Nach dem, was ich gesehen habe, hatte Claude Code anfangs die Nase vorn. Aber das Spiel änderte sich schnell. Nachdem Gemini CLI auf den Markt kam, strömten die Entwickler in Scharen herbei und sammelten<strong>innerhalb von 24 Stunden 15,1k GitHub-Sterne.</strong> Inzwischen sind es über <strong>55.000 Sterne</strong>, Tendenz steigend. Erstaunlich!</p>
-<p>Hier ist meine kurze Zusammenfassung, warum so viele Entwickler von Gemini CLI begeistert sind:</p>
+<p>Your IDE is bloated. Your coding assistant is outdated. And you’re still stuck right-clicking to refactor? Welcome to the CLI renaissance.</p>
+<p>AI code assistants are evolving from gimmicks to go-to tools and developers are taking sides. Beyond the startup sensation Cursor, <strong>Anthropic’s</strong> <a href="https://www.anthropic.com/claude-code"><strong>Claude Code</strong></a> brings precision and polish. Google’s <a href="https://github.com/google-gemini/gemini-cli"><strong>Gemini CLI</strong></a>? Fast, free, and hungry for context. Both promise to make natural language the new shell scripting. So which one should <em>you</em> trust to refactor your next repo?</p>
+<p>From what I’ve seen, Claude Code had the early lead. But the game changed fast. After Gemini CLI launched, developers flocked to it—<strong>racking up 15.1k GitHub stars within 24 hours.</strong> As of now, it’s soared past <strong>55,000 stars</strong> and counting. Amazing!</p>
+<p>Here’s my quick takeaway on why so many developers are excited about Gemini CLI:</p>
 <ul>
-<li><p><strong>Es ist Open Source unter Apache 2.0 und völlig kostenlos:</strong> Gemini CLI stellt kostenlos eine Verbindung zu Googles Top-Tier Gemini 2.0 Flash-Modell her. Melden Sie sich einfach mit Ihrem persönlichen Google-Konto an, um auf Gemini Code Assist zuzugreifen. Während des Vorschauzeitraums erhalten Sie bis zu 60 Anfragen pro Minute und 1.000 Anfragen pro Tag - und das alles kostenlos.</p></li>
-<li><p><strong>Es ist ein wahres Multitasking-Kraftpaket:</strong> Neben dem Programmieren (seiner stärksten Seite) beherrscht es auch die Dateiverwaltung, die Erstellung von Inhalten, die Skriptsteuerung und sogar Deep Research-Funktionen.</p></li>
-<li><p><strong>Es ist leichtgewichtig:</strong> Sie können ihn nahtlos in Terminalskripte einbetten oder als eigenständigen Agenten verwenden.</p></li>
-<li><p><strong>Er bietet eine lange Kontextlänge:</strong> Mit 1 Million Kontext-Token (ca. 750.000 Wörter) kann es ganze Codebasen für kleinere Projekte in einem einzigen Durchgang aufnehmen.</p></li>
+<li><p><strong>It’s open source under Apache 2.0 and completely free:</strong> Gemini CLI connects to Google’s top-tier Gemini 2.0 Flash model at no cost. Simply log in with your personal Google account to access Gemini Code Assist. During the preview period, you get up to 60 requests per minute and 1,000 daily requests—all free of charge.</p></li>
+<li><p><strong>It’s a true multi-task powerhouse:</strong> Beyond programming (its strongest suit), it handles file management, content generation, script control, and even Deep Research capabilities.</p></li>
+<li><p><strong>It’s lightweight:</strong> You can seamlessly embed it in terminal scripts or use it as a standalone agent.</p></li>
+<li><p><strong>It offers long context length:</strong> With 1 million tokens of context (roughly 750,000 words), it can ingest entire codebases for smaller projects in a single pass.</p></li>
 </ul>
-<h2 id="Why-Developers-Are-Ditching-IDEs-for-AI-Powered-Terminals" class="common-anchor-header">Warum Entwickler IDEs für KI-gesteuerte Terminals aufgeben<button data-href="#Why-Developers-Are-Ditching-IDEs-for-AI-Powered-Terminals" class="anchor-icon" translate="no">
+<h2 id="Why-Developers-Are-Ditching-IDEs-for-AI-Powered-Terminals" class="common-anchor-header">Why Developers Are Ditching IDEs for AI-Powered Terminals<button data-href="#Why-Developers-Are-Ditching-IDEs-for-AI-Powered-Terminals" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,10 +45,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Warum ist die Begeisterung für diese terminalbasierten Tools so groß? Als Entwickler haben Sie dieses Problem wahrscheinlich schon einmal erlebt: Herkömmliche IDEs verfügen zwar über beeindruckende Funktionen, doch die Komplexität der Arbeitsabläufe bremst die Dynamik. Sie möchten eine einzelne Funktion umgestalten? Sie müssen den Code auswählen, mit der rechten Maustaste auf das Kontextmenü klicken, zu "Refactor" navigieren, den spezifischen Refactoring-Typ auswählen, die Optionen in einem Dialogfeld konfigurieren und schließlich die Änderungen anwenden.</p>
-<p><strong>Terminal AI-Tools haben diesen Arbeitsablauf verändert, indem sie alle Vorgänge in natürlichsprachliche Befehle umwandeln.</strong> Anstatt sich die Befehlssyntax zu merken, sagen Sie einfach: &quot;<em>Helfen Sie mir, diese Funktion zu überarbeiten, um die Lesbarkeit zu verbessern</em>&quot;, und beobachten Sie, wie das Tool den gesamten Prozess übernimmt.</p>
-<p>Das ist nicht nur bequem - es ist ein grundlegender Wandel in unserer Denkweise. Komplexe technische Vorgänge werden zu Konversationen in natürlicher Sprache, so dass wir uns auf die Geschäftslogik und nicht auf die Mechanik der Tools konzentrieren können.</p>
-<h2 id="Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely" class="common-anchor-header">Claude Code oder Gemini CLI? Wählen Sie Ihren Co-Piloten mit Bedacht<button data-href="#Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely" class="anchor-icon" translate="no">
+    </button></h2><p>Why is there such enthusiasm for these terminal-based tools? As developers, you’ve probably felt this pain: Traditional IDEs pack impressive features, but they come with workflow complexity that kills momentum. Want to refactor a single function? You need to select the code, right-click for the context menu, navigate to “Refactor,” choose the specific refactoring type, configure options in a dialog box, and finally apply changes.</p>
+<p><strong>Terminal AI tools have changed this workflow by streamlining all operations into natural language commands.</strong> Instead of memorizing command syntax, you simply say: &quot;<em>Help me refactor this function to improve readability,</em>&quot; and watch as the tool handles the entire process.</p>
+<p>This isn’t just convenience—it’s a fundamental shift in how we think. Complex technical operations become natural language conversations, freeing us to focus on business logic rather than the mechanics of tools.</p>
+<h2 id="Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely" class="common-anchor-header">Claude Code or Gemini CLI? Choose Your Co-Pilot Wisely<button data-href="#Claude-Code-or-Gemini-CLI-Choose-Your-Co-Pilot-Wisely" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,55 +63,55 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Da Claude Code ebenfalls sehr beliebt und einfach zu verwenden ist und bisher die Akzeptanz dominiert hat, stellt sich die Frage, wie es im Vergleich zum neuen Gemini CLI aussieht? Wie sollte man sich zwischen den beiden entscheiden? Werfen wir einen genaueren Blick auf diese KI-Coding-Tools.</p>
-<h3 id="1-Cost-Free-vs-Paid" class="common-anchor-header"><strong>1. Kosten: Kostenlos vs. kostenpflichtig</strong></h3><ul>
-<li><p><strong>Gemini CLI</strong> ist in Verbindung mit einem Google-Konto völlig kostenlos und bietet 1.000 Anfragen pro Tag und 60 Anfragen pro Minute, ohne dass eine Rechnungsstellung erforderlich ist.</p></li>
-<li><p><strong>Claude Code</strong> erfordert ein aktives Anthropic-Abonnement und folgt einem Pay-per-Use-Modell, bietet aber Sicherheit und Support auf Unternehmensebene, was für kommerzielle Projekte sehr wertvoll ist.</p></li>
+    </button></h2><p>Since Claude Code is also quite popular and easy to use and has previously dominated adoption, how does it compare to the new Gemini CLI? How should we choose between the two? Let’s take a closer look at these AI coding tools.</p>
+<h3 id="1-Cost-Free-vs-Paid" class="common-anchor-header"><strong>1. Cost: Free vs Paid</strong></h3><ul>
+<li><p><strong>Gemini CLI</strong> is completely free with any Google account, providing 1,000 requests per day and 60 requests per minute, with no billing setup required.</p></li>
+<li><p><strong>Claude Code</strong> requires an active Anthropic subscription and follows a pay-per-use model, but includes enterprise-level security and support that’s valuable for commercial projects.</p></li>
 </ul>
-<h3 id="2-Context-Window-How-Much-Code-Can-It-See" class="common-anchor-header"><strong>2. Kontext-Fenster: Wie viel Code kann es sehen?</strong></h3><ul>
-<li><p><strong>Gemini CLI:</strong> 1 Million Token (etwa 750.000 Wörter)</p></li>
-<li><p><strong>Claude Code:</strong> Ungefähr 200.000 Token (etwa 150.000 Wörter)</p></li>
+<h3 id="2-Context-Window-How-Much-Code-Can-It-See" class="common-anchor-header"><strong>2. Context Window: How Much Code Can It See?</strong></h3><ul>
+<li><p><strong>Gemini CLI:</strong> 1 million tokens (roughly 750,000 words)</p></li>
+<li><p><strong>Claude Code:</strong> Approximately 200,000 tokens (about 150,000 words)</p></li>
 </ul>
-<p>Größere Kontextfenster ermöglichen es den Modellen, bei der Generierung von Antworten auf mehr Eingabeinhalte Bezug zu nehmen. Sie tragen auch dazu bei, die Kohärenz der Konversation in Dialogen mit mehreren Runden aufrechtzuerhalten, indem sie dem Modell ein besseres Gedächtnis für Ihre gesamte Konversation geben.</p>
-<p>Im Wesentlichen kann Gemini CLI Ihr gesamtes kleines bis mittleres Projekt in einer einzigen Sitzung analysieren, was es ideal für das Verstehen großer Codebasen und dateiübergreifender Beziehungen macht. Claude Code funktioniert besser, wenn Sie sich auf bestimmte Dateien oder Funktionen konzentrieren.</p>
-<h3 id="3-Code-Quality-vs-Speed" class="common-anchor-header"><strong>3. Code-Qualität vs. Geschwindigkeit</strong></h3><table>
+<p>Larger context windows enable models to reference more input content when generating responses. They also help maintain conversation coherence in multi-turn dialogues, giving the model better memory of your entire conversation.</p>
+<p>Essentially, Gemini CLI can analyze your entire small-to-medium project in a single session, making it ideal for comprehending large codebases and cross-file relationships. Claude Code works better when you’re focusing on specific files or functions.</p>
+<h3 id="3-Code-Quality-vs-Speed" class="common-anchor-header"><strong>3. Code Quality vs Speed</strong></h3><table>
 <thead>
 <tr><th></th><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Merkmal</strong></td><td><strong>Gemini CLI</strong></td><td><strong>Claude Code</strong></td><td><strong>Anmerkungen</strong></td></tr>
-<tr><td><strong>Kodiergeschwindigkeit</strong></td><td>8.5/10</td><td>7.2/10</td><td>Gemini generiert Code schneller</td></tr>
-<tr><td><strong>Qualität der Kodierung</strong></td><td>7.8/10</td><td>9.1/10</td><td>Claude erzeugt Code von höherer Qualität</td></tr>
-<tr><td><strong>Fehlerbehandlung</strong></td><td>7.5/10</td><td>8.8/10</td><td>Claude ist besser in der Fehlerbehandlung</td></tr>
-<tr><td><strong>Verständnis des Kontextes</strong></td><td>9.2/10</td><td>7.9/10</td><td>Gemini hat mehr Speicherplatz</td></tr>
-<tr><td><strong>Mehrsprachige Unterstützung</strong></td><td>8.9/10</td><td>8.5/10</td><td>Beide sind ausgezeichnet</td></tr>
+<tr><td><strong>Feature</strong></td><td><strong>Gemini CLI</strong></td><td><strong>Claude Code</strong></td><td><strong>Notes</strong></td></tr>
+<tr><td><strong>Coding speed</strong></td><td>8.5/10</td><td>7.2/10</td><td>Gemini generates code faster</td></tr>
+<tr><td><strong>Coding quality</strong></td><td>7.8/10</td><td>9.1/10</td><td>Claude generates higher quality code</td></tr>
+<tr><td><strong>Error handling</strong></td><td>7.5/10</td><td>8.8/10</td><td>Claude is better at error handling</td></tr>
+<tr><td><strong>Context understanding</strong></td><td>9.2/10</td><td>7.9/10</td><td>Gemini has longer memory</td></tr>
+<tr><td><strong>Multilingual support</strong></td><td>8.9/10</td><td>8.5/10</td><td>Both are excellent</td></tr>
 </tbody>
 </table>
 <ul>
-<li><p><strong>Gemini CLI</strong> generiert Code schneller und zeichnet sich durch die Fähigkeit aus, große Zusammenhänge zu verstehen, wodurch es sich hervorragend für Rapid Prototyping eignet.</p></li>
-<li><p><strong>Claude Code</strong> zeichnet sich durch Präzision und Fehlerbehandlung aus und ist daher besser für Produktionsumgebungen geeignet, in denen die Codequalität entscheidend ist.</p></li>
+<li><p><strong>Gemini CLI</strong> generates code faster and excels at understanding large contexts, making it great for rapid prototyping.</p></li>
+<li><p><strong>Claude Code</strong> nails precision and error handling, making it better suited for production environments where code quality is critical.</p></li>
 </ul>
-<h3 id="4-Platform-Support-Where-Can-You-Run-It" class="common-anchor-header"><strong>4. Plattform-Unterstützung: Wo können Sie es einsetzen?</strong></h3><ul>
-<li><p><strong>Gemini CLI</strong> funktioniert vom ersten Tag an gleichermaßen gut unter Windows, macOS und Linux.</p></li>
-<li><p><strong>Claude Code</strong> wurde zuerst für macOS optimiert, und obwohl es auch auf anderen Plattformen läuft, ist die beste Erfahrung immer noch auf dem Mac.</p></li>
+<h3 id="4-Platform-Support-Where-Can-You-Run-It" class="common-anchor-header"><strong>4. Platform Support: Where Can You Run It?</strong></h3><ul>
+<li><p><strong>Gemini CLI</strong> works equally well across Windows, macOS, and Linux from day one.</p></li>
+<li><p><strong>Claude Code</strong> was optimized for macOS first, and while it runs on other platforms, the best experience is still on Mac.</p></li>
 </ul>
-<h3 id="5-Authentication-and-Access" class="common-anchor-header"><strong>5. Authentifizierung und Zugang</strong></h3><p><strong>Claude Code</strong> erfordert ein aktives Anthropic-Abonnement (Pro, Max, Team oder Enterprise) oder API-Zugang über AWS Bedrock/Vertex AI. Das bedeutet, dass Sie die Abrechnung einrichten müssen, bevor Sie die Anwendung nutzen können.</p>
-<p><strong>Gemini CLI</strong> bietet einen großzügigen kostenlosen Plan für einzelne Google-Kontoinhaber, der 1.000 kostenlose Anfragen pro Tag und 60 Anfragen pro Minute für das voll funktionsfähige Gemini 2.0 Flash-Modell umfasst. Nutzer, die höhere Limits oder bestimmte Modelle benötigen, können über API-Schlüssel ein Upgrade durchführen.</p>
-<h3 id="6-Feature-Comparison-Overview" class="common-anchor-header"><strong>6. Überblick über den Funktionsvergleich</strong></h3><table>
+<h3 id="5-Authentication-and-Access" class="common-anchor-header"><strong>5. Authentication and Access</strong></h3><p><strong>Claude Code</strong> requires an active Anthropic subscription (Pro, Max, Team, or Enterprise) or API access through AWS Bedrock/Vertex AI. This means you need to set up billing before you can start using it.</p>
+<p><strong>Gemini CLI</strong> offers a generous free plan for individual Google account holders, including 1,000 free requests per day and 60 requests per minute to the full-featured Gemini 2.0 Flash model. Users requiring higher limits or specific models can upgrade via API keys.</p>
+<h3 id="6-Feature-Comparison-Overview" class="common-anchor-header"><strong>6. Feature Comparison Overview</strong></h3><table>
 <thead>
 <tr><th></th><th></th><th></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Funktion</strong></td><td><strong>Claude Code</strong></td><td><strong>Gemini CLI</strong></td></tr>
-<tr><td>Länge des Kontextfensters</td><td>200K Token</td><td>1M Token</td></tr>
-<tr><td>Multimodale Unterstützung</td><td>Begrenzt</td><td>Leistungsstark (Bilder, PDFs, etc.)</td></tr>
-<tr><td>Code-Verständnis</td><td>Ausgezeichnet</td><td>Ausgezeichnet</td></tr>
-<tr><td>Werkzeug-Integration</td><td>Grundlegend</td><td>Reichhaltig (MCP-Server)</td></tr>
-<tr><td>Sicherheit</td><td>Unternehmenstauglich</td><td>Standard</td></tr>
-<tr><td>Kostenlose Anfragen</td><td>Begrenzt</td><td>60/min, 1000/Tag</td></tr>
+<tr><td><strong>Feature</strong></td><td><strong>Claude Code</strong></td><td><strong>Gemini CLI</strong></td></tr>
+<tr><td>Context Window Length</td><td>200K tokens</td><td>1M tokens</td></tr>
+<tr><td>Multimodal Support</td><td>Limited</td><td>Powerful (images, PDFs, etc.)</td></tr>
+<tr><td>Code Understanding</td><td>Excellent</td><td>Excellent</td></tr>
+<tr><td>Tool Integration</td><td>Basic</td><td>Rich (MCP Servers)</td></tr>
+<tr><td>Security</td><td>Enterprise-grade</td><td>Standard</td></tr>
+<tr><td>Free Requests</td><td>Limited</td><td>60/min, 1000/day</td></tr>
 </tbody>
 </table>
-<h2 id="When-to-Choose-Claude-Code-vs-Gemini-CLI" class="common-anchor-header">Wann sollte man Claude Code vs. Gemini CLI wählen?<button data-href="#When-to-Choose-Claude-Code-vs-Gemini-CLI" class="anchor-icon" translate="no">
+<h2 id="When-to-Choose-Claude-Code-vs-Gemini-CLI" class="common-anchor-header">When to Choose Claude Code vs Gemini CLI?<button data-href="#When-to-Choose-Claude-Code-vs-Gemini-CLI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -126,24 +126,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem wir nun die wichtigsten Funktionen der beiden Tools verglichen haben, möchte ich Ihnen nun erläutern, wann Sie sich für eines der beiden Tools entscheiden sollten:</p>
-<p><strong>Wählen Sie Gemini CLI, wenn:</strong></p>
+    </button></h2><p>Now that we’ve compared the key features of both tools, here are my takeaways on when to choose each:</p>
+<p><strong>Choose Gemini CLI if:</strong></p>
 <ul>
-<li><p>Kosteneffizienz und schnelles Experimentieren im Vordergrund stehen</p></li>
-<li><p>Sie an großen Projekten arbeiten, die große Kontextfenster benötigen</p></li>
-<li><p>Sie modernste Open-Source-Tools lieben</p></li>
-<li><p>plattformübergreifende Kompatibilität entscheidend ist</p></li>
-<li><p>Sie leistungsstarke multimodale Funktionen wünschen</p></li>
+<li><p>Cost-effectiveness and rapid experimentation are priorities</p></li>
+<li><p>You’re working on large projects that need massive context windows</p></li>
+<li><p>You love cutting-edge, open-source tools</p></li>
+<li><p>Cross-platform compatibility is crucial</p></li>
+<li><p>You want powerful multimodal capabilities</p></li>
 </ul>
-<p><strong>Wählen Sie Claude Code, wenn:</strong></p>
+<p><strong>Choose Claude Code if:</strong></p>
 <ul>
-<li><p>Sie hochwertige Codegenerierung benötigen</p></li>
-<li><p>Sie unternehmenskritische kommerzielle Anwendungen entwickeln</p></li>
-<li><p>Unterstützung auf Unternehmensebene nicht verhandelbar ist</p></li>
-<li><p>Code-Qualität übertrumpft Kostenüberlegungen</p></li>
-<li><p>Sie hauptsächlich unter macOS arbeiten</p></li>
+<li><p>You need high-quality code generation</p></li>
+<li><p>You’re building mission-critical commercial applications</p></li>
+<li><p>Enterprise-level support is non-negotiable</p></li>
+<li><p>Code quality trumps cost considerations</p></li>
+<li><p>You’re primarily working on macOS</p></li>
 </ul>
-<h2 id="Claude-Code-vs-Gemini-CLI-Setup-and-Best-Practices" class="common-anchor-header">Claude Code vs. Gemini CLI: Einrichtung und Best Practices<button data-href="#Claude-Code-vs-Gemini-CLI-Setup-and-Best-Practices" class="anchor-icon" translate="no">
+<h2 id="Claude-Code-vs-Gemini-CLI-Setup-and-Best-Practices" class="common-anchor-header">Claude Code vs. Gemini CLI: Setup and Best Practices<button data-href="#Claude-Code-vs-Gemini-CLI-Setup-and-Best-Practices" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -158,8 +158,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem wir nun ein grundlegendes Verständnis für die Fähigkeiten dieser beiden Terminal-KI-Tools haben, wollen wir uns genauer ansehen, wie man mit ihnen anfängt und welche Best Practices es gibt.</p>
-<h3 id="Claude-Code-Setup-and-Best-Practices" class="common-anchor-header">Einrichtung von Claude Code und bewährte Vorgehensweisen</h3><p><strong>Installation:</strong> Claude Code benötigt npm und Node.js Version 18 oder höher.</p>
+    </button></h2><p>Now that we have a basic understanding of the capabilities of these two terminal AI tools, let’s take a closer look at how to get started with them and the best practices.</p>
+<h3 id="Claude-Code-Setup-and-Best-Practices" class="common-anchor-header">Claude Code Setup and Best Practices</h3><p><strong>Installation:</strong> Claude Code requires npm and Node.js version 18 or higher.</p>
 <pre><code translate="no"><span class="hljs-comment"># Install Claude Code on your system</span>
 npm install -g @anthropic-ai/claude-code
 
@@ -172,14 +172,15 @@ claude --version
 <span class="hljs-comment"># Launch Claude Code</span>
 Claude
 <button class="copy-code-btn"></button></code></pre>
-<p>****  <span class="img-wrapper">
+<p>****
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_c413bbf950.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 ****</p>
-<p><strong>Bewährte Praktiken für Claude Code:</strong></p>
+<p><strong>Best Practices for Claude Code:</strong></p>
 <ol>
-<li><strong>Beginnen Sie mit dem Verständnis der Architektur:</strong> Wenn Sie sich einem neuen Projekt nähern, lassen Sie sich von Claude Code helfen, die Gesamtstruktur zunächst in natürlicher Sprache zu verstehen.</li>
+<li><strong>Start with architecture understanding:</strong> When approaching a new project, have Claude Code help you understand the overall structure first using natural language.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-meta"># Let Claude analyze project architecture</span>
 &gt; Analyze the main architectural components of <span class="hljs-keyword">this</span> project
@@ -191,7 +192,7 @@ Claude
 &gt; Give me an overview of <span class="hljs-keyword">this</span> codebase
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li><strong>Seien Sie spezifisch und liefern Sie Kontext:</strong> Je mehr Kontext Sie angeben, desto genauer werden die Vorschläge von Claude Code sein.</li>
+<li><strong>Be specific and provide context:</strong> The more context you give, the more accurate Claude Code’s suggestions will be.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-meta"># Implement specific features</span>
 &gt; Implement an initial version <span class="hljs-keyword">for</span> GitHub issue <span class="hljs-meta">#123</span>
@@ -203,7 +204,7 @@ Claude
 &gt; Refactor <span class="hljs-keyword">this</span> function to make it more readable <span class="hljs-keyword">and</span> maintainable
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li><strong>Nutzen Sie es zur Fehlersuche und Optimierung:</strong></li>
+<li><strong>Use it for debugging and optimization:</strong></li>
 </ol>
 <pre><code translate="no"><span class="hljs-meta"># Error analysis</span>
 &gt; What caused <span class="hljs-keyword">this</span> error? How can we fix it?
@@ -214,14 +215,14 @@ Claude
 <span class="hljs-meta"># Code review</span>
 &gt; Review <span class="hljs-keyword">this</span> pull request <span class="hljs-keyword">and</span> point <span class="hljs-keyword">out</span> potential issues
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Zusammenfassung:</strong></p>
+<p><strong>Summary:</strong></p>
 <ul>
-<li><p>Nutzen Sie progressives Lernen, indem Sie mit einfachen Code-Erklärungen beginnen und dann allmählich zu komplexeren Code-Generierungsaufgaben übergehen</p></li>
-<li><p>Behalten Sie den Gesprächskontext bei, da Claude Code sich an frühere Diskussionen erinnert.</p></li>
-<li><p>Geben Sie Feedback mit dem Befehl <code translate="no">bug</code>, um Probleme zu melden und das Tool zu verbessern</p></li>
-<li><p>Bleiben Sie sicherheitsbewusst, indem Sie die Richtlinien zur Datenerfassung überprüfen und bei sensiblem Code Vorsicht walten lassen</p></li>
+<li><p>Use progressive learning by starting with simple code explanations, then gradually moving to more complex code generation tasks</p></li>
+<li><p>Maintain conversation context since Claude Code remembers earlier discussions</p></li>
+<li><p>Provide feedback using the <code translate="no">bug</code> command to report issues and help improve the tool</p></li>
+<li><p>Stay security-conscious by reviewing data collection policies and exercising caution with sensitive code</p></li>
 </ul>
-<h3 id="Gemini-CLI-Setup-and-Best-Practices" class="common-anchor-header">Gemini CLI-Einrichtung und bewährte Praktiken</h3><p><strong>Installation:</strong> Wie Claude Code erfordert auch Gemini CLI npm und Node.js Version 18 oder höher.</p>
+<h3 id="Gemini-CLI-Setup-and-Best-Practices" class="common-anchor-header">Gemini CLI Setup and Best Practices</h3><p><strong>Installation:</strong> Like Claude Code, Gemini CLI requires npm and Node.js version 18 or higher.</p>
 <pre><code translate="no"><span class="hljs-comment"># Install Gemini CLI</span>
 npm install -g @google/gemini-cli
 
@@ -240,12 +241,12 @@ Gemini
     <span></span>
   </span>
 </p>
-<p>Wenn Sie über ein persönliches Konto verfügen, melden Sie sich mit Ihrem Google-Konto an, um sofortigen Zugriff zu erhalten, wobei das Limit bei 60 Anfragen pro Minute liegt. Für höhere Limits konfigurieren Sie bitte Ihren API-Schlüssel:</p>
+<p>If you have a personal account, log in with your Google account for immediate access, with a limit of 60 requests per minute. For higher limits, configure your API key:</p>
 <pre><code translate="no"><span class="hljs-keyword">export</span> <span class="hljs-variable constant_">GEMINI_API_KEY</span>=<span class="hljs-string">&quot;YOUR_API_KEY&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Best Practices für Gemini CLI:</strong></p>
+<p><strong>Best Practices for Gemini CLI:</strong></p>
 <ol>
-<li><strong>Beginnen Sie mit dem Verständnis der Architektur:</strong> Wenn Sie sich einem neuen Projekt nähern, lassen Sie sich wie bei Claude Code von Gemini CLI helfen, die Gesamtstruktur zunächst in natürlicher Sprache zu verstehen. Beachten Sie, dass Gemini CLI ein Kontextfenster mit 1 Million Token unterstützt, was es für die Analyse großer Codebasen sehr effektiv macht.</li>
+<li><strong>Start with architecture understanding:</strong> Like Claude Code, when approaching a new project, have Gemini CLI help you understand the overall structure first using natural language. Note that Gemini CLI supports a 1 million token context window, making it highly effective for large-scale codebase analysis.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-meta"># Analyze project architecture</span>
 &gt; Analyze the main architectural components of <span class="hljs-keyword">this</span> project
@@ -257,7 +258,7 @@ Gemini
 &gt; Give me an overview of <span class="hljs-keyword">this</span> codebase
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li><strong>Nutzen Sie seine multimodalen Fähigkeiten:</strong> Dies ist der Punkt, an dem Gemini CLI wirklich glänzt.</li>
+<li><strong>Leverage its multimodal capabilities:</strong> This is where Gemini CLI truly shines.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-meta"># Generate app from PDF</span>
 &gt; Create a <span class="hljs-keyword">new</span> app based <span class="hljs-keyword">on</span> <span class="hljs-keyword">this</span> PDF design document
@@ -269,7 +270,7 @@ Gemini
 &gt; Convert all images <span class="hljs-keyword">in</span> <span class="hljs-keyword">this</span> directory to PNG format <span class="hljs-keyword">and</span> rename <span class="hljs-keyword">using</span> EXIF data
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li><strong>Erkunden Sie Tool-Integrationen:</strong> Gemini CLI kann mit mehreren Tools und MCP-Servern integriert werden, um die Funktionalität zu erweitern.</li>
+<li><strong>Explore tool integrations:</strong> Gemini CLI can integrate with multiple tools and MCP servers for enhanced functionality.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment"># Connect external tools</span>
 &gt; Use MCP server to connect my <span class="hljs-built_in">local</span> system tools
@@ -280,14 +281,14 @@ Gemini
 <span class="hljs-comment"># Search integration</span>
 &gt; Use Google search tool to find related technical documentation
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Zusammenfassung:</strong></p>
+<p><strong>Summary:</strong></p>
 <ul>
-<li><p>Seien Sie projektorientiert: Starten Sie Gemini immer aus Ihrem Projektverzeichnis, um ein besseres kontextuelles Verständnis zu erhalten.</p></li>
-<li><p>Maximieren Sie die multimodalen Funktionen, indem Sie Bilder, Dokumente und andere Medien als Eingaben verwenden, nicht nur Text</p></li>
-<li><p>Erforschen Sie Tool-Integrationen, indem Sie externe Tools mit MCP-Servern verbinden</p></li>
-<li><p>Verbessern Sie die Suchfunktionen, indem Sie die integrierte Google-Suche für aktuelle Informationen nutzen.</p></li>
+<li><p>Be project-oriented: Always launch Gemini from your project directory for better contextual understanding</p></li>
+<li><p>Maximize multimodal features by using images, documents, and other media as inputs, not just text</p></li>
+<li><p>Explore tool integrations by connecting external tools with MCP servers</p></li>
+<li><p>Enhance search capabilities by using built-in Google search for up-to-date information</p></li>
 </ul>
-<h2 id="AI-Code-is-Outdated-on-Arrival-Here’s-How-to-Fix-it-with-Milvus" class="common-anchor-header">AI-Code ist bei der Ankunft veraltet. So beheben Sie ihn mit Milvus<button data-href="#AI-Code-is-Outdated-on-Arrival-Here’s-How-to-Fix-it-with-Milvus" class="anchor-icon" translate="no">
+<h2 id="AI-Code-is-Outdated-on-Arrival-Here’s-How-to-Fix-it-with-Milvus" class="common-anchor-header">AI Code is Outdated on Arrival. Here’s How to Fix it with Milvus<button data-href="#AI-Code-is-Outdated-on-Arrival-Here’s-How-to-Fix-it-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -302,14 +303,14 @@ Gemini
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><em>KI-Codierungstools wie Claude Code und Gemini CLI sind leistungsstark - aber sie haben einen blinden Fleck:</em> <strong><em>Sie wissen nicht, was aktuell ist</em></strong><em>.</em></p>
-<p><em>Die Realität? Die meisten Modelle generieren veraltete Muster direkt nach dem Auspacken. Sie wurden vor Monaten, manchmal vor Jahren trainiert. Sie können zwar schnell Code generieren, aber sie können nicht garantieren, dass er</em> <strong><em>Ihre neuesten APIs</em></strong><em>, Frameworks oder SDK-Versionen</em><em>widerspiegelt</em><em>.</em></p>
-<p><strong>Ein reales Beispiel:</strong></p>
-<p>Wenn Sie Cursor fragen, wie man eine Verbindung zu Milvus herstellt, erhalten Sie möglicherweise die folgende Antwort:</p>
+    </button></h2><p><em>AI coding tools like Claude Code and Gemini CLI are powerful—but they have a blind spot:</em> <strong><em>they don’t know what’s current</em></strong><em>.</em></p>
+<p><em>The reality? Most models generate outdated patterns straight out of the box. They were trained months ago, sometimes years. So while they can generate code quickly, they can’t guarantee that it reflects</em> <strong><em>your latest APIs</em></strong><em>, frameworks, or SDK versions.</em></p>
+<p><strong>Real example:</strong></p>
+<p>Ask Cursor how to connect to Milvus, and you might get this:</p>
 <pre><code translate="no">connections.<span class="hljs-title function_">connect</span>(<span class="hljs-string">&quot;default&quot;</span>, host=<span class="hljs-string">&quot;localhost&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Sieht gut aus, aber diese Methode ist jetzt veraltet. Der empfohlene Ansatz ist die Verwendung von <code translate="no">MilvusClient</code>, aber die meisten Assistenten wissen das noch nicht.</p>
-<p>Oder nehmen Sie OpenAIs eigene API. Viele Tools schlagen immer noch <code translate="no">gpt-3.5-turbo</code> über <code translate="no">openai.ChatCompletion</code> vor, eine Methode, die im März 2024 veraltet ist. Sie ist langsamer, kostet mehr und liefert schlechtere Ergebnisse. Aber das LLM weiß das nicht.</p>
+<p>Looks fine, except that method’s now deprecated. The recommended approach is to use  <code translate="no">MilvusClient</code> but most assistants don’t know that yet.</p>
+<p>Or take OpenAI’s own API. Many tools still suggest <code translate="no">gpt-3.5-turbo</code> via <code translate="no">openai.ChatCompletion</code>, a method deprecated in March 2024. It’s slower, costs more, and delivers worse results. But the LLM doesn’t know that.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_8f0d1a42b6.png" alt="" class="doc-image" id="" />
@@ -322,36 +323,36 @@ Gemini
     <span></span>
   </span>
 </p>
-<h3 id="The-Fix-Real-Time-Intelligence-with-Milvus-MCP-+-RAG" class="common-anchor-header">Die Lösung: Intelligenz in Echtzeit mit Milvus MCP + RAG</h3><p>Um dieses Problem zu lösen, haben wir zwei leistungsstarke Ideen kombiniert:</p>
+<h3 id="The-Fix-Real-Time-Intelligence-with-Milvus-MCP-+-RAG" class="common-anchor-header">The Fix: Real-Time Intelligence with Milvus MCP + RAG</h3><p>To solve this, we combined two powerful ideas:</p>
 <ul>
-<li><p><strong>Model Context Protocol (MCP)</strong>: Ein Standard für agentechnische Werkzeuge zur Interaktion mit Live-Systemen durch natürliche Sprache</p></li>
-<li><p><strong>Retrieval-Augmented Generation (RAG)</strong>: Holt die frischesten, relevantesten Inhalte auf Abruf</p></li>
+<li><p><strong>Model Context Protocol (MCP)</strong>: A standard for agentic tools to interact with live systems through natural language</p></li>
+<li><p><strong>Retrieval-Augmented Generation (RAG)</strong>: Fetches the freshest, most relevant content—on demand</p></li>
 </ul>
-<p>Zusammen machen sie Ihren Assistenten intelligenter und aktueller.</p>
+<p>Together, they make your assistant smarter and current.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_e6bc6cacd6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Und so funktioniert es:</strong></p>
+<p><strong>Here’s how it works:</strong></p>
 <ol>
-<li><p>Vorverarbeitung Ihrer Dokumentation, SDK-Referenzen und API-Anleitungen</p></li>
-<li><p>Speichern Sie sie als Vektoreinbettungen in <a href="https://milvus.io/"><strong>Milvus</strong></a>, unserer Open-Source-Vektordatenbank</p></li>
-<li><p>Wenn ein Entwickler eine Frage stellt (z. B. "Wie stelle ich eine Verbindung zu Milvus her?"), führt das System:</p>
+<li><p>Preprocess your documentation, SDK references, and API guides</p></li>
+<li><p>Store them as vector embeddings in <a href="https://milvus.io/"><strong>Milvus</strong></a>, our open-source vector database</p></li>
+<li><p>When a dev asks a question (e.g. “How do I connect to Milvus?”), the system:</p>
 <ul>
-<li><p>Führt eine <strong>semantische Suche</strong> durch</p></li>
-<li><p>ruft die relevantesten Dokumente und Beispiele ab</p></li>
-<li><p>Fügt sie in den Kontext der Eingabeaufforderung des Assistenten ein</p></li>
+<li><p>Runs a <strong>semantic search</strong></p></li>
+<li><p>Retrieves the most relevant docs and examples</p></li>
+<li><p>Injects them into the assistant’s prompt context</p></li>
 </ul></li>
 </ol>
 <ol start="4">
-<li>Ergebnis: Code-Vorschläge, die <strong>genau das</strong> widerspiegeln <strong>, was im Moment wahr ist</strong></li>
+<li>Result: code suggestions that reflect <strong>exactly what’s true right now</strong></li>
 </ol>
-<h3 id="Live-Code-Live-Docs" class="common-anchor-header">Live-Code, Live-Dokumente</h3><p>Mit dem <strong>Milvus MCP Server</strong> können Sie diesen Ablauf direkt in Ihre Programmierumgebung einbinden. Assistenten werden schlauer. Der Code wird besser. Entwickler bleiben im Fluss.</p>
-<p>Und das ist nicht nur theoretisch - wir haben diese Lösung im Vergleich zu anderen Systemen wie dem Agent Mode von Cursor, Context7 und DeepWiki getestet. Der Unterschied? Milvus + MCP fasst Ihr Projekt nicht nur zusammen, sondern bleibt mit ihm synchronisiert.</p>
-<p>Sehen Sie es in Aktion: <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">Warum Ihr Vibe Coding veralteten Code erzeugt und wie Sie dies mit Milvus MCP beheben können </a></p>
-<h2 id="The-Future-of-Coding-is-ConversationalAnd-Its-Happening-Right-Now" class="common-anchor-header">Die Zukunft des Programmierens ist konversationell - und sie findet gerade jetzt statt<button data-href="#The-Future-of-Coding-is-ConversationalAnd-Its-Happening-Right-Now" class="anchor-icon" translate="no">
+<h3 id="Live-Code-Live-Docs" class="common-anchor-header">Live Code, Live Docs</h3><p>With the <strong>Milvus MCP Server</strong>, you can plug this flow directly into your coding environment. Assistants get smarter. Code gets better. Devs stay in flow.</p>
+<p>And it’s not just theoretical—we’ve battle-tested this against other setups like Cursor’s Agent Mode, Context7, and DeepWiki. The difference? Milvus + MCP doesn’t just summarize your project—it stays in sync with it.</p>
+<p>See it in Action: <a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">Why Your Vibe Coding Generates Outdated Code and How to Fix It with Milvus MCP </a></p>
+<h2 id="The-Future-of-Coding-is-ConversationalAnd-Its-Happening-Right-Now" class="common-anchor-header">The Future of Coding is Conversational—And It’s Happening Right Now<button data-href="#The-Future-of-Coding-is-ConversationalAnd-Its-Happening-Right-Now" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -366,10 +367,10 @@ Gemini
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die KI-Revolution im Endgerät steht erst am Anfang. Wenn diese Tools ausgereift sind, werden wir wahrscheinlich eine noch engere Integration in die Entwicklungsabläufe, eine bessere Codequalität und Lösungen für das Währungsproblem durch Ansätze wie MCP+RAG sehen.</p>
-<p>Ganz gleich, ob Sie sich für Claude Code wegen seiner Qualität oder für Gemini CLI wegen seiner Zugänglichkeit und Leistungsfähigkeit entscheiden, eines ist klar: <strong>Die natürlichsprachliche Programmierung wird sich durchsetzen.</strong> Die Frage ist nicht, ob Sie diese Tools einsetzen sollten, sondern wie Sie sie effektiv in Ihren Entwicklungsworkflow integrieren.</p>
-<p>Wir erleben einen grundlegenden Wandel vom Auswendiglernen der Syntax hin zu Gesprächen mit unserem Code. <strong>Die Zukunft des Programmierens ist dialogorientiert - und sie findet genau jetzt in Ihrem Terminal statt.</strong></p>
-<h2 id="Keep-Reading" class="common-anchor-header">Lesen Sie weiter<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+    </button></h2><p>The terminal AI revolution is just beginning. As these tools mature, we’ll likely see even tighter integration with development workflows, better code quality, and solutions to the currency problem through approaches like MCP+RAG.</p>
+<p>Whether you choose Claude Code for its quality or Gemini CLI for its accessibility and power, one thing is clear: <strong>natural language programming is here to stay.</strong> The question isn’t whether to adopt these tools, but how to integrate them effectively into your development workflow.</p>
+<p>We’re witnessing a fundamental shift from memorizing syntax to having conversations with our code. <strong>The future of coding is conversational—and it’s happening right now in your terminal.</strong></p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -385,9 +386,9 @@ Gemini
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md">Erstellung eines produktionsreifen KI-Assistenten mit Spring Boot und Milvus</a></p></li>
-<li><p><a href="https://zilliz.com/blog/introducing-zilliz-mcp-server">Zilliz MCP Server: Natürlicher Sprachzugriff auf Vektordatenbanken - Zilliz blog</a></p></li>
-<li><p><a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBench 1.0: Real-World Benchmarking für Vektordatenbanken - Milvus Blog</a></p></li>
-<li><p><a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">Warum Ihre Vibe-Codierung veralteten Code erzeugt und wie man das mit Milvus MCP beheben kann</a></p></li>
-<li><p><a href="https://milvus.io/blog/why-ai-databases-do-not-need-sql.md">Warum KI-Datenbanken kein SQL brauchen </a></p></li>
+<li><p><a href="https://milvus.io/blog/building-a-production-ready-ai-assistant-with-spring-boot-and-milvus.md">Building a Production-Ready AI Assistant with Spring Boot and Milvus</a></p></li>
+<li><p><a href="https://zilliz.com/blog/introducing-zilliz-mcp-server">Zilliz MCP Server: Natural Language Access to Vector Databases - Zilliz blog</a></p></li>
+<li><p><a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBench 1.0: Real-World Benchmarking for Vector Databases - Milvus Blog</a></p></li>
+<li><p><a href="https://milvus.io/blog/why-vibe-coding-generate-outdated-code-and-how-to-fix-it-with-milvus-mcp.md">Why Your Vibe Coding Generates Outdated Code and How to Fix It with Milvus MCP</a></p></li>
+<li><p><a href="https://milvus.io/blog/why-ai-databases-do-not-need-sql.md">Why AI Databases Don’t Need SQL </a></p></li>
 </ul>

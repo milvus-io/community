@@ -1,9 +1,9 @@
 ---
 id: >-
   unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
-title: >-
-  فتح الاسترجاع الحقيقي على مستوى الكيان: مجموعة جديدة من الهياكل وقدرات MAX_SIM
-  في ميلفوس
+title: >
+  Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM
+  Capabilities in Milvus
 author: 'Jeremy Zhu, Min Tian'
 date: 2025-12-05T00:00:00.000Z
 cover: assets.zilliz.com/Array_of_Structs_new_cover_1_d742c413ab.png
@@ -15,24 +15,24 @@ meta_keywords: 'Milvus, Array of Structs, MAX_SIM, vector database, multi-vector
 meta_title: |
   Array of Structs in Milvus: Entity-Level Multi-Vector Retrieval
 desc: >-
-  تعرّف على كيفية تمكين مصفوفة الهياكل وMax_SIM في Milvus من إجراء بحث حقيقي على
-  مستوى الكيان للبيانات متعددة المتجهات، مما يؤدي إلى التخلص من الاستبعاد وتحسين
-  دقة الاسترجاع.
+  Learn how Array of Structs and MAX_SIM in Milvus enable true entity-level
+  search for multi-vector data, eliminating deduping and improving retrieval
+  accuracy.
 origin: >-
   https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md
 ---
-<p>إذا كنت قد أنشأت تطبيقات ذكاء اصطناعي فوق قواعد البيانات المتجهة، فمن المحتمل أنك واجهت نفس المشكلة: تسترجع قاعدة البيانات تضمينات الأجزاء الفردية، لكن تطبيقك يهتم <strong><em>بالكيانات</em>.</strong> عدم التطابق يجعل سير عمل الاسترجاع بأكمله معقدًا.</p>
-<p>من المحتمل أنك رأيت هذا الأمر مرارًا وتكرارًا:</p>
+<p>If you’ve built AI applications on top of vector databases, you’ve probably hit the same pain point: the database retrieves embeddings of individual chunks, but your application cares about <strong><em>entities</em>.</strong> The mismatch makes the entire retrieval workflow complex.</p>
+<p>You’ve likely seen this play out again and again:</p>
 <ul>
-<li><p><strong>قواعد المعرفة RAG:</strong> يتم تجزئة المقالات إلى أجزاء مضمنة في فقرات، لذلك يقوم محرك البحث بإرجاع أجزاء متناثرة بدلاً من المستند الكامل.</p></li>
-<li><p><strong>توصيات التجارة الإلكترونية:</strong> يحتوي المنتج على تضمينات صور متعددة، ويعيد نظامك خمس زوايا لنفس العنصر بدلاً من خمسة منتجات فريدة.</p></li>
-<li><p><strong>منصات الفيديو:</strong> يتم تقسيم مقاطع الفيديو إلى تضمينات مقاطع فيديو، ولكن نتائج البحث تُظهر شرائح من نفس الفيديو بدلاً من إدخال واحد مدمج.</p></li>
-<li><p><strong>استرجاع على غرار ColBERT / ColPali:</strong> تتوسع المستندات إلى مئات من التضمينات على مستوى الرمز أو مستوى التصحيح، وتعود نتائجك كقطع صغيرة لا تزال تتطلب الدمج.</p></li>
+<li><p><strong>RAG knowledge bases:</strong> Articles are chunked into paragraph embeddings, so the search engine returns scattered fragments instead of the complete document.</p></li>
+<li><p><strong>E-commerce recommendation:</strong> A product has multiple image embeddings, and your system returns five angles of the same item rather than five unique products.</p></li>
+<li><p><strong>Video platforms:</strong> Videos are split into clip embeddings, but search results surface slices of the same video rather than a single consolidated entry.</p></li>
+<li><p><strong>ColBERT / ColPali–style retrieval:</strong> Documents expand into hundreds of token or patch-level embeddings, and your results come back as tiny pieces that still require merging.</p></li>
 </ul>
-<p>تنبع جميع هذه المشكلات من <em>نفس الفجوة المعمارية</em>: معظم قواعد البيانات المتجهة تتعامل مع كل تضمين كصف منفصل، بينما تعمل التطبيقات الحقيقية على كيانات ذات مستوى أعلى - المستندات والمنتجات ومقاطع الفيديو والعناصر والمشاهد. ونتيجةً لذلك، تضطر الفرق الهندسية إلى إعادة بناء الكيانات يدويًا باستخدام منطق إلغاء التكرار، والتجميع، والتجميع، والتجميع في مجموعات، وإعادة ترتيبها. إنها تعمل، لكنها هشة وبطيئة وتضخم طبقة التطبيق الخاصة بك بمنطق لا ينبغي أن يكون هناك في المقام الأول.</p>
-<p>يغلق<a href="https://milvus.io/docs/release_notes.md#v264">ميلفوس 2.6.4</a> هذه الفجوة بميزة جديدة: <a href="https://milvus.io/docs/array-of-structs.md"><strong>صفيف الهياكل</strong></a> مع نوع القياس <strong>MAX_SIM</strong>. تسمح هذه الميزات معًا بتخزين جميع التضمينات لكيان واحد في سجل واحد وتمكين Milvus من تسجيل الكيان وإرجاعه بشكل كلي. لا مزيد من مجموعات النتائج المكررة المملوءة. لا مزيد من المعالجة اللاحقة المعقدة مثل إعادة الترتيب والدمج</p>
-<p>سنستعرض في هذه المقالة كيفية عمل مصفوفة الهياكل و MAX_SIM - وسنوضحها من خلال مثالين حقيقيين: استرجاع مستندات ويكيبيديا والبحث عن المستندات المستندة إلى صور ColPali.</p>
-<h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">ما هي مصفوفة الهياكل؟<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
+<p>All of these issues stem from the <em>same architectural gap</em>: most vector databases treat each embedding as an isolated row, while real applications operate on higher-level entities — documents, products, videos, items, scenes. As a result, engineering teams are forced to reconstruct entities manually using deduplication, grouping, bucketing, and reranking logic. It works, but it’s fragile, slow, and bloats your application layer with logic that should never have lived there in the first place.</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6.4</a> closes this gap with a new feature: <a href="https://milvus.io/docs/array-of-structs.md"><strong>Array of Structs</strong></a> with the <strong>MAX_SIM</strong> metric type. Together, they allow all embeddings for a single entity to be stored in a single record and enable Milvus to score and return the entity holistically. No more duplicate-filled result sets. No more complex post-processing like reranking and merging</p>
+<p>In this article, we’ll walk through how Array of Structs and MAX_SIM work—and demonstrate them through two real examples: Wikipedia document retrieval and ColPali image-based document search.</p>
+<h2 id="What-is-an-Array-of-Structs" class="common-anchor-header">What is an Array of Structs?<button data-href="#What-is-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,8 +47,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في ميلفوس، يسمح حقل <strong>مصفوفة الهياكل</strong> باحتواء سجل واحد على <em>قائمة مرتبة</em> من عناصر الهيكل، كل منها يتبع نفس المخطط المحدد مسبقًا. يمكن أن تحتوي البنية على متجهات متعددة بالإضافة إلى حقول قياسية أو سلاسل أو أي أنواع أخرى مدعومة. بعبارة أخرى، يتيح لك تجميع جميع الأجزاء التي تنتمي إلى كيان واحد - تضمين الفقرات، وطرق عرض الصور، وناقلات الرموز، والبيانات الوصفية - مباشرةً داخل صف واحد.</p>
-<p>فيما يلي مثال لكيان من مجموعة تحتوي على حقل صفيف من الهياكل.</p>
+    </button></h2><p>In Milvus, an <strong>Array of Structs</strong> field allows a single record to contain an <em>ordered list</em> of Struct elements, each following the same predefined schema. A Struct can hold multiple vectors as well as scalar fields, strings, or any other supported types. In other words, it lets you bundle all the pieces that belong to one entity—paragraph embeddings, image views, token vectors, metadata—directly inside one row.</p>
+<p>Here’s an example of an entity from a collection that contains an Array of Structs field.</p>
 <pre><code translate="no">{
     <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-number">0</span>,
     <span class="hljs-string">&#x27;title&#x27;</span>: <span class="hljs-string">&#x27;Walden&#x27;</span>,
@@ -71,9 +71,9 @@ origin: >-
     <span class="hljs-comment">// hightlight-end</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>في المثال أعلاه، الحقل <code translate="no">chunks</code> هو حقل صفيف من حقول الهياكل، ويحتوي كل عنصر من عناصر الهياكل على الحقول الخاصة به، وهي <code translate="no">text</code> و <code translate="no">text_vector</code> و <code translate="no">chapter</code>.</p>
-<p>يحل هذا النهج مشكلة نمذجة طويلة الأمد في قواعد البيانات المتجهة. تقليديًا، يجب أن يصبح كل تضمين أو سمة صفًا خاصًا به، مما يفرض تقسيم <strong>الكيانات متعددة المتجهات (المستندات والمنتجات ومقاطع الفيديو)</strong> إلى عشرات أو مئات أو حتى آلاف السجلات. باستخدام Array of Structs، يتيح لك Milvus تخزين الكيان متعدد المتجهات بالكامل في حقل واحد، مما يجعله مناسبًا بشكل طبيعي لقوائم الفقرات أو تضمينات الرموز أو تسلسلات المقاطع أو الصور متعددة المشاهد أو أي سيناريو يتكون فيه عنصر منطقي واحد من العديد من المتجهات.</p>
-<h2 id="How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="common-anchor-header">كيف تعمل مصفوفة الهياكل مع MAX_SIM؟<button data-href="#How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="anchor-icon" translate="no">
+<p>In the example above, the <code translate="no">chunks</code> field is an Array of Structs field, and each Struct element contains its own fields, namely <code translate="no">text</code>, <code translate="no">text_vector</code>, and <code translate="no">chapter</code>.</p>
+<p>This approach solves a long-standing modeling issue in vector databases. Traditionally, every embedding or attribute has to become its own row, which forces <strong>multi-vector entities (documents, products, videos)</strong> to be split into dozens, hundreds, or even thousands of records. With Array of Structs, Milvus lets you store the entire multi-vector entity in a single field, making it a natural fit for paragraph lists, token embeddings, clip sequences, multi-view images, or any scenario where one logical item is composed of many vectors.</p>
+<h2 id="How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="common-anchor-header">How Does an Array of Structs Work with MAX_SIM?<button data-href="#How-Does-an-Array-of-Structs-Work-with-MAXSIM" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -88,67 +88,67 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يوجد فوق بنية مصفوفة الهياكل الجديدة هذه <strong>MAX_SIM،</strong> وهي استراتيجية تسجيل جديدة تجعل استرجاع الدلالات مدركًا للكيانات. عندما يأتي استعلام، يقارنه Milvus مع <em>كل</em> متجه داخل كل مصفوفة من الهياكل ويأخذ <strong>الحد الأقصى للتشابه</strong> كدرجة نهائية للكيان. ثم يتم ترتيب الكيان وإرجاعه بناءً على تلك الدرجة الواحدة. هذا يتجنب مشكلة قاعدة البيانات المتجهة التقليدية المتمثلة في استرداد الأجزاء المبعثرة ودفع عبء التجميع وإلغاء التصنيف وإعادة الترتيب إلى طبقة التطبيق. باستخدام MAX_SIM، يصبح الاسترجاع على مستوى الكيان مدمجًا ومتسقًا وفعالًا.</p>
-<p>لفهم كيفية عمل MAX_SIM عمليًا، دعونا نستعرض مثالًا ملموسًا.</p>
-<p><strong>ملاحظة:</strong> يتم إنشاء جميع المتجهات في هذا المثال بواسطة نموذج التضمين نفسه، ويتم قياس التشابه باستخدام تشابه جيب التمام في النطاق [0،1].</p>
-<p>لنفترض أن مستخدمًا يبحث عن <strong>"دورة تعلم الآلة للمبتدئين".</strong></p>
-<p>تم ترميز الاستعلام إلى ثلاثة <strong>رموز</strong>:</p>
+    </button></h2><p>Layered on top of this new array of structs structure is <strong>MAX_SIM</strong>, a new scoring strategy that makes semantic retrieval entity-aware. When a query comes in, Milvus compares it against <em>every</em> vector inside each Array of Structs and takes the <strong>maximum similarity</strong> as the entity’s final score. The entity is then ranked—and returned—based on that single score. This avoids the classic vector-database problem of retrieving scattered fragments and pushing the burden of grouping, deduping, and reranking into the application layer. With MAX_SIM, entity-level retrieval becomes built-in, consistent, and efficient.</p>
+<p>To understand how MAX_SIM works in practice, let’s walk through a concrete example.</p>
+<p><strong>Note:</strong> All vectors in this example are generated by the same embedding model, and similarity is measured with cosine similarity in the [0,1] range.</p>
+<p>Suppose a user searches for <strong>“Machine Learning Beginner Course.”</strong></p>
+<p>The query is tokenized into three <strong>tokens</strong>:</p>
 <ul>
-<li><p><em>تعلّم الآلة</em></p></li>
-<li><p><em>مبتدئ</em></p></li>
-<li><p><em>دورة تدريبية</em></p></li>
+<li><p><em>Machine learning</em></p></li>
+<li><p><em>beginner</em></p></li>
+<li><p><em>course</em></p></li>
 </ul>
-<p>يتم بعد ذلك <strong>تحويل</strong> كل رمز من هذه الرموز <strong>إلى متجه تضمين</strong> بواسطة نفس نموذج التضمين المستخدم للمستندات.</p>
-<p>والآن، تخيل أن قاعدة البيانات المتجهة تحتوي على مستندين:</p>
+<p>Each of these tokens is then <strong>converted into an embedding vector</strong> by the same embedding model used for the documents.</p>
+<p>Now, imagine the vector database contains two documents:</p>
 <ul>
-<li><p><strong>doc_1:</strong> <em>دليل تمهيدي للشبكات العصبية العميقة باستخدام بايثون</em></p></li>
-<li><p><strong>المستند_2:</strong> <em>دليل متقدم لقراءة أوراق LLM</em></p></li>
+<li><p><strong>doc_1:</strong> <em>An Introduction Guide to Deep Neural Networks with Python</em></p></li>
+<li><p><strong>doc_2:</strong> <em>An Advanced Guide to LLM Paper Reading</em></p></li>
 </ul>
-<p>تم تضمين كلا المستندين في متجهات وتم تخزينهما داخل مصفوفة من الهياكل.</p>
-<h3 id="Step-1-Compute-MAXSIM-for-doc1" class="common-anchor-header"><strong>الخطوة 1: حساب MAX_SIM لـ doc_1</strong></h3><p>بالنسبة لكل متجه استعلام، يحسب ميلفوس تشابه جيب التمام مقابل كل متجه في doc_1:</p>
+<p>Both documents have been embedded into vectors and stored inside an Array of Structs.</p>
+<h3 id="Step-1-Compute-MAXSIM-for-doc1" class="common-anchor-header"><strong>Step 1: Compute MAX_SIM for doc_1</strong></h3><p>For each query vector, Milvus computes its cosine similarity against every vector in doc_1:</p>
 <table>
 <thead>
-<tr><th></th><th>مقدمة</th><th>دليل</th><th>الشبكات العصبية العميقة</th><th>بيثون</th></tr>
+<tr><th></th><th>Introduction</th><th>guide</th><th>deep neural networks</th><th>python</th></tr>
 </thead>
 <tbody>
-<tr><td>التعلم الآلي</td><td>0.0</td><td>0.0</td><td><strong>0.9</strong></td><td>0.3</td></tr>
-<tr><td>مبتدئ</td><td><strong>0.8</strong></td><td>0.1</td><td>0.0</td><td>0.3</td></tr>
-<tr><td>الدورة</td><td>0.3</td><td><strong>0.7</strong></td><td>0.1</td><td>0.1</td></tr>
+<tr><td>machine learning</td><td>0.0</td><td>0.0</td><td><strong>0.9</strong></td><td>0.3</td></tr>
+<tr><td>beginner</td><td><strong>0.8</strong></td><td>0.1</td><td>0.0</td><td>0.3</td></tr>
+<tr><td>course</td><td>0.3</td><td><strong>0.7</strong></td><td>0.1</td><td>0.1</td></tr>
 </tbody>
 </table>
-<p>لكل متجه استعلام، يختار MAX_SIM <strong>أعلى</strong> تشابه من صفه:</p>
+<p>For each query vector, MAX_SIM selects the <strong>highest</strong> similarity from its row:</p>
 <ul>
-<li><p>التعلم الآلي → الشبكات العصبية العميقة (0.9)</p></li>
-<li><p>مبتدئ → مقدمة (0.8)</p></li>
-<li><p>الدورة التدريبية → دليل (0.7)</p></li>
+<li><p>machine learning → deep neural networks (0.9)</p></li>
+<li><p>beginner → introduction (0.8)</p></li>
+<li><p>course → guide (0.7)</p></li>
 </ul>
-<p>جمع أفضل التطابقات يعطي doc_1 <strong>درجة MAX_SIM 2.4</strong>.</p>
-<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">الخطوة 2: حساب MAX_SIM للمستند_2</h3><p>الآن نكرر العملية للمستند_2:</p>
+<p>Summing the best matches gives doc_1 a <strong>MAX_SIM score of 2.4</strong>.</p>
+<h3 id="Step-2-Compute-MAXSIM-for-doc2" class="common-anchor-header">Step 2: Compute MAX_SIM for doc_2</h3><p>Now we repeat the process for doc_2:</p>
 <table>
 <thead>
-<tr><th></th><th>متقدم</th><th>الدليل</th><th>LLM</th><th>الورقي</th><th>القراءة</th></tr>
+<tr><th></th><th>advanced</th><th>guide</th><th>LLM</th><th>paper</th><th>reading</th></tr>
 </thead>
 <tbody>
-<tr><td>التعلم الآلي</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
-<tr><td>مبتدئ</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
-<tr><td>الدورة</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
+<tr><td>machine learning</td><td>0.1</td><td>0.2</td><td><strong>0.9</strong></td><td>0.3</td><td>0.1</td></tr>
+<tr><td>beginner</td><td>0.4</td><td><strong>0.6</strong></td><td>0.0</td><td>0.2</td><td>0.5</td></tr>
+<tr><td>course</td><td>0.5</td><td><strong>0.8</strong></td><td>0.1</td><td>0.4</td><td>0.7</td></tr>
 </tbody>
 </table>
-<p>أفضل التطابقات لـ doc_2 هي</p>
+<p>The best matches for doc_2 are:</p>
 <ul>
-<li><p>"التعلم الآلي" → "LLM" (0.9)</p></li>
-<li><p>"مبتدئ" → "دليل" (0.6)</p></li>
-<li><p>"دورة" → "مرشد" (0.8)</p></li>
+<li><p>“machine learning” → “LLM” (0.9)</p></li>
+<li><p>“beginner” → “guide” (0.6)</p></li>
+<li><p>“course” → “guide” (0.8)</p></li>
 </ul>
-<p>جمعها يعطي doc_2 <strong>درجة MAX_SIM 2.3</strong>.</p>
-<h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">الخطوة 3: مقارنة الدرجات</h3><p>نظرًا لأن <strong>2.4 &gt; 2.3،</strong> فإن <strong>المستند_1 يحتل مرتبة أعلى من المستند2،</strong> وهو أمر منطقي بديهي لأن المستند_1 أقرب إلى دليل تعلم آلي تمهيدي.</p>
-<p>من هذا المثال يمكننا تسليط الضوء على ثلاث خصائص أساسية لـ MAX_SIM</p>
+<p>Summing them gives doc_2 a <strong>MAX_SIM score of 2.3</strong>.</p>
+<h3 id="Step-3-Compare-the-Scores" class="common-anchor-header">Step 3: Compare the Scores</h3><p>Because <strong>2.4 &gt; 2.3</strong>, <strong>doc_1 ranks higher than doc_2</strong>, which makes intuitive sense, since doc_1 is closer to an introductory machine learning guide.</p>
+<p>From this example, we can highlight three core characteristics of MAX_SIM:</p>
 <ul>
-<li><p><strong>الدلالي أولاً، وليس على أساس الكلمات الرئيسية:</strong> يقارن MAX_SIM التضمينات، وليس النصوص الحرفية. على الرغم من أن <em>"التعلّم الآلي"</em> و <em>"الشبكات العصبية العميقة"</em> لا يشتركان في أي كلمات متداخلة، إلا أن التشابه الدلالي بينهما يبلغ 0.9. وهذا ما يجعل MAX_SIM قويًا تجاه المرادفات وإعادة الصياغة والتداخل المفاهيمي وأعباء العمل الحديثة الغنية بالتضمينات.</p></li>
-<li><p><strong>غير حساس للطول والترتيب:</strong> لا يتطلب MAX_SIM أن يحتوي المستند والاستعلام على نفس عدد المتجهات (على سبيل المثال، يحتوي المستند_1 على 4 متجهات بينما يحتوي المستند 2 على 5 متجهات، وكلاهما يعمل بشكل جيد). كما أنه يتجاهل أيضًا ترتيب المتجهات - ظهور "مبتدئ" في الاستعلام سابقًا وظهور "مقدمة" لاحقًا في المستند ليس له أي تأثير على النتيجة.</p></li>
-<li><p><strong>كل متجه استعلام مهم:</strong> يأخذ MAX_SIM أفضل تطابق لكل متجه استعلام ويجمع أفضل الدرجات. هذا يمنع المتجهات غير المتطابقة من تحريف النتيجة ويضمن أن كل رمز استعلام مهم يساهم في النتيجة النهائية. على سبيل المثال، يقلل التطابق الأقل جودة لرمز "مبتدئ" في doc_2 من نتيجته الإجمالية مباشرةً.</p></li>
+<li><p><strong>Semantic first, not keyword-based:</strong> MAX_SIM compares embeddings, not text literals. Even though <em>“machine learning”</em> and <em>“deep neural networks”</em> share zero overlapping words, their semantic similarity is 0.9. This makes MAX_SIM robust to synonyms, paraphrases, conceptual overlap, and modern embedding-rich workloads.</p></li>
+<li><p><strong>Insensitive to length and order:</strong> MAX_SIM does not require the query and document to have the same number of vectors (e.g., doc_1 has 4 vectors while doc_2 has 5, and both work fine). It also ignores vector order—“beginner” appearing earlier in the query and “introduction” appearing later in the document has no impact on the score.</p></li>
+<li><p><strong>Every query vector matters:</strong> MAX_SIM takes the best match for each query vector and sums those best scores. This prevents unmatched vectors from skewing the result and ensures that every important query token contributes to the final score. For example, the lower-quality match for “beginner” in doc_2 directly reduces its overall score.</p></li>
 </ul>
-<h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">سبب أهمية MAX_SIM + صفيف الهياكل في قاعدة بيانات المتجهات<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">
+<h2 id="Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="common-anchor-header">Why MAX_SIM + Array of Structs Matter in Vector Database<button data-href="#Why-MAXSIM-+-Array-of-Structs-Matter-in-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -163,13 +163,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> هي قاعدة بيانات متجهات مفتوحة المصدر وعالية الأداء وتدعم الآن بشكل كامل MAX_SIM مع مصفوفة الهياكل، مما يتيح استرجاع متعدد المتجهات على مستوى الكيانات:</p>
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is an open-source, high-performance vector database and it now fully supports MAX_SIM together with Array of Structs, enabling vector-native, entity-level multi-vector retrieval:</p>
 <ul>
-<li><p><strong>تخزين الكيانات متعددة المتجهات محليًا:</strong> تسمح لك Array of Structs بتخزين مجموعات من المتجهات ذات الصلة في حقل واحد دون تقسيمها إلى صفوف منفصلة أو جداول مساعدة.</p></li>
-<li><p><strong>حساب أفضل تطابق فعال:</strong> بالاقتران مع فهارس المتجهات مثل IVF و HNSW، يمكن ل MAX_SIM حساب أفضل التطابقات دون مسح كل متجه، مما يحافظ على الأداء العالي حتى مع المستندات الكبيرة.</p></li>
-<li><p><strong>مصمم خصيصًا لأعباء العمل ذات الدلالات الثقيلة:</strong> تتفوق هذه الطريقة في استرجاع النصوص الطويلة، والمطابقة الدلالية متعددة الأوجه، والمحاذاة الدلالية متعددة الأوجه، ومحاذاة ملخص المستندات، والاستعلامات متعددة الكلمات الرئيسية، وسيناريوهات الذكاء الاصطناعي الأخرى التي تتطلب استدلالاً دلاليًا مرنًا ودقيقًا.</p></li>
+<li><p><strong>Store multi-vector entities natively:</strong> Array of Structs allows you to store groups of related vectors in a single field without splitting them into separate rows or auxiliary tables.</p></li>
+<li><p><strong>Efficient best-match computation:</strong> Combined with vector indexes such as IVF and HNSW, MAX_SIM can compute the best matches without scanning every vector, keeping performance high even with large documents.</p></li>
+<li><p><strong>Purpose-built for semantic-heavy workloads:</strong> This approach excels in long-text retrieval, multi-facet semantic matching, document–summary alignment, multi-keyword queries, and other AI scenarios that require flexible, fine-grained semantic reasoning.</p></li>
 </ul>
-<h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">متى تستخدم مصفوفة الهياكل<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
+<h2 id="When-to-Use-an-Array-of-Structs" class="common-anchor-header">When to Use an Array of Structs<button data-href="#When-to-Use-an-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -184,24 +184,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تصبح قيمة مصفوفة <strong>الهياكل</strong> واضحة عندما تنظر إلى ما تتيحه. توفر هذه الميزة في جوهرها ثلاث قدرات أساسية:</p>
+    </button></h2><p>The value of <strong>Array of Structs</strong> becomes clear when you look at what it enables. At its core, this feature provides three foundational capabilities:</p>
 <ul>
-<li><p><strong>إنها تجمع البيانات غير المتجانسة - المتجهات</strong>والمقاييس والسلاسل والبيانات الوصفية - في كائن واحد منظم.</p></li>
-<li><p><strong>تقوم بمحاذاة التخزين مع كيانات العالم الحقيقي،</strong> بحيث يتم ربط كل صف من قاعدة البيانات بشكل نظيف بعنصر فعلي مثل مقالة أو منتج أو فيديو.</p></li>
-<li><p><strong>عند دمجها مع الدوال المجمعة مثل MAX_SIM،</strong> فإنها تتيح استرجاعًا حقيقيًا متعدد المتجهات على مستوى الكيان مباشرةً من قاعدة البيانات، مما يلغي التكرار أو التجميع أو إعادة الترتيب في طبقة التطبيق.</p></li>
+<li><p><strong>It bundles heterogeneous data</strong>—vectors, scalars, strings, metadata—into a single structured object.</p></li>
+<li><p><strong>It aligns storage with real-world entities</strong>, so each database row maps cleanly to an actual item such as an article, a product, or a video.</p></li>
+<li><p><strong>When combined with aggregate functions like MAX_SIM</strong>, it enables true entity-level multi-vector retrieval directly from the database, eliminating deduplication, grouping, or reranking in the application layer.</p></li>
 </ul>
-<p>وبسبب هذه الخصائص، فإن مصفوفة الهياكل مناسبة بشكل طبيعي عندما <em>يتم تمثيل كيان منطقي واحد بواسطة ناقلات متعددة</em>. تشمل الأمثلة الشائعة المقالات المقسمة إلى فقرات، أو المستندات المتحللة إلى تضمينات رمزية، أو المنتجات الممثلة بصور متعددة. إذا كانت نتائج البحث الخاصة بك تعاني من تكرار النتائج، أو أجزاء مبعثرة، أو ظهور نفس الكيان عدة مرات في أعلى النتائج، فإن مصفوفة الهياكل تحل هذه المشكلات في طبقة التخزين والاسترجاع - وليس من خلال التصحيح اللاحق في التعليمات البرمجية للتطبيق.</p>
-<p>يعد هذا النمط قويًا بشكل خاص لأنظمة الذكاء الاصطناعي الحديثة التي تعتمد على <strong>الاسترجاع متعدد النواقل</strong>. على سبيل المثال:</p>
+<p>Because of these properties, Array of Structs is a natural fit whenever a <em>single logical entity is represented by multiple vectors</em>. Common examples include articles split into paragraphs, documents decomposed into token embeddings, or products represented by multiple images. If your search results suffer from duplicate hits, scattered fragments, or the same entity appearing multiple times in the top results, Array of Structs solves these issues at the storage and retrieval layer—not through after-the-fact patching in application code.</p>
+<p>This pattern is especially powerful for modern AI systems that rely on <strong>multi-vector retrieval</strong>.
+For instance:</p>
 <ul>
-<li><p>يمثّل<a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> مستندًا واحدًا على شكل 100-500 رمز مضمن لمطابقة دلالية دقيقة عبر مجالات مثل النصوص القانونية والأبحاث الأكاديمية.</p></li>
-<li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy">يقوم<strong>ColPali</strong> بتحويل </a>كل صفحة من صفحات PDF إلى 256-1024 رقعة صورة لاسترجاع متعدد الوسائط عبر البيانات المالية والعقود والفواتير وغيرها من المستندات الممسوحة ضوئيًا.</p></li>
+<li><p><a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search"><strong>ColBERT</strong></a> represents a single document as 100–500 token embeddings for fine-grained semantic matching across domains such as legal text and academic research.</p></li>
+<li><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong> </a>converts each PDF page into 256–1024 image patches for cross-modal retrieval across financial statements, contracts, invoices, and other scanned documents.</p></li>
 </ul>
-<p>تسمح مصفوفة من الهياكل لـ Milvus بتخزين جميع هذه المتجهات تحت كيان واحد وحساب التشابه الكلي (على سبيل المثال، MAX_SIM) بكفاءة وبشكل أصلي. لتوضيح ذلك، إليك مثالين ملموسين.</p>
-<h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">مثال 1: البحث عن منتجات التجارة الإلكترونية</h3><p>في السابق، كان يتم تخزين المنتجات ذات الصور المتعددة في مخطط مسطح - صورة واحدة لكل صف. كان المنتج الذي يحتوي على لقطات أمامية وجانبية وزاوية ينتج عنه ثلاثة صفوف. غالبًا ما كانت نتائج البحث تُرجع صورًا متعددة لنفس المنتج، مما كان يتطلب إلغاء التكرار وإعادة الترتيب يدويًا.</p>
-<p>مع مصفوفة الهياكل، يصبح كل منتج <strong>صفًا واحدًا</strong>. تعيش جميع عمليات تضمين الصور والبيانات الوصفية (الزاوية، is_primary، وما إلى ذلك) داخل حقل <code translate="no">images</code> كمصفوفة من الهياكل. يفهم ميلفوس أنها تنتمي إلى نفس المنتج ويعيد المنتج ككل - وليس صوره الفردية.</p>
-<h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">مثال 2: قاعدة المعرفة أو البحث في ويكيبيديا</h3><p>في السابق، كانت مقالة واحدة في ويكيبيديا مقسمة إلى <em>عدد N</em> من الفقرات. كانت نتائج البحث تُرجع فقرات مبعثرة، مما كان يجبر النظام على تجميعها وتخمين المقالة التي تنتمي إليها.</p>
-<p>مع صفيف الهياكل، تصبح المقالة بأكملها <strong>صفًا واحدًا</strong>. يتم تجميع جميع الفقرات وتضميناتها تحت حقل الفقرات، وتُرجع قاعدة البيانات المقالة كاملة، وليس أجزاءً مجزأة.</p>
-<h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">دروس عملية: استرجاع على مستوى المستند باستخدام صفيف الهياكل<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
+<p>An array of Structs lets Milvus store all these vectors under a single entity and compute aggregate similarity (e.g., MAX_SIM) efficiently and natively. To make this clearer, here are two concrete examples.</p>
+<h3 id="Example-1-E-commerce-Product-Search" class="common-anchor-header">Example 1: E-commerce Product Search</h3><p>Previously, products with multiple images were stored in a flat schema—one image per row. A product with front, side, and angled shots produced three rows. Search results often returned multiple images of the same product, requiring manual deduplication and reranking.</p>
+<p>With an Array of Structs, each product becomes <strong>one row</strong>. All image embeddings and metadata (angle, is_primary, etc.) live inside an <code translate="no">images</code> field as an array of structs. Milvus understands they belong to the same product and returns the product as a whole—not its individual images.</p>
+<h3 id="Example-2-Knowledge-Base-or-Wikipedia-Search" class="common-anchor-header">Example 2: Knowledge Base or Wikipedia Search</h3><p>Previously, a single Wikipedia article was split into <em>N</em> paragraph rows. Search results returned scattered paragraphs, forcing the system to group them and guess which article they belonged to.</p>
+<p>With an Array of Structs, the entire article becomes <strong>one row</strong>. All paragraphs and their embeddings are grouped under a paragraphs field, and the database returns the full article, not fragmented pieces.</p>
+<h2 id="Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="common-anchor-header">Hands-on Tutorials: Document-Level Retrieval with the Array of Structs<button data-href="#Hands-on-Tutorials-Document-Level-Retrieval-with-the-Array-of-Structs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,17 +217,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. استرجاع مستند ويكيبيديا</h3><p>سنستعرض في هذا البرنامج التعليمي كيفية استخدام مصفوفة <strong>الهياكل</strong> لتحويل البيانات على مستوى الفقرة إلى سجلات مستند كاملة - مما يسمح لملفوس بإجراء <strong>استرجاع حقيقي على مستوى المستند</strong> بدلاً من إرجاع أجزاء معزولة.</p>
-<p>تخزن العديد من خطوط أنابيب القاعدة المعرفية مقالات ويكيبيديا على شكل فقرات. يعمل هذا بشكل جيد للتضمين والفهرسة، لكنه يعطل الاسترجاع: عادةً ما يُرجع استعلام المستخدم فقرات مبعثرة، مما يجبرك على تجميع المقالة يدويًا وإعادة بنائها. باستخدام مصفوفة من الهياكل و MAX_SIM، يمكننا إعادة تصميم مخطط التخزين بحيث <strong>تصبح كل مقالة صفًا واحدًا،</strong> ويمكن لـ Milvus ترتيب المستند بأكمله وإرجاعه أصلاً.</p>
-<p>سنوضح في الخطوات التالية كيفية:</p>
+    </button></h2><h3 id="1-Wikipedia-Document-Retrieval" class="common-anchor-header">1. Wikipedia Document Retrieval</h3><p>In this tutorial, we’ll walk through how to use an <strong>Array of Structs</strong> to convert paragraph-level data into full document records—allowing Milvus to perform <strong>true document-level retrieval</strong> rather than returning isolated fragments.</p>
+<p>Many knowledge base pipelines store Wikipedia articles as paragraph chunks. This works well for embedding and indexing, but it breaks retrieval: a user query typically returns scattered paragraphs, forcing you to manually group and reconstruct the article. With an Array of Structs and MAX_SIM, we can redesign the storage schema so that <strong>each article becomes one row</strong>, and Milvus can rank and return the entire document natively.</p>
+<p>In the next steps, we’ll show how to:</p>
 <ol>
-<li><p>التحميل والمعالجة المسبقة لبيانات فقرات ويكيبيديا</p></li>
-<li><p>تجميع كل الفقرات التي تنتمي إلى نفس المقالة في مصفوفة من الهياكل</p></li>
-<li><p>إدراج هذه المستندات المهيكلة في ميلفوس</p></li>
-<li><p>قم بتشغيل استعلامات MAX_SIM لاسترداد المقالات الكاملة - بشكل نظيف، دون حذف أو إعادة ترتيب</p></li>
+<li><p>Load and preprocess Wikipedia paragraph data</p></li>
+<li><p>Bundle all paragraphs belonging to the same article into an Array of Structs</p></li>
+<li><p>Insert these structured documents into Milvus</p></li>
+<li><p>Run MAX_SIM queries to retrieve full articles—cleanly, without deduping or reranking</p></li>
 </ol>
-<p>بحلول نهاية هذا البرنامج التعليمي، سيكون لديك خط أنابيب يعمل حيث يتعامل ميلفوس مع الاسترجاع على مستوى الكيان مباشرة، بالطريقة التي يتوقعها المستخدمون بالضبط.</p>
-<p><strong>نموذج البيانات:</strong></p>
+<p>By the end of this tutorial, you’ll have a working pipeline where Milvus handles entity-level retrieval directly, exactly the way users expect.</p>
+<p><strong>Data Model:</strong></p>
 <pre><code translate="no">{
     <span class="hljs-string">&quot;wiki_id&quot;</span>: <span class="hljs-built_in">int</span>,                  <span class="hljs-comment"># WIKI ID(primary key） </span>
     <span class="hljs-string">&quot;paragraphs&quot;</span>: ARRAY&lt;STRUCT&lt;      <span class="hljs-comment"># Array of paragraph structs</span>
@@ -235,8 +236,8 @@ origin: >-
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 1: تجميع البيانات وتحويلها</strong></p>
-<p>في هذا العرض التوضيحي، نستخدم مجموعة بيانات <a href="https://huggingface.co/datasets/Cohere/wikipedia-22-12-simple-embeddings">تضمينات ويكيبيديا البسيطة</a>.</p>
+<p><strong>Step 1: Group and Transform the Data</strong></p>
+<p>For this demo, we use the <a href="https://huggingface.co/datasets/Cohere/wikipedia-22-12-simple-embeddings">Simple Wikipedia Embeddings</a> dataset.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> pyarrow <span class="hljs-keyword">as</span> pa
 
@@ -253,7 +254,7 @@ wiki_data = []
                        <span class="hljs-keyword">for</span> _, row <span class="hljs-keyword">in</span> group.iterrows()]
     })
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 2: إنشاء مجموعة ميلفوس</strong></p>
+<p><strong>Step 2: Create the Milvus Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -271,7 +272,7 @@ schema.add_field(<span class="hljs-string">&quot;paragraphs&quot;</span>, DataTy
 
 client.create_collection(<span class="hljs-string">&quot;wiki_docs&quot;</span>, schema=schema)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 3: إدراج البيانات وبناء الفهرس</strong></p>
+<p><strong>Step 3: Insert Data and Build Index</strong></p>
 <pre><code translate="no"><span class="hljs-meta"># Batch insert documents</span>
 client.insert(<span class="hljs-string">&quot;wiki_docs&quot;</span>, wiki_data)
 
@@ -286,7 +287,7 @@ index_params.add_index(
 client.create_index(<span class="hljs-string">&quot;wiki_docs&quot;</span>, index_params)
 client.load_collection(<span class="hljs-string">&quot;wiki_docs&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 4: البحث في المستندات</strong></p>
+<p><strong>Step 4: Search Documents</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Search query</span>
 <span class="hljs-keyword">import</span> cohere
 <span class="hljs-keyword">from</span> pymilvus.client.embedding_list <span class="hljs-keyword">import</span> EmbeddingList
@@ -317,51 +318,51 @@ results = client.search(
 <span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> results[<span class="hljs-number">0</span>]:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Article <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;entity&#x27;</span>][<span class="hljs-string">&#x27;wiki_id&#x27;</span>]}</span>: Score <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>مقارنة المخرجات: الاسترجاع التقليدي مقابل صفيف الهياكل</strong></p>
-<p>يصبح تأثير مصفوفة الهياكل واضحًا عندما ننظر إلى ما ترجعه قاعدة البيانات بالفعل:</p>
+<p><strong>Comparing Outputs: Traditional Retrieval vs. Array of Structs</strong></p>
+<p>The impact of Array of Structs becomes clear when we look at what the database actually returns:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>البُعد</strong></th><th style="text-align:center"><strong>النهج التقليدي</strong></th><th style="text-align:center"><strong>صفيف الهياكل</strong></th></tr>
+<tr><th style="text-align:center"><strong>Dimension</strong></th><th style="text-align:center"><strong>Traditional Approach</strong></th><th style="text-align:center"><strong>Array of Structs</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>مخرجات قاعدة البيانات</strong></td><td style="text-align:center">إرجاع <strong>أفضل 100 فقرة</strong> (تكرار كبير)</td><td style="text-align:center">إرجاع <em>أفضل 10 مستندات كاملة</em> - نظيفة ودقيقة</td></tr>
-<tr><td style="text-align:center"><strong>منطق التطبيق</strong></td><td style="text-align:center">يتطلب <strong>التجميع وإلغاء التكرار وإعادة الترتيب</strong> (معقد)</td><td style="text-align:center">لا حاجة إلى معالجة لاحقة - تأتي النتائج على مستوى الكيان مباشرةً من ميلفوس</td></tr>
+<tr><td style="text-align:center"><strong>Database Output</strong></td><td style="text-align:center">Returns <strong>Top 100 paragraphs</strong> (high redundancy)</td><td style="text-align:center">Returns the <em>top 10 full documents</em> — clean and accurate</td></tr>
+<tr><td style="text-align:center"><strong>Application Logic</strong></td><td style="text-align:center">Requires <strong>grouping, deduplication, and reranking</strong> (complex)</td><td style="text-align:center">No post-processing needed — entity-level results come directly from Milvus</td></tr>
 </tbody>
 </table>
-<p>في مثال ويكيبيديا، عرضنا أبسط حالة فقط: دمج متجهات الفقرات في تمثيل موحد للمستند. لكن القوة الحقيقية لـ Array of Structs هي أنه يعمم على <strong>أي</strong> نموذج بيانات متعدد المتجهات - سواءً كانت خطوط أنابيب الاسترجاع الكلاسيكية أو بنى الذكاء الاصطناعي الحديثة.</p>
-<p><strong>سيناريوهات الاسترجاع التقليدية متعددة النواقل</strong></p>
-<p>تعمل العديد من أنظمة البحث والتوصيات الراسخة بشكل طبيعي على الكيانات ذات المتجهات المتعددة المرتبطة بها. تتوافق مصفوفة الهياكل مع حالات الاستخدام هذه بشكل نظيف:</p>
+<p>In the Wikipedia example, we demonstrated only the simplest case: combining paragraph vectors into a unified document representation. But the real strength of Array of Structs is that it generalizes to <strong>any</strong> multi-vector data model—both classic retrieval pipelines and modern AI architectures.</p>
+<p><strong>Traditional Multi-Vector Retrieval Scenarios</strong></p>
+<p>Many well-established search and recommendation systems naturally operate on entities with multiple associated vectors. Array of Structs maps to these use cases cleanly:</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>السيناريو</strong></th><th style="text-align:center"><strong>نموذج البيانات</strong></th><th style="text-align:center"><strong>المتجهات لكل كيان</strong></th></tr>
+<tr><th style="text-align:center"><strong>Scenario</strong></th><th style="text-align:center"><strong>Data Model</strong></th><th style="text-align:center"><strong>Vectors per Entity</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">🛍️ <strong>منتجات التجارة الإلكترونية</strong></td><td style="text-align:center">منتج واحد ← صور متعددة</td><td style="text-align:center">5-20</td></tr>
-<tr><td style="text-align:center">🎬 <strong>البحث عن الفيديو</strong></td><td style="text-align:center">فيديو واحد ← مقاطع متعددة</td><td style="text-align:center">20-100</td></tr>
-<tr><td style="text-align:center">📖 <strong>استرجاع الورق</strong></td><td style="text-align:center">ورقة واحدة ← مقاطع متعددة</td><td style="text-align:center">5-15</td></tr>
+<tr><td style="text-align:center">🛍️ <strong>E-commerce products</strong></td><td style="text-align:center">One product → multiple images</td><td style="text-align:center">5–20</td></tr>
+<tr><td style="text-align:center">🎬 <strong>Video search</strong></td><td style="text-align:center">One video → multiple clips</td><td style="text-align:center">20–100</td></tr>
+<tr><td style="text-align:center">📖 <strong>Paper retrieval</strong></td><td style="text-align:center">One paper → multiple sections</td><td style="text-align:center">5–15</td></tr>
 </tbody>
 </table>
-<p><strong>أعباء عمل نموذج الذكاء الاصطناعي (حالات الاستخدام الرئيسية متعددة النواقل)</strong></p>
-<p>تصبح مصفوفة الهياكل أكثر أهمية في نماذج الذكاء الاصطناعي الحديثة التي تنتج عن قصد مجموعات كبيرة من المتجهات لكل كيان من أجل التفكير الدلالي الدقيق.</p>
+<p><strong>AI Model Workloads (Key Multi-Vector Use Cases)</strong></p>
+<p>Array of Structs becomes even more critical in modern AI models that intentionally produce large sets of vectors per entity for fine-grained semantic reasoning.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>النموذج</strong></th><th style="text-align:center"><strong>نموذج البيانات</strong></th><th style="text-align:center"><strong>المتجهات لكل كيان</strong></th><th style="text-align:center"><strong>التطبيق</strong></th></tr>
+<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Data Model</strong></th><th style="text-align:center"><strong>Vectors per Entity</strong></th><th style="text-align:center"><strong>Application</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>كولبيرت</strong></td><td style="text-align:center">مستند واحد → العديد من التضمينات الرمزية</td><td style="text-align:center">100-500</td><td style="text-align:center">النصوص القانونية، والأبحاث الأكاديمية، واسترجاع المستندات الدقيقة</td></tr>
-<tr><td style="text-align:center"><strong>كولبالي</strong></td><td style="text-align:center">صفحة PDF واحدة → العديد من التضمينات الرمزية</td><td style="text-align:center">256-1024</td><td style="text-align:center">تقارير مالية، وعقود، وفواتير، وبحث عن مستندات متعددة الوسائط</td></tr>
+<tr><td style="text-align:center"><strong>ColBERT</strong></td><td style="text-align:center">One document → many token embeddings</td><td style="text-align:center">100–500</td><td style="text-align:center">Legal text, academic papers, fine-grained document retrieval</td></tr>
+<tr><td style="text-align:center"><strong>ColPali</strong></td><td style="text-align:center">One PDF page → many patch embeddings</td><td style="text-align:center">256–1024</td><td style="text-align:center">Financial reports, contracts, invoices, multimodal document search</td></tr>
 </tbody>
 </table>
-<p><em>تتطلب</em> هذه النماذج نمط تخزين متعدد النواقل. قبل مصفوفة الهياكل، كان على المطورين تقسيم المتجهات عبر الصفوف وإعادة تجميع النتائج يدويًا. مع Milvus، يمكن الآن تخزين هذه الكيانات واسترجاعها محليًا، مع تعامل MAX_SIM مع التسجيل على مستوى المستند تلقائيًا.</p>
-<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. بحث المستندات القائم على الصور ColPali</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> هو نموذج قوي لاسترجاع ملفات PDF متعددة الوسائط. فبدلاً من الاعتماد على النص، يعالج كل صفحة PDF كصورة ويقسمها إلى ما يصل إلى 1024 رقعة مرئية، مما يؤدي إلى إنشاء تضمين واحد لكل رقعة. في ظل مخطط قاعدة البيانات التقليدية، سيتطلب ذلك تخزين صفحة واحدة كمئات أو آلاف الصفوف المنفصلة، مما يجعل من المستحيل على قاعدة البيانات فهم أن هذه الصفوف تنتمي إلى نفس الصفحة. ونتيجة لذلك، يصبح البحث على مستوى الكيان مجزأ وغير عملي.</p>
-<p>يحل Array of Structs هذا الأمر بشكل نظيف من خلال تخزين جميع تضمينات التصحيح <em>داخل حقل</em> واحد، مما يسمح لـ Milvus بمعالجة الصفحة ككيان واحد متماسك متعدد المتجهات.</p>
-<p>يعتمد البحث التقليدي لملفات PDF التقليدية غالبًا على <strong>التعرف الضوئي على الحروف OCR،</strong> والذي يحول صور الصفحة إلى نص. يعمل هذا مع النص العادي ولكنه يفقد المخططات والجداول والتخطيط والإشارات البصرية الأخرى. يتجنب ColPali هذا القيد من خلال العمل مباشرةً على صور الصفحات، مع الحفاظ على جميع المعلومات المرئية والنصية. المفاضلة هي الحجم: تحتوي كل صفحة الآن على مئات المتجهات، وهو ما يتطلب قاعدة بيانات يمكنها تجميع العديد من التضمينات في كيان واحد - وهو بالضبط ما توفره Array of Structs + MAX_SIM.</p>
-<p>حالة الاستخدام الأكثر شيوعًا هي <strong>Vision RAG،</strong> حيث تصبح كل صفحة PDF كيانًا متعدد المتجهات. تتضمن السيناريوهات النموذجية ما يلي:</p>
+<p>These models <em>require</em> a multi-vector storage pattern. Before Array of Structs, developers had to split vectors across rows and manually stitch results back together. With Milvus, these entities can now be stored and retrieved natively, with MAX_SIM handling document-level scoring automatically.</p>
+<h3 id="2-ColPali-Image-Based-Document-Search" class="common-anchor-header">2. ColPali Image-Based Document Search</h3><p><a href="https://zilliz.com/blog/colpali-enhanced-doc-retrieval-with-vision-language-models-and-colbert-strategy"><strong>ColPali</strong></a> is a powerful model for cross-modal PDF retrieval. Instead of relying on text, it processes each PDF page as an image and slices it into up to 1024 visual patches, generating one embedding per patch. Under a traditional database schema, this would require storing a single page as hundreds or thousands of separate rows, making it impossible for the database to understand that these rows belong to the same page. As a result, entity-level search becomes fragmented and impractical.</p>
+<p>Array of Structs solves this cleanly by storing all patch embeddings <em>inside a single field</em>, allowing Milvus to treat the page as one cohesive multi-vector entity.</p>
+<p>Traditional PDF search often depends on <strong>OCR</strong>, which converts page images into text. This works for plain text but loses charts, tables, layout, and other visual cues. ColPali avoids this limitation by working directly on page images, preserving all visual and textual information. The trade-off is scale: each page now contains hundreds of vectors, which requires a database that can aggregate many embeddings into one entity—exactly what Array of Structs + MAX_SIM provides.</p>
+<p>The most common use case is <strong>Vision RAG</strong>, where each PDF page becomes a multi-vector entity. Typical scenarios include:</p>
 <ul>
-<li><p><strong>التقارير المالية:</strong> البحث في آلاف ملفات PDF عن الصفحات التي تحتوي على مخططات أو جداول محددة.</p></li>
-<li><p><strong>العقود:</strong> استرداد البنود من المستندات القانونية الممسوحة ضوئيًا أو المصورة.</p></li>
-<li><p><strong>الفواتير:</strong> البحث عن الفواتير حسب البائع أو المبلغ أو التخطيط.</p></li>
-<li><p><strong>العروض التقديمية:</strong> تحديد موقع الشرائح التي تحتوي على شكل أو مخطط معين.</p></li>
+<li><p><strong>Financial reports:</strong> searching thousands of PDFs for pages containing specific charts or tables.</p></li>
+<li><p><strong>Contracts:</strong> retrieving clauses from scanned or photographed legal documents.</p></li>
+<li><p><strong>Invoices:</strong> finding invoices by vendor, amount, or layout.</p></li>
+<li><p><strong>Presentations:</strong> locating slides that contain a particular figure or diagram.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -369,7 +370,7 @@ results = client.search(
     <span></span>
   </span>
 </p>
-<p><strong>نموذج البيانات:</strong></p>
+<p><strong>Data Model:</strong></p>
 <pre><code translate="no">{
     <span class="hljs-string">&quot;page_id&quot;</span>: <span class="hljs-built_in">int</span>,                     <span class="hljs-comment"># Page ID (primary key) </span>
     <span class="hljs-string">&quot;page_number&quot;</span>: <span class="hljs-built_in">int</span>,                 <span class="hljs-comment"># Page number within the document </span>
@@ -379,7 +380,8 @@ results = client.search(
     &gt;&gt;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 1: إعداد البيانات</strong>يمكنك الرجوع إلى المستند للحصول على تفاصيل حول كيفية تحويل ColPali للصور أو النصوص إلى تمثيلات متعددة المتجهات.</p>
+<p><strong>Step 1: Prepare the Data</strong>
+You can refer to the doc for details on how ColPali converts images or text into multi-vector representations.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
 
@@ -406,7 +408,7 @@ batch_images = processor.process_images(images).to(model.device)
 <span class="hljs-keyword">with</span> torch.no_grad():
     image_embeddings = model(**batch_images)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 2: إنشاء مجموعة ميلفوس</strong></p>
+<p><strong>Step 2: Create the Milvus Collection</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -425,7 +427,7 @@ schema.add_field(<span class="hljs-string">&quot;patches&quot;</span>, DataType.
 
 client.create_collection(<span class="hljs-string">&quot;doc_pages&quot;</span>, schema=schema)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 3: إدراج البيانات وإنشاء الفهرس</strong></p>
+<p><strong>Step 3: Insert Data and Build Index</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Prepare data for insertion</span>
 page_data=[
     {
@@ -460,7 +462,7 @@ index_params.add_index(
 client.create_index(<span class="hljs-string">&quot;doc_pages&quot;</span>, index_params)
 client.load_collection(<span class="hljs-string">&quot;doc_pages&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>الخطوة 4: البحث متعدد الوسائط: استعلام نصي ← نتائج الصور</strong></p>
+<p><strong>Step 4: Cross-Modal Search: Text Query → Image Results</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Run the search</span>
 <span class="hljs-keyword">from</span> pymilvus.client.embedding_list <span class="hljs-keyword">import</span> EmbeddingList
 
@@ -494,7 +496,7 @@ results = client.search(
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{i}</span>. <span class="hljs-subst">{entity[<span class="hljs-string">&#x27;doc_name&#x27;</span>]}</span> - Page <span class="hljs-subst">{entity[<span class="hljs-string">&#x27;page_number&#x27;</span>]}</span>&quot;</span>)
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;   Score: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>عينة من المخرجات:</strong></p>
+<p><strong>Sample Output:</strong></p>
 <pre><code translate="no"><span class="hljs-title class_">Query</span>: <span class="hljs-string">&#x27;quarterly revenue growth chart&#x27;</span>
 <span class="hljs-number">1.</span> Q1_Financial_Report.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">2</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.9123</span>
@@ -505,8 +507,8 @@ results = client.search(
 <span class="hljs-number">3.</span> <span class="hljs-title class_">Product</span>_Manual.<span class="hljs-property">pdf</span> - <span class="hljs-title class_">Page</span> <span class="hljs-number">1</span>
    <span class="hljs-title class_">Score</span>: <span class="hljs-number">0.5231</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>هنا، تعرض النتائج مباشرةً صفحات PDF كاملة. لا داعي للقلق بشأن تضمين 1024 رقعة أساسية - يعالج ميلفوس كل التجميع تلقائيًا.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>Here, the results directly return full PDF pages. We don’t need to worry about the underlying 1024 patch embeddings—Milvus handles all the aggregation automatically.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -521,10 +523,10 @@ results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تخزن معظم قواعد البيانات المتجهة كل جزء كسجل مستقل، مما يعني أن التطبيقات يجب أن تعيد تجميع تلك الأجزاء عندما تحتاج إلى مستند أو منتج أو صفحة كاملة. مصفوفة من الهياكل تغير ذلك. من خلال الجمع بين الكميات القياسية والمتجهات والنصوص والحقول الأخرى في كائن منظم واحد، فهي تسمح لصف واحد في قاعدة البيانات بتمثيل كيان واحد كامل من البداية إلى النهاية.</p>
-<p>والنتيجة بسيطة ولكنها قوية: العمل الذي كان يتطلب تجميعًا معقدًا وإلغاءً وإعادة ترتيب في طبقة التطبيق يصبح قدرة قاعدة بيانات أصلية. وهذا هو بالضبط ما يتجه إليه مستقبل قواعد البيانات المتجهة - هياكل أكثر ثراءً واسترجاعًا أكثر ذكاءً وخطوط أنابيب أبسط.</p>
-<p>لمزيد من المعلومات حول صفيف الهياكل و MAX_SIM، راجع الوثائق أدناه:</p>
+    </button></h2><p>Most vector databases store each fragment as an independent record, which means applications have to reassemble those fragments when they need a full document, product, or page. An array of Structs changes that. By combining scalars, vectors, text, and other fields into a single structured object, it allows one database row to represent one complete entity end-to-end.</p>
+<p>The result is simple but powerful: work that used to require complex grouping, deduping, and reranking in the application layer becomes a native database capability. And that’s exactly where the future of vector databases is heading—richer structures, smarter retrieval, and simpler pipelines.</p>
+<p>For more information about Array of Structs and MAX_SIM, check the documentation below:</p>
 <ul>
-<li><a href="https://milvus.io/docs/array-of-structs.md">صفيف الهياكل | وثائق ملفوس</a></li>
+<li><a href="https://milvus.io/docs/array-of-structs.md">Array of Structs | Milvus Documentation</a></li>
 </ul>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة في أحدث إصدار من Milvus؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> ساعات عمل Milvus المكتبية</a>.</p>
+<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>

@@ -1,9 +1,9 @@
 ---
 id: >-
   embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
-title: >-
-  التضمين أولاً، ثم التقطيع: استرجاع RAG الأكثر ذكاءً مع التقطيع الدلالي الأقصى
-  الأدنى
+title: >
+  Embedding First, Then Chunking: Smarter RAG Retrieval with Max–Min Semantic
+  Chunking 
 author: Rachel Liu
 date: 2025-12-24T00:00:00.000Z
 cover: assets.zilliz.com/maxmin_cover_8be0b87409.png
@@ -15,17 +15,17 @@ meta_keywords: 'Max–Min Semantic Chunking, Milvus, RAG, chunking strategies'
 meta_title: |
   Max–Min Semantic Chunking: Top Chunking Strategy to Improve RAG Performance
 desc: >-
-  تعرّف على كيفية تعزيز التقطيع الدلالي الأقصى والأصغر دقة RAG باستخدام نهج
-  التضمين أولاً الذي ينشئ أجزاءً أكثر ذكاءً ويحسّن جودة السياق ويوفر أداءً أفضل
-  في الاسترجاع.
+  Learn how Max–Min Semantic Chunking boosts RAG accuracy using an
+  embedding-first approach that creates smarter chunks, improves context
+  quality, and delivers better retrieval performance.
 origin: >-
   https://milvus.io/blog/embedding-first-chunking-second-smarter-rag-retrieval-with-max-min-semantic-chunking.md
 ---
-<p>أصبح<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">التوليد المعزّز للاسترجاع (RAG)</a> هو النهج الافتراضي لتوفير السياق والذاكرة لتطبيقات الذكاء الاصطناعي - حيث يعتمد عليه وكلاء الذكاء الاصطناعي ومساعدو دعم العملاء وقواعد المعرفة وأنظمة البحث.</p>
-<p>في كل خط أنابيب RAG تقريبًا، تكون العملية القياسية هي نفسها: أخذ المستندات، وتقسيمها إلى أجزاء، ثم تضمين هذه الأجزاء لاسترجاع التشابه في قاعدة بيانات متجهة مثل <a href="https://milvus.io/">Milvus</a>. نظرًا لأن <strong>التقطيع</strong> يحدث مقدمًا، فإن جودة هذه الأجزاء تؤثر بشكل مباشر على مدى جودة استرجاع النظام للمعلومات ومدى دقة الإجابات النهائية.</p>
-<p>تكمن المشكلة في أن استراتيجيات التقطيع التقليدية عادةً ما تقسم النص دون أي فهم دلالي. فالتقطيع ذو الطول الثابت يعتمد على عدد الرموز الرمزية، والتقطيع التكراري يستخدم بنية على مستوى السطح، ولكن كلاهما يتجاهل المعنى الفعلي للنص. ونتيجة لذلك، غالبًا ما يتم فصل الأفكار ذات الصلة، وتجميع الأسطر غير ذات الصلة معًا، وتجزئة السياق المهم.</p>
-<p>في هذه المدونة، أود أن أشارك استراتيجية تقطيع مختلفة: <a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>التقطيع الدلالي الأقصى-الأدنى</strong></a>. فبدلاً من التقطيع أولاً، تقوم بتضمين النص مقدمًا وتستخدم التشابه الدلالي لتحديد مكان تشكيل الحدود. من خلال التضمين قبل التقطيع، يمكن لخط الأنابيب تتبع التحولات الطبيعية في المعنى بدلاً من الاعتماد على حدود الطول التعسفية.</p>
-<h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">كيفية عمل خط أنابيب RAG النموذجي<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
+<p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a> has become the default approach for providing context and memory for AI applications — AI agents, customer support assistants, knowledge bases, and search systems all rely on it.</p>
+<p>In almost every RAG pipeline, the standard process is the same: take the documents, split them into chunks, and then embed those chunks for similarity retrieval in a vector database like <a href="https://milvus.io/">Milvus</a>. Because <strong>chunking</strong> happens upfront, the quality of those chunks directly affects how well the system retrieves information and how accurate the final answers are.</p>
+<p>The issue is that traditional chunking strategies usually split text without any semantic understanding. Fixed-length chunking cuts based on token counts, and recursive chunking uses surface-level structure, but both still ignore the actual meaning of the text. As a result, related ideas often get separated, unrelated lines get grouped together, and important context gets fragmented.</p>
+<p>In this blog, I’d like to share a different chunking strategy: <a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>Max–Min Semantic Chunking</strong></a>. Instead of chunking first, it embeds the text upfront and uses semantic similarity to decide where boundaries should form. By embedding before cutting, the pipeline can track natural shifts in meaning rather than relying on arbitrary length limits.</p>
+<h2 id="How-a-Typical-RAG-Pipeline-Works" class="common-anchor-header">How a Typical RAG Pipeline Works<button data-href="#How-a-Typical-RAG-Pipeline-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,19 +40,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تتبع معظم خطوط أنابيب RAG، بغض النظر عن إطار العمل، نفس خط التجميع المكون من أربع مراحل. ربما تكون قد كتبت نسخة ما من هذا بنفسك:</p>
-<h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1. تنظيف البيانات وتقطيعها</h3><p>يبدأ خط التجميع بتنظيف المستندات الخام: إزالة الرؤوس والتذييلات ونص التنقل وأي شيء ليس محتوى حقيقيًا. بمجرد إزالة التشويش، يتم تقسيم النص إلى أجزاء أصغر. تستخدم معظم الفرق الأجزاء ذات الحجم الثابت - عادةً 300-800 رمز - لأنها تحافظ على نموذج التضمين قابلاً للإدارة. الجانب السلبي هو أن التقسيمات تعتمد على الطول وليس على المعنى، لذلك يمكن أن تكون الحدود اعتباطية.</p>
-<h3 id="2-Embedding-and-Storage" class="common-anchor-header">2. التضمين والتخزين</h3><p>بعد ذلك يتم تضمين كل جزء باستخدام نموذج تضمين مثل نموذج OpenAI <a href="https://zilliz.com/ai-models/text-embedding-3-small"><code translate="no">text-embedding-3-small</code></a> أو مشفر BAAI. يتم تخزين المتجهات الناتجة في قاعدة بيانات متجهات مثل <a href="https://milvus.io/">Milvus</a> أو <a href="https://zilliz.com/cloud">Zilliz Cloud</a>. تتعامل قاعدة البيانات مع الفهرسة والبحث عن التشابه حتى تتمكن من مقارنة الاستعلامات الجديدة بسرعة مع جميع القطع المخزنة.</p>
-<h3 id="3-Querying" class="common-anchor-header">3. الاستعلام</h3><p>عندما يطرح المستخدم سؤالاً - على سبيل المثال، <em>"كيف يقلل RAG من الهلوسة؟</em> - يقوم النظام بتضمين الاستعلام وإرساله إلى قاعدة البيانات. تقوم قاعدة البيانات بإرجاع الأجزاء الأعلى-ك التي تكون متجهاتها الأقرب إلى الاستعلام. هذه هي أجزاء النص التي سيعتمد عليها النموذج للإجابة عن السؤال.</p>
-<h3 id="4-Answer-Generation" class="common-anchor-header">4. توليد الإجابة</h3><p>يتم تجميع الأجزاء المسترجعة مع استعلام المستخدم وإدخالها في نموذج توليد الإجابات. يقوم النموذج بإنشاء إجابة باستخدام السياق المقدم كأساس.</p>
-<p><strong>يقع التقطيع في بداية هذا الخط بأكمله، ولكن له تأثير كبير</strong>. إذا كانت الأجزاء تتوافق مع المعنى الطبيعي للنص، فإن الاسترجاع يبدو دقيقًا ومتسقًا. أما إذا تم تقطيع الأجزاء في أماكن غير مناسبة، فسيواجه النظام صعوبة أكبر في العثور على المعلومات الصحيحة، حتى مع وجود تضمينات قوية وقاعدة بيانات متجهة سريعة.</p>
-<h3 id="The-Challenges-of-Getting-Chunking-Right" class="common-anchor-header">تحديات الحصول على التقطيع الصحيح</h3><p>تستخدم معظم أنظمة RAG اليوم واحدة من طريقتين أساسيتين للتقطيع، وكلاهما له قيود.</p>
-<p><strong>1. التقطيع بالحجم الثابت</strong></p>
-<p>هذه هي أبسط طريقة: تقسيم النص حسب عدد ثابت من الرموز أو الأحرف. إنه سريع ويمكن التنبؤ به، ولكنه غير مدرك تمامًا لقواعد اللغة أو الموضوعات أو الانتقالات. يمكن تقطيع الجمل إلى نصفين. وأحيانًا حتى الكلمات. تميل التضمينات التي تحصل عليها من هذه التجزئات إلى أن تكون صاخبة لأن الحدود لا تعكس كيفية تنظيم النص بالفعل.</p>
-<p><strong>2. التقسيم التكراري للأحرف</strong></p>
-<p>هذه الطريقة أكثر ذكاءً بعض الشيء. فهي تقسم النص بشكل هرمي بناءً على إشارات مثل الفقرات أو فواصل الأسطر أو الجمل. إذا كان القسم طويلًا جدًا، فإنه يقسمه بشكل متكرر. يكون الناتج أكثر تماسكًا بشكل عام، ولكنه لا يزال غير متناسق. فبعض المستندات تفتقر إلى بنية واضحة أو لديها أطوال أقسام غير متساوية، مما يضر بدقة الاسترجاع. وفي بعض الحالات، لا يزال هذا النهج ينتج أجزاءً تتجاوز نافذة سياق النموذج.</p>
-<p>تواجه كلتا الطريقتين نفس المفاضلة: الدقة مقابل السياق. تعمل الأجزاء الأصغر على تحسين دقة الاسترجاع ولكنها تفقد السياق المحيط؛ بينما تحافظ الأجزاء الأكبر على المعنى ولكنها تخاطر بإضافة ضوضاء غير ذات صلة. إن تحقيق التوازن الصحيح هو ما يجعل التقطيع أمرًا أساسيًا - ومُحبطًا - في تصميم نظام RAG.</p>
-<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="common-anchor-header">التجزئة الدلالية القصوى والدقيقة: التضمين أولاً، ثم التقطيع لاحقاً<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="anchor-icon" translate="no">
+    </button></h2><p>Most RAG pipelines, regardless of the framework, follow the same four-stage assembly line. You’ve probably written some version of this yourself:</p>
+<h3 id="1-Data-Cleaning-and-Chunking" class="common-anchor-header">1. Data Cleaning and Chunking</h3><p>The pipeline starts by cleaning the raw documents: removing headers, footers, navigation text, and anything that isn’t real content. Once the noise is out, the text gets split into smaller pieces. Most teams use fixed-size chunks — typically 300–800 tokens — because it keeps the embedding model manageable. The downside is that the splits are based on length, not meaning, so the boundaries can be arbitrary.</p>
+<h3 id="2-Embedding-and-Storage" class="common-anchor-header">2. Embedding and Storage</h3><p>Each chunk is then embedded using an embedding model like OpenAI’s <a href="https://zilliz.com/ai-models/text-embedding-3-small"><code translate="no">text-embedding-3-small</code></a> or BAAI’s encoder. The resulting vectors are stored in a vector database such as <a href="https://milvus.io/">Milvus</a> or <a href="https://zilliz.com/cloud">Zilliz Cloud</a>. The database handles indexing and similarity search so you can quickly compare new queries against all stored chunks.</p>
+<h3 id="3-Querying" class="common-anchor-header">3. Querying</h3><p>When a user asks a question — for example, <em>“How does RAG reduce hallucinations?”</em> — the system embeds the query and sends it to the database. The database returns the top-K chunks whose vectors are closest to the query. These are the pieces of text the model will rely on to answer the question.</p>
+<h3 id="4-Answer-Generation" class="common-anchor-header">4. Answer Generation</h3><p>The retrieved chunks are bundled together with the user query and fed into an LLM. The model generates an answer using the provided context as grounding.</p>
+<p><strong>Chunking sits at the start of this whole pipeline, but it has an outsized impact</strong>. If the chunks align with the natural meaning of the text, retrieval feels accurate and consistent. If the chunks were cut in awkward places, the system has a harder time finding the right information, even with strong embeddings and a fast vector database.</p>
+<h3 id="The-Challenges-of-Getting-Chunking-Right" class="common-anchor-header">The Challenges of Getting Chunking Right</h3><p>Most RAG systems today use one of two basic chunking methods, both of which have limitations.</p>
+<p><strong>1. Fixed-size chunking</strong></p>
+<p>This is the simplest approach: split the text by a fixed token or character count. It’s fast and predictable, but completely unaware of grammar, topics, or transitions. Sentences can get cut in half. Sometimes even words. The embeddings you get from these chunks tend to be noisy because the boundaries don’t reflect how the text is actually structured.</p>
+<p><strong>2. Recursive character splitting</strong></p>
+<p>This method is a bit smarter. It splits text hierarchically based on cues like paragraphs, line breaks, or sentences. If a section is too long, it recursively divides it further. The output is generally more coherent, but still inconsistent. Some documents lack clear structure or have uneven section lengths, which hurts retrieval accuracy. And in some cases, this approach still produces chunks that exceed the model’s context window.</p>
+<p>Both methods face the same tradeoff: precision vs. context. Smaller chunks improve retrieval accuracy but lose surrounding context; larger chunks preserve meaning but risk adding irrelevant noise. Striking the right balance is what makes chunking both foundational—and frustrating—in RAG system design.</p>
+<h2 id="Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="common-anchor-header">Max–Min Semantic Chunking: Embed First, Chunk Later<button data-href="#Max–Min-Semantic-Chunking-Embed-First-Chunk-Later" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,16 +67,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في عام 2025، نشر S.R. Bhat وآخرون <a href="https://arxiv.org/abs/2505.21700"><em>إعادة التفكير في حجم القطع لاسترجاع المستندات الطويلة: تحليل متعدد البيانات</em></a>. كانت إحدى النتائج الرئيسية التي توصلوا إليها هي أنه لا يوجد حجم <strong>"أفضل"</strong> واحد للقطع لاسترجاع المستندات الطويلة. تميل الأجزاء الصغيرة (64-128 رمزًا) إلى العمل بشكل أفضل مع الأسئلة الوقائعية أو الأسئلة ذات نمط البحث، بينما تساعد الأجزاء الأكبر (512-1024 رمزًا) في المهام السردية أو مهام التفكير عالي المستوى. بعبارة أخرى، دائمًا ما يكون التقطيع ذو الحجم الثابت حلاً وسطًا.</p>
-<p>وهذا يثير سؤالاً طبيعياً: بدلاً من اختيار طول واحد على أمل الحصول على الأفضل، هل يمكننا التقطيع حسب المعنى بدلاً من الحجم؟ <a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>التقطيع الدلالي الأقصى - الحد الأدنى</strong></a> هو أحد الأساليب التي وجدتها والتي تحاول القيام بذلك بالضبط.</p>
-<p>الفكرة بسيطة: <strong>التضمين أولاً، ثم التقطيع ثانياً</strong>. فبدلاً من تقسيم النص ثم تضمين أي أجزاء تتساقط، تقوم الخوارزمية بتضمين <em>جميع الجمل</em> في البداية. ثم تستخدم العلاقات الدلالية بين تضمين تلك الجمل لتقرير أين يجب أن تذهب الحدود.</p>
+    </button></h2><p>In 2025, S.R. Bhat et al. published <a href="https://arxiv.org/abs/2505.21700"><em>Rethinking Chunk Size for Long-Document Retrieval: A Multi-Dataset Analysis</em></a>. One of their key findings was that there isn’t a single <strong>“best”</strong> chunk size for RAG. Small chunks (64–128 tokens) tend to work better for factual or lookup-style questions, while larger chunks (512–1024 tokens) help with narrative or high-level reasoning tasks. In other words, fixed-size chunking is always a compromise.</p>
+<p>This raises a natural question: instead of picking one length and hoping for the best, can we chunk by meaning rather than size? <a href="https://link.springer.com/article/10.1007/s10791-025-09638-7"><strong>Max–Min Semantic Chunking</strong></a> is one approach I found that tries to do precisely that.</p>
+<p>The idea is simple: <strong>embed first, chunk second</strong>. Instead of splitting text and then embedding whatever pieces fall out, the algorithm embeds <em>all sentences</em> up front. It then uses the semantic relationships between those sentence embeddings to decide where the boundaries should go.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/embed_first_chunk_second_94f69c664c.png" alt="Diagram showing embed-first chunk-second workflow in Max-Min Semantic Chunking" class="doc-image" id="diagram-showing-embed-first-chunk-second-workflow-in-max-min-semantic-chunking" />
-   </span> <span class="img-wrapper"> <span>رسم تخطيطي يوضح سير عمل التضمين أولاً ثم التقطيع أولاً ثم التقطيع ثانياً في التقطيع الدلالي ماكس-مين</span> </span></p>
-<p>من الناحية المفاهيمية، تتعامل هذه الطريقة مع التقطيع كمشكلة تجميع مقيّد في مساحة التضمين. تتصفح المستند بالترتيب، جملة واحدة في كل مرة. بالنسبة لكل جملة، تقارن الخوارزمية تضمينها مع تلك الموجودة في القطعة الحالية. إذا كانت الجملة الجديدة قريبة من الناحية الدلالية بما فيه الكفاية، فإنها تنضم إلى القطعة. إذا كانت بعيدة جدًا، تبدأ الخوارزمية بقطعة جديدة. القيد الرئيسي هو أن القطع يجب أن تتبع ترتيب الجملة الأصلي - لا إعادة ترتيب ولا تجميع عام.</p>
-<p>والنتيجة هي مجموعة من القطع ذات الطول المتغير التي تعكس المكان الذي يتغير فيه معنى المستند فعليًا، بدلاً من المكان الذي يصل فيه عداد الأحرف إلى الصفر.</p>
-<h2 id="How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="common-anchor-header">كيف تعمل استراتيجية التقطيع الدلالي القصوى والدقيقة<button data-href="#How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/embed_first_chunk_second_94f69c664c.png" alt="Diagram showing embed-first chunk-second workflow in Max-Min Semantic Chunking" class="doc-image" id="diagram-showing-embed-first-chunk-second-workflow-in-max-min-semantic-chunking" />
+    <span>Diagram showing embed-first chunk-second workflow in Max-Min Semantic Chunking</span>
+  </span>
+</p>
+<p>Conceptually, the method treats chunking as a constrained clustering problem in embedding space. You walk through the document in order, one sentence at a time. For each sentence, the algorithm compares its embedding with those in the current chunk. If the new sentence is semantically close enough, it joins the chunk. If it’s too far, the algorithm starts a new chunk. The key constraint is that chunks must follow the original sentence order — no reordering, no global clustering.</p>
+<p>The result is a set of variable-length chunks that reflect where the document’s meaning actually changes, instead of where a character counter happens to hit zero.</p>
+<h2 id="How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="common-anchor-header">How the Max–Min Semantic Chunking Strategy Works<button data-href="#How-the-Max–Min-Semantic-Chunking-Strategy-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,19 +93,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تحدد استراتيجية التقطيع الدلالي القصوى-الدقيقة حدود القطع من خلال مقارنة كيفية ارتباط الجمل ببعضها البعض في الفضاء المتجه عالي الأبعاد. وبدلاً من الاعتماد على الأطوال الثابتة، فإنها تنظر في كيفية تغير المعنى عبر المستند. يمكن تقسيم العملية إلى ست خطوات:</p>
-<h3 id="1-Embed-all-sentences-and-start-a-chunk" class="common-anchor-header">1. تضمين جميع الجمل وبدء جزء مقطوع</h3><p>يقوم نموذج التضمين بتحويل كل جملة في المستند إلى تضمين متجه. يعالج الجمل بالترتيب. If the first <em>n–k</em> sentences form the current chunk C, the following sentence (sₙ₋ₖ₊₁) needs to be evaluated: should it join C, or start a new chunk?</p>
-<h3 id="2-Measure-how-consistent-the-current-chunk-is" class="common-anchor-header">2. قياس مدى اتساق القطعة الحالية</h3><p>ضمن القطعة C، احسب الحد الأدنى لتشابه جيب التمام الزوجي بين جميع تضمينات الجمل. تعكس هذه القيمة مدى ترابط الجمل داخل القطعة. يشير انخفاض الحد الأدنى للتشابه إلى أن الجمل أقل ترابطًا، مما يشير إلى أن القطعة قد تحتاج إلى التقسيم.</p>
-<h3 id="3-Compare-the-new-sentence-to-the-chunk" class="common-anchor-header">3. قارن الجملة الجديدة بالقطعة</h3><p>بعد ذلك، قم بحساب الحد الأقصى لجيب التمام للتشابه بين الجملة الجديدة وأي جملة موجودة بالفعل في C. يعكس هذا مدى توافق الجملة الجديدة دلاليًا مع القطعة الموجودة.</p>
-<h3 id="4-Decide-whether-to-extend-the-chunk-or-start-a-new-one" class="common-anchor-header">4. قرّر ما إذا كنت تريد توسيع القطعة أو البدء بقطعة جديدة</h3><p>هذه هي القاعدة الأساسية:</p>
+    </button></h2><p>Max–Min Semantic Chunking determines chunk boundaries by comparing how sentences relate to one another in the high-dimensional vector space. Instead of relying on fixed lengths, it looks at how meaning shifts across the document. The process can be broken down into six steps:</p>
+<h3 id="1-Embed-all-sentences-and-start-a-chunk" class="common-anchor-header">1. Embed all sentences and start a chunk</h3><p>The embedding model converts each sentence in the document into a vector embedding. It processes sentences in order. If the first <em>n–k</em> sentences form the current chunk C, the following sentence (sₙ₋ₖ₊₁) needs to be evaluated: should it join C, or start a new chunk?</p>
+<h3 id="2-Measure-how-consistent-the-current-chunk-is" class="common-anchor-header">2. Measure how consistent the current chunk is</h3><p>Within chunk C, calculate the minimum pairwise cosine similarity among all sentence embeddings. This value reflects how closely related the sentences within the chunk are. A lower minimum similarity indicates that the sentences are less related, suggesting that the chunk may need to be split.</p>
+<h3 id="3-Compare-the-new-sentence-to-the-chunk" class="common-anchor-header">3. Compare the new sentence to the chunk</h3><p>Next, calculate the maximum cosine similarity between the new sentence and any sentence already in C. This reflects how well the new sentence aligns semantically with the existing chunk.</p>
+<h3 id="4-Decide-whether-to-extend-the-chunk-or-start-a-new-one" class="common-anchor-header">4. Decide whether to extend the chunk or start a new one</h3><p>This is the core rule:</p>
 <ul>
-<li><p>إذا كان <strong>الحد الأقصى للتشابه بين الجملة الجديدة</strong> والجزء <strong>C</strong> <strong>أكبر من أو يساوي</strong> <strong>الحد الأدنى للتشابه داخل C،</strong> → تتناسب الجملة الجديدة وتبقى في الجزء C.</p></li>
-<li><p>خلاف ذلك، → ابدأ جزءًا جديدًا.</p></li>
+<li><p>If the <strong>new sentence’s max similarity</strong> to chunk <strong>C</strong> is <strong>greater than or equal to the</strong> <strong>minimum similarity inside C</strong>, → The new sentence fits and stays in the chunk.</p></li>
+<li><p>Otherwise, → start a new chunk.</p></li>
 </ul>
-<p>هذا يضمن أن كل قطعة تحافظ على اتساقها الدلالي الداخلي.</p>
-<h3 id="5-Adjust-thresholds-as-the-document-changes" class="common-anchor-header">5. ضبط العتبات مع تغير المستند</h3><p>لتحسين جودة القطع، يمكن تعديل المعلمات مثل حجم القطعة وعتبات التشابه بشكل ديناميكي. يسمح ذلك للخوارزمية بالتكيف مع هياكل المستندات المختلفة والكثافة الدلالية.</p>
-<h3 id="6-Handle-the-first-few-sentences" class="common-anchor-header">6. التعامل مع الجمل القليلة الأولى</h3><p>عندما تحتوي القطعة على جملة واحدة فقط، تتعامل الخوارزمية مع المقارنة الأولى باستخدام عتبة تشابه ثابتة. إذا كان التشابه بين الجملة 1 والجملة 2 أعلى من تلك العتبة، فإنهما يشكلان جزءًا واحدًا. إذا لم يكن كذلك، يتم فصلهما على الفور.</p>
-<h2 id="Strengths-and-Limitations-of-Max–Min-Semantic-Chunking" class="common-anchor-header">نقاط القوة والقصور في التقطيع الدلالي الأقصى الأدنى<button data-href="#Strengths-and-Limitations-of-Max–Min-Semantic-Chunking" class="anchor-icon" translate="no">
+<p>This ensures that each chunk maintains its internal semantic consistency.</p>
+<h3 id="5-Adjust-thresholds-as-the-document-changes" class="common-anchor-header">5. Adjust thresholds as the document changes</h3><p>To optimize chunk quality, parameters such as chunk size and similarity thresholds can be adjusted dynamically. This allows the algorithm to adapt to varying document structures and semantic densities.</p>
+<h3 id="6-Handle-the-first-few-sentences" class="common-anchor-header">6. Handle the first few sentences</h3><p>When a chunk contains only one sentence, the algorithm handles the first comparison using a fixed similarity threshold. If the similarity between sentence 1 and sentence 2 is above that threshold, they form a chunk. If not, they split immediately.</p>
+<h2 id="Strengths-and-Limitations-of-Max–Min-Semantic-Chunking" class="common-anchor-header">Strengths and Limitations of Max–Min Semantic Chunking<button data-href="#Strengths-and-Limitations-of-Max–Min-Semantic-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,29 +120,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يحسّن التقطيع الدلالي الأقصى-أدنى تقطيع دلالي من كيفية تقسيم أنظمة RAG للنص باستخدام المعنى بدلاً من الطول، ولكنه ليس حلاً سحريًا. فيما يلي نظرة عملية على ما تقوم به بشكل جيد وأين لا تزال قاصرة.</p>
-<h3 id="What-It-Does-Well" class="common-anchor-header">ما هو جيد</h3><p>يتحسن التقطيع الدلالي الأقصى والأصغر على التقطيع التقليدي بثلاث طرق مهمة:</p>
-<h4 id="1-Dynamic-meaning-driven-chunk-boundaries" class="common-anchor-header"><strong>1. حدود القطع الديناميكية المبنية على المعنى</strong></h4><p>على عكس المقاربات ذات الحجم الثابت أو القائمة على الهيكل، تعتمد هذه الطريقة على التشابه الدلالي لتوجيه عملية التقطيع. فهي تقارن الحد الأدنى للتشابه داخل القطعة الحالية (مدى تماسكها) بالحد الأقصى للتشابه بين الجملة الجديدة وتلك القطعة (مدى ملاءمتها). إذا كان هذا الأخير أعلى، تنضم الجملة إلى القطعة؛ وإلا تبدأ قطعة جديدة.</p>
-<h4 id="2-Simple-practical-parameter-tuning" class="common-anchor-header"><strong>2. ضبط بسيط وعملي للمعلمات</strong></h4><p>تعتمد الخوارزمية على ثلاثة بارامترات أساسية فقط:</p>
+    </button></h2><p>Max–Min Semantic Chunking improves how RAG systems split text by using meaning instead of length, but it’s not a silver bullet. Here’s a practical look at what it does well and where it still falls short.</p>
+<h3 id="What-It-Does-Well" class="common-anchor-header">What It Does Well</h3><p>Max–Min Semantic Chunking improves on traditional chunking in three important ways:</p>
+<h4 id="1-Dynamic-meaning-driven-chunk-boundaries" class="common-anchor-header"><strong>1. Dynamic, meaning-driven chunk boundaries</strong></h4><p>Unlike fixed-size or structure-based approaches, this method relies on semantic similarity to guide chunking. It compares the minimum similarity within the current chunk (how cohesive it is) to the maximum similarity between the new sentence and that chunk (how well it fits). If the latter is higher, the sentence joins the chunk; otherwise, a new chunk starts.</p>
+<h4 id="2-Simple-practical-parameter-tuning" class="common-anchor-header"><strong>2. Simple, practical parameter tuning</strong></h4><p>The algorithm depends on just three core hyperparameters:</p>
 <ul>
-<li><p><strong>الحد الأقصى لحجم القطعة</strong></p></li>
-<li><p><strong>الحد الأدنى للتشابه</strong> بين أول جملتين، و</p></li>
-<li><p><strong>وعتبة التشابه</strong> لإضافة جمل جديدة.</p></li>
+<li><p>the <strong>maximum chunk size</strong>,</p></li>
+<li><p>the <strong>minimum similarity</strong> between the first two sentences, and</p></li>
+<li><p>the <strong>similarity threshold</strong> for adding new sentences.</p></li>
 </ul>
-<p>تتكيف هذه المعلمات تلقائيًا مع السياق - تتطلب القطع الأكبر حجمًا عتبات تشابه أكثر صرامة للحفاظ على التماسك.</p>
-<h4 id="3-Low-processing-overhead" class="common-anchor-header"><strong>3. نفقات معالجة منخفضة</strong></h4><p>نظرًا لأن خط أنابيب RAG يحسب بالفعل تضمين الجمل، فإن التقطيع الدلالي Max-Min Semantic Chunking لا يضيف عمليات حسابية ثقيلة. كل ما يحتاجه هو مجموعة من عمليات التحقق من تشابه جيب التمام أثناء المسح من خلال الجمل. وهذا يجعلها أرخص من العديد من تقنيات التقطيع الدلالي التي تتطلب نماذج إضافية أو تجميعًا متعدد المراحل.</p>
-<h3 id="What-It-Still-Can’t-Solve" class="common-anchor-header">ما لا تستطيع حلّه بعد</h3><p>يحسّن التقطيع الدلالي الأقصى-الأدنى من حدود القطع، لكنه لا يلغي جميع تحديات تجزئة المستندات. ونظرًا لأن الخوارزمية تعالج الجمل بالترتيب وتجمعها محليًا فقط، فلا يزال بإمكانها أن تفوت العلاقات بعيدة المدى في المستندات الأطول أو الأكثر تعقيدًا.</p>
-<p>إحدى المشكلات الشائعة هي <strong>تجزئة السياق</strong>. عندما تنتشر المعلومات المهمة عبر أجزاء مختلفة من المستند، قد تضع الخوارزمية هذه الأجزاء في أجزاء منفصلة. وعندها تحمل كل قطعة جزءًا من المعنى فقط.</p>
-<p>على سبيل المثال، في ملاحظات الإصدار Milvus 2.4.13، كما هو موضح أدناه، قد تحتوي إحدى القطع على معرّف الإصدار بينما تحتوي أخرى على قائمة الميزات. يعتمد استعلام مثل <em>"ما هي الميزات الجديدة التي تم تقديمها في الإصدار 2.4.13 من ملفوس 2.4.13؟</em> إذا تم تقسيم هذه التفاصيل عبر أجزاء مختلفة، فقد لا يربط نموذج التضمين بينهما، مما يؤدي إلى استرجاع أضعف.</p>
+<p>These parameters adjust automatically with context—larger chunks require stricter similarity thresholds to maintain coherence.</p>
+<h4 id="3-Low-processing-overhead" class="common-anchor-header"><strong>3. Low processing overhead</strong></h4><p>Because the RAG pipeline already computes sentence embeddings, Max–Min Semantic Chunking doesn’t add heavy computation. All it needs is a set of cosine similarity checks while scanning through sentences. This makes it cheaper than many semantic chunking techniques that require extra models or multi-stage clustering.</p>
+<h3 id="What-It-Still-Can’t-Solve" class="common-anchor-header">What It Still Can’t Solve</h3><p>Max–Min Semantic Chunking improves chunk boundaries, but it doesn’t eliminate all the challenges of document segmentation. Because the algorithm processes sentences in order and only clusters locally, it can still miss long-range relationships in longer or more complex documents.</p>
+<p>One common issue is <strong>context fragmentation</strong>. When important information is spread across different parts of a document, the algorithm may place those pieces into separate chunks. Each chunk then carries only part of the meaning.</p>
+<p>For example, in the Milvus 2.4.13 Release Notes, as shown below, one chunk might contain the version identifier while another contains the feature list. A query like <em>“What new features were introduced in Milvus 2.4.13?”</em> depends on both. If those details are split across different chunks, the embedding model may not connect them, leading to weaker retrieval.</p>
 <ul>
 <li>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/v2413_a98e1b1f99.png" alt="Example showing context fragmentation in Milvus 2.4.13 Release Notes with version identifier and feature list in separate chunks" class="doc-image" id="example-showing-context-fragmentation-in-milvus-2.4.13-release-notes-with-version-identifier-and-feature-list-in-separate-chunks" />
-   </span> <span class="img-wrapper"> <span>مثال يُظهر تجزئة السياق في ملاحظات الإصدار Milvus 2.4.13 مع معرف الإصدار وقائمة الميزات في أجزاء منفصلة</span> </span></li>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/v2413_a98e1b1f99.png" alt="Example showing context fragmentation in Milvus 2.4.13 Release Notes with version identifier and feature list in separate chunks" class="doc-image" id="example-showing-context-fragmentation-in-milvus-2.4.13-release-notes-with-version-identifier-and-feature-list-in-separate-chunks" />
+    <span>Example showing context fragmentation in Milvus 2.4.13 Release Notes with version identifier and feature list in separate chunks</span>
+  </span>
+</li>
 </ul>
-<p>يؤثر هذا التجزئة أيضًا على مرحلة توليد LLM. إذا كان مرجع الإصدار في جزء واحد وأوصاف الميزة في جزء آخر، فإن النموذج يتلقى سياقًا غير مكتمل ولا يمكنه التفكير بشكل واضح في العلاقة بين الاثنين.</p>
-<p>للتخفيف من حدة هذه الحالات، غالبًا ما تستخدم الأنظمة تقنيات مثل النوافذ المنزلقة أو حدود القطع المتداخلة أو عمليات المسح متعددة المسارات. هذه الأساليب تعيد تقديم بعض السياق المفقود وتقلل من التجزئة وتساعد خطوة الاسترجاع على الاحتفاظ بالمعلومات ذات الصلة.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخاتمة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This fragmentation also affects the LLM generation stage. If the version reference is in one chunk and the feature descriptions are in another, the model receives incomplete context and can’t reason cleanly about the relationship between the two.</p>
+<p>To mitigate these cases, systems often use techniques such as sliding windows, overlapping chunk boundaries, or multi-pass scans. These approaches reintroduce some of the missing context, reduce fragmentation, and help the retrieval step retain related information.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -155,8 +159,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا يعد التقطيع الدلالي الأقصى الأدنى حلًا سحريًا لكل مشكلة من مشاكل RAG، ولكنه يمنحنا طريقة أكثر عقلانية للتفكير في حدود القطع. فبدلاً من السماح لحدود الرموز بتقرير أين يتم تقطيع الأفكار، فإنه يستخدم التضمينات لاكتشاف أين يتحول المعنى بالفعل. بالنسبة للعديد من المستندات في العالم الحقيقي - واجهات برمجة التطبيقات، والمواصفات، والسجلات، وملاحظات الإصدار، وأدلة استكشاف الأخطاء وإصلاحها - يمكن لهذا وحده أن يرفع جودة الاسترجاع بشكل ملحوظ.</p>
-<p>ما يعجبني في هذا النهج هو أنه يتناسب بشكل طبيعي مع خطوط أنابيب RAG الحالية. إذا كنت تقوم بالفعل بتضمين الجمل أو الفقرات، فإن التكلفة الإضافية هي في الأساس بعض فحوصات تشابه جيب التمام. لا تحتاج إلى نماذج إضافية أو تجميع معقد أو معالجة مسبقة ثقيلة الوزن. وعندما تنجح، فإن الأجزاء التي تنتجها تبدو أكثر "إنسانية" - أقرب إلى كيفية تجميع المعلومات ذهنيًا عند القراءة.</p>
-<p>لكن هذه الطريقة لا تزال لديها نقاط عمياء. فهي ترى المعنى محليًا فقط، ولا يمكنها إعادة ربط المعلومات المتباعدة عن قصد. لا تزال النوافذ المتداخلة والمسح متعدد المسارات وغيرها من حيل الحفاظ على السياق ضرورية، خاصةً بالنسبة للمستندات التي تكون فيها المراجع والتفسيرات بعيدة عن بعضها البعض.</p>
-<p>ومع ذلك، فإن التقطيع الدلالي ماكس-مين ينقلنا في الاتجاه الصحيح: بعيدًا عن التقطيع التعسفي للنص ونحو خطوط أنابيب الاسترجاع التي تحترم بالفعل الدلالات. إذا كنت تستكشف طرقًا لجعل RAG أكثر موثوقية، فإن الأمر يستحق التجربة.</p>
-<p>هل لديك أسئلة أو تريد التعمق في تحسين أداء RAG؟ انضم إلى <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> الخاص بنا وتواصل مع المهندسين الذين يقومون ببناء وضبط أنظمة الاسترجاع الحقيقية كل يوم.</p>
+    </button></h2><p>Max–Min Semantic Chunking isn’t a magic fix for every RAG problem, but it does give us a more sane way to think about chunk boundaries. Instead of letting token limits decide where ideas get chopped, it uses embeddings to detect where the meaning actually shifts. For many real-world documents—APIs, specs, logs, release notes, troubleshooting guides—this alone can push retrieval quality noticeably higher.</p>
+<p>What I like about this approach is that it fits naturally into existing RAG pipelines. If you already embed sentences or paragraphs, the extra cost is basically a few cosine similarity checks. You don’t need extra models, complex clustering, or heavyweight preprocessing. And when it works, the chunks it produces feel more “human”—closer to how we mentally group information when reading.</p>
+<p>But the method still has blind spots. It only sees meaning locally, and it can’t reconnect information that’s intentionally spread apart. Overlapping windows, multi-pass scans, and other context-preserving tricks are still necessary, especially for documents where references and explanations live far from each other.</p>
+<p>Still, Max–Min Semantic Chunking moves us in the right direction: away from arbitrary text slicing and toward retrieval pipelines that actually respect semantics. If you’re exploring ways to make RAG more reliable, it’s worth experimenting with.</p>
+<p>Have questions or want to dig deeper into improving RAG performance? Join our <a href="https://discord.com/invite/8uyFbECzPX">Discord</a> and connect with engineers who are building and tuning real retrieval systems every day.</p>

@@ -1,11 +1,16 @@
 ---
 id: >-
   unveiling-milvus-2-3-milestone-release-offering-support-for-gpu-arm64-cdc-and-other-features.md
-title: Milvus2.3を発表：GPU、Arm64、CDC、その他多くの待望の機能をサポートするマイルストーンリリース
+title: >-
+  Unveiling Milvus 2.3: A Milestone Release Offering Support for GPU, Arm64,
+  CDC, and Many Other Highly Anticipated Features
 author: 'Owen Jiao, Fendy Feng'
 date: 2023-08-28T00:00:00.000Z
 desc: >-
-  Milvus2.3は、GPU、Arm64、upsert、変更データキャプチャ、ScaNNインデックス、範囲検索のサポートを含む、多くの待望の機能を備えたマイルストーンリリースです。また、クエリー性能の向上、より強固なロードバランシングとスケジューリング、より優れた観測性と操作性が導入されています。
+  Milvus 2.3 is a milestone release with numerous highly anticipated features,
+  including support for GPU, Arm64, upsert, change data capture, ScaNN index,
+  and range search. It also introduces improved query performance, more robust
+  load balancing and scheduling, and better observability and operability.
 cover: assets.zilliz.com/Milvus_2_3_Milvus_io_2e3b0eb55c.jpeg
 tag: News
 tags: >-
@@ -21,9 +26,9 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>エキサイティングなニュースです！Milvus2.3は、GPU、Arm64、upsert、変更データキャプチャ、ScaNNインデックス、MMapテクノロジーのサポートなど、多くの待望の機能を搭載したマイルストーンバージョンです。また、Milvus 2.3では、クエリー性能の向上、より強固なロードバランシングとスケジューリング、より優れた観測性と操作性が導入されています。</p>
-<p>私と共にこれらの新機能と機能強化を見て、このリリースからどのような恩恵を受けることができるかを学びましょう。</p>
-<h2 id="Support-for-GPU-index-that-leads-to-3-10-times-faster-in-QPS" class="common-anchor-header">QPSを3～10倍高速化するGPUインデックスのサポート<button data-href="#Support-for-GPU-index-that-leads-to-3-10-times-faster-in-QPS" class="anchor-icon" translate="no">
+<p>Exciting news! After eight months of concerted effort, we’re thrilled to announce the release of Milvus 2.3, a milestone version that brings numerous highly anticipated features, including support for GPU, Arm64, upsert, change data capture, ScaNN index, and MMap technology. Milvus 2.3 also introduces improved query performance, more robust load balancing and scheduling, and better observability and operability.</p>
+<p>Join me to look at these new features and enhancements and learn how you can benefit from this release.</p>
+<h2 id="Support-for-GPU-index-that-leads-to-3-10-times-faster-in-QPS" class="common-anchor-header">Support for GPU index that leads to 3-10 times faster in QPS<button data-href="#Support-for-GPU-index-that-leads-to-3-10-times-faster-in-QPS" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,8 +43,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GPUインデックスはMilvusコミュニティで非常に期待されている機能です。Nvidiaのエンジニアとの素晴らしいコラボレーションにより、Milvus 2.3では、MilvusインデックスエンジンであるKnowhereに追加された堅牢なRAFTアルゴリズムにより、GPUインデックスがサポートされました。GPUのサポートにより、Milvus 2.3は、CPU HNSWインデックスを使用する旧バージョンと比較して、QPSで3倍以上速くなり、重い計算を必要とする特定のデータセットでは、ほぼ10倍速くなりました。</p>
-<h2 id="Arm64-support-to-accommodate-growing-user-demand" class="common-anchor-header">ユーザーニーズの高まりに対応するArm64サポート<button data-href="#Arm64-support-to-accommodate-growing-user-demand" class="anchor-icon" translate="no">
+    </button></h2><p>GPU index is a highly anticipated feature in the Milvus community. Thanks to a great collaboration with the Nvidia engineers, Milvus 2.3 has supported GPU indexing with the robust RAFT algorithm added to Knowhere, the Milvus index engine. With GPU support, Milvus 2.3 is more than three times faster in QPS than older versions using the CPU HNSW index and almost ten times faster for specific datasets that require heavy computation.</p>
+<h2 id="Arm64-support-to-accommodate-growing-user-demand" class="common-anchor-header">Arm64 support to accommodate growing user demand<button data-href="#Arm64-support-to-accommodate-growing-user-demand" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,8 +59,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>クラウドプロバイダーや開発者の間でArm CPUの人気が高まっています。この需要の高まりに対応するため、MilvusはARM64アーキテクチャ用のDockerイメージを提供するようになりました。この新しいCPUサポートにより、MacOSユーザはMilvusでよりシームレスにアプリケーションを構築することができます。</p>
-<h2 id="Upsert-support-for-better-user-experience" class="common-anchor-header">より良いユーザーエクスペリエンスのためのUpsertサポート<button data-href="#Upsert-support-for-better-user-experience" class="anchor-icon" translate="no">
+    </button></h2><p>Arm CPUs are becoming increasingly popular among cloud providers and developers. To meet this growing demand, Milvus now provides Docker images for the ARM64 architecture. With this new CPU support, MacOS users can build their applications with Milvus more seamlessly.</p>
+<h2 id="Upsert-support-for-better-user-experience" class="common-anchor-header">Upsert support for better user experience<button data-href="#Upsert-support-for-better-user-experience" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,13 +75,13 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3では、upsert操作をサポートすることで、注目すべき機能強化が行われています。この新機能により、ユーザーはデータの更新や挿入をシームレスに行うことができ、Upsertインターフェイスを通じて1回のリクエストで両方の操作を実行できるようになります。この機能は、データ管理を合理化し、効率性をもたらします。</p>
-<p><strong>注意</strong></p>
+    </button></h2><p>Milvus 2.3 introduces a notable enhancement by supporting the upsert operation. This new functionality allows users to update or insert data seamlessly and empowers them to perform both operations in a single request through the Upsert interface. This feature streamlines data management and brings efficiency to the table.</p>
+<p><strong>Note</strong>:</p>
 <ul>
-<li>アップサート機能は、自動インクリメントIDには適用されません。</li>
-<li>アップサートは、<code translate="no">delete</code> と<code translate="no">insert</code> の組み合わせとして実装されているため、パフォーマンスが多少低下する可能性があります。Milvusを書き込みの多いシナリオで使用する場合は、<code translate="no">insert</code> を使用することをお勧めします。</li>
+<li>The upsert feature does not apply to auto-increment IDs.</li>
+<li>Upsert is implemented as a combination of <code translate="no">delete</code> and <code translate="no">insert</code>, which may result in some performance loss. We recommend using <code translate="no">insert</code> if you use Milvus in write-heavy scenarios.</li>
 </ul>
-<h2 id="Range-search-for-more-accurate-results" class="common-anchor-header">より正確な結果を得るための範囲検索<button data-href="#Range-search-for-more-accurate-results" class="anchor-icon" translate="no">
+<h2 id="Range-search-for-more-accurate-results" class="common-anchor-header">Range search for more accurate results<button data-href="#Range-search-for-more-accurate-results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,7 +96,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus2.3では、クエリー中に入力ベクトルとMilvusに保存されているベクトルとの距離を指定することができます。Milvusは、設定された範囲内で一致するすべての結果を返します。以下は、範囲検索機能を使って検索距離を指定した例です。</p>
+    </button></h2><p>Milvus 2.3 allows users to specify the distance between the input vector and the vectors stored in Milvus during a query. Milvus then returns all matching results within the set range. Below is an example of specifying the search distance using the range search feature.</p>
 <pre><code translate="no"><span class="hljs-comment">// add radius and range_filter to params in search_params</span>
 search_params = {<span class="hljs-string">&quot;params&quot;</span>: {<span class="hljs-string">&quot;nprobe&quot;</span>: <span class="hljs-number">10</span>, <span class="hljs-string">&quot;radius&quot;</span>: <span class="hljs-number">10</span>, <span class="hljs-string">&quot;range_filter&quot;</span> : <span class="hljs-number">20</span>}, <span class="hljs-string">&quot;metric_type&quot;</span>: <span class="hljs-string">&quot;L2&quot;</span>}
 res = collection.<span class="hljs-title function_">search</span>(
@@ -99,9 +104,9 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
 <span class="hljs-string">&quot;int64 &gt; 100&quot;</span>, output_fields=[<span class="hljs-string">&quot;int64&quot;</span>, <span class="hljs-string">&quot;float&quot;</span>]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>この例では、ユーザはMilvusが入力ベクトルから10～20単位の距離内のベクトルを返すことを要求しています。</p>
-<p><strong>注意</strong>: 異なる距離メトリクスは、距離の計算方法が異なるため、値の範囲やソート戦略が異なります。したがって、範囲検索機能を使用する前に、それぞれの特徴を理解することが不可欠です。</p>
-<h2 id="ScaNN-index-for-faster-query-speed" class="common-anchor-header">ScaNNインデックスによるクエリの高速化<button data-href="#ScaNN-index-for-faster-query-speed" class="anchor-icon" translate="no">
+<p>In this example, the user requires Milvus to return vectors within a distance of 10 to 20 units from the input vector.</p>
+<p><strong>Note</strong>: Different distance metrics vary in how they calculate distances, resulting in distinct value ranges and sorting strategies. Therefore, it is essential to understand their characteristics before using the range search feature.</p>
+<h2 id="ScaNN-index-for-faster-query-speed" class="common-anchor-header">ScaNN index for faster query speed<button data-href="#ScaNN-index-for-faster-query-speed" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,8 +121,8 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3では、Googleが開発したオープンソースの<a href="https://zilliz.com/glossary/anns">近似最近傍（ANN）</a>インデックスであるScaNNインデックスをサポートしました。ScaNNインデックスは様々なベンチマークで優れた性能を発揮しており、HNSWを約20%上回り、IVFFlatよりも約7倍高速です。ScaNNインデックスをサポートすることで、Milvusは旧バージョンと比較してはるかに高速なクエリを実現している。</p>
-<h2 id="Growing-index-for-stable-and-better-query-performance" class="common-anchor-header">成長するインデックスによる安定したクエリ性能の向上<button data-href="#Growing-index-for-stable-and-better-query-performance" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus 2.3 now supports the ScaNN index, an open-source <a href="https://zilliz.com/glossary/anns">approximate nearest neighbor (ANN)</a> index developed by Google. ScaNN index has demonstrated superior performance in various benchmarks, outperforming HNSW by around 20% and being approximately seven times faster than IVFFlat. With the support for the ScaNN index, Milvus achieves much faster query speed compared to older versions.</p>
+<h2 id="Growing-index-for-stable-and-better-query-performance" class="common-anchor-header">Growing index for stable and better query performance<button data-href="#Growing-index-for-stable-and-better-query-performance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,8 +137,8 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusにはインデックス付きデータとストリーミングデータの2つのカテゴリーがあります。Milvusはインデックスを使用してインデックス付きデータを高速に検索することができますが、ストリーミングデータは行単位でしか検索できないため、パフォーマンスに影響を与える可能性があります。Milvus2.3では、ストリーミングデータのリアルタイムインデックスを自動的に作成し、クエリのパフォーマンスを向上させるGrowing Indexが導入されました。</p>
-<h2 id="Iterator-for-data-retrieval-in-batches" class="common-anchor-header">一括データ検索のためのイテレータ<button data-href="#Iterator-for-data-retrieval-in-batches" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus includes two categories of data: indexed data and streaming data. Milvus can use indexes to search indexed data quickly but can only brutely search streaming data row by row, which can impact performance. Milvus 2.3 introduces the Growing Index, which automatically creates real-time indexes for streaming data to improve query performance.</p>
+<h2 id="Iterator-for-data-retrieval-in-batches" class="common-anchor-header">Iterator for data retrieval in batches<button data-href="#Iterator-for-data-retrieval-in-batches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,8 +153,8 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus2.3では、16,384以上のエンティティを検索または範囲検索で取得できるイテレータインタフェースが導入されました。この機能は、数万またはそれ以上のベクトルを一括してエクスポートする必要がある場合に便利です。</p>
-<h2 id="Support-for-MMap-for-increased-capacity" class="common-anchor-header">MMapのサポートによる容量の増加<button data-href="#Support-for-MMap-for-increased-capacity" class="anchor-icon" translate="no">
+    </button></h2><p>In Milvus 2.3, Pymilvus has introduced an iterator interface that allows users to retrieve more than 16,384 entities in a search or range search. This feature is handy when users need to export tens of thousands or even more vectors in batches.</p>
+<h2 id="Support-for-MMap-for-increased-capacity" class="common-anchor-header">Support for MMap for increased capacity<button data-href="#Support-for-MMap-for-increased-capacity" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,9 +169,9 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MMapは、ファイルやその他のオブジェクトをメモリにマッピングするために使用されるUNIXのシステムコールです。Milvus2.3はMMapをサポートしており、データをローカルディスクにロードし、それをメモリにマッピングすることで、シングルマシンの容量を増やすことができます。</p>
-<p>当社のテスト結果によると、MMap技術を使用することで、Milvusは性能劣化を20％以内に抑えながら、データ容量を2倍に増やすことができます。このアプローチは全体的なコストを大幅に削減するため、性能の妥協を気にしない予算が限られたユーザーにとって特に有益です。</p>
-<h2 id="CDC-support-for-higher-system-availability" class="common-anchor-header">システムの可用性を高めるCDCサポート<button data-href="#CDC-support-for-higher-system-availability" class="anchor-icon" translate="no">
+    </button></h2><p>MMap is a UNIX system call used to map files and other objects into memory. Milvus 2.3 supports MMap, which enables users to load data onto local disks and map it to memory, thereby increasing single-machine capacity.</p>
+<p>Our testing results indicate that using MMap technology, Milvus can double its data capacity while limiting performance degradation to within 20%. This approach significantly reduces overall costs, making it particularly beneficial for users on a tight budget who do not mind compromising performance.</p>
+<h2 id="CDC-support-for-higher-system-availability" class="common-anchor-header">CDC support for higher system availability<button data-href="#CDC-support-for-higher-system-availability" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,9 +186,9 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>変更データキャプチャ（CDC）は、データベースシステムで一般的に使用されている機能で、データの変更をキャプチャし、指定された宛先に複製します。CDC機能により、Milvus 2.3では、データセンター間でのデータの同期、増分データのバックアップ、シームレスなデータ移行が可能となり、システムの可用性が向上する。</p>
-<p>上記の機能に加え、Milvus 2.3では、コレクションに格納されたデータの行数をリアルタイムで正確に計算するカウントインターフェイスの導入、ベクトル距離を測定するCosineメトリックのサポート、JSON配列に対するより多くの操作の追加などが行われている。より多くの機能と詳細情報については、<a href="https://milvus.io/docs/release_notes.md">Milvus 2.3リリースノートを</a>参照してください。</p>
-<h2 id="Enhancements-and-bug-fixes" class="common-anchor-header">機能強化とバグ修正<button data-href="#Enhancements-and-bug-fixes" class="anchor-icon" translate="no">
+    </button></h2><p>Change Data Capture (CDC) is a commonly used feature in database systems that captures and replicates data changes to a designated destination. With the CDC feature, Milvus 2.3 enables users to synchronize data across data centers, back up incremental data, and seamlessly migrate data, making the system more available.</p>
+<p>In addition to the features above, Milvus 2.3 introduces a count interface to accurately calculate the number of rows of data stored in a collection in real-time, supports the Cosine metric to measure vector distance, and more operations on JSON arrays. For more features and detailed information, refer to <a href="https://milvus.io/docs/release_notes.md">Milvus 2.3 release notes</a>.</p>
+<h2 id="Enhancements-and-bug-fixes" class="common-anchor-header">Enhancements and bug fixes<button data-href="#Enhancements-and-bug-fixes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -198,21 +203,21 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3では、新機能に加え、旧バージョンの改良とバグフィックスが多数含まれています。</p>
-<h3 id="Improved-performance-for-data-filtering" class="common-anchor-header">データフィルタリングのパフォーマンス向上</h3><p>Milvusでは、より正確な結果を得るために、スカラーとベクトルのハイブリッドデータクエリにおいて、ベクトル検索の前にスカラーフィルタリングを行います。しかし、スカラーフィルタリング後にユーザーがあまりにも多くのデータをフィルタリングしてしまった場合、インデックス作成のパフォーマンスが低下する可能性があります。Milvus2.3では、この問題に対処するためにHNSWのフィルタリング戦略を最適化し、クエリ性能を向上させました。</p>
-<h3 id="Increased-multi-core-CPU-usage" class="common-anchor-header">マルチコアCPU使用率の向上</h3><p>近似最近傍探索(ANN)は膨大なCPUリソースを必要とする計算集約的なタスクです。以前のリリースでは、Milvusは利用可能なマルチコアCPUリソースの70%程度しか利用できませんでした。しかし、最新のリリースでは、Milvusはこの制限を克服し、利用可能な全てのマルチコアCPUリソースをフルに活用できるようになりました。</p>
-<h3 id="Refactored-QueryNode" class="common-anchor-header">リファクタリングされたQueryNode</h3><p>QueryNodeはMilvusにおいてベクトル検索を担う重要なコンポーネントです。しかし、旧バージョンでは、QueryNodeは複雑なステート、重複したメッセージキュー、整理されていないコード構造、直感的でないエラーメッセージを持っていました。</p>
-<p>Milvus 2.3では、ステートレスなコード構造を導入し、データ削除用のメッセージキューを削除することで、QueryNodeをアップグレードしました。これらのアップデートにより、リソースの浪費が減り、より高速で安定したベクトル検索が可能になりました。</p>
-<h3 id="Enhanced-message-queues-based-on-NATS" class="common-anchor-header">NATSに基づくメッセージキューの強化</h3><p>Milvusはログ・ベースのアーキテクチャで構築されており、以前のバージョンでは、PulsarとKafkaをコア・ログ・ブローカーとして使用していました。しかし、この組み合わせは3つの重要な課題に直面していた：</p>
+    </button></h2><p>In addition to new features, Milvus 2.3 includes many improvements and bug fixes for older versions.</p>
+<h3 id="Improved-performance-for-data-filtering" class="common-anchor-header">Improved performance for data filtering</h3><p>Milvus performs scalar filtering before vector searching in hybrid scalar and vector data queries to achieve more accurate results. However, the indexing performance may decline if the user has filtered out too much data after scalar filtering. In Milvus 2.3, we optimized the filtering strategy of HNSW to address this issue, resulting in improved query performance.</p>
+<h3 id="Increased-multi-core-CPU-usage" class="common-anchor-header">Increased multi-core CPU usage</h3><p>Approximate nearest search (ANN) is a computationally intensive task that requires massive CPU resources. In previous releases, Milvus could only utilize around 70% of the available multi-core CPU resources. However, with the latest release, Milvus has overcome this limitation and can fully utilize all available multi-core CPU resources, resulting in improved query performance and reduced resource waste.</p>
+<h3 id="Refactored-QueryNode" class="common-anchor-header">Refactored QueryNode</h3><p>QueryNode is a crucial component in Milvus that is responsible for vector searching. However, in older versions, QueryNode had complex states, duplicate message queues, an unorganized code structure, and non-intuitive error messages.</p>
+<p>In Milvus 2.3, we’ve upgraded QueryNode by introducing a stateless code structure and removing the message queue for deleting data. These updates result in less resource waste and faster and more stable vector searching.</p>
+<h3 id="Enhanced-message-queues-based-on-NATS" class="common-anchor-header">Enhanced message queues based on NATS</h3><p>We built Milvus on a log-based architecture, and in previous versions, we used Pulsar and Kafka as the core log brokers. However, this combination faced three key challenges:</p>
 <ul>
-<li>マルチ・トピックの状況では不安定だった。</li>
-<li>アイドル時にリソースを消費し、メッセージの重複排除に苦労した。</li>
-<li>PulsarとKafkaはJavaエコシステムと密接に結びついているため、彼らのコミュニティはGo SDKのメンテナンスやアップデートをほとんど行っていません。</li>
+<li>It was unstable in multi-topic situations.</li>
+<li>It consumed resources when idle and struggled to deduplicate messages.</li>
+<li>Pulsar and Kafka are closely tied to the Java ecosystem, so their community rarely maintains and updates their Go SDKs.</li>
 </ul>
-<p>これらの問題を解決するために、私たちはMilvusの新しいログ・ブローカーとしてNATSとBookeeperを組み合わせました。</p>
-<h3 id="Optimized-load-balancer" class="common-anchor-header">ロードバランサの最適化</h3><p>Milvus 2.3では、システムの実負荷に基づき、より柔軟なロードバランシングアルゴリズムを採用しました。この最適化されたアルゴリズムにより、ユーザはノードの障害やアンバランスな負荷を迅速に検出し、それに応じてスケジューリングを調整することができます。我々のテスト結果によると、Milvus 2.3は障害、アンバランスな負荷、異常なノードステータス、およびその他のイベントを数秒以内に検出し、迅速に調整を行うことができます。</p>
-<p>Milvus 2.3の詳細については、<a href="https://milvus.io/docs/release_notes.md">Milvus 2.3リリースノートを</a>ご参照ください。</p>
-<h2 id="Tool-upgrades" class="common-anchor-header">ツールのアップグレード<button data-href="#Tool-upgrades" class="anchor-icon" translate="no">
+<p>To address these problems, we have combined NATS and Bookeeper as our new log broker for Milvus, which fits users’ needs better.</p>
+<h3 id="Optimized-load-balancer" class="common-anchor-header">Optimized load balancer</h3><p>Milvus 2.3 has adopted a more flexible load-balancing algorithm based on the system’s real loads. This optimized algorithm lets users quickly detect node failures and unbalanced loads and adjust schedulings accordingly. According to our testing results, Milvus 2.3 can detect faults, unbalanced load, abnormal node status, and other events within seconds and make adjustments promptly.</p>
+<p>For more information about Milvus 2.3, refer to <a href="https://milvus.io/docs/release_notes.md">Milvus 2.3 release notes</a>.</p>
+<h2 id="Tool-upgrades" class="common-anchor-header">Tool upgrades<button data-href="#Tool-upgrades" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -227,24 +232,24 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus2.3のリリースに伴い、Milvusの運用・保守に役立つツールであるBirdwatcherとAttuのアップグレードを行いました。</p>
-<h3 id="Birdwatcher-update" class="common-anchor-header">バードウォッチャーアップデート</h3><p>Milvusのデバッグツールである<a href="https://github.com/milvus-io/birdwatcher">Birdwatcherを</a>アップグレードし、以下のような多くの機能強化が行われました：</p>
+    </button></h2><p>We have also upgraded Birdwatcher and Attu, two valuable tools for operating and maintaining Milvus, along with Milvus 2.3.</p>
+<h3 id="Birdwatcher-update" class="common-anchor-header">Birdwatcher update</h3><p>We’ve upgraded <a href="https://github.com/milvus-io/birdwatcher">Birdwatcher</a>, the debug tool of Milvus, introducing numerous features and enhancements, including:</p>
 <ul>
-<li>他の診断システムとシームレスに統合するためのRESTful API。</li>
-<li>Go pprofツールとの統合を容易にするPProfコマンドのサポート。</li>
-<li>ストレージ使用状況の分析機能</li>
-<li>効率的なログ解析機能</li>
-<li>etcd での設定の表示と変更のサポート。</li>
+<li>RESTful API for seamless integration with other diagnostic systems.</li>
+<li>PProf command support to facilitate integration with the Go pprof tool.</li>
+<li>Storage usage analysis capabilities.</li>
+<li>Efficient log analysis functionality.</li>
+<li>Support for viewing and modifying configurations in etcd.</li>
 </ul>
-<h3 id="Attu-update" class="common-anchor-header">Attuアップデート</h3><p>オール・イン・ワンのベクター・データベース管理ツールである<a href="https://zilliz.com/attu">Attuの</a>インターフェイスを一新しました。新しいインターフェースは、よりわかりやすいデザインで、理解しやすくなっています。</p>
+<h3 id="Attu-update" class="common-anchor-header">Attu update</h3><p>We’ve launched a brand-new interface for <a href="https://zilliz.com/attu">Attu</a>, an all-in-one vector database administration tool. The new interface has a more straightforward design and is easier to understand.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Attu_s_new_interface_e24dd0d670.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>詳しくは<a href="https://milvus.io/docs/release_notes.md">Milvus 2.3リリースノートを</a>ご覧ください。</p>
-<h2 id="Let’s-keep-in-touch" class="common-anchor-header">今後ともよろしくお願いいたします！<button data-href="#Let’s-keep-in-touch" class="anchor-icon" translate="no">
+<p>For more details, refer to <a href="https://milvus.io/docs/release_notes.md">Milvus 2.3 release notes</a>.</p>
+<h2 id="Let’s-keep-in-touch" class="common-anchor-header">Let’s keep in touch!<button data-href="#Let’s-keep-in-touch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -259,4 +264,4 @@ vectors, <span class="hljs-string">&quot;float_vector&quot;</span>, search_param
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvusに関するご質問やご意見がございましたら、<a href="https://twitter.com/milvusio">Twitterや</a> <a href="https://www.linkedin.com/company/the-milvus-project">LinkedInから</a>お気軽にお問い合わせください。また、私たちの<a href="https://milvus.io/slack/">Slackチャンネルに</a>参加してエンジニアやコミュニティと直接チャットしたり、<a href="https://us02web.zoom.us/meeting/register/tZ0pcO6vrzsuEtVAuGTpNdb6lGnsPBzGfQ1T#/registration">火曜日のオフィスアワーを</a>チェックしたりすることも大歓迎です！</p>
+    </button></h2><p>If you have questions or feedback about Milvus, please don’t hesitate to contact us through <a href="https://twitter.com/milvusio">Twitter</a> or <a href="https://www.linkedin.com/company/the-milvus-project">LinkedIn</a>. You’re also welcome to join our <a href="https://milvus.io/slack/">Slack channel</a> to chat with our engineers and the community directly or check out our <a href="https://us02web.zoom.us/meeting/register/tZ0pcO6vrzsuEtVAuGTpNdb6lGnsPBzGfQ1T#/registration">Tuesday office hours</a>!</p>

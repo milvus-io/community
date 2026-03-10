@@ -1,11 +1,11 @@
 ---
 id: milvus-embraces-nats-messaging.md
-title: 'Mengoptimalkan Komunikasi Data: Milvus Merangkul Pesan NATS'
+title: 'Optimizing Data Communication: Milvus Embraces NATS Messaging'
 author: Zhen Ye
 date: 2023-11-24T00:00:00.000Z
 desc: >-
-  Memperkenalkan integrasi NATS dan Milvus, mengeksplorasi fitur-fiturnya,
-  proses pengaturan dan migrasi, dan hasil pengujian kinerja.
+  Introducing the integration of NATS and Milvus, exploring its features, setup
+  and migration process, and performance testing results.
 cover: assets.zilliz.com/Exploring_NATS_878f48c848.png
 tag: Engineering
 tags: >-
@@ -21,8 +21,8 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p>Dalam permadani pemrosesan data yang rumit, komunikasi tanpa batas adalah benang merah yang mengikat operasi bersama. <a href="https://zilliz.com/what-is-milvus">Milvus</a>, <a href="https://zilliz.com/cloud">basis data vektor sumber terbuka</a> yang menjadi pelopor, telah memulai perjalanan transformatif dengan fitur terbarunya: Integrasi pesan NATS. Dalam artikel blog yang komprehensif ini, kami akan mengungkap seluk-beluk integrasi ini, mengeksplorasi fitur-fitur intinya, proses penyiapan, manfaat migrasi, dan bagaimana integrasi ini dibandingkan dengan pendahulunya, RocksMQ.</p>
-<h2 id="Understanding-the-role-of-message-queues-in-Milvus" class="common-anchor-header">Memahami peran antrean pesan di Milvus<button data-href="#Understanding-the-role-of-message-queues-in-Milvus" class="anchor-icon" translate="no">
+<p>In the intricate tapestry of data processing, seamless communication is the thread that binds operations together. <a href="https://zilliz.com/what-is-milvus">Milvus</a>, the trailblazing <a href="https://zilliz.com/cloud">open-source vector database</a>, has embarked on a transformative journey with its latest feature: NATS messaging integration. In this comprehensive blog post, we’ll unravel the intricacies of this integration, exploring its core features, setup process, migration benefits, and how it stacks up against its predecessor, RocksMQ.</p>
+<h2 id="Understanding-the-role-of-message-queues-in-Milvus" class="common-anchor-header">Understanding the role of message queues in Milvus<button data-href="#Understanding-the-role-of-message-queues-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,9 +37,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam arsitektur cloud-native Milvus, antrean pesan, atau Log Broker, memiliki peran yang sangat penting. Ini adalah tulang punggung yang memastikan aliran data yang persisten, sinkronisasi, pemberitahuan peristiwa, dan integritas data selama pemulihan sistem. Secara tradisional, RocksMQ adalah pilihan yang paling mudah dalam mode Milvus Standalone, terutama jika dibandingkan dengan Pulsar dan Kafka, tetapi keterbatasannya menjadi jelas dengan data yang luas dan skenario yang kompleks.</p>
-<p>Milvus 2.3 memperkenalkan NATS, sebuah implementasi MQ single-node, yang mendefinisikan ulang cara mengelola aliran data. Tidak seperti pendahulunya, NATS membebaskan pengguna Milvus dari kendala kinerja, memberikan pengalaman yang mulus dalam menangani volume data yang besar.</p>
-<h2 id="What-is-NATS" class="common-anchor-header">Apa itu NATS?<button data-href="#What-is-NATS" class="anchor-icon" translate="no">
+    </button></h2><p>In Milvus’ cloud-native architecture, the message queue, or Log Broker, holds pivotal importance. It’s the backbone ensuring persistent data streams, synchronization, event notifications, and data integrity during system recoveries. Traditionally, RocksMQ was the most straightforward choice in Milvus Standalone mode, especially when compared with Pulsar and Kafka, but its limitations became evident with extensive data and complex scenarios.</p>
+<p>Milvus 2.3 introduces NATS, a single-node MQ implementation, redefining how to manage data streams. Unlike its predecessors, NATS liberates Milvus users from performance constraints, delivering a seamless experience in handling substantial data volumes.</p>
+<h2 id="What-is-NATS" class="common-anchor-header">What is NATS?<button data-href="#What-is-NATS" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,9 +54,9 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>NATS adalah teknologi konektivitas sistem terdistribusi yang diimplementasikan di Go. NATS mendukung berbagai mode komunikasi seperti Request-Reply dan Publish-Subscribe di seluruh sistem, menyediakan persistensi data melalui JetStream, dan menawarkan kemampuan terdistribusi melalui RAFT bawaan. Anda dapat merujuk ke <a href="https://nats.io/">situs web resmi NATS</a> untuk pemahaman yang lebih rinci tentang NATS.</p>
-<p>Dalam mode Milvus 2.3 Standalone, NATS, JetStream, dan PubSub menyediakan kemampuan MQ yang kuat bagi Milvus.</p>
-<h2 id="Enabling-NATS" class="common-anchor-header">Mengaktifkan NATS<button data-href="#Enabling-NATS" class="anchor-icon" translate="no">
+    </button></h2><p>NATS is a distributed system connectivity technology implemented in Go. It supports various communication modes like Request-Reply and Publish-Subscribe across systems, provides data persistence through JetStream, and offers distributed capabilities through built-in RAFT. You can refer to the <a href="https://nats.io/">NATS official website</a> for a more detailed understanding of NATS.</p>
+<p>In Milvus 2.3 Standalone mode, NATS, JetStream, and PubSub provide Milvus with robust MQ capabilities.</p>
+<h2 id="Enabling-NATS" class="common-anchor-header">Enabling NATS<button data-href="#Enabling-NATS" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,10 +71,10 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.3 menawarkan opsi kontrol baru, <code translate="no">mq.type</code>, yang memungkinkan pengguna untuk menentukan jenis MQ yang ingin mereka gunakan. Untuk mengaktifkan NATS, setel <code translate="no">mq.type=natsmq</code>. Jika Anda melihat log yang mirip dengan log di bawah ini setelah Anda memulai instans Milvus, Anda telah berhasil mengaktifkan NATS sebagai antrean pesan.</p>
+    </button></h2><p>Milvus 2.3 offers a new control option, <code translate="no">mq.type</code>, which allows users to specify the type of MQ they want to use. To enable NATS, set <code translate="no">mq.type=natsmq</code>. If you see logs similar to the ones below after you initiate Milvus instances, you have successfully enabled NATS as the message queue.</p>
 <pre><code translate="no">[INFO] [dependency/factory.go:83] [<span class="hljs-string">&quot;try to init mq&quot;</span>] [standalone=<span class="hljs-literal">true</span>] [mqType=natsmq]
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Configuring-NATS-for-Milvus" class="common-anchor-header">Mengonfigurasi NATS untuk Milvus<button data-href="#Configuring-NATS-for-Milvus" class="anchor-icon" translate="no">
+<h2 id="Configuring-NATS-for-Milvus" class="common-anchor-header">Configuring NATS for Milvus<button data-href="#Configuring-NATS-for-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -89,7 +89,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Opsi kustomisasi NATS termasuk menentukan port pendengaran, direktori penyimpanan JetStream, ukuran muatan maksimum, dan batas waktu inisialisasi. Menyempurnakan pengaturan ini akan memastikan kinerja dan keandalan yang optimal.</p>
+    </button></h2><p>NATS customization options include specifying the listening port, JetStream storage directory, maximum payload size, and initialization timeout. Fine-tuning these settings ensures optimal performance and reliability.</p>
 <pre><code translate="no">natsmq:
 server: <span class="hljs-comment"># server side configuration for natsmq.</span>
 port: <span class="hljs-number">4222</span> <span class="hljs-comment"># 4222 by default, Port for nats server listening.</span>
@@ -109,18 +109,18 @@ maxAge: <span class="hljs-number">4320</span> <span class="hljs-comment"># (min)
 maxBytes: <span class="hljs-comment"># (B) None by default, How many bytes the single P-channel may contain. Removing oldest messages if the P-channel exceeds this size.</span>
 maxMsgs: <span class="hljs-comment"># None by default, How many message the single P-channel may contain. Removing oldest messages if the P-channel exceeds this limit.</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Catatan:</strong></p>
+<p><strong>Note:</strong></p>
 <ul>
-<li><p>Anda harus menentukan <code translate="no">server.port</code> untuk mendengarkan server NATS. Jika terjadi konflik port, Milvus tidak dapat memulai. Atur <code translate="no">server.port=-1</code> untuk memilih port secara acak.</p></li>
-<li><p><code translate="no">storeDir</code> menentukan direktori untuk penyimpanan JetStream. Kami menyarankan untuk menyimpan direktori di solid-state drive (SSD) berkinerja tinggi untuk hasil baca/tulis yang lebih baik dari Milvus.</p></li>
-<li><p><code translate="no">maxFileStore</code> menetapkan batas atas ukuran penyimpanan JetStream. Melebihi batas ini akan mencegah penulisan data lebih lanjut.</p></li>
-<li><p><code translate="no">maxPayload</code> membatasi ukuran pesan individual. Anda harus menjaganya tetap di atas 5MB untuk menghindari penolakan penulisan.</p></li>
-<li><p><code translate="no">initializeTimeout</code>mengontrol batas waktu pengaktifan server NATS.</p></li>
-<li><p><code translate="no">monitor</code> mengonfigurasi log independen NATS.</p></li>
-<li><p><code translate="no">retention</code> mengontrol mekanisme penyimpanan pesan NATS.</p></li>
+<li><p>You must specify <code translate="no">server.port</code> for NATS server listening. If there is a port conflict, Milvus cannot start. Set <code translate="no">server.port=-1</code> to randomly select a port.</p></li>
+<li><p><code translate="no">storeDir</code> specifies the directory for JetStream storage. We recommend storing the directory in a high-performant solid-state drive (SSD) for better read/write throughput of Milvus.</p></li>
+<li><p><code translate="no">maxFileStore</code> sets the upper limit of JetStream storage size. Exceeding this limit will prevent further data writing.</p></li>
+<li><p><code translate="no">maxPayload</code> limits individual message size. You should keep it above 5MB to avoid any write rejections.</p></li>
+<li><p><code translate="no">initializeTimeout</code>controls NATS server startup timeout.</p></li>
+<li><p><code translate="no">monitor</code> configures NATS’ independent logs.</p></li>
+<li><p><code translate="no">retention</code> controls the retention mechanism of NATS messages.</p></li>
 </ul>
-<p>Untuk informasi lebih lanjut, lihat <a href="https://docs.nats.io/running-a-nats-service/configuration">dokumentasi resmi NATS</a>.</p>
-<h2 id="Migrating-from-RocksMQ-to-NATS" class="common-anchor-header">Migrasi dari RocksMQ ke NATS<button data-href="#Migrating-from-RocksMQ-to-NATS" class="anchor-icon" translate="no">
+<p>For more information, refer to <a href="https://docs.nats.io/running-a-nats-service/configuration">NATS official documentation</a>.</p>
+<h2 id="Migrating-from-RocksMQ-to-NATS" class="common-anchor-header">Migrating from RocksMQ to NATS<button data-href="#Migrating-from-RocksMQ-to-NATS" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -135,15 +135,15 @@ maxMsgs: <span class="hljs-comment"># None by default, How many message the sing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Migrasi dari RocksMQ ke NATS merupakan proses yang mulus yang melibatkan langkah-langkah seperti menghentikan operasi penulisan, pembilasan data, memodifikasi konfigurasi, dan memverifikasi migrasi melalui log Milvus.</p>
+    </button></h2><p>Migrating from RocksMQ to NATS is a seamless process involving steps like stopping write operations, flushing data, modifying configurations, and verifying the migration through Milvus logs.</p>
 <ol>
-<li><p>Sebelum memulai migrasi, hentikan semua operasi tulis di Milvus.</p></li>
-<li><p>Jalankan operasi <code translate="no">FlushALL</code> pada Milvus dan tunggu hingga selesai. Langkah ini memastikan bahwa semua data yang tertunda telah di-flush dan sistem siap untuk dimatikan.</p></li>
-<li><p>Ubahlah file konfigurasi Milvus dengan mengatur <code translate="no">mq.type=natsmq</code> dan sesuaikan opsi-opsi yang relevan pada bagian <code translate="no">natsmq</code>.</p></li>
-<li><p>Jalankan Milvus 2.3.</p></li>
-<li><p>Cadangkan dan bersihkan data asli yang tersimpan dalam direktori <code translate="no">rocksmq.path</code>. (Opsional)</p></li>
+<li><p>Before initiating the migration, stop all write operations in Milvus.</p></li>
+<li><p>Execute the <code translate="no">FlushALL</code> operation in Milvus and wait for its completion. This step ensures that all pending data is flushed and the system is ready for shutdown.</p></li>
+<li><p>Modify the Milvus configuration file by setting <code translate="no">mq.type=natsmq</code> and adjusting relevant options under the <code translate="no">natsmq</code> section.</p></li>
+<li><p>Start the Milvus 2.3.</p></li>
+<li><p>Back up and clean the original data stored in the <code translate="no">rocksmq.path</code> directory. (Optional)</p></li>
 </ol>
-<h2 id="NATS-vs-RocksMQ-A-Performance-Showdown" class="common-anchor-header">NATS vs RocksMQ: Adu Performa<button data-href="#NATS-vs-RocksMQ-A-Performance-Showdown" class="anchor-icon" translate="no">
+<h2 id="NATS-vs-RocksMQ-A-Performance-Showdown" class="common-anchor-header">NATS vs. RocksMQ: A Performance Showdown<button data-href="#NATS-vs-RocksMQ-A-Performance-Showdown" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -158,48 +158,48 @@ maxMsgs: <span class="hljs-comment"># None by default, How many message the sing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="PubSub-Performance-Testing" class="common-anchor-header">Pengujian Performa Pub/Sub</h3><ul>
-<li><p><strong>Platform Pengujian:</strong> Chip / Memori M1 Pro: 16GB</p></li>
-<li><p><strong>Skenario Pengujian:</strong> Mengirimkan dan menerbitkan paket data acak ke sebuah topik secara berulang-ulang sampai hasil terakhir yang diterbitkan diterima.</p></li>
-<li><p><strong>Hasil:</strong></p>
+    </button></h2><h3 id="PubSub-Performance-Testing" class="common-anchor-header">Pub/Sub Performance Testing</h3><ul>
+<li><p><strong>Testing Platform:</strong> M1 Pro Chip / Memory: 16GB</p></li>
+<li><p><strong>Testing Scenario:</strong> Subscribing and publishing random data packets to a topic repeatedly until the last published result is received.</p></li>
+<li><p><strong>Results:</strong></p>
 <ul>
-<li><p>Untuk paket data yang lebih kecil (&lt; 64kb), RocksMQ mengungguli NATS dalam hal memori, CPU, dan kecepatan respons.</p></li>
-<li><p>Untuk paket data yang lebih besar (&gt; 64kb), NATS mengungguli RocksMQ, menawarkan waktu respons yang jauh lebih cepat.</p></li>
+<li><p>For smaller data packets (&lt; 64kb), RocksMQ outperforms NATS regarding memory, CPU, and response speed.</p></li>
+<li><p>For larger data packets (&gt; 64kb), NATS outshines RocksMQ, offering much faster response times.</p></li>
 </ul></li>
 </ul>
 <table>
 <thead>
-<tr><th>Jenis Pengujian</th><th>MQ</th><th>jumlah operasi</th><th>biaya per operasi</th><th>Biaya memori</th><th>Total Waktu CPU</th><th>Biaya penyimpanan</th></tr>
+<tr><th>Test Type</th><th>MQ</th><th>op count</th><th>cost per op</th><th>Memory cost</th><th>CPU Total Time</th><th>Storage cost</th></tr>
 </thead>
 <tbody>
-<tr><td>5MB * 100 Pub / Sub</td><td>NATS</td><td>50</td><td>1.650328186 s/op</td><td>4,29 GB</td><td>85.58</td><td>25G</td></tr>
-<tr><td>5MB * 100 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>2.475595131 s/op</td><td>1,18 GB</td><td>81.42</td><td>19G</td></tr>
-<tr><td>1MB * 500 Pub/Sub</td><td>NATS</td><td>50</td><td>2.248722593 s/op</td><td>2,60 GB</td><td>96.50</td><td>25G</td></tr>
-<tr><td>1MB * 500 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>2.554614279 s/op</td><td>614.9 MB</td><td>80.19</td><td>19G</td></tr>
-<tr><td>64KB*10000 Pub/Sub</td><td>NATS</td><td>50</td><td>2.133345262 s/op</td><td>3,29 GB</td><td>97.59</td><td>31G</td></tr>
+<tr><td>5MB*100 Pub/Sub</td><td>NATS</td><td>50</td><td>1.650328186 s/op</td><td>4.29 GB</td><td>85.58</td><td>25G</td></tr>
+<tr><td>5MB*100 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>2.475595131 s/op</td><td>1.18 GB</td><td>81.42</td><td>19G</td></tr>
+<tr><td>1MB*500 Pub/Sub</td><td>NATS</td><td>50</td><td>2.248722593 s/op</td><td>2.60 GB</td><td>96.50</td><td>25G</td></tr>
+<tr><td>1MB*500 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>2.554614279 s/op</td><td>614.9 MB</td><td>80.19</td><td>19G</td></tr>
+<tr><td>64KB*10000 Pub/Sub</td><td>NATS</td><td>50</td><td>2.133345262 s/op</td><td>3.29 GB</td><td>97.59</td><td>31G</td></tr>
 <tr><td>64KB*10000 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>3.253778195 s/op</td><td>331.2 MB</td><td>134.6</td><td>24G</td></tr>
 <tr><td>1KB*50000 Pub/Sub</td><td>NATS</td><td>50</td><td>2.629391004 s/op</td><td>635.1 MB</td><td>179.67</td><td>2.6G</td></tr>
-<tr><td>1KB * 50000 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>0.897638581 s/op</td><td>232.3 MB</td><td>60.42</td><td>521M</td></tr>
+<tr><td>1KB*50000 Pub/Sub</td><td>RocksMQ</td><td>50</td><td>0.897638581 s/op</td><td>232.3 MB</td><td>60.42</td><td>521M</td></tr>
 </tbody>
 </table>
-<p>Tabel 1: Hasil pengujian kinerja Pub/Sub</p>
-<h3 id="Milvus-Integration-Testing" class="common-anchor-header">Pengujian Integrasi Milvus</h3><p><strong>Ukuran data:</strong> 100M</p>
-<p><strong>Hasil:</strong> Dalam pengujian ekstensif dengan set data 100 juta vektor, NATS menampilkan pencarian vektor dan latensi kueri yang lebih rendah.</p>
+<p>Table 1: Pub/Sub performance testing results</p>
+<h3 id="Milvus-Integration-Testing" class="common-anchor-header">Milvus Integration Testing</h3><p><strong>Data size:</strong> 100M</p>
+<p><strong>Result:</strong> In extensive testing with a 100 million vectors dataset, NATS showcased lower vector search and query latency.</p>
 <table>
 <thead>
-<tr><th>Metrik</th><th>RocksMQ (ms)</th><th>NATS (ms)</th></tr>
+<tr><th>Metrics</th><th>RocksMQ (ms)</th><th>NATS (ms)</th></tr>
 </thead>
 <tbody>
-<tr><td>Latensi pencarian vektor rata-rata</td><td>23.55</td><td>20.17</td></tr>
-<tr><td>Permintaan pencarian vektor per detik (RPS)</td><td>2.95</td><td>3.07</td></tr>
-<tr><td>Latensi kueri rata-rata</td><td>7.2</td><td>6.74</td></tr>
-<tr><td>Permintaan kueri per detik (RPS)</td><td>1.47</td><td>1.54</td></tr>
+<tr><td>Average vector search latency</td><td>23.55</td><td>20.17</td></tr>
+<tr><td>Vector search requests per second (RPS)</td><td>2.95</td><td>3.07</td></tr>
+<tr><td>Average query latency</td><td>7.2</td><td>6.74</td></tr>
+<tr><td>Query requests per second (RPS)</td><td>1.47</td><td>1.54</td></tr>
 </tbody>
 </table>
-<p>Tabel 2: Hasil pengujian integrasi Milvus dengan dataset 100 juta</p>
+<p>Table 2: Milvus integration testing results with 100m dataset</p>
 <p><strong>Dataset: &lt;100M</strong></p>
-<p><strong>Hasil</strong> Untuk dataset yang lebih kecil dari 100 juta, NATS dan RocksMQ menunjukkan performa yang serupa.</p>
-<h2 id="Conclusion-Empowering-Milvus-with-NATS-messaging" class="common-anchor-header">Kesimpulan: Memberdayakan Milvus dengan pesan NATS<button data-href="#Conclusion-Empowering-Milvus-with-NATS-messaging" class="anchor-icon" translate="no">
+<p><strong>Result:</strong> For datasets smaller than 100M, NATS and RocksMQ show similar performance.</p>
+<h2 id="Conclusion-Empowering-Milvus-with-NATS-messaging" class="common-anchor-header">Conclusion: Empowering Milvus with NATS messaging<button data-href="#Conclusion-Empowering-Milvus-with-NATS-messaging" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -214,4 +214,4 @@ maxMsgs: <span class="hljs-comment"># None by default, How many message the sing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Integrasi NATS dalam Milvus menandai langkah yang signifikan dalam pemrosesan data. Baik untuk mempelajari analitik waktu nyata, aplikasi pembelajaran mesin, atau usaha intensif data apa pun, NATS memberdayakan proyek Anda dengan efisiensi, keandalan, dan kecepatan. Seiring perkembangan lanskap data, memiliki sistem perpesanan yang kuat seperti NATS dalam Milvus memastikan komunikasi data yang lancar, andal, dan berkinerja tinggi.</p>
+    </button></h2><p>The integration of NATS within Milvus marks a significant stride in data processing. Whether delving into real-time analytics, machine learning applications, or any data-intensive venture, NATS empowers your projects with efficiency, reliability, and speed. As the data landscape evolves, having a robust messaging system like NATS within Milvus ensures seamless, reliable, and high-performing data communication.</p>

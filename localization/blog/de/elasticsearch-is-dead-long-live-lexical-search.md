@@ -1,6 +1,6 @@
 ---
 id: elasticsearch-is-dead-long-live-lexical-search.md
-title: 'Elasticsearch ist tot, es lebe die lexikalische Suche'
+title: 'Elasticsearch is Dead, Long Live Lexical Search'
 author: James Luan
 date: 2024-12-17T00:00:00.000Z
 cover: >-
@@ -10,9 +10,9 @@ tags: Milvus
 recommend: false
 canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-search.md'
 ---
-<p>Inzwischen weiß jeder, dass die hybride Suche die <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG-Suchqualität</a> (Retrieval-Augmented Generation) verbessert hat. Während die Suche <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">mit dichter Einbettung</a> beeindruckende Fähigkeiten bei der Erfassung tiefer semantischer Beziehungen zwischen Abfragen und Dokumenten gezeigt hat, weist sie immer noch bemerkenswerte Einschränkungen auf. Dazu gehören mangelnde Erklärbarkeit und suboptimale Leistung bei Long-Tail-Anfragen und seltenen Begriffen.</p>
-<p>Viele RAG-Anwendungen haben damit zu kämpfen, dass den vortrainierten Modellen oft domänenspezifisches Wissen fehlt. In einigen Szenarien übertrifft das einfache BM25-Schlüsselwortmatching diese hochentwickelten Modelle. Hier schließt die hybride Suche die Lücke, indem sie das semantische Verständnis des Dense Vector Retrieval mit der Präzision des Keyword Matching kombiniert.</p>
-<h2 id="Why-Hybrid-Search-is-Complex-in-Production" class="common-anchor-header">Warum die hybride Suche in der Produktion komplex ist<button data-href="#Why-Hybrid-Search-is-Complex-in-Production" class="anchor-icon" translate="no">
+<p>By now, everyone knows that hybrid search has improved <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> (Retrieval-Augmented Generation) search quality. While <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">dense embedding</a> search has shown impressive capabilities in capturing deep semantic relationships between queries and documents, it still has notable limitations. These include a lack of explainability and suboptimal performance with long-tail queries and rare terms.</p>
+<p>Many RAG applications struggle because pre-trained models often lack domain-specific knowledge. In some scenarios, simple BM25 keyword matching outperforms these sophisticated models. This is where hybrid search bridges the gap, combining the semantic understanding of dense vector retrieval with the precision of keyword matching.</p>
+<h2 id="Why-Hybrid-Search-is-Complex-in-Production" class="common-anchor-header">Why Hybrid Search is Complex in Production<button data-href="#Why-Hybrid-Search-is-Complex-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -27,21 +27,21 @@ canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-se
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Während Frameworks wie <a href="https://zilliz.com/learn/LangChain">LangChain</a> oder <a href="https://zilliz.com/learn/getting-started-with-llamaindex">LlamaIndex</a> den Aufbau eines Proof-of-Concept-Hybrid-Retrievers erleichtern, ist die Skalierung auf die Produktion mit massiven Datensätzen eine Herausforderung. Herkömmliche Architekturen erfordern separate Vektordatenbanken und Suchmaschinen, was zu mehreren zentralen Herausforderungen führt:</p>
+    </button></h2><p>While frameworks like <a href="https://zilliz.com/learn/LangChain">LangChain</a> or <a href="https://zilliz.com/learn/getting-started-with-llamaindex">LlamaIndex</a> make building a proof-of-concept hybrid retriever easy, scaling to production with massive datasets is challenging. Traditional architectures require separate vector databases and search engines, leading to several key challenges:</p>
 <ul>
-<li><p>Hohe Wartungskosten für die Infrastruktur und betriebliche Komplexität</p></li>
-<li><p>Datenredundanz über mehrere Systeme hinweg</p></li>
-<li><p>Schwierige Verwaltung der Datenkonsistenz</p></li>
-<li><p>Komplexe Sicherheit und systemübergreifende Zugriffskontrolle</p></li>
+<li><p>High infrastructure maintenance costs and operational complexity</p></li>
+<li><p>Data redundancy across multiple systems</p></li>
+<li><p>Difficult data consistency management</p></li>
+<li><p>Complex security and access control across systems</p></li>
 </ul>
-<p>Der Markt benötigt eine einheitliche Lösung, die lexikalische und semantische Suche unterstützt und gleichzeitig die Systemkomplexität und -kosten reduziert.</p>
+<p>The market needs a unified solution that supports lexical and semantic search while reducing system complexity and cost.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/elasticsearch_vs_milvus_5be6e2b69e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="The-Pain-Points-of-Elasticsearch" class="common-anchor-header">Die Schmerzpunkte von Elasticsearch<button data-href="#The-Pain-Points-of-Elasticsearch" class="anchor-icon" translate="no">
+<h2 id="The-Pain-Points-of-Elasticsearch" class="common-anchor-header">The Pain Points of Elasticsearch<button data-href="#The-Pain-Points-of-Elasticsearch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,15 +56,15 @@ canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-se
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Elasticsearch ist eines der einflussreichsten Open-Source-Suchprojekte des letzten Jahrzehnts. Es basiert auf Apache Lucene und wurde durch seine hohe Leistung, Skalierbarkeit und verteilte Architektur populär. Obwohl in Version 8.0 die Vector ANN-Suche hinzugefügt wurde, stehen Produktionsimplementierungen vor mehreren kritischen Herausforderungen:</p>
-<p><strong>Hohe Aktualisierungs- und Indizierungskosten:</strong> Die Architektur von Elasticsearch entkoppelt Schreibvorgänge, Indexaufbau und Abfragen nicht vollständig. Dies führt zu erheblichem CPU- und I/O-Overhead bei Schreiboperationen, insbesondere bei Massenaktualisierungen. Die Ressourcenkonkurrenz zwischen Indizierung und Abfrage wirkt sich auf die Leistung aus und stellt einen erheblichen Engpass für hochfrequente Aktualisierungsszenarien dar.</p>
-<p><strong>Schlechte Leistung in Echtzeit:</strong> Als "echtzeitnahe" Suchmaschine führt Elasticsearch zu einer spürbaren Latenz bei der Datensichtbarkeit. Diese Latenz wird besonders problematisch für KI-Anwendungen, wie z. B. Agentensysteme, bei denen hochfrequente Interaktionen und dynamische Entscheidungsfindung einen sofortigen Datenzugriff erfordern.</p>
-<p><strong>Schwierige Shard-Verwaltung:</strong> Obwohl Elasticsearch Sharding für eine verteilte Architektur verwendet, stellt das Shard-Management eine große Herausforderung dar. Das Fehlen einer dynamischen Sharding-Unterstützung führt zu einem Dilemma: Zu viele Shards in kleinen Datensätzen führen zu schlechter Leistung, während zu wenige Shards in großen Datensätzen die Skalierbarkeit einschränken und eine ungleichmäßige Datenverteilung verursachen.</p>
-<p><strong>Nicht-Cloud-native Architektur:</strong> Elasticsearch wurde entwickelt, bevor sich Cloud-native Architekturen durchsetzten. Das Design von Elasticsearch koppelt Storage und Compute eng aneinander, was die Integration mit modernen Infrastrukturen wie Public Clouds und Kubernetes einschränkt. Die Skalierung der Ressourcen erfordert eine gleichzeitige Erhöhung von Speicher und Rechenleistung, was die Flexibilität einschränkt. In Szenarien mit mehreren Replikaten muss jeder Shard seinen Index unabhängig aufbauen, was die Rechenkosten erhöht und die Ressourceneffizienz verringert.</p>
-<p><strong>Schlechte Vektorsuchleistung:</strong> Obwohl Elasticsearch 8.0 die ANN-Vektorsuche eingeführt hat, bleibt seine Leistung deutlich hinter der von dedizierten Vektormaschinen wie Milvus zurück. Die auf dem Lucene-Kernel basierende Indexstruktur erweist sich als ineffizient für hochdimensionale Daten und hat mit den Anforderungen einer groß angelegten Vektorsuche zu kämpfen. Besonders instabil wird die Leistung in komplexen Szenarien mit skalarer Filterung und Mandantenfähigkeit, was es schwierig macht, eine hohe Last oder unterschiedliche Geschäftsanforderungen zu unterstützen.</p>
-<p><strong>Übermäßiger Ressourcenverbrauch:</strong> Elasticsearch stellt extreme Anforderungen an Speicher und CPU, insbesondere bei der Verarbeitung großer Datenmengen. Seine JVM-Abhängigkeit erfordert häufige Anpassungen der Heap-Größe und eine Optimierung der Garbage Collection, was die Speichereffizienz stark beeinträchtigt. Vektorsuchoperationen erfordern intensive SIMD-optimierte Berechnungen, für die die JVM-Umgebung alles andere als ideal ist.</p>
-<p>Diese grundlegenden Beschränkungen werden zunehmend problematisch, wenn Unternehmen ihre KI-Infrastruktur skalieren, was Elasticsearch zu einer besonderen Herausforderung für moderne KI-Anwendungen macht, die hohe Leistung und Zuverlässigkeit erfordern.</p>
-<h2 id="Introducing-Sparse-BM25-Reimagining-Lexical-Search" class="common-anchor-header">Einführung von Sparse-BM25: Lexikalische Suche neu gedacht<button data-href="#Introducing-Sparse-BM25-Reimagining-Lexical-Search" class="anchor-icon" translate="no">
+    </button></h2><p>Elasticsearch has been one of the past decade’s most influential open-source search projects. Built on Apache Lucene, it gained popularity through its high performance, scalability, and distributed architecture. While it added vector ANN search in version 8.0, production deployments face several critical challenges:</p>
+<p><strong>High Update and Indexing Costs:</strong> Elasticsearch’s architecture doesn’t fully decouple write operations, index building, and querying. This leads to significant CPU and I/O overhead during write operations, especially in bulk updates. The resource contention between indexing and querying impacts performance, creating a major bottleneck for high-frequency update scenarios.</p>
+<p><strong>Poor Real-time Performance:</strong> As a “near real-time” search engine, Elasticsearch introduces noticeable latency in data visibility. This latency becomes particularly problematic for AI applications, such as Agent systems, where high-frequency interactions and dynamic decision-making require immediate data access.</p>
+<p><strong>Difficult Shard Management:</strong> While Elasticsearch uses sharding for distributed architecture, shard management poses significant challenges. The lack of dynamic sharding support creates a dilemma: too many shards in small datasets lead to poor performance, while too few shards in large datasets limit scalability and cause uneven data distribution.</p>
+<p><strong>Non-Cloud-Native Architecture:</strong> Developed before cloud-native architectures became prevalent, Elasticsearch’s design tightly couples storage and compute, limiting its integration with modern infrastructure like public clouds and Kubernetes. Resource scaling requires simultaneous increases in both storage and compute, reducing flexibility. In multi-replica scenarios, each shard must build its index independently, increasing computational costs and reducing resource efficiency.</p>
+<p><strong>Poor Vector Search Performance:</strong> Though Elasticsearch 8.0 introduced vector ANN search, its performance significantly lags behind that of dedicated vector engines like Milvus. Based on the Lucene kernel, its index structure proves inefficient for high-dimensional data, struggling with large-scale vector search requirements. Performance becomes particularly unstable in complex scenarios involving scalar filtering and multi-tenancy, making it challenging to support high-load or diverse business needs.</p>
+<p><strong>Excessive Resource Consumption:</strong> Elasticsearch places extreme demands on memory and CPU, especially when processing large-scale data. Its JVM dependency requires frequent heap size adjustments and garbage collection tuning, severely impacting memory efficiency. Vector search operations require intensive SIMD-optimized computations, for which the JVM environment is far from ideal.</p>
+<p>These fundamental limitations become increasingly problematic as organizations scale their AI infrastructure, making Elasticsearch particularly challenging for modern AI applications requiring high performance and reliability.</p>
+<h2 id="Introducing-Sparse-BM25-Reimagining-Lexical-Search" class="common-anchor-header">Introducing Sparse-BM25: Reimagining Lexical Search<button data-href="#Introducing-Sparse-BM25-Reimagining-Lexical-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -79,23 +79,23 @@ canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-se
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> führt native lexikalische Suchunterstützung durch Sparse-BM25 ein, die auf den in Version 2.4 eingeführten hybriden Suchfunktionen aufbaut. Dieser innovative Ansatz umfasst die folgenden Schlüsselkomponenten:</p>
+    </button></h2><p><a href="https://milvus.io/blog/introduce-milvus-2-5-full-text-search-powerful-metadata-filtering-and-more.md">Milvus 2.5</a> introduces native lexical search support through Sparse-BM25, building upon the hybrid search capabilities introduced in version 2.4. This innovative approach includes the following key components:</p>
 <ul>
-<li><p>Erweiterte Tokenisierung und Vorverarbeitung durch Tantivy</p></li>
-<li><p>Verteiltes Vokabular und Termfrequenzmanagement</p></li>
-<li><p>Sparse-Vektor-Generierung mit Korpus-TF und Abfrage-TF-IDF</p></li>
-<li><p>Unterstützung von invertierten Indizes mit dem WAND-Algorithmus (Block-Max WAND und Graph-Index-Unterstützung in Entwicklung)</p></li>
+<li><p>Advanced tokenization and preprocessing via Tantivy</p></li>
+<li><p>Distributed vocabulary and term frequency management</p></li>
+<li><p>Sparse vector generation using corpus TF and query TF-IDF</p></li>
+<li><p>Inverted index support with WAND algorithm (Block-Max WAND and graph index support in development)</p></li>
 </ul>
-<p>Im Vergleich zu Elasticsearch bietet Milvus erhebliche Vorteile bei der Flexibilität des Algorithmus. Seine auf Vektor-Distanz basierende Ähnlichkeitsberechnung ermöglicht ein ausgefeilteres Matching, einschließlich der Implementierung von TW-BERT (Term Weighting BERT) auf der Grundlage der "End-to-End Query Term Weighting"-Forschung. Dieser Ansatz hat sowohl bei In-Domain- als auch bei Out-Domain-Tests eine hervorragende Leistung gezeigt.</p>
-<p>Ein weiterer entscheidender Vorteil ist die Kosteneffizienz. Durch die Nutzung des invertierten Index und der Dense Embedding-Komprimierung erreicht Milvus eine fünffache Leistungsverbesserung bei einer Verschlechterung des Recalls um weniger als 1 %. Durch Tail-Term Pruning und Vektorquantisierung wurde die Speichernutzung um über 50 % reduziert.</p>
-<p>Die Optimierung langer Abfragen ist eine besondere Stärke. Wo herkömmliche WAND-Algorithmen mit längeren Abfragen zu kämpfen haben, zeichnet sich Milvus durch die Kombination von Sparse Embeddings mit Graph-Indizes aus, was zu einer zehnfachen Leistungsverbesserung in hochdimensionalen Sparse-Vector-Such-Szenarien führt.</p>
+<p>Compared to Elasticsearch, Milvus offers significant advantages in algorithm flexibility. Its vector distance-based similarity computation enables more sophisticated matching, including implementing TW-BERT (Term Weighting BERT) based on “End-to-End Query Term Weighting” research. This approach has demonstrated superior performance in both in-domain and out-domain testing.</p>
+<p>Another crucial advantage is cost efficiency. By leveraging both inverted index and dense embedding compression, Milvus achieves a fivefold performance improvement with less than 1% recall degradation. Through tail-term pruning and vector quantization, memory usage has been reduced by over 50%.</p>
+<p>Long query optimization stands out as a particular strength. Where traditional WAND algorithms struggle with longer queries, Milvus excels by combining sparse embeddings with graph indices, delivering a tenfold performance improvement in high-dimensional sparse vector search scenarios.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/document_in_and_out_b84771bec4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Milvus-The-Ultimate-Vector-Database-for-RAG" class="common-anchor-header">Milvus: Die ultimative Vektordatenbank für RAG<button data-href="#Milvus-The-Ultimate-Vector-Database-for-RAG" class="anchor-icon" translate="no">
+<h2 id="Milvus-The-Ultimate-Vector-Database-for-RAG" class="common-anchor-header">Milvus: The Ultimate Vector Database for RAG<button data-href="#Milvus-The-Ultimate-Vector-Database-for-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,17 +110,17 @@ canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-se
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus ist durch seinen umfassenden Funktionsumfang die erste Wahl für RAG-Anwendungen. Zu den wichtigsten Vorteilen gehören:</p>
+    </button></h2><p>Milvus is the premier choice for RAG applications through its comprehensive feature set. Key advantages include:</p>
 <ul>
-<li><p>Umfangreiche Metadatenunterstützung mit dynamischen Schemafunktionen und leistungsstarken Filteroptionen</p></li>
-<li><p>Mehrmandantenfähigkeit auf Unternehmensebene mit flexibler Isolierung durch Sammlungen, Partitionen und Partitionsschlüssel</p></li>
-<li><p>Branchenweit erste Unterstützung für Festplattenvektorindizes mit mehrstufiger Speicherung vom Speicher bis zu S3</p></li>
-<li><p>Cloud-native Skalierbarkeit mit nahtloser Skalierung von 10 Mio. bis 1 Mrd. Vektoren</p></li>
-<li><p>Umfassende Suchfunktionen, einschließlich Gruppierung, Bereich und hybride Suche</p></li>
-<li><p>Tiefgreifende Ökosystemintegration mit LangChain, LlamaIndex, Dify und anderen KI-Tools</p></li>
+<li><p>Rich metadata support with dynamic schema capabilities and powerful filtering options</p></li>
+<li><p>Enterprise-grade multi-tenancy with flexible isolation through collections, partitions, and partition keys</p></li>
+<li><p>Industry-first disk vector index support with multi-tier storage from memory to S3</p></li>
+<li><p>Cloud-native scalability supporting seamless scaling from 10M to 1B+ vectors</p></li>
+<li><p>Comprehensive search capabilities, including grouping, range, and hybrid search</p></li>
+<li><p>Deep ecosystem integration with LangChain, LlamaIndex, Dify, and other AI tools</p></li>
 </ul>
-<p>Die vielfältigen Suchfunktionen des Systems umfassen Gruppierungs-, Bereichs- und hybride Suchmethoden. Die tiefe Integration mit Tools wie LangChain, LlamaIndex und Dify sowie die Unterstützung zahlreicher KI-Produkte machen Milvus zum Zentrum des modernen KI-Infrastruktur-Ökosystems.</p>
-<h2 id="Looking-Forward" class="common-anchor-header">Blick in die Zukunft<button data-href="#Looking-Forward" class="anchor-icon" translate="no">
+<p>The system’s diverse search capabilities encompass grouping, range, and hybrid search methodologies. Deep integration with tools like LangChain, LlamaIndex, and Dify, as well as support for numerous AI products, places Milvus at the center of the modern AI infrastructure ecosystem.</p>
+<h2 id="Looking-Forward" class="common-anchor-header">Looking Forward<button data-href="#Looking-Forward" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -135,9 +135,9 @@ canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-se
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mit dem Übergang von KI von POC zur Produktion entwickelt sich Milvus weiter. Wir konzentrieren uns darauf, die Vektorsuche zugänglicher und kostengünstiger zu machen und gleichzeitig die Suchqualität zu verbessern. Ob Sie ein Startup oder ein Unternehmen sind, Milvus reduziert die technischen Barrieren für die Entwicklung von KI-Anwendungen.</p>
-<p>Dieses Engagement für Zugänglichkeit und Innovation hat uns zu einem weiteren großen Schritt nach vorn geführt. Während unsere Open-Source-Lösung weiterhin als Grundlage für Tausende von Anwendungen weltweit dient, haben wir erkannt, dass viele Unternehmen eine vollständig verwaltete Lösung benötigen, die den operativen Overhead eliminiert.</p>
-<h2 id="Zilliz-Cloud-The-Managed-Solution" class="common-anchor-header">Zilliz Cloud: Die verwaltete Lösung<button data-href="#Zilliz-Cloud-The-Managed-Solution" class="anchor-icon" translate="no">
+    </button></h2><p>As AI transitions from POC to production, Milvus continues to evolve. We focus on making vector search more accessible and cost-effective while enhancing search quality. Whether you’re a startup or an enterprise, Milvus reduces the technical barriers to AI application development.</p>
+<p>This commitment to accessibility and innovation has led us to another major step forward. While our open-source solution continues to serve as the foundation for thousands of applications worldwide, we recognize that many organizations need a fully managed solution that eliminates operational overhead.</p>
+<h2 id="Zilliz-Cloud-The-Managed-Solution" class="common-anchor-header">Zilliz Cloud: The Managed Solution<button data-href="#Zilliz-Cloud-The-Managed-Solution" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -152,6 +152,6 @@ canonicalUrl: 'https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-se
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In den letzten drei Jahren haben wir <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, einen vollständig verwalteten Vektordatenbankdienst auf der Grundlage von Milvus, entwickelt. Durch eine Cloud-native Neuimplementierung des Milvus-Protokolls bietet er verbesserte Benutzerfreundlichkeit, Kosteneffizienz und Sicherheit.</p>
-<p>Mit unserer Erfahrung in der Wartung der weltweit größten Vektorsuchcluster und der Unterstützung von Tausenden von KI-Anwendungsentwicklern reduziert Zilliz Cloud den betrieblichen Aufwand und die Kosten im Vergleich zu selbst gehosteten Lösungen erheblich.</p>
-<p>Sind Sie bereit, die Zukunft der Vektorsuche zu erleben? Starten Sie noch heute Ihre kostenlose Testversion mit einem Guthaben von bis zu 200 $, keine Kreditkarte erforderlich.</p>
+    </button></h2><p>We’ve built <a href="https://zilliz.com/cloud">Zilliz Cloud</a>, a fully managed vector database service based on Milvus, over the past three years. Through a cloud-native reimplementation of the Milvus protocol, it offers enhanced usability, cost efficiency, and security.</p>
+<p>Drawing from our experience maintaining the world’s largest vector search clusters and supporting thousands of AI application developers, Zilliz Cloud significantly reduces operational overhead and costs compared to self-hosted solutions.</p>
+<p>Ready to experience the future of vector search? Start your free trial today with up to $200 in credits, no credit card required.</p>

@@ -1,12 +1,12 @@
 ---
 id: the-developers-guide-to-milvus-configuration.md
-title: Panduan Pengembang untuk Konfigurasi Milvus
+title: The Developer’s Guide to Milvus Configuration
 author: Jack Li
 date: 2025-04-23T00:00:00.000Z
 desc: >-
-  Sederhanakan konfigurasi Milvus Anda dengan panduan terfokus kami. Temukan
-  parameter kunci untuk menyesuaikan kinerja yang lebih baik dalam aplikasi
-  basis data vektor Anda.
+  Simplify your Milvus configuration with our focused guide. Discover key
+  parameters to adjust for enhanced performance in your vector database
+  applications.
 cover: assets.zilliz.com/The_Developer_s_Guide_to_Milvus_Configuration_1519241756.png
 tag: Tutorials
 recommend: false
@@ -16,7 +16,7 @@ meta_keywords: 'Milvus, configurations, performance, scalability, stability'
 meta_title: The Developer’s Guide to Milvus Configuration
 origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
 ---
-<h2 id="Introduction" class="common-anchor-header">Pengantar<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -31,10 +31,10 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebagai pengembang yang bekerja dengan Milvus, Anda mungkin pernah menemukan file konfigurasi <code translate="no">milvus.yaml</code> yang menakutkan dengan lebih dari 500 parameter. Menangani kerumitan ini dapat menjadi tantangan ketika yang Anda inginkan adalah mengoptimalkan kinerja database vektor Anda.</p>
-<p>Kabar baiknya: Anda tidak perlu memahami setiap parameter. Panduan ini memotong semua kerumitan dan berfokus pada pengaturan penting yang benar-benar berdampak pada kinerja, menyoroti dengan tepat nilai mana yang harus diubah untuk kasus penggunaan spesifik Anda.</p>
-<p>Baik Anda sedang membangun sistem rekomendasi yang membutuhkan kueri secepat kilat atau mengoptimalkan aplikasi pencarian vektor dengan batasan biaya, saya akan menunjukkan kepada Anda parameter mana yang harus dimodifikasi dengan nilai yang praktis dan teruji. Di akhir panduan ini, Anda akan mengetahui cara menyetel konfigurasi Milvus untuk kinerja puncak berdasarkan skenario penerapan di dunia nyata.</p>
-<h2 id="Configuration-Categories" class="common-anchor-header">Kategori Konfigurasi<button data-href="#Configuration-Categories" class="anchor-icon" translate="no">
+    </button></h2><p>As a developer working with Milvus, you’ve likely encountered the daunting <code translate="no">milvus.yaml</code> configuration file with its 500+ parameters. Handling this complexity can be challenging when all you want is to optimize your vector database performance.</p>
+<p>Good news: you don’t need to understand every parameter. This guide cuts through the noise and focuses on the critical settings that actually impact performance, highlighting exactly which values to tweak for your specific use case.</p>
+<p>Whether you’re building a recommendation system that needs lightning-fast queries or optimizing a vector search application with cost constraints, I’ll show you exactly which parameters to modify with practical, tested values. By the end of this guide, you’ll know how to tune Milvus configurations for peak performance based on real-world deployment scenarios.</p>
+<h2 id="Configuration-Categories" class="common-anchor-header">Configuration Categories<button data-href="#Configuration-Categories" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -49,11 +49,11 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sebelum masuk ke parameter spesifik, mari kita uraikan struktur file konfigurasi. Saat bekerja dengan <code translate="no">milvus.yaml</code>, Anda akan berurusan dengan tiga kategori parameter:</p>
+    </button></h2><p>Before diving into specific parameters, let’s break down the structure of the configuration file. When working with <code translate="no">milvus.yaml</code>, you’ll be dealing with three parameter categories:</p>
 <ul>
-<li><p><strong>Konfigurasi Komponen Ketergantungan</strong>: Layanan eksternal yang terhubung dengan Milvus (<code translate="no">etcd</code>, <code translate="no">minio</code>, <code translate="no">mq</code>) - penting untuk pengaturan cluster dan persistensi data</p></li>
-<li><p><strong>Konfigurasi Komponen Internal</strong>: Arsitektur internal Milvus (<code translate="no">proxy</code>, <code translate="no">queryNode</code>, dll.) - kunci untuk penyetelan kinerja</p></li>
-<li><p><strong>Konfigurasi Fungsional</strong>: Keamanan, pencatatan, dan batas sumber daya - penting untuk penerapan produksi</p></li>
+<li><p><strong>Dependency Component Configurations</strong>: External services Milvus connects to (<code translate="no">etcd</code>, <code translate="no">minio</code>, <code translate="no">mq</code>) - critical for cluster setup and data persistence</p></li>
+<li><p><strong>Internal Component Configurations</strong>: Milvus’s internal architecture (<code translate="no">proxy</code>, <code translate="no">queryNode</code>, etc.) - key for performance tuning</p></li>
+<li><p><strong>Functional Configurations</strong>: Security, logging, and resource limits - important for production deployments</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -61,7 +61,7 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h2 id="Milvus-Dependency-Component-Configurations" class="common-anchor-header">Konfigurasi Komponen Ketergantungan Milvus<button data-href="#Milvus-Dependency-Component-Configurations" class="anchor-icon" translate="no">
+<h2 id="Milvus-Dependency-Component-Configurations" class="common-anchor-header">Milvus Dependency Component Configurations<button data-href="#Milvus-Dependency-Component-Configurations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,12 +76,12 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mari kita mulai dengan layanan eksternal yang menjadi ketergantungan Milvus. Konfigurasi ini sangat penting ketika berpindah dari pengembangan ke produksi.</p>
-<h3 id="etcd-Metadata-Store" class="common-anchor-header"><code translate="no">etcd</code>: Penyimpanan Metadata</h3><p>Milvus bergantung pada <code translate="no">etcd</code> untuk persistensi metadata dan koordinasi layanan. Parameter-parameter berikut ini sangat penting:</p>
+    </button></h2><p>Let’s start with the external services Milvus depends on. These configurations are particularly important when moving from development to production.</p>
+<h3 id="etcd-Metadata-Store" class="common-anchor-header"><code translate="no">etcd</code>: Metadata Store</h3><p>Milvus relies on <code translate="no">etcd</code> for metadata persistence and service coordination. The following parameters are crucial:</p>
 <ul>
-<li><p><code translate="no">Etcd.endpoints</code>: Menentukan alamat cluster etcd. Secara default, Milvus meluncurkan instance yang dibundel, tetapi di lingkungan perusahaan, praktik terbaiknya adalah menyambungkan ke layanan <code translate="no">etcd</code> terkelola untuk ketersediaan dan kontrol operasional yang lebih baik.</p></li>
-<li><p><code translate="no">etcd.rootPath</code>: Mendefinisikan awalan kunci untuk menyimpan data terkait Milvus dalam etcd. Jika Anda mengoperasikan beberapa cluster Milvus pada backend etcd yang sama, menggunakan jalur root yang berbeda memungkinkan isolasi metadata yang bersih.</p></li>
-<li><p><code translate="no">etcd.auth</code>: Mengontrol kredensial autentikasi. Milvus tidak mengaktifkan auth etcd secara default, tetapi jika instans etcd yang Anda kelola membutuhkan kredensial, Anda harus menentukannya di sini.</p></li>
+<li><p><code translate="no">Etcd.endpoints</code>: Specifies the address of the etcd cluster. By default, Milvus launches a bundled instance, but in enterprise environments, it’s best practice to connect to a managed <code translate="no">etcd</code> service for better availability and operational control.</p></li>
+<li><p><code translate="no">etcd.rootPath</code>: Defines the key prefix for storing Milvus-related data in etcd. If you’re operating multiple Milvus clusters on the same etcd backend, using different root paths allows clean metadata isolation.</p></li>
+<li><p><code translate="no">etcd.auth</code>: Controls authentication credentials. Milvus doesn’t enable etcd auth by default, but if your managed etcd instance requires credentials, you must specify them here.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -89,13 +89,13 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="minio-Object-Storage" class="common-anchor-header"><code translate="no">minio</code>: Penyimpanan Objek</h3><p>Terlepas dari namanya, bagian ini mengatur semua klien layanan penyimpanan objek yang kompatibel dengan S3. Bagian ini mendukung penyedia seperti AWS S3, GCS, dan Aliyun OSS melalui pengaturan <code translate="no">cloudProvider</code>.</p>
-<p>Perhatikan empat konfigurasi utama ini:</p>
+<h3 id="minio-Object-Storage" class="common-anchor-header"><code translate="no">minio</code>: Object Storage</h3><p>Despite the name, this section governs all S3-compatible object storage service clients. It supports providers such as AWS S3, GCS, and Aliyun OSS via the <code translate="no">cloudProvider</code> setting.</p>
+<p>Pay attention to these four key configurations:</p>
 <ul>
-<li><p><code translate="no">minio.address / minio.port</code>: Gunakan ini untuk menentukan titik akhir layanan penyimpanan objek Anda.</p></li>
-<li><p><code translate="no">minio.bucketName</code>: Tetapkan bucket terpisah (atau awalan logis) untuk menghindari tabrakan data saat menjalankan beberapa cluster Milvus.</p></li>
-<li><p><code translate="no">minio.rootPath</code>: Mengaktifkan intra-bucket namespacing untuk isolasi data.</p></li>
-<li><p><code translate="no">minio.cloudProvider</code>: Mengidentifikasi backend OSS. Untuk daftar kompatibilitas lengkap, lihat <a href="https://milvus.io/docs/product_faq.md#Where-does-Milvus-store-data">dokumentasi Milvus</a>.</p></li>
+<li><p><code translate="no">minio.address / minio.port</code>: Use these to specify the endpoint of your object storage service.</p></li>
+<li><p><code translate="no">minio.bucketName</code>: Assign separate buckets (or logical prefixes) to avoid data collisions when running multiple Milvus clusters.</p></li>
+<li><p><code translate="no">minio.rootPath</code>: Enables intra-bucket namespacing for data isolation.</p></li>
+<li><p><code translate="no">minio.cloudProvider</code>: Identifies the OSS backend. For a full compatibility list, refer to the <a href="https://milvus.io/docs/product_faq.md#Where-does-Milvus-store-data">Milvus documentation</a>.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -103,11 +103,11 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="mq-Message-Queue" class="common-anchor-header"><code translate="no">mq</code>: Antrian Pesan</h3><p>Milvus menggunakan antrean pesan untuk penyebaran peristiwa internal-baik Pulsar (default) atau Kafka. Perhatikan tiga parameter berikut ini.</p>
+<h3 id="mq-Message-Queue" class="common-anchor-header"><code translate="no">mq</code>: Message Queue</h3><p>Milvus uses a message queue for internal event propagation—either Pulsar (default) or Kafka. Pay attention to the following three parameters.</p>
 <ol>
-<li><p><code translate="no">pulsar.address/pulsar.port</code>: Atur nilai ini untuk menggunakan cluster Pulsar eksternal.</p></li>
-<li><p><code translate="no">pulsar.tenant</code>: Menentukan nama penyewa. Ketika beberapa gugus Milvus berbagi contoh Pulsar, ini memastikan pemisahan saluran yang bersih.</p></li>
-<li><p><code translate="no">msgChannel.chanNamePrefix.cluster</code>: Jika Anda lebih suka melewati model penyewa Pulsar, sesuaikan awalan saluran untuk mencegah tabrakan.</p></li>
+<li><p><code translate="no">pulsar.address/pulsar.port</code>: Set these values to use an external Pulsar cluster.</p></li>
+<li><p><code translate="no">pulsar.tenant</code>: Defines the tenant name. When multiple Milvus clusters share a Pulsar instance, this ensures clean channel separation.</p></li>
+<li><p><code translate="no">msgChannel.chanNamePrefix.cluster</code>: If you prefer to bypass Pulsar’s tenant model, adjust the channel prefix to prevent collisions.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -121,14 +121,14 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<p>Milvus juga mendukung Kafka sebagai antrean pesan. Untuk menggunakan Kafka, beri komentar pada pengaturan khusus Pulsar dan hapus komentar pada blok konfigurasi Kafka.</p>
+<p>Milvus also supports Kafka as the message queue. To use Kafka instead, comment out the Pulsar-specific settings and uncomment the Kafka config block.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/mq_in_milvusyaml3_d41f44f77a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Milvus-Internal-Component-Configurations" class="common-anchor-header">Konfigurasi Komponen Internal Milvus<button data-href="#Milvus-Internal-Component-Configurations" class="anchor-icon" translate="no">
+<h2 id="Milvus-Internal-Component-Configurations" class="common-anchor-header">Milvus Internal Component Configurations<button data-href="#Milvus-Internal-Component-Configurations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,10 +143,10 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="rootCoord-Metadata-+-Timestamps" class="common-anchor-header"><code translate="no">rootCoord</code>: Metadata + Stempel Waktu</h3><p>Node <code translate="no">rootCoord</code> menangani perubahan metadata (DDL/DCL) dan manajemen stempel waktu.</p>
+    </button></h2><h3 id="rootCoord-Metadata-+-Timestamps" class="common-anchor-header"><code translate="no">rootCoord</code>: Metadata + Timestamps</h3><p>The <code translate="no">rootCoord</code> node handles metadata changes (DDL/DCL) and timestamp management.</p>
 <ol>
-<li><p><code translate="no">rootCoord.maxPartitionNum</code>Menetapkan batas atas jumlah partisi per koleksi. Meskipun batas kerasnya adalah 1024, parameter ini terutama berfungsi sebagai pengaman. Untuk sistem multi-penyewa, hindari penggunaan partisi sebagai batas isolasi - sebagai gantinya, terapkan strategi kunci penyewa yang berskala jutaan penyewa logis.</p></li>
-<li><p><code translate="no">rootCoord.enableActiveStandby</code>Mengaktifkan ketersediaan tinggi dengan mengaktifkan node siaga. Hal ini sangat penting karena node koordinator Milvus tidak menskalakan secara horizontal secara default.</p></li>
+<li><p><code translate="no">rootCoord.maxPartitionNum</code>： Sets the upper bound on the number of partitions per collection. While the hard limit is 1024, this parameter primarily serves as a safeguard. For multi-tenant systems, avoid using partitions as isolation boundaries—instead, implement a tenant key strategy that scales to millions of logical tenants.</p></li>
+<li><p><code translate="no">rootCoord.enableActiveStandby</code>：Enables high availability by activating a standby node. This is critical since Milvus coordinator nodes don’t scale horizontally by default.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -154,17 +154,17 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="proxy-API-Gateway-+-Request-Router" class="common-anchor-header"><code translate="no">proxy</code>: API Gateway + Router Permintaan</h3><p><code translate="no">proxy</code> menangani permintaan yang dihadapi klien, validasi permintaan, dan agregasi hasil.</p>
+<h3 id="proxy-API-Gateway-+-Request-Router" class="common-anchor-header"><code translate="no">proxy</code>: API Gateway + Request Router</h3><p>The <code translate="no">proxy</code> handles client-facing requests, request validation, and result aggregation.</p>
 <ul>
-<li><p><code translate="no">proxy.maxFieldNum</code>: Membatasi jumlah bidang (skalar + vektor) per koleksi. Jaga agar tetap di bawah 64 untuk meminimalkan kompleksitas skema dan mengurangi overhead I/O.</p></li>
-<li><p><code translate="no">proxy.maxVectorFieldNum</code>: Mengontrol jumlah bidang vektor dalam sebuah koleksi. Milvus mendukung pencarian multimodal, tetapi dalam praktiknya, 10 bidang vektor adalah batas atas yang aman.</p></li>
-<li><p><code translate="no">proxy.maxShardNum</code>: Mendefinisikan jumlah pecahan konsumsi. Sebagai aturan praktis:</p>
+<li><p><code translate="no">proxy.maxFieldNum</code>: Limits the number of fields (scalar + vector) per collection. Keep this under 64 to minimize schema complexity and reduce I/O overhead.</p></li>
+<li><p><code translate="no">proxy.maxVectorFieldNum</code>: Controls the number of vector fields in a collection. Milvus supports multimodal search, but in practice, 10 vector fields is a safe upper bound.</p></li>
+<li><p><code translate="no">proxy.maxShardNum</code>:Defines the number of ingestion shards. As a rule of thumb:</p>
 <ul>
-<li><p>&lt; 200 juta catatan → 1 pecahan</p></li>
-<li><p>200-400 juta catatan → 2 pecahan</p></li>
-<li><p>Skala secara linear di luar itu</p></li>
+<li><p>&lt; 200M records → 1 shard</p></li>
+<li><p>200–400M records → 2 shards</p></li>
+<li><p>Scale linearly beyond that</p></li>
 </ul></li>
-<li><p><code translate="no">proxy.accesslog</code>: Ketika diaktifkan, log ini mencatat info permintaan yang mendetail (pengguna, IP, titik akhir, SDK). Berguna untuk mengaudit dan melakukan debug.</p></li>
+<li><p><code translate="no">proxy.accesslog</code>: When enabled, this logs detailed request info (user, IP, endpoint, SDK). Useful for auditing and debugging.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -172,9 +172,9 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="queryNode-Query-Execution" class="common-anchor-header"><code translate="no">queryNode</code>: Eksekusi Permintaan</h3><p>Menangani eksekusi pencarian vektor dan pemuatan segmen. Perhatikan parameter berikut ini.</p>
+<h3 id="queryNode-Query-Execution" class="common-anchor-header"><code translate="no">queryNode</code>: Query Execution</h3><p>Handles vector search execution and segment loading. Pay attention to the following parameter.</p>
 <ul>
-<li><code translate="no">queryNode.mmap</code>: Mengaktifkan I/O yang dipetakan dalam memori untuk memuat bidang dan segmen skalar. Mengaktifkan <code translate="no">mmap</code> membantu mengurangi jejak memori, tetapi dapat menurunkan latensi jika I / O disk menjadi hambatan.</li>
+<li><code translate="no">queryNode.mmap</code>: Toggles memory-mapped I/O for loading scalar fields and segments. Enabling <code translate="no">mmap</code> helps reduce memory footprint, but may degrade latency if disk I/O becomes a bottleneck.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -182,19 +182,19 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="dataCoord-Segment-+-Index-Management" class="common-anchor-header"><code translate="no">dataCoord</code>: Manajemen Segmen + Indeks</h3><p>Parameter ini mengontrol segmentasi data, pengindeksan, pemadatan, dan pengumpulan sampah (GC). Parameter konfigurasi utama meliputi:</p>
+<h3 id="dataCoord-Segment-+-Index-Management" class="common-anchor-header"><code translate="no">dataCoord</code>: Segment + Index Management</h3><p>This parameter controls data segmentation, indexing, compaction, and garbage collection (GC). Key configuration parameters include:</p>
 <ol>
-<li><p><code translate="no">dataCoord.segment.maxSize</code>: Menentukan ukuran maksimum segmen data dalam memori. Segmen yang lebih besar umumnya berarti lebih sedikit segmen total dalam sistem, yang dapat meningkatkan kinerja kueri dengan mengurangi pengindeksan dan overhead pencarian. Sebagai contoh, beberapa pengguna yang menjalankan instance <code translate="no">queryNode</code> dengan RAM 128GB melaporkan bahwa meningkatkan pengaturan ini dari 1GB menjadi 8GB menghasilkan kinerja kueri sekitar 4× lebih cepat.</p></li>
-<li><p><code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Mirip dengan yang di atas, parameter ini mengontrol ukuran maksimum untuk <a href="https://milvus.io/docs/disk_index.md#On-disk-Index">indeks disk</a> (diskann index) secara khusus.</p></li>
-<li><p><code translate="no">dataCoord.segment.sealProportion</code>: Menentukan kapan segmen yang sedang berkembang disegel (yaitu, diselesaikan dan diindeks). Segmen disegel ketika mencapai <code translate="no">maxSize * sealProportion</code>. Secara default, dengan <code translate="no">maxSize = 1024MB</code> dan <code translate="no">sealProportion = 0.12</code>, segmen akan disegel sekitar 123MB.</p></li>
+<li><p><code translate="no">dataCoord.segment.maxSize</code>: Specifies the maximum size of an in-memory data segment. Larger segments generally mean fewer total segments in the system, which can improve query performance by reducing indexing and search overhead. For example, some users running <code translate="no">queryNode</code> instances with 128GB of RAM reported that increasing this setting from 1GB to 8GB led to roughly 4× faster query performance.</p></li>
+<li><p><code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Similar to the above, this parameter controls the maximum size for <a href="https://milvus.io/docs/disk_index.md#On-disk-Index">disk indexes</a> (diskann index) specifically.</p></li>
+<li><p><code translate="no">dataCoord.segment.sealProportion</code>: Determines when a growing segment is sealed (i.e., finalized and indexed). The segment is sealed when it reaches <code translate="no">maxSize * sealProportion</code>. By default, with <code translate="no">maxSize = 1024MB</code> and <code translate="no">sealProportion = 0.12</code>, a segment will be sealed at around 123MB.</p></li>
 </ol>
 <ul>
-<li><p>Nilai yang lebih rendah (misalnya, 0,12) memicu penyegelan lebih cepat, yang dapat membantu pembuatan indeks yang lebih cepat - berguna dalam beban kerja dengan pembaruan yang sering.</p></li>
-<li><p>Nilai yang lebih tinggi (misalnya, 0,3 hingga 0,5) menunda penyegelan, mengurangi overhead pengindeksan - lebih cocok untuk skenario konsumsi offline atau batch.</p></li>
+<li><p>Lower values (e.g., 0.12) trigger sealing sooner, which can help with faster index creation—useful in workloads with frequent updates.</p></li>
+<li><p>Higher values (e.g., 0.3 to 0.5) delay sealing, reducing indexing overhead—more suitable for offline or batch ingestion scenarios.</p></li>
 </ul>
 <ol start="4">
-<li><p><code translate="no">dataCoord.segment.expansionRate</code>:  Mengatur faktor ekspansi yang diizinkan selama pemadatan. Milvus menghitung ukuran segmen maksimum yang diizinkan selama pemadatan sebagai <code translate="no">maxSize * expansionRate</code>.</p></li>
-<li><p><code translate="no">dataCoord.gc.dropTolerance</code>: Setelah sebuah segmen dipadatkan atau sebuah koleksi dibuang, Milvus tidak langsung menghapus data yang mendasarinya. Sebaliknya, Milvus menandai segmen-segmen tersebut untuk dihapus dan menunggu siklus pengumpulan sampah (GC) selesai. Parameter ini mengontrol durasi penundaan tersebut.</p></li>
+<li><p><code translate="no">dataCoord.segment.expansionRate</code>:  Sets the allowed expansion factor during compaction. Milvus calculates the maximum allowable segment size during compaction as <code translate="no">maxSize * expansionRate</code>.</p></li>
+<li><p><code translate="no">dataCoord.gc.dropTolerance</code>: After a segment is compacted or a collection is dropped, Milvus does not immediately delete the underlying data. Instead, it marks the segments for deletion and waits for the garbage collection (GC) cycle to complete. This parameter controls the duration of that delay.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -208,7 +208,7 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h2 id="Other-Functional-Configurations" class="common-anchor-header">Konfigurasi Fungsional Lainnya<button data-href="#Other-Functional-Configurations" class="anchor-icon" translate="no">
+<h2 id="Other-Functional-Configurations" class="common-anchor-header">Other Functional Configurations<button data-href="#Other-Functional-Configurations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -223,62 +223,62 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="log-Observability-and-Diagnostics" class="common-anchor-header"><code translate="no">log</code>: Pengamatan dan Diagnostik</h3><p>Pencatatan yang kuat adalah landasan dari sistem terdistribusi mana pun, tidak terkecuali Milvus. Pengaturan pencatatan yang dikonfigurasi dengan baik tidak hanya membantu dengan masalah debugging saat masalah tersebut muncul, tetapi juga memastikan visibilitas yang lebih baik ke dalam kesehatan dan perilaku sistem dari waktu ke waktu.</p>
-<p>Untuk penerapan produksi, kami merekomendasikan untuk mengintegrasikan log Milvus dengan alat pencatatan dan pemantauan terpusat-seperti <a href="https://milvus.io/docs/configure_grafana_loki.md#Deploy-Loki">Loki-untuk</a> merampingkan analisis dan peringatan. Pengaturan utama meliputi:</p>
+    </button></h2><h3 id="log-Observability-and-Diagnostics" class="common-anchor-header"><code translate="no">log</code>: Observability and Diagnostics</h3><p>Robust logging is a cornerstone of any distributed system, and Milvus is no exception. A well-configured logging setup not only helps with debugging issues as they arise but also ensures better visibility into system health and behavior over time.</p>
+<p>For production deployments, we recommend integrating Milvus logs with centralized logging and monitoring tools—such as <a href="https://milvus.io/docs/configure_grafana_loki.md#Deploy-Loki">Loki</a> —to streamline analysis and alerting. Key settings include:</p>
 <ol>
-<li><p><code translate="no">log.level</code>: Mengontrol verbositas output log. Untuk lingkungan produksi, gunakan level <code translate="no">info</code> untuk menangkap detail runtime yang penting tanpa membebani sistem. Selama pengembangan atau pemecahan masalah, Anda dapat beralih ke <code translate="no">debug</code> untuk mendapatkan wawasan yang lebih terperinci tentang operasi internal. ⚠️ Berhati-hatilah dengan level <code translate="no">debug</code> dalam produksi - ini menghasilkan volume log yang tinggi, yang dapat dengan cepat menghabiskan ruang disk dan menurunkan kinerja I / O jika dibiarkan.</p></li>
-<li><p><code translate="no">log.file</code>: Secara default, Milvus menulis log ke output standar (stdout), yang cocok untuk lingkungan terkontainerisasi di mana log dikumpulkan melalui sespan atau agen node. Untuk mengaktifkan pencatatan berbasis file, Anda dapat mengonfigurasi:</p></li>
+<li><p><code translate="no">log.level</code>: Controls the verbosity of log output. For production environments, stick with <code translate="no">info</code> level to capture essential runtime details without overwhelming the system. During development or troubleshooting, you can switch to <code translate="no">debug</code> to get more granular insights into internal operations. ⚠️ Be cautious with <code translate="no">debug</code> level in production—it generates a high volume of logs, which can quickly consume disk space and degrade I/O performance if left unchecked.</p></li>
+<li><p><code translate="no">log.file</code>: By default, Milvus writes logs to standard output (stdout), which is suitable for containerized environments where logs are collected via sidecars or node agents. To enable file-based logging instead, you can configure:</p></li>
 </ol>
 <ul>
-<li><p>Ukuran file maksimum sebelum rotasi</p></li>
-<li><p>Periode penyimpanan file</p></li>
-<li><p>Jumlah file log cadangan yang harus disimpan</p></li>
+<li><p>Maximum file size before rotation</p></li>
+<li><p>File retention period</p></li>
+<li><p>Number of backup log files to keep</p></li>
 </ul>
-<p>Ini berguna di lingkungan bare-metal atau on-prem di mana pengiriman log stdout tidak tersedia.</p>
+<p>This is useful in bare-metal or on-prem environments where stdout log shipping is not available.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/log_in_milvusyaml_248ead1264.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="security-Authentication-and-Access-Control" class="common-anchor-header"><code translate="no">security</code>: Otentikasi dan Kontrol Akses</h3><p>Milvus mendukung <a href="https://milvus.io/docs/authenticate.md?tab=docker">otentikasi pengguna</a> dan <a href="https://milvus.io/docs/rbac.md">kontrol akses berbasis peran (RBAC</a>), yang keduanya dikonfigurasikan dalam modul <code translate="no">common</code>. Pengaturan ini sangat penting untuk mengamankan lingkungan multi-penyewa atau penerapan apa pun yang terpapar ke klien eksternal.</p>
-<p>Parameter utama meliputi:</p>
+<h3 id="security-Authentication-and-Access-Control" class="common-anchor-header"><code translate="no">security</code>: Authentication and Access Control</h3><p>Milvus supports <a href="https://milvus.io/docs/authenticate.md?tab=docker">user authentication</a> and <a href="https://milvus.io/docs/rbac.md">role-based access control (RBAC)</a>, both of which are configured under the <code translate="no">common</code> module. These settings are essential for securing multi-tenant environments or any deployment exposed to external clients.</p>
+<p>Key parameters include:</p>
 <ol>
-<li><p><code translate="no">common.security.authorizationEnabled</code>: Sakelar ini mengaktifkan atau menonaktifkan autentikasi dan RBAC. Secara default dimatikan, yang berarti semua operasi diizinkan tanpa pemeriksaan identitas. Untuk menerapkan kontrol akses yang aman, atur parameter ini ke <code translate="no">true</code>.</p></li>
-<li><p><code translate="no">common.security.defaultRootPassword</code>: Bila autentikasi diaktifkan, pengaturan ini menentukan kata sandi awal untuk pengguna <code translate="no">root</code> bawaan.</p></li>
+<li><p><code translate="no">common.security.authorizationEnabled</code>: This toggle enables or disables authentication and RBAC. It’s turned off by default, meaning all operations are allowed without identity checks. To enforce secure access control, set this parameter to <code translate="no">true</code>.</p></li>
+<li><p><code translate="no">common.security.defaultRootPassword</code>: When authentication is enabled, this setting defines the initial password for the built-in <code translate="no">root</code> user.</p></li>
 </ol>
-<p>Pastikan untuk mengubah kata sandi default segera setelah mengaktifkan autentikasi untuk menghindari kerentanan keamanan di lingkungan produksi.</p>
+<p>Be sure to change the default password immediately after enabling authentication to avoid security vulnerabilities in production environments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/security_in_milvusyaml_a8d0187b5a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="quotaAndLimits-Rate-Limiting-and-Write-Control" class="common-anchor-header"><code translate="no">quotaAndLimits</code>: Pembatasan Kecepatan dan Kontrol Tulis</h3><p>Bagian <code translate="no">quotaAndLimits</code> di <code translate="no">milvus.yaml</code> memainkan peran penting dalam mengontrol bagaimana data mengalir melalui sistem. Bagian ini mengatur batas laju untuk operasi seperti menyisipkan, menghapus, mem-flush, dan kueri-memastikan stabilitas klaster di bawah beban kerja yang berat dan mencegah penurunan kinerja karena amplifikasi penulisan atau pemadatan yang berlebihan.</p>
-<p>Parameter utama meliputi:</p>
-<p><code translate="no">quotaAndLimits.flushRate.collection</code>: Mengontrol seberapa sering Milvus melakukan flush data dari koleksi.</p>
+<h3 id="quotaAndLimits-Rate-Limiting-and-Write-Control" class="common-anchor-header"><code translate="no">quotaAndLimits</code>: Rate Limiting and Write Control</h3><p>The <code translate="no">quotaAndLimits</code> section in <code translate="no">milvus.yaml</code> plays a critical role in controlling how data flows through the system. It governs rate limits for operations like inserts, deletes, flushes, and queries—ensuring cluster stability under heavy workloads and preventing performance degradation due to write amplification or excessive compaction.</p>
+<p>Key parameters include:</p>
+<p><code translate="no">quotaAndLimits.flushRate.collection</code>: Controls how frequently Milvus flushes data from a collection.</p>
 <ul>
-<li><p><strong>Nilai default</strong>: <code translate="no">0.1</code> yang berarti sistem mengizinkan satu flush setiap 10 detik.</p></li>
-<li><p>Operasi flush akan menyegel segmen yang sedang tumbuh dan mempertahankannya dari antrean pesan ke penyimpanan objek.</p></li>
-<li><p>Melakukan flush terlalu sering dapat menghasilkan banyak segmen kecil yang tersegel, yang meningkatkan overhead pemadatan dan merusak kinerja kueri.</p></li>
+<li><p><strong>Default value</strong>: <code translate="no">0.1</code>, which means the system allows one flush every 10 seconds.</p></li>
+<li><p>The flush operation seals a growing segment and persists it from the message queue to object storage.</p></li>
+<li><p>Flushing too frequently can generate many small sealed segments, which increases compaction overhead and hurts query performance.</p></li>
 </ul>
-<p>💡 Praktik terbaik: Dalam banyak kasus, biarkan Milvus menangani hal ini secara otomatis. Segmen yang sedang tumbuh akan disegel setelah mencapai <code translate="no">maxSize * sealProportion</code>, dan segmen yang disegel akan disiram setiap 10 menit. Pembilasan manual hanya disarankan setelah penyisipan massal ketika Anda tahu tidak ada lagi data yang akan masuk.</p>
-<p>Juga perlu diingat: <strong>visibilitas data</strong> ditentukan oleh <em>tingkat konsistensi</em> kueri, bukan waktu pembilasan-jadi pembilasan tidak membuat data baru dapat langsung di-query.</p>
+<p>💡 Best practice: In most cases, let Milvus handle this automatically. A growing segment is sealed once it reaches <code translate="no">maxSize * sealProportion</code>, and sealed segments are flushed every 10 minutes. Manual flushes are only recommended after bulk inserts when you know no more data is coming.</p>
+<p>Also keep in mind: <strong>data visibility</strong> is determined by the query’s <em>consistency level</em>, not the flush timing—so flushing does not make new data immediately queryable.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/quota_And_Limits1_be185e571f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><code translate="no">quotaAndLimits.upsertRate</code>/<code translate="no">quotaAndLimits.deleteRate</code>: Parameter-parameter ini menentukan kecepatan maksimum yang diperbolehkan untuk operasi upsert dan delete.</p>
+<p><code translate="no">quotaAndLimits.upsertRate</code>/<code translate="no">quotaAndLimits.deleteRate</code>: These parameters define the maximum allowed rate for upsert and delete operations.</p>
 <ul>
-<li><p>Milvus bergantung pada arsitektur penyimpanan LSM-Tree, yang berarti seringnya pembaruan dan penghapusan akan memicu pemadatan. Hal ini dapat menghabiskan banyak sumber daya dan mengurangi throughput secara keseluruhan jika tidak dikelola dengan hati-hati.</p></li>
-<li><p>Disarankan untuk membatasi <strong>kecepatan</strong> <code translate="no">upsertRate</code> dan <code translate="no">deleteRate</code> pada <strong>0,5 MB/s</strong> agar tidak membebani pipeline pemadatan.</p></li>
+<li><p>Milvus relies on an LSM-Tree storage architecture, which means frequent updates and deletions trigger compaction. This can be resource-intensive and reduce overall throughput if not managed carefully.</p></li>
+<li><p>It’s recommended to cap both <code translate="no">upsertRate</code> and <code translate="no">deleteRate</code> at <strong>0.5 MB/s</strong> to avoid overwhelming the compaction pipeline.</p></li>
 </ul>
-<p>🚀 Perlu memperbarui kumpulan data yang besar dengan cepat? Gunakan strategi alias koleksi:</p>
+<p>🚀 Need to update a large dataset quickly? Use a collection alias strategy:</p>
 <ul>
-<li><p>Masukkan data baru ke dalam koleksi baru.</p></li>
-<li><p>Setelah pembaruan selesai, tunjuk ulang alias ke koleksi baru. Hal ini untuk menghindari penalti pemadatan dari pembaruan di tempat dan memungkinkan peralihan instan.</p></li>
+<li><p>Insert new data into a fresh collection.</p></li>
+<li><p>Once the update is complete, repoint the alias to the new collection. This avoids the compaction penalty of in-place updates and allows instant switchover.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -286,7 +286,7 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Configuration-Examples" class="common-anchor-header">Contoh Konfigurasi Dunia Nyata<button data-href="#Real-World-Configuration-Examples" class="anchor-icon" translate="no">
+<h2 id="Real-World-Configuration-Examples" class="common-anchor-header">Real-World Configuration Examples<button data-href="#Real-World-Configuration-Examples" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -301,19 +301,19 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mari kita lihat dua skenario penerapan yang umum untuk mengilustrasikan bagaimana pengaturan konfigurasi Milvus dapat disesuaikan agar sesuai dengan tujuan operasional yang berbeda.</p>
-<h3 id="⚡-Example-1-High-Performance-Configuration" class="common-anchor-header">⚡ Contoh 1: Konfigurasi Berkinerja Tinggi</h3><p>Ketika latensi kueri sangat penting-pikirkan mesin rekomendasi, platform pencarian semantik, atau penilaian risiko waktu nyata-setiap milidetik sangat berarti. Dalam kasus penggunaan ini, Anda biasanya akan bersandar pada indeks berbasis grafik seperti <strong>HNSW</strong> atau <strong>DISKANN</strong>, dan mengoptimalkan penggunaan memori dan perilaku siklus hidup segmen.</p>
-<p>Strategi penyetelan utama:</p>
+    </button></h2><p>Let’s walk through two common deployment scenarios to illustrate how Milvus configuration settings can be tuned to match different operational goals.</p>
+<h3 id="⚡-Example-1-High-Performance-Configuration" class="common-anchor-header">⚡ Example 1: High-Performance Configuration</h3><p>When query latency is mission-critical—think recommendation engines, semantic search platforms, or real-time risk scoring—every millisecond counts. In these use cases, you’ll typically lean on graph-based indexes like <strong>HNSW</strong> or <strong>DISKANN</strong>, and optimize both memory usage and segment lifecycle behavior.</p>
+<p>Key tuning strategies:</p>
 <ul>
-<li><p>Tingkatkan <code translate="no">dataCoord.segment.maxSize</code> dan <code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Naikkan nilai ini menjadi 4GB atau bahkan 8GB, tergantung pada RAM yang tersedia. Segmen yang lebih besar mengurangi jumlah pembuatan indeks dan meningkatkan throughput kueri dengan meminimalkan fanout segmen. Namun, segmen yang lebih besar mengkonsumsi lebih banyak memori pada waktu kueri-jadi, pastikan instance <code translate="no">indexNode</code> dan <code translate="no">queryNode</code> Anda memiliki ruang yang cukup.</p></li>
-<li><p>Turunkan <code translate="no">dataCoord.segment.sealProportion</code> dan <code translate="no">dataCoord.segment.expansionRate</code>: Targetkan ukuran segmen yang terus bertambah sekitar 200MB sebelum melakukan penyegelan. Hal ini membuat penggunaan memori segmen dapat diprediksi dan mengurangi beban Delegator (pemimpin queryNode yang mengoordinasikan pencarian terdistribusi).</p></li>
+<li><p>Increase <code translate="no">dataCoord.segment.maxSize</code> and <code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Raise these values to 4GB or even 8GB, depending on available RAM. Larger segments reduce the number of index builds and improve query throughput by minimizing segment fanout. However, larger segments do consume more memory at query time—so make sure your <code translate="no">indexNode</code> and <code translate="no">queryNode</code> instances have enough headroom.</p></li>
+<li><p>Lower <code translate="no">dataCoord.segment.sealProportion</code> and <code translate="no">dataCoord.segment.expansionRate</code>: Target a growing segment size around 200MB before sealing. This keeps segment memory usage predictable and reduces the burden on the Delegator (the queryNode leader that coordinates distributed search).</p></li>
 </ul>
-<p>Aturan praktis: Pilihlah segmen yang lebih sedikit dan lebih besar jika memori berlimpah dan latensi menjadi prioritas. Bersikaplah konservatif dengan ambang batas seal jika kesegaran indeks penting.</p>
-<h3 id="💰-Example-2-Cost-Optimized-Configuration" class="common-anchor-header">💰 Contoh 2: Konfigurasi yang Dioptimalkan untuk Biaya</h3><p>Jika Anda memprioritaskan efisiensi biaya daripada kinerja mentah - umum terjadi pada jalur pelatihan model, alat internal QPS rendah, atau pencarian gambar berekor panjang - Anda dapat menukar recall atau latensi untuk mengurangi permintaan infrastruktur secara signifikan.</p>
-<p>Strategi yang disarankan:</p>
+<p>Rule of thumb: Favor fewer, larger segments when memory is abundant and latency is a priority. Be conservative with seal thresholds if index freshness matters.</p>
+<h3 id="💰-Example-2-Cost-Optimized-Configuration" class="common-anchor-header">💰 Example 2: Cost-Optimized Configuration</h3><p>If you’re prioritizing cost efficiency over raw performance—common in model training pipelines, low-QPS internal tools, or long-tail image search—you can trade off recall or latency to significantly reduce infrastructure demands.</p>
+<p>Recommended strategies:</p>
 <ul>
-<li><p><strong>Gunakan kuantisasi indeks:</strong> Jenis indeks seperti <code translate="no">SCANN</code>, <code translate="no">IVF_SQ8</code>, atau <code translate="no">HNSW_PQ/PRQ/SQ</code> (diperkenalkan pada Milvus 2.5) secara dramatis mengurangi ukuran indeks dan jejak memori. Ini sangat ideal untuk beban kerja di mana presisi tidak terlalu penting dibandingkan dengan skala atau anggaran.</p></li>
-<li><p><strong>Gunakan strategi pengindeksan yang didukung oleh disk:</strong> Tetapkan jenis indeks ke <code translate="no">DISKANN</code> untuk mengaktifkan pencarian berbasis disk murni. <strong>Aktifkan</strong> <code translate="no">mmap</code> untuk pembongkaran memori secara selektif.</p></li>
+<li><p><strong>Use index quantization:</strong> Index types like <code translate="no">SCANN</code>, <code translate="no">IVF_SQ8</code>, or <code translate="no">HNSW_PQ/PRQ/SQ</code> (introduced in Milvus 2.5) dramatically reduce index size and memory footprint. These are ideal for workloads where precision is less critical than scale or budget.</p></li>
+<li><p><strong>Adopt a disk-backed indexing strategy:</strong> Set the index type to <code translate="no">DISKANN</code> to enable pure disk-based search. <strong>Enable</strong> <code translate="no">mmap</code> for selective memory offloading.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -321,14 +321,14 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<p>Untuk penghematan memori yang ekstrem, aktifkan <code translate="no">mmap</code> untuk yang berikut ini: <code translate="no">vectorField</code>, <code translate="no">vectorIndex</code>, <code translate="no">scalarField</code>, dan <code translate="no">scalarIndex</code>. Hal ini akan melepaskan sebagian besar data ke memori virtual, sehingga mengurangi penggunaan RAM residen secara signifikan.</p>
-<p>⚠️ Peringatan: Jika pemfilteran skalar merupakan bagian utama dari beban kerja kueri Anda, pertimbangkan untuk menonaktifkan <code translate="no">mmap</code> untuk <code translate="no">vectorIndex</code> dan <code translate="no">scalarIndex</code>. Pemetaan memori dapat menurunkan kinerja kueri skalar di lingkungan yang dibatasi I/O.</p>
-<h4 id="Disk-usage-tip" class="common-anchor-header">Kiat penggunaan disk</h4><ul>
-<li><p>Indeks HNSW yang dibuat dengan <code translate="no">mmap</code> dapat memperbesar ukuran data total hingga <strong>1,8</strong> kali lipat.</p></li>
-<li><p>Disk fisik 100GB mungkin secara realistis hanya dapat menampung ~50GB data efektif ketika Anda memperhitungkan overhead indeks dan caching.</p></li>
-<li><p>Selalu sediakan penyimpanan ekstra saat bekerja dengan <code translate="no">mmap</code>, terutama jika Anda juga menyimpan vektor asli secara lokal.</p></li>
+<p>For extreme memory savings, enable <code translate="no">mmap</code> for the following: <code translate="no">vectorField</code>, <code translate="no">vectorIndex</code>, <code translate="no">scalarField</code>, and <code translate="no">scalarIndex</code>. This offloads large chunks of data to virtual memory, reducing resident RAM usage significantly.</p>
+<p>⚠️ Caveat: If scalar filtering is a major part of your query workload, consider disabling <code translate="no">mmap</code> for <code translate="no">vectorIndex</code> and <code translate="no">scalarIndex</code>. Memory mapping can degrade scalar query performance in I/O-constrained environments.</p>
+<h4 id="Disk-usage-tip" class="common-anchor-header">Disk usage tip</h4><ul>
+<li><p>HNSW indexes built with <code translate="no">mmap</code> can expand total data size by up to <strong>1.8×</strong>.</p></li>
+<li><p>A 100GB physical disk might realistically only accommodate ~50GB of effective data when you account for index overhead and caching.</p></li>
+<li><p>Always provision extra storage when working with <code translate="no">mmap</code>, especially if you also cache the original vectors locally.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -343,6 +343,6 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Menyetel Milvus bukan tentang mengejar angka yang sempurna - ini tentang membentuk sistem di sekitar perilaku dunia nyata beban kerja Anda. Pengoptimalan yang paling berdampak sering kali berasal dari pemahaman tentang bagaimana Milvus menangani I/O, siklus hidup segmen, dan pengindeksan di bawah tekanan. Ini adalah jalur di mana kesalahan konfigurasi paling merugikan - dan di mana penyetelan yang bijaksana menghasilkan keuntungan terbesar.</p>
-<p>Jika Anda baru mengenal Milvus, parameter konfigurasi yang telah kami bahas akan mencakup 80-90% kebutuhan kinerja dan stabilitas Anda. Mulailah dari sana. Setelah Anda membangun intuisi, gali lebih dalam spesifikasi lengkap <code translate="no">milvus.yaml</code> dan dokumentasi resminya-Anda akan menemukan kontrol halus yang dapat membawa penerapan Anda dari fungsional menjadi luar biasa.</p>
-<p>Dengan konfigurasi yang tepat, Anda akan siap untuk membangun sistem pencarian vektor yang dapat diskalakan dan berkinerja tinggi yang selaras dengan prioritas operasional Anda-apakah itu berarti penyajian dengan latensi rendah, penyimpanan yang hemat biaya, atau beban kerja analitik yang sangat tinggi.</p>
+    </button></h2><p>Tuning Milvus isn’t about chasing perfect numbers—it’s about shaping the system around your workload’s real-world behavior. The most impactful optimizations often come from understanding how Milvus handles I/O, segment lifecycle, and indexing under pressure. These are the paths where misconfiguration hurts the most—and where thoughtful tuning yields the biggest returns.</p>
+<p>If you’re new to Milvus, the configuration parameters we’ve covered will cover 80–90% of your performance and stability needs. Start there. Once you’ve built some intuition, dig deeper into the full <code translate="no">milvus.yaml</code> spec and the official documentation—you’ll uncover fine-grained controls that can take your deployment from functional to exceptional.</p>
+<p>With the right configurations in place, you’ll be ready to build scalable, high-performance vector search systems that align with your operational priorities—whether that means low-latency serving, cost-efficient storage, or high-ingest analytical workloads.</p>

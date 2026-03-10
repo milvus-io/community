@@ -1,64 +1,66 @@
 ---
 id: Whats-Inside-Milvus-1.0.md
-title: Apa yang Ada di Dalam Milvus 1.0?
+title: What's Inside Milvus 1.0?
 author: milvus
 date: 2021-04-29T08:46:04.019Z
 desc: >-
-  Milvus v1.0 telah tersedia sekarang. Pelajari tentang dasar-dasar Milvus serta
-  fitur-fitur utama Milvus v1.0.
+  Milvus v1.0 is available now. Learn about the Milvus fundamentals as well as
+  key features of Milvus v1.0.
 cover: assets.zilliz.com/Milvus_510cf50aee.jpeg
 tag: Engineering
 canonicalUrl: 'https://zilliz.com/blog/Whats-Inside-Milvus-1.0'
 ---
-<custom-h1>Apa yang ada di dalam Milvus 1.0?</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
-   </span> <span class="img-wrapper"> <span>Milvus.jpeg</span> </span></p>
-<p>Milvus adalah basis data vektor sumber terbuka yang dirancang untuk mengelola jutaan, miliaran, atau bahkan triliunan set data vektor. Milvus memiliki aplikasi yang luas yang mencakup penemuan obat baru, visi komputer, pengemudian otonom, mesin rekomendasi, chatbot, dan banyak lagi.</p>
-<p>Pada bulan Maret 2021, Zilliz, perusahaan di balik Milvus, merilis versi dukungan jangka panjang pertama platform ini - Milvus v1.0. Setelah berbulan-bulan pengujian ekstensif, versi stabil dan siap produksi dari basis data vektor paling populer di dunia ini siap untuk digunakan. Artikel blog ini membahas beberapa dasar-dasar Milvus serta fitur-fitur utama v1.0.</p>
+<custom-h1>What’s Inside Milvus 1.0?</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Milvus_510cf50aee.jpeg" alt="Milvus.jpeg" class="doc-image" id="milvus.jpeg" />
+    <span>Milvus.jpeg</span>
+  </span>
+</p>
+<p>Milvus is an open-source vector database designed to manage massive million, billion, or even trillion vector datasets. Milvus has broad applications spanning new drug discovery, computer vision, autonomous driving, recommendation engines, chatbots, and much more.</p>
+<p>In March, 2021 Zilliz, the company behind Milvus, released the platform’s first long-term support version—Milvus v1.0. After months of extensive testing, a stable, production ready version of the world’s most popular vector database is ready for prime time. This blog article covers some Milvus fundamentals as well as key features of v1.0.</p>
 <p><br/></p>
-<h3 id="Milvus-distributions" class="common-anchor-header">Distribusi Milvus</h3><p>Milvus tersedia dalam distribusi khusus CPU dan distribusi yang mendukung GPU. Distribusi yang pertama hanya mengandalkan CPU untuk pembuatan indeks dan pencarian; distribusi yang kedua memungkinkan pencarian hibrida CPU dan GPU serta pembuatan indeks yang semakin mempercepat Milvus. Sebagai contoh, dengan menggunakan distribusi hibrida, CPU dapat digunakan untuk pencarian dan GPU untuk pembuatan indeks, yang selanjutnya meningkatkan efisiensi kueri.</p>
-<p>Kedua distribusi Milvus tersedia di Docker. Anda dapat mengkompilasi Milvus dari Docker (jika sistem operasi Anda mendukungnya) atau mengkompilasi Milvus dari kode sumber di Linux (sistem operasi lain tidak didukung).</p>
+<h3 id="Milvus-distributions" class="common-anchor-header">Milvus distributions</h3><p>Milvus is available in CPU-only and GPU-enabled distributions. The former relies exclusively on CPU for index building and search; the latter enables CPU and GPU hybrid search and index building that further accelerates Milvus. For example, using the hybrid distribution, CPU can be used for search and GPU for index building, further improving query efficiency.</p>
+<p>Both Milvus distributions are available in Docker. You can either compile Milvus from Docker (if your operating system supports it) or compile Milvus from source code on Linux (other operating systems are not supported).</p>
 <p><br/></p>
-<h3 id="Embedding-vectors" class="common-anchor-header">Menyematkan vektor</h3><p>Vektor disimpan dalam Milvus sebagai entitas. Setiap entitas memiliki satu bidang ID vektor dan satu bidang vektor. Milvus v1.0 hanya mendukung ID vektor bilangan bulat. Ketika membuat koleksi di dalam Milvus, ID vektor dapat dibuat secara otomatis atau ditentukan secara manual. Milvus memastikan ID vektor yang dibuat secara otomatis adalah unik, namun ID yang dibuat secara manual dapat diduplikasi di dalam Milvus. Jika mendefinisikan ID secara manual, pengguna bertanggung jawab untuk memastikan bahwa semua ID adalah unik.</p>
+<h3 id="Embedding-vectors" class="common-anchor-header">Embedding vectors</h3><p>Vectors are stored in Milvus as entities. Each entity has one vector ID field and one vector field. Milvus v1.0 supports integer vector IDs only. When creating a collection within Milvus, vector IDs can be automatically generated or manually defined. Milvus ensures auto-generated vector IDs are unique however, manually defined IDs can be duplicated within Milvus. If manually defining IDs, users are responsible for making sure all IDs are unique.</p>
 <p><br/></p>
-<h3 id="Partitions" class="common-anchor-header">Partisi</h3><p>Milvus mendukung pembuatan partisi dalam sebuah koleksi. Dalam situasi di mana data dimasukkan secara teratur dan data historis tidak signifikan (misalnya, data streaming), partisi dapat digunakan untuk mempercepat pencarian kemiripan vektor. Satu koleksi dapat memiliki hingga 4.096 partisi. Menentukan pencarian vektor dalam partisi tertentu mempersempit pencarian dan dapat secara signifikan mengurangi waktu kueri, terutama untuk koleksi yang berisi lebih dari satu triliun vektor.</p>
+<h3 id="Partitions" class="common-anchor-header">Partitions</h3><p>Milvus supports creating partitions in a collection. In situations where data is inserted regularly and historical data isn’t significant (e.g., streaming data), partitions can be used to accelerate vector similarity search. One collection can have up to 4,096 partitions. Specifying a vector search within a specific partition narrows the search and may significantly reduce query time, particularly for collections that contain more than a trillion vectors.</p>
 <p><br/></p>
-<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Pengoptimalan algoritme indeks</h3><p>Milvus dibangun di atas beberapa pustaka indeks yang diadopsi secara luas, termasuk Faiss, NMSLIB, dan Annoy. Milvus lebih dari sekadar pembungkus dasar untuk pustaka-pustaka indeks ini. Berikut ini adalah beberapa peningkatan utama yang telah dilakukan pada pustaka-pustaka yang mendasarinya:</p>
+<h3 id="Index-algorithm-optimizations" class="common-anchor-header">Index algorithm optimizations</h3><p>Milvus is built on top of multiple widely-adopted index libraries, including Faiss, NMSLIB, and Annoy. Milvus is far more than a basic wrapper for these index libraries. Here are some of the major enhancements that have been made to the underlying libraries:</p>
 <ul>
-<li>Pengoptimalan kinerja indeks IVF menggunakan algoritma k-means Elkan.</li>
-<li>Pengoptimalan pencarian FLAT.</li>
-<li>Dukungan indeks hibrida IVF_SQ8H, yang dapat mengurangi ukuran file indeks hingga 75% tanpa mengorbankan akurasi data. IVF_SQ8H dibangun di atas IVF_SQ8, dengan daya ingat yang sama namun dengan kecepatan kueri yang jauh lebih cepat. Ini dirancang khusus untuk Milvus untuk memanfaatkan kapasitas pemrosesan paralel GPU, dan potensi sinergi antara pemrosesan bersama CPU/GPU.</li>
-<li>Kompatibilitas set instruksi dinamis.</li>
+<li>IVF index performance optimizations using the Elkan k-means algorithm.</li>
+<li>FLAT search optimizations.</li>
+<li>IVF_SQ8H hybrid index support, which can reduce index file sizes by up to 75% without sacrificing data accuracy. IVF_SQ8H is built upon IVF_SQ8, with identical recall but much faster query speed. It was designed specifically for Milvus to harnesses the parallel processing capacity of GPUs, and the potential for synergy between CPU/GPU co-processing.</li>
+<li>Dynamic instruction set compatibility.</li>
 </ul>
 <p><br/></p>
-<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Pencarian, pembuatan indeks, dan pengoptimalan Milvus lainnya</h3><p>Pengoptimalan berikut ini telah dilakukan pada Milvus untuk meningkatkan kinerja pencarian dan pembuatan indeks.</p>
+<h3 id="Search-index-building-and-other-Milvus-optimizations" class="common-anchor-header">Search, index building, and other Milvus optimizations</h3><p>The following optimizations have been made to Milvus to improve search and index building performance.</p>
 <ul>
-<li>Performa pencarian dioptimalkan dalam situasi ketika jumlah kueri (nq) kurang dari jumlah thread CPU.</li>
-<li>Milvus menggabungkan permintaan pencarian dari klien yang mengambil topK dan parameter pencarian yang sama.</li>
-<li>Pembuatan indeks dihentikan ketika permintaan pencarian masuk.</li>
-<li>Milvus secara otomatis memuat koleksi ke memori pada saat start.</li>
-<li>Beberapa perangkat GPU dapat ditugaskan untuk mempercepat pencarian kemiripan vektor.</li>
+<li>Search performance is optimized in situations when the number of queries (nq) is less than the number of CPU threads.</li>
+<li>Milvus combines search requests from a client that take the same topK and search parameters.</li>
+<li>Index building is suspended when search requests come in.</li>
+<li>Milvus automatically preloads collections to memory at start.</li>
+<li>Multiple GPU devices can be assigned to accelerate vector similarity search.</li>
 </ul>
 <p><br/></p>
-<h3 id="Distance-metrics" class="common-anchor-header">Metrik jarak</h3><p>Milvus adalah basis data vektor yang dibangun untuk mendukung pencarian kemiripan vektor. Platform ini dibangun dengan mempertimbangkan MLOps dan aplikasi AI tingkat produksi. Milvus mendukung berbagai metrik jarak untuk menghitung kemiripan, seperti jarak Euclidean (L2), inner product (IP), jarak Jaccard, Tanimoto, jarak Hamming, superstruktur, dan substruktur. Dua metrik terakhir biasanya digunakan dalam pencarian molekuler dan penemuan obat baru yang didukung oleh AI.</p>
+<h3 id="Distance-metrics" class="common-anchor-header">Distance metrics</h3><p>Milvus is a vector database built to power vector similarity search. The platform was built with MLOps and production level AI applications in mind. Milvus supports a wide range of distance metrics for calculating similarity, such as Euclidean distance (L2), inner product (IP), Jaccard distance, Tanimoto, Hamming distance, superstructure, and substructure. The last two metrics are commonly used in molecular search and AI-powered new drug discovery.</p>
 <p><br/></p>
-<h3 id="Logging" class="common-anchor-header">Penebangan</h3><p>Milvus mendukung rotasi log. Dalam file konfigurasi sistem, milvus.yaml, Anda dapat mengatur ukuran file log tunggal, jumlah file log, dan output log ke stdout.</p>
+<h3 id="Logging" class="common-anchor-header">Logging</h3><p>Milvus supports log rotation. In the system configuration file, milvus.yaml, you can set the size of a single log file, the number of log files, and log output to stdout.</p>
 <p><br/></p>
-<h3 id="Distributed-solution" class="common-anchor-header">Solusi terdistribusi</h3><p>Mishards, middleware sharding Milvus, adalah solusi terdistribusi untuk Milvus Dengan satu simpul tulis dan simpul baca dalam jumlah yang tidak terbatas, Mishards melepaskan potensi komputasi cluster server. Fitur-fiturnya meliputi penerusan permintaan, pemisahan baca/tulis, penskalaan dinamis/horizontal, dan banyak lagi.</p>
+<h3 id="Distributed-solution" class="common-anchor-header">Distributed solution</h3><p>Mishards, a Milvus sharding middleware, is the distributed solution for Milvus With one write node and an unlimited number of read nodes, Mishards unleashes the computational potential of server cluster. Its features include request forwarding, read/write splitting, dynamic/horizontal scaling, and more.</p>
 <p><br/></p>
-<h3 id="Monitoring" class="common-anchor-header">Pemantauan</h3><p>Milvus kompatibel dengan Prometheus, sebuah perangkat pemantauan dan peringatan sistem sumber terbuka. Milvus menambahkan dukungan untuk Pushgateway di Prometheus, sehingga memungkinkan Prometheus untuk memperoleh metrik batch yang berumur pendek. Sistem pemantauan dan peringatan bekerja sebagai berikut:</p>
+<h3 id="Monitoring" class="common-anchor-header">Monitoring</h3><p>Milvus is compatible with Prometheus, an open-source system monitoring and alerts toolkit. Milvus adds support for Pushgateway in Prometheus, making it possible for Prometheus to acquire short-lived batch metrics. The monitoring and alerts system works as follows:</p>
 <ul>
-<li>Server Milvus mendorong data metrik yang disesuaikan ke Pushgateway.</li>
-<li>Pushgateway memastikan data metrik yang bersifat sementara dikirim dengan aman ke Prometheus.</li>
-<li>Prometheus terus menarik data dari Pushgateway.</li>
-<li>Alertmanager digunakan untuk mengatur ambang batas peringatan untuk berbagai indikator dan mengirim peringatan melalui email atau pesan.</li>
+<li>The Milvus server pushes customized metrics data to Pushgateway.</li>
+<li>Pushgateway ensures ephemeral metric data is safely sent to Prometheus.</li>
+<li>Prometheus continues pulling data from Pushgateway.</li>
+<li>Alertmanager is used to set the alert threshold for different indicators and send alerts via email or message.</li>
 </ul>
 <p><br/></p>
-<h3 id="Metadata-management" class="common-anchor-header">Manajemen metadata</h3><p>Milvus menggunakan SQLite untuk manajemen metadata secara default. SQLite diimplementasikan di Milvus dan tidak memerlukan konfigurasi. Dalam lingkungan produksi, Anda disarankan untuk menggunakan MySQL untuk manajemen metadata.</p>
+<h3 id="Metadata-management" class="common-anchor-header">Metadata management</h3><p>Milvus uses SQLite for metadata management by default. SQLite is implemented in Milvus and does not require configuration. In a production environment, it is recommended that you use MySQL for metadata management.</p>
 <p><br/></p>
-<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Bergabunglah dengan komunitas sumber terbuka kami:</h3><ul>
-<li>Temukan atau berkontribusi ke Milvus di <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>Berinteraksi dengan komunitas melalui <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Terhubung dengan kami di <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<h3 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:</h3><ul>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

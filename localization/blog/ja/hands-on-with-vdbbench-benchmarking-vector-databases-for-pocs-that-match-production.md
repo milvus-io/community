@@ -1,11 +1,14 @@
 ---
 id: >-
   hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
-title: VDBBenchのハンズオン：ベクターデータベースのベンチマークで本番と同じPOCを実現
+title: >
+  Hands-On with VDBBench: Benchmarking Vector Databases for POCs That Match
+  Production
 author: Yifan Cai
 date: 2025-08-15T00:00:00.000Z
 desc: >-
-  VDBBenchを使用して、実際のプロダクションデータでベクターデータベースをテストする方法を学びます。実際のパフォーマンスを予測するカスタムデータセットPOCのステップバイステップガイド。
+  Learn how to test vector databases with real production data using VDBBench.
+  Step-by-step guide to custom dataset POCs that predict actual performance.
 cover: assets.zilliz.com/vdbbench_cover_min_2f86466839.png
 tag: Tutorials
 recommend: false
@@ -19,11 +22,11 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/hands-on-with-vdbbench-benchmarking-vector-databases-for-pocs-that-match-production.md
 ---
-<p>ベクターデータベースは今やAIインフラストラクチャの中核であり、カスタマーサービス、コンテンツ生成、検索、レコメンデーションなど、様々なLLM搭載アプリケーションを強力にサポートしている。</p>
-<p>MilvusやZilliz Cloudのような専用に構築されたベクターデータベースから、ベクター検索をアドオンとして備えた従来のデータベースまで、市場には非常に多くの選択肢があるため、<strong>適切なものを選ぶのはベンチマークチャートを読むほど単純ではない。</strong></p>
-<p>ほとんどのチームは、契約する前に概念実証（POC）を実行する。これは理論的には賢明なことだが、実際には、紙の上では印象的に見えるベンダーのベンチマークの多くが、実際の条件下では破綻する。</p>
-<p>主な理由の1つは、性能の主張のほとんどが、2006年から2012年の古いデータセット（SIFT、GloVe、LAION）に基づいていることです。例えば、SIFTは128次元のベクトルを使用しているが、今日のAIモデルははるかに高い次元（OpenAIの最新モデルでは3,072、Cohereのモデルでは1,024）を生成する。</p>
-<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">解決策：定型のベンチマークではなく、自社のデータでテストする<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
+<p>Vector databases are now a core part of AI infrastructure, powering various LLM-powered applications for customer service, content generation, search, recommendations, and more.</p>
+<p>With so many options in the market, from purpose-built vector databases like Milvus and Zilliz Cloud to traditional databases with vector search as an add-on, <strong>choosing the right one isn’t as simple as reading benchmark charts.</strong></p>
+<p>Most teams run a Proof of Concept (POC) before committing, which is smart in theory — but in practice, many vendor benchmarks that look impressive on paper collapse under real-world conditions.</p>
+<p>One of the main reasons is that most performance claims are based on outdated datasets from 2006–2012 (SIFT, GloVe, LAION) that behave very differently from modern embeddings. For example, SIFT uses 128-dimensional vectors, while today’s AI models produce far higher dimensions — 3,072 for OpenAI’s latest, 1,024 for Cohere’s —  a big shift that impacts performance, cost, and scalability.</p>
+<h2 id="The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="common-anchor-header">The Fix: Test with Your Data, Not Canned Benchmarks<button data-href="#The-Fix-Test-with-Your-Data-Not-Canned-Benchmarks" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,19 +41,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最もシンプルで効果的な解決策は、アプリケーションが実際に生成したベクトルでPOC評価を実行することです。つまり、組み込みモデル、実際のクエリー、実際のデータ分布を使用することです。</p>
-<p>オープンソースのベクトルデータベースベンチマークツールである<a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBenchは</strong></a>、まさにこのために構築されました。Milvus、Elasticsearch、pgvectorなどを含むあらゆるベクトルデータベースの評価と比較をサポートし、実際のプロダクションワークロードをシミュレートします。</p>
-<p><a href="https://github.com/zilliztech/VectorDBBench">VDBBench 1.0 をダウンロード →</a>｜<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> リーダーボードを見る →</a>｜<a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">VDBBenchとは</a>？</p>
-<p>VDBbenchは以下を可能にします：</p>
+    </button></h2><p>The simplest and most effective solution: run your POC evaluation with the vectors your application actually generates. That means using your embedding models, your real queries, and your actual data distribution.</p>
+<p>This is exactly what <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"><strong>VDBBench</strong></a> — an open-source vector database benchmarking tool — is built for. It supports the evaluation and comparison of any vector database, including Milvus, Elasticsearch, pgvector, and more, and simulates real production workloads.</p>
+<p><a href="https://github.com/zilliztech/VectorDBBench">Download VDBBench 1.0 →</a> |<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538"> View Leaderboard →</a> | <a href="https://milvus.io/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md">What is VDBBench</a></p>
+<p>VDBbench lets you:</p>
 <ul>
-<li><p>エンベッディングモデルから<strong>独自のデータでテスト</strong></p></li>
-<li><p><strong>コンカレントインサート、クエリ、ストリーミングインジェストの</strong>シミュレーション</p></li>
-<li><p><strong>P95/P99のレイテンシ、持続的なスループット、およびリコール精度の</strong>測定</p></li>
-<li><p>複数のデータベースを同一条件でベンチマーク</p></li>
-<li><p><strong>カスタムデータセットのテストが</strong>可能なため、実運用に近い結果を得ることができます。</p></li>
+<li><p><strong>Test with your own data</strong> from your embedding models</p></li>
+<li><p>Simulate <strong>concurrent inserts, queries, and streaming ingestion</strong></p></li>
+<li><p>Measure <strong>P95/P99 latency, sustained throughput, and recall accuracy</strong></p></li>
+<li><p>Benchmark across multiple databases under identical conditions</p></li>
+<li><p>Allows <strong>custom dataset testing</strong> so results actually match production</p></li>
 </ul>
-<p>次に、VDBBenchと実データを使用して本番レベルのPOCを実行する方法を説明します。</p>
-<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">VDBBenchでカスタムデータセットを使ってVectorDBを評価する方法<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
+<p>Next, we’ll walk you through how to run a production-grade POC with VDBBench and your real data — so you can make a confident, future-proof choice.</p>
+<h2 id="How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="common-anchor-header">How to Evaluate VectorDBs with Your Custom Datasets with VDBBench<button data-href="#How-to-Evaluate-VectorDBs-with-Your-Custom-Datasets-with-VDBBench" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,96 +68,96 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>始める前に、Python 3.11以上がインストールされていることを確認してください。CSVまたはNPY形式のベクトルデータ、セットアップとテストに約2-3時間、必要に応じてトラブルシューティングのための中級Python知識が必要です。</p>
-<h3 id="Installation-and-Configuration" class="common-anchor-header">インストールと設定</h3><p>1つのデータベースを評価する場合は、このコマンドを実行します：</p>
+    </button></h2><p>Before getting started, ensure you have Python 3.11 or higher installed. You’ll need vector data in CSV or NPY format, approximately 2-3 hours for complete setup and testing, and intermediate Python knowledge for troubleshooting if needed.</p>
+<h3 id="Installation-and-Configuration" class="common-anchor-header">Installation and Configuration</h3><p>If you’re evaluating one database, run this command:</p>
 <pre><code translate="no">pip install vectordb-bench
 <button class="copy-code-btn"></button></code></pre>
-<p>サポートされているすべてのデータベースを比較する場合は、このコマンドを実行してください：</p>
+<p>If you’re to compare all supported databases, run the command:</p>
 <pre><code translate="no">pip install vectordb-bench[<span class="hljs-built_in">all</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>特定のデータベースクライアント（例：Elasticsearch）の場合：</p>
+<p>For specific database clients (eg: Elasticsearch):</p>
 <pre><code translate="no">pip install vectordb-bench[elastic]
 <button class="copy-code-btn"></button></code></pre>
-<p>サポートされているすべてのデータベースとそのインストールコマンドについては、こちらの<a href="https://github.com/zilliztech/VectorDBBench">GitHub ページを</a>確認してください。</p>
-<h3 id="Launching-VDBBench" class="common-anchor-header">VDBBenchの起動</h3><p>で<strong>VDBBench を</strong>起動する：</p>
+<p>Check this <a href="https://github.com/zilliztech/VectorDBBench">GitHub page</a> for all the supported databases and their install commands.</p>
+<h3 id="Launching-VDBBench" class="common-anchor-header">Launching VDBBench</h3><p>Start <strong>VDBBench</strong> with:</p>
 <pre><code translate="no">init_bench
 <button class="copy-code-btn"></button></code></pre>
-<p>期待されるコンソール出力 
+<p>Expected console output: 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_expected_console_output_66e1a218b7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Webインターフェースはローカルで利用可能になります：</p>
+<p>The web interface will be available locally:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_2e4dd7ea69.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">データの準備とフォーマット変換</h3><p>VDBBench は，異なるデータベースやデータセット間で一貫したテストを行うために，特定のスキーマを持つ構造化 Parquet ファイルを必要とします．</p>
+<h3 id="Data-Preparation-and-Format-Conversion" class="common-anchor-header">Data Preparation and Format Conversion</h3><p>VDBBench requires structured Parquet files with specific schemas to ensure consistent testing across different databases and datasets.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>ファイル名</strong></th><th style="text-align:center"><strong>目的</strong></th><th style="text-align:center"><strong>必須</strong></th><th style="text-align:center"><strong>内容 例</strong></th></tr>
+<tr><th style="text-align:center"><strong>File Name</strong></th><th style="text-align:center"><strong>Purpose</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Content Example</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">データベース挿入用のベクトルコレクション</td><td style="text-align:center">✅</td><td style="text-align:center">ベクトルID + ベクトルデータ (list[float])</td></tr>
-<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">クエリ用ベクターコレクション</td><td style="text-align:center">✅</td><td style="text-align:center">ベクトルID + ベクトルデータ (list[float])</td></tr>
-<tr><td style="text-align:center">ネイバーズ.parquet</td><td style="text-align:center">クエリベクトルのグランドトゥルース（実際の最近傍IDリスト）</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k 近似IDリスト].</td></tr>
-<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">ラベル（ベクトル以外のエンティティを記述するメタデータ）</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; ラベル</td></tr>
+<tr><td style="text-align:center">train.parquet</td><td style="text-align:center">Vector collection for database insertion</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">test.parquet</td><td style="text-align:center">Vector collection for queries</td><td style="text-align:center">✅</td><td style="text-align:center">Vector ID + Vector data (list[float])</td></tr>
+<tr><td style="text-align:center">neighbors.parquet</td><td style="text-align:center">Ground Truth for query vectors (actual nearest neighbor ID list)</td><td style="text-align:center">✅</td><td style="text-align:center">query_id -&gt; [top_k similar ID list]</td></tr>
+<tr><td style="text-align:center">scalar_labels.parquet</td><td style="text-align:center">Labels (metadata describing entities other than vectors)</td><td style="text-align:center">❌</td><td style="text-align:center">id -&gt; label</td></tr>
 </tbody>
 </table>
-<p>必須ファイル仕様：</p>
+<p>Required File Specifications:</p>
 <ul>
-<li><p><strong>トレーニングベクターファイル（train.parquet）には</strong>、インクリメンタルな整数を含むID列と、float32配列を含むvector列が必要です。カラム名は設定可能ですが、IDカラムは適切なインデックスのために整数型を使用する必要があります。</p></li>
-<li><p><strong>テストベクターファイル（test.parquet）は</strong>トレーニングデータと同じ構造に従います。ID列名は "id "でなければなりませんが、ベクトル列名はデータスキーマに合わせてカスタマイズすることができます。</p></li>
-<li><p><strong>Ground Truth File (neighbers.parquet)</strong>には各テストクエリの参照最近傍データが含まれます。テストベクターIDに対応するIDカラムと、トレーニングセットからの正しい最近傍IDを含む近傍配列カラムが必要です。</p></li>
-<li><p><strong>スカラーラベルファイル（scalar_labels.parquet</strong>）はオプションで、トレーニングベクトルに関連するメタデータのラベルが含まれています。</p></li>
+<li><p><strong>Training Vector File (train.parquet)</strong> must contain an ID column with incremental integers and a vector column containing float32 arrays. Column names are configurable, but the ID column must use integer types for proper indexing.</p></li>
+<li><p><strong>Test Vector File (test.parquet)</strong> follows the same structure as the training data. The ID column name must be “id” while vector column names can be customized to match your data schema.</p></li>
+<li><p><strong>Ground Truth File (neighbors.parquet)</strong> contains the reference nearest neighbors for each test query. It requires an ID column corresponding to test vector IDs and a neighbors array column containing the correct nearest neighbor IDs from the training set.</p></li>
+<li><p><strong>Scalar Labels File (scalar_labels.parquet)</strong> is optional and contains metadata labels associated with training vectors, useful for filtered search testing.</p></li>
 </ul>
-<h3 id="Data-Format-Challenges" class="common-anchor-header">データフォーマットの課題</h3><p>ほとんどのプロダクションベクターデータはVDBBenchの要件に直接マッチしないフォーマットで存在します。CSVファイルは一般的にエンベッディングを配列の文字列表現として保存し、NPYファイルはメタデータのない生の数値行列を含み、データベースエクスポートはしばしばJSONや他の構造化フォーマットを使用します。</p>
-<p>これらのフォーマットを手動で変換するには、文字列表現を数値配列にパースする、FAISSのようなライブラリを使用して正確な最近傍を計算する、IDの一貫性を維持しながらデータセットを適切に分割する、すべてのデータ型がParquetの仕様に適合していることを確認するなど、いくつかの複雑なステップが必要です。</p>
-<h3 id="Automated-Format-Conversion" class="common-anchor-header">フォーマット変換の自動化</h3><p>変換プロセスを効率化するために、フォーマット変換、グランドトゥルース計算、適切なデータ構造化を自動的に行うPythonスクリプトを開発しました。</p>
-<p><strong>CSV入力フォーマット</strong></p>
+<h3 id="Data-Format-Challenges" class="common-anchor-header">Data Format Challenges</h3><p>Most production vector data exists in formats that don’t directly match VDBBench requirements. CSV files typically store embeddings as string representations of arrays, NPY files contain raw numerical matrices without metadata, and database exports often use JSON or other structured formats.</p>
+<p>Converting these formats manually involves several complex steps: parsing string representations into numerical arrays, computing exact nearest neighbors using libraries like FAISS, properly splitting datasets while maintaining ID consistency, and ensuring all data types match Parquet specifications.</p>
+<h3 id="Automated-Format-Conversion" class="common-anchor-header">Automated Format Conversion</h3><p>To streamline the conversion process, we’ve developed a Python script that handles format conversion, ground truth computation, and proper data structuring automatically.</p>
+<p><strong>CSV Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">id</span>,emb,label
 <span class="hljs-number">1</span>,<span class="hljs-string">&quot;[0.12,0.56,0.89,...]&quot;</span>,A
 <span class="hljs-number">2</span>,<span class="hljs-string">&quot;[0.33,0.48,0.90,...]&quot;</span>,B
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>NPY入力フォーマット</strong></p>
+<p><strong>NPY Input Format:</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 vectors = np.<span class="hljs-property">random</span>.<span class="hljs-title function_">rand</span>(<span class="hljs-number">10000</span>, <span class="hljs-number">768</span>).<span class="hljs-title function_">astype</span>(<span class="hljs-string">&#x27;float32&#x27;</span>)
 np.<span class="hljs-title function_">save</span>(<span class="hljs-string">&quot;vectors.npy&quot;</span>, vectors)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Conversion-Script-Implementation" class="common-anchor-header">変換スクリプトの実装</h3><p><strong>必要な依存関係をインストールする：</strong></p>
+<h3 id="Conversion-Script-Implementation" class="common-anchor-header">Conversion Script Implementation</h3><p><strong>Install required dependencies:</strong></p>
 <pre><code translate="no">pip install numpy pandas faiss-cpu
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>変換を実行する：</strong></p>
+<p><strong>Execute the conversion:</strong></p>
 <pre><code translate="no">python convert_to_vdb_format.py \
   --train data/train.csv \
   --<span class="hljs-built_in">test</span> data/test.csv \
   --out datasets/custom \
   --topk 10
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>パラメータ参照：</strong></p>
+<p><strong>Parameter Reference:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>パラメータ名</strong></th><th style="text-align:center"><strong>必須</strong></th><th style="text-align:center"><strong>タイプ</strong></th><th style="text-align:center"><strong>説明</strong></th><th style="text-align:center"><strong>デフォルト値</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Required</strong></th><th style="text-align:center"><strong>Type</strong></th><th style="text-align:center"><strong>Description</strong></th><th style="text-align:center"><strong>Default Value</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">はい</td><td style="text-align:center">文字列</td><td style="text-align:center">CSVまたはNPY形式をサポートするトレーニングデータのパス。CSVはembカラムを含む必要があり、idカラムがない場合は自動生成される。</td><td style="text-align:center">なし</td></tr>
-<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">なし</td><td style="text-align:center">文字列</td><td style="text-align:center">クエリデータパス、CSVまたはNPY形式をサポート。トレーニングデータと同じ形式</td><td style="text-align:center">なし</td></tr>
-<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">なし</td><td style="text-align:center">文字列</td><td style="text-align:center">出力ディレクトリパス、変換されたパーケットファイルと近傍インデックスファイルを保存</td><td style="text-align:center">なし</td></tr>
-<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">なし</td><td style="text-align:center">文字列</td><td style="text-align:center">ラベルCSVパス、ラベル列（文字列配列としてフォーマット）を含む必要がある。</td><td style="text-align:center">なし</td></tr>
-<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">なし</td><td style="text-align:center">整数</td><td style="text-align:center">計算時に返す最近傍の数</td><td style="text-align:center">10</td></tr>
+<tr><td style="text-align:center"><code translate="no">--train</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Training data path, supports CSV or NPY format. CSV must contain emb column, if no id column will auto-generate</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--test</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Query data path, supports CSV or NPY format. Format same as training data</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--out</code></td><td style="text-align:center">Yes</td><td style="text-align:center">String</td><td style="text-align:center">Output directory path, saves converted parquet files and neighbor index files</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--labels</code></td><td style="text-align:center">No</td><td style="text-align:center">String</td><td style="text-align:center">Label CSV path, must contain labels column (formatted as string array), used for saving labels</td><td style="text-align:center">None</td></tr>
+<tr><td style="text-align:center"><code translate="no">--topk</code></td><td style="text-align:center">No</td><td style="text-align:center">Integer</td><td style="text-align:center">Number of nearest neighbors to return when computing</td><td style="text-align:center">10</td></tr>
 </tbody>
 </table>
-<p><strong>出力ディレクトリ構造：</strong></p>
+<p><strong>Output Directory Structure:</strong></p>
 <pre><code translate="no">datasets/custom/
 ├── train.parquet        <span class="hljs-comment"># Training vectors</span>
 ├── test.parquet         <span class="hljs-comment"># Query vectors  </span>
 ├── neighbors.parquet    <span class="hljs-comment"># Ground Truth</span>
 └── scalar_labels.parquet <span class="hljs-comment"># Optional scalar labels</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Complete-Conversion-Script" class="common-anchor-header">完全な変換スクリプト</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="Complete-Conversion-Script" class="common-anchor-header">Complete Conversion Script</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> argparse
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
@@ -238,88 +241,88 @@ name
     args = parser.parse_args()
     main(args.train, args.test, args.out, args.labels, args.topk)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>変換処理の出力</strong>
+<p><strong>Conversion Process Output:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_conversion_process_output_0827ba75c9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>生成ファイルの検証</strong>
+<p><strong>Generated Files Verification:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_f02cd2964e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">カスタム・データセットの構成</h3><p>Webインタフェースのカスタム・データセット設定セクションに移動します：</p>
+<h3 id="Custom-Dataset-Configuration" class="common-anchor-header">Custom Dataset Configuration</h3><p>Navigate to the Custom Dataset configuration section in the web interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_aa14b75b5d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>この設定インターフェイスには、データセットのメタデータとファイル・パス指定のためのフィールドがあります：</p>
+<p>The configuration interface provides fields for dataset metadata and file path specification:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/6_1b64832990.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>設定パラメータ</strong></p>
+<p><strong>Configuration Parameters:</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>パラメータ名</strong></th><th style="text-align:center"><strong>意味</strong></th><th style="text-align:center"><strong>構成に関する提案</strong></th></tr>
+<tr><th style="text-align:center"><strong>Parameter Name</strong></th><th style="text-align:center"><strong>Meaning</strong></th><th style="text-align:center"><strong>Configuration Suggestions</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">名前</td><td style="text-align:center">データセット名（一意識別子）</td><td style="text-align:center">任意の名前、<code translate="no">my_custom_dataset</code></td></tr>
-<tr><td style="text-align:center">フォルダパス</td><td style="text-align:center">データセット・ファイルのディレクトリ・パス</td><td style="text-align:center">例<code translate="no">/data/datasets/custom</code></td></tr>
-<tr><td style="text-align:center">次元</td><td style="text-align:center">ベクトル寸法</td><td style="text-align:center">データファイルと一致しなければならない。</td></tr>
-<tr><td style="text-align:center">サイズ</td><td style="text-align:center">ベクトル数（オプション）</td><td style="text-align:center">空のままでも可、システムが自動検出する</td></tr>
-<tr><td style="text-align:center">メトリックタイプ</td><td style="text-align:center">類似度の測定方法</td><td style="text-align:center">一般的にはL2（ユークリッド距離）またはIP（内積）を使用</td></tr>
-<tr><td style="text-align:center">訓練ファイル名</td><td style="text-align:center">トレーニングセットのファイル名（拡張子.parquetなし）</td><td style="text-align:center"><code translate="no">train.parquet</code> の場合，<code translate="no">train</code> を埋める．複数のファイルを使用する場合は，カンマで区切る．<code translate="no">train1,train2</code></td></tr>
-<tr><td style="text-align:center">test ファイル名</td><td style="text-align:center">クエリセットのファイル名（.parquet拡張子なし）</td><td style="text-align:center"><code translate="no">test.parquet</code> の場合<code translate="no">test</code></td></tr>
-<tr><td style="text-align:center">グランドトゥルースファイル名</td><td style="text-align:center">グランドトゥルースファイル名（.parquet拡張子なし）</td><td style="text-align:center"><code translate="no">neighbors.parquet</code> の場合<code translate="no">neighbors</code></td></tr>
-<tr><td style="text-align:center">トレーニングID名</td><td style="text-align:center">トレーニングデータID列名</td><td style="text-align:center">通常は<code translate="no">id</code></td></tr>
-<tr><td style="text-align:center">訓練エンベロープ名</td><td style="text-align:center">トレーニングデータのベクトル列名</td><td style="text-align:center">スクリプトが生成したカラム名が<code translate="no">emb</code> の場合<code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">test emb name</td><td style="text-align:center">テストデータ・ベクトルの列名</td><td style="text-align:center">通常はtrain emb nameと同じ、<code translate="no">emb</code></td></tr>
-<tr><td style="text-align:center">グランドトゥルースemb name</td><td style="text-align:center">グラウンドトゥルースの最近傍列名</td><td style="text-align:center">カラム名が<code translate="no">neighbors_id</code> の場合<code translate="no">neighbors_id</code></td></tr>
-<tr><td style="text-align:center">スカラーラベルファイル名</td><td style="text-align:center">(オプション) ラベルファイル名 (拡張子 .parquet なし)</td><td style="text-align:center"><code translate="no">scalar_labels.parquet</code> が生成された場合、<code translate="no">scalar_labels</code> を埋める。</td></tr>
-<tr><td style="text-align:center">ラベルパーセンテージ</td><td style="text-align:center">(オプション) ラベルフィルター比率</td><td style="text-align:center">例：<code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, ラベルフィルターが必要ない場合は空白のまま</td></tr>
-<tr><td style="text-align:center">説明</td><td style="text-align:center">データセットの説明</td><td style="text-align:center">ビジネス・コンテキストまたは生成方法を注記できない</td></tr>
+<tr><td style="text-align:center">Name</td><td style="text-align:center">Dataset name (unique identifier)</td><td style="text-align:center">Any name, e.g., <code translate="no">my_custom_dataset</code></td></tr>
+<tr><td style="text-align:center">Folder Path</td><td style="text-align:center">Dataset file directory path</td><td style="text-align:center">e.g., <code translate="no">/data/datasets/custom</code></td></tr>
+<tr><td style="text-align:center">dim</td><td style="text-align:center">Vector dimensions</td><td style="text-align:center">Must match data files, e.g., 768</td></tr>
+<tr><td style="text-align:center">size</td><td style="text-align:center">Vector count (optional)</td><td style="text-align:center">Can be left empty, system will auto-detect</td></tr>
+<tr><td style="text-align:center">metric type</td><td style="text-align:center">Similarity measurement method</td><td style="text-align:center">Commonly use L2 (Euclidean distance) or IP (inner product)</td></tr>
+<tr><td style="text-align:center">train file name</td><td style="text-align:center">Training set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">train.parquet</code>, fill <code translate="no">train</code>. Multiple files use comma separation, e.g., <code translate="no">train1,train2</code></td></tr>
+<tr><td style="text-align:center">test file name</td><td style="text-align:center">Query set filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">test.parquet</code>, fill <code translate="no">test</code></td></tr>
+<tr><td style="text-align:center">ground truth file name</td><td style="text-align:center">Ground Truth filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">neighbors.parquet</code>, fill <code translate="no">neighbors</code></td></tr>
+<tr><td style="text-align:center">train id name</td><td style="text-align:center">Training data ID column name</td><td style="text-align:center">Usually <code translate="no">id</code></td></tr>
+<tr><td style="text-align:center">train emb name</td><td style="text-align:center">Training data vector column name</td><td style="text-align:center">If script-generated column name is <code translate="no">emb</code>, fill <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">test emb name</td><td style="text-align:center">Test data vector column name</td><td style="text-align:center">Usually same as train emb name, e.g., <code translate="no">emb</code></td></tr>
+<tr><td style="text-align:center">ground truth emb name</td><td style="text-align:center">Nearest neighbor column name in Ground Truth</td><td style="text-align:center">If column name is <code translate="no">neighbors_id</code>, fill <code translate="no">neighbors_id</code></td></tr>
+<tr><td style="text-align:center">scalar labels file name</td><td style="text-align:center">(Optional) Label filename (without .parquet extension)</td><td style="text-align:center">If <code translate="no">scalar_labels.parquet</code> was generated, fill <code translate="no">scalar_labels</code>, otherwise leave empty</td></tr>
+<tr><td style="text-align:center">label percentages</td><td style="text-align:center">(Optional) Label filter ratio</td><td style="text-align:center">e.g., <code translate="no">0.001</code>,<code translate="no">0.02</code>,<code translate="no">0.5</code>, leave empty if no label filtering needed</td></tr>
+<tr><td style="text-align:center">description</td><td style="text-align:center">Dataset description</td><td style="text-align:center">Cannot note business context or generation method</td></tr>
 </tbody>
 </table>
-<p>設定を保存して、テストのセットアップを続行します。</p>
-<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">テストの実行とデータベース構成</h3><p>テスト設定インターフェイスにアクセスします：</p>
+<p>Save the configuration to proceed with the test setup.</p>
+<h3 id="Test-Execution-and-Database-Configuration" class="common-anchor-header">Test Execution and Database Configuration</h3><p>Access the test configuration interface:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/7_3ecdcb1034.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>データベースの選択と構成（例として milvus）：</strong>
+<p><strong>Database Selection and Configuration (Milvus as an Example):</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/8_356a2d8c39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>データセットの割り当て</strong>
+<p><strong>Dataset Assignment:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/9_dataset_assignment_85ba7b24ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>メタデータとラベリングのテスト：</strong>
+<p><strong>Test Metadata and Labeling:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/10_test_metadata_and_labeling_293f6f2b99.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>テストの実行</strong>
+<p><strong>Test Execution:</strong> 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/11_test_execution_76acb42c98.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">結果分析とパフォーマンス評価<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
+<h2 id="Results-Analysis-and-Performance-Evaluation" class="common-anchor-header">Results Analysis and Performance Evaluation<button data-href="#Results-Analysis-and-Performance-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -334,22 +337,22 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>結果インターフェースは、包括的なパフォーマンス分析を提供します：</p>
+    </button></h2><p>The results interface provides comprehensive performance analytics:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/12_993c536c20.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Test-Configuration-Summary" class="common-anchor-header">テスト構成の概要</h3><p>評価では、同時実行レベル1、5、10（利用可能なハードウェアリソースによる制約）、ベクトル次元768、データセットサイズ3,000トレーニングベクトル、3,000テストクエリをテストし、このテスト実行ではスカラーラベルフィルタリングを無効にした。</p>
-<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">実装上の重要な考慮事項</h3><ul>
-<li><p><strong>次元の整合性：</strong>トレーニング・データセットとテスト・データセット間のベクトル次元の不一致は、即座にテスト失敗の原因となる。ランタイムエラーを避けるため、データ準備時に次元の整合を検証する。</p></li>
-<li><p><strong>グランド・トゥルースの精度：</strong>グランド・トゥルースの計算が正しくないと、再現率の測定が無効になります。提供される変換スクリプトは、正確な最近傍計算のためにL2距離を持つFAISSを使用し、正確な参照結果を保証します。</p></li>
-<li><p><strong>データセット規模の要件：</strong>小さなデータセット（10,000ベクトル以下）では、負荷生成が不十分なため、一貫性のないQPS測定が行われることがあります。より信頼性の高いスループット・テストを行うには、データセット・サイズの拡張を検討してください。</p></li>
-<li><p><strong>リソース割り当て：</strong>DockerコンテナのメモリとCPUの制約により、テスト中にデータベースのパフォーマンスが人為的に制限されることがあります。リソースの利用状況を監視し、必要に応じてコンテナの制限を調整することで、正確なパフォーマンス計測が可能になります。</p></li>
-<li><p><strong>エラーモニタリング：</strong> <strong>VDBBenchは</strong>ウェブインタフェースには表示されないエラーをコンソール出力に記録することがあります。テスト実行中のターミナルログを監視し、完全な診断情報を得ることができます。</p></li>
+<h3 id="Test-Configuration-Summary" class="common-anchor-header">Test Configuration Summary</h3><p>The evaluation tested concurrency levels of 1, 5, and 10 concurrent operations (constrained by available hardware resources), vector dimensions of 768, dataset size of 3,000 training vectors and 3,000 test queries, with scalar label filtering disabled for this test run.</p>
+<h3 id="Critical-Implementation-Considerations" class="common-anchor-header">Critical Implementation Considerations</h3><ul>
+<li><p><strong>Dimensional Consistency:</strong> Vector dimension mismatches between training and test datasets will cause immediate test failures. Verify dimensional alignment during data preparation to avoid runtime errors.</p></li>
+<li><p><strong>Ground Truth Accuracy:</strong> Incorrect ground truth calculations invalidate recall rate measurements. The provided conversion script uses FAISS with L2 distance for exact nearest neighbor computation, ensuring accurate reference results.</p></li>
+<li><p><strong>Dataset Scale Requirements:</strong> Small datasets (below 10,000 vectors) may produce inconsistent QPS measurements due to insufficient load generation. Consider scaling the dataset size for more reliable throughput testing.</p></li>
+<li><p><strong>Resource Allocation:</strong> Docker container memory and CPU constraints can artificially limit database performance during testing. Monitor resource utilization and adjust container limits as needed for accurate performance measurement.</p></li>
+<li><p><strong>Error Monitoring:</strong> <strong>VDBBench</strong> may log errors to console output that don’t appear in the web interface. Monitor terminal logs during test execution for complete diagnostic information.</p></li>
 </ul>
-<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">補足ツールテストデータ生成<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
+<h2 id="Supplemental-Tools-Test-Data-Generation" class="common-anchor-header">Supplemental Tools: Test Data Generation<button data-href="#Supplemental-Tools-Test-Data-Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -364,7 +367,7 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>開発および標準化されたテストシナリオのために、制御された特性を持つ合成データセットを生成することができます：</p>
+    </button></h2><p>For development and standardized testing scenarios, you can generate synthetic datasets with controlled characteristics:</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_csv</span>(<span class="hljs-params">num_records: <span class="hljs-built_in">int</span>, dim: <span class="hljs-built_in">int</span>, filename: <span class="hljs-built_in">str</span></span>):
@@ -386,8 +389,8 @@ name
     generate_csv(num_records, dim, <span class="hljs-string">&quot;train.csv&quot;</span>)
     generate_csv(num_records, dim, <span class="hljs-string">&quot;test.csv&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>このユーティリティは、プロトタイピングおよびベースライン テスト シナリオ用に、指定された寸法とレコード数を持つデータセットを生成します。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This utility generates datasets with specified dimensions and record counts for prototyping and baseline testing scenarios.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -402,12 +405,12 @@ name
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ベクターデータベースの決定を惑わす "ベンチマーク劇場 "から解放される方法を学びました。VDBBenchとあなた自身のデータセットがあれば、プロダクショングレードのQPS、レイテンシ、リコールメトリックスを生成することができます。</p>
-<p>実際のワークロードとは全く関係のない定型のベンチマークに頼る必要はありません。数週間ではなくわずか数時間で、<em>お客様の</em>ベクトル、クエリ、<em>制約を</em>使用してデータベースがどのように動作するかを正確に確認できます。つまり、自信を持って決断を下し、後で手間のかかる書き換えを回避し、本番で実際に動作するシステムを出荷することができるのです。</p>
+    </button></h2><p>You’ve just learned how to break free from the “benchmark theater” that’s misled countless vector database decisions. With VDBBench and your own dataset, you can generate production-grade QPS, latency, and recall metrics—no more guesswork from decades-old academic data.</p>
+<p>Stop relying on canned benchmarks that have nothing to do with your real workloads. In just hours—not weeks—you’ll see precisely how a database performs with <em>your</em> vectors, <em>your</em> queries, and <em>your</em> constraints. That means you can make the call with confidence, avoid painful rewrites later, and ship systems that actually work in production.</p>
 <ul>
-<li><p>あなたのワークロードでVDBBenchをお試し<a href="https://github.com/zilliztech/VectorDBBench">ください: https://github.com/zilliztech/VectorDBBench</a></p></li>
-<li><p>主要なベクトルデータベースのテスト結果を見る：<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
+<li><p>Try VDBBench with your workloads: <a href="https://github.com/zilliztech/VectorDBBench">https://github.com/zilliztech/VectorDBBench</a></p></li>
+<li><p>View testing results of major vector databases: <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch&amp;__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1755165753372.1755169827021.775&amp;__hssc=175614333.3.1755169827021&amp;__hsfp=1940526538">VDBBench Leaderboard</a></p></li>
 </ul>
-<p>ご質問や結果を共有したいですか？<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a>で会話に参加するか、<a href="https://discord.com/invite/FG6hMJStWu">Discord</a> で私たちのコミュニティに接続してください。</p>
+<p>Have questions or want to share your results? Join the conversation on<a href="https://github.com/zilliztech/VectorDBBench"> GitHub</a> or connect with our community on <a href="https://discord.com/invite/FG6hMJStWu">Discord</a>.</p>
 <hr>
-<p><em>これは、VectorDB POCガイドシリーズの最初の投稿です-実世界のプレッシャーの下でパフォーマンスを発揮するAIインフラストラクチャを構築するための、開発者がテストしたハンズオン手法です。今後もお楽しみに！</em></p>
+<p><em>This is the first post in our VectorDB POC Guide series—hands-on, developer-tested methods for building AI infrastructure that performs under real-world pressure. Stay tuned for more!</em></p>

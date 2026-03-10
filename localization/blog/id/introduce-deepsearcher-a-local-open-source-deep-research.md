@@ -1,13 +1,11 @@
 ---
 id: introduce-deepsearcher-a-local-open-source-deep-research.md
-title: >-
-  Memperkenalkan DeepSearcher: Sebuah Penelitian Sumber Terbuka Lokal untuk
-  Penelitian Mendalam
+title: 'Introducing DeepSearcher: A Local Open Source Deep Research'
 author: Stefan Webb
 date: 2025-02-21T00:00:00.000Z
 desc: >-
-  Berbeda dengan Deep Research milik OpenAI, contoh ini berjalan secara lokal,
-  hanya menggunakan model dan alat sumber terbuka seperti Milvus dan LangChain.
+  In contrast to OpenAI’s Deep Research, this example ran locally, using only
+  open-source models and tools like Milvus and LangChain.
 cover: >-
   assets.zilliz.com/Introducing_Deep_Searcher_A_Local_Open_Source_Deep_Research_4d00da5b85.png
 tag: Announcements
@@ -17,19 +15,23 @@ canonicalUrl: >-
   https://zilliz.com/blog/introduce-deepsearcher-a-local-open-source-deep-research
 ---
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="DeepSearcher" class="doc-image" id="deepsearcher" />
-   </span> <span class="img-wrapper"> <span>DeepSearcher</span> </span></p>
-<p>Pada artikel sebelumnya, <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>"Saya Membangun Penelitian Mendalam dengan Open Source-dan Anda pun bisa!",</em></a> kami menjelaskan beberapa prinsip yang mendasari agen penelitian dan membuat prototipe sederhana yang menghasilkan laporan terperinci tentang topik atau pertanyaan tertentu. Artikel dan buku catatan yang sesuai menunjukkan konsep dasar <em>penggunaan alat</em>, <em>dekomposisi pertanyaan</em>, <em>penalaran</em>, dan <em>refleksi</em>. Contoh dalam artikel kami sebelumnya, berbeda dengan Deep Research milik OpenAI, berjalan secara lokal, hanya menggunakan model dan alat sumber terbuka seperti <a href="https://milvus.io/docs">Milvus</a> dan LangChain. (Saya menyarankan Anda untuk membaca <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">artikel di atas</a> sebelum melanjutkan).</p>
-<p>Pada minggu-minggu berikutnya, terjadi ledakan minat untuk memahami dan mereproduksi Deep Research OpenAI. Lihat, misalnya, <a href="https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research">Perplexity Deep Research</a> dan <a href="https://huggingface.co/blog/open-deep-research">Open DeepResearch milik Hugging Face.</a> Alat-alat ini berbeda dalam arsitektur dan metodologi meskipun memiliki tujuan yang sama: secara berulang-ulang meneliti topik atau pertanyaan dengan menjelajahi web atau dokumen internal dan menghasilkan laporan yang terperinci, terinformasi, dan terstruktur dengan baik. Yang penting, agen yang mendasari mengotomatiskan penalaran tentang tindakan apa yang harus diambil pada setiap langkah peralihan.</p>
-<p>Dalam tulisan ini, kami mengembangkan tulisan kami sebelumnya dan menyajikan proyek sumber terbuka <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> dari Zilliz. Agen kami mendemonstrasikan konsep tambahan: <em>perutean kueri, aliran eksekusi bersyarat</em>, dan perayapan <em>web sebagai alat</em>. Alat ini disajikan sebagai pustaka Python dan alat baris perintah daripada buku catatan Jupyter dan memiliki fitur yang lebih lengkap daripada tulisan kami sebelumnya. Sebagai contoh, alat ini bisa memasukkan beberapa dokumen sumber dan bisa mengatur model penyematan dan basis data vektor yang digunakan melalui file konfigurasi. Meskipun masih relatif sederhana, DeepSearcher adalah contoh yang bagus dari RAG agentic dan merupakan langkah lebih lanjut menuju aplikasi AI yang canggih.</p>
-<p>Selain itu, kami mengeksplorasi kebutuhan akan layanan inferensi yang lebih cepat dan lebih efisien. Model penalaran memanfaatkan "penskalaan inferensi", yaitu komputasi ekstra, untuk meningkatkan output mereka, dan dikombinasikan dengan fakta bahwa satu laporan mungkin memerlukan ratusan atau ribuan panggilan LLM menghasilkan bandwidth inferensi yang menjadi hambatan utama. Kami menggunakan <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">model penalaran DeepSeek-R1 pada perangkat keras yang dibuat khusus oleh SambaNova</a>, yang dua kali lebih cepat dalam menghasilkan token per detik dibandingkan pesaing terdekat (lihat gambar di bawah).</p>
-<p>SambaNova Cloud juga menyediakan layanan inferensi-sebagai-layanan untuk model open-source lainnya termasuk Llama 3.x, Qwen2.5, dan QwQ. Layanan inferensi berjalan pada chip khusus SambaNova yang disebut unit aliran data yang dapat dikonfigurasi ulang (RDU), yang dirancang khusus untuk inferensi yang efisien pada model AI Generatif, menurunkan biaya dan meningkatkan kecepatan inferensi. <a href="https://sambanova.ai/technology/sn40l-rdu-ai-chip">Cari tahu lebih lanjut di situs web mereka.</a></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/deep_researcher_a0170dadd0.gif" alt="DeepSearcher" class="doc-image" id="deepsearcher" />
+    <span>DeepSearcher</span>
+  </span>
+</p>
+<p>In the previous post, <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><em>“I Built a Deep Research with Open Source—and So Can You!”</em></a>, we explained some of the principles underlying research agents and constructed a simple prototype that generates detailed reports on a given topic or question. The article and corresponding notebook demonstrated the fundamental concepts of <em>tool use</em>, <em>query decomposition</em>, <em>reasoning</em>, and <em>reflection</em>. The example in our previous post, in contrast to OpenAI’s Deep Research, ran locally, using only open-source models and tools like <a href="https://milvus.io/docs">Milvus</a> and LangChain. (I encourage you to read the <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md">above article</a> before continuing.)</p>
+<p>In the following weeks, there was an explosion of interest in understanding and reproducing OpenAI’s Deep Research. See, for example, <a href="https://www.perplexity.ai/hub/blog/introducing-perplexity-deep-research">Perplexity Deep Research</a> and <a href="https://huggingface.co/blog/open-deep-research">Hugging Face’s Open DeepResearch</a>. These tools differ in architecture and methodology although sharing an objective: iteratively research a topic or question by surfing the web or internal documents and output a detailed, informed, and well-structured report. Importantly, the underlying agent automates reasoning about what action to take at each intermediate step.</p>
+<p>In this post, we build upon our previous post and present Zilliz’s <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> open-source project. Our agent demonstrates additional concepts: <em>query routing, conditional execution flow</em>, and <em>web crawling as a tool</em>. It is presented as a Python library and command-line tool rather than a Jupyter notebook and is more fully-featured than our previous post. For example, it can input multiple source documents and can set the embedding model and vector database used via a configuration file. While still relatively simple, DeepSearcher is a great showcase of agentic RAG and is a further step towards a state-of-the-art AI applications.</p>
+<p>Additionally, we explore the need for faster and more efficient inference services. Reasoning models make use of “inference scaling”, that is, extra computation, to improve their output, and that combined with the fact that a single report may require hundreds or thousands of LLM calls results in inference bandwidth being the primary bottleneck. We use the <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">DeepSeek-R1 reasoning model on SambaNova’s custom-built hardware</a>, which is twice as fast in output tokens-per-second as the nearest competitor (see figure below).</p>
+<p>SambaNova Cloud also provides inference-as-a-service for other open-source models including Llama 3.x, Qwen2.5, and QwQ. The inference service runs on SambaNova’s custom chip called the reconfigurable dataflow unit (RDU), which is specially designed for efficient inference on Generative AI models, lowering cost and increasing inference speed. <a href="https://sambanova.ai/technology/sn40l-rdu-ai-chip">Find out more on their website.</a></p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output Speed- DeepSeek R1" class="doc-image" id="output-speed--deepseek-r1" />
-   </span> <span class="img-wrapper"> <span>Kecepatan Keluaran- DeepSeek R1</span> </span></p>
-<h2 id="DeepSearcher-Architecture" class="common-anchor-header">Arsitektur DeepSearcher<button data-href="#DeepSearcher-Architecture" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/Output_speed_deepseek_r1_d820329f0a.png" alt="Output Speed- DeepSeek R1" class="doc-image" id="output-speed--deepseek-r1" />
+    <span>Output Speed- DeepSeek R1</span>
+  </span>
+</p>
+<h2 id="DeepSearcher-Architecture" class="common-anchor-header">DeepSearcher Architecture<button data-href="#DeepSearcher-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,21 +46,23 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Arsitektur <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> mengikuti posting kami sebelumnya dengan memecah masalah menjadi empat langkah - <em>mendefinisikan / menyempurnakan pertanyaan</em>, <em>meneliti</em>, <em>menganalisis</em>, <em>mensintesis</em> - meskipun kali ini dengan beberapa tumpang tindih. Kami membahas setiap langkah, menyoroti peningkatan <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>.</p>
+    </button></h2><p>The architecture of <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a> follows our previous post by breaking the problem up into four steps - <em>define/refine the question</em>, <em>research</em>, <em>analyze</em>, <em>synthesize</em> - although this time with some overlap. We go through each step, highlighting <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>’s improvements.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="DeepSearcher Architecture" class="doc-image" id="deepsearcher-architecture" />
-   </span> <span class="img-wrapper"> <span>Arsitektur DeepSearcher</span> </span></p>
-<h3 id="Define-and-Refine-the-Question" class="common-anchor-header">Tentukan dan Sempurnakan Pertanyaan</h3><pre><code translate="no" class="language-txt">Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/deepsearcher_architecture_088c7066d1.png" alt="DeepSearcher Architecture" class="doc-image" id="deepsearcher-architecture" />
+    <span>DeepSearcher Architecture</span>
+  </span>
+</p>
+<h3 id="Define-and-Refine-the-Question" class="common-anchor-header">Define and Refine the Question</h3><pre><code translate="no" class="language-txt">Break down the original query <span class="hljs-keyword">into</span> <span class="hljs-keyword">new</span> sub queries: [
   <span class="hljs-string">&#x27;How has the cultural impact and societal relevance of The Simpsons evolved from its debut to the present?&#x27;</span>,
   <span class="hljs-string">&#x27;What changes in character development, humor, and storytelling styles have occurred across different seasons of The Simpsons?&#x27;</span>, 
   <span class="hljs-string">&#x27;How has the animation style and production technology of The Simpsons changed over time?&#x27;</span>,
   <span class="hljs-string">&#x27;How have audience demographics, reception, and ratings of The Simpsons shifted throughout its run?&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p>Dalam desain DeepSearcher, batasan antara meneliti dan menyaring pertanyaan menjadi kabur. Kueri pengguna awal diuraikan menjadi sub-kueri, sama seperti tulisan sebelumnya. Lihat di atas untuk sub-kueri awal yang dihasilkan dari kueri "Bagaimana The Simpsons berubah dari waktu ke waktu?". Namun, langkah penelitian berikut ini akan terus menyempurnakan pertanyaan sesuai kebutuhan.</p>
-<h3 id="Research-and-Analyze" class="common-anchor-header">Meneliti dan Menganalisis</h3><p>Setelah memecah kueri menjadi sub-kueri, bagian penelitian agen dimulai. Secara garis besar, ada empat langkah: <em>perutean</em>, <em>pencarian</em>, <em>refleksi, dan pengulangan bersyarat</em>.</p>
-<h4 id="Routing" class="common-anchor-header">Perutean</h4><p>Basis data kita berisi banyak tabel atau koleksi dari berbagai sumber. Akan lebih efisien jika kita dapat membatasi pencarian semantik kita hanya pada sumber-sumber yang relevan dengan kueri yang ada. Perute kueri meminta LLM untuk memutuskan dari koleksi mana informasi harus diambil.</p>
-<p>Berikut ini adalah metode untuk membentuk permintaan perutean kueri:</p>
+<p>In the design of DeepSearcher, the boundaries between researching and refining the question are blurred. The initial user query is decomposed into sub-queries, much like the previous post. See above for initial subqueries produced from the query “How has The Simpsons changed over time?”. However, the following research step will continue to refine the question as needed.</p>
+<h3 id="Research-and-Analyze" class="common-anchor-header">Research and Analyze</h3><p>Having broken down the query into sub-queries, the research portion of the agent begins. It has, roughly speaking, four steps: <em>routing</em>, <em>search</em>, <em>reflection, and conditional repeat</em>.</p>
+<h4 id="Routing" class="common-anchor-header">Routing</h4><p>Our database contains multiple tables or collections from different sources. It would be more efficient if we could restrict our semantic search to only those sources that are relevant to the query at hand. A query router prompts an LLM to decide from which collections information should be retrieved.</p>
+<p>Here is the method to form the query routing prompt:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_vector_db_search_prompt</span>(<span class="hljs-params">
     question: <span class="hljs-built_in">str</span>,
     collection_names: <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>],
@@ -108,10 +112,10 @@ Critical Requirements:
     sections.append(footer)
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n\n&quot;</span>.join(sections)
 <button class="copy-code-btn"></button></code></pre>
-<p>Kami membuat LLM mengembalikan keluaran terstruktur sebagai JSON agar dapat dengan mudah mengubah keluarannya menjadi keputusan tentang apa yang harus dilakukan selanjutnya.</p>
-<h4 id="Search" class="common-anchor-header">Pencarian</h4><p>Setelah memilih berbagai koleksi basis data melalui langkah sebelumnya, langkah pencarian melakukan pencarian kemiripan dengan <a href="https://milvus.io/docs">Milvus</a>. Sama seperti langkah sebelumnya, sumber data telah ditentukan sebelumnya, dipotong-potong, disematkan, dan disimpan dalam basis data vektor. Untuk DeepSearcher, sumber data, baik lokal maupun online, harus ditentukan secara manual. Kami meninggalkan pencarian online untuk pekerjaan di masa depan.</p>
-<h4 id="Reflection" class="common-anchor-header">Refleksi</h4><p>Tidak seperti tulisan sebelumnya, DeepSearcher menggambarkan bentuk refleksi agenik yang sebenarnya, dengan memasukkan output sebelumnya sebagai konteks ke dalam prompt yang "merefleksikan" apakah pertanyaan yang diajukan sejauh ini dan potongan-potongan yang diambil yang relevan mengandung kesenjangan informasi. Hal ini dapat dilihat sebagai langkah analisis.</p>
-<p>Berikut ini adalah metode untuk membuat prompt:</p>
+<p>We make the LLM return structured output as JSON in order to easily convert its output to a decision on what to do next.</p>
+<h4 id="Search" class="common-anchor-header">Search</h4><p>Having selected various database collections via the previous step, the search step performs a similarity search with <a href="https://milvus.io/docs">Milvus</a>. Much like the previous post, the source data has been specified in advance, chunked, embedded, and stored in the vector database. For DeepSearcher, the data sources, both local and online, must be manually specified. We leave online search for future work.</p>
+<h4 id="Reflection" class="common-anchor-header">Reflection</h4><p>Unlike the previous post, DeepSearcher illustrates a true form of agentic reflection, inputting the prior outputs as context into a prompt that “reflects” on whether the questions asked so far and the relevant retrieved chunks contain any informational gaps. This can be seen as an analysis step.</p>
+<p>Here is the method to create the prompt:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_reflect_prompt</span>(<span class="hljs-params">
    question: <span class="hljs-built_in">str</span>,
    mini_questions: <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>],
@@ -134,15 +138,15 @@ If the original query is to write a report, then you prefer to generate some fur
     footer = <span class="hljs-string">&quot;&quot;&quot;Respond exclusively in valid List of str format without any other text.&quot;&quot;&quot;</span>
     <span class="hljs-keyword">return</span> reflect_prompt + footer
 <button class="copy-code-btn"></button></code></pre>
-<p>Sekali lagi, kita membuat LLM mengembalikan output terstruktur, kali ini sebagai data yang dapat diinterpretasikan dengan Python.</p>
-<p>Berikut ini adalah contoh sub-kueri baru yang "ditemukan" oleh refleksi setelah menjawab sub-kueri awal di atas:</p>
+<p>Once more, we make the LLM return structured output, this time as Python-interpretable data.</p>
+<p>Here is an example of new sub-queries “discovered” by reflection after answering the initial sub-queries above:</p>
 <pre><code translate="no">New search queries <span class="hljs-keyword">for</span> <span class="hljs-built_in">next</span> iteration: [
   <span class="hljs-string">&quot;How have changes in The Simpsons&#x27; voice cast and production team influenced the show&#x27;s evolution over different seasons?&quot;</span>,
   <span class="hljs-string">&quot;What role has The Simpsons&#x27; satire and social commentary played in its adaptation to contemporary issues across decades?&quot;</span>,
   <span class="hljs-string">&#x27;How has The Simpsons addressed and incorporated shifts in media consumption, such as streaming services, into its distribution and content strategies?&#x27;</span>]
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Conditional-Repeat" class="common-anchor-header">Pengulangan Bersyarat</h4><p>Tidak seperti posting kami sebelumnya, DeepSearcher mengilustrasikan alur eksekusi bersyarat. Setelah merefleksikan apakah pertanyaan dan jawaban sejauh ini sudah lengkap, jika ada pertanyaan tambahan yang ingin ditanyakan, agen akan mengulangi langkah-langkah di atas. Yang penting, alur eksekusi (perulangan sementara) merupakan fungsi dari keluaran LLM dan bukan merupakan kode keras. Dalam hal ini hanya ada pilihan biner: <em>mengulangi penelitian</em> atau <em>menghasilkan laporan.</em> Pada agen yang lebih kompleks, mungkin ada beberapa pilihan seperti: <em>mengikuti hyperlink</em>, <em>mengambil potongan, menyimpan dalam memori, merefleksikan</em>, dll. Dengan cara ini, pertanyaan terus disempurnakan sesuai keinginan agen hingga memutuskan untuk keluar dari perulangan dan menghasilkan laporan. Dalam contoh Simpsons kami, DeepSearcher melakukan dua putaran lagi untuk mengisi kekosongan dengan sub-kueri tambahan.</p>
-<h3 id="Synthesize" class="common-anchor-header">Mensintesis</h3><p>Akhirnya, pertanyaan yang telah terurai sepenuhnya dan potongan yang diambil disintesis menjadi laporan dengan satu prompt. Berikut ini adalah kode untuk membuat prompt:</p>
+<h4 id="Conditional-Repeat" class="common-anchor-header">Conditional Repeat</h4><p>Unlike our previous post, DeepSearcher illustrates conditional execution flow. After reflecting on whether the questions and answers so far are complete, if there are additional questions to be asked the agent repeats the above steps. Importantly, the execution flow (a while loop) is a function of the LLM output rather than being hard-coded. In this case there is only a binary choice: <em>repeat research</em> or <em>generate a report</em>. In more complex agents there may be several such as: <em>follow hyperlink</em>, <em>retrieve chunks, store in memory, reflect</em> etc. In this way, the question continues to be refined as the agent sees fit until it decides to exit the loop and generate the report. In our Simpsons example, DeepSearcher performs two more rounds of filling the gaps with extra sub-queries.</p>
+<h3 id="Synthesize" class="common-anchor-header">Synthesize</h3><p>Finally, the fully decomposed question and retrieved chunks are synthesized into a report with a single prompt. Here is the code to create the prompt:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_final_answer_prompt</span>(<span class="hljs-params">
    question: <span class="hljs-built_in">str</span>, 
    mini_questions: <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>],
@@ -160,8 +164,8 @@ If the original query is to write a report, then you prefer to generate some fur
     &quot;&quot;&quot;</span>
     <span class="hljs-keyword">return</span> summary_prompt
 <button class="copy-code-btn"></button></code></pre>
-<p>Pendekatan ini memiliki keunggulan dibandingkan prototipe kami, yang menganalisis setiap pertanyaan secara terpisah dan hanya menggabungkan hasilnya, untuk menghasilkan laporan di mana semua bagian konsisten satu sama lain, yaitu tidak mengandung informasi yang berulang atau bertentangan. Sistem yang lebih kompleks dapat menggabungkan aspek-aspek dari keduanya, menggunakan alur eksekusi bersyarat untuk menyusun laporan, meringkas, menulis ulang, merefleksikan dan melakukan pivot, dan seterusnya, yang akan kami tinggalkan untuk pekerjaan di masa depan.</p>
-<h2 id="Results" class="common-anchor-header">Hasil<button data-href="#Results" class="anchor-icon" translate="no">
+<p>This approach has the advantage over our prototype, which analyzed each question separately and simply concatenated the output, of producing a report where all sections are consistent with each other, i.e., containing no repeated or contradictory information. A more complex system could combine aspects of both, using a conditional execution flow to structure the report, summarize, rewrite, reflect and pivot, and so on, which we leave for future work.</p>
+<h2 id="Results" class="common-anchor-header">Results<button data-href="#Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -176,7 +180,7 @@ If the original query is to write a report, then you prefer to generate some fur
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Berikut ini adalah contoh dari laporan yang dihasilkan oleh kueri "Bagaimana The Simpsons berubah dari waktu ke waktu?" dengan DeepSeek-R1 yang menggunakan halaman Wikipedia tentang The Simpsons sebagai materi sumber:</p>
+    </button></h2><p>Here is a sample from the report generated by the query “How has The Simpsons changed over time?” with DeepSeek-R1 passing the Wikipedia page on The Simpsons as source material:</p>
 <pre><code translate="no" class="language-txt"><span class="hljs-title class_">Report</span>: <span class="hljs-title class_">The</span> <span class="hljs-title class_">Evolution</span> <span class="hljs-keyword">of</span> <span class="hljs-title class_">The</span> <span class="hljs-title class_">Simpsons</span> (<span class="hljs-number">1989</span>–<span class="hljs-title class_">Present</span>)
 <span class="hljs-number">1.</span> <span class="hljs-title class_">Cultural</span> <span class="hljs-title class_">Impact</span> and <span class="hljs-title class_">Societal</span> <span class="hljs-title class_">Relevance</span>
 <span class="hljs-title class_">The</span> <span class="hljs-title class_">Simpsons</span> debuted <span class="hljs-keyword">as</span> a subversive critique <span class="hljs-keyword">of</span> <span class="hljs-title class_">American</span> middle-<span class="hljs-keyword">class</span> <span class="hljs-title class_">life</span>, gaining notoriety <span class="hljs-keyword">for</span> its bold satire <span class="hljs-keyword">in</span> the 1990s. <span class="hljs-title class_">Initially</span> a countercultural phenomenon, it challenged norms <span class="hljs-keyword">with</span> episodes tackling religion, politics, and consumerism. <span class="hljs-title class_">Over</span> time, its cultural dominance waned <span class="hljs-keyword">as</span> competitors like <span class="hljs-title class_">South</span> <span class="hljs-title class_">Park</span> and <span class="hljs-title class_">Family</span> <span class="hljs-title class_">Guy</span> pushed boundaries further. <span class="hljs-title class_">By</span> the 2010s, the show transitioned <span class="hljs-keyword">from</span> trendsetter to nostalgic institution, balancing legacy appeal <span class="hljs-keyword">with</span> attempts to address modern issues like climate change and <span class="hljs-variable constant_">LGBTQ</span>+ rights, albeit <span class="hljs-keyword">with</span> less societal resonance.
@@ -184,8 +188,8 @@ If the original query is to write a report, then you prefer to generate some fur
 <span class="hljs-title class_">Conclusion</span>
 <span class="hljs-title class_">The</span> <span class="hljs-title class_">Simpsons</span> evolved <span class="hljs-keyword">from</span> a radical satire to a television institution, navigating shifts <span class="hljs-keyword">in</span> technology, politics, and audience expectations. <span class="hljs-title class_">While</span> its golden-age brilliance remains unmatched, its adaptability—through streaming, updated humor, and <span class="hljs-variable language_">global</span> outreach—secures its place <span class="hljs-keyword">as</span> a cultural touchstone. <span class="hljs-title class_">The</span> show’s longevity reflects both nostalgia and a pragmatic embrace <span class="hljs-keyword">of</span> change, even <span class="hljs-keyword">as</span> it grapples <span class="hljs-keyword">with</span> the challenges <span class="hljs-keyword">of</span> relevance <span class="hljs-keyword">in</span> a fragmented media landscape.
 <button class="copy-code-btn"></button></code></pre>
-<p>Temukan <a href="https://drive.google.com/file/d/1GE3rvxFFTKqro67ctTkknryUf-ojhduN/view?usp=sharing">laporan lengkapnya di sini</a>, dan <a href="https://drive.google.com/file/d/1EGd16sJDNFnssk9yTd5o9jzbizrY_NS_/view?usp=sharing">laporan yang dihasilkan oleh DeepSearcher dengan GPT-4o mini</a> untuk perbandingan.</p>
-<h2 id="Discussion" class="common-anchor-header">Diskusi<button data-href="#Discussion" class="anchor-icon" translate="no">
+<p>Find <a href="https://drive.google.com/file/d/1GE3rvxFFTKqro67ctTkknryUf-ojhduN/view?usp=sharing">the full report here</a>, and <a href="https://drive.google.com/file/d/1EGd16sJDNFnssk9yTd5o9jzbizrY_NS_/view?usp=sharing">a report produced by DeepSearcher with GPT-4o mini</a> for comparison.</p>
+<h2 id="Discussion" class="common-anchor-header">Discussion<button data-href="#Discussion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -200,10 +204,10 @@ If the original query is to write a report, then you prefer to generate some fur
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Kami mempresentasikan <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>, sebuah agen untuk melakukan penelitian dan menulis laporan. Sistem kami dibangun berdasarkan ide pada artikel kami sebelumnya, dengan menambahkan fitur-fitur seperti aliran eksekusi bersyarat, perutean kueri, dan antarmuka yang lebih baik. Kami beralih dari inferensi lokal dengan model penalaran terkuantisasi 4-bit yang kecil ke layanan inferensi online untuk model DeepSeek-R1 yang sangat besar, yang secara kualitatif meningkatkan laporan keluaran kami. DeepSearcher bekerja dengan sebagian besar layanan inferensi seperti OpenAI, Gemini, DeepSeek dan Grok 3 (segera hadir!).</p>
-<p>Model penalaran, terutama yang digunakan dalam agen penelitian, sangat berat dalam pengambilan kesimpulan, dan kami beruntung dapat menggunakan penawaran tercepat dari DeepSeek-R1 dari SambaNova yang berjalan pada perangkat keras khusus mereka. Untuk kueri demonstrasi kami, kami melakukan enam puluh lima panggilan ke layanan inferensi DeepSeek-R1 SambaNova, memasukkan sekitar 25 ribu token, menghasilkan 22 ribu token, dan menghabiskan biaya $ 0,30. Kami terkesan dengan kecepatan inferensi yang diberikan mengingat model ini berisi 671 miliar parameter dan berukuran 3/4 terabyte. <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">Cari tahu detail selengkapnya di sini!</a></p>
-<p>Kami akan terus mengulangi pekerjaan ini di tulisan-tulisan selanjutnya, memeriksa konsep-konsep agen tambahan dan ruang desain agen penelitian. Sementara itu, kami mengundang semua orang untuk mencoba <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>, membintangi <a href="https://github.com/zilliztech/deep-searcher">kami di GitHub</a>, dan membagikan umpan balik Anda!</p>
-<h2 id="Resources" class="common-anchor-header">Sumber daya<button data-href="#Resources" class="anchor-icon" translate="no">
+    </button></h2><p>We presented <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>, an agent for performing research and writing reports. Our system is built upon the idea in our previous article, adding features like conditional execution flow, query routing, and an improved interface. We switched from local inference with a small 4-bit quantized reasoning model to an online inference service for the massive DeepSeek-R1 model, qualitatively improving our output report. DeepSearcher works with most inference services like OpenAI, Gemini, DeepSeek and Grok 3 (coming soon!).</p>
+<p>Reasoning models, especially as used in research agents, are inference-heavy, and we were fortunate to be able to use the fastest offering of DeepSeek-R1 from SambaNova running on their custom hardware. For our demonstration query, we made sixty-five calls to SambaNova’s DeepSeek-R1 inference service, inputting around 25k tokens, outputting 22k tokens, and costing $0.30. We were impressed with the speed of inference given that the model contains 671-billion parameters and is 3/4 of a terabyte large. <a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency">Find out more details here!</a></p>
+<p>We will continue to iterate on this work in future posts, examining additional agentic concepts and the design space of research agents. In the meanwhile, we invite everyone to try out <a href="https://github.com/zilliztech/deep-searcher">DeepSearcher</a>, <a href="https://github.com/zilliztech/deep-searcher">star us on GitHub</a>, and share your feedback!</p>
+<h2 id="Resources" class="common-anchor-header">Resources<button data-href="#Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -219,10 +223,10 @@ If the original query is to write a report, then you prefer to generate some fur
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://github.com/zilliztech/deep-searcher"><strong>DeepSearcher milik Zilliz</strong></a></p></li>
-<li><p>Bacaan latar belakang: <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><strong><em>"Saya Membangun Penelitian Mendalam dengan Open Source - dan Anda Juga Bisa!"</em></strong></a></p></li>
-<li><p><em>"</em><a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency"><strong>SambaNova Meluncurkan DeepSeek-R1 671B Tercepat dengan Efisiensi Tertinggi</strong></a><em>"</em></p></li>
-<li><p>DeepSearcher: <a href="https://drive.google.com/file/d/1GE3rvxFFTKqro67ctTkknryUf-ojhduN/view?usp=sharing">Laporan DeepSeek-R1 tentang The Simpsons</a></p></li>
-<li><p>DeepSearcher: <a href="https://drive.google.com/file/d/1EGd16sJDNFnssk9yTd5o9jzbizrY_NS_/view?usp=sharing">Laporan mini GPT-4o tentang The Simpsons</a></p></li>
-<li><p><a href="https://milvus.io/docs">Basis Data Vektor Sumber Terbuka Milvus</a></p></li>
+<li><p><a href="https://github.com/zilliztech/deep-searcher"><strong>Zilliz’s DeepSearcher</strong></a></p></li>
+<li><p>Background reading: <a href="https://milvus.io/blog/i-built-a-deep-research-with-open-source-so-can-you.md"><strong><em>“I Built a Deep Research with Open Source—and So Can You!”</em></strong></a></p></li>
+<li><p><em>“</em><a href="https://sambanova.ai/press/fastest-deepseek-r1-671b-with-highest-efficiency"><strong>SambaNova Launches the Fastest DeepSeek-R1 671B with the Highest Efficiency</strong></a><em>”</em></p></li>
+<li><p>DeepSearcher: <a href="https://drive.google.com/file/d/1GE3rvxFFTKqro67ctTkknryUf-ojhduN/view?usp=sharing">DeepSeek-R1 report on The Simpsons</a></p></li>
+<li><p>DeepSearcher: <a href="https://drive.google.com/file/d/1EGd16sJDNFnssk9yTd5o9jzbizrY_NS_/view?usp=sharing">GPT-4o mini report on The Simpsons</a></p></li>
+<li><p><a href="https://milvus.io/docs">Milvus Open-Source Vector Database</a></p></li>
 </ul>

@@ -1,9 +1,9 @@
 ---
 id: >-
   zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
-title: >-
-  قمنا بتدريب نموذج تسليط الضوء الدلالي ثنائي اللغة على نموذج تسليط الضوء
-  الدلالي ثنائي اللغة لإنتاج RAG والبحث بالذكاء الاصطناعي
+title: >
+  We Trained and Open-Sourced a Bilingual Semantic Highlighting Model for
+  Production RAG and AI Search
 author: Cheney Zhang
 date: 2026-01-06T00:00:00.000Z
 cover: assets.zilliz.com/semantic_highlight_cover_f35a98fc58.png
@@ -15,20 +15,21 @@ meta_keywords: 'Semantic Highlighting, RAG, semantic search, Milvus, bilingual m
 meta_title: |
   Open-sourcing a Bilingual Semantic Highlighting Model for Production AI
 desc: >-
-  تعمّق في تسليط الضوء الدلالي، وتعرّف على كيفية بناء نموذج Zilliz ثنائي اللغة
-  وكيفية أدائه عبر المعايير المرجعية لأنظمة RAG باللغتين الإنجليزية والصينية.
+  Dive deep into semantic highlighting, learn how Zilliz’s bilingual model is
+  built, and how it performs across English and Chinese benchmarks for RAG
+  systems.
 origin: >-
   https://milvus.io/blog/zilliz-trained-and-open-sourced-bilingual-semantic-highlighting-model-for-production-ai.md
 ---
-<p>سواء كنت تنشئ بحثًا عن منتج أو خط أنابيب RAG أو وكيل ذكاء اصطناعي، يحتاج المستخدمون في النهاية إلى نفس الشيء: طريقة سريعة لمعرفة سبب ارتباط النتيجة. يساعد <strong>التظليل</strong> من خلال وضع علامة على النص الدقيق الذي يدعم التطابق، بحيث لا يضطر المستخدمون إلى مسح المستند بأكمله.</p>
-<p>لا تزال معظم الأنظمة تعتمد على التظليل القائم على الكلمات الرئيسية. إذا بحث المستخدم عن "أداء iPhone"، فإن النظام يبرز الرموز الدقيقة "iPhone" و"الأداء". ولكن هذا ينهار بمجرد أن يعبّر النص عن نفس الفكرة باستخدام صياغات مختلفة. فوصف مثل "رقاقة A15 Bionic، أكثر من مليون في المعايير، سلس بدون تأخير" يتناول الأداء بوضوح، ومع ذلك لا يتم تمييز أي شيء لأن الكلمات الرئيسية لا تظهر أبدًا.</p>
-<p><strong>التظليل الدلالي</strong> يحل هذه المشكلة. فبدلاً من مطابقة السلاسل الدقيقة، فإنه يحدد الامتدادات النصية التي تتماشى دلالياً مع الاستعلام. بالنسبة لأنظمة RAG، والبحث بالذكاء الاصطناعي، والوكلاء - حيث تعتمد الأهمية على المعنى وليس على الشكل السطحي - ينتج عن ذلك تفسيرات أكثر دقة وموثوقية لسبب استرجاع المستند.</p>
-<p>ومع ذلك، فإن طرق التظليل الدلالي الحالية ليست مصممة لإنتاج أعباء عمل الذكاء الاصطناعي. بعد تقييم جميع الحلول المتاحة، وجدنا أن أياً منها لا يوفر الدقة أو زمن الاستجابة أو التغطية متعددة اللغات أو المتانة المطلوبة لخطوط أنابيب RAG أو أنظمة الوكلاء أو البحث على نطاق واسع على الويب. <strong>لذلك قمنا بتدريب نموذج التظليل الدلالي ثنائي اللغة الخاص بنا - وقمنا بتدريب نموذجنا الخاص بنا - وقمنا بإتاحته.</strong></p>
+<p>Whether you’re building a product search, a RAG pipeline, or an AI agent, users ultimately need the same thing: a fast way to see why a result is relevant. <strong>Highlighting</strong> helps by marking the exact text that supports the match, so users don’t have to scan the entire document.</p>
+<p>Most systems still rely on keyword-based highlighting. If a user searches for “iPhone performance,” the system highlights the exact tokens “iPhone” and “performance.” But this breaks down as soon as the text expresses the same idea using different wording. A description like “A15 Bionic chip, over one million in benchmarks, smooth with no lag” clearly addresses performance, yet nothing is highlighted because the keywords never appear.</p>
+<p><strong>Semantic highlighting</strong> solves this problem. Instead of matching exact strings, it identifies text spans that are semantically aligned with the query. For RAG systems, AI search, and agents—where relevance depends on meaning rather than surface form—this yields more precise, more reliable explanations of why a document was retrieved.</p>
+<p>However, existing semantic highlighting methods aren’t designed for production AI workloads. After evaluating all available solutions, we found that none delivered the precision, latency, multilingual coverage, or robustness required for RAG pipelines, agent systems, or large-scale web search. <strong>So we trained our own bilingual semantic highlighting model—and open-sourced it.</strong></p>
 <ul>
-<li><p>نموذج التمييز الدلالي الخاص بنا: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-highlight-bilingual-v1</a></p></li>
-<li><p>أخبرنا برأيك - انضم إلى موقعنا <a href="https://discord.com/invite/8uyFbECzPX">Discord،</a> أو تابعنا على <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn،</a> أو احجز معنا جلسة <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">ساعات عمل Milvus لمدة 20 دقيقة</a>.</p></li>
+<li><p>Our semantic highlighting model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a></p></li>
+<li><p>Tell us what you think—join our <a href="https://discord.com/invite/8uyFbECzPX">Discord</a>, follow us on <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a>, or book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">20-minute Milvus Office Hours</a> session with us.</p></li>
 </ul>
-<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">كيف يعمل التظليل القائم على الكلمات الرئيسية - ولماذا يفشل في أنظمة الذكاء الاصطناعي الحديثة<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
+<h2 id="How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="common-anchor-header">How Keyword-Based Highlighting Works — and Why It Fails in Modern AI Systems<button data-href="#How-Keyword-Based-Highlighting-Works--and-Why-It-Fails-in-Modern-AI-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,25 +44,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>تقوم أنظمة البحث التقليدية بتنفيذ التظليل من خلال مطابقة الكلمات المفتاحية البسيطة</strong>. عندما يتم إرجاع النتائج، يقوم المحرك بتحديد مواضع الرموز المميزة التي تطابق الاستعلام ويغلفها في ترميز (عادةً <code translate="no">&lt;em&gt;</code> )، تاركًا للواجهة الأمامية عرض التظليل. يعمل هذا بشكل جيد عندما تظهر مصطلحات الاستعلام حرفياً في النص.</p>
-<p>وتكمن المشكلة في أن هذا النموذج يفترض أن الصلة مرتبطة بتداخل الكلمات المفتاحية بالضبط. بمجرد أن ينهار هذا الافتراض، تنخفض الموثوقية بسرعة. فأي نتيجة تعبّر عن الفكرة الصحيحة بصياغة مختلفة ينتهي بها الأمر بدون تمييز على الإطلاق، حتى لو كانت خطوة الاسترجاع صحيحة.</p>
-<p>يصبح هذا الضعف واضحًا في تطبيقات الذكاء الاصطناعي الحديثة. في خطوط أنابيب RAG وسير عمل وكيل الذكاء الاصطناعي، تكون الاستعلامات أكثر تجريدًا، والمستندات أطول، وقد لا يتم إعادة استخدام المعلومات ذات الصلة بنفس الكلمات. لم يعد بإمكان التظليل المستند إلى الكلمات الرئيسية أن يُظهر للمطورين - أو المستخدمين النهائيين - مكان<em>الإجابة بالفعل،</em> مما يجعل النظام الكلي أقل دقة حتى عندما يعمل الاسترجاع على النحو المنشود.</p>
-<p>لنفترض أن المستخدم يسأل: <em>"كيف يمكنني تحسين كفاءة تنفيذ كود بايثون؟</em> يسترجع النظام مستندًا تقنيًا من قاعدة بيانات متجهة. يمكن للتمييز التقليدي وضع علامة على التطابقات الحرفية فقط مثل <em>"بايثون" و</em> <em>"الكود"</em> و <em>"التنفيذ"</em> و <em>"الكفاءة</em>" <em>.</em></p>
-<p>ومع ذلك، قد تكون الأجزاء الأكثر فائدة من المستند:</p>
+    </button></h2><p><strong>Traditional search systems implement highlighting through simple keyword matching</strong>. When results are returned, the engine locates the exact token positions that match the query and wraps them in markup (usually <code translate="no">&lt;em&gt;</code> tags), leaving the frontend to render the highlight. This works fine when the query terms appear verbatim in the text.</p>
+<p>The problem is that this model assumes relevance is tied to exact keyword overlap. Once that assumption breaks, reliability drops fast. Any result that expresses the right idea with different wording ends up with no highlight at all, even if the retrieval step was correct.</p>
+<p>This weakness becomes obvious in modern AI applications. In RAG pipelines and AI agent workflows, queries are more abstract, documents are longer, and relevant information may not reuse the same words. Keyword-based highlighting can no longer show developers—or end users—<em>where the answer actually is</em>, which makes the overall system feel less accurate even when retrieval is working as intended.</p>
+<p>Suppose a user asks: <em>“How can I improve the execution efficiency of Python code?”</em> The system retrieves a technical document from a vector database. Traditional highlighting can only mark literal matches such as <em>“Python”</em>, <em>“code”</em>, <em>“execution”</em>, and <em>“efficiency”</em>.</p>
+<p>However, the most useful parts of the document might be:</p>
 <ul>
-<li><p>استخدام عمليات NumPy المتجهة بدلًا من الحلقات الصريحة</p></li>
-<li><p>تجنب إنشاء كائنات متكررة داخل الحلقات</p></li>
+<li><p>Use NumPy vectorized operations instead of explicit loops</p></li>
+<li><p>Avoid repeatedly creating objects inside loops</p></li>
 </ul>
-<p>تجيب هذه الجمل عن السؤال مباشرة، لكنها لا تحتوي على أي من مصطلحات الاستعلام. ونتيجة لذلك، يفشل التظليل التقليدي تمامًا. قد يكون المستند ذا صلة، ولكن لا يزال يتعين على المستخدم مسحه سطرًا بسطر لتحديد موقع الإجابة الفعلية.</p>
-<p>تصبح المشكلة أكثر وضوحًا مع وكلاء الذكاء الاصطناعي. غالبًا ما لا يكون استعلام البحث الخاص بالوكيل هو السؤال الأصلي للمستخدم، بل هو تعليمات مشتقة تم إنتاجها من خلال التفكير المنطقي وتفكيك المهام. على سبيل المثال، إذا سأل المستخدم، <em>"هل يمكنك تحليل اتجاهات السوق الأخيرة؟"،</em> فقد يقوم الوكيل بإنشاء استعلام مثل "استرجاع بيانات مبيعات الإلكترونيات الاستهلاكية للربع الرابع من عام 2024، ومعدلات النمو السنوية، والتغيرات في الحصة السوقية للمنافسين الرئيسيين، وتقلبات تكلفة سلسلة التوريد".</p>
-<p>يغطي هذا الاستعلام أبعادًا متعددة ويعبّر عن نية معقدة. ومع ذلك، لا يمكن للتمييز التقليدي المستند إلى الكلمات المفتاحية أن يحدد فقط التطابقات الحرفية مثل <em>"2024" أو</em> <em>"بيانات المبيعات"</em> أو <em>"معدل النمو".</em></p>
-<p>وفي الوقت نفسه، قد تبدو الرؤى الأكثر قيمة مثل:</p>
+<p>These sentences directly answer the question, but they contain none of the query terms. As a result, traditional highlighting fails completely. The document may be relevant, but the user still has to scan it line by line to locate the actual answer.</p>
+<p>The problem becomes even more pronounced with AI agents. An agent’s search query is often not the user’s original question, but a derived instruction produced through reasoning and task decomposition. For example, if a user asks, <em>“Can you analyze recent market trends?”</em>, the agent might generate a query like “Retrieve Q4 2024 consumer electronics sales data, year-over-year growth rates, changes in major competitors’ market share, and supply chain cost fluctuations”.</p>
+<p>This query spans multiple dimensions and encodes complex intent. Traditional keyword-based highlighting, however, can only mechanically mark literal matches such as <em>“2024”</em>, <em>“sales data”</em>, or <em>“growth rate”</em>.</p>
+<p>Meanwhile, the most valuable insights may look like:</p>
 <ul>
-<li><p>قادت سلسلة iPhone 15 إلى انتعاش السوق على نطاق أوسع</p></li>
-<li><p>أدت قيود توريد الرقاقات إلى ارتفاع التكاليف بنسبة 15%</p></li>
+<li><p>The iPhone 15 series drove a broader market recovery</p></li>
+<li><p>Chip supply constraints pushed costs up by 15%</p></li>
 </ul>
-<p>قد لا تشترك هذه الاستنتاجات في كلمة رئيسية واحدة مع الاستعلام، على الرغم من أنها بالضبط ما يحاول الوكيل استخلاصه. يحتاج الوكلاء إلى تحديد المعلومات المفيدة حقًا بسرعة من الكميات الكبيرة من المحتوى المسترجع - ولا يقدم التظليل الدلالي القائم على الكلمات المفتاحية أي مساعدة حقيقية.</p>
-<h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">ما هو التظليل الدلالي، ونقاط الضعف في الحلول الحالية<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
+<p>These conclusions may not share a single keyword with the query, even though they are exactly what the agent is trying to extract. Agents need to quickly identify truly useful information from large volumes of retrieved content—and keyword-based highlighting offers no real help.</p>
+<h2 id="What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="common-anchor-header">What Is Semantic Highlighting, and Pain Points in Today’s Solutions<button data-href="#What-Is-Semantic-Highlighting-and-Pain-Points-in-Today’s-Solutions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,53 +77,53 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>يعتمد التظليل الدلالي على نفس الفكرة الكامنة وراء البحث الدلالي: المطابقة على أساس المعنى بدلاً من الكلمات الدقيقة</strong>. في البحث الدلالي، تقوم نماذج التضمين في البحث الدلالي بتحويل النص إلى متجهات بحيث <a href="https://milvus.io/">يمكن</a>لنظام البحث - المدعوم عادةً بقاعدة بيانات متجهة مثل <a href="https://milvus.io/">ميلفوس -</a>استرداد المقاطع التي تنقل نفس الفكرة التي ينقلها الاستعلام، حتى لو كانت الصياغة مختلفة. يطبّق التظليل الدلالي هذا المبدأ على مستوى أدق. فبدلاً من وضع علامات على الكلمات المفتاحية الحرفية، فإنه يسلط الضوء على المقاطع المحددة داخل المستند ذات الصلة الدلالية بقصد المستخدم.</p>
+    </button></h2><p><strong>Semantic highlighting builds on the same idea behind semantic search: matching based on meaning rather than exact words</strong>. In semantic search, embedding models map text into vectors so a search system—typically backed by a vector database like <a href="https://milvus.io/">Milvus</a>—can retrieve passages that convey the same idea as the query, even if the wording is different. Semantic highlighting applies this principle at a finer granularity. Instead of marking literal keyword hits, it highlights the specific spans inside a document that are semantically relevant to the user’s intent.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vs_20ec73c4a7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>يحل هذا النهج مشكلة أساسية في التظليل التقليدي، والذي يعمل فقط عندما تظهر مصطلحات الاستعلام حرفياً. فإذا بحث المستخدم عن "أداء iPhone"، يتجاهل التظليل القائم على الكلمات المفتاحية عبارات مثل "شريحة A15 Bionic" أو "أكثر من مليون في المعايير" أو "سلس بدون تأخير"، على الرغم من أن هذه العبارات تجيب بوضوح على السؤال. أما التظليل الدلالي فيلتقط هذه الروابط القائمة على المعنى ويبرز أجزاء النص التي يهتم بها المستخدمون بالفعل.</p>
-<p>من الناحية النظرية، هذه مشكلة مطابقة دلالية مباشرة. تقوم نماذج التضمين الحديثة بالفعل بترميز التشابه بشكل جيد، لذا فإن الأجزاء المفاهيمية موجودة بالفعل. يأتي التحدي من قيود العالم الواقعي: يحدث التظليل في كل استعلام، وغالبًا ما يحدث عبر العديد من المستندات المسترجعة، مما يجعل زمن الاستجابة والإنتاجية والمتانة عبر المجالات متطلبات غير قابلة للتفاوض. النماذج اللغوية الكبيرة هي ببساطة بطيئة جدًا ومكلفة للغاية بحيث لا يمكن تشغيلها في هذا المسار عالي التردد.</p>
-<p>لهذا السبب يتطلب تسليط الضوء الدلالي العملي نموذجًا متخصصًا خفيف الوزن - صغيرًا بما يكفي ليجلس جنبًا إلى جنب مع البنية التحتية للبحث وسريعًا بما يكفي لإرجاع النتائج في بضعة أجزاء من الثانية. هذا هو المكان الذي تتعطل فيه معظم الحلول الحالية. فالنماذج الثقيلة توفر الدقة ولكن لا يمكن تشغيلها على نطاق واسع؛ أما النماذج الأخف وزناً فهي سريعة ولكنها تفقد الدقة أو تفشل في البيانات متعددة اللغات أو البيانات الخاصة بمجال معين.</p>
-<h3 id="opensearch-semantic-highlighter" class="common-anchor-header">Opensearch-semantic-semantic-highlighter</h3><p>
+<p>This approach solves a core problem with traditional highlighting, which only works when the query terms appear verbatim. If a user searches for “iPhone performance,” keyword-based highlighting ignores phrases like “A15 Bionic chip,” “over one million in benchmarks,” or “smooth with no lag,” even though these lines clearly answer the question. Semantic highlighting captures these meaning-driven connections and surfaces the parts of the text users actually care about.</p>
+<p>In theory, this is a straightforward semantic matching problem. Modern embedding models already encode similarity well, so the conceptual pieces are already in place. The challenge comes from real-world constraints: highlighting occurs on every query, often across many retrieved documents, making latency, throughput, and cross-domain robustness non-negotiable requirements. Large language models are simply too slow and too expensive to run in this high-frequency path.</p>
+<p>That is why practical semantic highlighting requires a lightweight, specialized model—small enough to sit alongside search infrastructure and fast enough to return results in a few milliseconds. This is where most existing solutions break down. Heavy models deliver accuracy but cannot run at scale; lighter models are fast but lose precision or fail on multilingual or domain-specific data.</p>
+<h3 id="opensearch-semantic-highlighter" class="common-anchor-header">opensearch-semantic-highlighter</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/opensearch_en_aea06a2114.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>في العام الماضي، أصدرت OpenSearch العام الماضي نموذجًا مخصصًا للتمييز الدلالي: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-hemantic-highlighter-v1</strong></a>. وعلى الرغم من أنها محاولة مفيدة لحل المشكلة، إلا أنها تعاني من قصورين مهمين.</p>
+<p>Last year, OpenSearch released a dedicated model for semantic highlighting: <a href="https://huggingface.co/opensearch-project/opensearch-semantic-highlighter-v1"><strong>opensearch-semantic-highlighter-v1</strong></a>. While it is a meaningful attempt at the problem, it has two critical limitations.</p>
 <ul>
-<li><p><strong>نافذة سياق صغيرة:</strong> يستند النموذج على بنية BERT ويدعم 512 رمزًا كحد أقصى - ما يقرب من 300-400 حرف صيني أو 400-500 كلمة إنجليزية. في سيناريوهات العالم الحقيقي، غالبًا ما تمتد أوصاف المنتجات والمستندات التقنية لآلاف الكلمات. يتم ببساطة اقتطاع المحتوى الذي يتجاوز النافذة الأولى، مما يجبر النموذج على تحديد النقاط البارزة بناءً على جزء صغير فقط من المستند.</p></li>
-<li><p><strong>تعميم ضعيف خارج المجال:</strong> يعمل النموذج بشكل جيد فقط على توزيعات البيانات المشابهة لمجموعة التدريب الخاصة به. عند تطبيقه على بيانات خارج المجال - مثل استخدام نموذج مُدرَّب على مقالات إخبارية لتسليط الضوء على محتوى التجارة الإلكترونية أو الوثائق التقنية - يتدهور الأداء بشكل حاد. في تجاربنا، يحقق النموذج درجة F1 تبلغ حوالي 0.72 على البيانات داخل النطاق، ولكنه ينخفض إلى حوالي 0.46 على مجموعات البيانات خارج النطاق. هذا المستوى من عدم الاستقرار يمثل مشكلة في الإنتاج. بالإضافة إلى ذلك، لا يدعم النموذج اللغة الصينية.</p></li>
+<li><p><strong>Small context window:</strong> The model is based on a BERT architecture and supports a maximum of 512 tokens—roughly 300–400 Chinese characters or 400–500 English words. In real-world scenarios, product descriptions and technical documents often span thousands of words. Content beyond the first window is simply truncated, forcing the model to identify highlights based on only a small fraction of the document.</p></li>
+<li><p><strong>Poor out-of-domain generalization:</strong> The model performs well only on data distributions similar to its training set. When applied to out-of-domain data—such as using a model trained on news articles to highlight e-commerce content or technical documentation—performance degrades sharply. In our experiments, the model achieves an F1 score of around 0.72 on in-domain data, but drops to approximately 0.46 on out-of-domain datasets. This level of instability is problematic in production. In addition, the model does not support Chinese.</p></li>
 </ul>
-<h3 id="Provence--XProvence" class="common-anchor-header">بروفانس/إكس بروفانس</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>بروفانس</strong></a> هو نموذج تم تطويره من قبل <a href="https://zilliz.com/customers/naver">Naver</a> وتم تدريبه في البداية على <strong>تشذيب السياق - وهي</strong>مهمة ترتبط ارتباطًا وثيقًا بالتمييز الدلالي.</p>
-<p>كلتا المهمتين مبنية على نفس الفكرة الأساسية: استخدام المطابقة الدلالية لتحديد المحتوى ذي الصلة وتصفية الأجزاء غير ذات الصلة. لهذا السبب، يمكن إعادة استخدام بروفانس في التظليل الدلالي مع القليل من التكييف نسبيًا.</p>
+<h3 id="Provence--XProvence" class="common-anchor-header">Provence / XProvence</h3><p><a href="https://huggingface.co/naver/provence-reranker-debertav3-v1"><strong>Provence</strong></a> is a model developed by <a href="https://zilliz.com/customers/naver">Naver</a> and was initially trained for <strong>context pruning</strong>—a task that is closely related to semantic highlighting.</p>
+<p>Both tasks are built on the same underlying idea: using semantic matching to identify relevant content and filter out irrelevant parts. For this reason, Provence can be repurposed for semantic highlighting with relatively little adaptation.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/provence_053cd3bccc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>بروفانس هو نموذج باللغة الإنجليزية فقط ويؤدي أداءً جيدًا بشكل معقول في هذا الإعداد. أما <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a> فهو نموذج متعدد اللغات يدعم أكثر من اثنتي عشرة لغة، بما في ذلك الصينية واليابانية والكورية. للوهلة الأولى، هذا يجعل XProvence يبدو للوهلة الأولى مرشحًا جيدًا لسيناريوهات التظليل الدلالي ثنائي اللغة أو متعدد اللغات.</p>
-<p>ومع ذلك، من الناحية العملية، يعاني كل من بروفانس وإكس بروفانس من عدة قيود ملحوظة:</p>
+<p>Provence is an English-only model and performs reasonably well in that setting. <a href="https://huggingface.co/naver/xprovence-reranker-bgem3-v1"><strong>XProvence</strong></a> is its multilingual variant, supporting more than a dozen languages, including Chinese, Japanese, and Korean. At first glance, this makes XProvence appear to be a good candidate for bilingual or multilingual semantic highlighting scenarios.</p>
+<p>In practice, however, both Provence and XProvence have several notable limitations:</p>
 <ul>
-<li><p><strong>ضعف أداء اللغة الإنجليزية في النموذج متعدد اللغات:</strong> لا يتطابق أداء XProvence مع أداء بروفانس في معايير اللغة الإنجليزية. هذه مفاضلة شائعة في النماذج متعددة اللغات: يتم تقاسم السعة بين اللغات، مما يؤدي غالبًا إلى أداء أضعف في اللغات ذات الموارد العالية مثل الإنجليزية. هذا القيد مهم في أنظمة العالم الحقيقي حيث تظل اللغة الإنجليزية عبء العمل الأساسي أو المهيمن.</p></li>
-<li><p><strong>أداء صيني محدود:</strong> يدعم XProvence العديد من اللغات. أثناء التدريب متعدد اللغات، تتوزع البيانات وقدرة النموذج على عدة لغات، مما يحد من مدى قدرة النموذج على التخصص في لغة واحدة. ونتيجةً لذلك، فإن أداءه باللغة الصينية مقبول بشكل هامشي فقط وغالباً ما يكون غير كافٍ لحالات استخدام التمييز عالية الدقة.</p></li>
-<li><p><strong>عدم التطابق بين أهداف التقليم والتمييز:</strong> تم تحسين بروفانس من أجل تشذيب السياق، حيث تكون الأولوية هي التذكّر - الاحتفاظ بأكبر قدر ممكن من المحتوى المفيد المحتمل لتجنب فقدان المعلومات المهمة. على النقيض من ذلك، يركّز التظليل الدلالي على الدقة: تسليط الضوء على الجمل الأكثر صلة فقط، وليس على أجزاء كبيرة من المستند. عندما يتم تطبيق نماذج على غرار بروفانس على التظليل، غالبًا ما يؤدي عدم التطابق هذا إلى إبرازات واسعة أو صاخبة بشكل مفرط.</p></li>
-<li><p><strong>الترخيص المقيد:</strong> تم إصدار كل من بروفانس وإكس بروفانس بموجب ترخيص CC BY-NC 4.0، والذي لا يسمح بالاستخدام التجاري. هذا التقييد وحده يجعلهما غير مناسبين للعديد من عمليات النشر الإنتاج.</p></li>
+<li><p><strong>Weaker English performance in the multilingual model:</strong> XProvence does not match Provence’s performance on English benchmarks. This is a common trade-off in multilingual models: capacity is shared across languages, often leading to weaker performance in high-resource languages such as English. This limitation matters in real-world systems where English remains a primary or dominant workload.</p></li>
+<li><p><strong>Limited Chinese performance:</strong>  XProvence supports many languages. During multilingual training, data and model capacity are spread across languages, which limits how well the model can specialize in any single one. As a result, its Chinese performance is only marginally acceptable and often insufficient for high-precision highlighting use cases.</p></li>
+<li><p><strong>Mismatch between pruning and highlighting objectives:</strong> Provence is optimized for context pruning, where the priority is recall—keeping as much potentially useful content as possible to avoid losing critical information. Semantic highlighting, by contrast, emphasizes precision: highlighting only the most relevant sentences, not large portions of the document. When Provence-style models are applied to highlighting, this mismatch often leads to overly broad or noisy highlights.</p></li>
+<li><p><strong>Restrictive licensing:</strong> Both Provence and XProvence are released under the CC BY-NC 4.0 license, which does not permit commercial use. This restriction alone makes them unsuitable for many production deployments.</p></li>
 </ul>
-<h3 id="Open-Provence" class="common-anchor-header">بروفانس المفتوح</h3><p>
+<h3 id="Open-Provence" class="common-anchor-header">Open Provence</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/openprovence_en_c4f0aa8b65.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><a href="https://github.com/hotchpotch/open_provence"><strong>أوبن بروفانس</strong></a> هو مشروع يقوده المجتمع المحلي ويعيد تنفيذ خط أنابيب تدريب بروفانس بطريقة مفتوحة وشفافة. وهو لا يوفر فقط البرامج النصية للتدريب، بل يوفر أيضًا سير عمل معالجة البيانات، وأدوات التقييم، والنماذج المدربة مسبقًا على مستويات متعددة.</p>
-<p>الميزة الرئيسية لبرنامج Open Provence المفتوح هي <strong>رخصة MIT المتساهلة</strong>. على عكس بروفانس وإكس بروفنس، يمكن استخدامه بأمان في البيئات التجارية دون قيود قانونية، مما يجعله جذابًا للفرق الموجهة للإنتاج.</p>
-<p>ومع ذلك، يدعم Open Provence المفتوح حاليًا <strong>اللغتين الإنجليزية واليابانية</strong> فقط، مما يجعله غير مناسب لحالات الاستخدام ثنائية اللغة لدينا.</p>
-<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">قمنا بتدريب نموذج تسليط الضوء الدلالي ثنائي اللغة وإتاحته للمصادر المفتوحة<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p><a href="https://github.com/hotchpotch/open_provence"><strong>Open Provence</strong></a> is a community-driven project that reimplements the Provence training pipeline in an open and transparent way. It provides not only training scripts, but also data processing workflows, evaluation tools, and pretrained models at multiple scales.</p>
+<p>A key advantage of Open Provence is its <strong>permissive MIT license</strong>. Unlike Provence and XProvence, it can be safely used in commercial environments without legal restrictions, which makes it attractive for production-oriented teams.</p>
+<p>That said, Open Provence currently supports only <strong>English and Japanese</strong>, which makes it unsuitable for our bilingual use cases.</p>
+<h2 id="We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">We Trained and Open-Sourced a Bilingual Semantic Highlighting Model<button data-href="#We-Trained-and-Open-Sourced-a-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -137,40 +138,40 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يجب أن يوفر نموذج التظليل الدلالي المصمم لأعباء العمل في العالم الحقيقي بعض القدرات الأساسية:</p>
+    </button></h2><p>A semantic highlighting model designed for real-world workloads must deliver a few essential capabilities:</p>
 <ul>
-<li><p>أداء قوي متعدد اللغات</p></li>
-<li><p>نافذة سياق كبيرة بما يكفي لدعم المستندات الطويلة</p></li>
-<li><p>تعميم قوي خارج المجال</p></li>
-<li><p>دقة عالية في مهام التظليل الدلالي</p></li>
-<li><p>ترخيص متساهل ومناسب للإنتاج (MIT أو Apache 2.0)</p></li>
+<li><p>Strong multilingual performance</p></li>
+<li><p>A context window large enough to support long documents</p></li>
+<li><p>Robust out-of-domain generalization</p></li>
+<li><p>High precision in semantic highlighting tasks</p></li>
+<li><p>A permissive, production-friendly license (MIT or Apache 2.0)</p></li>
 </ul>
-<p>بعد تقييم الحلول الموجودة، وجدنا أن أياً من النماذج المتاحة لا تفي بالمتطلبات اللازمة للاستخدام في الإنتاج. لذلك قررنا تدريب نموذج التظليل الدلالي الخاص بنا: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-highlight-bilingual-v1</a>.</p>
+<p>After evaluating existing solutions, we found that none of the available models met the requirements needed for production use. So we decided to train our own semantic highlight model: <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">zilliz/semantic-highlight-bilingual-v1</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hugging_face_56eca8f423.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>ولتحقيق كل ذلك، اعتمدنا نهجاً مباشراً: استخدام نماذج لغوية كبيرة لتوليد بيانات موسومة عالية الجودة، ثم تدريب نموذج تمييز دلالي خفيف الوزن فوقها باستخدام أدوات مفتوحة المصدر. يتيح لنا ذلك الجمع بين القوة الاستدلالية لنماذج التمييز الدلالي الكبيرة والكفاءة والكمون المنخفض المطلوبين في أنظمة الإنتاج.</p>
-<p><strong>الجزء الأكثر تحديًا في هذه العملية هو بناء البيانات</strong>. أثناء الشرح، نطلب من LLM (Qwen3 8B) أثناء الشرح، أن يُخرج ليس فقط الامتدادات المميزة ولكن أيضًا المنطق الكامل وراءها. تُنتج إشارة التعليل الإضافية هذه إشرافًا أكثر دقة واتساقًا وتحسّن جودة النموذج الناتج بشكل كبير.</p>
-<p>على مستوى عالٍ، يعمل خط أنابيب الشرح على النحو التالي: <strong>استدلال LLM ← تسميات التمييز ← التسميات المميزة ← التصفية ← عينة التدريب النهائية.</strong></p>
+<p>To achieve all of these, we adopted a straightforward approach: use large language models to generate high-quality labeled data, then train a lightweight semantic highlighting model on top of it using open-source tooling. This lets us combine the reasoning strength of LLMs with the efficiency and low latency required in production systems.</p>
+<p><strong>The most challenging part of this process is data construction</strong>. During annotation, we prompt an LLM (Qwen3 8B) to output not only the highlight spans but also the whole reasoning behind them. This additional reasoning signal produces more accurate, consistent supervision and significantly improves the quality of the resulting model.</p>
+<p>At a high level, the annotation pipeline works as follows: <strong>LLM reasoning → highlight labels → filtering → final training sample.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/pipeline_en_2e917fe1ce.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>يوفر هذا التصميم ثلاث فوائد ملموسة في الممارسة العملية:</p>
+<p>This design delivers three concrete benefits in practice:</p>
 <ul>
-<li><p><strong>جودة تصنيف أعلى</strong>: يُطلب من النموذج <em>التفكير أولاً، ثم الإجابة</em>. تعمل خطوة الاستدلال الوسيطة هذه بمثابة فحص ذاتي مدمج، مما يقلل من احتمالية التسميات السطحية أو غير المتسقة.</p></li>
-<li><p><strong>تحسين قابلية الملاحظة والتصحيح</strong>: نظرًا لأن كل تسمية تكون مصحوبة بتتبع تعليلي، تصبح الأخطاء مرئية. وهذا يجعل من السهل تشخيص حالات الفشل وتعديل المطالبات أو القواعد أو مرشحات البيانات بسرعة في خط الأنابيب.</p></li>
-<li><p><strong>بيانات قابلة لإعادة الاستخدام</strong>: توفر آثار الاستدلال سياقًا قيّمًا لإعادة التسمية في المستقبل. ومع تغير المتطلبات، يمكن إعادة النظر في البيانات نفسها وتنقيحها دون البدء من الصفر.</p></li>
+<li><p><strong>Higher labeling quality</strong>: The model is prompted to <em>think first, then answer</em>. This intermediate reasoning step serves as a built-in self-check, reducing the likelihood of shallow or inconsistent labels.</p></li>
+<li><p><strong>Improved observability and debuggability</strong>: Because each label is accompanied by a reasoning trace, errors become visible. This makes it easier to diagnose failure cases and quickly adjust prompts, rules, or data filters in the pipeline.</p></li>
+<li><p><strong>Reusable data</strong>: Reasoning traces provide valuable context for future re-labeling. As requirements change, the same data can be revisited and refined without starting from scratch.</p></li>
 </ul>
-<p>باستخدام هذا الخط، أنتجنا أكثر من مليون عينة تدريب ثنائية اللغة، مقسمة بالتساوي تقريباً بين اللغتين الإنجليزية والصينية.</p>
-<p>لتدريب النموذج، بدأنا من BGE-M3 Reranker الإصدار 2 (0.6 مليار معلمة ونافذة سياق مكونة من 8192 رمزًا)، واعتمدنا إطار عمل التدريب Open Provence، وقمنا بالتدريب لثلاث مراحل على وحدات معالجة رسومات 8×A100، وأكملنا التدريب في حوالي خمس ساعات.</p>
-<p>سوف نتعمق أكثر في هذه الخيارات التقنية - بما في ذلك سبب اعتمادنا على آثار التفكير، وكيف اخترنا النموذج الأساسي، وكيف تم إنشاء مجموعة البيانات - في منشور لاحق.</p>
-<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">المقارنة المعيارية لنموذج تسليط الضوء الدلالي ثنائي اللغة الخاص بزيليز<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
+<p>Using this pipeline, we generated more than one million bilingual training samples, split roughly evenly between English and Chinese.</p>
+<p>For model training, we started from BGE-M3 Reranker v2 (0.6B parameters, 8,192-token context window), adopted the Open Provence training framework, and trained for three epochs on 8× A100 GPUs, completing training in approximately five hours.</p>
+<p>We will dive deeper into these technical choices—including why we rely on reasoning traces, how we selected the base model, and how the dataset was constructed—in a follow-up post.</p>
+<h2 id="Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="common-anchor-header">Benchmarking Zilliz’s Bilingual Semantic Highlighting Model<button data-href="#Benchmarking-Zilliz’s-Bilingual-Semantic-Highlighting-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -185,93 +186,93 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لتقييم الأداء في العالم الحقيقي، قمنا بتقييم نماذج تسليط الضوء الدلالي المتعددة عبر مجموعة متنوعة من مجموعات البيانات. تغطي المعايير كلاً من السيناريوهات داخل المجال وخارجه، باللغتين الإنجليزية والصينية، لتعكس تنوع المحتوى الذي تتم مواجهته في أنظمة الإنتاج.</p>
-<h3 id="Datasets" class="common-anchor-header">مجموعات البيانات</h3><p>استخدمنا مجموعات البيانات التالية في تقييمنا:</p>
+    </button></h2><p>To assess real-world performance, we evaluated multiple semantic highlighting models across a diverse set of datasets. The benchmarks cover both in-domain and out-of-domain scenarios, in English and Chinese, to reflect the variety of content encountered in production systems.</p>
+<h3 id="Datasets" class="common-anchor-header">Datasets</h3><p>We used the following datasets in our evaluation:</p>
 <ul>
-<li><p><strong>MultiSpanQA (باللغة الإنجليزية)</strong> - مجموعة بيانات للإجابة على الأسئلة متعددة النطاقات داخل النطاق</p></li>
-<li><p><strong>WikiText-2 (بالإنجليزية)</strong> - مجموعة بيانات ويكيبيديا خارج النطاق</p></li>
-<li><p><strong>MultiSpanQA-ZH (صيني)</strong> - مجموعة بيانات صينية متعددة النطاقات للإجابة على الأسئلة</p></li>
-<li><p><strong>WikiText-2-ZH (صيني)</strong> - مجموعة بيانات ويكيبيديا صينية خارج المجال</p></li>
+<li><p><strong>MultiSpanQA (English)</strong> – an in-domain multi-span question answering dataset</p></li>
+<li><p><strong>WikiText-2 (English)</strong> – an out-of-domain Wikipedia corpus</p></li>
+<li><p><strong>MultiSpanQA-ZH (Chinese)</strong> – a Chinese multi-span question answering dataset</p></li>
+<li><p><strong>WikiText-2-ZH (Chinese)</strong> – an out-of-domain Chinese Wikipedia corpus</p></li>
 </ul>
-<h3 id="Models-Compared" class="common-anchor-header">النماذج المقارنة</h3><p>النماذج المدرجة في المقارنة هي:</p>
+<h3 id="Models-Compared" class="common-anchor-header">Models Compared</h3><p>The models included in the comparison are:</p>
 <ul>
-<li><p><strong>نماذج بروفانس المفتوحة</strong></p></li>
-<li><p>بروفانس<strong>/ إكس بروفانس</strong> (صادر عن نافر)</p></li>
-<li><p><strong>أداة التمييز الدلالي OpenSearch Semantic Highlighter</strong></p></li>
-<li><p><strong>نموذج Zilliz للتمييز الدلالي ثنائي اللغة</strong></p></li>
+<li><p><strong>Open Provence models</strong></p></li>
+<li><p><strong>Provence / XProvence</strong> (released by Naver)</p></li>
+<li><p><strong>OpenSearch Semantic Highlighter</strong></p></li>
+<li><p><strong>Zilliz’s bilingual semantic highlighting model</strong></p></li>
 </ul>
-<h3 id="Results-and-Analysis" class="common-anchor-header">النتائج والتحليل</h3><p><strong>مجموعات البيانات الإنجليزية:</strong></p>
+<h3 id="Results-and-Analysis" class="common-anchor-header">Results and Analysis</h3><p><strong>English Datasets:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/en_dataset_fce4cbc747.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>مجموعات البيانات الصينية:</strong></p>
+<p><strong>Chinese Datasets:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zh_dataset_ac7760e0b5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>عبر المعايير ثنائية اللغة، يحقق نموذجنا <strong>متوسط درجات F1 الأكثر تطوراً،</strong> متفوقاً بذلك على جميع النماذج والنهج التي تم تقييمها سابقاً. تتضح المكاسب بشكل خاص في <strong>مجموعات البيانات</strong> الصينية، حيث يتفوق نموذجنا بشكل ملحوظ على XProvence - النموذج الوحيد الآخر الذي تم تقييمه مع دعم اللغة الصينية.</p>
-<p>والأهم من ذلك أن نموذجنا يقدم أداءً متوازنًا في اللغتين الإنجليزية والصينية، وهي خاصية تكافح الحلول الحالية لتحقيقها:</p>
+<p>Across the bilingual benchmarks, our model achieves <strong>state-of-the-art average F1 scores</strong>, outperforming all previously evaluated models and approaches. The gains are especially pronounced on the <strong>Chinese datasets</strong>, where our model significantly outperforms XProvence—the only other evaluated model with Chinese support.</p>
+<p>More importantly, our model delivers balanced performance across both English and Chinese, a property that existing solutions struggle to achieve:</p>
 <ul>
-<li><p>يدعم<strong>Open Provence</strong> اللغة الإنجليزية فقط</p></li>
-<li><p>يضحي<strong>XProvence</strong> بأداء اللغة الإنجليزية مقارنةً بنموذج بروفانس</p></li>
-<li><p>يفتقر<strong>OpenSearch Semantic Highlighter</strong> إلى دعم اللغة الصينية ويُظهر تعميماً ضعيفاً</p></li>
+<li><p><strong>Open Provence</strong> supports English only</p></li>
+<li><p><strong>XProvence</strong> sacrifices English performance compared to Provence</p></li>
+<li><p><strong>OpenSearch Semantic Highlighter</strong> lacks Chinese support and shows weak generalization</p></li>
 </ul>
-<p>ونتيجةً لذلك، يتجنب نموذجنا المفاضلة الشائعة بين التغطية اللغوية والأداء، مما يجعله أكثر ملاءمة لعمليات النشر ثنائية اللغة في العالم الحقيقي.</p>
-<h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">مثال ملموس في الممارسة العملية</h3><p>بالإضافة إلى النتائج القياسية، غالبًا ما يكون فحص مثال ملموس أكثر وضوحًا. تُظهر الحالة التالية كيف يتصرف نموذجنا في سيناريو تسليط الضوء الدلالي الحقيقي وسبب أهمية الدقة.</p>
-<p><strong>استعلام:</strong> من كتب فيلم <em>"قتل غزال مقدس</em>"؟</p>
-<p><strong>السياق (5 جمل):</strong></p>
+<p>As a result, our model avoids the common trade-offs between language coverage and performance, making it better suited for real-world bilingual deployments.</p>
+<h3 id="A-Concrete-Example-in-Practice" class="common-anchor-header">A Concrete Example in Practice</h3><p>Beyond benchmark scores, it is often more revealing to examine a concrete example. The following case shows how our model behaves in a real semantic highlighting scenario and why precision matters.</p>
+<p><strong>Query:</strong> Who wrote the film <em>The Killing of a Sacred Deer</em>?</p>
+<p><strong>Context (5 sentences):</strong></p>
 <ol>
-<li><p><em>فيلم The Killing of a Sacred Deer (قتل غزال مقدس</em> ) هو فيلم إثارة نفسية من إخراج يورغوس لانثيموس عام 2017، وكتب السيناريو لانثيموس وإفثيميس فيليبو.</p></li>
-<li><p>الفيلم من بطولة كولين فاريل ونيكول كيدمان وباري كيوغان ورافي كاسيدي وساني سولجيتش وأليسيا سيلفرستون وبيل كامب.</p></li>
-<li><p>القصة مأخوذة عن المسرحية اليونانية القديمة <em>"إيفيجينيا في أوليس</em> " ليوريبيدس.</p></li>
-<li><p>تدور أحداث الفيلم حول جرّاح قلب يكوّن صداقة سرية مع صبي مراهق مرتبط بماضيه.</p></li>
-<li><p>يقوم بتعريف الصبي على عائلته، وبعد ذلك تبدأ أمراض غامضة في الحدوث.</p></li>
+<li><p><em>The Killing of a Sacred Deer</em> is a 2017 psychological thriller film directed by Yorgos Lanthimos, with the screenplay written by Lanthimos and Efthymis Filippou.</p></li>
+<li><p>The film stars Colin Farrell, Nicole Kidman, Barry Keoghan, Raffey Cassidy, Sunny Suljic, Alicia Silverstone, and Bill Camp.</p></li>
+<li><p>The story is based on the ancient Greek play <em>Iphigenia in Aulis</em> by Euripides.</p></li>
+<li><p>The film follows a cardiac surgeon who forms a secret friendship with a teenage boy connected to his past.</p></li>
+<li><p>He introduces the boy to his family, after which mysterious illnesses begin to occur.</p></li>
 </ol>
-<p><strong>تسليط الضوء الصحيح: الجملة 1</strong> هي الإجابة الصحيحة، لأنها تنص صراحةً على أن السيناريو من تأليف يورغوس لانثيموس وإفثيميس فيليبو.</p>
-<p>يحتوي هذا المثال على فخ خفي. تشير <strong>الجملة 3</strong> إلى يوريبيدس، مؤلف المسرحية اليونانية الأصلية التي استندت إليها القصة بشكل فضفاض. ومع ذلك، فإن السؤال يسأل عمن كتب <em>الفيلم،</em> وليس عن المادة المصدرية القديمة. وبالتالي فإن الإجابة الصحيحة هي كاتب سيناريو الفيلم، وليس كاتب المسرحية منذ آلاف السنين.</p>
-<p><strong>النتائج:</strong></p>
-<p>يلخص الجدول أدناه أداء النماذج المختلفة في هذا المثال.</p>
+<p><strong>Correct highlight: Sentence 1</strong> is the correct answer, as it explicitly states that the screenplay was written by Yorgos Lanthimos and Efthymis Filippou.</p>
+<p>This example contains a subtle trap. <strong>Sentence 3</strong> mentions Euripides, the author of the original Greek play on which the story is loosely based. However, the question asks who wrote the <em>film</em>, not the ancient source material. The correct answer is therefore the screenwriters of the movie, not the playwright from thousands of years ago.</p>
+<p><strong>Results:</strong></p>
+<p>The table below summarizes how different models performed on this example.</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>النموذج</strong></th><th style="text-align:center"><strong>الإجابة الصحيحة التي تم تحديدها</strong></th><th style="text-align:center"><strong>النتيجة</strong></th></tr>
+<tr><th style="text-align:center"><strong>Model</strong></th><th style="text-align:center"><strong>Correct Answer Identified</strong></th><th style="text-align:center"><strong>Outcome</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center"><strong>نموذجنا (M3 ثنائي اللغة)</strong></td><td style="text-align:center">✓</td><td style="text-align:center">الجملة المختارة 1 (صحيحة) والجملة 3</td></tr>
-<tr><td style="text-align:center"><strong>سبروفانس م1</strong></td><td style="text-align:center">✗</td><td style="text-align:center">اخترت الجملة 3 فقط، وأخطأت الإجابة الصحيحة</td></tr>
-<tr><td style="text-align:center"><strong>XProvence v2</strong></td><td style="text-align:center">✗</td><td style="text-align:center">اخترت الجملة 3 فقط، وأخطأت الإجابة الصحيحة</td></tr>
+<tr><td style="text-align:center"><strong>Ours (Bilingual M3)</strong></td><td style="text-align:center">✓</td><td style="text-align:center">Selected sentence 1 (correct) and sentence 3</td></tr>
+<tr><td style="text-align:center"><strong>XProvence v1</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Selected sentence 3 only, missed the correct answer</td></tr>
+<tr><td style="text-align:center"><strong>XProvence v2</strong></td><td style="text-align:center">✗</td><td style="text-align:center">Selected sentence 3 only, missed the correct answer</td></tr>
 </tbody>
 </table>
-<p><strong>مقارنة نقاط مستوى الجملة</strong></p>
+<p><strong>Sentence-Level Score Comparison</strong></p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>الجملة</strong></th><th><strong>لنا (M3 ثنائي اللغة)</strong></th><th style="text-align:center"><strong>XProvence v1</strong></th><th style="text-align:center"><strong>XProvence v2</strong></th></tr>
+<tr><th style="text-align:center"><strong>Sentence</strong></th><th><strong>Ours (Bilingual M3)</strong></th><th style="text-align:center"><strong>XProvence v1</strong></th><th style="text-align:center"><strong>XProvence v2</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">الجملة 1 (سيناريو فيلم، <strong>صحيح</strong>)</td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
-<tr><td style="text-align:center">الجملة 3 (مسرحية أصلية، مشتتة)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
+<tr><td style="text-align:center">Sentence 1 (film screenplay, <strong>correct</strong>)</td><td><strong>0.915</strong></td><td style="text-align:center">0.133</td><td style="text-align:center">0.081</td></tr>
+<tr><td style="text-align:center">Sentence 3 (original play, distractor)</td><td>0.719</td><td style="text-align:center"><strong>0.947</strong></td><td style="text-align:center"><strong>0.802</strong></td></tr>
 </tbody>
 </table>
-<p><strong>حيث يقصر XProvence</strong></p>
+<p><strong>Where XProvence falls short</strong></p>
 <ul>
-<li><p>ينجذب برنامج XProvence بشدة إلى الكلمتين الرئيسيتين <em>"يوريبيدس"</em> و <em>"كتب"، حيث</em> يمنح الجملة 3 درجة شبه كاملة (0.947 و0.802).</p></li>
-<li><p>وفي الوقت نفسه، يتجاهل إلى حد كبير الإجابة الصحيحة في الجملة 1، حيث يعيّن درجات منخفضة للغاية (0.133 و0.081).</p></li>
-<li><p>حتى بعد خفض عتبة القرار من 0.5 إلى 0.2، لا يزال النموذج يفشل في تحديد الإجابة الصحيحة.</p></li>
+<li><p>XProvence is strongly attracted to the keywords <em>“Euripides”</em> and <em>“wrote”</em>, assigning sentence 3 an almost perfect score (0.947 and 0.802).</p></li>
+<li><p>At the same time, it largely ignores the correct answer in sentence 1, assigning extremely low scores (0.133 and 0.081).</p></li>
+<li><p>Even after lowering the decision threshold from 0.5 to 0.2, the model still fails to surface the correct answer.</p></li>
 </ul>
-<p>وبعبارة أخرى، فإن النموذج مدفوع في المقام الأول بارتباطات الكلمات الرئيسية على مستوى السطح بدلاً من القصد الفعلي للسؤال.</p>
-<p><strong>كيف يتصرف نموذجنا بشكل مختلف</strong></p>
+<p>In other words, the model is primarily driven by surface-level keyword associations rather than the question’s actual intent.</p>
+<p><strong>How our model behaves differently</strong></p>
 <ul>
-<li><p>يعيّن نموذجنا درجة عالية (0.915) للإجابة الصحيحة في الجملة 1، حيث يحدد بشكل صحيح <em>كتاب سيناريو الفيلم</em>.</p></li>
-<li><p>كما أنه يخصص درجة معتدلة (0.719) للجملة 3، حيث أن هذه الجملة تذكر مفهومًا متعلقًا بالسيناريو.</p></li>
-<li><p>والأهم من ذلك أن الفصل واضح وذو مغزى: <strong>0.915 مقابل 0.719،</strong> أي فجوة تقارب 0.2.</p></li>
+<li><p>Our model assigns a high score (0.915) to the correct answer in sentence 1, correctly identifying the <em>film’s screenwriters</em>.</p></li>
+<li><p>It also assigns a moderate score (0.719) to sentence 3, since that sentence does mention a screenplay-related concept.</p></li>
+<li><p>Crucially, the separation is clear and meaningful: <strong>0.915 vs. 0.719</strong>, a gap of nearly 0.2.</p></li>
 </ul>
-<p>يسلط هذا المثال الضوء على القوة الأساسية لنهجنا: تجاوز الارتباطات القائمة على الكلمات الرئيسية لتفسير نية المستخدم بشكل صحيح. حتى عندما تظهر مفاهيم "المؤلف" المتعددة، يبرز النموذج باستمرار المفهوم الذي يشير إليه السؤال بالفعل.</p>
-<p>سنشارك تقرير تقييم أكثر تفصيلاً ودراسات حالة إضافية في منشور لاحق.</p>
-<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">جرّبه وأخبرنا برأيك<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
+<p>This example highlights the core strength of our approach: moving beyond keyword-driven associations to correctly interpret user intent. Even when multiple “author” concepts appear, the model consistently highlights the one the question actually refers to.</p>
+<p>We will share a more detailed evaluation report and additional case studies in a follow-up post.</p>
+<h2 id="Try-It-Out-and-Tell-Us-What-You-Think" class="common-anchor-header">Try It Out and Tell Us What You Think<button data-href="#Try-It-Out-and-Tell-Us-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -286,7 +287,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد قمنا بإتاحة نموذج التظليل الدلالي ثنائي اللغة الخاص بنا على موقع <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face،</a> مع إتاحة جميع أوزان النموذج للجمهور حتى تتمكن من البدء في التجربة على الفور. نود أن نسمع كيف يعمل هذا النموذج بالنسبة لك - يرجى مشاركة أي ملاحظات أو مشاكل أو أفكار تحسينية أثناء تجربته.</p>
-<p>بالتوازي مع ذلك، نحن نعمل على خدمة استدلال جاهزة للإنتاج ودمج النموذج مباشرةً في <a href="https://milvus.io/">Milvus</a> كواجهة برمجة تطبيقات تسليط الضوء الدلالي الأصلية. هذا التكامل جارٍ بالفعل وسيكون متاحًا قريبًا.</p>
-<p>يفتح التظليل الدلالي الباب أمام تجربة أكثر سهولة في RAG والذكاء الاصطناعي العميل. عندما يسترجع Milvus العديد من المستندات الطويلة، يمكن للنظام أن يظهر على الفور الجمل الأكثر صلة بالموضوع، مما يوضح مكان الإجابة. لا يؤدي ذلك إلى تحسين تجربة المستخدم النهائي فحسب - بل يساعد المطورين أيضًا على تصحيح أخطاء خطوط أنابيب الاسترجاع من خلال إظهار أجزاء السياق التي يعتمد عليها النظام بالضبط.</p>
-<p>نحن نعتقد أن التظليل الدلالي سيصبح قدرة قياسية في الجيل التالي من أنظمة البحث والاسترجاع. إذا كانت لديك أفكار أو اقتراحات أو حالات استخدام للتمييز الدلالي ثنائي اللغة، انضم إلى <a href="https://discord.com/invite/8uyFbECzPX">قناة Discord</a> الخاصة بنا وشاركنا أفكارك. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات على أسئلتك من خلال <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">ساعات عمل Milvus المكتبية</a>.</p>
+    </button></h2><p>We’ve open-sourced our bilingual semantic highlighting model on <a href="https://huggingface.co/zilliz/semantic-highlight-bilingual-v1">Hugging Face</a>, with all model weights publicly available so you can start experimenting right away. We’d love to hear how it works for you—please share any feedback, issues, or improvement ideas as you try it out.</p>
+<p>In parallel, we’re working on a production-ready inference service and integrating the model directly into <a href="https://milvus.io/">Milvus</a> as a native Semantic Highlighting API. This integration is already underway and will be available soon.</p>
+<p>Semantic highlighting opens the door to a more intuitive RAG and agentic AI experience. When Milvus retrieves several long documents, the system can immediately surface the most relevant sentences, making it clear where the answer is. This doesn’t just improve the end-user experience—it also helps developers debug retrieval pipelines by showing exactly which parts of the context the system relies on.</p>
+<p>We believe semantic highlighting will become a standard capability in next-generation search and RAG systems. If you have ideas, suggestions, or use cases for bilingual semantic highlighting, join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> and share your thoughts. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>

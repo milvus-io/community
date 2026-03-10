@@ -2,20 +2,20 @@
 id: >-
   generate-more-creative-and-curated-ghibli-style-images-with-gpt-4o-and-milvus.md
 title: >-
-  Générer des images plus créatives et plus curatives de type Ghibli avec GPT-4o
-  et Milvus
+  Generating More Creative and Curated Ghibli-Style Images with GPT-4o and
+  Milvus
 author: Lumina Wang
 date: 2025-04-01T00:00:00.000Z
 desc: >-
-  Connecter vos données privées avec GPT-4o Utiliser Milvus pour des sorties
-  d'images plus soignées
+  Connecting Your Private Data with GPT-4o Using Milvus for More Curated Image
+  Outputs
 cover: assets.zilliz.com/GPT_4opagephoto_5e934b89e5.png
 tag: Engineering
 tags: 'GPT-4o, Database, Milvus, Artificial Intelligence, Image Generation'
 canonicalUrl: >-
   https://milvus.io/blog/generate-more-creative-and-curated-ghibli-style-images-with-gpt-4o-and-milvus.md
 ---
-<h2 id="Everyone-Became-an-Artist-Overnight-with-GPT-4o" class="common-anchor-header">Tout le monde est devenu artiste du jour au lendemain grâce à GPT-4o<button data-href="#Everyone-Became-an-Artist-Overnight-with-GPT-4o" class="anchor-icon" translate="no">
+<h2 id="Everyone-Became-an-Artist-Overnight-with-GPT-4o" class="common-anchor-header">Everyone Became an Artist Overnight with GPT-4o<button data-href="#Everyone-Became-an-Artist-Overnight-with-GPT-4o" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,16 +36,16 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><em>Croyez-le ou non, l'image que vous venez de voir a été générée par l'IA, plus précisément par la nouvelle version de GPT-4o !</em></p>
-<p>Lorsque OpenAI a lancé la fonction native de génération d'images de GPT-4o le 26 mars, personne n'aurait pu prédire le tsunami créatif qui s'en est suivi. Du jour au lendemain, l'Internet a explosé avec des portraits de style Ghibli générés par l'IA - des célébrités, des politiciens, des animaux de compagnie et même des utilisateurs eux-mêmes ont été transformés en charmants personnages du Studio Ghibli avec seulement quelques invites simples. La demande était si forte que Sam Altman lui-même a dû "supplier" les utilisateurs de ralentir, en tweetant que les GPU de l'OpenAI "fondaient".</p>
+<p><em>Believe it or not, the picture you just saw was AI-generated—specifically, by the newly released GPT-4o!</em></p>
+<p>When OpenAI launched GPT-4o’s native image generation feature on March 26th, no one could have predicted the creative tsunami that followed. Overnight, the internet exploded with AI-generated Ghibli-style portraits—celebrities, politicians, pets, and even users themselves were transformed into charming Studio Ghibli characters with just a few simple prompts. The demand was so overwhelming that Sam Altman himself had to “plead” with users to slow down, tweeting that the OpenAI’s “GPUs are melting.”</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Ghibli_32e739c2ac.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Exemple d'images générées par GPT-4o (crédit X@Jason Reid)</p>
-<h2 id="Why-GPT-4o-Changes-Everything" class="common-anchor-header">Pourquoi GPT-4o change tout<button data-href="#Why-GPT-4o-Changes-Everything" class="anchor-icon" translate="no">
+<p>Example of GPT-4o generated images (credit X@Jason Reid)</p>
+<h2 id="Why-GPT-4o-Changes-Everything" class="common-anchor-header">Why GPT-4o Changes Everything<button data-href="#Why-GPT-4o-Changes-Everything" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -60,12 +60,12 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pour les industries créatives, il s'agit d'un changement de paradigme. Des tâches qui nécessitaient autrefois une journée entière pour toute une équipe de conception peuvent désormais être réalisées en quelques minutes seulement. Ce qui différencie GPT-4o des précédents générateurs d'images, c'est <strong>sa remarquable cohérence visuelle et son interface intuitive</strong>. Il prend en charge les conversations multi-tours qui vous permettent d'affiner les images en ajoutant des éléments, en ajustant les proportions, en modifiant les styles ou même en transformant la 2D en 3D, ce qui revient à mettre un concepteur professionnel dans votre poche.</p>
-<p>Le secret des performances supérieures de GPT-4o ? Son architecture autorégressive. Contrairement aux modèles de diffusion (comme la diffusion stable) qui dégradent les images en bruit avant de les reconstruire, GPT-4o génère des images séquentiellement, un jeton à la fois, en conservant la conscience du contexte tout au long du processus. Cette différence architecturale fondamentale explique pourquoi GPT-4o produit des résultats plus cohérents avec des invites plus simples et plus naturelles.</p>
-<p>Mais c'est là que les choses deviennent intéressantes pour les développeurs : <strong>De plus en plus de signes indiquent une tendance majeure : les modèles d'intelligence artificielle deviennent eux-mêmes des produits. En d'autres termes, la plupart des produits qui se contentent d'envelopper de grands modèles d'IA autour de données du domaine public risquent d'être laissés pour compte.</strong></p>
-<p>La véritable puissance de ces avancées vient de la combinaison de grands modèles à usage général avec des <strong>données privées spécifiques à un domaine</strong>. Cette combinaison pourrait bien être la stratégie de survie optimale pour la plupart des entreprises à l'ère des grands modèles de langage. Alors que les modèles de base continuent d'évoluer, l'avantage concurrentiel durable appartiendra à ceux qui peuvent intégrer efficacement leurs ensembles de données propriétaires à ces puissants systèmes d'IA.</p>
-<p>Voyons comment connecter vos données privées à GPT-4o à l'aide de Milvus, une base de données vectorielle open-source et hautement performante.</p>
-<h2 id="Connecting-Your-Private-Data-with-GPT-4o-Using-Milvus-for-More-Curated-Image-Outputs" class="common-anchor-header">Connexion de vos données privées à GPT-4o à l'aide de Milvus pour des sorties d'images plus soignées<button data-href="#Connecting-Your-Private-Data-with-GPT-4o-Using-Milvus-for-More-Curated-Image-Outputs" class="anchor-icon" translate="no">
+    </button></h2><p>For creative industries, this represents a paradigm shift. Tasks that once required an entire design team a whole day can now be completed in mere minutes. What makes GPT-4o different from previous image generators is <strong>its remarkable visual consistency and intuitive interface</strong>. It supports multi-turn conversations that let you refine images by adding elements, adjusting proportions, changing styles, or even transforming 2D into 3D—essentially putting a professional designer in your pocket.</p>
+<p>The secret behind GPT-4o’s superior performance? It’s autoregressive architecture. Unlike diffusion models (like Stable Diffusion) that degrade images into noise before reconstructing them, GPT-4o generates images sequentially—one token at a time—maintaining contextual awareness throughout the process. This fundamental architectural difference explains why GPT-4o produces more coherent results with more straightforward, more natural prompts.</p>
+<p>But here’s where things get interesting for developers: <strong>An increasing number of signs point to a major trend—AI models themselves are becoming products. Simply put, most products that simply wrap large AI models around public domain data are at risk of being left behind.</strong></p>
+<p>The true power of these advancements comes from combining general-purpose large models with <strong>private, domain-specific data</strong>. This combination may well be the optimal survival strategy for most companies in the era of large language models. As base models continue to evolve, the lasting competitive advantage will belong to those who can effectively integrate their proprietary datasets with these powerful AI systems.</p>
+<p>Let’s explore how to connect your private data with GPT-4o using Milvus, an open-source and high-performance vector database.</p>
+<h2 id="Connecting-Your-Private-Data-with-GPT-4o-Using-Milvus-for-More-Curated-Image-Outputs" class="common-anchor-header">Connecting Your Private Data with GPT-4o Using Milvus for More Curated Image Outputs<button data-href="#Connecting-Your-Private-Data-with-GPT-4o-Using-Milvus-for-More-Curated-Image-Outputs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,20 +80,20 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Les bases de données vectorielles sont la technologie clé qui permet de relier vos données privées aux modèles d'IA. Elles convertissent votre contenu, qu'il s'agisse d'images, de textes ou de sons, en représentations mathématiques (vecteurs) qui capturent leur signification et leurs caractéristiques. Cela permet une recherche sémantique basée sur la similarité plutôt que sur de simples mots-clés.</p>
-<p>Milvus, en tant que base de données vectorielles open-source de premier plan, est particulièrement bien adapté à la connexion avec des outils d'IA générative tels que GPT-4o. Voici comment je l'ai utilisé pour résoudre un problème personnel.</p>
-<h3 id="Background" class="common-anchor-header">Contexte</h3><p>Un jour, j'ai eu une idée brillante : transformer toutes les bêtises de mon chien Cola en bande dessinée. Mais il y avait un hic : Comment passer au crible des dizaines de milliers de photos de mon travail, de mes voyages et de mes aventures culinaires pour retrouver les moments d'espièglerie de Cola ?</p>
-<p>La solution ? Importer toutes mes photos dans Milvus et effectuer une recherche d'images.</p>
-<p>Voyons la mise en œuvre étape par étape.</p>
-<h4 id="Dependencies-and-Environment" class="common-anchor-header">Dépendances et environnement</h4><p>Tout d'abord, vous devez préparer votre environnement avec les bons paquets :</p>
+    </button></h2><p>Vector databases are the key technology bridging your private data with AI models. They work by converting your content—whether images, text, or audio—into mathematical representations (vectors) that capture their meaning and characteristics. This allows for a semantic search based on similarity rather than just keywords.</p>
+<p>Milvus, as a leading open-source vector database, is particularly well-suited for connecting with generative AI tools like GPT-4o. Here’s how I used it to solve a personal challenge.</p>
+<h3 id="Background" class="common-anchor-header">Background</h3><p>One day, I had this brilliant idea—turn all the mischief of my dog Cola, into a comic strip. But there was a catch: How could I sift through tens of thousands of photos from work, travels, and food adventures to find Cola’s mischievous moments?</p>
+<p>The answer? Import all my photos into Milvus and do an image search.</p>
+<p>Let’s walk through the implementation step by step.</p>
+<h4 id="Dependencies-and-Environment" class="common-anchor-header">Dependencies and Environment</h4><p>First, you need to get your environment ready with the right packages:</p>
 <pre><code translate="no">pip install pymilvus --upgrade
 pip install torch numpy scikit-learn pillow
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Prepare-the-Data" class="common-anchor-header">Préparer les données</h4><p>J'utiliserai ma photothèque, qui contient environ 30 000 photos, comme ensemble de données dans ce guide. Si vous ne disposez d'aucun jeu de données, téléchargez un exemple de jeu de données à partir de Milvus et décompressez-le :</p>
+<h4 id="Prepare-the-Data" class="common-anchor-header">Prepare the Data</h4><p>I’ll use my photo library, which has about 30,000 photos, as the dataset in this guide. If you don’t have any dataset at hand, download a sample dataset from Milvus and unzip it:</p>
 <pre><code translate="no">!wget https://github.com/milvus-io/pymilvus-assets/releases/download/imagedata/reverse_image_search.<span class="hljs-built_in">zip</span>
 !unzip -q -o reverse_image_search.<span class="hljs-built_in">zip</span>
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Define-the-Feature-Extractor" class="common-anchor-header">Définir l'extracteur de caractéristiques</h4><p>Nous utiliserons le mode ResNet-50 de la bibliothèque <code translate="no">timm</code> pour extraire les vecteurs d'intégration de nos images. Ce modèle a été entraîné sur des millions d'images et peut extraire des caractéristiques significatives qui représentent le contenu visuel.</p>
+<h4 id="Define-the-Feature-Extractor" class="common-anchor-header">Define the Feature Extractor</h4><p>We’ll use the ResNet-50 mode from the <code translate="no">timm</code> library to extract embedding vectors from our images. This model has been trained on millions of images and can extract meaningful features that represent the visual content.</p>
 <pre><code translate="no">    <span class="hljs-keyword">import</span> torch
     <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
     <span class="hljs-keyword">import</span> timm
@@ -125,7 +125,7 @@ pip install torch numpy scikit-learn pillow
             feature_vector = output.squeeze().numpy()
             <span class="hljs-keyword">return</span> normalize(feature_vector.reshape(<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>), norm=<span class="hljs-string">&quot;l2&quot;</span>).flatten()
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Create-a-Milvus-Collection" class="common-anchor-header">Créer une collection Milvus</h4><p>Ensuite, nous allons créer une collection Milvus pour stocker nos encastrements d'images. Il s'agit d'une base de données spécialisée, explicitement conçue pour la recherche de similarités vectorielles :</p>
+<h4 id="Create-a-Milvus-Collection" class="common-anchor-header">Create a Milvus Collection</h4><p>Next, we’ll create a Milvus collection to store our image embeddings. Think of this as a specialized database explicitly designed for vector similarity search:</p>
 <pre><code translate="no">    <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
     client = MilvusClient(uri=<span class="hljs-string">&quot;example.db&quot;</span>)
     <span class="hljs-keyword">if</span> client.has_collection(collection_name=<span class="hljs-string">&quot;image_embeddings&quot;</span>):
@@ -140,13 +140,13 @@ pip install torch numpy scikit-learn pillow
         metric_type=<span class="hljs-string">&quot;COSINE&quot;</span>,
     )
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Notes sur les paramètres de MilvusClient :</strong></p>
+<p><strong>Notes on MilvusClient Parameters:</strong></p>
 <ul>
-<li><p><strong>Configuration locale :</strong> L'utilisation d'un fichier local (par exemple, <code translate="no">./milvus.db</code>) est le moyen le plus simple de démarrer - Milvus Lite gérera toutes vos données.</p></li>
-<li><p>Mise à<strong>l'échelle :</strong> pour les grands ensembles de données, configurez un serveur Milvus robuste à l'aide de Docker ou de Kubernetes et utilisez son URI (par exemple, <code translate="no">http://localhost:19530</code>).</p></li>
-<li><p><strong>Option cloud :</strong> Si vous utilisez Zilliz Cloud (le service entièrement géré de Milvus), ajustez votre URI et votre jeton pour qu'ils correspondent au point de terminaison public et à la clé API.</p></li>
+<li><p><strong>Local Setup:</strong> Using a local file (e.g., <code translate="no">./milvus.db</code>) is the easiest way to get started—Milvus Lite will handle all your data.</p></li>
+<li><p><strong>Scale Up:</strong> For large datasets, set up a robust Milvus server using Docker or Kubernetes and use its URI (e.g., <code translate="no">http://localhost:19530</code>).</p></li>
+<li><p><strong>Cloud Option:</strong> If you’re into Zilliz Cloud (the fully managed service of Milvus), adjust your URI and token to match the public endpoint and API key.</p></li>
 </ul>
-<h4 id="Insert-Image-Embeddings-into-Milvus" class="common-anchor-header">Insérer des incorporations d'images dans Milvus</h4><p>Il s'agit maintenant d'analyser chaque image et de stocker sa représentation vectorielle. Cette étape peut prendre un certain temps en fonction de la taille de votre ensemble de données, mais il s'agit d'un processus unique :</p>
+<h4 id="Insert-Image-Embeddings-into-Milvus" class="common-anchor-header">Insert Image Embeddings into Milvus</h4><p>Now comes the process of analyzing each image and storing its vector representation. This step might take some time depending on your dataset size, but it’s a one-time process:</p>
 <pre><code translate="no">    <span class="hljs-keyword">import</span> os
     <span class="hljs-keyword">from</span> some_module <span class="hljs-keyword">import</span> FeatureExtractor  <span class="hljs-comment"># Replace with your feature extraction module</span>
     extractor = FeatureExtractor(<span class="hljs-string">&quot;resnet50&quot;</span>)
@@ -163,7 +163,7 @@ pip install torch numpy scikit-learn pillow
                         {<span class="hljs-string">&quot;vector&quot;</span>: image_embedding, <span class="hljs-string">&quot;filename&quot;</span>: filepath},
                     )
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Conduct-an-Image-Search" class="common-anchor-header">Effectuer une recherche d'images</h4><p>Notre base de données étant alimentée, nous pouvons maintenant rechercher des images similaires. C'est là que la magie opère : nous pouvons trouver des photos visuellement similaires en utilisant la similarité vectorielle :</p>
+<h4 id="Conduct-an-Image-Search" class="common-anchor-header">Conduct an Image Search</h4><p>With our database populated, we can now search for similar images. This is where the magic happens—we can find visually similar photos using vector similarity:</p>
 <pre><code translate="no">    <span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> display
     <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
     query_image = <span class="hljs-string">&quot;./search-image.jpeg&quot;</span>  <span class="hljs-comment"># The image you want to search with</span>
@@ -194,48 +194,51 @@ pip install torch numpy scikit-learn pillow
     display(<span class="hljs-string">&quot;results&quot;</span>)
     display(concatenated_image)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Les images obtenues sont présentées ci-dessous :</strong></p>
+<p><strong>The returned images are shown as below:</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/640_1_8d4e88c6dd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Combine-Vector-Search-with-GPT-4o-Generating-Ghibli-Style-Images-with-Images-Returned-by-Milvus" class="common-anchor-header">Combiner la recherche vectorielle avec GPT-4o : Génération d'images de style Ghibli à partir d'images renvoyées par Milvus</h3><p>Voici maintenant la partie la plus excitante : utiliser les résultats de notre recherche d'images comme données d'entrée pour GPT-4o afin de générer un contenu créatif. Dans mon cas, je voulais créer des bandes dessinées mettant en scène mon chien Cola à partir de photos que j'avais prises.</p>
-<p>Le processus est simple mais puissant :</p>
+<h3 id="Combine-Vector-Search-with-GPT-4o-Generating-Ghibli-Style-Images-with-Images-Returned-by-Milvus" class="common-anchor-header">Combine Vector Search with GPT-4o: Generating Ghibli-Style Images with Images Returned by Milvus</h3><p>Now comes the exciting part: using our image search results as input for GPT-4o to generate creative content. In my case, I wanted to create comic strips featuring my dog Cola based on photos I’ve taken.</p>
+<p>The workflow is simple but powerful:</p>
 <ol>
-<li><p>Utiliser la recherche vectorielle pour trouver des images pertinentes de Cola dans ma collection.</p></li>
-<li><p>Alimenter GPT-4o avec ces images et des invites créatives.</p></li>
-<li><p>Générer des bandes dessinées uniques basées sur l'inspiration visuelle</p></li>
+<li><p>Use vector search to find relevant images of Cola from my collection</p></li>
+<li><p>Feed these images to GPT-4o with creative prompts</p></li>
+<li><p>Generate unique comics based on visual inspiration</p></li>
 </ol>
-<p>Voici quelques exemples de ce que cette combinaison peut produire :</p>
-<p><strong>Les invites que j'utilise :</strong></p>
+<p>Here are some examples of what this combination can produce:</p>
+<p><strong>The prompts I use:</strong></p>
 <ul>
-<li><p><em>"Créez une bande dessinée hilarante de quatre planches en couleur mettant en scène un border collie surpris en train de ronger une souris, avec un moment gênant lorsque le propriétaire s'en aperçoit."<br><em>
+<li><p><em>“Generate a four-panel, full-color, hilarious comic strip featuring a Border Collie caught gnawing on a mouse—with an awkward moment when the owner finds out.”<br>
+<em>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Screenshot_2025_04_02_at_11_34_43_1d7141eef3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </em></em></p></li>
-<li><p><em>"Dessinez une bande dessinée dans laquelle ce chien porte une jolie tenue."<br><em>
+<li><p><em>“Draw a comic where this dog rocks a cute outfit.”<br>
+<em>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/cutedog_6fdb1e9c79.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </em></em></p></li>
-<li><p><em>"En utilisant ce chien comme modèle, créez une bande dessinée dans laquelle il entre à l'école de sorcellerie Poudlard."<br><em>
+<li><p><em>“Using this dog as the model, create a comic strip of it attending Hogwarts School of Witchcraft and Wizardry.”<br>
+<em>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Screenshot_2025_04_02_at_11_44_00_ce932cd035.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </em></em></p></li>
 </ul>
-<h3 id="A-Few-Quick-Tips-from-My-Experience-of-Image-Generation" class="common-anchor-header">Quelques conseils rapides tirés de mon expérience de la génération d'images :</h3><ol>
-<li><p><strong>Restez simple</strong>: Contrairement à ces modèles de diffusion délicats, le GPT-4o fonctionne mieux avec des messages simples. Je me suis surpris à écrire des questions de plus en plus courtes au fur et à mesure que j'avançais, ce qui m'a permis d'obtenir de meilleurs résultats.</p></li>
-<li><p><strong>L'anglais fonctionne mieux</strong>: J'ai essayé de rédiger des messages-guides en chinois pour certaines bandes dessinées, mais les résultats n'étaient pas très bons. J'ai fini par rédiger mes messages-guides en anglais, puis par traduire les bandes dessinées terminées lorsque cela était nécessaire.</p></li>
-<li><p><strong>Ce n'est pas bon pour la génération vidéo</strong>: Ne vous faites pas encore trop d'illusions sur Sora : les vidéos générées par l'IA ont encore des progrès à faire en matière de fluidité des mouvements et de cohérence des scénarios.</p></li>
+<h3 id="A-Few-Quick-Tips-from-My-Experience-of-Image-Generation" class="common-anchor-header">A Few Quick Tips from My Experience of Image Generation:</h3><ol>
+<li><p><strong>Keep it simple</strong>: Unlike those finicky diffusion models, GPT-4o works best with straightforward prompts. I found myself writing shorter and shorter prompts as I went along, and getting better results.</p></li>
+<li><p><strong>English works best</strong>: I tried prompting in Chinese for some comics, but the results weren’t great. I ended up writing my prompts in English and then translating the finished comics when needed.</p></li>
+<li><p><strong>Not good for Video Generation</strong>: Don’t get your hopes too high with Sora yet—AI-generated videos still have a way to go when it comes to fluid movement and coherent storylines.</p></li>
 </ol>
-<h2 id="Whats-Next-My-Perspective-and-Open-for-Discussion" class="common-anchor-header">Et maintenant ? Mon point de vue et ouvert à la discussion<button data-href="#Whats-Next-My-Perspective-and-Open-for-Discussion" class="anchor-icon" translate="no">
+<h2 id="Whats-Next-My-Perspective-and-Open-for-Discussion" class="common-anchor-header">What’s Next? My Perspective and Open for Discussion<button data-href="#Whats-Next-My-Perspective-and-Open-for-Discussion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -250,6 +253,6 @@ pip install torch numpy scikit-learn pillow
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Avec les images générées par l'IA en tête, un rapide coup d'œil aux principales publications d'OpenAI au cours des six derniers mois montre un schéma clair : qu'il s'agisse de GPT pour les places de marché d'applications, de DeepResearch pour la génération de rapports, de GPT-4o pour la création d'images conversationnelles ou de Sora pour la magie vidéo, les grands modèles d'IA sortent de l'ombre pour se retrouver sous les feux de la rampe. Ce qui était autrefois une technologie expérimentale est en train de mûrir pour devenir des produits réels et utilisables.</p>
-<p>À mesure que le GPT-4o et d'autres modèles similaires sont largement acceptés, la plupart des flux de travail et des agents intelligents basés sur la diffusion stable sont en voie d'obsolescence. Toutefois, la valeur irremplaçable des données privées et des connaissances humaines reste forte. Par exemple, même si l'IA ne remplacera pas complètement les agences de création, l'intégration d'une base de données vectorielles Milvus avec des modèles GPT permet aux agences de générer rapidement des idées nouvelles et créatives inspirées de leurs succès passés. Les plateformes de commerce électronique peuvent concevoir des vêtements personnalisés en fonction des tendances d'achat, et les établissements d'enseignement peuvent créer instantanément des visuels pour les documents de recherche.</p>
-<p>L'ère des produits alimentés par des modèles d'IA est arrivée, et la course à l'exploitation de la mine d'or de données ne fait que commencer. Pour les développeurs comme pour les entreprises, le message est clair : combinez vos données uniques avec ces puissants modèles ou risquez d'être laissé pour compte.</p>
+    </button></h2><p>With AI-generated images leading the charge, a quick look at OpenAI’s major releases over the past six months shows a clear pattern: whether it’s GPTs for app marketplaces, DeepResearch for report generation, GPT-4o for conversational image creation, or Sora for video magic - large AI models are stepping from behind the curtain into the spotlight. What was once experimental tech is now maturing into real, usable products.</p>
+<p>As GPT-4o and similar models become widely accepted, most workflows and intelligent agents based on Stable Diffusion are heading toward obsolescence. However, the irreplaceable value of private data and human insight remains strong. For example, while AI won’t completely replace creative agencies, integrating a Milvus vector database with GPT models enables agencies to quickly generate fresh, creative ideas inspired by their past successes. E-commerce platforms can design personalized clothing based on shopping trends, and academic institutions can instantly create visuals for research papers.</p>
+<p>The era of products powered by AI models is here, and the race to mine the data goldmine is just getting started. For developers and businesses alike, the message is clear: combine your unique data with these powerful models or risk being left behind.</p>

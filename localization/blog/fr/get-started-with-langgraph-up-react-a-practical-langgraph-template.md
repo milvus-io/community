@@ -1,11 +1,12 @@
 ---
 id: get-started-with-langgraph-up-react-a-practical-langgraph-template.md
-title: 'Démarrer avec langgraph-up-react : Un modèle pratique de LangGraph'
+title: |
+  Getting Started with langgraph-up-react: A Practical LangGraph Template
 author: Min Yin
 date: 2025-09-11T00:00:00.000Z
 desc: >-
-  présentation de langgraph-up-react, un modèle LangGraph + ReAct prêt à
-  l'emploi pour les agents ReAct.
+  introducing langgraph-up-react, a ready-to-use LangGraph + ReAct template for
+  ReAct agents.
 cover: assets.zilliz.com/Chat_GPT_Image_Sep_12_2025_12_09_04_PM_804305620a.png
 tag: Tutorials
 recommend: false
@@ -17,10 +18,10 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/get-started-with-langgraph-up-react-a-practical-langgraph-template.md
 ---
-<p>Les agents d'IA sont en train de devenir un modèle central dans l'IA appliquée. De plus en plus de projets dépassent les simples messages-guides et intègrent des modèles dans des boucles de prise de décision. C'est passionnant, mais cela implique aussi de gérer l'état, de coordonner les outils, de gérer les branches et d'ajouter des transferts humains - des choses qui ne sont pas immédiatement évidentes.</p>
-<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a> est un choix judicieux pour cette couche. Il s'agit d'un cadre d'IA qui fournit des boucles, des conditionnelles, de la persistance, des contrôles humains dans la boucle et du streaming - une structure suffisante pour transformer une idée en une véritable application multi-agents. Cependant, LangGraph a une courbe d'apprentissage abrupte. Sa documentation est rapide, il faut du temps pour s'habituer aux abstractions, et passer d'une simple démo à quelque chose qui ressemble à un produit peut être frustrant.</p>
-<p>Récemment, j'ai commencé à utiliser <a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react, un</strong></a>modèle LangGraph + ReAct prêt à l'emploi pour les agents ReAct. Il réduit la configuration, est livré avec des valeurs par défaut saines, et vous permet de vous concentrer sur le comportement plutôt que sur le modèle. Dans ce billet, je vais vous expliquer comment démarrer avec LangGraph en utilisant ce modèle.</p>
-<h2 id="Understanding-ReAct-Agents" class="common-anchor-header">Comprendre les agents ReAct<button data-href="#Understanding-ReAct-Agents" class="anchor-icon" translate="no">
+<p>AI agents are becoming a core pattern in applied AI. More projects are moving past single prompts and wiring models into decision-making loops. That’s exciting, but it also means managing state, coordinating tools, handling branches, and adding human handoffs—things that aren’t immediately obvious.</p>
+<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a> is a strong choice for this layer. It is an AI framework that provides loops, conditionals, persistence, human-in-the-loop controls, and streaming—enough structure to turn an idea into a real multi-agent app. However, LangGraph has a steep learning curve. Its documentation moves quickly, the abstractions take time to get used to, and jumping from a simple demo to something that feels like a product can be frustrating.</p>
+<p>Recently, I started using <a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react</strong></a>—a ready-to-use LangGraph + ReAct template for ReAct agents. It trims setup, ships with sane defaults, and lets you focus on behavior instead of boilerplate. In this post, I’ll walk through how to get started with LangGraph using this template.</p>
+<h2 id="Understanding-ReAct-Agents" class="common-anchor-header">Understanding ReAct Agents<button data-href="#Understanding-ReAct-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,16 +36,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Avant de plonger dans le modèle lui-même, il est utile d'examiner le type d'agent que nous allons construire. L'un des modèles les plus courants aujourd'hui est le cadre <strong>ReAct (Reason + Act)</strong>, présenté pour la première fois dans le document de 2022 de Google <em>intitulé "</em><a href="https://arxiv.org/abs/2210.03629"><em>ReAct : Synergizing Reasoning and Acting in Language Models</em></a><em>".</em></p>
-<p>L'idée est simple : au lieu de traiter le raisonnement et l'action séparément, ReAct les combine dans une boucle de rétroaction qui ressemble beaucoup à la résolution de problèmes par l'homme. L'agent <strong>raisonne</strong> sur le problème, <strong>agit</strong> en appelant un outil ou une API, puis <strong>observe le</strong> résultat avant de décider de la suite. Ce cycle simple - raisonner → agir → observer - permet aux agents de s'adapter dynamiquement au lieu de suivre un script fixe.</p>
-<p>Voici comment les pièces s'imbriquent les unes dans les autres :</p>
+    </button></h2><p>Before diving into the template itself, it’s worth looking at the kind of agent we’ll be building. One of the most common patterns today is the <strong>ReAct (Reason + Act)</strong> framework, first introduced in Google’s 2022 paper <em>“</em><a href="https://arxiv.org/abs/2210.03629"><em>ReAct: Synergizing Reasoning and Acting in Language Models.</em></a><em>”</em></p>
+<p>The idea is straightforward: instead of treating reasoning and action as separate, ReAct combines them into a feedback loop that looks a lot like human problem solving. The agent <strong>reasons</strong> about the problem, <strong>acts</strong> by calling a tool or API, and then <strong>observes</strong> the result before deciding what to do next. This simple cycle—reason → act → observe—lets agents adapt dynamically instead of following a fixed script.</p>
+<p>Here’s how the pieces fit together:</p>
 <ul>
-<li><p><strong>Raison</strong>: Le modèle décompose les problèmes en étapes, planifie des stratégies et peut même corriger les erreurs à mi-chemin.</p></li>
-<li><p><strong>Agir</strong>: Sur la base de son raisonnement, l'agent fait appel à des outils, qu'il s'agisse d'un moteur de recherche, d'une calculatrice ou de votre propre API personnalisée.</p></li>
-<li><p><strong>Observer</strong>: L'agent examine les résultats de l'outil, les filtre et les réintègre dans son raisonnement suivant.</p></li>
+<li><p><strong>Reason</strong>: The model breaks problems into steps, plans strategies, and can even correct mistakes mid-way.</p></li>
+<li><p><strong>Act</strong>: Based on its reasoning, the agent calls tools—whether that’s a search engine, a calculator, or your own custom API.</p></li>
+<li><p><strong>Observe</strong>: The agent looks at the tool’s output, filters the results, and feeds that back into its next round of reasoning.</p></li>
 </ul>
-<p>Cette boucle est rapidement devenue l'épine dorsale des agents d'IA modernes. Vous en trouverez des traces dans les plugins ChatGPT, les pipelines RAG, les assistants intelligents et même la robotique. Dans notre cas, c'est la base sur laquelle le modèle <code translate="no">langgraph-up-react</code> s'appuie.</p>
-<h2 id="Understanding-LangGraph" class="common-anchor-header">Comprendre LangGraph<button data-href="#Understanding-LangGraph" class="anchor-icon" translate="no">
+<p>This loop has quickly become the backbone of modern AI agents. You’ll see traces of it in ChatGPT plugins, RAG pipelines, intelligent assistants, and even robotics. In our case, it’s the foundation that the <code translate="no">langgraph-up-react</code> template builds on.</p>
+<h2 id="Understanding-LangGraph" class="common-anchor-header">Understanding LangGraph<button data-href="#Understanding-LangGraph" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -59,20 +60,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Maintenant que nous avons examiné le modèle ReAct, la question suivante est : comment mettre en œuvre un tel modèle dans la pratique ? La plupart des modèles de langage ne gèrent pas très bien le raisonnement en plusieurs étapes. Chaque appel est sans état : le modèle génère une réponse et oublie tout dès qu'il a terminé. Il est donc difficile de reporter les résultats intermédiaires ou d'ajuster les étapes ultérieures en fonction des premières.</p>
-<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a> comble cette lacune. Au lieu de traiter chaque demande comme un événement unique, il permet de décomposer les tâches complexes en étapes, de se souvenir de ce qui s'est passé à chaque étape et de décider de la suite en fonction de l'état actuel. En d'autres termes, elle transforme le processus de raisonnement d'un agent en quelque chose de structuré et de répétable, plutôt qu'en une chaîne d'invites ad hoc.</p>
-<p>Il s'agit en quelque sorte d'un <strong>organigramme du raisonnement de l'IA</strong>:</p>
+    </button></h2><p>Now that we’ve looked at the ReAct pattern, the next question is: how do you actually implement something like that in practice? Out of the box, most language models don’t handle multi-step reasoning very well. Each call is stateless: the model generates an answer and forgets everything as soon as it’s done. That makes it hard to carry intermediate results forward or adjust later steps based on earlier ones.</p>
+<p><a href="https://github.com/langchain-ai/langgraph"><strong>LangGraph</strong></a> closes this gap. Instead of treating every prompt as a one-off, it gives you a way to break complex tasks into steps, remember what happened at each point, and decide what to do next based on the current state. In other words, it turns an agent’s reasoning process into something structured and repeatable, rather than a chain of ad-hoc prompts.</p>
+<p>You can think of it like a <strong>flowchart for AI reasoning</strong>:</p>
 <ul>
-<li><p><strong>Analyse de</strong> la requête de l'utilisateur</p></li>
-<li><p><strong>Sélectionner</strong> l'outil adéquat pour la tâche</p></li>
-<li><p><strong>Exécuter la</strong> tâche en appelant l'outil</p></li>
-<li><p><strong>Traiter les</strong> résultats</p></li>
-<li><p><strong>Vérifier</strong> si la tâche est terminée ; si ce n'est pas le cas, revenir en arrière et poursuivre le raisonnement</p></li>
-<li><p><strong>Produire</strong> la réponse finale</p></li>
+<li><p><strong>Analyze</strong> the user query</p></li>
+<li><p><strong>Select</strong> the right tool for the job</p></li>
+<li><p><strong>Execute</strong> the task by calling the tool</p></li>
+<li><p><strong>Process</strong> the results</p></li>
+<li><p><strong>Check</strong> if the task is complete; if not, loop back and continue reasoning</p></li>
+<li><p><strong>Output</strong> the final answer</p></li>
 </ul>
-<p>En cours de route, LangGraph gère le <strong>stockage de la mémoire</strong> afin que les résultats des étapes précédentes ne soient pas perdus, et il s'intègre à une <strong>bibliothèque d'outils externes</strong> (API, bases de données, recherche, calculatrices, systèmes de fichiers, etc.)</p>
-<p>C'est pourquoi il s'appelle <em>LangGraph</em>: <strong>Lang (langue) + Graph - un</strong>cadre permettant d'organiser la façon dont les modèles de langue pensent et agissent au fil du temps.</p>
-<h2 id="Understanding-langgraph-up-react" class="common-anchor-header">Comprendre langgraph-up-react<button data-href="#Understanding-langgraph-up-react" class="anchor-icon" translate="no">
+<p>Along the way, LangGraph handles <strong>memory storage</strong> so results from earlier steps aren’t lost, and it integrates with an <strong>external tool library</strong> (APIs, databases, search, calculators, file systems, etc.).</p>
+<p>That’s why it’s called <em>LangGraph</em>: <strong>Lang (Language) + Graph</strong>—a framework for organizing how language models think and act over time.</p>
+<h2 id="Understanding-langgraph-up-react" class="common-anchor-header">Understanding langgraph-up-react<button data-href="#Understanding-langgraph-up-react" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -87,17 +88,17 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>LangGraph est puissant, mais il s'accompagne de frais généraux. La mise en place de la gestion des états, la conception des nœuds et des arêtes, la gestion des erreurs et le câblage des modèles et des outils sont autant de tâches qui prennent du temps. Le débogage des flux à plusieurs étapes peut également s'avérer pénible : lorsque quelque chose ne fonctionne pas, le problème peut se situer au niveau de n'importe quel nœud ou de n'importe quelle transition. Au fur et à mesure que les projets se développent, les moindres changements peuvent se répercuter sur la base de code et tout ralentir.</p>
-<p>C'est là qu'un modèle mature fait une énorme différence. Au lieu de partir de zéro, un modèle vous offre une structure éprouvée, des outils préconstruits et des scripts qui fonctionnent parfaitement. Vous n'avez pas à vous préoccuper de la paperasse et vous vous concentrez directement sur la logique de l'agent.</p>
-<p><a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react</strong></a> est l'un de ces modèles. Il est conçu pour vous aider à créer rapidement un agent LangGraph ReAct, avec :</p>
+    </button></h2><p>LangGraph is powerful, but it comes with overhead. Setting up state management, designing nodes and edges, handling errors, and wiring in models and tools all take time. Debugging multi-step flows can also be painful—when something breaks, the issue might be in any node or transition. As projects grow, even small changes can ripple through the codebase and slow everything down.</p>
+<p>This is where a mature template makes a huge difference. Instead of starting from scratch, a template gives you a proven structure, pre-built tools, and scripts that just work. You skip the boilerplate and focus directly on the agent logic.</p>
+<p><a href="https://github.com/webup/langgraph-up-react"><strong>langgraph-up-react</strong></a> is one such template. It’s designed to help you spin up a LangGraph ReAct agent quickly, with:</p>
 <ul>
-<li><p>🔧 <strong>Un écosystème d'outils intégrés</strong>: adaptateurs et utilitaires prêts à l'emploi.</p></li>
-<li><p>⚡ <strong>Démarrage rapide</strong>: configuration simple et agent fonctionnel en quelques minutes</p></li>
-<li><p>🧪 <strong>Tests inclus</strong>: tests unitaires et tests d'intégration pour plus de confiance lors de l'extension</p></li>
-<li><p>📦 <strong>Configuration prête pour la production</strong>: modèles d'architecture et scripts qui permettent de gagner du temps lors du déploiement.</p></li>
+<li><p>🔧 <strong>Built-in tool ecosystem</strong>: adapters and utilities ready to use out of the box</p></li>
+<li><p>⚡ <strong>Quick start</strong>: simple configuration and a working agent in minutes</p></li>
+<li><p>🧪 <strong>Testing included</strong>: unit tests and integration tests for confidence as you extend</p></li>
+<li><p>📦 <strong>Production-ready setup</strong>: architecture patterns and scripts that save time when deploying</p></li>
 </ul>
-<p>En bref, il s'occupe de la paperasse pour que vous puissiez vous concentrer sur la construction d'agents qui résolvent réellement vos problèmes d'entreprise.</p>
-<h2 id="Getting-Started-with-the-langgraph-up-react-Template" class="common-anchor-header">Démarrer avec le modèle langgraph-up-react<button data-href="#Getting-Started-with-the-langgraph-up-react-Template" class="anchor-icon" translate="no">
+<p>In short, it takes care of the boilerplate so you can focus on building agents that actually solve your business problems.</p>
+<h2 id="Getting-Started-with-the-langgraph-up-react-Template" class="common-anchor-header">Getting Started with the langgraph-up-react Template<button data-href="#Getting-Started-with-the-langgraph-up-react-Template" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -112,30 +113,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Faire fonctionner le modèle est simple. Voici le processus d'installation étape par étape :</p>
+    </button></h2><p>Getting the template running is straightforward. Here’s the setup process step by step:</p>
 <ol>
-<li>Installer les dépendances de l'environnement</li>
+<li>Install environment dependencies</li>
 </ol>
 <pre><code translate="no">curl -<span class="hljs-title class_">LsSf</span> <span class="hljs-attr">https</span>:<span class="hljs-comment">//astral.sh/uv/install.sh | sh</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>Cloner le projet</li>
+<li>Clone the project</li>
 </ol>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/webup/langgraph-up-react.git
 <span class="hljs-built_in">cd</span> langgraph-up-react
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>Installer les dépendances</li>
+<li>Install dependencies</li>
 </ol>
 <pre><code translate="no">uv <span class="hljs-built_in">sync</span> --dev
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>Configurer l'environnement</li>
+<li>Configure environment</li>
 </ol>
-<p>Copiez l'exemple de configuration et ajoutez vos clés :</p>
+<p>Copy the example config and add your keys:</p>
 <pre><code translate="no"><span class="hljs-built_in">cp</span> .env.example .<span class="hljs-built_in">env</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Editez .env et définissez au moins un fournisseur de modèle ainsi que votre clé d'API Tavily :</p>
+<p>Edit .env and set at least one model provider plus your Tavily API key:</p>
 <pre><code translate="no">TAVILY_API_KEY=your-tavily-api-key      <span class="hljs-comment"># Required for web search  </span>
 DASHSCOPE_API_KEY=your-dashscope-api-key  <span class="hljs-comment"># Qwen (default recommended)  </span>
 OPENAI_API_KEY=your-openai-api-key        <span class="hljs-comment"># OpenAI or compatible platforms  </span>
@@ -144,7 +145,7 @@ REGION=us                <span class="hljs-comment"># Optional: region flag  </s
 ENABLE_DEEPWIKI=true      <span class="hljs-comment"># Optional: enable document tools  </span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="5">
-<li>Démarrer le projet</li>
+<li>Start the project</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment"># Start development server (without UI)</span>
 make dev
@@ -152,14 +153,14 @@ make dev
 <span class="hljs-comment"># Start development server with LangGraph Studio UI</span>
 make dev_ui
 <button class="copy-code-btn"></button></code></pre>
-<p>Votre serveur de développement est maintenant en place et prêt à être testé.</p>
+<p>Your dev server will now be up and ready for testing.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/template_set_up_a42d1819ed.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="What-Can-You-Build-with-langgraph-up-react" class="common-anchor-header">Que pouvez-vous construire avec langgraph-up-react ?<button data-href="#What-Can-You-Build-with-langgraph-up-react" class="anchor-icon" translate="no">
+<h2 id="What-Can-You-Build-with-langgraph-up-react" class="common-anchor-header">What Can You Build with langgraph-up-react?<button data-href="#What-Can-You-Build-with-langgraph-up-react" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,11 +175,11 @@ make dev_ui
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Que pouvez-vous faire une fois que le modèle est opérationnel ? Voici deux exemples concrets qui montrent comment il peut être appliqué dans des projets réels.</p>
-<h3 id="Enterprise-Knowledge-Base-QA-Agentic-RAG" class="common-anchor-header">Base de connaissances d'entreprise Q&amp;A (Agentic RAG)</h3><p>Un cas d'utilisation courant est un assistant Q&amp;A interne pour les connaissances de l'entreprise. Pensez aux manuels de produits, aux documents techniques, aux FAQ - des informations utiles mais dispersées. Avec <code translate="no">langgraph-up-react</code>, vous pouvez créer un agent qui indexe ces documents dans une base de données vectorielle <a href="https://milvus.io/"><strong>Milvus</strong></a>, récupère les passages les plus pertinents et génère des réponses précises fondées sur le contexte.</p>
-<p>Pour le déploiement, Milvus propose des options flexibles : <strong>Lite</strong> pour un prototypage rapide, <strong>Standalone</strong> pour des charges de travail de production de taille moyenne et <strong>Distributed</strong> pour des systèmes à l'échelle de l'entreprise. Vous devrez également régler les paramètres de l'index (par exemple, HNSW) pour équilibrer la vitesse et la précision, et mettre en place une surveillance de la latence et du rappel pour garantir la fiabilité du système en cas de charge.</p>
-<h3 id="Multi-Agent-Collaboration" class="common-anchor-header">Collaboration multi-agents</h3><p>La collaboration multi-agents est un autre cas d'utilisation puissant. Au lieu qu'un agent essaie de tout faire, vous définissez plusieurs agents spécialisés qui travaillent ensemble. Dans un flux de travail de développement logiciel, par exemple, un agent chef de produit décompose les exigences, un agent architecte rédige la conception, un agent développeur écrit le code et un agent testeur valide les résultats.</p>
-<p>Cette orchestration met en évidence les points forts de LangGraph : gestion des états, ramifications et coordination entre les agents. Nous couvrirons cette configuration plus en détail dans un prochain article, mais le point clé est que <code translate="no">langgraph-up-react</code> permet d'essayer ces modèles sans passer des semaines sur l'échafaudage.</p>
+    </button></h2><p>So what can you actually do once the template is up and running? Here are two concrete examples that show how it can be applied in real projects.</p>
+<h3 id="Enterprise-Knowledge-Base-QA-Agentic-RAG" class="common-anchor-header">Enterprise Knowledge Base Q&amp;A (Agentic RAG)</h3><p>A common use case is an internal Q&amp;A assistant for company knowledge. Think product manuals, technical docs, FAQs—information that’s useful but scattered. With <code translate="no">langgraph-up-react</code>, you can create an agent that indexes these documents in a <a href="https://milvus.io/"><strong>Milvus</strong></a> vector database, retrieves the most relevant passages, and generates accurate answers grounded in context.</p>
+<p>For deployment, Milvus offers flexible options: <strong>Lite</strong> for quick prototyping, <strong>Standalone</strong> for mid-sized production workloads, and <strong>Distributed</strong> for enterprise-scale systems. You’ll also want to tune index parameters (e.g., HNSW) to balance speed and accuracy, and set up monitoring for latency and recall to ensure the system remains reliable under load.</p>
+<h3 id="Multi-Agent-Collaboration" class="common-anchor-header">Multi-Agent Collaboration</h3><p>Another powerful use case is multi-agent collaboration. Instead of one agent trying to do everything, you define several specialized agents that work together. In a software development workflow, for example, a Product Manager Agent breaks down requirements, an Architect Agent drafts the design, a Developer Agent writes code, and a Testing Agent validates the results.</p>
+<p>This orchestration highlights LangGraph’s strengths—state management, branching, and coordination across agents. We’ll cover this setup in more detail in a later article, but the key point is that <code translate="no">langgraph-up-react</code> makes it practical to try these patterns without spending weeks on scaffolding.</p>
 <h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -194,6 +195,6 @@ make dev_ui
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Construire des agents fiables n'est pas seulement une question de messages intelligents - il s'agit de structurer le raisonnement, de gérer l'état, et de connecter le tout dans un système que vous pouvez réellement maintenir. LangGraph vous donne le cadre pour le faire, et <code translate="no">langgraph-up-react</code> abaisse la barrière en s'occupant de l'habillage pour que vous puissiez vous concentrer sur le comportement de l'agent.</p>
-<p>Avec ce modèle, vous pouvez lancer des projets tels que des systèmes de base de connaissances Q&amp;A ou des flux de travail multi-agents sans vous perdre dans la configuration. C'est un point de départ qui permet de gagner du temps, d'éviter les pièges les plus courants et de rendre l'expérimentation avec LangGraph beaucoup plus fluide.</p>
-<p>Dans le prochain billet, j'irai plus loin dans un tutoriel pratique, montrant étape par étape comment étendre le modèle et construire un agent fonctionnel pour un cas d'utilisation réel en utilisant LangGraph, <code translate="no">langgraph-up-react</code>, et la base de données vectorielle Milvus. Restez à l'écoute.</p>
+    </button></h2><p>Building reliable agents isn’t just about clever prompts—it’s about structuring reasoning, managing state, and wiring everything into a system you can actually maintain. LangGraph gives you the framework to do that, and <code translate="no">langgraph-up-react</code> lowers the barrier by handling the boilerplate so you can focus on agent behavior.</p>
+<p>With this template, you can spin up projects like knowledge base Q&amp;A systems or multi-agent workflows without getting lost in setup. It’s a starting point that saves time, avoids common pitfalls, and makes experimenting with LangGraph far smoother.</p>
+<p>In the next post, I’ll go deeper into a hands-on tutorial—showing step by step how to extend the template and build a working agent for a real use case using LangGraph, <code translate="no">langgraph-up-react</code>, and Milvus vector database. Stay tuned.</p>
