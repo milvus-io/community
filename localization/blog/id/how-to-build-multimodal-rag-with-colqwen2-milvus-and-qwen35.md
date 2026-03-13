@@ -1,6 +1,7 @@
 ---
 id: how-to-build-multimodal-rag-with-colqwen2-milvus-and-qwen35.md
-title: 'Cara Membuat RAG Multimodal dengan ColQwen2, Milvus, dan Qwen3.5'
+title: |
+  How to Build Multimodal RAG with ColQwen2, Milvus, and Qwen3.5
 author: Lumina Wang
 date: 2026-3-6
 cover: assets.zilliz.com/download_11zon_1862455eb4.png
@@ -11,23 +12,22 @@ tags: 'multimodal RAG, RAG, Milvus, Qwen3.5, vector database'
 meta_keywords: 'multimodal RAG, RAG, Milvus, Qwen3.5, vector database'
 meta_title: |
   How to Build Multimodal RAG with ColQwen2, Milvus, Qwen3.5
-desc: >-
-  Buat pipeline RAG multimodal yang mengambil gambar halaman PDF alih-alih teks
-  yang diekstrak, menggunakan ColQwen2, Milvus, dan Qwen3.5. Tutorial langkah
-  demi langkah.
+desc: >
+  Build a multimodal RAG pipeline that retrieves PDF page images instead of
+  extracted text, using ColQwen2, Milvus, and Qwen3.5. Step-by-step tutorial.
 origin: >-
   https://milvus.io/blog/how-to-build-multimodal-rag-with-colqwen2-milvus-and-qwen35.md
 ---
-<p>Saat ini, Anda bisa mengunggah PDF ke LLM modern mana pun dan mengajukan pertanyaan tentangnya. Untuk beberapa dokumen, hal ini dapat dilakukan dengan baik. Tetapi kebanyakan LLM membatasi beberapa ratus halaman konteks, sehingga korpus yang besar tidak akan muat. Bahkan ketika itu sesuai, Anda membayar untuk memproses setiap halaman pada setiap kueri. Ajukan seratus pertanyaan tentang kumpulan dokumen 500 halaman yang sama, dan Anda membayar untuk 500 halaman seratus kali lipat. Hal ini menjadi mahal dengan cepat.</p>
-<p>Retrieval-augmented generation (RAG) memecahkan masalah ini dengan memisahkan pengindeksan dari menjawab. Anda menyandikan dokumen Anda sekali, menyimpan representasi dalam basis data vektor, dan pada waktu kueri Anda hanya mengambil halaman yang paling relevan untuk dikirim ke LLM. Model ini membaca tiga halaman per kueri, bukan seluruh korpus Anda. Hal ini membuatnya praktis untuk membuat Q&amp;A dokumen pada koleksi yang terus bertambah.</p>
-<p>Tutorial ini memandu Anda dalam membangun pipeline RAG multimodal dengan tiga komponen berlisensi terbuka:</p>
+<p>Nowadays, you can upload a PDF to any modern LLM and ask questions about it. For a handful of documents, that works fine. But most LLMs cap out at a few hundred pages of context, so a large corpus simply won’t fit. Even when it does fit, you’re paying to process every page on every query. Ask a hundred questions about the same 500-page document set, and you pay for 500 pages a hundred times over. That gets expensive fast.</p>
+<p>Retrieval-augmented generation (RAG) solves this by separating indexing from answering. You encode your documents once, store the representations in a vector database, and at query time you retrieve only the most relevant pages to send to the LLM. The model reads three pages per query, not your entire corpus. That makes it practical to build document Q&amp;A over collections that keep growing.</p>
+<p>This tutorial walks you through building a multimodal RAG pipeline with three openly licensed components:</p>
 <ul>
-<li><strong><a href="https://huggingface.co/vidore/colqwen2-v1.0-merged">ColQwen2</a></strong> <a href="https://huggingface.co/vidore/colqwen2-v1.0-merged"></a>mengkodekan setiap halaman PDF sebagai gambar ke dalam penyematan multi-vektor, menggantikan OCR tradisional dan langkah pemotongan teks.</li>
-<li><strong><a href="http://milvus.io">Milvus</a></strong> menyimpan vektor-vektor tersebut dan menangani pencarian kemiripan pada waktu permintaan, hanya mengambil halaman yang paling relevan.</li>
-<li><strong><a href="https://qwen.ai/blog?id=qwen3.5">Qwen3.5-397B-A17B</a></strong> membaca gambar halaman yang diambil dan menghasilkan jawaban berdasarkan apa yang dilihatnya.</li>
+<li><strong><a href="https://huggingface.co/vidore/colqwen2-v1.0-merged">ColQwen2</a></strong> <a href="https://huggingface.co/vidore/colqwen2-v1.0-merged"></a>encodes each PDF page as an image into multi-vector embeddings, replacing the traditional OCR and text chunking step.</li>
+<li><strong><a href="http://milvus.io">Milvus</a></strong> stores those vectors and handles similarity search at query time, retrieving only the most relevant pages.</li>
+<li><strong><a href="https://qwen.ai/blog?id=qwen3.5">Qwen3.5-397B-A17B</a></strong> reads the retrieved page images and generates an answer based on what it sees.</li>
 </ul>
-<p>Pada akhirnya, Anda akan memiliki sistem kerja yang mengambil PDF dan pertanyaan, menemukan halaman yang paling relevan, dan mengembalikan jawaban berdasarkan apa yang dilihat oleh model.</p>
-<h2 id="What-is-Multimodal-RAG" class="common-anchor-header">Apa yang dimaksud dengan Multimodal RAG?<button data-href="#What-is-Multimodal-RAG" class="anchor-icon" translate="no">
+<p>By the end, you’ll have a working system that takes a PDF and a question, finds the most relevant pages, and returns an answer grounded in what the model sees.</p>
+<h2 id="What-is-Multimodal-RAG" class="common-anchor-header">What is Multimodal RAG?<button data-href="#What-is-Multimodal-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,21 +42,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pengantar telah membahas mengapa RAG penting dalam skala besar. Pertanyaan selanjutnya adalah jenis RAG seperti apa yang Anda butuhkan, karena pendekatan tradisional memiliki titik buta.</p>
-<p>RAG tradisional mengekstrak teks dari dokumen, menyematkannya sebagai vektor, mengambil kecocokan terdekat pada waktu kueri, dan meneruskan potongan teks tersebut ke LLM. Ini bekerja dengan baik untuk konten yang padat teks dengan format yang bersih. Ini akan rusak ketika dokumen Anda berisi:</p>
+    </button></h2><p>The intro covered why RAG matters at scale. The next question is what kind of RAG you need, because the traditional approach has a blind spot.</p>
+<p>Traditional RAG extracts text from documents, embeds it as vectors, retrieves the closest matches at query time, and passes those text chunks to an LLM. That works well for text-heavy content with clean formatting. It breaks when your documents contain:</p>
 <ul>
-<li>Tabel, di mana makna bergantung pada hubungan antara baris, kolom, dan header.</li>
-<li>Bagan dan diagram, di mana informasi sepenuhnya bersifat visual dan tidak memiliki padanan teks.</li>
-<li>Dokumen yang dipindai atau catatan tulisan tangan, di mana output OCR tidak dapat diandalkan atau tidak lengkap.</li>
+<li>Tables, where meaning depends on the relationship between rows, columns, and headers.</li>
+<li>Charts and diagrams, where information is entirely visual and has no text equivalent.</li>
+<li>Scanned documents or handwritten notes, where OCR output is unreliable or incomplete.</li>
 </ul>
-<p>RAG multimodal menggantikan ekstraksi teks dengan pengodean gambar. Anda merender setiap halaman sebagai gambar, mengkodekannya dengan model bahasa visi, dan mengambil gambar halaman pada waktu kueri. LLM melihat halaman asli - tabel, gambar, format, dan semuanya - dan menjawab berdasarkan apa yang dilihatnya.</p>
+<p>Multimodal RAG replaces text extraction with image encoding. You render each page as an image, encode it with a vision-language model, and retrieve page images at query time. The LLM sees the original page — tables, figures, formatting and all — and answers based on what it sees.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Col_Qwen2_Milvus_Qwen3_5397_BA_17_B_5_2f55d33896.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Structure-of-Multimodal-RAG-Pipeline-ColQwen2-for-Encoding-Milvus-for-Search-Qwen35-for-Generation" class="common-anchor-header">Struktur Pipa RAG Multimodal: ColQwen2 untuk Pengkodean, Milvus untuk Pencarian, Qwen3.5 untuk Pembuatan<button data-href="#Structure-of-Multimodal-RAG-Pipeline-ColQwen2-for-Encoding-Milvus-for-Search-Qwen35-for-Generation" class="anchor-icon" translate="no">
+<h2 id="Structure-of-Multimodal-RAG-Pipeline-ColQwen2-for-Encoding-Milvus-for-Search-Qwen35-for-Generation" class="common-anchor-header">Structure of Multimodal RAG Pipeline: ColQwen2 for Encoding, Milvus for Search, Qwen3.5 for Generation<button data-href="#Structure-of-Multimodal-RAG-Pipeline-ColQwen2-for-Encoding-Milvus-for-Search-Qwen35-for-Generation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -71,22 +71,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="How-the-Pipeline-Works-httpsassetszillizcomblogColQwen2MilvusQwen35397BA17B284c822b9efpng" class="common-anchor-header">Bagaimana Pipeline Bekerja  <span class="img-wrapper">
+    </button></h2><h3 id="How-the-Pipeline-Works-httpsassetszillizcomblogColQwen2MilvusQwen35397BA17B284c822b9efpng" class="common-anchor-header">How the Pipeline Works 
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Col_Qwen2_Milvus_Qwen3_5397_BA_17_B_2_84c822b9ef.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
-</h3><h3 id="Tech-Stack" class="common-anchor-header">Tumpukan Teknologi</h3><table>
+</h3><h3 id="Tech-Stack" class="common-anchor-header">Tech Stack</h3><table>
 <thead>
-<tr><th><strong>Komponen</strong></th><th><strong>Pilihan</strong></th><th><strong>Peran</strong></th></tr>
+<tr><th><strong>Component</strong></th><th><strong>Choice</strong></th><th><strong>Role</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Pemrosesan PDF</td><td>pdf2image + poppler</td><td>Merender halaman PDF sebagai gambar beresolusi tinggi</td></tr>
-<tr><td>Model penyematan</td><td><a href="https://huggingface.co/vidore/colqwen2-v1.0-merged">colqwen2-v1.0</a></td><td>Model bahasa visi; mengkodekan setiap halaman menjadi ~ 755 vektor tambalan 128-dim</td></tr>
-<tr><td>Basis data vektor</td><td><a href="https://milvus.io/">Milvus Lite</a></td><td>Menyimpan vektor tambalan dan menangani pencarian kemiripan; berjalan secara lokal tanpa pengaturan server</td></tr>
-<tr><td>Model generasi</td><td><a href="https://qwen.ai/blog?id=qwen3.5">Qwen3.5-397B-A17B</a></td><td>Multimodal LLM dipanggil melalui OpenRouter API; membaca gambar halaman yang diambil untuk menghasilkan jawaban</td></tr>
+<tr><td>PDF processing</td><td>pdf2image + poppler</td><td>Renders PDF pages as high-resolution images</td></tr>
+<tr><td>Embedding model</td><td><a href="https://huggingface.co/vidore/colqwen2-v1.0-merged">colqwen2-v1.0</a></td><td>Vision-language model; encodes each page into ~755 128-dim patch vectors</td></tr>
+<tr><td>Vector database</td><td><a href="https://milvus.io/">Milvus Lite</a></td><td>Stores patch vectors and handles similarity search; runs locally with no server setup</td></tr>
+<tr><td>Generation model</td><td><a href="https://qwen.ai/blog?id=qwen3.5">Qwen3.5-397B-A17B</a></td><td>Multimodal LLM called via OpenRouter API; reads retrieved page images to generate answers</td></tr>
 </tbody>
 </table>
-<h2 id="Step-by-Step-Implementation-for-Multi-Modal-RAG-with-ColQwen2+-Milvus+-Qwen35-397B-A17B" class="common-anchor-header">Implementasi Langkah-demi-Langkah untuk RAG Multi-Modal dengan ColQwen2 + Milvus + Qwen3.5-397B-A17B<button data-href="#Step-by-Step-Implementation-for-Multi-Modal-RAG-with-ColQwen2+-Milvus+-Qwen35-397B-A17B" class="anchor-icon" translate="no">
+<h2 id="Step-by-Step-Implementation-for-Multi-Modal-RAG-with-ColQwen2+-Milvus+-Qwen35-397B-A17B" class="common-anchor-header">Step-by-Step Implementation for Multi-Modal RAG with ColQwen2+ Milvus+ Qwen3.5-397B-A17B<button data-href="#Step-by-Step-Implementation-for-Multi-Modal-RAG-with-ColQwen2+-Milvus+-Qwen35-397B-A17B" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -101,13 +102,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Environment-Setup" class="common-anchor-header">Pengaturan Lingkungan</h3><ol>
-<li>Instal Ketergantungan Python</li>
+    </button></h2><h3 id="Environment-Setup" class="common-anchor-header">Environment Setup</h3><ol>
+<li>Install Python Dependencies</li>
 </ol>
 <pre><code translate="no">pip install colpali-engine pymilvus openai pdf2image torch pillow tqdm
 <button class="copy-code-btn"></button></code></pre>
 <ol start="2">
-<li>Instal Poppler, Mesin Perender PDF</li>
+<li>Install Poppler, the PDF Rendering Engine</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment"># macOS</span>
 brew install poppler
@@ -119,17 +120,17 @@ sudo apt-get install poppler-utils
 
 <button class="copy-code-btn"></button></code></pre>
 <ol start="3">
-<li>Unduh Model Penyematan, ColQwen2</li>
+<li>Download the Embedding Model, ColQwen2</li>
 </ol>
-<p>Unduh vidore/colqwen2-v1.0-merged dari HuggingFace (~4,4 GB) dan simpan secara lokal:</p>
+<p>Download vidore/colqwen2-v1.0-merged from HuggingFace (~4.4 GB) and save it locally:</p>
 <pre><code translate="no"><span class="hljs-built_in">mkdir</span> -p ~/models/colqwen2-v1.0-merged
 <span class="hljs-comment"># Download all model files to this directory</span>
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>Dapatkan Kunci API OpenRouter</li>
+<li>Get an OpenRouter API Key</li>
 </ol>
-<p>Daftar dan buat kunci di <a href="https://openrouter.ai/settings/keys"></a><a href="https://openrouter.ai/settings/keys">https://openrouter.ai/settings/keys.</a></p>
-<h3 id="Step-1-Import-Dependencies-and-Configure" class="common-anchor-header">Langkah 1: Impor Ketergantungan dan Konfigurasi</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os, io, base64
+<p>Sign up and generate a key at <a href="https://openrouter.ai/settings/keys"></a><a href="https://openrouter.ai/settings/keys">https://openrouter.ai/settings/keys</a>.</p>
+<h3 id="Step-1-Import-Dependencies-and-Configure" class="common-anchor-header">Step 1: Import Dependencies and Configure</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os, io, base64
 <span class="hljs-keyword">import</span> torch
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">from</span> PIL <span class="hljs-keyword">import</span> Image
@@ -160,8 +161,8 @@ DEVICE = <span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-key
 DTYPE = torch.bfloat16 <span class="hljs-keyword">if</span> DEVICE == <span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-keyword">else</span> torch.float32
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Device: <span class="hljs-subst">{DEVICE}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran Perangkat: cpu</p>
-<h3 id="Step-2-Load-the-Embedding-Model" class="common-anchor-header">Langkah 2: Muat Model Penyematan</h3><p><strong>ColQwen2</strong> adalah model bahasa visi yang mengkodekan gambar dokumen ke dalam representasi multi-vektor gaya ColBERT. Setiap halaman menghasilkan beberapa ratus vektor tambalan 128 dimensi.</p>
+<p>Output: Device: cpu</p>
+<h3 id="Step-2-Load-the-Embedding-Model" class="common-anchor-header">Step 2: Load the Embedding Model</h3><p><strong>ColQwen2</strong> is a vision-language model that encodes document images into ColBERT-style multi-vector representations. Each page produces several hundred 128-dimensional patch vectors.</p>
 <pre><code translate="no"><span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Loading embedding model: <span class="hljs-subst">{EMBED_MODEL}</span>&quot;</span>)
 emb_model = ColQwen2.from_pretrained(
     EMBED_MODEL,
@@ -172,19 +173,19 @@ emb_model = ColQwen2.from_pretrained(
 emb_processor = ColQwen2Processor.from_pretrained(EMBED_MODEL)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Embedding model ready on <span class="hljs-subst">{DEVICE}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran:</p>
+<p>Output:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Col_Qwen2_Milvus_Qwen3_5397_BA_17_B_1_1fbbeba04e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-Initialize-Milvus" class="common-anchor-header">Langkah 3: Inisialisasi Milvus</h3><p>Tutorial ini menggunakan Milvus Lite, yang berjalan sebagai file lokal tanpa konfigurasi - tidak perlu proses server yang terpisah.</p>
-<p><strong>Skema basis data:</strong></p>
-<p><strong>id</strong>: INT64, kunci utama yang bertambah secara otomatis</p>
-<p><strong>doc_id</strong>: INT64, nomor halaman (halaman berapa dari PDF)</p>
-<p><strong>patch_idx</strong>: INT64, indeks tambalan dalam halaman tersebut</p>
-<p><strong>vektor</strong>: FLOAT_VECTOR(128), penyematan 128 dimensi dari patch tersebut</p>
+<h3 id="Step-3-Initialize-Milvus" class="common-anchor-header">Step 3: Initialize Milvus</h3><p>This tutorial uses Milvus Lite, which runs as a local file with zero configuration — no separate server process needed.</p>
+<p><strong>Database schema:</strong></p>
+<p><strong>id</strong>: INT64, auto-increment primary key</p>
+<p><strong>doc_id</strong>: INT64, page number (which page of the PDF)</p>
+<p><strong>patch_idx</strong>: INT64, patch index within that page</p>
+<p><strong>vector</strong>: FLOAT_VECTOR(128), the patch’s 128-dimensional embedding</p>
 <pre><code translate="no">milvus_client = MilvusClient(uri=MILVUS_URI)
 
 <span class="hljs-keyword">if</span> milvus_client.has_collection(COLLECTION):
@@ -201,8 +202,8 @@ index.add_index(field_name=<span class="hljs-string">&quot;vector&quot;</span>, 
 milvus_client.create_collection(COLLECTION, schema=schema, index_params=index)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Milvus collection created.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran: Koleksi Milvus dibuat.</p>
-<h3 id="Step-4-Convert-PDF-Pages-to-Images" class="common-anchor-header">Langkah 4: Mengonversi Halaman PDF ke Gambar</h3><p>Anda merender setiap halaman pada 150 DPI. Tidak ada ekstraksi teks yang terjadi di sini - pipeline memperlakukan setiap halaman murni sebagai gambar.</p>
+<p>Output: Milvus collection created.</p>
+<h3 id="Step-4-Convert-PDF-Pages-to-Images" class="common-anchor-header">Step 4: Convert PDF Pages to Images</h3><p>You render each page at 150 DPI. No text extraction happens here — the pipeline treats every page purely as an image.</p>
 <pre><code translate="no">PDF_PATH = <span class="hljs-string">&quot;Milvus vs Zilliz.pdf&quot;</span>  <span class="hljs-comment"># Replace with your own PDF</span>
 images = [p.convert(<span class="hljs-string">&quot;RGB&quot;</span>) <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> convert_from_path(PDF_PATH, dpi=<span class="hljs-number">150</span>)]
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">len</span>(images)}</span> pages loaded.&quot;</span>)
@@ -210,14 +211,14 @@ images = [p.convert(<span class="hljs-string">&quot;RGB&quot;</span>) <span clas
 <span class="hljs-comment"># Preview the first page</span>
 images[<span class="hljs-number">0</span>].resize((<span class="hljs-number">400</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">400</span> * images[<span class="hljs-number">0</span>].height / images[<span class="hljs-number">0</span>].width)))
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran:</p>
+<p>Output:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Col_Qwen2_Milvus_Qwen3_5397_BA_17_B_4_8720da8494.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-5-Encode-Images-and-Insert-into-Milvus" class="common-anchor-header">Langkah 5: Menyandikan Gambar dan Menyisipkan ke dalam Milvus</h3><p>ColQwen2 mengkodekan setiap halaman ke dalam embedding patch multi-vektor. Anda kemudian menyisipkan setiap tambalan sebagai baris terpisah di Milvus.</p>
+<h3 id="Step-5-Encode-Images-and-Insert-into-Milvus" class="common-anchor-header">Step 5: Encode Images and Insert into Milvus</h3><p>ColQwen2 encodes each page into multi-vector patch embeddings. You then insert every patch as a separate row in Milvus.</p>
 <pre><code translate="no"><span class="hljs-comment"># Encode all pages</span>
 all_page_embs = []
 <span class="hljs-keyword">with</span> torch.no_grad():
@@ -230,7 +231,7 @@ all_page_embs = []
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Encoded <span class="hljs-subst">{<span class="hljs-built_in">len</span>(all_page_embs)}</span> pages, ~<span class="hljs-subst">{all_page_embs[<span class="hljs-number">0</span>].shape[<span class="hljs-number">0</span>]}</span> patches per page, dim=<span class="hljs-subst">{all_page_embs[<span class="hljs-number">0</span>].shape[<span class="hljs-number">1</span>]}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran: Dikodekan 17 halaman, ~ 755 tambalan per halaman, redup = 128</p>
+<p>Output: Encoded 17 pages, ~755 patches per page, dim=128</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert into Milvus</span>
 <span class="hljs-keyword">for</span> doc_id, patch_vecs <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(all_page_embs):
     rows = [
@@ -242,13 +243,13 @@ all_page_embs = []
 total = milvus_client.get_collection_stats(COLLECTION)[<span class="hljs-string">&quot;row_count&quot;</span>]
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Indexed <span class="hljs-subst">{<span class="hljs-built_in">len</span>(all_page_embs)}</span> pages, <span class="hljs-subst">{total}</span> patches total.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran: Diindeks 17 halaman, total 12835 patch.</p>
-<p>PDF 17 halaman menghasilkan 12.835 catatan vektor tambalan - kira-kira 755 tambalan per halaman.</p>
-<h3 id="Step-6-Retrieve--Query-Encoding-+-MaxSim-Reranking" class="common-anchor-header">Langkah 6: Mengambil - Pengkodean Kueri + Pemeringkatan Ulang MaxSim</h3><p>Ini adalah logika pengambilan inti. Ini bekerja dalam tiga tahap:</p>
-<p><strong>Mengkodekan kueri</strong> menjadi beberapa vektor token.</p>
-<p><strong>Cari Milvus</strong> untuk setiap tambalan terdekat dari vektor token.</p>
-<p><strong>Agregasi berdasarkan halaman</strong> menggunakan MaxSim: untuk setiap token kueri, ambil patch dengan skor tertinggi di setiap halaman, lalu jumlahkan skor tersebut di semua token. Halaman dengan total skor tertinggi adalah yang paling cocok.</p>
-<p><strong>Bagaimana MaxSim bekerja:</strong> Untuk setiap vektor token kueri, Anda menemukan potongan dokumen dengan hasil kali dalam tertinggi ("max" dalam MaxSim). Anda kemudian menjumlahkan skor maksimum ini di semua token kueri untuk mendapatkan skor relevansi total per halaman. Skor yang lebih tinggi = kecocokan semantik yang lebih kuat antara kueri dan konten visual halaman.</p>
+<p>Output: Indexed 17 pages, 12835 patches total.</p>
+<p>A 17-page PDF produces 12,835 patch vector records — roughly 755 patches per page.</p>
+<h3 id="Step-6-Retrieve--Query-Encoding-+-MaxSim-Reranking" class="common-anchor-header">Step 6: Retrieve — Query Encoding + MaxSim Reranking</h3><p>This is the core retrieval logic. It works in three stages:</p>
+<p><strong>Encode the query</strong> into multiple token vectors.</p>
+<p><strong>Search Milvus</strong> for each token vector’s closest patches.</p>
+<p><strong>Aggregate by page</strong> using MaxSim: for each query token, take the highest-scoring patch in each page, then sum those scores across all tokens. The page with the highest total score is the best match.</p>
+<p><strong>How MaxSim works:</strong> For each query token vector, you find the document patch with the highest inner product (the “max” in MaxSim). You then sum these maximum scores across all query tokens to get a total relevance score per page. Higher score = stronger semantic match between the query and the page’s visual content.</p>
 <pre><code translate="no">question = <span class="hljs-string">&quot;What is the difference between Milvus and Zilliz Cloud?&quot;</span>
 
 <span class="hljs-comment"># 1. Encode the query</span>
@@ -279,7 +280,7 @@ ranked = <span class="hljs-built_in">sorted</span>(doc_scores.items(), key=<span
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Top-<span class="hljs-subst">{TOP_K}</span> retrieved pages: <span class="hljs-subst">{[(d, <span class="hljs-built_in">round</span>(s, <span class="hljs-number">2</span>)) <span class="hljs-keyword">for</span> d, s <span class="hljs-keyword">in</span> ranked]}</span>&quot;</span>)
 
 <button class="copy-code-btn"></button></code></pre>
-<p>Keluaran:</p>
+<p>Output:</p>
 <pre><code translate="no">Query encoded: 24 token vectors
 Top-3 retrieved pages: [(16, 161.16), (12, 135.73), (7, 122.58)]
 <button class="copy-code-btn"></button></code></pre>
@@ -295,7 +296,7 @@ context_images = [images[d] <span class="hljs-keyword">for</span> d, _ <span cla
     <span></span>
   </span>
 </p>
-<h3 id="Step-7-Generate-an-Answer-with-the-Multimodal-LLM" class="common-anchor-header">Langkah 7: Hasilkan Jawaban dengan LLM Multimodal</h3><p>Anda mengirim gambar halaman yang diambil - bukan teks yang diekstrak - bersama dengan pertanyaan pengguna ke Qwen3.5. LLM membaca gambar secara langsung untuk menghasilkan jawaban.</p>
+<h3 id="Step-7-Generate-an-Answer-with-the-Multimodal-LLM" class="common-anchor-header">Step 7: Generate an Answer with the Multimodal LLM</h3><p>You send the retrieved page images — not extracted text — along with the user’s question to Qwen3.5. The LLM reads the images directly to produce an answer.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">image_to_uri</span>(<span class="hljs-params">img</span>):
     <span class="hljs-string">&quot;&quot;&quot;Convert an image to a base64 data URI for sending to the LLM.&quot;&quot;&quot;</span>
     img = img.copy()
@@ -336,14 +337,14 @@ answer = response.choices[<span class="hljs-number">0</span>].message.content.st
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Question: <span class="hljs-subst">{question}</span>\n&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Answer: <span class="hljs-subst">{answer}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Hasil:<br>
+<p>Results:<br>
 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Col_Qwen2_Milvus_Qwen3_5397_BA_17_B_3_33fa5d551d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -358,23 +359,23 @@ answer = response.choices[<span class="hljs-number">0</span>].message.content.st
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dalam tutorial ini, kami membuat pipeline RAG multimodal yang mengambil PDF, mengubah setiap halaman menjadi gambar, mengkodekan gambar-gambar tersebut ke dalam embedding patch multi-vektor dengan ColQwen2, menyimpannya di Milvus, dan mengambil halaman yang paling relevan pada waktu kueri menggunakan penilaian MaxSim. Alih-alih mengekstrak teks dan berharap OCR mempertahankan tata letak, pipeline mengirimkan gambar halaman asli ke Qwen3.5, yang membacanya secara visual dan menghasilkan jawaban.</p>
-<p>Tutorial ini adalah titik awal, bukan penerapan produksi. Beberapa hal yang perlu diingat saat Anda melangkah lebih jauh.</p>
-<p>Tentang pengorbanan:</p>
+    </button></h2><p>In this tutorial, we built a multimodal RAG pipeline that takes a PDF, converts each page into an image, encodes those images into multi-vector patch embeddings with ColQwen2, stores them in Milvus, and retrieves the most relevant pages at query time using MaxSim scoring. Instead of extracting text and hoping OCR preserves the layout, the pipeline sends the original page images to Qwen3.5, which reads them visually and generates an answer.</p>
+<p>This tutorial is a starting point, not a production deployment. A few things to keep in mind as you take it further.</p>
+<p>On tradeoffs:</p>
 <ul>
-<li><strong>Penyimpanan berskala dengan jumlah halaman.</strong> Setiap halaman menghasilkan ~755 vektor, jadi korpus 1.000 halaman berarti sekitar 755.000 baris dalam Milvus. Indeks FLAT yang digunakan di sini berfungsi untuk demo, tetapi Anda sebaiknya menggunakan IVF atau HNSW untuk koleksi yang lebih besar.</li>
-<li><strong>Pengkodean lebih lambat daripada penyematan teks.</strong> ColQwen2 adalah model visi 4,4 GB. Pengkodean gambar membutuhkan waktu lebih lama per halaman daripada penyematan potongan teks. Untuk pekerjaan pengindeksan batch yang berjalan satu kali, hal ini biasanya tidak masalah. Untuk konsumsi waktu nyata, ada baiknya melakukan pembandingan.</li>
-<li><strong>Pendekatan ini bekerja paling baik untuk dokumen yang kaya secara visual.</strong> Jika PDF Anda sebagian besar berupa teks satu kolom yang bersih tanpa tabel atau gambar, RAG berbasis teks tradisional dapat mengambil dengan lebih tepat dan lebih murah untuk dijalankan.</li>
+<li><strong>Storage scales with page count.</strong> Each page produces ~755 vectors, so a 1,000-page corpus means roughly 755,000 rows in Milvus. The FLAT index used here works for demos but you’d want IVF or HNSW for larger collections.</li>
+<li><strong>Encoding is slower than text embedding.</strong> ColQwen2 is a 4.4 GB vision model. Encoding images takes longer per page than embedding text chunks. For a batch indexing job that runs once, this is usually fine. For real-time ingestion it’s worth benchmarking.</li>
+<li><strong>This approach works best for visually rich documents.</strong> If your PDFs are mostly clean, single-column text with no tables or figures, traditional text-based RAG may retrieve more precisely and cost less to run.</li>
 </ul>
-<p>Tentang apa yang harus dicoba selanjutnya:</p>
+<p>On what to try next:</p>
 <ul>
-<li><strong>Tukar dengan LLM multimodal yang berbeda.</strong> Tutorial ini menggunakan Qwen3.5 melalui OpenRouter, tetapi pipeline pengambilannya bersifat model-agnostik. Anda dapat mengarahkan langkah pembuatan ke GPT-4o, Gemini, atau model multimodal apa pun yang menerima input gambar.</li>
-<li><strong>Meningkatkan skala <a href="http://milvus.io">Milvus</a>.</strong> Milvus Lite berjalan sebagai file lokal, yang sangat bagus untuk pembuatan prototipe. Untuk beban kerja produksi, Milvus di Docker/Kubernetes atau Zilliz Cloud (Milvus yang dikelola sepenuhnya) menangani korpora yang lebih besar tanpa Anda harus mengelola infrastruktur.</li>
-<li><strong>Bereksperimenlah dengan berbagai jenis dokumen.</strong> Pipeline di sini menggunakan PDF perbandingan, tetapi bekerja dengan cara yang sama pada kontrak yang dipindai, gambar teknik, laporan keuangan, atau makalah penelitian dengan angka-angka yang padat.</li>
+<li><strong>Swap in a different multimodal LLM.</strong> This tutorial uses Qwen3.5 via OpenRouter, but the retrieval pipeline is model-agnostic. You could point the generation step at GPT-4o, Gemini, or any multimodal model that accepts image inputs.</li>
+<li><strong>Scale up <a href="http://milvus.io">Milvus</a>.</strong> Milvus Lite runs as a local file, which is great for prototyping. For production workloads, Milvus on Docker/Kubernetes or Zilliz Cloud (fully managed Milvus) handles larger corpora without you managing infrastructure.</li>
+<li><strong>Experiment with different document types.</strong> The pipeline here uses a comparison PDF, but it works the same way on scanned contracts, engineering drawings, financial statements, or research papers with dense figures.</li>
 </ul>
-<p>Untuk memulai, instal <a href="https://github.com/milvus-io/milvus-lite">Milvus Lite</a> dengan pip install pymilvus dan ambil bobot ColQwen2 dari HuggingFace.</p>
-<p>Punya pertanyaan, atau ingin memamerkan apa yang telah Anda buat? <a href="https://milvus.io/slack">Milvus Slack</a> adalah cara tercepat untuk mendapatkan bantuan dari komunitas dan tim. Jika Anda lebih suka berbicara empat mata, Anda bisa memesan waktu pada <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?uuid=4cb203e5-482a-47e0-90a6-7acc511d61f4">jam kerja</a> kami.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Teruslah membaca<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p>To get started, install <a href="https://github.com/milvus-io/milvus-lite">Milvus Lite</a> with pip install pymilvus and grab the ColQwen2 weights from HuggingFace.</p>
+<p>Got questions, or want to show off what you’ve built? The <a href="https://milvus.io/slack">Milvus Slack</a> is the fastest way to get help from the community and the team. If you’d prefer a one-on-one conversation, you can book time at our <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?uuid=4cb203e5-482a-47e0-90a6-7acc511d61f4">office hours</a>.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -390,8 +391,8 @@ answer = response.choices[<span class="hljs-number">0</span>].message.content.st
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md">Bagaimana Jika Anda Dapat Mengetahui Mengapa RAG Gagal? Debugging RAG dalam 3D dengan Project_Golem dan Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">Apakah RAG Menjadi Usang Sekarang Karena Agen yang Sudah Lama Beroperasi Seperti Claude Cowork Muncul?</a></p></li>
-<li><p><a href="https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md">Bagaimana Kami Membangun Model Penyorotan Semantik untuk Pemangkasan Konteks RAG dan Penyimpanan Token</a></p></li>
-<li><p><a href="https://milvus.io/blog/ai-code-review-gets-better-when-models-debate-claude-vs-gemini-vs-codex-vs-qwen-vs-minimax.md">Tinjauan Kode AI Menjadi Lebih Baik Ketika Model Berdebat: Claude vs Gemini vs Codex vs Qwen vs MiniMax</a></p></li>
+<li><p><a href="https://milvus.io/blog/debugging-rag-in-3d-with-projectgolem-and-milvus.md">What If You Could See Why RAG Fails? Debugging RAG in 3D with Project_Golem and Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/is-rag-become-outdated-now-long-running-agents-like-claude-cowork-are-emerging.md">Is RAG Becoming Outdated Now That Long-Running Agents Like Claude Cowork Are Emerging?</a></p></li>
+<li><p><a href="https://milvus.io/blog/semantic-highlighting-model-for-rag-context-pruning-and-token-saving.md">How We Built a Semantic Highlighting Model for RAG Context Pruning and Token Saving</a></p></li>
+<li><p><a href="https://milvus.io/blog/ai-code-review-gets-better-when-models-debate-claude-vs-gemini-vs-codex-vs-qwen-vs-minimax.md">AI Code Review Gets Better When Models Debate: Claude vs Gemini vs Codex vs Qwen vs MiniMax</a></p></li>
 </ul>
