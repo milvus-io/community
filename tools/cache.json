@@ -258,5 +258,6 @@
   "blog/en/how-to-build-multimodal-rag-with-colqwen2-milvus-and-qwen35.md": "2026-03-13T13:18:07.686Z",
   "blog/en/milvus-rustfs-vibe-coding-build-a-lightweight-rag-chatbot-from-scratch.md": "2026-03-13T13:22:31.655Z",
   "blog/en/will-gemini-embedding-2-kill-multi-vector-search-in-vector-databases.md": "2026-03-13T14:10:02.020Z",
-  "blog/en/i-built-a-stock-monitoring-agent-with-openclaw-exa-and-milvus-for-20month.md": "2026-03-15T14:47:16.768Z"
+  "blog/en/i-built-a-stock-monitoring-agent-with-openclaw-exa-and-milvus-for-20month.md": "2026-03-15T14:47:16.768Z",
+  "blog/en/how-to-build-a-rag-pipeline-with-ultrarag-v2-and-milvus.md": "2026-03-15T14:51:54.690Z"
 }
