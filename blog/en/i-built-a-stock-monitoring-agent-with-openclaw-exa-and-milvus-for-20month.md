@@ -21,23 +21,23 @@ I trade U.S. stocks on the side, which is a polite way of saying I lose money as
 
 The repeat part is what kills me. Every time I stare at the market, I end up making a trade I didn't plan on. Oil spikes, I panic-sell. That one tech stock pops 4%, I chase it. A week later, I'm looking at my trade history going, *didn't I do this exact thing last quarter?*
 
-So I built an agent with OpenClaw that watches the market instead of me and stops me from making the same mistakes. It doesn't trade or touch my money; it keeps me from doing something I've already regretted once.
+So I built an agent with OpenClaw that watches the market instead of me and stops me from making the same mistakes. It doesn't trade or touch my money, because that’d be too much of a security risk. Instead, it saves me time spent on market watching, and keeps me from making the same mistakes.
 
-This agent consists of three parts and costs about $20/month:
+This agent consists of three parts, and costs about $20/month:
 
 -   **[OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md)** **for running it all on autopilot.** OpenClaw runs the agent on a 30-minute heartbeat and only pings me when something actually matters, which relieves the FOMO that used to keep me glued to the screen. Before, the more I watched prices, the more I reacted on impulse.
 -   **[Exa](https://exa.ai/)** **for accurate, real-time searches.** Exa browses and summarizes hand-picked information sources on a schedule, so I get a clean briefing every morning. Before, I was spending an hour a day sifting through SEO spam and speculation to find reliable news — and it couldn't be automated because finance sites update daily to fight scrapers.
--   **[Milvus](https://milvus.io/) for personal history and preferences.** Milvus stores my trading history, and the agent searches it before I make a decision — if I'm about to repeat something I've regretted, it tells me. Before, reviewing past trades was tedious enough that I just didn't, so the same mistakes kept happening with different tickers. [Zilliz Cloud](https://zilliz.com/cloud) is the fully managed version of Milvus. If you'd like a hassle-free experience, Zilliz Cloud is a great option ([free tier available](https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&utm_button=banner_left&_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..).)
+-   **[M](https://milvus.io/)****[ilvus](https://milvus.io/)** **for personal history and preferences.** Milvus stores my trading history, and the agent searches it before I make a decision — if I'm about to repeat something I've regretted, it tells me. Before, reviewing past trades was tedious enough that I just didn't, so the same mistakes kept happening with different tickers. [Zilliz Cloud](https://zilliz.com/cloud) is the fully managed version of Milvus. If you'd like a hassle-free experience, Zilliz Cloud is a great option ([free tier available](https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&utm_button=banner_left&_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..).)
 
 Here's how I set it up, step by step.
 
 ## Step 1: Get Real-Time Market Intelligence with Exa
 
-Before, I'd tried browsing financial apps, writing scrapers, and looking into professional data terminals. Apps buried the signal under noise, scrapers broke constantly, and professional APIs are priced for institutional traders. Exa is a search API built for AI agents that solves the issues above.
+Before, I'd tried browsing financial apps, writing scrapers, and looking into professional data terminals. My experience?  Apps buried the signal under noise, scrapers broke constantly, and professional APIs were prohibitively expensive.  Exa is a search API built for AI agents that solves the issues above.
 
-![](https://assets.zilliz.com/blog_Open_Claw_1_fa9d10fd00.png)
+![](https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png)
 
-**[Exa](https://exa.ai/)** is a web search API that returns structured, AI-ready data. It is powered by [Zilliz Cloud](https://zilliz.com/cloud) (the fully managed service of Milvus).  If Perplexity is a search engine used by humans, Exa is used by AI. The agent sends a query, and Exa returns article text, key sentences, and summaries as JSON — structured output the agent can parse and act on directly, no scraping required.
+**[Exa](https://exa.ai/)** is a web search API that returns structured, AI-ready data for AI agents. It is powered by [Zilliz Cloud](https://zilliz.com/cloud) (the fully managed service of Milvus). If Perplexity is a search engine used by humans, Exa is used by AI. The agent sends a query, and Exa returns article text, key sentences, and summaries as JSON — structured output the agent can parse and act on directly, no scraping required.
 
 Exa also uses semantic search under the hood, so the agent can query in natural language. A query like "Why did NVIDIA stock drop despite strong Q4 2026 earnings" returns analyst breakdowns from Reuters and Bloomberg, not a page of SEO clickbait.
 
@@ -135,11 +135,11 @@ I wrote about a dozen templates using these patterns, covering Fed policy, tech 
 
 ## Step 2: Store Trading History in Milvus for Smarter Decisions
 
-Exa fixed my information problem. But I was still repeating the same trades — panic-selling during dips that recovered within days, chasing momentum into stocks that were already overpriced. I'd act on emotion, regret it, and forget the lesson by the time a similar situation came around.
+Exa fixed my information problem. But I was still repeating the same trades — panic-selling during dips that recovered within days, and chasing momentum into stocks that were already overpriced. I'd act on emotion, regret it, and forget the lesson by the time a similar situation came around.
 
-I needed a personal knowledge base: my past trades, my reasoning, my screw-ups. Not something I'd have to review manually (I'd tried that and never kept it up), but something the agent could search on its own whenever a similar situation came up. If I'm about to repeat a mistake, I want the agent to tell me before I hit the button. Matching "current situation" to "past experience" is a similarity search problem that vector databases solve, so all my data had to be stored in one.
+I needed a personal knowledge base: something that could store my past trades, my reasoning, and my screw-ups. Not something I'd have to review manually (I'd tried that and never kept it up), but something the agent could search on its own whenever a similar situation came up. If I'm about to repeat a mistake, I want the agent to tell me before I hit the button. Matching "current situation" to "past experience" is a similarity search problem that vector databases solve, so I picked one to store my data.
 
-I used [Milvus Lite](https://github.com/milvus-io/milvus-lite), a lightweight version of Milvus that runs locally with no server setup. It is perfect for prototyping and experimenting. I split my data into three collections. The embedding dimension is 1536 to match OpenAI's text-embedding-3-small model, which can be used directly:
+I used [Milvus Lite](https://github.com/milvus-io/milvus-lite), a lightweight version of Milvus that runs locally. It has no server setu, and is perfect for prototyping and experimenting. I split my data into three collections. The embedding dimension is 1536 to match OpenAI's text-embedding-3-small model, which can be used directly:
 
 ```
 from pymilvus import MilvusClient, DataType
@@ -186,11 +186,11 @@ The three collections map to three types of personal data, each with a different
 | **Decisions & Patterns** | Specific past trades, lessons learned, market observations | Retrieved via similarity search only when a relevant situation comes up |
 | **External knowledge** | Research reports, SEC filings, public data | Not stored in Milvus — searchable through Exa |
 
-Mixing these into one collection would mean either bloating every prompt with irrelevant trade history or losing core biases when they don't match the current query closely enough.
+I built three different collections because mixing these into one collection would mean either bloating every prompt with irrelevant trade history, or losing core biases when they don't match the current query closely enough.
 
-Once the collections exist, the agent needs to populate them automatically. I don't want to write notes after every conversation, so I built a memory extractor that runs at the end of each chat session.
+Once the collections existed, I needed a way to populate them automatically. I didn’t want to copy-paste information after every conversation with the agent, so I built a memory extractor that runs at the end of each chat session.
 
-It does two things: extract and deduplicate. The extractor asks the LLM to pull structured insights from the conversation — decisions, preferences, patterns, lessons — and routes each one to the right collection. Before storing anything, it checks similarity against what's already there. If a new insight is more than 92% similar to an existing entry, it gets skipped.
+The extractor does two things: extract and deduplicate. The extractor asks the LLM to pull structured insights from the conversation — decisions, preferences, patterns, lessons — and routes each one to the right collection. Before storing anything, it checks similarity against what's already there. If a new insight is more than 92% similar to an existing entry, it gets skipped.
 
 ```
 import json
@@ -305,15 +305,15 @@ context = recall_my_experience(
 # - My pattern: "tech selloffs from geopolitics recover in 1-3 weeks"
 ```
 
-For example, when tech stocks dropped 3-4% on Middle East tensions in early March, the agent pulled up three things: a lesson from October 2024 about not panic-selling during a geopolitical dip, a preference note that I tend to overweight geopolitical risk, and a pattern I'd recorded that tech selloffs driven by geopolitics typically recover in one to three weeks.
+For example, when tech stocks dropped 3-4% on Middle East tensions in early March, the agent pulled up three things: a lesson from October 2024 about not panic-selling during a geopolitical dip, a preference note that I tend to overweight geopolitical risk, and a pattern I'd recorded (tech selloffs driven by geopolitics typically recover in one to three weeks.)
 
-My coworker called this "reinforcement learning for retail investors" where I'm the model being trained on my own loss function. Fair enough. At least now there's a feedback loop between what I did and what I'm about to do.
+My coworker's take: if your training data is a losing record, what exactly is the AI learning? But that's the whole point — the agent isn't copying my trades, it's memorizing them so it can talk me out of the next one.
 
 ## Step 3: Teach Your Agent to Analyze with OpenClaw Skills
 
-At this point the agent has good information ([Exa](https://exa.ai/)) and personal memory ([Milvus](https://github.com/milvus-io/milvus-lite)). But if you hand both to an LLM and say "analyze this," you get a generic, hedge-everything response. It mentions every possible angle and concludes with "investors should weigh the risks," in other words, nothing.
+At this point, the agent has reliable information ([Exa](https://exa.ai/)) and personal memory ([Milvus](https://github.com/milvus-io/milvus-lite)). But if you hand both to an LLM and say "analyze this," you get a generic, hedge-everything response. It mentions every possible angle and concludes with "investors should weigh the risks." It might as well have said nothing.
 
-The fix is to write your own analytical framework and give it to the agent as explicit instructions. Which indicators you care about, which situations you consider dangerous, when to be conservative versus aggressive. These rules are different for every investor, so you have to define them yourself.
+The fix is to write your own analytical framework and give it to the agent as explicit instructions. You have to tell it which indicators you care about, which situations you consider dangerous, and when to be conservative versus aggressive. These rules are different for every investor, so you have to define them yourself.
 
 OpenClaw does this through Skills — markdown files in a skills/ directory. When the agent encounters a relevant situation, it loads the matching Skill and follows your framework instead of freewheeling.
 
@@ -362,7 +362,7 @@ let fear override data. If my Milvus history shows I regretted
 selling after a dip, say so explicitly.
 ```
 
-The last line is the most important: "Always surface my past mistakes. I have a tendency to let fear override data. If my Milvus history shows I regretted selling after a dip, say so explicitly." That's a correction mechanism built specifically for my psychology. Your version would encode your own tendencies.
+The last line is the most important: "Always surface my past mistakes. I have a tendency to let fear override data. If my Milvus history shows I regretted selling after a dip, say so explicitly." That's me telling the agent exactly where I go wrong, so it knows when to push back. If you build your own, this is the part you'd customize based on your biases.
 
 I wrote similar Skills for sentiment analysis, macro indicators, and sector rotation signals. I also wrote Skills that simulate how investors I admire would evaluate the same situation — Buffett's value framework, Bridgewater's macro approach. These aren't decision-makers; they're additional perspectives.
 
@@ -370,7 +370,7 @@ A warning: don't let LLMs calculate technical indicators like RSI or MACD. They 
 
 ## Step 4: Start Your Agent with OpenClaw Heartbeat
 
-Everything above still requires you to trigger it manually. If you have to open a terminal every time you want an update, you're back to square one — probably doomscrolling your brokerage app during meetings again.
+Everything above still requires you to trigger it manually. If you have to open a terminal every time you want an update, you're practically back to doomscrolling your brokerage app during meetings again.
 
 OpenClaw's Heartbeat mechanism fixes this. A gateway pings the agent every 30 minutes (configurable), and the agent checks a HEARTBEAT.md file to decide what to do at that moment. It’s a markdown file with time-based rules:
 
@@ -398,7 +398,7 @@ OpenClaw's Heartbeat mechanism fixes this. A gateway pings the agent every 30 mi
 - Note any new patterns worth remembering
 ```
 
-![](https://assets.zilliz.com/blog_Open_Claw_2_1690efaffd.jpg)
+![](https://assets.zilliz.com/blog_Open_Claw_2_b2c5262371.jpg)
 
 ## Results: Less Screen Time, Fewer Impulsive Trades
 
@@ -420,9 +420,9 @@ The total cost: $10/month for OpenClaw, $10/month for Exa, and a bit of electric
 
 I kept making the same impulsive trades because my information was bad, I seldom reviewed my own history, and staring at the market all day made it worse. So I built an AI agent that solves those problems by doing three things:
 
--   **Gathers reliable market news automatically** **using** **[Exa](https://exa.ai/)**, so I start each morning with a clean briefing instead of an hour of doomscrolling.
--   **Remembers my past trades with [Milvus](https://milvus.io/) and warns me** when I'm about to repeat a mistake, using Milvus as a personal vector database.
--   **Runs on** **[OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md)** **autopilot and only pings me when it matters**, using OpenClaw Skills and Heartbeat — no cron jobs, no glue code.
+-   **Gathers reliable market news** with **[Exa](https://exa.ai/)**, replacing an hour of scrolling through SEO spam and paywalled sites.
+-   **Remembers my past trades** with [Milvus](http://milvus.io) and warns me when I'm about to repeat a mistake I've already regretted.
+-   **Runs on autopilot** with [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) and only pings me when something actually matters.
 
 Total cost: $20/month. The agent doesn't trade or touch my money.
 
