@@ -23,11 +23,11 @@ The repeat part is what kills me. Every time I stare at the market, I end up mak
 
 So I built an agent with OpenClaw that watches the market instead of me and stops me from making the same mistakes. It doesn't trade or touch my money, because that’d be too much of a security risk. Instead, it saves me time spent on market watching, and keeps me from making the same mistakes.
 
-This agent consists of three parts, and costs about $20/month:
+This agent consists of three parts, and costs about \$20/month:
 
--   **[OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md)** **for running it all on autopilot.** OpenClaw runs the agent on a 30-minute heartbeat and only pings me when something actually matters, which relieves the FOMO that used to keep me glued to the screen. Before, the more I watched prices, the more I reacted on impulse.
--   **[Exa](https://exa.ai/)** **for accurate, real-time searches.** Exa browses and summarizes hand-picked information sources on a schedule, so I get a clean briefing every morning. Before, I was spending an hour a day sifting through SEO spam and speculation to find reliable news — and it couldn't be automated because finance sites update daily to fight scrapers.
--   **[M](https://milvus.io/)****[ilvus](https://milvus.io/)** **for personal history and preferences.** Milvus stores my trading history, and the agent searches it before I make a decision — if I'm about to repeat something I've regretted, it tells me. Before, reviewing past trades was tedious enough that I just didn't, so the same mistakes kept happening with different tickers. [Zilliz Cloud](https://zilliz.com/cloud) is the fully managed version of Milvus. If you'd like a hassle-free experience, Zilliz Cloud is a great option ([free tier available](https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&utm_button=banner_left&_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..).)
+-   **[OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) for running it all on autopilot.** OpenClaw runs the agent on a 30-minute heartbeat and only pings me when something actually matters, which relieves the FOMO that used to keep me glued to the screen. Before, the more I watched prices, the more I reacted on impulse.
+-   **[Exa](https://exa.ai/) for accurate, real-time searches.** Exa browses and summarizes hand-picked information sources on a schedule, so I get a clean briefing every morning. Before, I was spending an hour a day sifting through SEO spam and speculation to find reliable news — and it couldn't be automated because finance sites update daily to fight scrapers.
+-   **[Milvus](https://milvus.io/) for personal history and preferences.** Milvus stores my trading history, and the agent searches it before I make a decision — if I'm about to repeat something I've regretted, it tells me. Before, reviewing past trades was tedious enough that I just didn't, so the same mistakes kept happening with different tickers. [Zilliz Cloud](https://zilliz.com/cloud) is the fully managed version of Milvus. If you'd like a hassle-free experience, Zilliz Cloud is a great option ([free tier available](https://cloud.zilliz.com/signup).)
 
 Here's how I set it up, step by step.
 
@@ -414,7 +414,7 @@ Before this system, I was spending 10–15 hours a week on information gathering
 
 The information quality is also better. I'm reading summaries from Reuters and Bloomberg instead of whatever went viral on Twitter. And with the agent pulling up my past mistakes every time I'm tempted to act, I've cut my impulsive trades significantly. I can't prove this has made me a better investor yet, but it's made me a less reckless one.
 
-The total cost: $10/month for OpenClaw, $10/month for Exa, and a bit of electricity to keep Milvus Lite running.
+The total cost: \$10/month for OpenClaw, \$10/month for Exa, and a bit of electricity to keep Milvus Lite running.
 
 ## Conclusion
 
@@ -424,7 +424,7 @@ I kept making the same impulsive trades because my information was bad, I seldom
 -   **Remembers my past trades** with [Milvus](http://milvus.io) and warns me when I'm about to repeat a mistake I've already regretted.
 -   **Runs on autopilot** with [OpenClaw](https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md) and only pings me when something actually matters.
 
-Total cost: $20/month. The agent doesn't trade or touch my money.
+Total cost: \$20/month. The agent doesn't trade or touch my money.
 
 The biggest change wasn't the data or the alerts. It was that I stopped watching the market. I forgot about it entirely last Wednesday, which has never happened in my years of trading. I still lose money sometimes, but way less often, and I actually enjoy my weekends again. My coworkers haven't updated the joke yet, but give it time.
 
