@@ -89,7 +89,9 @@ docker-compose up -d
 docker-compose ps -a
 ```
 
-### ![](https://assets.zilliz.com/Blog_Howto_Builda_RAG_Pipelinewith_Ultra_RA_Gv2and_Mi_1_ff7eb318e0.png)Step 2: Clone the Project
+![](https://assets.zilliz.com/Blog_Howto_Builda_RAG_Pipelinewith_Ultra_RA_Gv2and_Mi_1_ff7eb318e0.png)
+
+### Step 2: Clone the Project
 
 ```
 git clone https://github.com/OpenBMB/UltraRAG.git
@@ -1244,7 +1246,7 @@ ultrarag run examples/rag_Milvus.yaml
 
 ## Conclusion
 
-Building a traditional RAG pipeline often means writing hundreds or even thousands of lines of code. UltraRAG v2 takes a very different approach. With its MCP-based modular design, declarative YAML configuration, and lightweight orchestration model, you can build the same end-to-end pipeline in just a few dozen lines. Also, YAML is used to describe the steps of the workflow, you don’t have to actually write real code. This make it much easier to bring enterprise-level RAG into real-world applications.
+Building a traditional RAG pipeline often means writing hundreds or even thousands of lines of code. UltraRAG v2 takes a very different approach. With its MCP-based modular design, declarative YAML configuration, and lightweight orchestration model, you can build the same end-to-end pipeline in just a few dozen lines. Furthermore, YAML is used to describe the steps of the workflow. You don’t actually need to write real code. This makes it much easier to bring enterprise-level RAG into real-world applications.
 
 Integrating Milvus into this workflow adds another advantage: a high-performance, production-ready vector database that’s designed specifically for scalable semantic retrieval. Together, Milvus and UltraRAG v2 make it far easier to prototype quickly, iterate confidently, and deploy RAG systems that can handle real workloads.
 
