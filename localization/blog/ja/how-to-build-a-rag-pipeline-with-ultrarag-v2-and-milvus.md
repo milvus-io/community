@@ -1,6 +1,7 @@
 ---
 id: how-to-build-a-rag-pipeline-with-ultrarag-v2-and-milvus.md
-title: UltraRAG v2とmilvusでRAGパイプラインを構築する方法
+title: |
+  How to Build a RAG Pipeline with UltraRAG v2 and Milvus
 author: Min Yin
 date: 2026-3-11
 cover: assets.zilliz.com/cover_ultra_RAG_7bf485abd9.jpg
@@ -13,17 +14,17 @@ meta_keywords: >-
   vector search retrieval
 meta_title: |
   Build a RAG Pipeline with UltraRAG v2 and Milvus
-desc: >-
-  UltraRAG
-  v2とMilvusを使用し、MCP、モジュラーコンポーネント、YAMLベースのワークフローを使用してRAGパイプラインを構築する方法を学びます。
+desc: >
+  Learn how to build a RAG pipeline using UltraRAG v2 and Milvus with MCP,
+  modular components, and YAML-based workflows.
 origin: >-
   https://milvus.io/blog/how-to-build-a-rag-pipeline-with-ultrarag-v2-and-milvus.md
 ---
-<p>検索拡張型生成（RAG）は、単純な「検索→生成」パターンをはるかに超えて進化している。現代のシステムは、適応検索、マルチステップ・プランニング、動的意思決定を組み合わせた、完全な推論エンジンのような振る舞いをするようになっている。しかしこの進歩には、<strong>高いエンジニアリングコストと</strong> <strong>システムの複雑化という</strong>2つの大きな課題がある。既存の手法を再現するには、複雑なパイプラインを再構築する必要があり、新しいアイデアを試すには、オーケストレーションに多大な労力を要する。</p>
-<p><a href="https://github.com/OpenBMB/UltraRAG">UltraRAG v2は</a>、これらの難点に直接取り組む。THUNLP、NEUIR、OpenBMB、AI9starsによって開発されたUltraRAG v2は、モデルコンテキストプロトコル（MCP）上に構築された最初のRAGフレームワークである。複雑なロジックを手書きする代わりに、研究者はシンプルなYAMLファイルでシーケンス、ループ、分岐動作を宣言することができ、多段階のRAGシステムを高速かつローコードで構築することができる。</p>
-<p>UltraRAGのようなフレームワークを使っても、RAGシステムには強力な検索レイヤーが必要である。そこで役立つのがベクターデータベースである。オープンソースのベクトルデータベースである<a href="https://milvus.io/">Milvusは</a>、埋め込みデータを保存し、インデックスを構築し、大規模なデータセットに対して高速な類似性検索を実行する。UltraRAGパイプラインでは、Milvusがモデルの関連情報を検索する。UltraRAGとMilvusを組み合わせることで、柔軟で効率的なRAGシステムの構築が容易になる。</p>
-<p>この投稿では、MilvusとUltraRAG v2を統合し、完全なRAGパイプラインを構築する方法を紹介します。</p>
-<h2 id="UltraRAG-v2-Architecture-at-a-Glance" class="common-anchor-header">UltraRAG v2アーキテクチャの概要<button data-href="#UltraRAG-v2-Architecture-at-a-Glance" class="anchor-icon" translate="no">
+<p>Retrieval-Augmented Generation (RAG) has evolved far beyond the simple “retrieve then generate” pattern. Modern systems now behave more like full reasoning engines, combining adaptive retrieval, multi-step planning, and dynamic decision-making. But this progress comes with two major challenges: <strong>high engineering cost</strong> and <strong>growing system complexity</strong>. Reproducing existing methods often requires rebuilding intricate pipelines, while experimenting with new ideas demands significant orchestration work.</p>
+<p><a href="https://github.com/OpenBMB/UltraRAG">UltraRAG v2</a> tackles these pain points directly. Developed by THUNLP, NEUIR, OpenBMB, and AI9stars, it’s the first RAG framework built on the Model Context Protocol (MCP). Instead of hand-writing complex logic, researchers can declare sequences, loops, and branching behavior in simple YAML files, enabling fast, low-code construction of multi-stage RAG systems.</p>
+<p>Even with a framework like UltraRAG, a RAG system still needs a strong retrieval layer. This is where a vector database helps. <a href="https://milvus.io/">Milvus</a>, an open-source vector database, stores embeddings, builds indexes, and performs fast similarity search on large datasets. In an UltraRAG pipeline, Milvus retrieves relevant information for the model. Together, UltraRAG and Milvus make it easier to build RAG systems that are both flexible and efficient.</p>
+<p>In this post, we’ll show how to integrate Milvus with UltraRAG v2 and build a complete RAG pipeline.</p>
+<h2 id="UltraRAG-v2-Architecture-at-a-Glance" class="common-anchor-header">UltraRAG v2 Architecture at a Glance<button data-href="#UltraRAG-v2-Architecture-at-a-Glance" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,12 +39,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>異なるRAGシステムでは、検索、生成、評価などのコア機能は類似しているが、異なる方法で実装されているため、コンポーネントの再利用や組み合わせが困難である。MCPは、シンプルなClient-Serverアーキテクチャを通して、LLMが外部ツールとどのように通信するかを標準化することで、この問題に対処しています。</p>
-<p>これに触発され、UltraRAG v2は3つのコアアイデアを中心に構築されている：</p>
+    </button></h2><p>In different RAG systems, core functions such as retrieval, generation, and evaluation are similar but implemented in different ways, making components difficult to reuse or combine. The MCP addresses this problem by standardizing how LLMs communicate with external tools through a simple Client–Server architecture.</p>
+<p>Inspired by this, UltraRAG v2 is built around three core ideas:</p>
 <ul>
-<li><strong>モジュール式カプセル化：</strong>UltraRAG v2は、主要なRAG機能を、統一されたツールインターフェースを持つスタンドアロンのMCPサーバーにパッケージ化します。これにより、バックエンドの配線よりも推論ロジックに集中できる、すっきりとしたモジュール構造を実現しています。新しいコンポーネントは、プラグインのように追加、置き換え、アップグレードすることができます。</li>
-<li><strong>YAMLコンフィギュレーション：</strong>複雑なマルチステップのRAGパイプラインはデバッグが困難です。UltraRAG v2は、すべての制御ロジックをYAMLに移行することで、それらを透過的にします。シーケンス、ループ、条件分岐は宣言的な方法で定義され、各ステップの入力と出力は明確に追跡可能です。これにより、デバッグが大幅に簡素化され、ワークフローの反復が加速される。</li>
-<li><strong>軽量なワークフロー・オーケストレーション：</strong>ビルトインのMCPクライアントがパイプラインを実行し、ワークフローの動作を基本的な実装から完全に切り離します。従来のRAGシステムは、新しい機能を追加するためにコアコードを編集する必要がありましたが、UltraRAG v2は、プラグインをインストールするように、新しいモジュールを独立してデプロイできるマイクロサービスのようなモデルを採用しています。</li>
+<li><strong>Modular encapsulation:</strong> UltraRAG v2 packages key RAG capabilities into standalone MCP Servers with unified Tool interfaces. This creates a clean, modular structure where you can focus on reasoning logic rather than backend wiring. New components can be added, replaced, or upgraded like plugins—no core-code edits required.</li>
+<li><strong>YAML configuration:</strong> Complex, multi-step RAG pipelines are hard to debug. UltraRAG v2 makes them transparent by moving all control logic into YAML. Sequences, loops, and conditional branches are defined in a declarative manner, and every step’s inputs and outputs are clearly traceable. This greatly simplifies debugging and accelerates workflow iteration.</li>
+<li><strong>Lightweight workflow orchestration:</strong> A built-in MCP Client executes pipeline, keeping workflow behavior fully decoupled from underlying implementations. While traditional RAG systems often require editing core code to add new features, UltraRAG v2 adopts a microservice-like model where new modules can be deployed independently, just like installing a plugin.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -51,7 +52,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h2 id="Why-and-How-to-Integrate-Milvus-into-the-UltraRAG-Pipeline" class="common-anchor-header">MilvusをUltraRAGパイプラインに統合する理由と方法<button data-href="#Why-and-How-to-Integrate-Milvus-into-the-UltraRAG-Pipeline" class="anchor-icon" translate="no">
+<h2 id="Why-and-How-to-Integrate-Milvus-into-the-UltraRAG-Pipeline" class="common-anchor-header">Why and How to Integrate Milvus into the UltraRAG Pipeline<button data-href="#Why-and-How-to-Integrate-Milvus-into-the-UltraRAG-Pipeline" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,16 +67,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>UltraRAG v2スタックでは、ベクターデータベースが検索品質とシステムパフォーマンスにおいて重要な役割を果たします。オープンソースのベクターデータベースである<strong>Milvusは</strong>、そのスケーラビリティ、効率的なインデックス作成、シームレスな統合機能により、非常に適しています。</p>
-<p>MilvusがUltraRAGパイプラインに統合されると、ultrarag buildやultrarag runのような簡単なコマンドでインデックスを構築し、クエリを実行することができます。UltraRAGは自動的に設定を読み込み、タスクを完了するために必要な全てのモジュールを調整します。</p>
-<p>このデモでは、4つの目的について説明します：</p>
+    </button></h2><p>In the UltraRAG v2 stack, the vector database plays a critical role in retrieval quality and system performance. <strong>Milvus</strong>, an open-source vector database, is a strong fit thanks to its scalability, efficient indexing, and seamless integration capabilities.</p>
+<p>Once Milvus is integrated into an UltraRAG pipeline, you can build indexes and run queries using simple commands such as ultrarag build and ultrarag run. UltraRAG will automatically load your configuration and coordinate all modules needed to complete the task.</p>
+<p>In this demo, we will walk through four objectives:</p>
 <ol>
-<li><p>MilvusをUltraRAG v2プロジェクトに統合する。</p></li>
-<li><p>Milvusを検索に使用するカスタムパイプラインの作成</p></li>
-<li><p>全てのパイプラインを実行し、エンドツーエンドで動作することを確認する。</p></li>
-<li><p>実行結果の確認（オプション）</p></li>
+<li><p>Integrate Milvus into an UltraRAG v2 project</p></li>
+<li><p>Create a custom pipeline that uses Milvus for retrieval</p></li>
+<li><p>Run the full pipeline to verify everything works end to end</p></li>
+<li><p>Check the run results (Optional)</p></li>
 </ol>
-<h3 id="Dataset-Setup" class="common-anchor-header">データセットのセットアップ</h3><p>このデモでは、Milvus公式リポジトリにあるMilvus FAQデータセットを使用します。データセットはJSONL形式で提供されます。</p>
+<h3 id="Dataset-Setup" class="common-anchor-header">Dataset Setup</h3><p>For this demo, we will use the Milvus FAQ dataset from the official Milvus repository. The dataset is provided in JSONL format.</p>
 <pre><code translate="no">{<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;faq_0&quot;</span>, <span class="hljs-string">&quot;contents&quot;</span>: <span class="hljs-string">&quot;If you failed to pull the Milvus Docker image from Docker Hub, try adding other registry mirrors. Users from the Chinese mainland can add the URL https://registry.docker-cn.com to the registry-mirrors array in /etc.docker/daemon.json.&quot;</span>}
 {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;faq_1&quot;</span>, <span class="hljs-string">&quot;contents&quot;</span>: <span class="hljs-string">&quot;Docker is an efficient way to deploy Milvus, but not the only way. You can also deploy Milvus from source code. This requires Ubuntu (18.04 or higher) or CentOS (7 or higher). See Building Milvus from Source Code for more information.&quot;</span>}
 {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;faq_2&quot;</span>, <span class="hljs-string">&quot;contents&quot;</span>: <span class="hljs-string">&quot;Recall is affected mainly by index type and search parameters. For FLAT index, Milvus takes an exhaustive scan within a collection, with a 100% return. For IVF indexes, the nprobe parameter determines the scope of a search within the collection. Increasing nprobe increases the proportion of vectors searched and recall, but diminishes query performance.&quot;</span>}
@@ -87,10 +88,10 @@ origin: >-
 {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;faq_8&quot;</span>, <span class="hljs-string">&quot;contents&quot;</span>: <span class="hljs-string">&quot;Yes. You can install Milvus on Windows either by compiling from source code or from a binary package. See Run Milvus on Windows to learn how to install Milvus on Windows.&quot;</span>}
 {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;faq_9&quot;</span>, <span class="hljs-string">&quot;contents&quot;</span>: <span class="hljs-string">&quot;It is not recommended to install PyMilvus on Windows. But if you have to install PyMilvus on Windows but got an error, try installing it in a Conda environment. See Install Milvus SDK for more information about how to install PyMilvus in the Conda environment.&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-1-Deploy-the-Milvus-Vector-Database" class="common-anchor-header">ステップ1: Milvus Vectorデータベースのデプロイ</h3><p><strong>配置ファイルのダウンロード</strong></p>
+<h3 id="Step-1-Deploy-the-Milvus-Vector-Database" class="common-anchor-header">Step 1: Deploy the Milvus Vector Database</h3><p><strong>Download the Deployment Files</strong></p>
 <pre><code translate="no">wget https://github.com/Milvus-io/Milvus/releases/download/v2.5.12/Milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Milvusサービスの開始</strong></p>
+<p><strong>Start the Milvus Service</strong></p>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">docker-compose ps -a
@@ -101,10 +102,10 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Clone-the-Project" class="common-anchor-header">ステップ2: プロジェクトのクローン</h3><pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/OpenBMB/UltraRAG.git
+<h3 id="Step-2-Clone-the-Project" class="common-anchor-header">Step 2: Clone the Project</h3><pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/OpenBMB/UltraRAG.git
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Implement-the-Pipeline" class="common-anchor-header">ステップ 3: パイプラインの実装</h3><p><strong>Milvusベクターデータベースの統合</strong></p>
-<p>注意: Milvusは検索モジュールでサポートされているベクターデータベースの種類の1つとして追加されています。</p>
+<h3 id="Step-3-Implement-the-Pipeline" class="common-anchor-header">Step 3: Implement the Pipeline</h3><p><strong>Integrate the Milvus Vector Database</strong></p>
+<p>Note: Milvus is added as one of the supported vector database types in the retrieval module.</p>
 <pre><code translate="no">vim ultraRAG/UltraRAG/servers/retriever/src/retriever.py
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
@@ -915,8 +916,8 @@ retriever_app = Flask(__name__)
     Retriever(app)
     app.run(transport=<span class="hljs-string">&quot;stdio&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>パラメータ設定ファイルの定義</strong></p>
-<p>注意: このファイルはパイプラインで使用されるすべてのパラメータ設定を指定します。</p>
+<p><strong>Define the Parameter Configuration File</strong></p>
+<p>Note: This file specifies all parameter settings used in the pipeline.</p>
 <pre><code translate="no">vim parameter.yaml
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-comment"># servers/retriever/parameter.yaml</span>
@@ -958,8 +959,8 @@ Milvus_port: 19530
 collection_name: <span class="hljs-string">&quot;ultrarag_collection_v3&quot;</span>
 embedding_dim: 1024
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>サーバー設定ファイルの定義</strong></p>
-<p>注：この構成には、Alibaba Cloud APIとの統合が含まれます。</p>
+<p><strong>Define the Server Configuration File</strong></p>
+<p>Note: This configuration includes integration with Alibaba Cloud APIs.</p>
 <pre><code translate="no">vim rag_Milvus_faq_server.yaml
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">benchmark:
@@ -1037,8 +1038,8 @@ retriever:
       output:
       - ret_psg
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>ビルドインデックスの</strong><strong>定義</strong></p>
-<p>注：ドキュメントコーパスをベクトル埋め込みに変換し、milvusに格納します。この処理に必要なインデックス作成パラメータを設定します。</p>
+<p><strong>Define the</strong> <strong>Build Index</strong></p>
+<p>Note: Convert the document corpus into vector embeddings and store them in Milvus. Configure the key indexing parameters needed for this process.</p>
 <pre><code translate="no">vim Milvus_index_parameter.yaml
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">retriever:
@@ -1072,8 +1073,8 @@ pipeline:
   <span class="hljs-comment"># Note: Index building is now handled by setup_Milvus_collection.py</span>
   <span class="hljs-comment"># The collection ultrarag_collection_v3 should already exist with proper indexing</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>RAGの実行</strong></p>
-<p>検索、回答生成、評価を含む完全なRAGワークフローを実行します。この処理に必要なインデックス作成パラメータを設定します。</p>
+<p><strong>Run RAG</strong></p>
+<p>Runs the full RAG workflow including retrieval, answer generation, and evaluation. Configure the key indexing parameters needed for this process.</p>
 <pre><code translate="no">vim rag_Milvus_faq_server
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">benchmark:
@@ -1176,8 +1177,8 @@ pipeline:
 - custom.output_extract_from_boxed
 - evaluation.evaluate
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>インデックス構築の実行</strong></p>
-<p>注：正常に実行されると、システムはベクトル埋め込みとインデックスファイルを生成します。RAGパイプラインはこれらを直接使用して検索を実行することができます。</p>
+<p><strong>Run the Build Index</strong></p>
+<p>Note: After a successful run, the system generates the vector embeddings and index files. The RAG pipeline can then use these directly to perform retrieval.</p>
 <pre><code translate="no">ultrarag build examples/Milvus_index.yaml
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -1194,8 +1195,8 @@ pipeline:
     <span></span>
   </span>
 </p>
-<p><strong>RAGクエリーの実行</strong></p>
-<p>注：完全なRAGパイプラインを構築し、エンドツーエンドで実行します。</p>
+<p><strong>Run the RAG Query</strong></p>
+<p>Note: Build and execute the full RAG pipeline end to end.</p>
 <pre><code translate="no">ultrarag build examples/rag_Milvus.yaml
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -1218,7 +1219,7 @@ pipeline:
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -1233,7 +1234,7 @@ pipeline:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>従来のRAGパイプラインの構築は、数百から数千行のコードを書くことを意味します。UltraRAG v2は全く異なるアプローチをとります。MCPベースのモジュール設計、宣言的なYAML設定、軽量なオーケストレーションモデルにより、同じエンドツーエンドのパイプラインをわずか数十行で構築できます。さらに、YAMLはワークフローのステップを記述するために使われる。実際にコードを書く必要はない。これによって、エンタープライズレベルのRAGを実世界のアプリケーションに導入することが非常に容易になる。</p>
-<p>Milvusをこのワークフローに統合することで、スケーラブルなセマンティック検索のために特別に設計された、高性能で生産可能なベクターデータベースというもう一つの利点が加わる。MilvusとUltraRAG v2を組み合わせることで、迅速なプロトタイプ作成、確実な反復、そして実際のワークロードに対応できるRAGシステムのデプロイがはるかに容易になります。</p>
-<p><strong>RAG開発を簡素化する準備はできましたか？</strong>UltraRAG v2とMilvusをお試しください。サンプルパイプラインをご覧いただき、ご自身で実行し、数行の設定で完全なRAGワークフローを構築してください。</p>
-<p>ご不明な点がございましたら、<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slackチャンネルに</a>ご参加いただくか、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワーの</a>20分セッションをご予約ください。</p>
+    </button></h2><p>Building a traditional RAG pipeline often means writing hundreds or even thousands of lines of code. UltraRAG v2 takes a very different approach. With its MCP-based modular design, declarative YAML configuration, and lightweight orchestration model, you can build the same end-to-end pipeline in just a few dozen lines. Furthermore, YAML is used to describe the steps of the workflow. You don’t actually need to write real code. This makes it much easier to bring enterprise-level RAG into real-world applications.</p>
+<p>Integrating Milvus into this workflow adds another advantage: a high-performance, production-ready vector database that’s designed specifically for scalable semantic retrieval. Together, Milvus and UltraRAG v2 make it far easier to prototype quickly, iterate confidently, and deploy RAG systems that can handle real workloads.</p>
+<p><strong>Ready to simplify your RAG development?</strong> Try UltraRAG v2 with Milvus. Explore the example pipeline, run it yourself, and build a complete RAG workflow with just a few lines of configuration.</p>
+<p>If you have any questions, join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session to discuss your use case.</p>

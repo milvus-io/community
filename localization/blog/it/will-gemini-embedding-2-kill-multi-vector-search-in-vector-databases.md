@@ -1,8 +1,6 @@
 ---
 id: will-gemini-embedding-2-kill-multi-vector-search-in-vector-databases.md
-title: >-
-  Gemini Embedding 2 ucciderà la ricerca multivettoriale nei database
-  vettoriali?
+title: "Will Gemini Embedding 2 Kill Multi-Vector Search in\_Vector Databases?\n"
 author: Jack Li
 date: 2026-3-13
 cover: assets.zilliz.com/blog_Gemini_Embedding2_4_62bc980b71.png
@@ -17,18 +15,17 @@ meta_keywords: >-
   vector database
 meta_title: |
   Will Gemini Embedding 2 kill Multi-Vector Search in Vector Databases?
-desc: >-
-  Gemini Embedding 2 di Google mappa testo, immagini, video e audio in un unico
-  vettore. Questo renderà obsoleta la ricerca multivettoriale? No, ed ecco
-  perché.
+desc: >
+  Google's Gemini Embedding 2 maps text, images, video, and audio into one
+  vector. Will that make multi-vector search obsolete? No, and here's why.
 origin: >-
   https://milvus.io/blog/will-gemini-embedding-2-kill-multi-vector-search-in-vector-databases.md
 ---
-<p>Google ha rilasciato <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">Gemini Embedding 2</a>, il primo modello di embedding multimodale che mappa testo, immagini, video, audio e documenti in un unico spazio vettoriale.</p>
-<p>È possibile incorporare un videoclip, una foto di un prodotto e un paragrafo di testo con una sola chiamata API, e tutti finiranno nella stessa zona semantica.</p>
-<p>Prima di modelli come questo, era necessario far passare ogni modalità attraverso il proprio modello specialistico e poi memorizzare ogni risultato in una colonna vettoriale separata. Le colonne multivettore nei database vettoriali come <a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> sono state create proprio per questi scenari.</p>
-<p>Con Gemini Embedding 2, che mappa più modalità allo stesso tempo, sorge una domanda: in che misura Gemini Embedding 2 è in grado di sostituire le colonne multivettoriali e in che cosa non è all'altezza? Questo post illustra le caratteristiche di ciascun approccio e il loro funzionamento congiunto.</p>
-<h2 id="What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="common-anchor-header">Le differenze di Gemini Embedding 2 rispetto a CLIP/CLAP<button data-href="#What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="anchor-icon" translate="no">
+<p>Google released <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">Gemini Embedding 2</a> — the first multimodal embedding model that maps text, images, video, audio, and documents into a single vector space.</p>
+<p>You can embed a video clip, a product photo, and a paragraph of text with one API call, and they will all land in the same semantic neighborhood.</p>
+<p>Before models like this, you had to run each modality through its own specialist model, and then store each output in a separate vector column. Multi-vector columns in vector databases like <a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> were built precisely for such scenarios.</p>
+<p>With Gemini Embedding 2 mapping multiple modalities at the same time, a question arises: how much of multi-vector columns can Gemini Embedding 2 replace, and where does it fall short? This post walks through where each approach fits and how they work together.</p>
+<h2 id="What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="common-anchor-header">What’s Different About Gemini Embedding 2 When Compared to CLIP/CLAP<button data-href="#What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,30 +40,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>I modelli di embedding convertono i dati non strutturati in vettori densi, in modo che gli elementi semanticamente simili si raggruppino nello spazio vettoriale. Ciò che rende Gemini Embedding 2 diverso è che lo fa in modo nativo tra le varie modalità, senza modelli separati e senza pipeline di stitching.</p>
-<p>Fino a oggi, gli embedding multimodali implicavano modelli a doppio codificatore addestrati con l'apprendimento contrastivo: <a href="https://openai.com/index/clip/">CLIP</a> per le immagini-testo, <a href="https://arxiv.org/abs/2211.06687">CLAP</a> per l'audio-testo, ciascuno dei quali gestisce esattamente due modalità. Se servivano tutte e tre, si eseguivano più modelli e si coordinavano i loro spazi di incorporamento.</p>
-<p>Per esempio, indicizzare un podcast con la copertina significava eseguire CLIP per l'immagine, CLAP per l'audio e un codificatore di testo per la trascrizione: tre modelli, tre spazi vettoriali e una logica di fusione personalizzata per rendere i loro punteggi comparabili al momento dell'interrogazione.</p>
-<p>Invece, secondo l'<a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">annuncio ufficiale di Google</a>, ecco cosa supporta Gemini Embedding 2:</p>
+    </button></h2><p>Embedding models convert unstructured data into dense vectors so that semantically similar items cluster together in vector space. What makes Gemini Embedding 2 different is that it does this natively across modalities, with no separate models and no stitching pipelines.</p>
+<p>Until now, multimodal embeddings meant dual-encoder models trained with contrastive learning: <a href="https://openai.com/index/clip/">CLIP</a> for image-text, <a href="https://arxiv.org/abs/2211.06687">CLAP</a> for audio-text, each handling exactly two modalities. If you needed all three, you ran multiple models and coordinated their embedding spaces yourself.</p>
+<p>For example, indexing a podcast with cover art meant running CLIP for the image, CLAP for the audio, and a text encoder for the transcript — three models, three vector spaces, and custom fusion logic to make their scores comparable at query time.</p>
+<p>In contrast, according to <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">Google’s official announcement</a>, here is what Gemini Embedding 2 supports:</p>
 <ul>
-<li><strong>Testo</strong> fino a 8.192 token per richiesta</li>
-<li><strong>Immagini</strong> fino a 6 per richiesta (PNG, JPEG)</li>
-<li><strong>Video</strong> fino a 120 secondi (MP4, MOV)</li>
-<li><strong>Audio</strong> fino a 80 secondi, incorporato nativamente senza trascrizione ASR</li>
-<li><strong>Documenti</strong> in ingresso PDF, fino a 6 pagine</li>
+<li><strong>Text</strong> up to 8,192 tokens per request</li>
+<li><strong>Images</strong> up to 6 per request (PNG, JPEG)</li>
+<li><strong>Video</strong> up to 120 seconds (MP4, MOV)</li>
+<li><strong>Audio</strong> up to 80 seconds, embedded natively without ASR transcription</li>
+<li><strong>Documents</strong> PDF input, up to 6 pages</li>
 </ul>
-<p>Immagine<strong>di input mista</strong> + testo insieme in un'unica chiamata di incorporamento</p>
-<h3 id="Gemini-Embedding-2-vs-CLIPCLAP-One-Model-vs-Many-for-Multimodal-Embeddings" class="common-anchor-header">Gemini Embedding 2 vs. CLIP/CLAP Un modello vs. molti per l'embedding multimodale</h3><table>
+<p><strong>Mixed input</strong> image + text together in a single embedding call</p>
+<h3 id="Gemini-Embedding-2-vs-CLIPCLAP-One-Model-vs-Many-for-Multimodal-Embeddings" class="common-anchor-header">Gemini Embedding 2 vs. CLIP/CLAP One Model vs. Many for Multimodal Embeddings</h3><table>
 <thead>
-<tr><th></th><th><strong>Doppio codificatore (CLIP, CLAP)</strong></th><th><strong>Incorporazione Gemini 2</strong></th></tr>
+<tr><th></th><th><strong>Dual-encoder (CLIP, CLAP)</strong></th><th><strong>Gemini Embedding 2</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Modalità per modello</strong></td><td>2 (ad esempio, immagine + testo)</td><td>5 (testo, immagine, video, audio, PDF)</td></tr>
-<tr><td><strong>Aggiunta di una nuova modalità</strong></td><td>Si aggiunge un altro modello e si allineano gli spazi manualmente</td><td>Già incluso - una sola chiamata API</td></tr>
-<tr><td><strong>Input cross-modale</strong></td><td>Codificatori separati, chiamate separate</td><td>Input interlacciato (ad esempio, immagine + testo in un'unica richiesta)</td></tr>
-<tr><td><strong>Architettura</strong></td><td>Codificatori visivi e testuali separati allineati tramite perdita contrastiva</td><td>Modello singolo che eredita la comprensione multimodale da Gemini</td></tr>
+<tr><td><strong>Modalities per model</strong></td><td>2 (e.g., image + text)</td><td>5 (text, image, video, audio, PDF)</td></tr>
+<tr><td><strong>Adding a new modality</strong></td><td>You bring another model and align spaces manually</td><td>Already included — one API call</td></tr>
+<tr><td><strong>Cross-modal input</strong></td><td>Separate encoders, separate calls</td><td>Interleaved input (e.g., image + text in one request)</td></tr>
+<tr><td><strong>Architecture</strong></td><td>Separate vision and text encoders aligned via contrastive loss</td><td>Single model inheriting multimodal understanding from Gemini</td></tr>
 </tbody>
 </table>
-<h2 id="Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="common-anchor-header">Il vantaggio di Gemini Embedding 2: Semplificazione della pipeline<button data-href="#Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="anchor-icon" translate="no">
+<h2 id="Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="common-anchor-header">Gemini Embedding 2’s Advantage: Pipeline Simplification<button data-href="#Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,11 +78,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Prendiamo uno scenario comune: costruire un motore di ricerca semantico su una breve videoteca. Ogni clip presenta fotogrammi visivi, audio parlato e testo dei sottotitoli, che descrivono lo stesso contenuto.</p>
-<p><strong>Prima di Gemini Embedding 2</strong>, erano necessari tre modelli di embedding separati (immagine, audio, testo), tre colonne vettoriali e una pipeline di recupero che eseguisse il richiamo a più vie, la fusione dei risultati e la deduplicazione. Si tratta di un sacco di parti mobili da costruire e mantenere.</p>
-<p><strong>Ora</strong> è possibile inserire i fotogrammi, l'audio e i sottotitoli del video in un'unica chiamata API e ottenere un vettore unificato che cattura l'intero quadro semantico.</p>
-<p>Naturalmente, si è tentati di concludere che le colonne multivettore sono morte. Ma questa conclusione confonde la "rappresentazione unificata multimodale" con il "recupero vettoriale multidimensionale". Risolvono problemi diversi e capire la differenza è importante per scegliere l'approccio giusto.</p>
-<h2 id="What-is-Multi-Vector-Search-in-Milvus" class="common-anchor-header">Che cos'è la ricerca multivettoriale in Milvus?<button data-href="#What-is-Multi-Vector-Search-in-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Take a common scenario: building a semantic search engine over a short video library. Each clip has visual frames, spoken audio, and subtitle text — all describing the same content.</p>
+<p><strong>Before Gemini Embedding 2</strong>, you’d need three separate embedding models (image, audio, text), three vector columns, and a retrieval pipeline that does multi-way recall, result fusion, and deduplication. That’s a lot of moving parts to build and maintain.</p>
+<p><strong>Now</strong>, you can feed the video’s frames, audio, and subtitles into a single API call and get one unified vector that captures the full semantic picture.</p>
+<p>Naturally, it’s tempting to conclude that multi-vector columns are dead. But that conclusion confuses “multimodal unified representation” with “multi-dimensional vector retrieval.” They solve different problems, and understanding the difference matters for picking the right approach.</p>
+<h2 id="What-is-Multi-Vector-Search-in-Milvus" class="common-anchor-header">What is Multi-Vector Search in Milvus?<button data-href="#What-is-Multi-Vector-Search-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,22 +97,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In <a href="http://milvus.io">Milvus</a>, la ricerca multivettoriale consiste nel cercare lo stesso oggetto in più campi vettoriali contemporaneamente e poi combinare i risultati con un reranking.</p>
-<p>L'idea di base è che un singolo oggetto spesso ha più di un tipo di significato. Un prodotto ha un titolo <em>e una</em> descrizione. Un post sui social media ha una didascalia <em>e un'</em> immagine. Ogni angolo racconta qualcosa di diverso, quindi ognuno ha un proprio campo vettoriale.</p>
-<p>Milvus cerca ogni campo vettoriale in modo indipendente, poi unisce gli insiemi candidati usando un reranker. Nell'API, ogni richiesta corrisponde a un campo e a una configurazione di ricerca diversi e hybrid_search() restituisce il risultato combinato.</p>
-<p>Due modelli comuni dipendono da questo:</p>
+    </button></h2><p>In <a href="http://milvus.io">Milvus</a>, multi-vector search means searching the same item through multiple vector fields at once and then combining those results with reranking.</p>
+<p>The core idea: a single object often carries more than one kind of meaning. A product has a title <em>and</em> a description. A social media post has a caption <em>and</em> an image. Each angle tells you something different, so each one gets its own vector field.</p>
+<p>Milvus searches every vector field independently, then merges the candidate sets using a reranker. In the API, each request maps to a different field and search configuration, and hybrid_search() returns the combined result.</p>
+<p>Two common patterns depend on this:</p>
 <ul>
-<li><strong>Ricerca vettoriale sparsa e densa.</strong> Avete un catalogo di prodotti in cui gli utenti digitano query come "Nike Air Max rosse taglia 10". I vettori densi colgono l'intento semantico ("scarpe da corsa, rosse, Nike"), ma non la taglia esatta. I vettori sparsi, tramite <a href="https://milvus.io/docs/full-text-search.md">BM25</a> o modelli come <a href="https://milvus.io/docs/full_text_search_with_milvus.md">BGE-M3</a>, centrano la corrispondenza con la parola chiave. È necessario che entrambi vengano eseguiti in parallelo e poi riclassificati, perché nessuno dei due da solo fornisce buoni risultati per le query che combinano il linguaggio naturale con identificatori specifici come SKU, nomi di file o codici di errore.</li>
-<li><strong>Ricerca vettoriale multimodale.</strong> Un utente carica la foto di un vestito e scrive "qualcosa di simile ma in blu". Si cerca simultaneamente nella colonna di incorporazione dell'immagine per la somiglianza visiva e nella colonna di incorporazione del testo per il vincolo del colore. Ogni colonna ha il proprio indice e modello - <a href="https://openai.com/index/clip/">CLIP</a> per l'immagine, un codificatore di testo per la descrizione - e i risultati vengono uniti.</li>
+<li><strong>Sparse+Dense Vector Search.</strong> You have a product catalog where users type queries like “red Nike Air Max size 10.” Dense vectors catch the semantic intent (“running shoes, red, Nike”), but miss the exact size. Sparse vectors via <a href="https://milvus.io/docs/full-text-search.md">BM25</a> or models like <a href="https://milvus.io/docs/full_text_search_with_milvus.md">BGE-M3</a> nail the keyword match. You need both running in parallel, then reranked — because neither alone returns good results for queries that mix natural language with specific identifiers like SKUs, file names, or error codes.</li>
+<li><strong>Multimodal Vector Search.</strong>  A user uploads a photo of a dress and types “something like this but in blue.” You search the image embedding column for visual similarity and the text embedding column for the color constraint simultaneously. Each column has its own index and model — <a href="https://openai.com/index/clip/">CLIP</a> for the image, a text encoder for the description — and results get merged.</li>
 </ul>
-<p><a href="https://milvus.io/">Milvus</a> esegue entrambi i modelli come <a href="https://milvus.io/docs/multi-vector-search.md">ricerche ANN</a> parallele con reranking nativo tramite RRFRanker. La definizione dello schema, la configurazione di più indici e il BM25 integrato sono gestiti in un unico sistema.</p>
-<p>Ad esempio, si consideri un catalogo di prodotti in cui ogni articolo include una descrizione testuale e un'immagine. È possibile eseguire tre ricerche in parallelo su questi dati:</p>
+<p><a href="https://milvus.io/">Milvus</a> runs both patterns as parallel <a href="https://milvus.io/docs/multi-vector-search.md">ANN searches</a> with native reranking via RRFRanker. Schema definition, multi-index configuration, and built-in BM25 are all handled in one system.</p>
+<p>For instance, consider a product catalog where each item includes a text description and an image. You can run three searches against that data in parallel:</p>
 <ul>
-<li><strong>Ricerca semantica del testo.</strong> Interrogare la descrizione del testo con vettori densi generati da modelli come <a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#A-Quick-Recap-of-BERT">BERT</a>, <a href="https://zilliz.com/learn/NLP-essentials-understanding-transformers-in-AI?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.">Transformers</a> o l'API <a href="https://zilliz.com/learn/guide-to-using-openai-text-embedding-models">OpenAI</a> embeddings.</li>
-<li><strong>Ricerca full-text.</strong> Interrogazione della descrizione del testo con vettori radi utilizzando <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> o modelli di embedding radi come <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*1cde1oq*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#BGE-M3">BGE-M3</a> o <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*ov2die*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#SPLADE">SPLADE</a>.</li>
-<li><strong>Ricerca cross-modale di immagini.</strong> Interrogazione di immagini di prodotti utilizzando una query di testo, con vettori densi da un modello come <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a>.</li>
+<li><strong>Semantic text search.</strong> Query the text description with dense vectors generated by models like <a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#A-Quick-Recap-of-BERT">BERT</a>, <a href="https://zilliz.com/learn/NLP-essentials-understanding-transformers-in-AI?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.">Transformers</a>, or the <a href="https://zilliz.com/learn/guide-to-using-openai-text-embedding-models">OpenAI</a> embeddings API.</li>
+<li><strong>Full-text search.</strong> Query the text description with sparse vectors using <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> or sparse embedding models like <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*1cde1oq*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#BGE-M3">BGE-M3</a> or <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*ov2die*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#SPLADE">SPLADE</a>.</li>
+<li><strong>Cross-modal image search.</strong> Query over product images using a text query, with dense vectors from a model like <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a>.</li>
 </ul>
-<h2 id="With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="common-anchor-header">Con Gemini Embedding 2, la ricerca multivettoriale è ancora importante?<button data-href="#With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="anchor-icon" translate="no">
+<h2 id="With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="common-anchor-header">With Gemini Embedding 2, Will Multi-Vector Search Still Matter?<button data-href="#With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,15 +127,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gemini Embedding 2 gestisce più modalità in un'unica chiamata, semplificando notevolmente le pipeline. Ma un embedding multimodale unificato non è la stessa cosa di un recupero multivettoriale. In altre parole, sì, la ricerca multivettoriale sarà ancora importante.</p>
-<p>Gemini Embedding 2 mappa testo, immagini, video, audio e documenti in un unico spazio vettoriale condiviso. Google <a href="https://developers.googleblog.com/en/gemini-embedding-model-now-available/">lo posiziona</a> per la ricerca semantica multimodale, il reperimento di documenti e la raccomandazione - scenari in cui tutte le modalità descrivono lo stesso contenuto e l'elevata sovrapposizione cross-modale rende praticabile un unico vettore.</p>
-<p><a href="https://milvus.io/docs/multi-vector-search.md">La</a> ricerca multivettoriale<a href="https://milvus.io/docs/multi-vector-search.md">di Milvus</a> risolve un problema diverso. È un modo per cercare lo stesso oggetto attraverso <strong>più campi vettoriali -</strong>per esempio, titolo e descrizione, o testo e immagine - e poi combinare questi segnali durante il recupero. In altre parole, si tratta di preservare e interrogare <strong>più viste semantiche</strong> dello stesso oggetto, non solo di comprimere tutto in un'unica rappresentazione.</p>
-<p>Ma i dati del mondo reale raramente si adattano a un unico incorporamento. I sistemi biometrici, il reperimento di strumenti agenziali e il commercio elettronico a intenzioni miste dipendono tutti da vettori che vivono in spazi semantici completamente diversi. È proprio qui che un'incorporazione unificata smette di funzionare.</p>
-<h3 id="Why-One-Embedding-Isnt-Enough-Multi-Vector-Retrieval-in-Practice" class="common-anchor-header">Perché un'incorporazione non è sufficiente: Recupero multivettoriale nella pratica</h3><p>Gemini Embedding 2 gestisce il caso in cui tutte le modalità descrivono la stessa cosa. La ricerca multivettoriale gestisce tutto il resto, e "tutto il resto" comprende la maggior parte dei sistemi di recupero in produzione.</p>
-<p><strong>Biometria.</strong> Un singolo utente dispone di vettori di volto, impronta vocale, impronta digitale e iride. Questi descrivono caratteristiche biologiche completamente indipendenti con zero sovrapposizioni semantiche. Non è possibile riunirli in un unico vettore: ognuno ha bisogno di una colonna, di un indice e di una metrica di somiglianza propri.</p>
-<p><strong>Strumenti agenziali.</strong> Un assistente di codifica come OpenClaw memorizza vettori semantici densi per la cronologia delle conversazioni ("quel problema di implementazione della settimana scorsa") accanto a vettori BM25 più radi per la corrispondenza esatta di nomi di file, comandi CLI e parametri di configurazione. Obiettivi di recupero diversi, tipi di vettori diversi, percorsi di ricerca indipendenti, poi riordinati.</p>
-<p><strong>Commercio elettronico con intenti misti.</strong> Il video promozionale di un prodotto e le immagini dei dettagli funzionano bene come embedding Gemini unificato. Ma quando un utente vuole "abiti che assomigliano a questo" <em>e</em> "stesso tessuto, taglia M", sono necessarie una colonna di similarità visiva e una colonna di attributi strutturati con indici separati e un livello di recupero ibrido.</p>
-<h2 id="When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="common-anchor-header">Quando utilizzare l'incorporazione Gemini 2 rispetto alle colonne multivettore<button data-href="#When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="anchor-icon" translate="no">
+    </button></h2><p>Gemini Embedding 2 handles more modalities in one call, which simplifies pipelines considerably. But a unified multimodal embedding is not the same thing as multi-vector retrieval. In other words, yes, multi-vector search will still matter.</p>
+<p>Gemini Embedding 2 maps text, images, video, audio, and documents into one shared vector space. Google <a href="https://developers.googleblog.com/en/gemini-embedding-model-now-available/">positions it</a> for multimodal semantic search, document retrieval, and recommendation — scenarios where all modalities describe the same content and high cross-modal overlap makes a single vector viable.</p>
+<p><a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> multi-vector search solves a different problem. It is a way to search the same object through <strong>multiple vector fields</strong>— for instance, a title plus description, or text plus image—and then combine those signals during retrieval. In other words, it is about preserving and querying <strong>multiple semantic views</strong> of the same item, not just compressing everything into one representation.</p>
+<p>But real-world data rarely fits into a single embedding. Biometric systems, agentic tool retrieval, and mixed-intent e-commerce all depend on vectors that live in completely different semantic spaces. That’s exactly where a unified embedding stops working.</p>
+<h3 id="Why-One-Embedding-Isnt-Enough-Multi-Vector-Retrieval-in-Practice" class="common-anchor-header">Why One Embedding Isn’t Enough: Multi-Vector Retrieval in Practice</h3><p>Gemini Embedding 2 handles the case where all your modalities describe the same thing. Multi-vector search handles everything else — and “everything else” covers most production retrieval systems.</p>
+<p><strong>Biometrics.</strong> A single user has face, voiceprint, fingerprint, and iris vectors. These describe completely independent biological features with zero semantic overlap. You cannot collapse them into one vector — each needs its own column, index, and similarity metric.</p>
+<p><strong>Agentic tools.</strong> A coding assistant like OpenClaw stores dense semantic vectors for conversation history (“that deployment issue from last week”) alongside sparse BM25 vectors for exact matching on file names, CLI commands, and config parameters. Different retrieval goals, different vector types, independent search paths, then reranked.</p>
+<p><strong>E-commerce with mixed intent.</strong> A product’s promo video and detail images work well as a unified Gemini embedding. But when a user wants “dresses that look like this” <em>and</em> “same fabric, size M,” you need a visual similarity column and a structured attribute column with separate indexes and a hybrid retrieval layer.</p>
+<h2 id="When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="common-anchor-header">When to Use Gemini Embedding 2 vs. Multi-vector Columns<button data-href="#When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -155,18 +152,18 @@ origin: >-
       </svg>
     </button></h2><table>
 <thead>
-<tr><th><strong>Scenario</strong></th><th><strong>Cosa usare</strong></th><th><strong>Perché</strong></th></tr>
+<tr><th><strong>Scenario</strong></th><th><strong>What to use</strong></th><th><strong>Why</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Tutte le modalità descrivono lo stesso contenuto (fotogrammi video + audio + sottotitoli)</td><td>Gemini Embedding 2 vettore unificato</td><td>L'elevata sovrapposizione semantica significa che un vettore cattura l'immagine completa - non è necessaria la fusione</td></tr>
-<tr><td>È necessaria la precisione delle parole chiave insieme al richiamo semantico (BM25 + denso)</td><td>Colonne multivettore con hybrid_search()</td><td>I vettori sparsi e densi servono a obiettivi di ricerca diversi che non possono essere racchiusi in un unico embedding.</td></tr>
-<tr><td>La ricerca cross-modale è il caso d'uso principale (query di testo → risultati di immagini)</td><td>Incorporamento Gemini 2 vettore unificato</td><td>Un unico spazio condiviso rende nativa la similarità cross-modale</td></tr>
-<tr><td>I vettori vivono in spazi semantici fondamentalmente diversi (biometria, attributi strutturati)</td><td>Colonne multivettore con indici per campo</td><td>Metriche di similarità e tipi di indici indipendenti per campo vettoriale</td></tr>
-<tr><td>Si desidera la semplicità della pipeline <em>e il</em> reperimento a grana fine</td><td>Entrambi - vettore Gemini unificato + colonne sparse o attributi aggiuntivi nella stessa collezione</td><td>Gemini gestisce la colonna multimodale; Milvus gestisce il livello di reperimento ibrido intorno ad essa</td></tr>
+<tr><td>All modalities describe the same content (video frames + audio + subtitles)</td><td>Gemini Embedding 2 unified vector</td><td>High semantic overlap means one vector captures the full picture — no fusion needed</td></tr>
+<tr><td>You need keyword precision alongside semantic recall (BM25 + dense)</td><td>Multi-vector columns with hybrid_search()</td><td>Sparse and dense vectors serve different retrieval goals that can’t collapse into one embedding</td></tr>
+<tr><td>Cross-modal search is the primary use case (text query → image results)</td><td>Gemini Embedding 2 unified vector</td><td>Single shared space makes cross-modal similarity native</td></tr>
+<tr><td>Vectors live in fundamentally different semantic spaces (biometrics, structured attributes)</td><td>Multi-vector columns with per-field indexes</td><td>Independent similarity metrics and index types per vector field</td></tr>
+<tr><td>You want pipeline simplicity <em>and</em> fine-grained retrieval</td><td>Both — unified Gemini vector + additional sparse or attribute columns in the same collection</td><td>Gemini handles the multimodal column; Milvus handles the hybrid retrieval layer around it</td></tr>
 </tbody>
 </table>
-<p>Questi due approcci non si escludono a vicenda. È possibile utilizzare Gemini Embedding 2 per la colonna multimodale unificata e memorizzare altri vettori sparsi o specifici per gli attributi in colonne separate all'interno della stessa raccolta <a href="https://milvus.io/">Milvus</a>.</p>
-<h2 id="Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="common-anchor-header">Avvio rapido: Configurazione di Gemini Embedding 2 + Milvus<button data-href="#Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="anchor-icon" translate="no">
+<p>These two approaches are not mutually exclusive. You can use Gemini Embedding 2 for the unified multimodal column and still store additional sparse or attribute-specific vectors in separate columns within the same <a href="https://milvus.io/">Milvus</a> collection.</p>
+<h2 id="Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="common-anchor-header">Quick Start: Set Up Gemini Embedding 2 + Milvus<button data-href="#Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,11 +178,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ecco una demo funzionante. È necessaria un'<a href="https://milvus.io/docs/install-overview.md">istanza Milvus o Zilliz Cloud</a> funzionante e una GOOGLE_API_KEY.</p>
-<h3 id="Setup" class="common-anchor-header">Impostazione</h3><pre><code translate="no">pip install google-genai pymilvus
+    </button></h2><p>Here’s a working demo. You need a running <a href="https://milvus.io/docs/install-overview.md">Milvus or Zilliz Cloud instance</a> and a GOOGLE_API_KEY.</p>
+<h3 id="Setup" class="common-anchor-header">Setup</h3><pre><code translate="no">pip install google-genai pymilvus
 <span class="hljs-keyword">export</span> <span class="hljs-variable constant_">GOOGLE_API_KEY</span>=<span class="hljs-string">&quot;your-api-key&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Full-Example" class="common-anchor-header">Esempio completo</h3><pre><code translate="no"><span class="hljs-string">&quot;&quot;&quot;
+<h3 id="Full-Example" class="common-anchor-header">Full Example</h3><pre><code translate="no"><span class="hljs-string">&quot;&quot;&quot;
 Prerequisites:
     pip install google-genai pymilvus
 
@@ -369,8 +366,8 @@ query_vectors = embed_texts(queries, task_type=<span class="hljs-string">&quot;S
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nDone!&quot;</span>)
 
 <button class="copy-code-btn"></button></code></pre>
-<p>Per le incorporazioni di immagini e audio, utilizzare embed_image() e embed_audio() allo stesso modo: i vettori finiscono nella stessa collezione e nello stesso spazio vettoriale, consentendo una vera ricerca cross-modale.</p>
-<h2 id="Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="common-anchor-header">Gemini Embedding 2 sarà presto disponibile in Milvus/Zilliz Cloud<button data-href="#Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="anchor-icon" translate="no">
+<p>For image and audio embeddings, use embed_image() and embed_audio() the same way — the vectors land in the same collection and same vector space, enabling true cross-modal search.</p>
+<h2 id="Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="common-anchor-header">Gemini Embedding 2 Will be Available in Milvus/Zilliz Cloud Soon<button data-href="#Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -385,10 +382,10 @@ query_vectors = embed_texts(queries, task_type=<span class="hljs-string">&quot;S
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> sta per lanciare un'integrazione profonda con Gemini Embedding 2 attraverso la funzione <a href="https://milvus.io/docs/embeddings.md">Embedding Function</a>. Una volta disponibile, non sarà più necessario chiamare manualmente le API di embedding. Milvus evocherà automaticamente il modello (che supporta OpenAI, AWS Bedrock, Google Vertex AI e altri ancora) per vettorializzare i dati grezzi in inserimento e le query in ricerca.</p>
-<p>Ciò significa che si ottiene un embedding multimodale unificato da Gemini dove è opportuno, e il toolkit multivettoriale completo di Milvus - ricerca ibrida sparsa e densa, schemi multi-indice, reranking - dove è necessario un controllo a grana fine.</p>
-<p>Volete provarlo? Iniziate con il <a href="https://milvus.io/docs/quickstart.md">quickstart di Milvus</a> ed eseguite la demo qui sopra, oppure consultate la <a href="https://milvus.io/docs/hybrid_search_with_milvus.md">guida alla ricerca ibrida</a> per la configurazione completa del multivettore con BGE-M3. Portate le vostre domande su <a href="https://milvus.io/discord">Discord</a> o negli <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">orari di ufficio di Milvus</a>.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Continua a leggere<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is shipping deep integration with Gemini Embedding 2 through its <a href="https://milvus.io/docs/embeddings.md">Embedding Function</a> feature. Once live, you won’t need to call embedding APIs manually. Milvus will auto-invoke the model (supporting OpenAI, AWS Bedrock, Google Vertex AI, and more) to vectorize raw data on insert and queries on search.</p>
+<p>That means you get unified multimodal embedding from Gemini where it fits, and Milvus’s full multi-vector toolkit — sparse-dense hybrid search, multi-index schemas, reranking — where you need fine-grained control.</p>
+<p>Want to try it? Start with the <a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a> and run the demo above, or check out the <a href="https://milvus.io/docs/hybrid_search_with_milvus.md">hybrid search guide</a> for the full multi-vector setup with BGE-M3. Bring your questions to <a href="https://milvus.io/discord">Discord</a> or <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">Milvus Office Hours</a>.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -404,7 +401,7 @@ query_vectors = embed_texts(queries, task_type=<span class="hljs-string">&quot;S
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introduzione alla funzione Embedding: Come Milvus 2.6 semplifica la vettorializzazione e la ricerca semantica - Milvus Blog</a></li>
-<li><a href="https://milvus.io/docs/multi-vector-search.md">Ricerca ibrida multivettoriale</a></li>
-<li><a href="https://milvus.io/docs/embeddings.md">Documenti sulla funzione di incorporamento di Milvus</a></li>
+<li><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search - Milvus Blog</a></li>
+<li><a href="https://milvus.io/docs/multi-vector-search.md">Multi-Vector Hybrid Search</a></li>
+<li><a href="https://milvus.io/docs/embeddings.md">Milvus Embedding Function Docs</a></li>
 </ul>

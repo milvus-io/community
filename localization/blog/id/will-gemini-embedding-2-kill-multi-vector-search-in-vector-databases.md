@@ -1,8 +1,6 @@
 ---
 id: will-gemini-embedding-2-kill-multi-vector-search-in-vector-databases.md
-title: >-
-  Akankah Penyematan Gemini 2 Membunuh Pencarian Multi-Vektor dalam Basis Data
-  Vektor?
+title: "Will Gemini Embedding 2 Kill Multi-Vector Search in\_Vector Databases?\n"
 author: Jack Li
 date: 2026-3-13
 cover: assets.zilliz.com/blog_Gemini_Embedding2_4_62bc980b71.png
@@ -17,18 +15,17 @@ meta_keywords: >-
   vector database
 meta_title: |
   Will Gemini Embedding 2 kill Multi-Vector Search in Vector Databases?
-desc: >-
-  Google Gemini menyematkan teks, gambar, video, dan audio ke dalam satu vektor.
-  Apakah itu akan membuat pencarian multi-vektor menjadi usang? Tidak, dan
-  inilah alasannya.
+desc: >
+  Google's Gemini Embedding 2 maps text, images, video, and audio into one
+  vector. Will that make multi-vector search obsolete? No, and here's why.
 origin: >-
   https://milvus.io/blog/will-gemini-embedding-2-kill-multi-vector-search-in-vector-databases.md
 ---
-<p>Google merilis <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">Gemini Embedding 2</a> - model penyematan multimodal pertama yang memetakan teks, gambar, video, audio, dan dokumen ke dalam satu ruang vektor.</p>
-<p>Anda dapat menyematkan klip video, foto produk, dan paragraf teks dengan satu panggilan API, dan semuanya akan mendarat di lingkungan semantik yang sama.</p>
-<p>Sebelum model seperti ini, Anda harus menjalankan setiap modalitas melalui model spesialisnya sendiri, dan kemudian menyimpan setiap output dalam kolom vektor yang terpisah. Kolom multi-vektor dalam basis data vektor seperti <a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> dibangun dengan tepat untuk skenario seperti itu.</p>
-<p>Dengan Gemini Embedding 2 yang memetakan beberapa modalitas pada saat yang sama, sebuah pertanyaan muncul: berapa banyak kolom multi-vektor yang dapat digantikan oleh Gemini Embedding 2, dan di mana kekurangannya? Artikel ini akan menjelaskan di mana setiap pendekatan cocok dan bagaimana mereka bekerja bersama.</p>
-<h2 id="What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="common-anchor-header">Apa yang Berbeda dari Gemini Embedding 2 Jika Dibandingkan dengan CLIP/CLAP<button data-href="#What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="anchor-icon" translate="no">
+<p>Google released <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">Gemini Embedding 2</a> — the first multimodal embedding model that maps text, images, video, audio, and documents into a single vector space.</p>
+<p>You can embed a video clip, a product photo, and a paragraph of text with one API call, and they will all land in the same semantic neighborhood.</p>
+<p>Before models like this, you had to run each modality through its own specialist model, and then store each output in a separate vector column. Multi-vector columns in vector databases like <a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> were built precisely for such scenarios.</p>
+<p>With Gemini Embedding 2 mapping multiple modalities at the same time, a question arises: how much of multi-vector columns can Gemini Embedding 2 replace, and where does it fall short? This post walks through where each approach fits and how they work together.</p>
+<h2 id="What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="common-anchor-header">What’s Different About Gemini Embedding 2 When Compared to CLIP/CLAP<button data-href="#What’s-Different-About-Gemini-Embedding-2-When-Compared-to-CLIPCLAP" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,30 +40,30 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Model embedding mengubah data yang tidak terstruktur menjadi vektor padat sehingga item yang secara semantik mirip akan mengelompok dalam ruang vektor. Apa yang membuat Gemini Embedding 2 berbeda adalah bahwa ia melakukan hal ini secara native di seluruh modalitas, tanpa model terpisah dan tidak ada pipa jahitan.</p>
-<p>Hingga saat ini, penyematan multimodal berarti model penyandi ganda yang dilatih dengan pembelajaran kontras: <a href="https://openai.com/index/clip/">CLIP</a> untuk gambar-teks, <a href="https://arxiv.org/abs/2211.06687">CLAP</a> untuk audio-teks, masing-masing menangani dua modalitas. Jika Anda membutuhkan ketiganya, Anda menjalankan beberapa model dan mengoordinasikan ruang penyematannya sendiri.</p>
-<p>Sebagai contoh, mengindeks podcast dengan seni sampul berarti menjalankan CLIP untuk gambar, CLAP untuk audio, dan penyandi teks untuk transkrip - tiga model, tiga ruang vektor, dan logika perpaduan khusus untuk membuat nilainya sebanding pada waktu kueri.</p>
-<p>Sebaliknya, menurut <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">pengumuman resmi Google</a>, inilah yang didukung oleh Gemini Embedding 2:</p>
+    </button></h2><p>Embedding models convert unstructured data into dense vectors so that semantically similar items cluster together in vector space. What makes Gemini Embedding 2 different is that it does this natively across modalities, with no separate models and no stitching pipelines.</p>
+<p>Until now, multimodal embeddings meant dual-encoder models trained with contrastive learning: <a href="https://openai.com/index/clip/">CLIP</a> for image-text, <a href="https://arxiv.org/abs/2211.06687">CLAP</a> for audio-text, each handling exactly two modalities. If you needed all three, you ran multiple models and coordinated their embedding spaces yourself.</p>
+<p>For example, indexing a podcast with cover art meant running CLIP for the image, CLAP for the audio, and a text encoder for the transcript — three models, three vector spaces, and custom fusion logic to make their scores comparable at query time.</p>
+<p>In contrast, according to <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-embedding-2/">Google’s official announcement</a>, here is what Gemini Embedding 2 supports:</p>
 <ul>
-<li><strong>Teks</strong> hingga 8.192 token per permintaan</li>
-<li><strong>Gambar</strong> hingga 6 per permintaan (PNG, JPEG)</li>
-<li><strong>Video</strong> hingga 120 detik (MP4, MOV)</li>
-<li><strong>Audio</strong> hingga 80 detik, disematkan secara native tanpa transkripsi ASR</li>
-<li><strong>Dokumen</strong> masukan PDF, hingga 6 halaman</li>
+<li><strong>Text</strong> up to 8,192 tokens per request</li>
+<li><strong>Images</strong> up to 6 per request (PNG, JPEG)</li>
+<li><strong>Video</strong> up to 120 seconds (MP4, MOV)</li>
+<li><strong>Audio</strong> up to 80 seconds, embedded natively without ASR transcription</li>
+<li><strong>Documents</strong> PDF input, up to 6 pages</li>
 </ul>
-<p>Menggabungkan gambar<strong>input</strong> + teks bersama-sama dalam satu panggilan penyematan</p>
-<h3 id="Gemini-Embedding-2-vs-CLIPCLAP-One-Model-vs-Many-for-Multimodal-Embeddings" class="common-anchor-header">Penyematan Gemini 2 vs CLIP / CLAP Satu Model vs Banyak Model untuk Penyematan Multimodal</h3><table>
+<p><strong>Mixed input</strong> image + text together in a single embedding call</p>
+<h3 id="Gemini-Embedding-2-vs-CLIPCLAP-One-Model-vs-Many-for-Multimodal-Embeddings" class="common-anchor-header">Gemini Embedding 2 vs. CLIP/CLAP One Model vs. Many for Multimodal Embeddings</h3><table>
 <thead>
-<tr><th></th><th><strong>Pembuat enkode ganda (CLIP, CLAP)</strong></th><th><strong>Penyematan Gemini 2</strong></th></tr>
+<tr><th></th><th><strong>Dual-encoder (CLIP, CLAP)</strong></th><th><strong>Gemini Embedding 2</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Modalitas per model</strong></td><td>2 (misalnya, gambar + teks)</td><td>5 (teks, gambar, video, audio, PDF)</td></tr>
-<tr><td><strong>Menambahkan modalitas baru</strong></td><td>Anda membawa model lain dan menyelaraskan spasi secara manual</td><td>Sudah termasuk - satu panggilan API</td></tr>
-<tr><td><strong>Masukan lintas-modal</strong></td><td>Penyandi terpisah, panggilan terpisah</td><td>Masukan yang disisipkan (misalnya, gambar + teks dalam satu permintaan)</td></tr>
-<tr><td><strong>Arsitektur</strong></td><td>Penyandi penglihatan dan teks yang terpisah diselaraskan melalui kehilangan kontras</td><td>Model tunggal yang mewarisi pemahaman multimodal dari Gemini</td></tr>
+<tr><td><strong>Modalities per model</strong></td><td>2 (e.g., image + text)</td><td>5 (text, image, video, audio, PDF)</td></tr>
+<tr><td><strong>Adding a new modality</strong></td><td>You bring another model and align spaces manually</td><td>Already included — one API call</td></tr>
+<tr><td><strong>Cross-modal input</strong></td><td>Separate encoders, separate calls</td><td>Interleaved input (e.g., image + text in one request)</td></tr>
+<tr><td><strong>Architecture</strong></td><td>Separate vision and text encoders aligned via contrastive loss</td><td>Single model inheriting multimodal understanding from Gemini</td></tr>
 </tbody>
 </table>
-<h2 id="Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="common-anchor-header">Keunggulan Gemini Embedding 2: Penyederhanaan Pipeline<button data-href="#Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="anchor-icon" translate="no">
+<h2 id="Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="common-anchor-header">Gemini Embedding 2’s Advantage: Pipeline Simplification<button data-href="#Gemini-Embedding-2’s-Advantage-Pipeline-Simplification" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,11 +78,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ambil contoh skenario umum: membangun mesin pencari semantik di atas perpustakaan video pendek. Setiap klip memiliki bingkai visual, audio yang diucapkan, dan teks subtitle - semuanya menggambarkan konten yang sama.</p>
-<p><strong>Sebelum Gemini Embedding 2</strong>, Anda memerlukan tiga model penyematan terpisah (gambar, audio, teks), tiga kolom vektor, dan pipeline pengambilan yang melakukan pemanggilan kembali multi arah, fusi hasil, dan deduplikasi. Itu adalah banyak bagian yang bergerak untuk dibangun dan dipelihara.</p>
-<p><strong>Sekarang</strong>, Anda dapat memasukkan frame, audio, dan subtitle video ke dalam satu panggilan API dan mendapatkan satu vektor terpadu yang menangkap gambaran semantik secara penuh.</p>
-<p>Tentu saja, Anda tergoda untuk menyimpulkan bahwa kolom multi-vektor sudah mati. Tetapi kesimpulan itu membingungkan "representasi terpadu multimodal" dengan "pengambilan vektor multi-dimensi." Keduanya memecahkan masalah yang berbeda, dan memahami perbedaannya penting untuk memilih pendekatan yang tepat.</p>
-<h2 id="What-is-Multi-Vector-Search-in-Milvus" class="common-anchor-header">Apa yang dimaksud dengan Pencarian Multi-Vektor di Milvus?<button data-href="#What-is-Multi-Vector-Search-in-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Take a common scenario: building a semantic search engine over a short video library. Each clip has visual frames, spoken audio, and subtitle text — all describing the same content.</p>
+<p><strong>Before Gemini Embedding 2</strong>, you’d need three separate embedding models (image, audio, text), three vector columns, and a retrieval pipeline that does multi-way recall, result fusion, and deduplication. That’s a lot of moving parts to build and maintain.</p>
+<p><strong>Now</strong>, you can feed the video’s frames, audio, and subtitles into a single API call and get one unified vector that captures the full semantic picture.</p>
+<p>Naturally, it’s tempting to conclude that multi-vector columns are dead. But that conclusion confuses “multimodal unified representation” with “multi-dimensional vector retrieval.” They solve different problems, and understanding the difference matters for picking the right approach.</p>
+<h2 id="What-is-Multi-Vector-Search-in-Milvus" class="common-anchor-header">What is Multi-Vector Search in Milvus?<button data-href="#What-is-Multi-Vector-Search-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,22 +97,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Di <a href="http://milvus.io">Milvus</a>, pencarian multi-vektor berarti mencari objek yang sama melalui beberapa bidang vektor sekaligus dan kemudian menggabungkan hasil pencarian tersebut dengan pengurutan ulang.</p>
-<p>Ide intinya: satu objek sering kali memiliki lebih dari satu makna. Sebuah produk memiliki judul <em>dan</em> deskripsi. Sebuah postingan media sosial memiliki judul <em>dan</em> gambar. Setiap sudut memberi tahu Anda sesuatu yang berbeda, sehingga masing-masing memiliki bidang vektornya sendiri.</p>
-<p>Milvus mencari setiap bidang vektor secara independen, lalu menggabungkan set kandidat menggunakan perangking ulang. Dalam API, setiap permintaan dipetakan ke bidang dan konfigurasi pencarian yang berbeda, dan hybrid_search() mengembalikan hasil gabungan.</p>
-<p>Ada dua pola umum yang bergantung pada hal ini:</p>
+    </button></h2><p>In <a href="http://milvus.io">Milvus</a>, multi-vector search means searching the same item through multiple vector fields at once and then combining those results with reranking.</p>
+<p>The core idea: a single object often carries more than one kind of meaning. A product has a title <em>and</em> a description. A social media post has a caption <em>and</em> an image. Each angle tells you something different, so each one gets its own vector field.</p>
+<p>Milvus searches every vector field independently, then merges the candidate sets using a reranker. In the API, each request maps to a different field and search configuration, and hybrid_search() returns the combined result.</p>
+<p>Two common patterns depend on this:</p>
 <ul>
-<li><strong>Pencarian Vektor Jarang+Padat.</strong> Anda memiliki katalog produk di mana pengguna mengetikkan kueri seperti "Nike Air Max merah ukuran 10." Vektor padat menangkap maksud semantik ("sepatu lari, merah, Nike"), tetapi melewatkan ukuran yang tepat. Vektor yang jarang melalui <a href="https://milvus.io/docs/full-text-search.md">BM25</a> atau model seperti <a href="https://milvus.io/docs/full_text_search_with_milvus.md">BGE-M3</a> akan menangkap kata kunci yang cocok. Anda perlu menjalankan keduanya secara paralel, kemudian diurutkan ulang - karena tidak ada yang memberikan hasil yang baik untuk kueri yang menggabungkan bahasa alami dengan pengidentifikasi spesifik seperti SKU, nama file, atau kode kesalahan.</li>
-<li><strong>Pencarian Vektor Multimodal.</strong> Seorang pengguna mengunggah foto gaun dan mengetik "sesuatu seperti ini tetapi berwarna biru." Anda mencari kolom penyematan gambar untuk kemiripan visual dan kolom penyematan teks untuk batasan warna secara bersamaan. Setiap kolom memiliki indeks dan modelnya sendiri - <a href="https://openai.com/index/clip/">CLIP</a> untuk gambar, penyandi teks untuk deskripsi - dan hasilnya digabungkan.</li>
+<li><strong>Sparse+Dense Vector Search.</strong> You have a product catalog where users type queries like “red Nike Air Max size 10.” Dense vectors catch the semantic intent (“running shoes, red, Nike”), but miss the exact size. Sparse vectors via <a href="https://milvus.io/docs/full-text-search.md">BM25</a> or models like <a href="https://milvus.io/docs/full_text_search_with_milvus.md">BGE-M3</a> nail the keyword match. You need both running in parallel, then reranked — because neither alone returns good results for queries that mix natural language with specific identifiers like SKUs, file names, or error codes.</li>
+<li><strong>Multimodal Vector Search.</strong>  A user uploads a photo of a dress and types “something like this but in blue.” You search the image embedding column for visual similarity and the text embedding column for the color constraint simultaneously. Each column has its own index and model — <a href="https://openai.com/index/clip/">CLIP</a> for the image, a text encoder for the description — and results get merged.</li>
 </ul>
-<p><a href="https://milvus.io/">Milvus</a> menjalankan kedua pola tersebut sebagai <a href="https://milvus.io/docs/multi-vector-search.md">pencarian ANN</a> paralel dengan pemeringkatan ulang melalui RRFRanker. Definisi skema, konfigurasi multi-indeks, dan BM25 bawaan semuanya ditangani dalam satu sistem.</p>
-<p>Sebagai contoh, pertimbangkan katalog produk di mana setiap item menyertakan deskripsi teks dan gambar. Anda dapat menjalankan tiga pencarian terhadap data tersebut secara paralel:</p>
+<p><a href="https://milvus.io/">Milvus</a> runs both patterns as parallel <a href="https://milvus.io/docs/multi-vector-search.md">ANN searches</a> with native reranking via RRFRanker. Schema definition, multi-index configuration, and built-in BM25 are all handled in one system.</p>
+<p>For instance, consider a product catalog where each item includes a text description and an image. You can run three searches against that data in parallel:</p>
 <ul>
-<li><strong>Pencarian teks semantik.</strong> Menanyakan deskripsi teks dengan vektor padat yang dihasilkan oleh model seperti <a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#A-Quick-Recap-of-BERT">BERT</a>, <a href="https://zilliz.com/learn/NLP-essentials-understanding-transformers-in-AI?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.">Transformers</a>, atau <a href="https://zilliz.com/learn/guide-to-using-openai-text-embedding-models">OpenAI</a> embeddings API.</li>
-<li><strong>Pencarian teks lengkap.</strong> Menanyakan deskripsi teks dengan vektor yang jarang menggunakan <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> atau model penyematan yang jarang seperti <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*1cde1oq*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#BGE-M3">BGE-M3</a> atau <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*ov2die*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#SPLADE">SPLADE</a>.</li>
-<li><strong>Pencarian gambar lintas-modal.</strong> Menanyakan gambar produk menggunakan kueri teks, dengan vektor padat dari model seperti <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a>.</li>
+<li><strong>Semantic text search.</strong> Query the text description with dense vectors generated by models like <a href="https://zilliz.com/learn/explore-colbert-token-level-embedding-and-ranking-model-for-similarity-search?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#A-Quick-Recap-of-BERT">BERT</a>, <a href="https://zilliz.com/learn/NLP-essentials-understanding-transformers-in-AI?_gl=1*d243m9*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.">Transformers</a>, or the <a href="https://zilliz.com/learn/guide-to-using-openai-text-embedding-models">OpenAI</a> embeddings API.</li>
+<li><strong>Full-text search.</strong> Query the text description with sparse vectors using <a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a> or sparse embedding models like <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*1cde1oq*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#BGE-M3">BGE-M3</a> or <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings?_gl=1*ov2die*_gcl_au*MjcyNTAwMzUyLjE3NDMxMzE1MjY.*_ga*MTQ3OTI4MDc5My4xNzQzMTMxNTI2*_ga_KKMVYG8YF2*MTc0NTkwODU0Mi45NC4xLjE3NDU5MDg4MzcuMC4wLjA.#SPLADE">SPLADE</a>.</li>
+<li><strong>Cross-modal image search.</strong> Query over product images using a text query, with dense vectors from a model like <a href="https://zilliz.com/learn/exploring-openai-clip-the-future-of-multimodal-ai-learning">CLIP</a>.</li>
 </ul>
-<h2 id="With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="common-anchor-header">Dengan Gemini Embedding 2, Akankah Pencarian Multi-Vektor Masih Penting?<button data-href="#With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="anchor-icon" translate="no">
+<h2 id="With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="common-anchor-header">With Gemini Embedding 2, Will Multi-Vector Search Still Matter?<button data-href="#With-Gemini-Embedding-2-Will-Multi-Vector-Search-Still-Matter" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,15 +127,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gemini Embedding 2 menangani lebih banyak modalitas dalam satu panggilan, yang sangat menyederhanakan pipeline. Tetapi penyematan multimodal terpadu bukanlah hal yang sama dengan pencarian multi-vektor. Dengan kata lain, ya, pencarian multi-vektor akan tetap penting.</p>
-<p>Gemini Embedding 2 memetakan teks, gambar, video, audio, dan dokumen ke dalam satu ruang vektor bersama. Google <a href="https://developers.googleblog.com/en/gemini-embedding-model-now-available/">memposisikannya</a> untuk pencarian semantik multimodal, pencarian dokumen, dan rekomendasi - skenario di mana semua modalitas menggambarkan konten yang sama dan tumpang tindih antar modalitas yang tinggi membuat satu vektor menjadi layak.</p>
-<p>Pencarian multi-vektor<a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> memecahkan masalah yang berbeda. Ini adalah cara untuk mencari objek yang sama melalui <strong>beberapa bidang vektor -</strong>misalnya, judul ditambah deskripsi, atau teks ditambah gambar - dan kemudian menggabungkan sinyal-sinyal tersebut selama pencarian. Dengan kata lain, ini adalah tentang mempertahankan dan menanyakan <strong>beberapa tampilan semantik</strong> dari item yang sama, bukan hanya memadatkan semuanya ke dalam satu representasi.</p>
-<p>Tetapi data dunia nyata jarang sekali cocok dengan satu penyematan. Sistem biometrik, pengambilan alat agen, dan e-commerce dengan tujuan campuran, semuanya bergantung pada vektor yang berada di ruang semantik yang sangat berbeda. Di situlah tepatnya di mana penyematan terpadu berhenti bekerja.</p>
-<h3 id="Why-One-Embedding-Isnt-Enough-Multi-Vector-Retrieval-in-Practice" class="common-anchor-header">Mengapa Satu Penyematan Saja Tidak Cukup: Pengambilan Multi-Vektor dalam Praktik</h3><p>Gemini Embedding 2 menangani kasus di mana semua modalitas Anda menggambarkan hal yang sama. Pencarian multi-vektor menangani segala sesuatu yang lain - dan "segala sesuatu yang lain" mencakup sebagian besar sistem pengambilan produksi.</p>
-<p><strong>Biometrik.</strong> Seorang pengguna memiliki vektor wajah, rekaman suara, sidik jari, dan iris mata. Semua ini menggambarkan fitur biologis yang sepenuhnya independen tanpa tumpang tindih semantik. Anda tidak dapat menggabungkannya menjadi satu vektor - masing-masing membutuhkan kolom, indeks, dan metrik kemiripannya sendiri.</p>
-<p><strong>Alat bantu agen.</strong> Asisten pengkodean seperti OpenClaw menyimpan vektor semantik yang padat untuk riwayat percakapan ("masalah penyebaran itu dari minggu lalu") di samping vektor BM25 yang jarang untuk pencocokan yang tepat pada nama file, perintah CLI, dan parameter konfigurasi. Tujuan pengambilan yang berbeda, jenis vektor yang berbeda, jalur pencarian yang independen, kemudian diurutkan ulang.</p>
-<p><strong>E-commerce dengan tujuan yang beragam.</strong> Video promo produk dan gambar detail bekerja dengan baik sebagai penyematan Gemini terpadu. Namun saat pengguna menginginkan "gaun yang terlihat seperti ini" <em>dan</em> "kain yang sama, ukuran M", Anda memerlukan kolom kemiripan visual dan kolom atribut terstruktur dengan indeks terpisah serta lapisan pengambilan hibrida.</p>
-<h2 id="When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="common-anchor-header">Kapan Menggunakan Penyematan Gemini 2 vs Kolom Multi-vektor<button data-href="#When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="anchor-icon" translate="no">
+    </button></h2><p>Gemini Embedding 2 handles more modalities in one call, which simplifies pipelines considerably. But a unified multimodal embedding is not the same thing as multi-vector retrieval. In other words, yes, multi-vector search will still matter.</p>
+<p>Gemini Embedding 2 maps text, images, video, audio, and documents into one shared vector space. Google <a href="https://developers.googleblog.com/en/gemini-embedding-model-now-available/">positions it</a> for multimodal semantic search, document retrieval, and recommendation — scenarios where all modalities describe the same content and high cross-modal overlap makes a single vector viable.</p>
+<p><a href="https://milvus.io/docs/multi-vector-search.md">Milvus</a> multi-vector search solves a different problem. It is a way to search the same object through <strong>multiple vector fields</strong>— for instance, a title plus description, or text plus image—and then combine those signals during retrieval. In other words, it is about preserving and querying <strong>multiple semantic views</strong> of the same item, not just compressing everything into one representation.</p>
+<p>But real-world data rarely fits into a single embedding. Biometric systems, agentic tool retrieval, and mixed-intent e-commerce all depend on vectors that live in completely different semantic spaces. That’s exactly where a unified embedding stops working.</p>
+<h3 id="Why-One-Embedding-Isnt-Enough-Multi-Vector-Retrieval-in-Practice" class="common-anchor-header">Why One Embedding Isn’t Enough: Multi-Vector Retrieval in Practice</h3><p>Gemini Embedding 2 handles the case where all your modalities describe the same thing. Multi-vector search handles everything else — and “everything else” covers most production retrieval systems.</p>
+<p><strong>Biometrics.</strong> A single user has face, voiceprint, fingerprint, and iris vectors. These describe completely independent biological features with zero semantic overlap. You cannot collapse them into one vector — each needs its own column, index, and similarity metric.</p>
+<p><strong>Agentic tools.</strong> A coding assistant like OpenClaw stores dense semantic vectors for conversation history (“that deployment issue from last week”) alongside sparse BM25 vectors for exact matching on file names, CLI commands, and config parameters. Different retrieval goals, different vector types, independent search paths, then reranked.</p>
+<p><strong>E-commerce with mixed intent.</strong> A product’s promo video and detail images work well as a unified Gemini embedding. But when a user wants “dresses that look like this” <em>and</em> “same fabric, size M,” you need a visual similarity column and a structured attribute column with separate indexes and a hybrid retrieval layer.</p>
+<h2 id="When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="common-anchor-header">When to Use Gemini Embedding 2 vs. Multi-vector Columns<button data-href="#When-to-Use-Gemini-Embedding-2-vs-Multi-vector-Columns" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -155,18 +152,18 @@ origin: >-
       </svg>
     </button></h2><table>
 <thead>
-<tr><th><strong>Skenario</strong></th><th><strong>Apa yang harus digunakan</strong></th><th><strong>Mengapa</strong></th></tr>
+<tr><th><strong>Scenario</strong></th><th><strong>What to use</strong></th><th><strong>Why</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Semua modalitas mendeskripsikan konten yang sama (bingkai video + audio + subtitle)</td><td>Gemini Embedding 2 vektor terpadu</td><td>Tumpang tindih semantik yang tinggi berarti satu vektor menangkap gambaran lengkap - tidak perlu penggabungan</td></tr>
-<tr><td>Anda membutuhkan ketepatan kata kunci bersama dengan semantic recall (BM25 + padat)</td><td>Kolom multi-vektor dengan hybrid_search()</td><td>Vektor yang jarang dan padat memiliki tujuan pencarian yang berbeda yang tidak dapat digabungkan menjadi satu penyematan</td></tr>
-<tr><td>Pencarian lintas-modal adalah kasus penggunaan utama (kueri teks → hasil gambar)</td><td>Gemini Menanamkan 2 vektor terpadu</td><td>Ruang bersama tunggal membuat kemiripan lintas-modal menjadi asli</td></tr>
-<tr><td>Vektor berada dalam ruang semantik yang berbeda secara fundamental (biometrik, atribut terstruktur)</td><td>Kolom multi-vektor dengan indeks per bidang</td><td>Metrik kemiripan independen dan jenis indeks per bidang vektor</td></tr>
-<tr><td>Anda menginginkan kesederhanaan pipeline <em>dan</em> pengambilan berbutir halus</td><td>Keduanya - vektor Gemini terpadu + kolom jarang atau atribut tambahan dalam koleksi yang sama</td><td>Gemini menangani kolom multimodal; Milvus menangani lapisan pengambilan hibrida di sekitarnya</td></tr>
+<tr><td>All modalities describe the same content (video frames + audio + subtitles)</td><td>Gemini Embedding 2 unified vector</td><td>High semantic overlap means one vector captures the full picture — no fusion needed</td></tr>
+<tr><td>You need keyword precision alongside semantic recall (BM25 + dense)</td><td>Multi-vector columns with hybrid_search()</td><td>Sparse and dense vectors serve different retrieval goals that can’t collapse into one embedding</td></tr>
+<tr><td>Cross-modal search is the primary use case (text query → image results)</td><td>Gemini Embedding 2 unified vector</td><td>Single shared space makes cross-modal similarity native</td></tr>
+<tr><td>Vectors live in fundamentally different semantic spaces (biometrics, structured attributes)</td><td>Multi-vector columns with per-field indexes</td><td>Independent similarity metrics and index types per vector field</td></tr>
+<tr><td>You want pipeline simplicity <em>and</em> fine-grained retrieval</td><td>Both — unified Gemini vector + additional sparse or attribute columns in the same collection</td><td>Gemini handles the multimodal column; Milvus handles the hybrid retrieval layer around it</td></tr>
 </tbody>
 </table>
-<p>Kedua pendekatan ini tidak saling eksklusif. Anda dapat menggunakan Gemini Embedding 2 untuk kolom multimodal terpadu dan masih menyimpan vektor jarang atau atribut tambahan dalam kolom terpisah dalam koleksi <a href="https://milvus.io/">Milvus</a> yang sama.</p>
-<h2 id="Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="common-anchor-header">Mulai Cepat: Menyiapkan Gemini Embedding 2 + Milvus<button data-href="#Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="anchor-icon" translate="no">
+<p>These two approaches are not mutually exclusive. You can use Gemini Embedding 2 for the unified multimodal column and still store additional sparse or attribute-specific vectors in separate columns within the same <a href="https://milvus.io/">Milvus</a> collection.</p>
+<h2 id="Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="common-anchor-header">Quick Start: Set Up Gemini Embedding 2 + Milvus<button data-href="#Quick-Start-Set-Up-Gemini-Embedding-2-+-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,11 +178,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Berikut ini adalah sebuah demo kerja. Anda memerlukan <a href="https://milvus.io/docs/install-overview.md">instance Milvus atau Zilliz Cloud</a> yang sedang berjalan dan GOOGLE_API_KEY.</p>
-<h3 id="Setup" class="common-anchor-header">Penyiapan</h3><pre><code translate="no">pip install google-genai pymilvus
+    </button></h2><p>Here’s a working demo. You need a running <a href="https://milvus.io/docs/install-overview.md">Milvus or Zilliz Cloud instance</a> and a GOOGLE_API_KEY.</p>
+<h3 id="Setup" class="common-anchor-header">Setup</h3><pre><code translate="no">pip install google-genai pymilvus
 <span class="hljs-keyword">export</span> <span class="hljs-variable constant_">GOOGLE_API_KEY</span>=<span class="hljs-string">&quot;your-api-key&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Full-Example" class="common-anchor-header">Contoh Lengkap</h3><pre><code translate="no"><span class="hljs-string">&quot;&quot;&quot;
+<h3 id="Full-Example" class="common-anchor-header">Full Example</h3><pre><code translate="no"><span class="hljs-string">&quot;&quot;&quot;
 Prerequisites:
     pip install google-genai pymilvus
 
@@ -369,8 +366,8 @@ query_vectors = embed_texts(queries, task_type=<span class="hljs-string">&quot;S
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\nDone!&quot;</span>)
 
 <button class="copy-code-btn"></button></code></pre>
-<p>Untuk penyematan gambar dan audio, gunakan embed_image () dan embed_audio () dengan cara yang sama - vektor mendarat di koleksi yang sama dan ruang vektor yang sama, sehingga memungkinkan pencarian cross-modal yang sebenarnya.</p>
-<h2 id="Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="common-anchor-header">Gemini Embedding 2 Akan Segera Tersedia di Milvus/Zilliz Cloud<button data-href="#Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="anchor-icon" translate="no">
+<p>For image and audio embeddings, use embed_image() and embed_audio() the same way — the vectors land in the same collection and same vector space, enabling true cross-modal search.</p>
+<h2 id="Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="common-anchor-header">Gemini Embedding 2 Will be Available in Milvus/Zilliz Cloud Soon<button data-href="#Gemini-Embedding-2-Will-be-Available-in-MilvusZilliz-Cloud-Soon" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -385,10 +382,10 @@ query_vectors = embed_texts(queries, task_type=<span class="hljs-string">&quot;S
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/">Milvus</a> menghadirkan integrasi mendalam dengan Gemini Embedding 2 melalui fitur <a href="https://milvus.io/docs/embeddings.md">Embedding Function</a>. Setelah aktif, Anda tidak perlu memanggil API penyematan secara manual. Milvus akan memanggil model secara otomatis (mendukung OpenAI, AWS Bedrock, Google Vertex AI, dan banyak lagi) untuk memvektorisasi data mentah saat menyisipkan dan melakukan kueri pada pencarian.</p>
-<p>Itu berarti Anda mendapatkan penyematan multimodal terpadu dari Gemini yang sesuai, dan toolkit multi-vektor lengkap Milvus - pencarian hibrida yang jarang-padat, skema multi-indeks, pemeringkatan ulang - di mana Anda membutuhkan kontrol yang lebih baik.</p>
-<p>Ingin mencobanya? Mulailah dengan <a href="https://milvus.io/docs/quickstart.md">quickstart Milvus</a> dan jalankan demo di atas, atau lihat <a href="https://milvus.io/docs/hybrid_search_with_milvus.md">panduan pencarian hibrida</a> untuk pengaturan multi-vektor lengkap dengan BGE-M3. Sampaikan pertanyaan Anda ke <a href="https://milvus.io/discord">Discord</a> atau <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">Jam Kerja Milvus</a>.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Teruslah Membaca<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://milvus.io/">Milvus</a> is shipping deep integration with Gemini Embedding 2 through its <a href="https://milvus.io/docs/embeddings.md">Embedding Function</a> feature. Once live, you won’t need to call embedding APIs manually. Milvus will auto-invoke the model (supporting OpenAI, AWS Bedrock, Google Vertex AI, and more) to vectorize raw data on insert and queries on search.</p>
+<p>That means you get unified multimodal embedding from Gemini where it fits, and Milvus’s full multi-vector toolkit — sparse-dense hybrid search, multi-index schemas, reranking — where you need fine-grained control.</p>
+<p>Want to try it? Start with the <a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a> and run the demo above, or check out the <a href="https://milvus.io/docs/hybrid_search_with_milvus.md">hybrid search guide</a> for the full multi-vector setup with BGE-M3. Bring your questions to <a href="https://milvus.io/discord">Discord</a> or <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">Milvus Office Hours</a>.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -404,7 +401,7 @@ query_vectors = embed_texts(queries, task_type=<span class="hljs-string">&quot;S
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Memperkenalkan Fungsi Penyematan: Bagaimana Milvus 2.6 Menyederhanakan Vektorisasi dan Pencarian Semantik - Blog Milvus</a></li>
-<li><a href="https://milvus.io/docs/multi-vector-search.md">Pencarian Hibrida Multi-Vektor</a></li>
-<li><a href="https://milvus.io/docs/embeddings.md">Dokumen Fungsi Penyematan Milvus</a></li>
+<li><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search - Milvus Blog</a></li>
+<li><a href="https://milvus.io/docs/multi-vector-search.md">Multi-Vector Hybrid Search</a></li>
+<li><a href="https://milvus.io/docs/embeddings.md">Milvus Embedding Function Docs</a></li>
 </ul>
