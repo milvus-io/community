@@ -265,12 +265,14 @@ As queries run, frequently accessed data is cached locally and resource usage gr
 
 **3. Near-zero impact on hot data performance**
 
-|          **Query type**          | **Milvus 2.5 P99 latency** | **Milvus 2.6+ P99 latency** | **Change** |
-| :------------------------------: | :------------------------: | :-------------------------: | :--------: |
-|         Hot data queries         |            15 ms           |            16 ms            |    +6.7%   |
-|         Warm data queries        |            15 ms           |            28 ms            |    +86%    |
-| Cold data queries (first access) |            15 ms           |            120 ms           |    +700%   |
-|    Cold data queries (cached)    |            15 ms           |            18 ms            |    +20%    |
+|        **Search request type**        | **Milvus 2.5 P99 latency** | **Milvus 2.6+ P99 latency** | **Change** |
+| :-----------------------------------: | :------------------------: | :-------------------------: | :--------: |
+|          Hot data searches            |            15 ms           |            16 ms            |    +6.7%   |
+|          Warm data searches           |            15 ms           |            28 ms            |    +86%    |
+|  Cold data searches (first access)    |            15 ms           |            120 ms           |    +700%   |
+|     Cold data searches (cached)       |            15 ms           |            18 ms            |    +20%    |
+
+> *"Query" here refers to vector search requests, not the Milvus `query()` API.*
 
 For hot data, which accounts for roughly 80% of all queries, P99 latency increases by only 6.7%, resulting in virtually no perceptible impact in production.
 
