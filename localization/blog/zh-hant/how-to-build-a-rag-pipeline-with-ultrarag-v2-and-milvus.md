@@ -18,7 +18,7 @@ origin: >-
   https://milvus.io/blog/how-to-build-a-rag-pipeline-with-ultrarag-v2-and-milvus.md
 ---
 <p>擷取增強產生 (Retrieval-Augmented Generation，RAG) 的發展已遠遠超越簡單的「擷取然後產生」模式。現代系統現在的行為更像是完整的推理引擎，結合了自適應檢索、多步規劃和動態決策。但這一進步也帶來了兩大挑戰：<strong>高工程成本</strong>和<strong>不斷增加的系統複雜性</strong>。複製現有的方法往往需要重建複雜的管道，而嘗試新的想法則需要大量的協調工作。</p>
-<p><a href="https://github.com/OpenBMB/UltraRAG">UltraRAG v2</a>直接解決了這些痛點。UltraRAG v2 由 THUNLP、NEUIR、OpenBMB 和 AI9stars 共同開發，是第一個建構在模型上下文通訊協定 (Model Context Protocol, MCP) 上的 RAG 架構。研究人員可以在簡單的 YAML 檔案中宣告序列、迴圈和分支行為，取代手寫複雜的邏輯，以快速、低程式碼的方式建構多階段 RAG 系統。</p>
+<p><a href="https://github.com/OpenBMB/UltraRAG">UltraRAG v2</a>直接解決了這些痛點。UltraRAG v2 由 THUNLP、NEUIR、OpenBMB 和 AI9stars 共同開發，是第一個建構在模型上下文通訊協定 (Model Context Protocol, MCP) 上的 RAG 架構。研究人員可以在簡單的 YAML 檔案中宣告序列、迴圈和分支行為，而不需要手寫複雜的邏輯，因此能以快速、低程式碼的方式建構多階段 RAG 系統。</p>
 <p>即使有 UltraRAG 這樣的框架，RAG 系統仍需要強大的檢索層。這就是向量資料庫可以幫上忙的地方。<a href="https://milvus.io/">Milvus</a> 是一個開放原始碼的向量資料庫，可以儲存嵌入、建立索引，並在大型資料集上執行快速相似性搜尋。在 UltraRAG 管道中，Milvus 會為模型擷取相關資訊。UltraRAG 與 Milvus 結合起來，可以更輕鬆地建立既靈活又有效率的 RAG 系統。</p>
 <p>在這篇文章中，我們將介紹如何整合 Milvus 與 UltraRAG v2，並建立完整的 RAG 管線。</p>
 <h2 id="UltraRAG-v2-Architecture-at-a-Glance" class="common-anchor-header">UltraRAG v2 架構一覽<button data-href="#UltraRAG-v2-Architecture-at-a-Glance" class="anchor-icon" translate="no">
