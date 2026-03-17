@@ -26,8 +26,8 @@ origin: >-
 <p>Questo agente è composto da tre parti e costa circa 20 dollari al mese:</p>
 <ul>
 <li><strong><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a></strong> <strong>per gestire il tutto con il pilota automatico.</strong> OpenClaw gestisce l'agente con un battito cardiaco di 30 minuti e mi segnala solo quando qualcosa è veramente importante, alleviando la FOMO che mi teneva incollato allo schermo. Prima, più guardavo i prezzi, più reagivo d'impulso.</li>
-<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>per ricerche accurate e in tempo reale.</strong> Exa sfoglia e riassume fonti di informazione selezionate a mano in base a un programma, in modo da ottenere un briefing pulito ogni mattina. Prima passavo un'ora al giorno a setacciare lo spam SEO e le speculazioni per trovare notizie affidabili, e non era possibile automatizzarlo perché i siti di finanza si aggiornano quotidianamente per combattere gli scrapers.</li>
-<li><strong><a href="https://milvus.io/">M****ilvus</a></strong> <strong>per la storia e le preferenze personali.</strong> Milvus memorizza la mia storia di trading e l'agente la ricerca prima che io prenda una decisione: se sto per ripetere qualcosa di cui mi sono pentito, me lo dice. Prima, rivedere le operazioni passate era abbastanza noioso e non lo facevo, così gli stessi errori continuavano a ripetersi con ticker diversi. <a href="https://zilliz.com/cloud">Zilliz Cloud</a> è la versione completamente gestita di Milvus. Se desiderate un'esperienza senza problemi, Zilliz Cloud è un'ottima opzione<a href="https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&amp;utm_button=banner_left&amp;_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..">(è disponibile il livello gratuito</a>).</li>
+<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>per ricerche accurate e in tempo reale.</strong> Exa sfoglia e riassume fonti di informazione selezionate a mano in base a un programma, in modo da ottenere un briefing pulito ogni mattina. Prima passavo un'ora al giorno a setacciare lo spam SEO e le speculazioni per trovare notizie affidabili, e non poteva essere automatizzato perché i siti di finanza si aggiornano quotidianamente per combattere gli scrapers.</li>
+<li><strong><a href="https://milvus.io/">Milvus</a></strong> <strong>per la storia e le preferenze personali.</strong> Milvus memorizza la mia storia di trading e l'agente la ricerca prima che io prenda una decisione: se sto per ripetere qualcosa di cui mi sono pentito, me lo dice. Prima, rivedere le operazioni passate era abbastanza noioso e non lo facevo, così gli stessi errori continuavano a ripetersi con ticker diversi. <a href="https://zilliz.com/cloud">Zilliz Cloud</a> è la versione completamente gestita di Milvus. Se desiderate un'esperienza senza problemi, Zilliz Cloud è un'ottima opzione<a href="https://cloud.zilliz.com/signup">(è disponibile il livello gratuito</a>).</li>
 </ul>
 <p>Ecco come l'ho configurato, passo dopo passo.</p>
 <h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">Passo 1: ottenere informazioni di mercato in tempo reale con Exa<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
@@ -45,14 +45,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In precedenza, avevo provato a navigare tra le app finanziarie, a scrivere scrapers e a cercare terminali di dati professionali. La mia esperienza?  Le app seppellivano il segnale sotto il rumore, gli scrapers si rompevano continuamente e le API professionali erano proibitive.  Exa è un'API di ricerca costruita per agenti AI che risolve i problemi di cui sopra.</p>
+    </button></h2><p>In precedenza, avevo provato a navigare tra le app finanziarie, a scrivere scrapers e a cercare terminali di dati professionali. La mia esperienza? Le app seppellivano il segnale sotto il rumore, gli scrapers si rompevano continuamente e le API professionali erano proibitive. Exa è un'API di ricerca costruita per agenti AI che risolve i problemi di cui sopra.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong><a href="https://exa.ai/">Exa</a></strong> è un'API di ricerca sul web che restituisce dati strutturati e pronti per l'AI per gli agenti AI. È alimentata da <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (il servizio completamente gestito di Milvus). Se Perplexity è un motore di ricerca usato dagli esseri umani, Exa è usato dall'IA. L'agente invia una query ed Exa restituisce il testo dell'articolo, le frasi chiave e i sommari in formato JSON: un output strutturato che l'agente può analizzare e utilizzare direttamente, senza bisogno di scraping.</p>
+<p><strong><a href="https://exa.ai/">Exa</a></strong> è un'API di ricerca sul web che restituisce dati strutturati e pronti per l'AI per gli agenti AI. È alimentata da <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (il servizio completamente gestito di Milvus). Se Perplexity è un motore di ricerca usato dagli esseri umani, Exa è usato dall'IA. L'agente invia una query ed Exa restituisce il testo dell'articolo, le frasi chiave e i riassunti in formato JSON, un output strutturato che l'agente può analizzare e utilizzare direttamente, senza bisogno di scraping.</p>
 <p>Exa utilizza anche la ricerca semantica, in modo che l'agente possa eseguire query in linguaggio naturale. Una query del tipo "Perché le azioni NVIDIA sono scese nonostante i forti guadagni del quarto trimestre 2026" restituisce le analisi di Reuters e Bloomberg, non una pagina di clickbait SEO.</p>
 <p>Exa ha un livello gratuito - 1.000 ricerche al mese - che è più che sufficiente per iniziare. Per seguire la procedura, installate l'SDK e inserite la vostra chiave API:</p>
 <pre><code translate="no">pip install exa-py
@@ -194,7 +194,7 @@ milvus.create_collection(
 <tbody>
 <tr><td><strong>Preferenze</strong></td><td>Pregiudizi, tolleranza al rischio, filosofia di investimento ("tendo a tenere i titoli tecnologici troppo a lungo")</td><td>Caricato nel contesto dell'agente a ogni esecuzione</td></tr>
 <tr><td><strong>Decisioni e modelli</strong></td><td>Operazioni specifiche del passato, lezioni apprese, osservazioni di mercato.</td><td>Recuperati tramite ricerca per similarità solo quando si presenta una situazione rilevante</td></tr>
-<tr><td><strong>Conoscenze esterne</strong></td><td>Rapporti di ricerca, documenti SEC, dati pubblici</td><td>Non memorizzate in Milvus - ricercabili tramite Exa</td></tr>
+<tr><td><strong>Conoscenza esterna</strong></td><td>Rapporti di ricerca, documenti SEC, dati pubblici</td><td>Non memorizzate in Milvus - ricercabili tramite Exa</td></tr>
 </tbody>
 </table>
 <p>Ho creato tre raccolte diverse, perché unirle in un'unica raccolta significherebbe appesantire ogni richiesta di informazioni con la cronologia degli scambi irrilevante, oppure perdere i pregiudizi fondamentali quando non corrispondono abbastanza alla query corrente.</p>
@@ -442,7 +442,7 @@ selling after a dip, say so explicitly.
 <p>Quest'ultimo punto è il cambiamento più importante. L'agente non solo fa risparmiare tempo, ma mi libera anche dall'osservazione del mercato. Non si può vendere nel panico se non si guardano i prezzi.</p>
 <p>Prima di questo sistema, dedicavo 10-15 ore alla settimana alla raccolta di informazioni, al monitoraggio del mercato e alla revisione delle transazioni, sparpagliate tra riunioni, spostamenti e scorrimento notturno. Ora sono circa due ore: cinque minuti per il briefing mattutino ogni giorno, più 30 minuti per la revisione nel fine settimana.</p>
 <p>Anche la qualità delle informazioni è migliore. Leggo i riassunti di Reuters e Bloomberg invece di quello che è diventato virale su Twitter. Inoltre, grazie all'agente che richiama i miei errori passati ogni volta che sono tentato di agire, ho ridotto in modo significativo le mie operazioni impulsive. Non posso ancora provare che questo mi abbia reso un investitore migliore, ma mi ha reso un investitore meno avventato.</p>
-<p>Il costo totale: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>10/mese</mi><mn>per OpenClaw</mn><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">10/mese per OpenClaw,</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">10/mese</span><span class="mord">per OpenClaw</span><span class="mpunct">,</span></span></span></span>10/mese per Exa e un po' di elettricità per mantenere in funzione Milvus Lite.</p>
+<p>Il costo totale: 10 dollari al mese per OpenClaw, 10 dollari al mese per Exa e un po' di elettricità per far funzionare Milvus Lite.</p>
 <h2 id="Conclusion" class="common-anchor-header">Conclusione<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -460,17 +460,17 @@ selling after a dip, say so explicitly.
       </svg>
     </button></h2><p>Continuavo a fare le stesse operazioni impulsive perché le mie informazioni erano sbagliate, rivedevo raramente la mia cronologia e stare tutto il giorno a guardare il mercato peggiorava la situazione. Ho quindi costruito un agente AI che risolve questi problemi facendo tre cose:</p>
 <ul>
-<li><strong>Raccoglie notizie di mercato affidabili</strong> con <strong><a href="https://exa.ai/">Exa</a></strong>, sostituendo un'ora di scrolling tra spam SEO e siti a pagamento.</li>
+<li><strong>Raccoglie notizie di mercato affidabili</strong> con <strong><a href="https://exa.ai/">Exa</a></strong>, sostituendo un'ora di scorrimento tra spam SEO e siti a pagamento.</li>
 <li><strong>Ricorda le mie operazioni passate</strong> con <a href="http://milvus.io">Milvus</a> e mi avverte quando sto per ripetere un errore di cui mi sono già pentito.</li>
 <li><strong>Funziona con il pilota automatico</strong> con <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> e mi segnala solo quando qualcosa è veramente importante.</li>
 </ul>
 <p>Costo totale: 20 dollari al mese. L'agente non fa trading e non tocca il mio denaro.</p>
 <p>Il cambiamento più importante non è stato quello dei dati o degli avvisi. È che ho smesso di guardare il mercato. Mercoledì scorso me ne sono completamente dimenticato, cosa che non è mai successa in anni di trading. A volte perdo ancora denaro, ma molto meno spesso, e mi godo di nuovo i miei fine settimana. I miei colleghi non hanno ancora aggiornato la battuta, ma dategli tempo.</p>
 <p>Anche per costruire l'agente ci sono voluti solo due fine settimana. Un anno fa, la stessa configurazione avrebbe comportato la scrittura di scheduler, pipeline di notifica e gestione della memoria da zero. Con OpenClaw, la maggior parte del tempo è stata impiegata per chiarire le mie regole di trading, non per scrivere l'infrastruttura.</p>
-<p>Inoltre, una volta costruita per un caso d'uso, l'architettura è portatile.  Sostituendo i modelli di ricerca Exa e le competenze OpenClaw, si ottiene un agente che monitora i documenti di ricerca, segue i concorrenti, osserva i cambiamenti normativi o segue le interruzioni della catena di approvvigionamento.</p>
+<p>Inoltre, una volta costruita per un caso d'uso, l'architettura è portatile. Sostituendo i modelli di ricerca Exa e le competenze OpenClaw, si ottiene un agente che monitora i documenti di ricerca, segue i concorrenti, osserva i cambiamenti normativi o segue le interruzioni della catena di approvvigionamento.</p>
 <p>Se volete provarlo:</p>
 <ul>
-<li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a></strong> - per ottenere un database di vettori funzionante localmente in meno di cinque minuti</li>
+<li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a></strong> - per ottenere un database di vettori funzionante a livello locale in meno di cinque minuti.</li>
 <li><strong><a href="https://docs.openclaw.ai/">OpenClaw</a></strong> <strong>docs</strong> - configurare il primo agente con Skills e Heartbeat</li>
 <li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>API</strong> - 1.000 ricerche gratuite al mese per cominciare</li>
 </ul>
@@ -492,7 +492,7 @@ selling after a dip, say so explicitly.
       </svg>
     </button></h2><ul>
 <li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw (ex Clawdbot e Moltbot) spiegato: Guida completa all'agente AI autonomo</a></li>
-<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Guida passo-passo alla configurazione di OpenClaw (precedentemente Clawdbot/Moltbot) con Slack</a></li>
+<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Guida passo passo alla configurazione di OpenClaw (precedentemente Clawdbot/Moltbot) con Slack</a></li>
 <li><a href="https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md">Perché gli agenti di intelligenza artificiale come OpenClaw bruciano i gettoni e come ridurre i costi</a></li>
 <li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">Abbiamo estratto il sistema di memoria di OpenClaw e lo abbiamo reso open source (memsearch)</a></li>
 </ul>

@@ -23,8 +23,8 @@ origin: >-
 <p>이 에이전트는 세 부분으로 구성되어 있으며 월 20달러 정도입니다:</p>
 <ul>
 <li><strong>이 모든 것을 자동 조종으로 실행하기 위한</strong><strong><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a></strong> <strong>.</strong> OpenClaw는 30분 주기로 에이전트를 실행하고 실제로 중요한 일이 있을 때만 핑을 보내주므로 화면에 계속 붙어 있던 FOMO를 완화해 줍니다. 이전에는 가격을 더 많이 볼수록 충동적으로 반응했습니다.</li>
-<li><strong>정확한 실시간 검색을 위한</strong><strong><a href="https://exa.ai/">Exa</a></strong> <strong>.</strong> Exa는 일정에 따라 엄선된 정보 소스를 검색하고 요약해 주기 때문에 매일 아침 깔끔한 브리핑을 받을 수 있습니다. 이전에는 신뢰할 수 있는 뉴스를 찾기 위해 하루에 한 시간씩 SEO 스팸과 추측성 뉴스를 샅샅이 뒤지는데, 금융 사이트는 스크레이퍼와 싸우기 위해 매일 업데이트되기 때문에 이 작업을 자동화할 수 없었습니다.</li>
-<li><strong>개인 거래 내역과 선호도를 위한</strong><strong><a href="https://milvus.io/">M****ilvus</a></strong> <strong>.</strong> Milvus는 제 거래 내역을 저장하고, 제가 결정을 내리기 전에 에이전트가 이를 검색하여 후회했던 일을 반복하려는 경우 이를 알려줍니다. 이전에는 과거 거래를 검토하는 것이 번거로워서 하지 않았기 때문에 다른 시세에서 같은 실수가 계속 발생했습니다. <a href="https://zilliz.com/cloud">질리즈 클라우드는</a> 밀버스의 완전 관리형 버전입니다. 번거로움 없는 환경을 원한다면 Zilliz Cloud가 훌륭한 옵션입니다<a href="https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&amp;utm_button=banner_left&amp;_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..">(무료 티어 사용 가능</a>).</li>
+<li><strong>정확한 실시간 검색을 위한</strong><strong><a href="https://exa.ai/">Exa</a></strong> <strong>.</strong> Exa는 일정에 따라 엄선된 정보 소스를 검색하고 요약해 주기 때문에 매일 아침 깔끔한 브리핑을 받을 수 있습니다. 이전에는 신뢰할 수 있는 뉴스를 찾기 위해 하루에 한 시간씩 SEO 스팸과 추측성 기사를 샅샅이 뒤지는데, 금융 사이트는 스크레이퍼와 싸우기 위해 매일 업데이트되기 때문에 이 작업을 자동화할 수 없었습니다.</li>
+<li><strong>개인 거래 내역과 선호도를 위한</strong><strong><a href="https://milvus.io/">Milvus</a></strong> <strong>.</strong> Milvus는 내 거래 내역을 저장하고, 내가 결정을 내리기 전에 에이전트가 이를 검색하여 후회했던 일을 반복하려는 경우 이를 알려줍니다. 이전에는 과거 거래를 검토하는 것이 번거로워서 하지 않았기 때문에 다른 시세에서 같은 실수가 계속 발생했습니다. <a href="https://zilliz.com/cloud">질리즈 클라우드는</a> 밀버스의 완전 관리형 버전입니다. 번거로움 없는 환경을 원하신다면 Zilliz Cloud가 좋은 옵션입니다<a href="https://cloud.zilliz.com/signup">(무료 티어 사용 가능</a>).</li>
 </ul>
 <p>단계별로 설정하는 방법은 다음과 같습니다.</p>
 <h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">1단계: Exa로 실시간 시장 정보 얻기<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
@@ -42,7 +42,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>전에는 금융 앱을 검색하고, 스크레이퍼를 작성하고, 전문 데이터 단말기를 살펴본 적이 있습니다. 제 경험은 어땠나요?  앱은 노이즈에 신호를 묻어버렸고, 스크레이퍼는 계속 고장 났으며, 전문 API는 엄청나게 비쌌습니다.  Exa는 위의 문제를 해결하는 AI 에이전트를 위해 구축된 검색 API입니다.</p>
+    </button></h2><p>전에는 금융 앱을 검색하고, 스크레이퍼를 작성하고, 전문 데이터 단말기를 살펴본 적이 있습니다. 제 경험은 어땠나요? 앱은 노이즈에 신호를 묻어버렸고, 스크레이퍼는 계속 고장 났으며, 전문 API는 엄청나게 비쌌습니다. Exa는 위의 문제를 해결하는 AI 에이전트를 위해 구축된 검색 API입니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png" alt="" class="doc-image" id="" />
@@ -367,7 +367,7 @@ IMPORTANT: Always surface my past mistakes. I have a tendency to
 let fear override data. If my Milvus history shows I regretted
 selling after a dip, say so explicitly.
 <button class="copy-code-btn"></button></code></pre>
-<p>마지막 줄이 가장 중요합니다. "항상 과거의 실수를 드러내라. 저는 두려움이 데이터보다 우선하는 경향이 있습니다. 밀버스 기록에 따르면 하락 후 매도한 것을 후회한 적이 있다면 명확하게 말하세요." 이렇게 하면 상담원에게 제가 어디에서 잘못했는지 정확히 알려주므로 언제 뒤로 물러나야 하는지 알 수 있습니다. 직접 작성한다면 이 부분은 자신의 편견에 따라 사용자 지정할 수 있습니다.</p>
+<p>마지막 줄이 가장 중요합니다. "항상 과거의 실수를 드러내라. 저는 두려움이 데이터보다 우선하는 경향이 있습니다. 밀버스 기록에 따르면 하락 후 매도한 것을 후회한 적이 있다면 솔직하게 말하세요." 이렇게 하면 에이전트에게 제가 어디에서 잘못했는지 정확히 알려주므로 언제 뒤로 물러나야 하는지 알 수 있습니다. 직접 작성한다면 이 부분은 자신의 편견에 따라 사용자 지정할 수 있습니다.</p>
 <p>저는 감정 분석, 매크로 지표, 섹터 회전 신호에 대해서도 비슷한 스킬을 작성했습니다. 또한 제가 존경하는 투자자들이 같은 상황을 어떻게 평가할지 시뮬레이션하는 스킬, 즉 버핏의 가치 프레임워크, 브릿지워터의 거시적 접근 방식을 시뮬레이션하는 스킬도 만들었습니다. 이는 의사 결정자가 아니라 추가적인 관점입니다.</p>
 <p>경고: LLM이 RSI나 MACD와 같은 기술적 지표를 계산하게 두지 마세요. 그들은 자신 있게 숫자를 계산합니다. 직접 계산하거나 전용 API를 호출하여 그 결과를 스킬에 입력으로 제공하세요.</p>
 <h2 id="Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="common-anchor-header">4단계: OpenClaw 하트비트로 에이전트 시작하기<button data-href="#Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="anchor-icon" translate="no">
@@ -385,7 +385,7 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>위의 모든 작업은 여전히 수동으로 트리거해야 합니다. 업데이트를 원할 때마다 터미널을 열어야 한다면, 회의 중에 중개 앱을 다시 스크롤하는 것과 마찬가지입니다.</p>
+    </button></h2><p>위의 모든 작업은 여전히 수동으로 트리거해야 합니다. 업데이트를 원할 때마다 터미널을 열어야 한다면 회의 중에 중개 앱을 다시 스크롤하는 것과 마찬가지입니다.</p>
 <p>OpenClaw의 하트비트 메커니즘은 이 문제를 해결합니다. 게이트웨이가 30분마다(설정 가능) 상담원에게 핑을 보내고, 상담원은 HEARTBEAT.md 파일을 확인하여 그 순간에 수행할 작업을 결정합니다. 이 파일은 시간 기반 규칙이 있는 마크다운 파일입니다:</p>
 <pre><code translate="no"><span class="hljs-meta"># HEARTBEAT.md — runs every 30 minutes automatically</span>
 
@@ -432,14 +432,14 @@ selling after a dip, say so explicitly.
       </svg>
     </button></h2><p>시스템이 실제로 매일 생성하는 내용은 다음과 같습니다:</p>
 <ul>
-<li><strong>아침 요약(오전 7시).</strong> 에이전트가 밤새 Exa를 실행하고 Milvus에서 내 포지션과 관련 기록을 가져와 500단어 미만의 개인화된 요약을 휴대폰으로 푸시합니다. 밤새 무슨 일이 있었는지, 제 보유 포지션과 어떤 관련이 있는지, 1~3개의 실행 항목이 포함되어 있습니다. 양치질을 하면서 읽었습니다.</li>
-<li><strong>일중 알림(오전 9시 30분~오후 4시(동부표준시)).</strong> 30분마다 상담원이 제 관심 종목 목록을 확인합니다. 주식이 3% 이상 움직이면 매수 이유, 손절가 위치, 이전에 비슷한 상황에 처한 적이 있는지 등 맥락이 담긴 알림을 받습니다.</li>
+<li><strong>아침 요약(오전 7시).</strong> 에이전트가 밤새 Exa를 실행하고 Milvus에서 내 포지션과 관련 기록을 가져와서 500단어 미만의 개인화된 요약을 휴대폰으로 푸시합니다. 밤새 무슨 일이 있었는지, 제 보유 포지션과 어떤 관련이 있는지, 1~3개의 실행 항목이 포함되어 있습니다. 양치질을 하면서 읽었습니다.</li>
+<li><strong>일중 알림(오전 9시 30분~오후 4시(동부표준시)).</strong> 30분마다 상담원이 제 관심 종목 목록을 확인합니다. 주식이 3% 이상 움직이면 매수 이유, 손절가 위치, 이전에 비슷한 상황에 처한 적이 있는지 여부 등 맥락이 담긴 알림을 받습니다.</li>
 <li><strong>주간 검토(주말).</strong> 에이전트는 시장 움직임, 아침 예상과 비교한 결과, 기억해야 할 패턴 등 한 주간의 모든 것을 정리해 줍니다. 저는 토요일에 30분 동안 이 자료를 읽습니다. 나머지 주중에는 일부러 화면을 멀리합니다.</li>
 </ul>
 <p>마지막 점이 가장 큰 변화입니다. 에이전트 덕분에 시간을 절약할 수 있을 뿐만 아니라 시장을 주시하지 않아도 되니까요. 가격을 보고 있지 않으면 당황해서 판매할 수 없으니까요.</p>
 <p>이 시스템을 사용하기 전에는 정보 수집, 시장 모니터링, 거래 검토에 일주일에 10~15시간을 회의, 출퇴근 시간, 늦은 밤 스크롤링 등으로 흩어져 보냈습니다. 이제는 매일 아침 브리핑에 5분, 주말 검토에 30분씩 더해 2시간 정도면 충분합니다.</p>
 <p>정보의 질도 더 좋아졌습니다. 트위터에서 화제가 된 내용 대신 로이터와 블룸버그의 요약본을 읽고 있습니다. 그리고 제가 행동하고 싶은 유혹을 느낄 때마다 에이전트가 과거의 실수를 알려주니 충동적인 거래가 크게 줄었습니다. 아직 제가 더 나은 투자자가 되었다는 것을 증명할 수는 없지만 덜 무모한 투자자가 된 것은 분명합니다.</p>
-<p>총 비용: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">OpenClaw</annotation><mrow><mn>월</mn><mi>10달러</mi></mrow><annotation encoding="application/x-tex">, OpenClaw</annotation></semantics></math></span></span>월 10달러, <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">월</span><span class="mord mathnormal" style="margin-right:0.02691em;">10달러</span><span class="mpunct">,</span></span></span></span>Exa 월 10달러, Milvus Lite를 계속 실행하기 위한 약간의 전기료.</p>
+<p>총 비용: OpenClaw는 월 $10, Exa는 월 $10, 그리고 Milvus Lite를 계속 실행하기 위한 약간의 전기료.</p>
 <h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -455,7 +455,7 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>저는 정보가 좋지 않아서 충동적인 거래를 계속했고, 내 기록을 거의 검토하지 않았으며, 하루 종일 시장을 쳐다보는 것이 상황을 악화시켰습니다. 그래서 저는 다음 세 가지를 수행하여 이러한 문제를 해결하는 AI 에이전트를 만들었습니다:</p>
+    </button></h2><p>저는 잘못된 정보로 인해 충동적인 매매를 계속했고, 거래 내역을 거의 검토하지 않았으며, 하루 종일 시장을 쳐다보는 것이 상황을 악화시켰습니다. 그래서 저는 다음 세 가지를 수행하여 이러한 문제를 해결하는 AI 에이전트를 만들었습니다:</p>
 <ul>
 <li><strong><a href="https://exa.ai/">Exa로</a></strong><strong>신뢰할 수 있는 시장 뉴스를 수집하여</strong> 한 시간 동안 SEO 스팸과 유료 사이트를 스크롤하는 일을 대신합니다.</li>
 <li><a href="http://milvus.io">Milvus를</a> 통해<strong>과거 거래를 기억하고</strong> 이미 후회했던 실수를 반복하려고 할 때 경고해 줍니다.</li>
@@ -464,7 +464,7 @@ selling after a dip, say so explicitly.
 <p>총 비용: 월 $20. 에이전트는 제 돈을 거래하거나 건드리지 않습니다.</p>
 <p>가장 큰 변화는 데이터나 알림이 아니었습니다. 제가 시장을 보지 않게 된 것입니다. 지난 수요일에는 완전히 잊어버렸는데, 수년간 트레이딩을 하면서 이런 일은 처음이었습니다. 여전히 가끔 손실을 보지만 그 빈도가 훨씬 줄어들었고 주말을 다시 즐기게 되었습니다. 동료들은 아직 농담을 업데이트하지 않았지만 시간을 두고 지켜봐 주세요.</p>
 <p>에이전트도 구축하는 데 주말 이틀밖에 걸리지 않았습니다. 1년 전 같았으면 스케줄러, 알림 파이프라인, 메모리 관리를 처음부터 다시 작성해야 했을 것입니다. OpenClaw를 사용하면 대부분의 시간을 인프라를 작성하는 것이 아니라 저만의 거래 규칙을 명확히 하는 데 할애할 수 있습니다.</p>
-<p>그리고 한 가지 사용 사례에 맞게 구축한 후에는 아키텍처를 이식할 수 있습니다.  Exa 검색 템플릿과 OpenClaw 스킬을 교체하면 연구 논문을 모니터링하고, 경쟁사를 추적하고, 규제 변화를 주시하고, 공급망 중단을 추적하는 에이전트가 생깁니다.</p>
+<p>그리고 한 가지 사용 사례에 맞게 구축한 후에는 아키텍처를 이식할 수 있습니다. Exa 검색 템플릿과 OpenClaw 스킬을 교체하면 연구 논문을 모니터링하고, 경쟁사를 추적하고, 규제 변화를 주시하고, 공급망 중단을 추적하는 에이전트가 생깁니다.</p>
 <p>사용해 보세요:</p>
 <ul>
 <li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus 빠른 시작</a></strong> - 5분 이내에 로컬에서 벡터 데이터베이스를 실행할 수 있습니다.</li>
@@ -491,5 +491,5 @@ selling after a dip, say so explicitly.
 <li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">오픈클로(이전의 클로봇 및 몰트봇) 설명: 자율 AI 에이전트에 대한 완벽한 가이드</a></li>
 <li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Slack으로 OpenClaw(이전의 Clawdbot/Moltbot)를 설정하는 단계별 가이드</a></li>
 <li><a href="https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md">OpenClaw와 같은 AI 에이전트가 토큰을 소모하는 이유와 비용을 절감하는 방법</a></li>
-<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">OpenClaw의 메모리 시스템을 추출하여 오픈 소스화(memsearch)한 방법</a></li>
+<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">OpenClaw의 메모리 시스템을 추출하여 오픈소스화(memsearch)한 방법</a></li>
 </ul>

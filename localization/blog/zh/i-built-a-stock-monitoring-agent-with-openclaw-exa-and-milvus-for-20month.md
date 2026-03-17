@@ -17,14 +17,14 @@ origin: >-
 ---
 <p>我的业余爱好是交易美股，说得客气点就是赔钱。我的同事开玩笑说，我的策略是 "兴奋时高价买入，恐惧时低价卖出，每周重复"。</p>
 <p>重复的部分是我的致命伤。每次我盯着市场，最终都会做一笔我没计划好的交易。石油价格飙升，我恐慌性抛售。某只科技股大涨 4%，我追涨。一周后，我看着自己的交易记录，<em>上个季度我不也是这么做的吗？</em></p>
-<p>于是，我用 OpenClaw 建立了一个 Agents，代替我观察市场，阻止我犯同样的错误。它不会进行交易，也不会碰我的钱，因为那样会有太多的安全风险。相反，它为我节省了观察市场的时间，让我不再犯同样的错误。</p>
+<p>于是，我用 OpenClaw 建立了一个 Agents，代替我观察市场，阻止我犯同样的错误。它不会进行交易，也不会碰我的钱，因为那样会有太多的安全风险。相反，它节省了我观察市场的时间，让我不再犯同样的错误。</p>
 <p>这个 Agents 由三部分组成，每月费用约 20 美元：</p>
 <ul>
 <li><strong><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a></strong> <strong>，用于自动运行这一切。</strong>OpenClaw 以 30 分钟心跳一次的频率运行代理，只有在真正重要的事情发生时才会呼叫我，这缓解了过去让我目不转睛盯着屏幕的 FOMO。以前，我越是关注价格，就越会做出冲动的反应。</li>
-<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>提供准确、实时的搜索。</strong>Exa 按计划浏览和汇总精心挑选的信息源，因此我每天早上都能得到一份简洁的简报。以前，我每天都要花一个小时的时间在搜索引擎优化垃圾信息和猜测中寻找可靠的新闻，而这无法实现自动化，因为金融网站每天都会更新，以打击垃圾信息。</li>
-<li><strong><a href="https://milvus.io/">M</a><a href="https://milvus.io/">****ilvus</a></strong> <strong>，用于个人历史和偏好。</strong>Milvus 存储了我的交易历史，在我做决定之前，Agents 会对其进行搜索--如果我即将重复我后悔过的事情，它会告诉我。以前，回顾过去的交易非常乏味，我就没有回顾，所以同样的错误在不同的股票上不断发生。<a href="https://zilliz.com/cloud">Zilliz Cloud</a>是 Milvus 的全托管版本。如果您想获得省心的体验，Zilliz Cloud 是一个不错的选择<a href="https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&amp;utm_button=banner_left&amp;_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..">（提供免费级别）</a>。</li>
+<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>提供准确、实时的搜索。</strong>Exa 按计划浏览和汇总精心挑选的信息来源，因此我每天早上都能得到一份简洁的简报。以前，我每天都要花一个小时在搜索引擎优化垃圾信息和猜测中寻找可靠的新闻，而这无法实现自动化，因为金融网站每天都要更新，以打击垃圾信息。</li>
+<li><strong><a href="https://milvus.io/">Milvus</a></strong> <strong>用于个人历史和偏好。</strong>Milvus 存储了我的交易历史，在我做出决定之前，Agents 会对其进行搜索--如果我即将重复我后悔过的事情，它会告诉我。以前，回顾过去的交易非常乏味，我就没有回顾，所以同样的错误在不同的股票上不断发生。<a href="https://zilliz.com/cloud">Zilliz Cloud</a>是 Milvus 的全托管版本。如果您想获得省心的体验，Zilliz Cloud 是一个不错的选择<a href="https://cloud.zilliz.com/signup">（提供免费级别</a>）。</li>
 </ul>
-<p>以下是我的设置步骤。</p>
+<p>下面是我的设置步骤。</p>
 <h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">第一步：使用 Exa 获取实时市场情报<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -40,7 +40,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在此之前，我曾尝试过浏览金融应用程序、编写刮板程序以及研究专业数据终端。我的经验是？  应用程序将信号掩盖在噪音之下，搜索器经常出现故障，而专业 API 的价格又高得令人望而却步。  Exa 是专为人工智能 Agents 打造的搜索 API，可以解决上述问题。</p>
+    </button></h2><p>在此之前，我曾尝试过浏览金融应用程序、编写刮板程序以及研究专业数据终端。我的经验是？应用程序将信号掩盖在噪音之下，搜索器经常出现故障，而专业 API 的价格又高得令人望而却步。Exa 是专为人工智能 Agents 打造的搜索 API，可以解决上述问题。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png" alt="" class="doc-image" id="" />
@@ -194,7 +194,7 @@ milvus.create_collection(
 </table>
 <p>我建立了三个不同的 Collections，因为将这些内容混合到一个 Collections 中，要么意味着用不相关的交易历史臃肿每个提示，要么意味着当核心偏差与当前查询不够匹配时会丢失核心偏差。</p>
 <p>一旦有了这些 Collections，我就需要一种自动填充它们的方法。我不想在每次与 Agents 对话后都复制粘贴信息，因此我创建了一个内存提取器，在每次聊天会话结束时运行。</p>
-<p>提取器有两个功能：提取和重复。提取器要求 LLM 从对话中提取结构化的见解--决定、偏好、模式、经验教训--并将每个见解路由到正确的 Collections。在存储任何内容之前，它会对照已有内容检查相似性。如果新见解与现有条目相似度超过 92%，就会被跳过。</p>
+<p>提取器有两个功能：提取和重复。提取器要求 LLM 从对话中提取结构化的见解--决定、偏好、模式、经验教训--并将每一条都转到正确的 Collections 中。在存储任何内容之前，它会对照已有内容检查相似性。如果新见解与现有条目相似度超过 92%，就会被跳过。</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">extract_and_store_memories</span>(<span class="hljs-params">conversation: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">int</span>:
@@ -304,7 +304,7 @@ context = recall_my_experience(
 <span class="hljs-comment"># - My pattern: &quot;tech selloffs from geopolitics recover in 1-3 weeks&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>例如，3 月初中东紧张局势导致科技股下跌 3-4%，Agents 调用了三样东西：2024 年 10 月关于在地缘政治下跌期间不要恐慌性抛售的教训、我倾向于超配地缘政治风险的偏好说明，以及我记录的模式（地缘政治导致的科技股大跌通常会在一到三周内恢复）。</p>
-<p>我的同事认为：如果你的训练数据是一个失败的记录，那么人工智能到底在学习什么？但这正是关键所在--代理并不是在复制我的交易，而是在记住它们，以便说服我放弃下一次交易。</p>
+<p>我的同事认为：如果你的训练数据是一个失败的记录，那么人工智能到底在学习什么？但这正是问题的关键所在--代理并不是在复制我的交易，而是在记住它们，以便说服我放弃下一次交易。</p>
 <h2 id="Step-3-Teach-Your-Agent-to-Analyze-with-OpenClaw-Skills" class="common-anchor-header">第三步：用 OpenClaw 技能教你的代理进行分析<button data-href="#Step-3-Teach-Your-Agent-to-Analyze-with-OpenClaw-Skills" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -365,7 +365,7 @@ IMPORTANT: Always surface my past mistakes. I have a tendency to
 let fear override data. If my Milvus history shows I regretted
 selling after a dip, say so explicitly.
 <button class="copy-code-btn"></button></code></pre>
-<p>最后一行是最重要的："总是浮现我过去的错误。我有一种让恐惧凌驾于数据之上的倾向。如果我的 Milvus 历史记录显示我在下跌后后悔卖出，那就明说"。这就是我告诉 Agents 我到底错在哪里，让它知道什么时候该反击。如果你自己开发，这部分内容可以根据你的偏好进行定制。</p>
+<p>最后一行是最重要的："总是浮现我过去的错误。我有一种让恐惧凌驾于数据之上的倾向。如果我的 Milvus 历史记录显示我在下跌后后悔卖出，那就明确地说出来"。这就是我告诉 Agents 我到底错在哪里，让它知道什么时候该反击。如果你自己开发，这部分内容可以根据你的偏好进行定制。</p>
 <p>我为情绪分析、宏观指标和行业轮动信号编写了类似的 Skills。我还编写了模拟我欣赏的投资者如何评估相同情况的 "技能"--巴菲特的价值框架、桥水的宏观方法。这些不是决策者，而是额外的视角。</p>
 <p>警告：不要让 LLM 计算 RSI 或 MACD 等技术指标。他们会自信地幻化出数字。自己计算这些指标或调用专用 API，并将结果作为输入输入到 Skill 中。</p>
 <h2 id="Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="common-anchor-header">第 4 步：使用 OpenClaw Heartbeat 启动 Agents<button data-href="#Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="anchor-icon" translate="no">
@@ -430,14 +430,14 @@ selling after a dip, say so explicitly.
       </svg>
     </button></h2><p>以下是该系统每天实际产生的结果：</p>
 <ul>
-<li><strong>早晨简报（上午 7:00）。</strong>Agents 过夜运行 Exa，从 Milvus 中提取我的仓位和相关历史记录，然后向我的手机推送一份个性化摘要--500 字以内。一夜之间发生了什么，与我的持股有什么关系，以及一到三个行动项目。我一边刷牙一边阅读。</li>
+<li><strong>早晨简报（上午 7:00）。</strong>Agents 隔夜运行 Exa，从 Milvus 中提取我的仓位和相关历史记录，然后向我的手机推送一份个性化摘要--少于 500 字。一夜之间发生了什么，与我的持股有什么关系，以及一到三个行动项目。我一边刷牙一边阅读。</li>
 <li><strong>日内提醒（东部时间上午 9:30 至下午 4:00）。</strong>每隔 30 分钟，Agent 会检查我的观察列表。如果有任何股票变动超过 3%，我就会收到通知，并说明相关情况：我为什么买入它，我的止损点在哪里，以及我以前是否遇到过类似情况。</li>
 <li><strong>每周回顾（周末）。</strong>Agents 汇总了整周的情况--市场走势、与我早上的预期相比如何，以及值得记住的模式。我在周六花 30 分钟阅读。本周其余时间，我有意远离屏幕。</li>
 </ul>
 <p>最后一点是最大的改变。Agents 不仅节省了时间，还让我从观察市场中解放出来。如果不看价格，就无法恐慌性抛售。</p>
 <p>在使用这套系统之前，我每周要花 10-15 个小时来收集信息、监控市场和审查交易，这些时间分散在开会、通勤和深夜浏览网页上。现在大约只需 2 个小时：每天早上 5 分钟的简报，加上周末 30 分钟的回顾。</p>
 <p>信息质量也更好了。我阅读的是路透社和彭博社的摘要，而不是 Twitter 上的热门话题。每当我想采取行动时，Agents 就会提醒我过去的错误，这让我大大减少了冲动交易。我还不能证明这让我成为了一个更好的投资者，但它让我不再那么鲁莽。</p>
-<p>总成本：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">OpenClaw</annotation><mrow><mn>10</mn><mi>/</mi><mn>月</mn></mrow><annotation encoding="application/x-tex">，OpenClaw 10/月，</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">10/月，</span></span></span></span>Exa<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal" style="margin-right:0.02691em;">10</span><span class="mord">/月</span><span class="mpunct">，</span></span></span></span>以及维持 Milvus Lite 运行的一点电费。</p>
+<p>总成本：OpenClaw 每月 10 美元，Exa 每月 10 美元，以及 Milvus Lite 运行所需的电费。</p>
 <h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -462,7 +462,7 @@ selling after a dip, say so explicitly.
 <p>总成本：20 美元/月。Agents 不交易，也不碰我的钱。</p>
 <p>最大的变化不是数据或警报。而是我不再关注市场了。上周三我完全忘了这回事，这在我多年的交易生涯中从未发生过。我有时还是会亏钱，但次数少了很多，而且我又开始享受周末了。我的同事们还没有更新这个笑话，但给它点时间吧。</p>
 <p>Agents 也只花了两个周末就建立起来了。一年前，同样的设置意味着要从头开始编写调度程序、通知管道和内存管理。有了 OpenClaw，大部分时间都花在了明确自己的交易规则上，而不是编写基础架构。</p>
-<p>一旦你为一个用例构建了它，架构就可以移植。  把 Exa 搜索模板和 OpenClaw Skills 互换一下，你就拥有了一个可以监控研究论文、追踪竞争对手、观察监管变化或跟踪供应链中断的 Agents。</p>
+<p>一旦你为一个用例构建了它，架构就可以移植。把 Exa 搜索模板和 OpenClaw Skills 互换一下，你就拥有了一个可以监控研究论文、追踪竞争对手、观察监管变化或跟踪供应链中断的 Agents。</p>
 <p>如果你想试试</p>
 <ul>
 <li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus快速入门</a></strong>--五分钟内本地运行一个向量数据库</li>

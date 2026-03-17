@@ -16,13 +16,13 @@ origin: >-
   https://milvus.io/blog/i-built-a-stock-monitoring-agent-with-openclaw-exa-and-milvus-for-20month.md
 ---
 <p>我從事美股交易，這是一種客氣的說法，表示我把虧錢當成一種嗜好。我的同事開玩笑說我的策略是「興奮時高買，恐懼時低賣，每週重覆」。</p>
-<p>重複的部分是我的死穴。每次我盯著市場，最後都會做一筆我沒有計劃的交易。石油飆升，我恐慌性賣出。有一隻科技股漲了 4%，我追逐它。一個星期之後，我看著我的交易歷史，<em>上個季度我不是也做了這件事嗎？</em></p>
+<p>重複的部分是我的死穴。每次我盯著市場，最後都會做一筆我沒有計劃的交易。石油飆漲，我恐慌性賣出。有一隻科技股漲了 4%，我追逐它。一個星期之後，我看著我的交易歷史，<em>上個季度我不是也做了這件事嗎？</em></p>
 <p>所以我用 OpenClaw 建立了一個代理程式，它可以代替我觀察市場，阻止我犯同樣的錯誤。它不會交易或碰觸我的錢，因為那會有太大的安全風險。相反，它可以節省我花在觀察市場的時間，並讓我不犯同樣的錯誤。</p>
 <p>這個代理程式包含三個部分，每月約需 20 美元：</p>
 <ul>
 <li><strong><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a></strong> <strong>用於自動執行。</strong>OpenClaw 以每 30 分鐘心跳一次的方式運行代理程式，只有在真正重要的事情發生時才會呼叫我，這樣就能緩解以往讓我目不转睛盯著螢幕的 FOMO。以前，我越是觀察價格，就越是會做出衝動的反應。</li>
-<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>提供精確、即時的搜尋。</strong>Exa 會依據排程瀏覽並總結精心挑選的資訊來源，因此我每天早上都會收到一份簡潔的簡報。在此之前，我每天都要花一小時在 SEO 垃圾郵件和臆測中篩選可靠的新聞 - 而且無法自動化，因為金融網站每天都會更新，以對抗刮刀。</li>
-<li><strong><a href="https://milvus.io/">M****ilvus</a></strong> <strong>儲存個人歷史和偏好。</strong>Milvus 儲存了我的交易歷史，代理會在我做決定之前搜尋它 - 如果我即將重蹈覆轍，它會告訴我。以前，檢視過去的交易非常乏味，我就沒有這樣做，所以相同的錯誤不斷在不同的股票上發生。<a href="https://zilliz.com/cloud">Zilliz Cloud</a>是 Milvus 的完全管理版本。如果您想要一個無憂無慮的體驗，Zilliz Cloud 是一個很好的選擇<a href="https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&amp;utm_button=banner_left&amp;_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..">（有免費層級</a>。）</li>
+<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>提供精確、即時的搜尋。</strong>Exa 會依據排程瀏覽並總結精心挑選的資訊來源，因此我每天早上都會收到一份簡潔的簡報。在此之前，我每天都要花一小時的時間，從 SEO 垃圾郵件和臆測中篩選可靠的新聞，而且無法自動化，因為金融網站每天都會更新，以對抗刮擦程式。</li>
+<li><strong><a href="https://milvus.io/">Milvus</a></strong> <strong>用於個人歷史和偏好。</strong>Milvus 儲存了我的交易歷史，代理會在我做決定之前搜尋它 - 如果我即將重蹈覆轍，它會告訴我。以前，檢視過去的交易非常乏味，我就沒有這樣做，所以相同的錯誤不斷在不同的股票上發生。<a href="https://zilliz.com/cloud">Zilliz Cloud</a>是 Milvus 的完全管理版本。如果您想要一個無憂無慮的體驗，Zilliz Cloud 是一個很好的選擇<a href="https://cloud.zilliz.com/signup">（有免費層級</a>）。</li>
 </ul>
 <p>以下是我如何一步一步設定的。</p>
 <h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">步驟 1：使用 Exa 獲得即時市場情報<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
@@ -40,7 +40,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在此之前，我曾嘗試瀏覽金融應用程式、撰寫搜刮程式，以及研究專業的資料終端。我的經驗？  應用程式將信號埋藏在雜訊之下，刮擦程式經常損壞，而專業 API 的價格又高得令人望而卻步。  Exa 是專為 AI 代理打造的搜尋 API，可解決上述問題。</p>
+    </button></h2><p>之前，我曾嘗試瀏覽金融應用程式、撰寫搜刮程式，以及研究專業的資料終端。我的經驗？應用程式將信號埋藏在雜訊之下，刮擦程式經常損壞，而專業 API 的價格又高得令人望而卻步。Exa 是專為 AI 代理打造的搜尋 API，可解決上述問題。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png" alt="" class="doc-image" id="" />
@@ -437,8 +437,8 @@ selling after a dip, say so explicitly.
 <p>最後一點是最大的改變。經紀人不只節省時間，也讓我不用再觀察市場。不看價格就無法恐慌性銷售。</p>
 <p>在使用這套系統之前，我每週要花 10-15 個小時來收集資訊、監察市場和審閱交易，分散在會議、通勤時間和深夜滾動頁面上。現在大約是兩個小時：每天早上 5 分鐘的簡報，加上週末 30 分鐘的回顧。</p>
 <p>資訊品質也更好。我閱讀的是路透社和彭博社的摘要，而不是 Twitter 上的任何病毒。每當我想行動時，經紀人就會提醒我過去的錯誤，我已經大幅減少了衝動的交易。我還不能證明這讓我成為更好的投資者，但它讓我不再那麼魯莽。</p>
-<p>總成本：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">OpenClaw</annotation><mrow><mn>10</mn><mi>/</mi><mn>月</mn><mo separator="true">、</mo></mrow><annotation encoding="application/x-tex">OpenClaw 10/月、</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">10/月</span><span class="mpunct">、</span></span></span></span>Exa<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal" style="margin-right:0.02691em;">10</span></span></span></span>/月，以及維持 Milvus Lite 運作的一點電費。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>總成本：OpenClaw 每月 10 美元，Exa 每月 10 美元，以及 Milvus Lite 運行所需的一點電費。</p>
+<h2 id="Conclusion" class="common-anchor-header">總結<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -453,7 +453,7 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我一直在做同樣衝動的交易，因為我的資訊很差，我很少回顧自己的歷史，而且整天盯著市場讓情況變得更糟。因此我建立了一個 AI 代理，透過三件事來解決這些問題：</p>
+    </button></h2><p>我不斷做出同樣衝動的交易，因為我的資訊很糟糕，我很少回顧自己的歷史，整天盯著市場讓情況更糟。因此我建立了一個 AI 代理，透過三件事來解決這些問題：</p>
 <ul>
 <li>使用<strong><a href="https://exa.ai/">Exa</a></strong><strong>收集可靠的市場新聞</strong>，取代一小時捲動 SEO 垃圾郵件和收費網站的時間。</li>
 <li>使用<a href="http://milvus.io">Milvus</a><strong>記憶我過去的交易</strong>，並在我即將重蹈覆轍時發出警告。</li>
@@ -462,7 +462,7 @@ selling after a dip, say so explicitly.
 <p>總成本：20 美元/月。代理不會交易或碰我的錢。</p>
 <p>最大的改變不是資料或警示。而是我不再看市場了。上周三我完全忘記了這件事，這在我多年的交易生涯中從未發生過。有時候我還是會虧錢，但是虧錢的頻率少了很多，而且我又開始享受週末了。我的同事還沒有更新這個笑話，但是給他們時間吧。</p>
 <p>代理也只花了兩個週末就建立好了。一年前，同樣的設定意味著要從頭寫調度程式、通知管道和記憶體管理。有了 OpenClaw，大部分時間都用在釐清我自己的交易規則，而不是撰寫基礎架構。</p>
-<p>一旦您為一個使用個案建立了它，這個架構就是可移植的。  將 Exa 搜尋範本與 OpenClaw Skills 對調，您就能擁有一個可以監控研究論文、追蹤競爭對手、觀察法規變動或跟蹤供應鏈中斷的代理程式。</p>
+<p>一旦您為一個使用個案建立了它，這個架構就是可移植的。將 Exa 搜尋範本與 OpenClaw Skills 對調，您就能擁有一個可以監控研究論文、追蹤競爭對手、觀察法規變動或跟蹤供應鏈中斷的代理程式。</p>
 <p>如果您想試試看</p>
 <ul>
 <li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus 快速入門</a></strong>- 五分鐘內在本機執行向量資料庫</li>

@@ -22,8 +22,8 @@ origin: >-
 <p>このエージェントは3つの部分で構成されており、月々約20ドルかかる：</p>
 <ul>
 <li><strong>OpenClawはすべてを自動操縦で実行する。</strong>OpenClawは30分のハートビートでエージェントを動かし、実際に何か重要なことがあったときだけピングを鳴らしてくれる。以前は、価格を見れば見るほど、衝動的に反応していた。</li>
-<li><strong>正確でリアルタイムな検索を可能にする</strong><strong><a href="https://exa.ai/">エクサ。</a></strong>エクサは、厳選された情報源をスケジュール通りに閲覧・要約してくれるので、毎朝すっきりとしたブリーフィングを受けることができる。以前は、信頼できるニュースを見つけるために、SEOスパムや憶測をふるいにかけて1日1時間費やしていた。金融サイトはスクレイパーと戦うために毎日更新されるため、自動化できなかったのだ。</li>
-<li><strong>個人的な履歴と嗜好のための</strong><strong><a href="https://milvus.io/">M</a><a href="https://milvus.io/">*****</a><a href="https://milvus.io/">ilvus。</a></strong>Milvusは私の取引履歴を保存し、私が決断を下す前にエージェントがそれを検索する。以前は、過去の取引を見直すのは面倒だったので、同じ間違いを別のティッカーで繰り返していました。<a href="https://zilliz.com/cloud">Zilliz Cloudは</a>Milvusのフルマネージド・バージョンです。手間をかけずに利用したいのであれば、Zilliz Cloudは素晴らしい選択肢です<a href="https://cloud.zilliz.com/signup?utm_page=zilliz-cloud-free-tier&amp;utm_button=banner_left&amp;_gl=1*373c3v*_gcl_au*MjEwODY2Nzk5NS4xNzY5Njg1NzY4*_ga*MTU0OTAxMzY5Ni4xNzY5Njg1NzY4*_ga_Q1F8R2NWDP*czE3NzM0MDYzOTEkbzUwJGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..*_ga_KKMVYG8YF2*czE3NzM0MDYzOTEkbzc0JGcwJHQxNzczNDA2MzkxJGo2MCRsMCRoMA..">（無料ティアもあります</a>。）</li>
+<li><strong>Exaで正確なリアルタイム検索。</strong>エクサは、厳選された情報源をスケジュール通りに閲覧・要約してくれるので、毎朝すっきりとしたブリーフィングを受けることができる。以前は、信頼できるニュースを見つけるために、SEOスパムや憶測をふるいにかけて1日1時間費やしていた。金融サイトはスクレイパーと戦うために毎日更新されるため、自動化できなかったのだ。</li>
+<li><strong>Milvusで個人の履歴と嗜好を管理。</strong>Milvusは私の取引履歴を保存し、私が決断を下す前にエージェントがそれを検索する。以前は、過去の取引を見直すのは面倒だったので、同じ間違いを別のティッカーで繰り返していました。<a href="https://zilliz.com/cloud">Zilliz Cloudは</a>Milvusのフルマネージド・バージョンです。手間をかけずに利用したいのであれば、Zilliz Cloudは素晴らしい選択肢です<a href="https://cloud.zilliz.com/signup">（無料ティアもあります</a>）。</li>
 </ul>
 <p>私がどのようにセットアップしたかを順を追って説明しよう。</p>
 <h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">ステップ1：Exaでリアルタイムのマーケット・インテリジェンスを得る<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
@@ -41,15 +41,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>以前は、金融アプリを見たり、スクレイパーを書いたり、プロのデータ端末を調べたりしていた。私の経験？  アプリはシグナルをノイズに埋もれさせ、スクレイパーは常に壊れ、専門的なAPIは法外に高価だった。  ExaはAIエージェントのために作られた検索APIで、上記の問題を解決する。</p>
+    </button></h2><p>以前は、金融アプリを見たり、スクレイパーを書いたり、プロのデータ端末を調べたりしていた。私の経験？アプリはシグナルをノイズに埋もれさせ、スクレイパーは常に壊れ、専門的なAPIは法外に高価だった。ExaはAIエージェントのために作られた検索APIで、上記の問題を解決する。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong><a href="https://exa.ai/">Exaは</a></strong>、AIエージェントのために構造化されたAI対応データを返すウェブ検索APIだ。Milvusのフルマネージド・サービスである<a href="https://zilliz.com/cloud">Zilliz Cloudを</a>利用している。Perplexityが人間が使う検索エンジンなら、ExaはAIが使う。エージェントがクエリを送信すると、Exaは記事テキスト、キーセンテンス、要約をJSONとして返す。</p>
-<p>Exaはまた、セマンティック検索を使用しているため、エージェントは自然言語でクエリーを行うことができる。なぜNVIDIAの株価は2026年第4四半期の業績が好調にもかかわらず下落したのか」というようなクエリは、SEOクリックベイトのページではなく、ロイターやブルームバーグからのアナリストの内訳を返します。</p>
+<p><strong><a href="https://exa.ai/">Exaは</a></strong>、AIエージェントのために構造化されたAI対応データを返すウェブ検索APIだ。Milvusのフルマネージドサービスである<a href="https://zilliz.com/cloud">Zilliz Cloudを</a>利用している。Perplexityが人間が使う検索エンジンなら、ExaはAIが使う。エージェントがクエリを送信すると、Exaは記事テキスト、キーセンテンス、要約をJSONとして返す。</p>
+<p>Exaはまた、フード下でセマンティック検索を使用しているため、エージェントは自然言語でクエリーを行うことができる。なぜNVIDIAの株価は2026年第4四半期の業績が好調だったにもかかわらず下落したのか」というようなクエリは、SEOクリックベイトのページではなく、ロイターやブルームバーグからのアナリストの内訳を返します。</p>
 <p>Exaには、月1,000回の検索が可能な無料版がある。SDKをインストールし、自分のAPIキーと交換する：</p>
 <pre><code translate="no">pip install exa-py
 <button class="copy-code-btn"></button></code></pre>
@@ -76,7 +76,7 @@ result = exa.search(
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  Summary: <span class="hljs-subst">{r.summary}</span>&quot;</span>)
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  URL: <span class="hljs-subst">{r.url}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>contentsパラメータは、記事の全文を取得し、重要な文章を抽出し、あなたが提供した質問に基づいた要約を生成します。1回のAPI呼び出しで、20分のタブホッピングを置き換えることができる。</p>
+<p>contentsパラメータは、記事の全文を取得し、主要な文章を抽出し、あなたが提供した質問に基づいた要約を生成します。1回のAPI呼び出しで、20分のタブホッピングを置き換えることができる。</p>
 <p>この基本パターンは多くのことをカバーしているが、私は定期的に遭遇するさまざまな状況に対処するために4つのバリエーションを構築することにした：</p>
 <ul>
 <li><strong>ソースの信頼性によるフィルタリング。</strong>収益分析では、ロイター、ブルームバーグ、ウォールストリート・ジャーナルだけが欲しい。</li>
@@ -432,13 +432,13 @@ selling after a dip, say so explicitly.
     </button></h2><p>以下は、このシステムが日々実際に生成するものである：</p>
 <ul>
 <li><strong>朝のブリーフ（午前7時）。</strong>エージェントは一晩中エクサを実行し、私のポジションと関連する履歴をmilvusから取得し、パーソナライズされたサマリーを私の携帯電話にプッシュする。一晩の出来事、私の持ち株との関連、そして1つから3つのアクション・アイテム。歯を磨きながら読んでいる。</li>
-<li><strong>日中アラート（9:30 AM-4:00 PM ET）。</strong>30分ごとにエージェントが私のウォッチリストをチェックする。3％以上動いた銘柄があれば、その銘柄を買った理由、ストップロスの位置、以前に同じような状況に陥ったことがあるかどうかなど、状況とともに通知が届く。</li>
+<li><strong>日中アラート（9:30 AM-4:00 PM ET）。</strong>30分ごとにエージェントが私のウォッチリストをチェックする。3％以上動いた銘柄があれば、その銘柄を買った理由、ストップロスの位置、以前にも同じような状況に陥ったことがあるかどうかなど、状況とともに通知が届く。</li>
 <li><strong>週次レビュー（週末）。</strong>市場の動き、朝の予想との比較、覚えておく価値のあるパターンなど。私は土曜日に30分かけてそれを読む。それ以外の週は、意図的に画面から離れる。</li>
 </ul>
 <p>最後の点が最大の変化だ。エージェントは時間を節約するだけでなく、市場を見ることから私を解放してくれる。価格を見ていなければ、パニック売りはできない。</p>
 <p>このシステムを導入する前は、情報収集、市場監視、取引検討に週10～15時間を費やしており、会議、通勤時間、深夜のスクロールなどに分散していた。今では、毎日朝のブリーフに5分、週末のレビューに30分の合計2時間程度だ。</p>
 <p>情報の質も向上した。ツイッターで話題になったものではなく、ロイターやブルームバーグのサマリーを読んでいる。そして、行動を起こしたくなるたびにエージェントが過去の失敗を引き出してくれるので、衝動的な取引を大幅に減らすことができた。これが私をより良い投資家にしたと証明することはまだできないが、無謀な投資家は減った。</p>
-<p>総費用：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>OpenClawが</mn><mi>10</mi><mn>ドル/月</mn><mo separator="true">、</mo></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"></span><span class="mord mathnormal" style="margin-right:0.02691em;">OpenClawが</span><span class="mord">10ドル/月</span><span class="mpunct">、</span></span></span></span>Exaが10ドル/月、milvus Liteを稼働させるための電気代が少し。</p>
+<p>総費用：OpenClawに月10ドル、Exaに月10ドル、milvus Liteを稼働させるための電気代が少し。</p>
 <h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -454,7 +454,7 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>私は同じような衝動的な取引を繰り返していた。なぜなら、自分の情報が悪く、自分の履歴をめったに見直さず、一日中マーケットとにらめっこしていたからだ。そこで私は、3つのことをすることでこれらの問題を解決するAIエージェントを作った：</p>
+    </button></h2><p>私が同じような衝動的な取引を繰り返していたのは、自分の情報が悪く、自分の履歴をめったに見直さず、一日中マーケットとにらめっこしていたからだ。そこで私は、3つのことをすることでこれらの問題を解決するAIエージェントを作った：</p>
 <ul>
 <li>SEOスパムや有料サイトを1時間スクロールする代わりに、<strong><a href="https://exa.ai/">Exaで</a></strong><strong>信頼できるマーケットニュースを収集する</strong>。</li>
 <li><a href="http://milvus.io">Milvusを使って</a><strong>過去のトレードを記憶し</strong>、すでに後悔しているミスを繰り返そうとしているときに警告してくれる。</li>
@@ -463,7 +463,7 @@ selling after a dip, say so explicitly.
 <p>総費用は月20ドル。エージェントは私のお金を売買したり、触ったりしない。</p>
 <p>最大の変化はデータでもアラートでもない。マーケットを見なくなったことだ。先週の水曜日、私はこのことをすっかり忘れていた。今でも時々損をすることはあるが、その頻度はずっと減り、週末を再び楽しむことができるようになった。同僚はまだジョークを更新していないけど、時間をおいてね。</p>
 <p>このエージェントもたった2回の週末で構築できた。年前だったら、同じセットアップでスケジューラー、通知パイプライン、メモリー管理をゼロから書いていただろう。OpenClawの場合、その時間のほとんどは、インフラを書くことではなく、私自身の取引ルールを明確にすることに費やされた。</p>
-<p>そして、一つのユースケースのために構築した後は、アーキテクチャは移植可能だ。  Exaの検索テンプレートとOpenClawのスキルを入れ替えれば、研究論文を監視したり、競合他社を追跡したり、規制の変更を監視したり、サプライチェーンの混乱を追跡したりするエージェントができる。</p>
+<p>そして、一つのユースケースのために構築した後は、アーキテクチャは移植可能だ。Exaの検索テンプレートとOpenClawのスキルを入れ替えれば、研究論文を監視したり、競合他社を追跡したり、規制の変更を監視したり、サプライチェーンの混乱を追跡したりするエージェントができる。</p>
 <p>試してみたい方は</p>
 <ul>
 <li><strong><a href="https://milvus.io/docs/quickstart.md">Milvusクイックスタート</a></strong>- 5分以内にローカルでベクターデータベースを稼動させることができます。</li>
