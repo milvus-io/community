@@ -260,5 +260,6 @@
   "blog/en/i-built-a-stock-monitoring-agent-with-openclaw-exa-and-milvus-for-20month.md": "2026-03-17T09:42:16.368Z",
   "blog/en/milvus-rustfs-vibe-coding-build-a-lightweight-rag-chatbot-from-scratch.md": "2026-03-17T03:25:49.970Z",
   "blog/en/will-gemini-embedding-2-kill-multi-vector-search-in-vector-databases.md": "2026-03-17T03:27:02.143Z",
-  "blog/en/from-pdfs-to-answers-building-a-rag-knowledge-base-with-paddleocr-milvus-and-ernie.md": "2026-03-17T11:51:42.039Z"
+  "blog/en/from-pdfs-to-answers-building-a-rag-knowledge-base-with-paddleocr-milvus-and-ernie.md": "2026-03-17T11:51:42.039Z",
+  "blog/en/productionizing-semantic-search-how-we-built-and-scaled-vector-infrastructure-at-airtable.md": "2026-03-18T03:38:56.079Z"
 }
