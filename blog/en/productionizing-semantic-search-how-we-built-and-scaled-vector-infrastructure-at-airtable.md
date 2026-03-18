@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Airtable semantic search, Milvus vector database, vector infrastructure, multi-tenant vector search, scalable AI retrieval
 meta_title: >
- Airtable’s Milvus Architecture for Scalable Semantic Search
+ How Airtable Built and Scaled Vector Infrastructure with Milvus
 desc: >
  Learn how Airtable built a scalable Milvus-based vector infrastructure for semantic search, multi-tenant retrieval, and low-latency AI experiences.
 origin: https://milvus.io/blog/productionizing-semantic-search-how-we-built-and-scaled-vector-infrastructure-at-airtable.md
