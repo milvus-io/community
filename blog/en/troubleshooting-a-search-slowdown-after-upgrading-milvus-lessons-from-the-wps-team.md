@@ -30,53 +30,29 @@ While running Milvus 2.2.16, we ran into a serious stability issue that was alre
 Below is the actual Proxy error log and stack trace from the incident:
 
 ```
-
-\[2025/12/23 10:43:13.581 +00:00\] \[ERROR\] \[concurrency/pool_option.go:53\] \["Conc pool panicked"\]
-
-\[panic="runtime error: invalid memory address or nil pointer dereference"\]
-
-\[stack="...
-
+[2025/12/23 10:43:13.581 +00:00] [ERROR] [concurrency/pool_option.go:53] ["Conc pool panicked"]
+[panic="runtime error: invalid memory address or nil pointer dereference"]
+[stack="...
 github.com/milvus-io/milvus/internal/parser/planparserv2.HandleCompare
-
   /go/src/github.com/milvus-io/milvus/internal/parser/planparserv2/utils.go:331
-
 github.com/milvus-io/milvus/internal/parser/planparserv2.(*ParserVisitor).VisitEquality
-
   /go/src/github.com/milvus-io/milvus/internal/parser/planparserv2/parser_visitor.go:345
-
 ...
-
 github.com/milvus-io/milvus/internal/proxy.(*queryTask).PreExecute
-
   /go/src/github.com/milvus-io/milvus/internal/proxy/task_query.go:271
-
 github.com/milvus-io/milvus/internal/proxy.(*taskScheduler).processTask
-
   /go/src/github.com/milvus-io/milvus/internal/proxy/task_scheduler.go:455
+..."]
 
-..."\]
-
-  
-
-panic: runtime error: invalid memory address or nil pointer dereference \[recovered\]
-
+panic: runtime error: invalid memory address or nil pointer dereference [recovered]
 panic: runtime error: invalid memory address or nil pointer dereference
-
-\[signal SIGSEGV: segmentation violation code=0x1 addr=0x8 pc=0x2f1a02a\]
-
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x8 pc=0x2f1a02a]
   
-
-goroutine 989 \[running\]:
-
+goroutine 989 [running]:
 github.com/milvus-io/milvus/internal/parser/planparserv2.HandleCompare(...)
-
   /go/src/github.com/milvus-io/milvus/internal/parser/planparserv2/utils.go:331 +0x2a
-
 github.com/milvus-io/milvus/internal/parser/planparserv2.(*ParserVisitor).VisitEquality(...)
-
   /go/src/github.com/milvus-io/milvus/internal/parser/planparserv2/parser_visitor.go:345 +0x7e5
-
 ```
 
 **What the stack trace shows**: The panic occurred during query preprocessing in Proxy, within `queryTask.PreExecute`. The call path was:
@@ -127,79 +103,44 @@ To restore from a backup, Milvus Backup creates a new collection in the target M
 We prepared a dedicated config file, `configs/backup.yaml`. The main fields are shown below, with sensitive values removed:
 
 ```
-
 milvus:
-
   address: 1.1.1.1  # Source Milvus address
-
   port: 19530  # Source Milvus port
-
   user: root  # Source Milvus username (must have backup permissions)
-
   password: <PASS> # Source Milvus user password
 
-  
-
   etcd:
-
     endpoints: "2.2.2.1:2379,2.2.2.2:2379,2.2.2.3:2379" # Endpoints of the etcd cluster connected to Milvus
-
     rootPath: "by-dev"  # Prefix of Milvus metadata in etcd. If not modified, the default is by-dev. It is recommended to check etcd before proceeding.
 
-  
-
 minio:
-
   # Source Milvus object storage bucket configuration
-
   storageType: "aliyun" # support storage type: local, minio, s3, aws, gcp, ali(aliyun), azure, tc(tencent), gcpnative
-
   address: ks3-cn-beijing-internal.ksyuncs.com # Address of MinIO/S3
-
   port: 443   # Port of MinIO/S3
-
   accessKeyID: <Source object storage AK>  
-
   secretAccessKey: <Source object storage SK> 
-
   useSSL: true
-
   bucketName: "<Source object storage bucket name>"
-
   rootPath: "file" # Root directory prefix under the source object storage bucket where the current Milvus data is stored. If Milvus is installed using Helm Chart, the default prefix is file. It is recommended to log in to the object storage and verify before proceeding.
 
-  
-
   # Object storage bucket configuration for storing backup data
-
   backupStorageType: "aliyun" # support storage type: local, minio, s3, aws, gcp, ali(aliyun), azure, tc(tencent)
-
   backupAddress: ks3-cn-beijing-internal.ksyuncs.com # Address of MinIO/S3
-
   backupPort: 443   # Port of MinIO/S3
-
   backupAccessKeyID: <Backup bucket AK> 
-
   backupSecretAccessKey: <Backup bucket SK> 
-
   backupBucketName: <Backup bucket name>
-
   backupRootPath: "backup" # Root path to store backup data. Backup data will be stored in backupBucketName/backupRootPath
-
   backupUseSSL: true # Access MinIO/S3 with SSL
-
   crossStorage: "true"  # Must be set to true when performing cross-storage backup
-
 ```
 
 We then ran this command:
 
 ```
-
 # Create a backup using milvus-backup
-
 ./milvus-backup create --config configs/backup.yaml -n backup_v2216
-
 ```
 
 `milvus-backup` supports **hot backup**, so it usually has little impact on online traffic. Running during off-peak hours is still safer to avoid resource contention.
@@ -209,18 +150,10 @@ We then ran this command:
 After the backup finished, we verified it was complete and usable. We mainly checked whether the number of collections and segments in the backup matched those in the source cluster.
 
 ```# List backups
-
 ./milvus-backup list --config configs/backup.yaml
-
-  
-
 # View backup details and confirm the number of Collections and Segments
-
 ./milvus-backup get --config configs/backup.yaml -n backup_v2216
-
 ```
-
-  
 
 They matched, so we moved on to the upgrade.
 
@@ -233,35 +166,19 @@ Jumping three major versions (2.2 → 2.5) with tens of millions of vectors made
 We deployed the new Milvus 2.5.16 cluster with Helm:
 
 ```
-
 # Add the Milvus Helm repository
-
 : helm repo add milvus https://zilliztech.github.io/milvus-helm/
-
-helm repo update
-
-  
-
+helm repo update  
 # Check the Helm chart version corresponding to the target Milvus version
-
 : helm search repo milvus/milvus -l | grep 2.5.16
-
 milvus/milvus        4.2.58               2.5.16                    Milvus is an open-source vector database built ...
-
   
-
 # Deploy the new version cluster (with mmap disabled)
-
 helm install milvus-v25 milvus/milvus \
-
   --namespace milvus-new \
-
   --values values-v25.yaml \
-
   --version 4.2.58 \
-
   --wait
-
 ```
 
 ### Key Configuration Changes (`values-v25.yaml`)
@@ -293,79 +210,43 @@ We used `milvus-backup restore` to load the backup into the new cluster. In milv
 The restore config file, `configs/restore.yaml`, had to point to the **new cluster** and its storage settings. The main fields looked like this:
 
 ```
-
 # Restore target Milvus connection information
-
 milvus:
-
   address: 1.1.1.1  # Milvus address
-
   port: 19530  # Milvus port
-
   user: root  # Milvus username (must have restore permissions)
-
-  password: <PASS> # Milvus user password
-
-  
-
+  password: <PASS> # Milvus user password  
   etcd:
-
     endpoints: "2.2.2.1:2379,2.2.2.2:2379,2.2.2.3:2379" # Endpoints of the etcd cluster connected to the target Milvus
-
     rootPath: "by-dev"  # Prefix of Milvus metadata in etcd. If not modified, the default is by-dev. It is recommended to check etcd before proceeding.
 
-  
-
 minio:
-
   # Target Milvus object storage bucket configuration
-
   storageType: "aliyun" # support storage type: local, minio, s3, aws, gcp, ali(aliyun), azure, tc(tencent), gcpnative
-
   address: ks3-cn-beijing-internal.ksyuncs.com # Address of MinIO/S3
-
   port: 443   # Port of MinIO/S3
-
   accessKeyID: <Object storage AK>  
-
   secretAccessKey: <Object storage SK> 
-
   useSSL: true
-
   bucketName: "<Object storage bucket name>"
-
   rootPath: "file" # Root directory prefix under the object storage bucket where the current Milvus data is stored. If Milvus is installed using Helm Chart, the default prefix is file. It is recommended to log in to the object storage and verify before proceeding.
 
-  
-
   # Object storage bucket configuration for storing backup data
-
   backupStorageType: "aliyun" # support storage type: local, minio, s3, aws, gcp, ali(aliyun), azure, tc(tencent)
-
   backupAddress: ks3-cn-beijing-internal.ksyuncs.com # Address of MinIO/S3
-
   backupPort: 443   # Port of MinIO/S3
-
   backupAccessKeyID: <Backup bucket AK> 
-
   backupSecretAccessKey: <Backup bucket SK> 
-
   backupBucketName: <Backup bucket name>
-
   backupRootPath: "backup" # Root path to store backup data. Backup data will be stored in backupBucketName/backupRootPath
-
   backupUseSSL: true # Access MinIO/S3 with SSL
-
   crossStorage: "true"  # Must be set to true when performing cross-storage backup
-
 ```
 
 We then ran:
 
 ```
-
 ./milvus-backup restore --config configs/restore.yaml -n backup_v2216 --rebuild_index
-
 ```
 
 `restore.yaml` needs the new cluster’s Milvus and MinIO connection information so the restored data is written to the new cluster’s storage.
@@ -462,17 +343,11 @@ The new cluster looked very different. It had 21 segments (60% more), with varyi
 We traced the problem back to our original restore command:
 
 ```
-
 ./milvus-backup restore --config configs/restore.yaml -n backup_v2216 \
-
   --rebuild_index \
-
   --use_v2_restore \
-
   --drop_exist_collection \
-
   --drop_exist_index
-
 ```
 
 That `--use_v2_restore` flag enables segment merging restore mode, which groups multiple segments into a single restore job. This mode is designed to speed up restores when you have many small segments. 
@@ -493,9 +368,7 @@ This hurt performance in three ways:
 We removed `--use_v2_restore` and restored with the default logic:
 
 ```
-
 ./milvus-backup restore --config configs/restore.yaml -n backup_v2216
-
 ```
 
 We cleaned up the bad data from the new cluster first, then ran the default restore. Segment distribution returned to balance, search latency returned to normal, and the problem was gone.
@@ -539,65 +412,34 @@ We checked the row count and deemed it fine. That wasn't enough. A complete post
 You can script this validation with PyMilvus to catch imbalance before it hits production:
 
 ```
-
-from pymilvus import connections, utility, Collection
-
-  
-
+from pymilvus import connections, utility, Collection  
 def check_segment_balance(collection_name: str):
-
     """Check Segment distribution balance"""
-
     collection = Collection(collection_name)
-
     segments = utility.get_query_segment_info(collection_name)
-
     # Group statistics by QueryNode
-
     node_stats = {}
-
     for seg in segments:
-
         node_id = seg.nodeID
-
         if node_id not in node_stats:
-
-            node_stats\[node_id\] = {"count": 0, "rows": 0}
-
-        node_stats\[node_id\]\["count"\] += 1
-
-        node_stats\[node_id\]\["rows"\] += seg.num_rows
-
+            node_stats[node_id] = {"count": 0, "rows": 0}
+        node_stats[node_id]["count"] += 1
+        node_stats[node_id]["rows"] += seg.num_rows
     # Calculate balance
-
-    row_counts = \[v\["rows"\] for v in node_stats.values()\]
-
+    row_counts = [v["rows"] for v in node_stats.values()]
     avg_rows = sum(row_counts) / len(row_counts)
-
     max_deviation = max(abs(r - avg_rows) / avg_rows for r in row_counts)
-
     print(f"Number of nodes: {len(node_stats)}")
-
     print(f"Average row count: {avg_rows:.0f}")
-
     print(f"Maximum deviation: {max_deviation:.2%}")
-
     if max_deviation > 0.2:  # Raise a warning if deviation exceeds 20%
-
         print("⚠️ Warning: Segment distribution is unbalanced and may affect query performance!")
-
     for node_id, stats in sorted(node_stats.items()):
-
-        print(f"  Node {node_id}: {stats\['count'\]} segments, {stats\['rows'\]} rows")
-
+        print(f"  Node {node_id}: {stats['count']} segments, {stats['rows']} rows")
   
-
 # Usage example
-
 connections.connect(host="localhost", port="19530")
-
 check_segment_balance("your_collection_name")
-
 ```
 
 ### Use Existing Tools Better
