@@ -1,7 +1,7 @@
 ---
 id: hybrid-spatial-and-vector-search-with-milvus-264.md
 title: >
- Hybrid Spatial and Vector Search with Milvus 2.6.4
+ How to Use Hybrid Spatial and Vector Search with Milvus 
 author: Alden
 date: 2026-3-18
 cover: assets.zilliz.com/cover_8b550decfe.jpg
