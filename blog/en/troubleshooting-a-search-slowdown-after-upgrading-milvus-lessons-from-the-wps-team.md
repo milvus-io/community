@@ -9,7 +9,7 @@ tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus
-meta_keywords: Milvus upgrade, milvus-backup, Milvus search latency, Milvus troubleshooting, cross-version restore
+meta_keywords: Milvus upgrade, milvus-backup, Milvus search latency, Milvus troubleshooting
 meta_title: >
  Troubleshooting a Search Slowdown After Upgrading Milvus
 desc: >
