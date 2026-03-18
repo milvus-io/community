@@ -8,7 +8,7 @@ cover: assets.zilliz.com/Version_A_Warm_Background_20b93359df.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
-tags: Milvus upgrade, milvus-backup, Milvus search latency, Milvus troubleshooting, cross-version restore
+tags: Milvus
 meta_keywords: Milvus upgrade, milvus-backup, Milvus search latency, Milvus troubleshooting, cross-version restore
 meta_title: >
  Troubleshooting a Search Slowdown After Upgrading Milvus
