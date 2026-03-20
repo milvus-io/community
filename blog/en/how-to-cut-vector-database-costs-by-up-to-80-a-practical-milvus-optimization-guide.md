@@ -18,7 +18,7 @@ origin: https://milvus.io/blog/how-to-cut-vector-database-costs-by-up-to-80-a-pr
 ---
 
 
-Your RAG prototype worked great. Then it went to production, traffic grew, and now your vector database bill has gone from $500 to $5,000 a month. Sound familiar?
+Your RAG prototype worked great. Then it went to production, traffic grew, and now your vector database bill has gone from \$500 to \$5,000 a month. Sound familiar?
 
 This is one of the most common scaling problems in AI applications right now. You've built something that creates real value, but the infrastructure costs are growing faster than your user base is growing. And when you look at the bill, the vector database is often the biggest surprise — in the deployments we've seen, it can account for roughly 40-50% of total application cost, second only to LLM API calls.
 
@@ -32,13 +32,13 @@ Let's start with a concrete example. Say you have 100 million vectors, 768 dimen
 
 | **Cost Component** | **Share** | **~Monthly Cost** | **Notes** |
 | --- | --- | --- | --- |
-| Compute   (CPU + memory) | 85-90% | $2,800 | The big one — mostly driven by memory |
-| Network | 5-10% | $250 | Cross-AZ traffic, large result payloads |
-| Storage | 2-5% | $100 | Cheap — object storage (S3/MinIO) is ~$0.03/GB |
+| Compute   (CPU + memory) | 85-90% | \$2,800 | The big one — mostly driven by memory |
+| Network | 5-10% | \$250 | Cross-AZ traffic, large result payloads |
+| Storage | 2-5% | \$100 | Cheap — object storage (S3/MinIO) is ~\$0.03/GB |
 
 The takeaway is simple: memory is where 85-90% of your money goes. Network and storage matter at the margins, but if you want to cut costs meaningfully, memory is the lever. Everything in this guide focuses on that.
 
-**Quick note on network and storage:** You can reduce network costs by only returning the fields you need (ID, score, key metadata) and avoiding cross-region queries. For storage, Milvus already separates storage from compute — your vectors sit in cheap object storage like S3, so even at 100M vectors, storage is usually under $50/month. Neither of these will move the needle like memory optimization will.
+**Quick note on network and storage:** You can reduce network costs by only returning the fields you need (ID, score, key metadata) and avoiding cross-region queries. For storage, Milvus already separates storage from compute — your vectors sit in cheap object storage like S3, so even at 100M vectors, storage is usually under \$50/month. Neither of these will move the needle like memory optimization will.
 
 ## Why Memory Is So Expensive for Vector Search
 
@@ -53,7 +53,7 @@ For our 100M × 768 × float32 example with HNSW (multiplier ~1.8x):
 -   Raw data: 100M × 768 × 4 bytes ≈ 307 GB
 -   With HNSW index: 307 GB × 1.8 ≈ 553 GB
 -   With OS overhead, cache, and headroom: ~768 GB total
--   On AWS: 3× r6i.8xlarge (256 GB each) ≈ $2,800/month
+-   On AWS: 3× r6i.8xlarge (256 GB each) ≈ \$2,800/month
 
 **That's the baseline. Now let's look at how to bring it down.**
 
