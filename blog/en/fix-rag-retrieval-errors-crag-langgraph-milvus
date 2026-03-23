@@ -44,7 +44,7 @@ These aren't corner cases. They show up regularly once a RAG system handles real
 
 Traditional RAG struggles when retrieval results land in a gray zone: partially relevant, somewhat dated, or missing a key piece. A simple yes/no gate either discards useful partial information or lets noisy content through. CRAG reframes the pipeline from **retrieve → generate** to **retrieve → evaluate → correct → generate**, giving the system a chance to fix retrieval quality before generation begins.
 
-![CRAG four-step workflow: Retrieval → Evaluation → Correction → Generation, showing how documents are scored and routed](blob:https://septemberfd.github.io/e50f9b9e-5bad-4f6f-97c0-cc7ed646ceba)
+![CRAG four-step workflow: Retrieval → Evaluation → Correction → Generation, showing how documents are scored and routed](https://assets.zilliz.com/fix_rag_retrieval_errors_crag_langgraph_milvus_1_11a820f454.png)
 
 Retrieved results are classified into one of three categories:
 
@@ -70,7 +70,7 @@ The refinement process has three parts:
 - **Query rewriting:** turn vague or ambiguous queries into more targeted ones
 - **Knowledge selection:** deduplicate, rank, and retain only the most useful content
 
-![The three-step document refinement process: Document Decomposition (2000 → 500 tokens), Query Rewriting (improved search precision), and Knowledge Selection (filter, rank, and trim)](blob:https://septemberfd.github.io/4d8e3f86-1f51-46fc-93aa-4bedc9ebcd51)
+![The three-step document refinement process: Document Decomposition (2000 → 500 tokens), Query Rewriting (improved search precision), and Knowledge Selection (filter, rank, and trim)](https://assets.zilliz.com/fix_rag_retrieval_errors_crag_langgraph_milvus_2_9ec4b6aa81.png)
 
 ### The Evaluator
 
