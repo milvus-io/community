@@ -1,5 +1,5 @@
 ---
-id: fix-rag-retrieval-errors-crag-langgraph-milvus
+id: fix-rag-retrieval-errors-crag-langgraph-milvus.md
 title: >
  Fix RAG Retrieval Errors with CRAG, LangGraph, and Milvus
 author: Min Yin
@@ -14,7 +14,7 @@ meta_title: >
  Fix RAG Retrieval Errors with CRAG, LangGraph, and Milvus
 desc: >
  High similarity but wrong answers? Learn how CRAG adds evaluation and correction to RAG pipelines. Build a production-ready system with LangGraph + Milvus.
-origin: https://milvus.io/blog/fix-rag-retrieval-errors-crag-langgraph-milvus
+origin: https://milvus.io/blog/fix-rag-retrieval-errors-crag-langgraph-milvus.md
 ---
 
 
