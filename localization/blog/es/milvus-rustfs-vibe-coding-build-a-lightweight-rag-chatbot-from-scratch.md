@@ -1,6 +1,7 @@
 ---
 id: milvus-rustfs-vibe-coding-build-a-lightweight-rag-chatbot-from-scratch.md
-title: 'Milvus + RustFS+ Vibe Coding: Construye un chatbot RAG ligero desde cero'
+title: |
+  Milvus + RustFS+ Vibe Coding: Build a Lightweight RAG Chatbot from Scratch
 author: Jinghe Ma
 date: 2026-3-10
 cover: assets.zilliz.com/blog_Milvus_Rust_FS_Vibe_Coding_Chatbot_7_f25795481e.png
@@ -11,19 +12,19 @@ tags: 'Milvus, RustFS, RAG chatbot,  vector database, S3-compatible object stora
 meta_keywords: 'Milvus, RustFS, RAG chatbot,  vector database, S3-compatible object storage'
 meta_title: |
   Milvus + RustFS: Build a Lightweight RAG Chatbot
-desc: >-
-  Construye un chatbot RAG ligero con Milvus, RustFS, FastAPI y Next.js
-  utilizando los documentos de RustFS como base de conocimientos.
+desc: >
+  Build a lightweight RAG chatbot with Milvus, RustFS, FastAPI, and Next.js
+  using RustFS docs as a knowledge base.
 origin: >-
   https://milvus.io/blog/milvus-rustfs-vibe-coding-build-a-lightweight-rag-chatbot-from-scratch.md
 ---
-<p><em>Este blog ha sido escrito por Jinghe Ma, colaborador de la comunidad Milvus</em> <em>, y se publica aquí con permiso.</em></p>
-<p>Quería un chatbot que pudiera responder a las preguntas de mi propia documentación, y quería un control total sobre la pila detrás de él, desde el almacenamiento de objetos a la interfaz de chat. Eso me llevó a construir un chatbot RAG ligero con <a href="https://milvus.io/">Milvus</a> y <a href="https://rustfs.com/">RustFS</a> en el núcleo.</p>
-<p><a href="https://milvus.io/">Milvus</a> es la base de datos vectorial de código abierto más adoptada para crear aplicaciones RAG. Separa la computación del almacenamiento, manteniendo los datos calientes en la memoria o en SSD para una búsqueda rápida, mientras que se basa en el almacenamiento de objetos para una gestión de datos escalable y rentable. Dado que funciona con almacenamiento compatible con S3, encajaba perfectamente en este proyecto.</p>
-<p>Para la capa de almacenamiento, elegí <a href="https://rustfs.com/">RustFS</a>, un sistema de almacenamiento de objetos de código abierto compatible con S3 y escrito en Rust. Puede desplegarse vía binaria, Docker o Helm chart. Aunque todavía está en fase alfa y no se recomienda para cargas de trabajo de producción, era lo suficientemente estable para esta compilación.</p>
-<p>Una vez que la infraestructura estaba en su lugar, necesitaba una base de conocimientos para consultar. La documentación de RustFS (unos 80 archivos Markdown) era un buen punto de partida. Troceé la documentación, generé incrustaciones, las almacené en Milvus y codifiqué el resto: <a href="https://fastapi.tiangolo.com/">FastAPI</a> para el backend y <a href="https://nextjs.org/">Next.js</a> para la interfaz de chat.</p>
-<p>En este post, voy a cubrir el sistema completo de extremo a extremo. El código está disponible en https://github.com/majinghe/chatbot. Se trata de un prototipo de trabajo en lugar de un sistema listo para la producción, pero el objetivo es proporcionar una construcción clara y extensible que se puede adaptar para su propio uso. Cada sección a continuación recorre una capa, desde la infraestructura hasta el frontend.</p>
-<h2 id="Installing-Milvus-and-RustFS-with-Docker-Compose" class="common-anchor-header">Instalación de Milvus y RustFS con Docker Compose<button data-href="#Installing-Milvus-and-RustFS-with-Docker-Compose" class="anchor-icon" translate="no">
+<p><em>This blog is contributed by Jinghe Ma, a Milvus community contributor</em><em>,</em> <em>and is published here with permission.</em></p>
+<p>I wanted a chatbot that could answer questions from my own documentation, and I wanted full control over the stack behind it—from object storage to the chat interface. That led me to build a lightweight RAG chatbot with <a href="https://milvus.io/">Milvus</a> and <a href="https://rustfs.com/">RustFS</a> at the core.</p>
+<p><a href="https://milvus.io/">Milvus</a> is the most widely adopted open-source vector database for building RAG applications. It separates compute from storage, keeping hot data in memory or on SSD for fast search while relying on object storage underneath for scalable, cost-efficient data management. Because it works with S3-compatible storage, it was a natural fit for this project.</p>
+<p>For the storage layer, I chose <a href="https://rustfs.com/">RustFS</a>, an open-source S3-compatible object storage system written in Rust. It can be deployed via binary, Docker, or Helm chart. Although it is still in alpha and not recommended for production workloads, it was stable enough for this build.</p>
+<p>Once the infrastructure was in place, I needed a knowledge base to query. The RustFS documentation—about 80 Markdown files—was a convenient starting point. I chunked the docs, generated embeddings, stored them in Milvus, and vibe-coded the rest: <a href="https://fastapi.tiangolo.com/">FastAPI</a> for the backend and <a href="https://nextjs.org/">Next.js</a> for the chat interface.</p>
+<p>In this post, I’ll cover the full system end-to-end. The code is available at https://github.com/majinghe/chatbot. It is a working prototype rather than a production-ready system, but the goal is to provide a clear, extensible build that you can adapt for your own use. Each section below walks through one layer, from infrastructure to frontend.</p>
+<h2 id="Installing-Milvus-and-RustFS-with-Docker-Compose" class="common-anchor-header">Installing Milvus and RustFS with Docker Compose<button data-href="#Installing-Milvus-and-RustFS-with-Docker-Compose" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,9 +39,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Empecemos instalando <a href="https://milvus.io/">Milvus</a> y <a href="https://rustfs.com/">RustFS</a>.</p>
-<p>Milvus puede trabajar con cualquier almacenamiento de objetos compatible con S3, aunque MinIO es el backend por defecto en la configuración estándar. Dado que MinIO ya no acepta contribuciones de la comunidad, lo sustituiremos por RustFS en este ejemplo.</p>
-<p>Para hacer ese cambio, actualice la configuración de almacenamiento de objetos en configs/milvus.yaml dentro del repositorio Milvus. La sección relevante tiene este aspecto:</p>
+    </button></h2><p>Let’s start by installing <a href="https://milvus.io/">Milvus</a> and <a href="https://rustfs.com/">RustFS</a>.</p>
+<p>Milvus can work with any S3-compatible object storage, although MinIO is the default backend in the standard setup. Since MinIO is no longer accepting community contributions, we’ll replace it with RustFS in this example.</p>
+<p>To make that change, update the object storage configuration in configs/milvus.yaml inside the Milvus repository. The relevant section looks like this:</p>
 <pre><code translate="no"><span class="hljs-attr">minio</span>:
   <span class="hljs-attr">address</span>: <span class="hljs-attr">localhost</span>:<span class="hljs-number">9000</span>
   <span class="hljs-attr">port</span>: <span class="hljs-number">9000</span>
@@ -49,16 +50,16 @@ origin: >-
   <span class="hljs-attr">useSSL</span>: <span class="hljs-literal">false</span>
   <span class="hljs-attr">bucketName</span>: <span class="hljs-string">&quot;rustfs-bucket&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Hay dos maneras de aplicar este cambio:</p>
+<p>There are two ways to apply this change:</p>
 <ul>
-<li><strong>Montar un archivo de configuración local.</strong> Copie configs/milvus.yaml localmente, actualice los campos MinIO para que apunten a RustFS y, a continuación, móntelo en el contenedor mediante un volumen Docker.</li>
-<li><strong>Parchear al inicio con</strong> <strong>yq****.</strong> Modifique el comando del contenedor para ejecutar yq contra /milvus/configs/milvus.yaml antes de que se inicie el proceso Milvus.</li>
+<li><strong>Mount a local config file.</strong> Copy configs/milvus.yaml locally, update the MinIO fields to point at RustFS, then mount it into the container via a Docker volume.</li>
+<li><strong>Patch at startup with</strong> <strong>yq****.</strong> Modify the container’s command to run yq against /milvus/configs/milvus.yaml before the Milvus process starts.</li>
 </ul>
-<p>Esta compilación utiliza el primer enfoque. El servicio Milvus en docker-compose.yml obtiene una entrada de volumen extra:</p>
+<p>This build uses the first approach. The Milvus service in docker-compose.yml gets one extra volume entry:</p>
 <pre><code translate="no">- <span class="hljs-variable">${DOCKER_VOLUME_DIRECTORY:-.}</span>/volumes/milvus/milvus.yaml:/milvus/configs/milvus.yaml:ro
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="The-Docker-Compose-Setup" class="common-anchor-header">La configuración de Docker Compose</h3><p>El docker-compose.yml completo ejecuta cuatro servicios.</p>
-<p><strong>etcd</strong> - Milvus depende de etcd para el almacenamiento de metadatos:</p>
+<h3 id="The-Docker-Compose-Setup" class="common-anchor-header">The Docker Compose Setup</h3><p>The full docker-compose.yml runs four services.</p>
+<p><strong>etcd</strong> — Milvus depends on etcd for metadata storage:</p>
 <pre><code translate="no">etcd:
     container_name: milvus-etcd
     image: quay.io/coreos/etcd:v3.5.18
@@ -76,7 +77,7 @@ origin: >-
       <span class="hljs-built_in">timeout</span>: 20s
       retries: 3
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Attu</strong> - una interfaz de usuario visual para Milvus, desarrollada y de código abierto por Zilliz (nota: las versiones posteriores a la 2.6 son de código cerrado):</p>
+<p><strong>Attu</strong> — a visual UI for Milvus, developed and open-sourced by Zilliz (note: versions after 2.6 are closed-source):</p>
 <pre><code translate="no">  attu:
     container_name: milvus-attu
     image: zilliz/attu:v2.6
@@ -86,7 +87,7 @@ origin: >-
       - <span class="hljs-string">&quot;8000:3000&quot;</span>
     restart: unless-stopped
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>RustFS</strong> - el backend de almacenamiento de objetos:</p>
+<p><strong>RustFS</strong> — the object storage backend:</p>
 <pre><code translate="no">rustfs:
     container_name: milvus-rustfs
     image: rustfs/rustfs:1.0.0-alpha.58
@@ -122,7 +123,7 @@ origin: >-
       retries: 3
       start_period: 40s
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Milvus</strong> - funcionando en modo autónomo:</p>
+<p><strong>Milvus</strong> — running in standalone mode:</p>
 <pre><code translate="no">  standalone:
     container_name: milvus-standalone
     image: milvusdb/milvus:v2.6.0
@@ -149,10 +150,10 @@ origin: >-
       - <span class="hljs-string">&quot;etcd&quot;</span>
       - <span class="hljs-string">&quot;rustfs&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Starting-Everything" class="common-anchor-header">Comenzando todo</h3><p>Una vez que la configuración está en su lugar, poner en marcha los cuatro servicios:</p>
+<h3 id="Starting-Everything" class="common-anchor-header">Starting Everything</h3><p>Once the config is in place, bring up all four services:</p>
 <pre><code translate="no">docker compose -f docker-compose.yml up -d
 <button class="copy-code-btn"></button></code></pre>
-<p>Puedes verificar que todo está funcionando con:</p>
+<p>You can verify everything is running with:</p>
 <pre><code translate="no">docker ps
 CONTAINER ID   IMAGE                                             COMMAND                  CREATED          STATUS                      PORTS                                                                                      NAMES
 4404b5cc6f7e   milvusdb/milvus:v2.6.0                            <span class="hljs-string">&quot;/tini -- milvus run…&quot;</span>   53 minutes ago   Up 53 minutes (healthy)     0.0.0.0:9091-&gt;9091/tcp, :::9091-&gt;9091/tcp, 0.0.0.0:19530-&gt;19530/tcp, :::19530-&gt;19530/tcp   milvus-standalone
@@ -160,13 +161,13 @@ CONTAINER ID   IMAGE                                             COMMAND        
 3d2c8d80a8ce   quay.io/coreos/etcd:v3.5.18                       <span class="hljs-string">&quot;etcd -advertise-cli…&quot;</span>   53 minutes ago   Up 53 minutes (healthy)     2379-2380/tcp                                                                              milvus-etcd
 d760f6690ea7   rustfs/rustfs:1.0.0-alpha.58                      <span class="hljs-string">&quot;/entrypoint.sh rust…&quot;</span>   53 minutes ago   Up 53 minutes (unhealthy)   0.0.0.0:9000-9001-&gt;9000-9001/tcp, :::9000-9001-&gt;9000-9001/tcp                              milvus-rustfs
 <button class="copy-code-btn"></button></code></pre>
-<p>Con los cuatro contenedores funcionando, tus servicios están disponibles en:</p>
+<p>With all four containers up, your services are available at:</p>
 <ul>
 <li><strong>Milvus:</strong> <ip>:19530</li>
-<li><strong>RustFS</strong>: <ip>:9000</li>
-<li><strong>Attu</strong>: <ip>:8000</li>
+<li><strong>RustFS:</strong> <ip>:9000</li>
+<li><strong>Attu:</strong> <ip>:8000</li>
 </ul>
-<h2 id="Vectorizing-the-RustFS-Docs-and-Storing-Embeddings-in-Milvus" class="common-anchor-header">Vectorización de los documentos de RustFS y almacenamiento de incrustaciones en Milvus<button data-href="#Vectorizing-the-RustFS-Docs-and-Storing-Embeddings-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="Vectorizing-the-RustFS-Docs-and-Storing-Embeddings-in-Milvus" class="common-anchor-header">Vectorizing the RustFS Docs and Storing Embeddings in Milvus<button data-href="#Vectorizing-the-RustFS-Docs-and-Storing-Embeddings-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -181,8 +182,8 @@ d760f6690ea7   rustfs/rustfs:1.0.0-alpha.58                      <span class="hl
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con Milvus y RustFS funcionando, el siguiente paso es construir la base de conocimientos. El material fuente es la documentación en chino de RustFS: 80 archivos Markdown que troceará, incrustará y almacenará en Milvus.</p>
-<h3 id="Reading-and-Chunking-the-Docs" class="common-anchor-header">Leer y trocear la documentación</h3><p>El script lee recursivamente cada archivo .md en la carpeta docs, luego divide el contenido de cada archivo en trozos por nueva línea:</p>
+    </button></h2><p>With Milvus and RustFS running, the next step is to build the knowledge base. The source material is the RustFS Chinese documentation: 80 Markdown files that you’ll chunk, embed, and store in Milvus.</p>
+<h3 id="Reading-and-Chunking-the-Docs" class="common-anchor-header">Reading and Chunking the Docs</h3><p>The script recursively reads every .md file in the docs folder, then splits each file’s content into chunks by newline:</p>
 <pre><code translate="no"><span class="hljs-comment"># 3. Read Markdown files</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">load_markdown_files</span>(<span class="hljs-params">folder</span>):
     files = glob.glob(os.path.join(folder, <span class="hljs-string">&quot;**&quot;</span>, <span class="hljs-string">&quot;*.md&quot;</span>), recursive=<span class="hljs-literal">True</span>)
@@ -205,8 +206,8 @@ d760f6690ea7   rustfs/rustfs:1.0.0-alpha.58                      <span class="hl
         chunks.append(<span class="hljs-string">&quot; &quot;</span>.join(current))
     <span class="hljs-keyword">return</span> chunks
 <button class="copy-code-btn"></button></code></pre>
-<p>Esta estrategia de fragmentación es intencionadamente simple. Si desea un control más estricto -dividir en encabezados, preservar bloques de código, o superponer trozos para una mejor recuperación- este es el lugar para iterar.</p>
-<h3 id="Embedding-the-Chunks" class="common-anchor-header">Incrustar los trozos</h3><p>Con los trozos listos, se incrustan utilizando el modelo text-embedding-3-large de OpenAI, que produce vectores de 3072 dimensiones:</p>
+<p>This chunking strategy is intentionally simple. If you want tighter control — splitting on headers, preserving code blocks, or overlapping chunks for better retrieval — this is the place to iterate.</p>
+<h3 id="Embedding-the-Chunks" class="common-anchor-header">Embedding the Chunks</h3><p>With the chunks ready, you embed them using OpenAI’s text-embedding-3-large model, which outputs 3072-dimensional vectors:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">embed_texts</span>(<span class="hljs-params">texts</span>):
     response = client.embeddings.create(
         model=<span class="hljs-string">&quot;text-embedding-3-large&quot;</span>,
@@ -214,7 +215,7 @@ d760f6690ea7   rustfs/rustfs:1.0.0-alpha.58                      <span class="hl
     )
     <span class="hljs-keyword">return</span> [d.embedding <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> response.data]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Storing-Embeddings-in-Milvus" class="common-anchor-header">Almacenamiento de incrustaciones en Milvus</h3><p>Milvus organiza los datos en colecciones, cada una definida por un esquema. Aquí, cada registro almacena el fragmento de texto en bruto junto con su vector de incrustación:</p>
+<h3 id="Storing-Embeddings-in-Milvus" class="common-anchor-header">Storing Embeddings in Milvus</h3><p>Milvus organizes data into collections, each defined by a schema. Here, each record stores the raw text chunk alongside its embedding vector:</p>
 <pre><code translate="no"><span class="hljs-comment"># Connect to Milvus</span>
 connections.connect(<span class="hljs-string">&quot;default&quot;</span>, host=<span class="hljs-string">&quot;ip&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 
@@ -236,21 +237,21 @@ collection = Collection(name=<span class="hljs-string">&quot;docs_collection&quo
 collection.insert([all_chunks, embeddings])
 collection.flush()
 <button class="copy-code-btn"></button></code></pre>
-<p>Una vez completada la inserción, puede verificar la colección en Attu en <ip>:8000 - debería ver docs_collection listada bajo Collections.</p>
+<p>Once the insert completes, you can verify the collection in Attu at <ip>:8000 — you should see docs_collection listed under Collections.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Milvus_Rust_FS_Vibe_Coding_Chatbot_2_a787e96076.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>También puede comprobar RustFS en <ip>:9000 para confirmar que los datos subyacentes aterrizaron en el almacenamiento de objetos.</p>
+<p>You can also check RustFS at <ip>:9000 to confirm the underlying data landed in object storage.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Milvus_Rust_FS_Vibe_Coding_Chatbot_6_0e6d8c9471.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Building-a-RAG-Pipeline-with-Milvus-and-OpenAI’s-GPT-5" class="common-anchor-header">Construyendo una tubería RAG con Milvus y GPT-5 de OpenAI<button data-href="#Building-a-RAG-Pipeline-with-Milvus-and-OpenAI’s-GPT-5" class="anchor-icon" translate="no">
+<h2 id="Building-a-RAG-Pipeline-with-Milvus-and-OpenAI’s-GPT-5" class="common-anchor-header">Building a RAG Pipeline with Milvus and OpenAI’s GPT-5<button data-href="#Building-a-RAG-Pipeline-with-Milvus-and-OpenAI’s-GPT-5" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -265,7 +266,7 @@ collection.flush()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con las incrustaciones almacenadas en Milvus, tienes todo lo que necesitas para construir la tubería RAG. El flujo es: incrustar la consulta del usuario, recuperar los trozos semánticamente más similares de Milvus, montar un prompt y llamar al GPT-5. La construcción aquí utiliza el GPT-5 de OpenAI, pero cualquier modelo con capacidad de chat funciona aquí - la capa de recuperación es lo que importa, y Milvus se encarga de ello independientemente del LLM que genere la respuesta final.</p>
+    </button></h2><p>With embeddings stored in Milvus, you have everything you need to build the RAG pipeline. The flow is: embed the user’s query, retrieve the most semantically similar chunks from Milvus, assemble a prompt, and call the GPT-5.The build here uses OpenAI’s GPT-5, but any chat-capable model works here — the retrieval layer is what matters, and Milvus handles that regardless of which LLM generates the final answer.</p>
 <pre><code translate="no"><span class="hljs-comment"># 1. Embed the query</span>
 query_embedding = embed_texts(query)
 
@@ -297,10 +298,11 @@ prompt = <span class="hljs-string">f&quot;You are a RustFS expert. Answer the qu
 
     <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;answer&quot;</span>: answer, <span class="hljs-string">&quot;sources&quot;</span>: docs}
 <button class="copy-code-btn"></button></code></pre>
-<p>Para probarlo, ejecute una consulta:</p>
+<p>To test it, run a query:</p>
 <pre><code translate="no"><span class="hljs-title class_">How</span> <span class="hljs-keyword">do</span> I install <span class="hljs-title class_">RustFS</span> <span class="hljs-keyword">in</span> <span class="hljs-title class_">Docker</span>?
 <button class="copy-code-btn"></button></code></pre>
-<p>Resultados de la consulta:  <span class="img-wrapper">
+<p>Query results:
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Milvus_Rust_FS_Vibe_Coding_Chatbot_5_2cd609c90c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
@@ -311,9 +313,9 @@ prompt = <span class="hljs-string">f&quot;You are a RustFS expert. Answer the qu
     <span></span>
   </span>
 </p>
-<p>Envolviéndolo todo en un chatbot FastAPI + Next.js</p>
-<p>La canalización RAG funciona, pero ejecutar un script de Python cada vez que quieres hacer una pregunta frustra el propósito. Así que le pedí a AI una sugerencia de pila. La respuesta: <strong>FastAPI</strong> para el backend -el código RAG ya es Python, así que envolverlo en un punto final FastAPI es lo más natural- y <strong>Next.js</strong> para el frontend. FastAPI expone la lógica RAG como un punto final HTTP; Next.js lo llama y muestra la respuesta en una ventana de chat.</p>
-<h3 id="FastAPI-Backend" class="common-anchor-header">Backend FastAPI</h3><p>FastAPI envuelve la lógica RAG en un único punto final POST. Cualquier cliente puede ahora consultar su base de conocimientos con una petición JSON:</p>
+<p>Wrapping Everything in a FastAPI + Next.js Chatbot</p>
+<p>The RAG pipeline is working, but running a Python script every time you want to ask a question defeats the purpose. So I asked AI for a stack suggestion. The answer: <strong>FastAPI</strong> for the backend — the RAG code is already Python, so wrapping it in a FastAPI endpoint is the natural fit — and <strong>Next.js</strong> for the frontend. FastAPI exposes the RAG logic as an HTTP endpoint; Next.js calls it and renders the response in a chat window.</p>
+<h3 id="FastAPI-Backend" class="common-anchor-header">FastAPI Backend</h3><p>FastAPI wraps the RAG logic in a single POST endpoint. Any client can now query your knowledge base with a JSON request:</p>
 <pre><code translate="no">app = FastAPI()
 
 <span class="hljs-meta">@app.post(<span class="hljs-params"><span class="hljs-string">&quot;/chat&quot;</span></span>)</span>
@@ -322,7 +324,7 @@ prompt = <span class="hljs-string">f&quot;You are a RustFS expert. Answer the qu
 
 ......
 <button class="copy-code-btn"></button></code></pre>
-<p>Inicie el servidor con:</p>
+<p>Start the server with:</p>
 <pre><code translate="no">uvicorn main:app --reload --host <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span> --port <span class="hljs-number">9999</span>
 INFO:     Will watch <span class="hljs-keyword">for</span> changes <span class="hljs-keyword">in</span> these directories: [<span class="hljs-string">&#x27;/home/xiaomage/milvus/chatbot/.venv&#x27;</span>]
 INFO:     Uvicorn running <span class="hljs-keyword">on</span> http:<span class="hljs-comment">//0.0.0.0:9999 (Press CTRL+C to quit)</span>
@@ -331,7 +333,7 @@ INFO:     Started server process [<span class="hljs-number">2071376</span>]
 INFO:     Waiting <span class="hljs-keyword">for</span> application startup.
 INFO:     Application startup complete.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Nextjs-Frontend" class="common-anchor-header">Next.js Frontend</h3><p>La interfaz envía la consulta del usuario al punto final de FastAPI y muestra la respuesta. El núcleo de la lógica de obtención:</p>
+<h3 id="Nextjs-Frontend" class="common-anchor-header">Next.js Frontend</h3><p>The frontend sends the user’s query to the FastAPI endpoint and renders the response. The core fetch logic:</p>
 <p>javascript</p>
 <pre><code translate="no">   <span class="hljs-keyword">try</span> {
       <span class="hljs-keyword">const</span> res = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-string">&#x27;http://localhost:9999/chat&#x27;</span>, {
@@ -351,7 +353,7 @@ INFO:     Application startup complete.
       <span class="hljs-title function_">setLoading</span>(<span class="hljs-literal">false</span>);
     }
 <button class="copy-code-btn"></button></code></pre>
-<p>Inicie el frontend con:</p>
+<p>Start the frontend with:</p>
 <pre><code translate="no">pnpm run dev -H <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span> -p <span class="hljs-number">3000</span>
 
 &gt; rag-chatbot@<span class="hljs-number">0.1</span><span class="hljs-number">.0</span> dev /home/xiaomage/milvus/chatbot-web/rag-chatbot
@@ -364,24 +366,24 @@ INFO:     Application startup complete.
  ✓ <span class="hljs-title class_">Starting</span>...
  ✓ <span class="hljs-title class_">Ready</span> <span class="hljs-keyword">in</span> 1288ms
 <button class="copy-code-btn"></button></code></pre>
-<p>Abre <code translate="no">http://&lt;ip&gt;:3000/chat</code> en tu navegador.</p>
+<p>Open <code translate="no">http://&lt;ip&gt;:3000/chat</code> in your browser.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Milvus_Rust_FS_Vibe_Coding_Chatbot_1_0832811fc8.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
-Escriba una pregunta:</p>
+Type a question:</p>
 <pre><code translate="no"><span class="hljs-title class_">How</span> <span class="hljs-keyword">do</span> I install <span class="hljs-title class_">RustFS</span> <span class="hljs-keyword">in</span> <span class="hljs-title class_">Docker</span>?
 <button class="copy-code-btn"></button></code></pre>
-<p>Respuesta de la interfaz de chat::</p>
+<p>Chat interface response::</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Milvus_Rust_FS_Vibe_Coding_Chatbot_4_91d679ae50.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Y ya está hecho el chatbot.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>And that’s the chatbot done.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -396,18 +398,18 @@ Escriba una pregunta:</p>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Lo que empezó como una curiosidad sobre el backend de almacenamiento de Milvus se convirtió en un chatbot RAG completamente funcional, y el camino de uno a otro fue más corto de lo esperado. Esto es lo que la construcción cubre, de extremo a extremo:</p>
+    </button></h2><p>What started as curiosity about Milvus’s storage backend turned into a full working RAG chatbot — and the path from one to the other was shorter than expected. Here’s what the build covers, end to end:</p>
 <ul>
-<li><strong><a href="http://milvus.io">Milvus</a></strong> <strong>+</strong> <strong><a href="https://rustfs.com/">RustFS</a></strong> <strong>con Docker Compose.</strong> Milvus se ejecuta en modo autónomo con RustFS como backend de almacenamiento de objetos, sustituyendo al predeterminado MinIO. Cuatro servicios en total: etcd, Milvus, RustFS y Attu.</li>
-<li><strong>Vectorización de la base de conocimientos.</strong> La documentación de RustFS (80 archivos Markdown) se divide en trozos, se incrusta con text-embedding-3-large y se almacena en Milvus como 466 vectores.</li>
-<li><strong>El proceso RAG.</strong> En el momento de la consulta, la pregunta del usuario se incrusta del mismo modo, Milvus recupera los tres fragmentos semánticamente más similares y GPT-5 genera una respuesta basada en esos documentos.</li>
-<li><strong>La interfaz de usuario del chatbot.</strong> FastAPI envuelve el proceso en un único punto final POST; Next.js coloca una ventana de chat delante. Se acabó el tener que entrar en un terminal para hacer una pregunta.</li>
+<li><strong><a href="http://milvus.io">Milvus</a></strong> <strong>+</strong> <strong><a href="https://rustfs.com/">RustFS</a></strong> <strong>with Docker Compose.</strong> Milvus runs in standalone mode with RustFS as its object storage backend, replacing the default MinIO. Four services total: etcd, Milvus, RustFS, and Attu.</li>
+<li><strong>Vectorizing the knowledge base.</strong> The RustFS documentation — 80 Markdown files — gets chunked, embedded with text-embedding-3-large, and stored in Milvus as 466 vectors.</li>
+<li><strong>The RAG pipeline.</strong> At query time, the user’s question gets embedded the same way, Milvus retrieves the three most semantically similar chunks, and GPT-5 generates an answer grounded in those docs.</li>
+<li><strong>The chatbot UI.</strong> FastAPI wraps the pipeline in a single POST endpoint; Next.js puts a chat window in front of it. No more dropping into a terminal to ask a question.</li>
 </ul>
-<p>Algunas de mis conclusiones del proceso:</p>
+<p>A few of my takeaways from the process:</p>
 <ul>
-<li><strong><a href="https://milvus.io/docs">La documentación de Milvus</a></strong> <strong>es genial.</strong> Especialmente las secciones de despliegue - clara, completa, fácil de seguir.</li>
-<li><strong>Es un placer trabajar con</strong><strong><a href="https://rustfs.com/">RustFS</a></strong> <strong>como backend de almacenamiento de objetos.</strong> Incorporarlo a MinIO requirió menos esfuerzo del esperado.</li>
-<li><strong>La codificación de Vibe es rápida, justo hasta que el ámbito se hace cargo.</strong> Una cosa lleva a la otra: de Milvus a RAG, a chatbot y a "quizá debería Dockerizarlo todo". Los requisitos no convergen por sí solos.</li>
-<li><strong>Depurar enseña más que leer.</strong> Cada fallo en esta compilación hizo que la siguiente sección hiciera clic más rápido de lo que lo habría hecho cualquier documentación.</li>
+<li><strong><a href="https://milvus.io/docs">Milvus’s documentation</a></strong> <strong>is great.</strong> Especially the deployment sections — clear, complete, easy to follow.</li>
+<li><strong><a href="https://rustfs.com/">RustFS</a></strong> <strong>is a pleasure to work with as an object storage backend.</strong> Dropping it in for MinIO took less effort than expected.</li>
+<li><strong>Vibe coding is fast, right up until scope takes over.</strong> One thing kept leading to another — Milvus to RAG to chatbot to “maybe I should Dockerize the whole thing.” Requirements don’t converge on their own.</li>
+<li><strong>Debugging teaches more than reading.</strong> Every failure in this build made the next section click faster than any documentation would have.</li>
 </ul>
-<p>Todo el código de esta construcción está en <a href="https://github.com/majinghe/chatbot"></a> github<a href="https://github.com/majinghe/chatbot">.com/majinghe/chatbot</a>. Si quieres probar <a href="http://milvus.io">Milvus</a> por ti mismo, el <a href="https://milvus.io/docs/quickstart.md">inicio rápido</a> es un buen lugar para empezar. Si quieres hablar sobre lo que estás construyendo o te encuentras con algo inesperado, ven y encuéntranos en el <a href="https://milvus.io/slack">Slack</a> de <a href="https://milvus.io/slack">Milvus</a>. Si prefieres tener una conversación dedicada, también puedes <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?uuid=4cb203e5-482a-47e0-90a6-7acc511d61f4">reservar un hueco en horario de oficina</a>.</p>
+<p>All the code from this build is at <a href="https://github.com/majinghe/chatbot"></a><a href="https://github.com/majinghe/chatbot">github.com/majinghe/chatbot</a>. If you want to try <a href="http://milvus.io">Milvus</a> yourself, the <a href="https://milvus.io/docs/quickstart.md">quickstart</a> is a good place to start. If you want to talk through what you’re building or run into something unexpected, come and find us in the <a href="https://milvus.io/slack">Milvus Slack</a>. If you’d rather have a dedicated conversation, you can also <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?uuid=4cb203e5-482a-47e0-90a6-7acc511d61f4">book a slot at office hours</a>.</p>

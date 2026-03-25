@@ -1,9 +1,9 @@
 ---
 id: >-
   how-to-cut-vector-database-costs-by-up-to-80-a-practical-milvus-optimization-guide.md
-title: >-
-  Como reduzir os custos das bases de dados vectoriais até 80%: Um guia prático
-  de otimização Milvus
+title: >
+  How to Cut Vector Database Costs by Up to 80%: A Practical Milvus Optimization
+  Guide
 author: Jack Li
 date: 2026-3-20
 cover: assets.zilliz.com/cover_reduce_vdb_cost_by_80_56ed2fe3ae.png
@@ -16,18 +16,17 @@ meta_keywords: >-
   optimization, HNSW vs IVF_SQ8, vector search cost
 meta_title: |
   Milvus Cost Optimization Guide: Cut Vector Database Costs by Up to 80%
-desc: >-
-  O Milvus é gratuito, mas a infraestrutura não é. Saiba como reduzir os custos
-  de memória da base de dados vetorial em 60-80% com melhores índices, MMap e
-  armazenamento em camadas.
+desc: >
+  Milvus is free, but the infrastructure isn't. Learn how to reduce vector
+  database memory costs by 60-80% with better indexes, MMap, and tiered storage.
 origin: >-
   https://milvus.io/blog/how-to-cut-vector-database-costs-by-up-to-80-a-practical-milvus-optimization-guide.md
 ---
-<p>O seu protótipo RAG funcionou muito bem. Depois passou à produção, o tráfego aumentou e agora a fatura da sua base de dados vetorial passou de 500 dólares para 5000 dólares por mês. Parece-lhe familiar?</p>
-<p>Este é um dos problemas de escala mais comuns em aplicações de IA atualmente. Construiu algo que cria valor real, mas os custos de infraestrutura estão a crescer mais rapidamente do que a sua base de utilizadores está a crescer. E quando você olha para a conta, o banco de dados vetorial costuma ser a maior surpresa - nas implantações que vimos, ele pode representar cerca de 40-50% do custo total do aplicativo, perdendo apenas para as chamadas de API LLM.</p>
-<p>Neste guia, vou explicar para onde o dinheiro realmente vai e as coisas específicas que você pode fazer para reduzi-lo - em muitos casos, em 60-80%. Vou usar <a href="https://milvus.io/">o Milvus</a>, a base de dados vetorial open-source mais popular, como exemplo principal, uma vez que é a que conheço melhor, mas os princípios aplicam-se à maioria das bases de dados vectoriais.</p>
-<p><em>Para ser claro:</em> <em><a href="https://milvus.io/">o Milvus</a></em> <em>em si é gratuito e de código aberto - nunca se paga pelo software. O custo vem inteiramente da infraestrutura em que é executado: instâncias de nuvem, memória, armazenamento e rede. A boa notícia é que a maior parte desse custo de infraestrutura é redutível.</em></p>
-<h2 id="Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="common-anchor-header">Para onde o dinheiro realmente vai quando se usa um VectorDB?<button data-href="#Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="anchor-icon" translate="no">
+<p>Your RAG prototype worked great. Then it went to production, traffic grew, and now your vector database bill has gone from $500 to $5,000 a month. Sound familiar?</p>
+<p>This is one of the most common scaling problems in AI applications right now. You’ve built something that creates real value, but the infrastructure costs are growing faster than your user base is growing. And when you look at the bill, the vector database is often the biggest surprise — in the deployments we’ve seen, it can account for roughly 40-50% of total application cost, second only to LLM API calls.</p>
+<p>In this guide, I’ll walk through where the money actually goes and the specific things you can do to bring it down — in many cases by 60-80%. I’ll use <a href="https://milvus.io/">Milvus</a>, the most popular open-source vector database, as the primary example since that’s what I know best, but the principles apply to most vector databases.</p>
+<p><em>To be clear:</em> <em><a href="https://milvus.io/">Milvus</a></em> <em>itself is free and open source — you never pay for the software. The cost comes entirely from the infrastructure you run it on: cloud instances, memory, storage, and network. The good news is that most of that infrastructure cost is reducible.</em></p>
+<h2 id="Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="common-anchor-header">Where Does the Money Actually Go When Using a VectorDB?<button data-href="#Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -42,20 +41,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vamos começar com um exemplo concreto. Digamos que tem 100 milhões de vectores, 768 dimensões, armazenados como float32 - uma configuração RAG bastante típica. Aqui está o custo aproximado disso na AWS por mês:</p>
+    </button></h2><p>Let’s start with a concrete example. Say you have 100 million vectors, 768 dimensions, stored as float32 — a pretty typical RAG setup. Here’s roughly what that costs on AWS per month:</p>
 <table>
 <thead>
-<tr><th><strong>Componente de custo</strong></th><th><strong>Parcela</strong></th><th><strong>~Custo mensal</strong></th><th><strong>Notas</strong></th></tr>
+<tr><th><strong>Cost Component</strong></th><th><strong>Share</strong></th><th><strong>~Monthly Cost</strong></th><th><strong>Notes</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Computação (CPU + memória)</td><td>85-90%</td><td>$2,800</td><td>O mais importante - principalmente devido à memória</td></tr>
-<tr><td>Rede</td><td>5-10%</td><td>$250</td><td>Tráfego entre AZs, grandes cargas de resultados</td></tr>
-<tr><td>Armazenamento</td><td>2-5%</td><td>$100</td><td>Barato - o armazenamento de objectos (S3/MinIO) custa ~$0,03/GB</td></tr>
+<tr><td>Compute   (CPU + memory)</td><td>85-90%</td><td>$2,800</td><td>The big one — mostly driven by memory</td></tr>
+<tr><td>Network</td><td>5-10%</td><td>$250</td><td>Cross-AZ traffic, large result payloads</td></tr>
+<tr><td>Storage</td><td>2-5%</td><td>$100</td><td>Cheap — object storage (S3/MinIO) is ~$0.03/GB</td></tr>
 </tbody>
 </table>
-<p>A conclusão é simples: a memória é para onde vai 85-90% do seu dinheiro. A rede e o armazenamento são importantes nas margens, mas se você quiser cortar custos significativamente, a memória é a alavanca. Tudo neste guia se concentra nisso.</p>
-<p><strong>Nota rápida sobre rede e armazenamento:</strong> Pode reduzir os custos de rede devolvendo apenas os campos de que necessita (ID, pontuação, metadados chave) e evitando consultas entre regiões. Para o armazenamento, o Milvus já separa o armazenamento da computação - os seus vectores são armazenados em objectos baratos como o S3, por isso, mesmo com 100M de vectores, o armazenamento é normalmente inferior a $50/mês. Nenhuma destas opções irá mover a agulha como a otimização da memória.</p>
-<h2 id="Why-Memory-Is-So-Expensive-for-Vector-Search" class="common-anchor-header">Por que a memória é tão cara para a pesquisa vetorial<button data-href="#Why-Memory-Is-So-Expensive-for-Vector-Search" class="anchor-icon" translate="no">
+<p>The takeaway is simple: memory is where 85-90% of your money goes. Network and storage matter at the margins, but if you want to cut costs meaningfully, memory is the lever. Everything in this guide focuses on that.</p>
+<p><strong>Quick note on network and storage:</strong> You can reduce network costs by only returning the fields you need (ID, score, key metadata) and avoiding cross-region queries. For storage, Milvus already separates storage from compute — your vectors sit in cheap object storage like S3, so even at 100M vectors, storage is usually under $50/month. Neither of these will move the needle like memory optimization will.</p>
+<h2 id="Why-Memory-Is-So-Expensive-for-Vector-Search" class="common-anchor-header">Why Memory Is So Expensive for Vector Search<button data-href="#Why-Memory-Is-So-Expensive-for-Vector-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,18 +69,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Se você vem de bancos de dados tradicionais, os requisitos de memória para pesquisa vetorial podem ser surpreendentes. Um banco de dados relacional pode aproveitar os índices de árvore B baseados em disco e o cache de página do sistema operacional. A pesquisa vetorial é diferente - ela envolve computação maciça de ponto flutuante, e índices como HNSW ou IVF precisam ficar carregados na memória para fornecer latência no nível de milissegundos.</p>
-<p>Aqui está uma fórmula rápida para estimar suas necessidades de memória:</p>
-<p><strong>Memória necessária = (vectores × dimensões × 4 bytes) × multiplicador de índice</strong></p>
-<p>Para o nosso exemplo de 100M × 768 × float32 com HNSW (multiplicador ~1,8x):</p>
+    </button></h2><p>If you’re coming from traditional databases, the memory requirements for vector search can be surprising. A relational database can leverage disk-based B-tree indexes and the OS page cache. Vector search is different — it involves massive floating-point computation, and indexes like HNSW or IVF need to stay loaded in memory to deliver millisecond-level latency.</p>
+<p>Here’s a quick formula to estimate your memory needs:</p>
+<p><strong>Memory required = (vectors × dimensions × 4 bytes) × index multiplier</strong></p>
+<p>For our 100M × 768 × float32 example with HNSW (multiplier ~1.8x):</p>
 <ul>
-<li>Dados em bruto: 100M × 768 × 4 bytes ≈ 307 GB</li>
-<li>Com índice HNSW: 307 GB × 1,8 ≈ 553 GB</li>
-<li>Com sobrecarga do SO, cache e espaço livre: ~768 GB total</li>
-<li>No AWS: 3× r6i.8xlarge (256 GB cada) ≈ $2.800/mês</li>
+<li>Raw data: 100M × 768 × 4 bytes ≈ 307 GB</li>
+<li>With HNSW index: 307 GB × 1.8 ≈ 553 GB</li>
+<li>With OS overhead, cache, and headroom: ~768 GB total</li>
+<li>On AWS: 3× r6i.8xlarge (256 GB each) ≈ $2,800/month</li>
 </ul>
-<p><strong>Essa é a linha de base. Agora vamos ver como reduzi-la.</strong></p>
-<h2 id="1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="common-anchor-header">1. Escolha o índice certo para obter 4x menos uso de memória<button data-href="#1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="anchor-icon" translate="no">
+<p><strong>That’s the baseline. Now let’s look at how to bring it down.</strong></p>
+<h2 id="1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="common-anchor-header">1. Pick the Right Index to Get 4x Less Memory Usage<button data-href="#1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -96,31 +95,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Esta é a mudança de maior impacto que pode ser feita. Para o mesmo conjunto de dados de 100 milhões de vetores, o uso de memória pode variar de 4 a 6 vezes, dependendo da sua escolha de índice.</p>
+    </button></h2><p>This is the single highest-impact change you can make. For the same 100M-vector dataset, memory usage can vary by 4-6x depending on your index choice.</p>
 <ul>
-<li><strong>FLAT / IVF_FLAT</strong>: quase nenhuma compactação, portanto, o uso da memória permanece próximo ao tamanho dos dados brutos, em torno de <strong>300 GB</strong></li>
-<li><strong>HNSW</strong>: armazena uma estrutura gráfica adicional, pelo que a utilização de memória é normalmente <strong>1,5x a 2,0x</strong> o tamanho dos dados em bruto, ou cerca de <strong>450 a 600 GB</strong></li>
-<li><strong>IVF_SQ8</strong>: comprime os valores float32 em uint8, obtendo uma <strong>compressão de</strong> cerca de <strong>4x</strong>, pelo que a utilização de memória pode baixar para cerca de <strong>75 a 100 GB</strong></li>
-<li><strong>IVF_PQ / DiskANN</strong>: utiliza uma compressão mais forte ou um índice baseado em disco, pelo que a memória pode diminuir ainda mais para cerca de <strong>30 a 60 GB</strong></li>
+<li><strong>FLAT / IVF_FLAT</strong>: almost no compression, so memory usage stays close to the raw data size, around <strong>300 GB</strong></li>
+<li><strong>HNSW</strong>: stores an extra graph structure, so memory usage is usually <strong>1.5x to 2.0x</strong> the raw data size, or about <strong>450 to 600 GB</strong></li>
+<li><strong>IVF_SQ8</strong>: compresses float32 values into uint8, giving about <strong>4x compression</strong>, so memory use can drop to around <strong>75 to 100 GB</strong></li>
+<li><strong>IVF_PQ / DiskANN</strong>: use stronger compression or a disk-based index, so memory can drop further to about <strong>30 to 60 GB</strong></li>
 </ul>
-<p>Muitas equipas começam com o HNSW porque tem a melhor velocidade de consulta, mas acabam por pagar 3-5 vezes mais do que o necessário.</p>
-<p>Veja como os principais tipos de índice se comparam:</p>
+<p>Many teams start with HNSW because it has the best query speed, but they end up paying 3-5x more than they need to.</p>
+<p>Here’s how the main index types compare:</p>
 <table>
 <thead>
-<tr><th><strong>Índice</strong></th><th><strong>Multiplicador de memória</strong></th><th><strong>Velocidade de consulta</strong></th><th><strong>Recuperação</strong></th><th><strong>Melhor para</strong></th></tr>
+<tr><th><strong>Index</strong></th><th><strong>Memory Multiplier</strong></th><th><strong>Query Speed</strong></th><th><strong>Recall</strong></th><th><strong>Best For</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>FLAT</td><td>~1.0x</td><td>Lenta</td><td>100%</td><td>Conjuntos de dados pequenos (&lt;1M), testes</td></tr>
-<tr><td>IVF_FLAT</td><td>~1.05x</td><td>Médio</td><td>95-99%</td><td>Utilização geral</td></tr>
-<tr><td>IVF_SQ8</td><td>~0.30x</td><td>Média</td><td>93-97%</td><td>Produção sensível aos custos (recomendado)</td></tr>
-<tr><td>IVF_PQ</td><td>~0.12x</td><td>Rápida</td><td>70-80%</td><td>Conjuntos de dados muito grandes, recuperação grosseira</td></tr>
-<tr><td>HNSW</td><td>~1.8x</td><td>Muito rápido</td><td>98-99%</td><td>Apenas quando a latência é mais importante do que o custo</td></tr>
-<tr><td>DiskANN</td><td>~0.08x</td><td>Médio</td><td>95-98%</td><td>Escala muito grande com SSDs NVMe</td></tr>
+<tr><td>FLAT</td><td>~1.0x</td><td>Slow</td><td>100%</td><td>Small datasets (&lt;1M), testing</td></tr>
+<tr><td>IVF_FLAT</td><td>~1.05x</td><td>Medium</td><td>95-99%</td><td>General use</td></tr>
+<tr><td>IVF_SQ8</td><td>~0.30x</td><td>Medium</td><td>93-97%</td><td>Cost-sensitive production (recommended)</td></tr>
+<tr><td>IVF_PQ</td><td>~0.12x</td><td>Fast</td><td>70-80%</td><td>Very large datasets, coarse retrieval</td></tr>
+<tr><td>HNSW</td><td>~1.8x</td><td>Very fast</td><td>98-99%</td><td>Only when latency matters more than cost</td></tr>
+<tr><td>DiskANN</td><td>~0.08x</td><td>Medium</td><td>95-98%</td><td>Very large scale with NVMe SSDs</td></tr>
 </tbody>
 </table>
-<p><strong>O resultado final:</strong> Mudar de HNSW ou IVF_FLAT para IVF_SQ8 normalmente reduz o recall em apenas 2-3% (por exemplo, de 97% para 94-95%) enquanto reduz o custo de memória em cerca de 70%. Para a maioria das cargas de trabalho RAG, essa troca vale absolutamente a pena. Se estiver a fazer uma recuperação grosseira ou se a sua barra de precisão for mais baixa, o IVF_PQ ou o IVF_RABITQ podem aumentar ainda mais as poupanças.</p>
-<p><strong>Minha recomendação:</strong> Se estiver a executar o HNSW na produção e o custo for uma preocupação, experimente primeiro o IVF_SQ8 numa coleção de teste. Meça a recuperação nas suas consultas reais. A maior parte das equipas fica surpreendida com a pequena diminuição da precisão.</p>
-<h2 id="2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="common-anchor-header">2. Pare de carregar tudo na memória para obter uma redução de custo de 60% a 80%<button data-href="#2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="anchor-icon" translate="no">
+<p><strong>The bottom line:</strong> Switching from HNSW or IVF_FLAT to IVF_SQ8 typically drops recall by only 2-3% (e.g., from 97% to 94-95%) while cutting memory cost by about 70%. For most RAG workloads, that tradeoff is absolutely worth it. If you’re doing coarse retrieval or your accuracy bar is lower, IVF_PQ or IVF_RABITQ can further boost savings.</p>
+<p><strong>My recommendation:</strong> If you’re running HNSW in production and cost is a concern, try IVF_SQ8 on a test collection first. Measure recall on your actual queries. Most teams are surprised by how small the accuracy drop is.</p>
+<h2 id="2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="common-anchor-header">2. Stop Loading Everything into Memory for 60%-80% Cost Reduction<button data-href="#2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -135,46 +134,46 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mesmo depois de escolher um índice mais eficiente, é possível que ainda haja mais dados na memória do que o necessário. O Milvus oferece duas maneiras de resolver isso: <strong>MMap (disponível desde a versão 2.3) e armazenamento em camadas (disponível desde a versão 2.6). Ambas podem reduzir o uso de memória em 60-80%.</strong></p>
-<p>A idéia central por trás de ambos é a mesma: nem todos os seus dados precisam estar na memória o tempo todo. A diferença é como eles lidam com os dados que não estão na memória.</p>
-<h3 id="MMap-Memory-Mapped-Files" class="common-anchor-header">MMap (Ficheiros Mapeados na Memória)</h3><p>O MMap mapeia os seus ficheiros de dados do disco local para o espaço de endereço do processo. O conjunto de dados completo permanece no disco local do nó, e o SO carrega páginas para a memória a pedido - apenas quando são acedidas. Antes de usar o MMap, todos os dados são baixados do armazenamento de objetos (S3/MinIO) para o disco local do QueryNode.</p>
+    </button></h2><p>Even after picking a more efficient index, you might still have more data in memory than necessary. Milvus offers two ways to fix this: <strong>MMap (available since 2.3) and tiered storage (available since 2.6). Both can reduce memory usage by 60-80%.</strong></p>
+<p>The core idea behind both is the same: not all your data needs to live in memory at all times. The difference is how they handle the data that’s not in memory.</p>
+<h3 id="MMap-Memory-Mapped-Files" class="common-anchor-header">MMap (Memory-Mapped Files)</h3><p>MMap maps your data files from local disk into the process address space. The full dataset remains on the node’s local disk, and the OS loads pages into memory on demand—only when they’re accessed. Before using MMap, all data gets downloaded from object storage (S3/MinIO) to the QueryNode’s local disk.</p>
 <ul>
-<li>O uso da memória cai para ~10-30% do modo de carga total</li>
-<li>A latência permanece estável e previsível (os dados estão no disco local, sem busca na rede)</li>
-<li>Compensação: o disco local deve ser suficientemente grande para conter o conjunto de dados completo</li>
+<li>Memory usage drops to ~10-30% of full-load mode</li>
+<li>Latency stays stable and predictable (data is on local disk, no network fetch)</li>
+<li>Tradeoff: local disk must be large enough to hold the full dataset</li>
 </ul>
-<h3 id="Tiered-Storage" class="common-anchor-header">Armazenamento em camadas</h3><p>O armazenamento em camadas vai um passo mais além. Em vez de descarregar tudo para o disco local, utiliza o disco local como cache para dados quentes e mantém o armazenamento de objectos como camada primária. Os dados são obtidos do armazenamento de objectos apenas quando necessário.</p>
+<h3 id="Tiered-Storage" class="common-anchor-header">Tiered Storage</h3><p>Tiered storage takes it a step further. Instead of downloading everything to the local disk, it uses the local disk as a cache for hot data and keeps object storage as the primary layer. Data is fetched from object storage only when needed.</p>
 <ul>
-<li>O uso da memória cai para &lt;10% do modo de carga total</li>
-<li>A utilização do disco local também diminui - apenas os dados quentes são colocados em cache (normalmente 10-30% do total)</li>
-<li>Compensação: os erros de cache acrescentam uma latência de 50-200 ms (pesquisa no armazenamento de objectos)</li>
+<li>Memory usage drops to &lt;10% of full-load mode</li>
+<li>Local disk usage also drops — only hot data is cached (usually 10-30% of total)</li>
+<li>Tradeoff: cache misses add 50-200ms latency (fetching from object storage)</li>
 </ul>
-<h3 id="Data-flow-and-resource-usage" class="common-anchor-header">Fluxo de dados e utilização de recursos</h3><table>
+<h3 id="Data-flow-and-resource-usage" class="common-anchor-header">Data flow and resource usage</h3><table>
 <thead>
-<tr><th><strong>Modo</strong></th><th><strong>Fluxo de dados</strong></th><th><strong>Utilização da memória</strong></th><th><strong>Utilização do disco local</strong></th><th><strong>Latência</strong></th></tr>
+<tr><th><strong>Mode</strong></th><th><strong>Data Flow</strong></th><th><strong>Memory Usage</strong></th><th><strong>Local Disk Usage</strong></th><th><strong>Latency</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Carga total tradicional</td><td>Armazenamento de objectos → memória (100%)</td><td>Muito alta (100%)</td><td>Baixa (apenas temporária)</td><td>Muito baixa e estável</td></tr>
-<tr><td>MMap</td><td>Armazenamento de objectos → disco local (100%) → memória (a pedido)</td><td>Baixo (10-30%)</td><td>Elevado (100%)</td><td>Baixo e estável</td></tr>
-<tr><td>Armazenamento em camadas</td><td>Armazenamento de objectos ↔ cache local (dados quentes) → memória (a pedido)</td><td>Muito baixo (&lt;10%)</td><td>Baixa (apenas dados quentes)</td><td>Baixa taxa de acerto na cache, maior taxa de falha na cache</td></tr>
+<tr><td>Traditional full load</td><td>Object storage → memory (100%)</td><td>Very high (100%)</td><td>Low (temporary only)</td><td>Very low and stable</td></tr>
+<tr><td>MMap</td><td>Object storage → local disk (100%) → memory (on demand)</td><td>Low (10-30%)</td><td>High (100%)</td><td>Low and stable</td></tr>
+<tr><td>Tiered storage</td><td>Object storage ↔ local cache (hot data) → memory (on demand)</td><td>Very low (&lt;10%)</td><td>Low (hot data only)</td><td>Low on cache hit, higher on cache miss</td></tr>
 </tbody>
 </table>
-<p><strong>Recomendação de hardware:</strong> ambos os métodos dependem fortemente de E/S de disco local, pelo que <strong>os SSD NVMe</strong> são fortemente recomendados, idealmente com <strong>IOPS superior a 10.000</strong>.</p>
-<h3 id="MMap-vs-Tiered-Storage-Which-One-Should-You-Use" class="common-anchor-header">MMap vs. armazenamento em camadas: Qual deles você deve usar?</h3><table>
+<p><strong>Hardware recommendation:</strong> both methods depend heavily on local disk I/O, so <strong>NVMe SSDs</strong> are strongly recommended, ideally with <strong>IOPS above 10,000</strong>.</p>
+<h3 id="MMap-vs-Tiered-Storage-Which-One-Should-You-Use" class="common-anchor-header">MMap vs. Tiered Storage: Which One Should You Use?</h3><table>
 <thead>
-<tr><th><strong>Sua situação</strong></th><th><strong>Usar este</strong></th><th><strong>Por que</strong></th></tr>
+<tr><th><strong>Your Situation</strong></th><th><strong>Use This</strong></th><th><strong>Why</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>Sensível à latência (P99 &lt; 20ms)</td><td>MMap</td><td>Os dados já estão no disco local - sem busca na rede, latência estável</td></tr>
-<tr><td>Acesso uniforme (sem divisão clara entre quente e frio)</td><td>MMap</td><td>O armazenamento em camadas precisa de uma distorção quente/fria para ser eficaz; sem ela, a taxa de acerto da cache é baixa</td></tr>
-<tr><td>O custo é a prioridade (não há problema com picos ocasionais de latência)</td><td>Armazenamento em camadas</td><td>Poupa na memória e no disco local (70-90% menos disco)</td></tr>
-<tr><td>Padrão claro de quente/frio (regra 80/20)</td><td>Armazenamento em camadas</td><td>Os dados quentes permanecem em cache, os dados frios permanecem baratos no armazenamento de objectos</td></tr>
-<tr><td>Escala muito grande (&gt;500M de vectores)</td><td>Armazenamento em camadas</td><td>O disco local de um nó muitas vezes não pode conter o conjunto completo de dados nesta escala</td></tr>
+<tr><td>Latency-sensitive (P99 &lt; 20ms)</td><td>MMap</td><td>Data is already on local disk — no network fetch, stable latency</td></tr>
+<tr><td>Uniform access (no clear hot/cold split)</td><td>MMap</td><td>Tiered storage needs hot/cold skew to be effective; without it, cache hit rate is low</td></tr>
+<tr><td>Cost is the priority (occasional latency spikes OK)</td><td>Tiered storage</td><td>Saves on both memory and local disk (70-90% less disk)</td></tr>
+<tr><td>Clear hot/cold pattern (80/20 rule)</td><td>Tiered storage</td><td>Hot data stays cached, cold data stays cheap in object storage</td></tr>
+<tr><td>Very large scale (&gt;500M vectors)</td><td>Tiered storage</td><td>One node’s local disk often can’t hold the full dataset at this scale</td></tr>
 </tbody>
 </table>
-<p><strong>Nota:</strong> MMap requer Milvus 2.3+. O armazenamento em camadas requer o Milvus 2.6+. Ambos funcionam melhor com SSDs NVMe (recomenda-se mais de 10.000 IOPS).</p>
-<h3 id="How-to-Configure-MMap" class="common-anchor-header">Como configurar o MMap</h3><p><strong>Opção 1: configuração YAML (recomendada para novas implantações)</strong></p>
-<p>Edite o ficheiro de configuração Milvus milvus.yaml e adicione as seguintes definições na secção queryNode:</p>
+<p><strong>Note:</strong> MMap requires Milvus 2.3+. Tiered storage requires Milvus 2.6+. Both work best with NVMe SSDs (10,000+ IOPS recommended).</p>
+<h3 id="How-to-Configure-MMap" class="common-anchor-header">How to Configure MMap</h3><p><strong>Option 1: YAML configuration (recommended for new deployments)</strong></p>
+<p>Edit the Milvus configuration file milvus.yaml and add the following settings under the queryNode section:</p>
 <pre><code translate="no">queryNode:
   mmap:
     vectorField: <span class="hljs-literal">true</span>      <span class="hljs-comment"># vector data</span>
@@ -183,7 +182,7 @@ origin: >-
     scalarIndex: <span class="hljs-literal">true</span>      <span class="hljs-comment"># scalar index</span>
     growingMmapEnabled: <span class="hljs-literal">false</span>  <span class="hljs-comment"># incremental data stays in memory</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Opção 2: configuração do Python SDK (para coleções existentes)</strong></p>
+<p><strong>Option 2: Python SDK configuration (for existing collections)</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -204,7 +203,7 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
 <span class="hljs-built_in">print</span>(client.describe_collection(<span class="hljs-string">&quot;my_collection&quot;</span>)[<span class="hljs-string">&quot;properties&quot;</span>])
 <span class="hljs-comment"># Output: {&#x27;mmap.enabled&#x27;: &#x27;True&#x27;}</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-to-Configure-Tiered-Storage-Milvus-26+" class="common-anchor-header">Como configurar o armazenamento em camadas (Milvus 2.6+)</h3><p>Edite o ficheiro de configuração do Milvus milvus.yaml e adicione as seguintes definições na secção queryNode:</p>
+<h3 id="How-to-Configure-Tiered-Storage-Milvus-26+" class="common-anchor-header">How to Configure Tiered Storage (Milvus 2.6+)</h3><p>Edit the Milvus configuration file milvus.yaml and add the following settings under the queryNode section:</p>
 <pre><code translate="no">queryNode:
   segcore:
     tieredStorage:
@@ -241,23 +240,23 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Este é fácil de ignorar, mas a dimensão dimensiona diretamente o seu custo. A memória, o armazenamento e a computação crescem linearmente com a contagem de dimensões. Um modelo de 1536 dimensões custa cerca de 4x mais infraestrutura do que um modelo de 384 dimensões para os mesmos dados.</p>
-<p>O custo da consulta é escalonado da mesma forma - a similaridade de cosseno é O(D), portanto, vetores de 768 dimensões consomem aproximadamente o dobro da computação de vetores de 384 dimensões por consulta. Em cargas de trabalho de alto QPS, essa diferença se traduz diretamente em menos nós necessários.</p>
-<p>Veja como os modelos de incorporação comuns se comparam (usando 384-dim como linha de base de 1,0x):</p>
+    </button></h2><p>This one is easy to overlook, but the dimension directly scales your cost. Memory, storage, and compute all grow linearly with dimension count. A 1536-dim model costs roughly 4x more infrastructure than a 384-dim model for the same data.</p>
+<p>Query cost scales the same way — cosine similarity is O(D), so 768-dim vectors take about twice the compute of 384-dim vectors per query. In high-QPS workloads, that difference translates directly into fewer nodes needed.</p>
+<p>Here’s how common embedding models compare (using 384-dim as the 1.0x baseline):</p>
 <table>
 <thead>
-<tr><th><strong>Modelo</strong></th><th><strong>Dimensões</strong></th><th><strong>Custo relativo</strong></th><th><strong>Recuperação</strong></th><th><strong>Melhor para</strong></th></tr>
+<tr><th><strong>Model</strong></th><th><strong>Dimensions</strong></th><th><strong>Relative Cost</strong></th><th><strong>Recall</strong></th><th><strong>Best For</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>text-embedding-3-large</td><td>3072</td><td>8.0x</td><td>98%+</td><td>Quando a precisão não é negociável (investigação, cuidados de saúde)</td></tr>
-<tr><td>texto-embedding-3-pequeno</td><td>1536</td><td>4.0x</td><td>95-97%</td><td>Cargas de trabalho RAG gerais</td></tr>
-<tr><td>DistilBERT</td><td>768</td><td>2.0x</td><td>92-95%</td><td>Bom equilíbrio entre custo e desempenho</td></tr>
-<tr><td>all-MiniLM-L6-v2</td><td>384</td><td>1.0x</td><td>88-92%</td><td>Cargas de trabalho sensíveis ao custo</td></tr>
+<tr><td>text-embedding-3-large</td><td>3072</td><td>8.0x</td><td>98%+</td><td>When accuracy is non-negotiable (research, healthcare)</td></tr>
+<tr><td>text-embedding-3-small</td><td>1536</td><td>4.0x</td><td>95-97%</td><td>General RAG workloads</td></tr>
+<tr><td>DistilBERT</td><td>768</td><td>2.0x</td><td>92-95%</td><td>Good cost-performance balance</td></tr>
+<tr><td>all-MiniLM-L6-v2</td><td>384</td><td>1.0x</td><td>88-92%</td><td>Cost-sensitive workloads</td></tr>
 </tbody>
 </table>
-<p><strong>Conselhos práticos:</strong> Não parta do princípio de que precisa do maior modelo. Teste numa amostra representativa das suas consultas reais (1 milhão de vectores é normalmente suficiente) e encontre o modelo de dimensão mais baixa que satisfaça a sua exigência de precisão. Muitas equipas descobrem que 768 dimensões funcionam tão bem como 1536 para o seu caso de utilização.</p>
-<p><strong>Já está comprometido com um modelo de alta dimensão?</strong> É possível reduzir as dimensões após o facto. A PCA (Análise de Componentes Principais) pode eliminar caraterísticas redundantes, e <a href="https://milvus.io/blog/matryoshka-embeddings-detail-at-multiple-scales.md">as incorporações Matryoshka</a> permitem-lhe truncar as primeiras N dimensões, mantendo a maior parte da qualidade. Vale a pena experimentar ambos antes de voltar a incorporar todo o seu conjunto de dados.</p>
-<h2 id="Manage-Data-Lifecycle-with-Compaction-and-TTL" class="common-anchor-header">Gerir o ciclo de vida dos dados com compactação e TTL<button data-href="#Manage-Data-Lifecycle-with-Compaction-and-TTL" class="anchor-icon" translate="no">
+<p><strong>Practical advice:</strong> Don’t assume you need the biggest model. Test on a representative sample of your actual queries (1M vectors is usually enough) and find the lowest-dimension model that meets your accuracy bar. Many teams discover that 768 dimensions works just as well as 1536 for their use case.</p>
+<p><strong>Already committed to a high-dimensional model?</strong> You can reduce dimensions after the fact. PCA (Principal Component Analysis) can strip out redundant features, and <a href="https://milvus.io/blog/matryoshka-embeddings-detail-at-multiple-scales.md">Matryoshka embeddings</a> let you truncate to the first N dimensions while retaining most of the quality. Both are worth trying before re-embedding your entire dataset.</p>
+<h2 id="Manage-Data-Lifecycle-with-Compaction-and-TTL" class="common-anchor-header">Manage Data Lifecycle with Compaction and TTL<button data-href="#Manage-Data-Lifecycle-with-Compaction-and-TTL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -272,23 +271,23 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Este é menos glamoroso, mas ainda é importante, especialmente para sistemas de produção de longa duração. O Milvus usa um modelo de armazenamento append-only: quando você exclui dados, eles são marcados como excluídos, mas não são removidos imediatamente. Com o tempo, esses dados mortos se acumulam, desperdiçam espaço de armazenamento e fazem com que as consultas examinem mais linhas do que o necessário.</p>
-<h3 id="Compaction-Reclaim-Storage-from-Deleted-Data" class="common-anchor-header">Compactação: Recuperar o armazenamento de dados eliminados</h3><p>A compactação é o processo de fundo do Milvus para limpeza. Ele mescla pequenos segmentos, remove fisicamente dados excluídos e reescreve arquivos compactados. Você vai querer isso se:</p>
+    </button></h2><p>This one is less glamorous but still matters, especially for long-running production systems. Milvus uses an append-only storage model: when you delete data, it’s marked as deleted but not removed immediately. Over time, this dead data accumulates, wastes storage space, and causes queries to scan more rows than they need to.</p>
+<h3 id="Compaction-Reclaim-Storage-from-Deleted-Data" class="common-anchor-header">Compaction: Reclaim Storage from Deleted Data</h3><p>Compaction is Milvus’s background process for cleaning up. It merges small segments, physically removes deleted data, and rewrites compacted files. You’ll want this if:</p>
 <ul>
-<li>Tem escritas e eliminações frequentes (catálogos de produtos, actualizações de conteúdos, registos em tempo real)</li>
-<li>Sua contagem de segmentos continua crescendo (isso aumenta a sobrecarga por consulta)</li>
-<li>O uso do armazenamento está crescendo muito mais rápido do que seus dados válidos reais</li>
+<li>You have frequent writes and deletes (product catalogs, content updates, real-time logs)</li>
+<li>Your segment count keeps growing (this increases per-query overhead)</li>
+<li>Storage usage is growing much faster than your actual valid data</li>
 </ul>
-<p><strong>Atenção:</strong> A compactação faz uso intensivo de E/S. Programe-a durante períodos de baixo tráfego (por exemplo, à noite) ou ajuste os acionadores cuidadosamente para que ela não concorra com as consultas de produção.</p>
-<h3 id="TTLTime-to-Live-Automatically-Expire-Old-Vector-Data" class="common-anchor-header">TTL(Time to Live): Expirar automaticamente dados vetoriais antigos</h3><p>Para dados que expiram naturalmente, o TTL é mais limpo do que a exclusão manual. Defina um tempo de vida para seus dados, e Milvus automaticamente marca-os para exclusão quando expirarem. A compactação lida com a limpeza real.</p>
-<p>Isso é útil para:</p>
+<p><strong>Heads up:</strong> Compaction is I/O-intensive. Schedule it during low-traffic periods (e.g., nightly) or tune the triggers carefully so it doesn’t compete with production queries.</p>
+<h3 id="TTLTime-to-Live-Automatically-Expire-Old-Vector-Data" class="common-anchor-header">TTL(Time to Live): Automatically Expire Old Vector Data</h3><p>For data that naturally expires, TTL is cleaner than manual deletion. Set a lifetime on your data, and Milvus automatically marks it for deletion when it expires. Compaction handles the actual cleanup.</p>
+<p>This is useful for:</p>
 <ul>
-<li>Registos e dados de sessão - manter apenas os últimos 7 ou 30 dias</li>
-<li>RAG sensíveis ao tempo - preferir conhecimento recente, deixar documentos antigos expirarem</li>
-<li>Recomendações em tempo real - obter apenas informações sobre o comportamento recente do utilizador</li>
+<li>Logs and session data — keep only the last 7 or 30 days</li>
+<li>Time-sensitive RAG — prefer recent knowledge, let old documents expire</li>
+<li>Real-time recommendations — only retrieve from recent user behavior</li>
 </ul>
-<p>Em conjunto, a compactação e o TTL evitam que o seu sistema acumule resíduos silenciosamente. Não é a maior alavanca de custos, mas evita o tipo de aumento lento do armazenamento que apanha as equipas desprevenidas.</p>
-<h2 id="One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="common-anchor-header">Mais uma opção: Zilliz Cloud (Milvus totalmente gerido)<button data-href="#One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="anchor-icon" translate="no">
+<p>Together, compaction and TTL keep your system from silently accumulating waste. It’s not the biggest cost lever, but it prevents the kind of slow storage creep that catches teams off guard.</p>
+<h2 id="One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="common-anchor-header">One More Option: Zilliz Cloud (Fully Managed Milvus)<button data-href="#One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -303,12 +302,12 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Divulgação completa: <a href="https://zilliz.com/">o Zilliz Cloud</a> foi criado pela mesma equipa por detrás do Milvus, por isso, considere isto com o devido grau de sal.</p>
-<p>Dito isso, aqui está a parte contra-intuitiva: embora o Milvus seja gratuito e de código aberto, um serviço gerenciado pode realmente custar menos do que a auto-hospedagem. A razão é simples - o software é gratuito, mas a infraestrutura de nuvem para o executar não é, e são necessários engenheiros para a operar e manter. Se um serviço gerido puder fazer o mesmo trabalho com menos máquinas e menos horas de engenharia, a sua fatura total diminui mesmo depois de pagar pelo próprio serviço.</p>
-<p><a href="https://zilliz.com/">O Zilliz Cloud</a> é um serviço totalmente gerido, construído com base no Milvus e compatível com a sua API. Duas coisas são relevantes para o custo:</p>
+    </button></h2><p>Full disclosure: <a href="https://zilliz.com/">Zilliz Cloud</a> is built by the same team behind Milvus, so take this with the appropriate grain of salt.</p>
+<p>That said, here’s the counterintuitive part: even though Milvus is free and open source, a managed service can actually cost less than self-hosting. The reason is simple — the software is free, but the cloud infrastructure to run it isn’t, and you need engineers to operate and maintain it. If a managed service can do the same work with fewer machines and fewer engineer hours, your total bill goes down even after paying for the service itself.</p>
+<p><a href="https://zilliz.com/">Zilliz Cloud</a> is a fully managed service built on Milvus and API-compatible with it. Two things are relevant to cost:</p>
 <ul>
-<li><strong>Melhor desempenho por nó.</strong> O Zilliz Cloud é executado no Cardinal, o nosso motor de pesquisa optimizado. Com base nos <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch">resultados do VectorDBBench</a>, oferece um rendimento 3-5 vezes superior ao Milvus de código aberto e é 10 vezes mais rápido. Na prática, isso significa que precisa de cerca de um terço a um quinto dos nós de computação para a mesma carga de trabalho.</li>
-<li><strong>Optimizações incorporadas.</strong> Os recursos abordados neste guia - MMap, armazenamento em camadas e quantização de índices - são incorporados e ajustados automaticamente. O escalonamento automático ajusta a capacidade com base na carga real, para que você não pague por espaço livre que não precisa.</li>
+<li><strong>Better performance per node.</strong> Zilliz Cloud runs on Cardinal, our optimized search engine. Based on <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch">VectorDBBench results</a>, it delivers 3-5x higher throughput than open-source Milvus and is 10x faster. In practice, that means you need roughly one-third to one-fifth as many compute nodes for the same workload.</li>
+<li><strong>Built-in optimizations.</strong> The features covered in this guide — MMap, tiered storage, and index quantization — are built in and automatically tuned. Auto-scaling adjusts capacity based on actual load, so you’re not paying for headroom you don’t need.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -316,8 +315,8 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
     <span></span>
   </span>
 </p>
-<p><a href="https://zilliz.com/zilliz-migration-service">A migração</a> é simples, uma vez que as APIs e os formatos de dados são compatíveis. O Zilliz também fornece ferramentas de migração para ajudar. Para uma comparação detalhada, consulte: <a href="https://zilliz.com/zilliz-vs-milvus">Zilliz Cloud vs. Milvus</a></p>
-<h2 id="Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="common-anchor-header">Resumo: um plano passo a passo para reduzir os custos do banco de dados de vetores<button data-href="#Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="anchor-icon" translate="no">
+<p><a href="https://zilliz.com/zilliz-migration-service">Migration</a> is straightforward since the APIs and data formats are compatible. Zilliz also provides migration tooling to help. For a detailed comparison, see: <a href="https://zilliz.com/zilliz-vs-milvus">Zilliz Cloud vs. Milvus</a></p>
+<h2 id="Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="common-anchor-header">Summary: A Step-by-Step Plan to Cut Vector Database Costs<button data-href="#Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -332,15 +331,15 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Se você fizer apenas uma coisa, faça o seguinte: verifique o tipo de índice.</strong></p>
-<p>Se estiver executando o HNSW em uma carga de trabalho sensível ao custo, mude para IVF_SQ8. Isso, por si só, pode reduzir o custo de memória em ~70% com perda mínima de memória.</p>
-<p>Se quiser ir mais longe, aqui está a ordem de prioridade:</p>
+    </button></h2><p><strong>If you only do one thing, do this: check your index type.</strong></p>
+<p>If you’re running HNSW on a cost-sensitive workload, switch to IVF_SQ8. That alone can cut memory cost by ~70% with minimal recall loss.</p>
+<p>If you want to go further, here’s the priority order:</p>
 <ul>
-<li>Troque<strong>seu índice</strong> - HNSW → IVF_SQ8 para a maioria das cargas de trabalho. Maior impacto para zero mudança de arquitetura.</li>
-<li><strong>Ativar MMap ou armazenamento em camadas</strong> - Pare de manter tudo na memória. Trata-se de uma alteração de configuração, não de uma reformulação.</li>
-<li><strong>Avalie suas dimensões de incorporação</strong> - Teste se um modelo menor atende às suas necessidades de precisão. Isto requer uma nova incorporação, mas as poupanças são maiores.</li>
-<li>Configure<strong>a compactação e o TTL</strong> - Evite o inchaço silencioso dos dados, especialmente se tiver gravações/eliminações frequentes.</li>
+<li><strong>Switch your index</strong> — HNSW → IVF_SQ8 for most workloads. Biggest bang for zero architectural change.</li>
+<li><strong>Enable MMap or tiered storage</strong> — Stop keeping everything in memory. This is a config change, not a redesign.</li>
+<li><strong>Evaluate your embedding dimensions</strong> — Test whether a smaller model meets your accuracy needs. This requires re-embedding but the savings compound.</li>
+<li><strong>Set up compaction and TTL</strong> — Prevent silent data bloat, especially if you have frequent writes/deletes.</li>
 </ul>
-<p>Combinadas, estas estratégias podem reduzir a fatura da sua base de dados vetorial em 60-80%. Nem todas as equipas precisam de todas as quatro - comece com a alteração do índice, meça o impacto e vá descendo na lista.</p>
-<p>Para as equipas que procuram reduzir o trabalho operacional e melhorar a eficiência dos custos, <a href="https://zilliz.com/">o Zilliz Cloud</a> (Milvus gerido) é outra opção.</p>
-<p>Se estiver a trabalhar em qualquer uma destas optimizações e quiser comparar notas, o <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack da comunidade Milvus</a> é um bom local para colocar questões. Também pode juntar-se ao <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> para uma conversa rápida com a equipa de engenharia sobre a sua configuração específica.</p>
+<p>Combined, these strategies can reduce your vector database bill by 60-80%. Not every team needs all four — start with the index change, measure the impact, and work your way down the list.</p>
+<p>For teams looking to reduce operational work and improve cost efficiency, <a href="https://zilliz.com/">Zilliz Cloud</a> (managed Milvus) is another option.</p>
+<p>If you’re working through any of these optimizations and want to compare notes, the <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus community Slack</a> is a good place to ask questions. You can also join <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> for a quick chat with the engineering team about your specific setup.</p>

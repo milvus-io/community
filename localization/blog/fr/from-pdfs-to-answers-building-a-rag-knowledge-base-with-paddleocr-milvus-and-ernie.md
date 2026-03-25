@@ -1,9 +1,9 @@
 ---
 id: >-
   from-pdfs-to-answers-building-a-rag-knowledge-base-with-paddleocr-milvus-and-ernie.md
-title: >-
-  Des PDF aux réponses : Construire une base de connaissances RAG avec
-  PaddleOCR, Milvus et ERNIE
+title: >
+  From PDFs to Answers: Building a RAG Knowledge Base with PaddleOCR, Milvus,
+  and ERNIE
 author: LiaoYF and Jing Zhang
 date: 2026-3-17
 cover: assets.zilliz.com/cover_747a1385ed.jpg
@@ -14,18 +14,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'RAG, Milvus, vector database, hybrid search, knowledge base Q&A'
 meta_title: |
   Build a RAG Knowledge Base with PaddleOCR, Milvus, and ERNIE
-desc: >-
-  Apprenez à construire une base de connaissances RAG de haute précision en
-  utilisant Milvus, la recherche hybride, le reranking et le Q&amp;A multimodal
-  pour l'intelligence documentaire.
+desc: >
+  Learn how to build a high-accuracy RAG knowledge base using Milvus, hybrid
+  search, reranking, and multimodal Q&A for document intelligence.
 origin: >-
   https://milvus.io/blog/from-pdfs-to-answers-building-a-rag-knowledge-base-with-paddleocr-milvus-and-ernie.md
 ---
-<p>Les grands modèles de langage sont bien plus performants qu'en 2023, mais ils ont encore des hallucinations de confiance et s'appuient souvent sur des informations obsolètes. RAG (Retrieval-Augmented Generation) résout ces deux problèmes en extrayant le contexte pertinent d'une base de données vectorielle telle que <a href="https://milvus.io/">Milvus</a> avant que le modèle ne génère une réponse. Ce contexte supplémentaire permet d'ancrer la réponse dans des sources réelles et de la rendre plus actuelle.</p>
-<p>L'un des cas d'utilisation les plus courants de la RAG est la base de connaissances d'une entreprise. Un utilisateur télécharge des PDF, des fichiers Word ou d'autres documents internes, pose une question en langage naturel et reçoit une réponse basée sur ces documents plutôt que sur le seul entraînement préalable du modèle.</p>
-<p>Mais l'utilisation du même LLM et de la même base de données vectorielle ne garantit pas le même résultat. Deux équipes peuvent construire sur les mêmes bases et aboutir à des systèmes de qualité très différente. La différence provient généralement de tout ce qui se trouve en amont : <strong>la façon dont les documents sont analysés, découpés et intégrés ; la façon dont les données sont indexées ; la façon dont les résultats de la recherche sont classés ; et la façon dont la réponse finale est assemblée.</strong></p>
-<p>Dans cet article, nous utiliserons <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> comme exemple et expliquerons comment construire une base de connaissances basée sur RAG avec <a href="https://github.com/PADDLEPADDLE/PADDLEOCR">PaddleOCR</a>, <a href="https://milvus.io/">Milvus</a> et ERNIE-4.5-Turbo.</p>
-<h2 id="Paddle-ERNIE-RAG-System-Architecture" class="common-anchor-header">Architecture du système Paddle-ERNIE-RAG<button data-href="#Paddle-ERNIE-RAG-System-Architecture" class="anchor-icon" translate="no">
+<p>Large language models are far more capable than they were in 2023, but they still hallucinate with confidence and often fall back on outdated information. RAG (Retrieval-Augmented Generation) addresses both problems by retrieving relevant context from a vector database such as <a href="https://milvus.io/">Milvus</a> before the model generates a response. That extra context grounds the answer in real sources and makes it more current.</p>
+<p>One of the most common RAG use cases is a company knowledge base. A user uploads PDFs, Word files, or other internal documents, asks a natural-language question, and receives an answer based on those materials rather than solely on the model’s pretraining.</p>
+<p>But using the same LLM and the same vector database does not guarantee the same outcome. Two teams can build on the same foundation and still end up with very different system quality. The difference usually comes from everything upstream: <strong>how documents are parsed, chunked, and embedded; how data is indexed; how retrieval results are ranked; and how the final answer is assembled.</strong></p>
+<p>In this article, we’ll use <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> as an example and explain how to build an RAG-based knowledge base with <a href="https://github.com/PADDLEPADDLE/PADDLEOCR">PaddleOCR</a>, <a href="https://milvus.io/">Milvus</a>, and ERNIE-4.5-Turbo.</p>
+<h2 id="Paddle-ERNIE-RAG-System-Architecture" class="common-anchor-header">Paddle-ERNIE-RAG System Architecture<button data-href="#Paddle-ERNIE-RAG-System-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,19 +39,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'architecture Paddle-ERNIE-RAG se compose de quatre couches principales :</p>
+    </button></h2><p>The Paddle-ERNIE-RAG architecture consists of four core layers:</p>
 <ul>
-<li><strong>Couche d'extraction des données.</strong> <a href="https://github.com/PaddlePaddle/PaddleOCR">PP-StructureV3</a>, le pipeline d'analyse de documents de PaddleOCR, lit les PDF et les images avec une OCR tenant compte de la mise en page. Il préserve la structure du document - titres, tableaux, ordre de lecture - et produit un code Markdown propre, divisé en morceaux qui se chevauchent.</li>
-<li><strong>Couche de stockage vectoriel.</strong> Chaque morceau est intégré dans un vecteur à 384 dimensions et stocké dans <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> avec les métadonnées (nom du fichier, numéro de page, identifiant du morceau). Un index parallèle inversé prend en charge la recherche par mot-clé.</li>
-<li><strong>Couche de récupération et de réponse.</strong> Chaque requête est exécutée à la fois dans l'index vectoriel et dans l'index des mots-clés. Les résultats sont fusionnés par RRF (Reciprocal Rank Fusion), reclassés et transmis au modèle <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG">ERNIE</a> pour la génération de réponses.</li>
-<li><strong>Couche d'application.</strong> Une interface<a href="https://www.gradio.app/">Gradio</a> <a href="https://www.gradio.app/"></a><a href="https://www.gradio.app/"></a> vous permet de télécharger des documents, de poser des questions et d'afficher les réponses avec les citations des sources et les scores de confiance.  <span class="img-wrapper">
+<li><strong>Data extraction layer.</strong> <a href="https://github.com/PaddlePaddle/PaddleOCR">PP-StructureV3</a>, the document parsing pipeline in PaddleOCR, reads PDFs and images with layout-aware OCR. It preserves document structure — headings, tables, reading order — and outputs clean Markdown, split into overlapping chunks.</li>
+<li><strong>Vector storage layer.</strong> Each chunk is embedded into a 384-dimensional vector and stored in <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> alongside metadata (file name, page number, chunk ID). A parallel inverted index supports keyword search.</li>
+<li><strong>Retrieval and answering layer.</strong> Each query runs against both the vector index and the keyword index. Results are merged via RRF (Reciprocal Rank Fusion), reranked, and passed to the <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG">ERNIE</a> model for answer generation.</li>
+<li><strong>Application layer.</strong> A <a href="https://www.gradio.app/"></a><a href="https://www.gradio.app/">Gradio</a> interface lets you upload documents, ask questions, and view answers with source citations and confidence scores.
+  <span class="img-wrapper">
     <img translate="no" src="blob:https://septemberfd.github.io/9043a059-de46-49b1-9399-f915aed555dc" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </li>
 </ul>
-<p>Les sections ci-dessous décrivent chaque étape dans l'ordre, en commençant par la transformation des documents bruts en texte consultable.</p>
-<h2 id="How-to-Build-RAG-Pipeline-Step-by-Step" class="common-anchor-header">Comment construire un pipeline RAG étape par étape<button data-href="#How-to-Build-RAG-Pipeline-Step-by-Step" class="anchor-icon" translate="no">
+<p>The sections below walk through each stage in order, starting with how raw documents become searchable text.</p>
+<h2 id="How-to-Build-RAG-Pipeline-Step-by-Step" class="common-anchor-header">How to Build RAG Pipeline Step by Step<button data-href="#How-to-Build-RAG-Pipeline-Step-by-Step" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,27 +67,27 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Step-1-Parse-Documents-with-PP-StructureV3" class="common-anchor-header">Étape 1 : Analyse des documents avec PP-StructureV3</h3><p>Les documents bruts sont le point de départ de la plupart des problèmes de précision. Les documents de recherche et les rapports techniques mélangent des mises en page à deux colonnes, des formules, des tableaux et des images. L'extraction du texte à l'aide d'une bibliothèque de base telle que PyPDF2 entraîne généralement une altération du résultat : les paragraphes apparaissent dans le désordre, les tableaux s'effondrent et les formules disparaissent.</p>
-<p>Pour éviter ces problèmes, le projet crée une classe OnlinePDFParser dans backend.py. Cette classe appelle l'API en ligne PP-StructureV3 pour effectuer l'analyse de la mise en page. Au lieu d'extraire du texte brut, elle identifie la structure du document, puis le convertit au format Markdown.</p>
-<p>Cette méthode présente trois avantages évidents :</p>
+    </button></h2><h3 id="Step-1-Parse-Documents-with-PP-StructureV3" class="common-anchor-header">Step 1: Parse Documents with PP-StructureV3</h3><p>Raw documents are where most accuracy problems begin. Research papers and technical reports mix two-column layouts, formulas, tables, and images. Extracting text with a basic library like PyPDF2 usually garbles the output: paragraphs appear out of order, tables collapse, and formulas vanish.</p>
+<p>To avoid these problems, the project creates an OnlinePDFParser class in backend.py. This class calls the PP-StructureV3 online API to do layout parsing. Instead of extracting raw text, it identifies the structure of the document, then turns it into Markdown format.</p>
+<p>This method has three clear benefits:</p>
 <ul>
-<li><strong>Une sortie Markdown propre</strong></li>
+<li><strong>Clean Markdown output</strong></li>
 </ul>
-<p>La sortie est formatée au format Markdown avec des titres et des paragraphes appropriés. Le contenu est ainsi plus facile à comprendre pour le modèle.</p>
+<p>The output is formatted as Markdown with proper headings and paragraphs. This makes the content easier for the model to understand.</p>
 <ul>
-<li><strong>Extraction séparée des images</strong></li>
+<li><strong>Separate Image extraction</strong></li>
 </ul>
-<p>Le système extrait et enregistre les images pendant l'analyse. Cela permet d'éviter la perte d'informations visuelles importantes.</p>
+<p>The system extracts and saves images during parsing. This prevents important visual information from being lost.</p>
 <ul>
-<li><strong>Meilleure gestion du contexte</strong></li>
+<li><strong>Better context handling</strong></li>
 </ul>
-<p>Le texte est découpé à l'aide d'une fenêtre coulissante avec chevauchement. Cela évite de couper des phrases ou des formules au milieu, ce qui permet de conserver un sens clair et d'améliorer la précision de la recherche.</p>
-<p><strong>Flux d'analyse de base</strong></p>
-<p>Dans backend.py, l'analyse syntaxique suit trois étapes simples :</p>
+<p>The text is split using a sliding window with overlap. This avoids cutting sentences or formulas in the middle, which helps keep the meaning clear and improves search accuracy.</p>
+<p><strong>Basic Parsing Flow</strong></p>
+<p>In backend.py, parsing follows three simple steps:</p>
 <ol>
-<li>Envoyer le fichier PDF à l'API PP-StructureV3.</li>
-<li>Lire les résultats de layoutParsingResults renvoyés.</li>
-<li>Extraire le texte Markdown nettoyé et les images.</li>
+<li>Send the PDF file to the PP-StructureV3 API.</li>
+<li>Read the returned layoutParsingResults.</li>
+<li>Extract the cleaned Markdown text and any images.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment"># backend.py (Core logic summary of the OnlinePDFParser class)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, file_path</span>):
@@ -114,8 +114,8 @@ origin: >-
         mock_outputs.append(MockResult(md_text, images))
     <span class="hljs-keyword">return</span> mock_outputs, <span class="hljs-string">&quot;Success&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Chunk-Text-with-Sliding-Window-Overlap" class="common-anchor-header">Étape 2 : Découpage du texte avec chevauchement des fenêtres coulissantes</h3><p>Après l'analyse, le texte Markdown doit être divisé en morceaux plus petits (chunks) pour la recherche. Si le texte est coupé à des longueurs fixes, les phrases ou les formules peuvent être coupées en deux.</p>
-<p>Pour éviter cela, le système utilise un découpage par fenêtre coulissante avec chevauchement. Chaque morceau partage une partie de la queue avec le suivant, de sorte que le contenu limitrophe apparaît dans les deux fenêtres. La signification reste ainsi intacte sur les bords des morceaux et améliore le rappel de l'extraction.</p>
+<h3 id="Step-2-Chunk-Text-with-Sliding-Window-Overlap" class="common-anchor-header">Step 2: Chunk Text with Sliding Window Overlap</h3><p>After parsing, the Markdown text must be divided into smaller pieces (chunks) for search. If text is cut at fixed lengths, sentences or formulas may be split in half.</p>
+<p>To prevent this, the system uses sliding window chunking with overlap. Each chunk shares a tail portion with the next, so boundary content appears in both windows. This keeps meaning intact at chunk edges and improves retrieval recall.</p>
 <pre><code translate="no"><span class="hljs-comment"># backend.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">split_text_into_chunks</span>(<span class="hljs-params">text: <span class="hljs-built_in">str</span>, chunk_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">300</span>, overlap: <span class="hljs-built_in">int</span> = <span class="hljs-number">120</span></span>) -&gt; <span class="hljs-built_in">list</span>:
     <span class="hljs-string">&quot;&quot;&quot;Sliding window-based text chunking that preserves overlap-length contextual overlap&quot;&quot;&quot;</span>
@@ -144,9 +144,9 @@ origin: >-
         chunks.append(<span class="hljs-string">&quot;\n&quot;</span>.join(current_chunk).strip())
     <span class="hljs-keyword">return</span> chunks
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Store-Vectors-and-Metadata-in-Milvus" class="common-anchor-header">Étape 3 : Stockage des vecteurs et des métadonnées dans Milvus</h3><p>Les morceaux propres étant prêts, l'étape suivante consiste à les stocker d'une manière qui permette une récupération rapide et précise.</p>
-<p><strong>Stockage des vecteurs et métadonnées</strong></p>
-<p>Milvus applique des règles strictes pour les noms de collection - uniquement des lettres ASCII, des chiffres et des traits de soulignement. Si le nom d'une base de connaissances contient des caractères non ASCII, le backend l'encode en hexadécimal avec un préfixe kb_ avant de créer la collection et de la décoder pour l'affichage. Il s'agit d'un petit détail, mais qui permet d'éviter les erreurs cryptiques.</p>
+<h3 id="Step-3-Store-Vectors-and-Metadata-in-Milvus" class="common-anchor-header">Step 3: Store Vectors and Metadata in Milvus</h3><p>With clean chunks ready, the next step is storing them in a way that supports fast, accurate retrieval.</p>
+<p><strong>Vector Storage and Metadata</strong></p>
+<p>Milvus enforces strict rules for collection names — only ASCII letters, numbers, and underscores. If a knowledge base name contains non-ASCII characters, the backend hex-encodes it with a kb_ prefix before creating the collection and decodes it for display. A small detail, but one that prevents cryptic errors.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> binascii
 <span class="hljs-keyword">import</span> re
 
@@ -169,19 +169,19 @@ origin: >-
             <span class="hljs-keyword">return</span> real_name
     <span class="hljs-keyword">return</span> real_name
 <button class="copy-code-btn"></button></code></pre>
-<p>Outre le nommage, chaque élément passe par deux étapes avant d'être inséré : la génération d'une intégration et l'ajout de métadonnées.</p>
+<p>Beyond naming, each chunk goes through two steps before insertion: generating an embedding and attaching metadata.</p>
 <ul>
-<li><strong>Ce qui est stocké :</strong></li>
+<li><strong>What is stored:</strong></li>
 </ul>
-<p>Chaque morceau est converti en un vecteur dense à 384 dimensions. Parallèlement, le schéma Milvus stocke des champs supplémentaires tels que le nom du fichier, le numéro de page et l'identifiant du bloc.</p>
+<p>Each chunk is converted into a 384-dimensional dense vector. At the same time, the Milvus schema stores extra fields such as file name, page number, and chunk ID.</p>
 <ul>
-<li><strong>Pourquoi c'est important :</strong></li>
+<li><strong>Why this is important:</strong></li>
 </ul>
-<p>Cela permet de retracer une réponse jusqu'à la page exacte d'où elle provient. Il prépare également le système à de futurs cas d'utilisation multimodaux de questions-réponses.</p>
+<p>This makes it possible to trace an answer back to the exact page it came from. It also prepares the system for future multimodal Q&amp;A use cases.</p>
 <ul>
-<li><strong>Optimisation des performances :</strong></li>
+<li><strong>Performance optimization:</strong></li>
 </ul>
-<p>Dans vector_store.py, la méthode insert_documents utilise l'intégration par lots. Cela réduit le nombre de requêtes réseau et rend le processus plus efficace.</p>
+<p>In vector_store.py, the insert_documents method uses batch embedding. This reduces the number of network requests and makes the process more efficient.</p>
 <pre><code translate="no"><span class="hljs-comment"># vector_store.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">insert_documents</span>(<span class="hljs-params">self, documents</span>):
     <span class="hljs-string">&quot;&quot;&quot;Batch vectorization and insertion into Milvus&quot;&quot;&quot;</span>
@@ -208,13 +208,13 @@ origin: >-
     <span class="hljs-variable language_">self</span>.collection.insert(data)
     <span class="hljs-variable language_">self</span>.collection.flush()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Retrieve-with-Hybrid-Search-and-RRF-Fusion" class="common-anchor-header">Étape 4 : Récupérer avec la recherche hybride et la fusion RRF</h3><p>Une seule méthode de recherche est rarement suffisante. La recherche vectorielle permet de trouver des contenus sémantiquement similaires, mais peut ne pas trouver les termes exacts ; la recherche par mot-clé permet de trouver des termes spécifiques, mais ne permet pas de trouver des paraphrases. L'exécution des deux méthodes en parallèle et la fusion des résultats permettent d'obtenir de meilleurs résultats que si l'une d'entre elles était utilisée seule.</p>
-<p>Lorsque la langue de la requête diffère de celle du document, le système traduit d'abord la requête à l'aide d'un LLM afin que les deux voies de recherche puissent fonctionner dans la langue du document. Les deux recherches sont ensuite exécutées en parallèle :</p>
+<h3 id="Step-4-Retrieve-with-Hybrid-Search-and-RRF-Fusion" class="common-anchor-header">Step 4: Retrieve with Hybrid Search and RRF Fusion</h3><p>A single search method is rarely enough. Vector search finds semantically similar content but can miss exact terms; keyword search nails specific terms but misses paraphrases. Running both in parallel and merging the output produces better results than either alone.</p>
+<p>When the query language differs from the document language, the system first translates the query using an LLM so both search paths can operate in the document’s language. Then two searches run in parallel:</p>
 <ul>
-<li><strong>Recherche vectorielle (dense) :</strong> Elle permet de trouver des contenus dont la signification est similaire, même d'une langue à l'autre, mais peut faire apparaître des passages connexes qui ne répondent pas directement à la question.</li>
-<li><strong>La recherche par mot-clé (peu dense) :</strong> Elle permet de trouver des correspondances exactes pour des termes techniques, des nombres ou des variables de formules - le type d'éléments que l'intégration vectorielle ne prend souvent pas en compte.</li>
+<li><strong>Vector search (dense):</strong> Finds content with similar meaning, even across languages, but may surface related passages that don’t directly answer the question.</li>
+<li><strong>Keyword search (sparse):</strong> Finds exact matches for technical terms, numbers, or formula variables — the kind of tokens that vector embeddings often smooth over.</li>
 </ul>
-<p>Le système fusionne les deux listes de résultats à l'aide de la méthode RRF (Reciprocal Rank Fusion). Chaque candidat reçoit un score basé sur son rang dans chaque liste, de sorte qu'un élément qui apparaît en haut des <em>deux</em> listes obtient le score le plus élevé. La recherche vectorielle contribue à la couverture sémantique ; la recherche par mot-clé contribue à la précision des termes.</p>
+<p>The system merges both result lists using RRF (Reciprocal Rank Fusion). Each candidate receives a score based on its rank in each list, so a chunk that appears near the top of <em>both</em> lists scores highest. Vector search contributes semantic coverage; keyword search contributes term precision.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_From_PD_Fsto_Answers_Buildinga_RAG_Knowledge_Bas_1_d241e95fc2.png" alt="" class="doc-image" id="" />
@@ -245,36 +245,36 @@ origin: >-
     sorted_docs = <span class="hljs-built_in">sorted</span>(rank_dict.values(), key=<span class="hljs-keyword">lambda</span> x: x[<span class="hljs-string">&#x27;score&#x27;</span>], reverse=<span class="hljs-literal">True</span>)
     <span class="hljs-keyword">return</span> [item[<span class="hljs-string">&#x27;data&#x27;</span>] <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> sorted_docs[:top_k * <span class="hljs-number">2</span>]]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Rerank-Results-Before-Answer-Generation" class="common-anchor-header">Étape 5 : Reclassement des résultats avant la génération des réponses</h3><p>Les éléments renvoyés par l'étape de recherche ne sont pas tous aussi pertinents les uns que les autres. C'est pourquoi, avant de générer la réponse finale, une étape de reclassement permet de les classer à nouveau.</p>
-<p>Dans reranker_v2.py, une méthode de notation combinée évalue chaque élément, qui est noté selon cinq aspects :</p>
+<h3 id="Step-5-Rerank-Results-Before-Answer-Generation" class="common-anchor-header">Step 5: Rerank Results Before Answer Generation</h3><p>The chunks returned by the search step are not equally relevant. So before generating the final answer, a reranking step rescores them.</p>
+<p>In reranker_v2.py, a combined scoring method evaluates each chunk, which is scored from five aspects:</p>
 <ul>
-<li><strong>Correspondance floue</strong></li>
+<li><strong>Fuzzy matching</strong></li>
 </ul>
-<p>À l'aide de fuzzywuzzy, nous vérifions dans quelle mesure le libellé de l'élément est similaire à celui de la requête. Cela permet de mesurer le chevauchement direct du texte.</p>
+<p>Using fuzzywuzzy, we check how similar the wording of the chunk is to the query. This measures direct text overlap.</p>
 <ul>
-<li><strong>Couverture des mots-clés</strong></li>
+<li><strong>Keyword coverage</strong></li>
 </ul>
-<p>Nous vérifions combien de mots importants de la requête apparaissent dans le bloc. Plus il y a de correspondances entre les mots-clés, plus le score est élevé.</p>
+<p>We check how many important words from the query appear in the chunk. More keyword matches mean a higher score.</p>
 <ul>
-<li><strong>Similitude sémantique</strong></li>
+<li><strong>Semantic similarity</strong></li>
 </ul>
-<p>Nous réutilisons le score de similarité vectorielle renvoyé par Milvus. Ce score reflète la proximité des significations.</p>
+<p>We reuse the vector similarity score returned by Milvus. This reflects how close the meanings are.</p>
 <ul>
-<li><strong>Longueur et rang d'origine</strong></li>
+<li><strong>Length and original rank</strong></li>
 </ul>
-<p>Les morceaux très courts sont pénalisés parce qu'ils manquent souvent de contexte. Les morceaux qui étaient mieux classés dans les résultats originaux de Milvus bénéficient d'un petit bonus.</p>
+<p>Very short chunks are penalized because they often lack context. Chunks that ranked higher in the original Milvus results get a small bonus.</p>
 <ul>
-<li><strong>Détection des entités nommées</strong></li>
+<li><strong>Named entity detection</strong></li>
 </ul>
-<p>Le système détecte les termes en majuscules tels que "Milvus" ou "RAG" comme des noms propres probables, et identifie les termes techniques à plusieurs mots comme des expressions clés possibles.</p>
-<p>Chaque facteur a un poids dans le score final (voir la figure ci-dessous).</p>
+<p>The system detects capitalized terms like “Milvus” or “RAG” as likely proper nouns, and identifies multi-word technical terms as possible key phrases.</p>
+<p>Each factor has a weight in the final score (shown in the figure below).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_From_PD_Fsto_Answers_Buildinga_RAG_Knowledge_Bas_2_2bce5d382a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Il ne nécessite pas de données d'entraînement et la contribution de chaque facteur est visible. Si un élément se classe de manière inattendue à un niveau élevé ou bas, les scores expliquent pourquoi. Un reranker à boîte noire n'offre pas cette possibilité.</p>
+<p>It requires no training data, and each factor’s contribution is visible. If a chunk ranks unexpectedly high or low, the scores explain why. A fully black-box reranker doesn’t offer that.</p>
 <pre><code translate="no"><span class="hljs-comment"># reranker_v2.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">_calculate_composite_score</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span>, chunk: <span class="hljs-type">Dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-type">Any</span>]</span>) -&gt; <span class="hljs-built_in">float</span>:
     content = chunk.get(<span class="hljs-string">&#x27;content&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)
@@ -310,11 +310,11 @@ origin: >-
     proper_noun_bonus = <span class="hljs-number">30</span> <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._check_proper_nouns(query, content) <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
     <span class="hljs-keyword">return</span> base_score + proper_noun_bonus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Add-Multimodal-QA-for-Charts-and-Diagrams" class="common-anchor-header">Étape 6 : ajouter des questions-réponses multimodales pour les graphiques et les diagrammes</h3><p>Les documents de recherche contiennent souvent des graphiques et des diagrammes importants qui apportent des informations que le texte n'apporte pas. Un pipeline RAG ne contenant que du texte passerait complètement à côté de ces signaux.  Pour y remédier, nous avons ajouté une fonction simple de questions-réponses basée sur l'image et comportant trois parties :</p>
-<p><strong>1. Ajouter plus de contexte à l'invite</strong></p>
-<p>Lorsqu'il envoie une image au modèle, le système obtient également le texte OCR de la même page.<br>
-L'invite comprend : l'image, le texte de la page et la question de l'utilisateur.<br>
-Cela permet au modèle de comprendre le contexte complet et de réduire les erreurs lors de la lecture de l'image.</p>
+<h3 id="Step-6-Add-Multimodal-QA-for-Charts-and-Diagrams" class="common-anchor-header">Step 6: Add Multimodal Q&amp;A for Charts and Diagrams</h3><p>Research papers often contain important charts and diagrams that carry information the text does not. A text-only RAG pipeline would miss those signals entirely.  To handle this, we added a simple image-based Q&amp;A feature with three parts:</p>
+<p><strong>1. Add more context to the prompt</strong></p>
+<p>When sending an image to the model, the system also gets the OCR text from the same page.<br>
+The prompt includes: the image, the page text, and the user’s question.<br>
+This helps the model understand the full context and reduces mistakes when reading the image.</p>
 <pre><code translate="no"><span class="hljs-comment"># backend.py - Core logic for multimodal Q&amp;A</span>
 <span class="hljs-comment"># 1. Retrieve OCR text from the current page as background context</span>
 <span class="hljs-comment"># The system pulls the full page text where the image appears from Milvus,</span>
@@ -335,8 +335,8 @@ final_prompt = <span class="hljs-string">f&quot;&quot;&quot;
 <span class="hljs-comment"># together with final_prompt to the ERNIE-VL model</span>
 answer = ernie_client.chat_with_image(query=final_prompt, image_path=img_path)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. Prise en charge de l'API Vision</strong></p>
-<p>Le client (ernie_client.py) prend en charge le format de vision OpenAI. Les images sont converties en Base64 et envoyées dans le format image_url, ce qui permet au modèle de traiter à la fois l'image et le texte.</p>
+<p><strong>2. Vision API support</strong></p>
+<p>The client (ernie_client.py) supports the OpenAI vision format. Images are converted to Base64 and sent in the image_url format, which lets the model process both image and text together.</p>
 <pre><code translate="no"><span class="hljs-comment"># ernie_client.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">chat_with_image</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span>, image_path: <span class="hljs-built_in">str</span></span>):
    base64_image = <span class="hljs-variable language_">self</span>._encode_image(image_path)
@@ -357,9 +357,9 @@ answer = ernie_client.chat_with_image(query=final_prompt, image_path=img_path)
    ]
    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.chat(messages)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. Plan de repli</strong></p>
-<p>Si l'API image échoue (par exemple, en raison de problèmes de réseau ou de limites du modèle), le système revient à un RAG normal basé sur le texte.<br>
-Il utilise le texte ROC pour répondre à la question, de sorte que le système continue à fonctionner sans interruption.</p>
+<p><strong>3. Fallback plan</strong></p>
+<p>If the image API fails (for example, because of network issues or model limits), the system switches back to normal text-based RAG.<br>
+It uses the OCR text to answer the question, so the system keeps working without interruption.</p>
 <pre><code translate="no"><span class="hljs-comment"># Fallback logic in backend.py</span>
 <span class="hljs-keyword">try</span>:
    answer = ernie.chat_with_image(final_prompt, img_path)
@@ -369,7 +369,7 @@ Il utilise le texte ROC pour répondre à la question, de sorte que le système 
    <span class="hljs-comment"># Fallback: use the extracted text as context to continue answering</span>
    answer, metric = ask_question_logic(final_prompt, collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Key-UI-Features-and-Implementation-for-Pipeline" class="common-anchor-header">Fonctionnalités clés de l'interface utilisateur et mise en œuvre pour le pipeline<button data-href="#Key-UI-Features-and-Implementation-for-Pipeline" class="anchor-icon" translate="no">
+<h2 id="Key-UI-Features-and-Implementation-for-Pipeline" class="common-anchor-header">Key UI Features and Implementation for Pipeline<button data-href="#Key-UI-Features-and-Implementation-for-Pipeline" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -384,8 +384,8 @@ Il utilise le texte ROC pour répondre à la question, de sorte que le système 
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="How-to-Handle-API-Rate-Limiting-and-Protection" class="common-anchor-header">Comment gérer la limitation et la protection du débit de l'API ?</h3><p>Lors de l'appel de LLM ou de l'intégration d'API, le système peut parfois recevoir une erreur <strong>429 Too Many Requests</strong>. Cela se produit généralement lorsque trop de demandes sont envoyées dans un court laps de temps.</p>
-<p>Pour gérer ce problème, le projet ajoute un mécanisme de ralentissement adaptatif dans ernie_client.py. Si une erreur de limite de taux se produit, le système réduit automatiquement la vitesse de la requête et réessaie au lieu de s'arrêter.</p>
+    </button></h2><h3 id="How-to-Handle-API-Rate-Limiting-and-Protection" class="common-anchor-header">How to Handle API Rate Limiting and Protection</h3><p>When calling LLM or embedding APIs, the system may sometimes receive a <strong>429 Too Many Requests</strong> error. This usually happens when too many requests are sent in a short time.</p>
+<p>To handle this, the project adds an adaptive slowdown mechanism in ernie_client.py. If a rate limit error occurs, the system automatically reduces the request speed and retries instead of stopping.</p>
 <pre><code translate="no"><span class="hljs-comment"># Logic for handling rate limiting</span>
 <span class="hljs-keyword">if</span> is_rate_limit:
     <span class="hljs-variable language_">self</span>._adaptive_slow_down()  <span class="hljs-comment"># Permanently increase the request interval</span>
@@ -396,16 +396,16 @@ Il utilise le texte ROC pour répondre à la question, de sorte que le système 
     <span class="hljs-variable language_">self</span>.current_delay = <span class="hljs-built_in">min</span>(<span class="hljs-variable language_">self</span>.current_delay * <span class="hljs-number">2.0</span>, <span class="hljs-number">15.0</span>)
     logger.warning(<span class="hljs-string">f&quot;📉 Rate limit triggered (429), system automatically slowing down: new interval <span class="hljs-subst">{self.current_delay:<span class="hljs-number">.2</span>f}</span>s&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Cela permet de maintenir la stabilité du système, en particulier lors du traitement et de l'intégration d'un grand nombre de documents.</p>
-<h3 id="Custom-Styling" class="common-anchor-header">Style personnalisé</h3><p>L'interface utilise Gradio (main.py). Nous avons ajouté un CSS personnalisé (modern_css) pour rendre l'interface plus propre et plus facile à utiliser.</p>
+<p>This helps keep the system stable, especially when processing and embedding large numbers of documents.</p>
+<h3 id="Custom-Styling" class="common-anchor-header">Custom Styling</h3><p>The frontend uses Gradio (main.py). We added custom CSS (modern_css) to make the interface cleaner and easier to use.</p>
 <ul>
-<li><strong>Boîte de saisie</strong></li>
+<li><strong>Input box</strong></li>
 </ul>
-<p>Le style gris par défaut a été remplacé par un design blanc et arrondi. Il est plus simple et plus moderne.</p>
+<p>Changed from the default gray style to a white, rounded design. It looks simpler and more modern.</p>
 <ul>
-<li><strong>Bouton d'envoi</strong></li>
+<li><strong>Send button</strong></li>
 </ul>
-<p>Ajout d'un dégradé de couleurs et d'un effet de survol pour qu'il soit plus visible.</p>
+<p>Added a gradient color and hover effect so it stands out more.</p>
 <pre><code translate="no"><span class="hljs-comment">/* main.py - modern_css snippet */</span>
 <span class="hljs-comment">/* Force the input box to use a white background with rounded corners, simulating a modern chat app */</span>
 .custom-textbox textarea {
@@ -430,10 +430,12 @@ Il utilise le texte ROC pour répondre à la question, de sorte que le système 
     box-shadow: <span class="hljs-number">0</span> <span class="hljs-number">4</span>px <span class="hljs-number">10</span><span class="hljs-function">px <span class="hljs-title">rgba</span>(<span class="hljs-params"><span class="hljs-number">99</span>, <span class="hljs-number">102</span>, <span class="hljs-number">241</span>, <span class="hljs-number">0.3</span></span>) !important</span>;
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="LaTeX-Formula-Rendering" class="common-anchor-header">Rendu des formules LaTeX</h3><p>De nombreux documents de recherche contiennent des formules mathématiques, d'où l'importance d'un rendu correct. Nous avons ajouté une prise en charge complète de LaTeX pour les formules en ligne et en bloc.</p>
+<h3 id="LaTeX-Formula-Rendering" class="common-anchor-header">LaTeX Formula Rendering</h3><p>Many research documents contain math formulas, so correct rendering is important. We added full LaTeX support for both inline and block formulas.</p>
 <ul>
-<li><strong>Domaine d'application</strong>La configuration fonctionne à la fois dans la fenêtre de discussion (Chatbot) et dans la zone de résumé (Markdown).</li>
-<li><strong>Résultat pratique</strong>Que les formules apparaissent dans la réponse du modèle ou dans les résumés des documents, elles sont rendues correctement sur la page.</li>
+<li><strong>Where it applies</strong>
+The configuration works in both the chat window (Chatbot) and the summary area (Markdown).</li>
+<li><strong>Practical result</strong>
+Whether formulas appear in the model’s answer or in document summaries, they are rendered correctly on the page.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Configure LaTeX rules in main.py</span>
 latex_config = [
@@ -455,12 +457,12 @@ doc_summary = gr.Markdown(
     latex_delimiters=latex_config
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Explainability-Relevance-Scores-and-Confidence" class="common-anchor-header">Explicabilité : Scores de pertinence et confiance</h3><p>Pour éviter une expérience "boîte noire", le système affiche deux indicateurs simples :</p>
+<h3 id="Explainability-Relevance-Scores-and-Confidence" class="common-anchor-header">Explainability: Relevance Scores and Confidence</h3><p>To avoid a “black box” experience, the system shows two simple indicators:</p>
 <ul>
-<li><p><strong>Pertinence</strong></p></li>
-<li><p>Apparaît sous chaque réponse dans la section "Références".</p></li>
-<li><p>Affiche le score du reranker pour chaque élément cité.</p></li>
-<li><p>Aide les utilisateurs à comprendre pourquoi une page ou un passage spécifique a été utilisé.</p></li>
+<li><p><strong>Relevance</strong></p></li>
+<li><p>Shown under each answer in the “References” section.</p></li>
+<li><p>Displays the reranker score for each cited chunk.</p></li>
+<li><p>Helps users see why a specific page or passage was used.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># backend.py - Build reference source list</span>
 sources = <span class="hljs-string">&quot;\n\n📚 **References:**\n&quot;</span>
@@ -470,11 +472,11 @@ sources = <span class="hljs-string">&quot;\n\n📚 **References:**\n&quot;</span
     sources += <span class="hljs-string">f&quot;- <span class="hljs-subst">{key}</span> [Relevance:<span class="hljs-subst">{c.get(<span class="hljs-string">&#x27;composite_score&#x27;</span>,<span class="hljs-number">0</span>):<span class="hljs-number">.0</span>f}</span>%]\n&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p><strong>Confiance</strong></p></li>
-<li><p>Affiché dans le panneau "Détails de l'analyse".</p></li>
-<li><p>Basé sur le score de l'élément le plus important (échelle de 100 %).</p></li>
-<li><p>Indique le degré de confiance du système dans la réponse.</p></li>
-<li><p>Si elle est inférieure à 60 %, la réponse peut être moins fiable.</p></li>
+<li><p><strong>Confidence</strong></p></li>
+<li><p>Shown in the “Analysis Details” panel.</p></li>
+<li><p>Based on the top chunk’s score (scaled to 100%).</p></li>
+<li><p>Shows how confident the system is about the answer.</p></li>
+<li><p>If below 60%, the answer may be less reliable.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># backend.py - Calculate overall confidence</span>
 <span class="hljs-comment"># 1. Get the top-ranked chunk after reranking</span>
@@ -483,7 +485,7 @@ top_score = final[<span class="hljs-number">0</span>].get(<span class="hljs-stri
 <span class="hljs-comment"># 2. Normalize the score (capped at 100%) as the overall &quot;confidence&quot; for this Q&amp;A</span>
 metric = <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, top_score):<span class="hljs-number">.1</span>f}</span>%&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>L'interface utilisateur est illustrée ci-dessous. Dans l'interface, chaque réponse indique le numéro de page de la source et son score de pertinence.</p>
+<p>The UI is shown below. In the interface, each answer shows the page number of the source and its relevance score.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_ec01986414.png" alt="" class="doc-image" id="" />
@@ -523,14 +525,14 @@ metric = <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La précision du RAG dépend de l'ingénierie entre un LLM et une base de données vectorielle. Cet article présente une construction <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> avec <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> qui couvre chaque étape de cette ingénierie :</p>
+    </button></h2><p>RAG accuracy is dependent on the engineering between an LLM and a vector database. This article walked through a <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> build with <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> that covers each stage of that engineering:</p>
 <ul>
-<li><strong>Analyse du document.</strong> PP-StructureV3 (via <a href="https://github.com/PaddlePaddle/PaddleOCR"></a><a href="https://github.com/PaddlePaddle/PaddleOCR">PaddleOCR</a>) convertit les PDF en Markdown propre avec un OCR prenant en compte la mise en page, préservant les titres, les tableaux et les images que les extracteurs de base perdent.</li>
-<li><strong>Chunking.</strong> Les scissions par fenêtre coulissante avec chevauchement conservent le contexte intact aux limites des morceaux, évitant ainsi les fragments brisés qui nuisent au rappel de la recherche.</li>
-<li><strong>Stockage des vecteurs dans Milvus.</strong> Stocker les vecteurs de manière à permettre une extraction rapide et précise.</li>
-<li><strong>Recherche hybride.</strong> L'exécution en parallèle de la recherche vectorielle et de la recherche par mot-clé, puis la fusion des résultats avec la méthode RRF (Reciprocal Rank Fusion), permet d'obtenir à la fois des correspondances sémantiques et des occurrences de termes exacts que l'une ou l'autre de ces méthodes ne permettrait pas d'obtenir à elle seule.</li>
-<li><strong>Reranking.</strong> Un reranker transparent, basé sur des règles, évalue chaque morceau en fonction de la correspondance floue, de la couverture des mots-clés, de la similarité sémantique, de la longueur et de la détection des noms propres - aucune donnée d'entraînement n'est nécessaire et chaque score peut être débogué.</li>
-<li><strong>Questions et réponses multimodales.</strong> L'association d'images et de texte de page OCR dans l'invite donne au modèle de vision suffisamment de contexte pour répondre aux questions sur les graphiques et les diagrammes, avec une solution de repli en texte seul si l'API de l'image échoue.</li>
+<li><strong>Document parsing.</strong> PP-StructureV3 (via <a href="https://github.com/PaddlePaddle/PaddleOCR"></a><a href="https://github.com/PaddlePaddle/PaddleOCR">PaddleOCR</a>) converts PDFs into clean Markdown with layout-aware OCR, preserving headings, tables, and images that basic extractors lose.</li>
+<li><strong>Chunking.</strong> Sliding window splits with overlap keep context intact at chunk boundaries, preventing the broken fragments that hurt retrieval recall.</li>
+<li><strong>Storing Vectors in Milvus.</strong> Store vectors in a way that supports fast, accurate retrieval.</li>
+<li><strong>Hybrid search.</strong> Running vector search and keyword search in parallel, then merging results with RRF (Reciprocal Rank Fusion), catches both semantic matches and exact-term hits that either method alone would miss.</li>
+<li><strong>Reranking.</strong> A transparent, rule-based reranker scores each chunk on fuzzy match, keyword coverage, semantic similarity, length, and proper noun detection — no training data required, and every score is debuggable.</li>
+<li><strong>Multimodal Q&amp;A.</strong> Pairing images with OCR page text in the prompt gives the vision model enough context to answer questions about charts and diagrams, with a text-only fallback if the image API fails.</li>
 </ul>
-<p>Si vous construisez un système RAG pour les questions-réponses sur les documents et que vous souhaitez améliorer la précision, nous serions ravis de savoir comment vous procédez.</p>
-<p>Vous avez des questions sur <a href="https://milvus.io/">Milvus</a>, la recherche hybride ou la conception de bases de connaissances ? Rejoignez notre <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal Slack</a> ou réservez une session <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours de</a> 20 minutes pour discuter de votre cas d'utilisation.</p>
+<p>If you’re building a RAG system for document Q&amp;A and want better accuracy, we’d love to hear how you’re approaching it.</p>
+<p>Have questions about <a href="https://milvus.io/">Milvus</a>, hybrid search, or knowledge base design? Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session to discuss your use case.</p>

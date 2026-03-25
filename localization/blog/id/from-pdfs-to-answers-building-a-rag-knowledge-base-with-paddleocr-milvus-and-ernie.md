@@ -1,9 +1,9 @@
 ---
 id: >-
   from-pdfs-to-answers-building-a-rag-knowledge-base-with-paddleocr-milvus-and-ernie.md
-title: >-
-  Dari PDF ke Jawaban: Membangun Basis Pengetahuan RAG dengan PaddleOCR, Milvus,
-  dan ERNIE
+title: >
+  From PDFs to Answers: Building a RAG Knowledge Base with PaddleOCR, Milvus,
+  and ERNIE
 author: LiaoYF and Jing Zhang
 date: 2026-3-17
 cover: assets.zilliz.com/cover_747a1385ed.jpg
@@ -14,18 +14,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'RAG, Milvus, vector database, hybrid search, knowledge base Q&A'
 meta_title: |
   Build a RAG Knowledge Base with PaddleOCR, Milvus, and ERNIE
-desc: >-
-  Pelajari cara membangun basis pengetahuan RAG dengan akurasi tinggi
-  menggunakan Milvus, pencarian hibrida, pemeringkatan ulang, dan Tanya Jawab
-  multimodal untuk kecerdasan dokumen.
+desc: >
+  Learn how to build a high-accuracy RAG knowledge base using Milvus, hybrid
+  search, reranking, and multimodal Q&A for document intelligence.
 origin: >-
   https://milvus.io/blog/from-pdfs-to-answers-building-a-rag-knowledge-base-with-paddleocr-milvus-and-ernie.md
 ---
-<p>Model bahasa yang besar jauh lebih mampu dibandingkan pada tahun 2023, tetapi model ini masih berhalusinasi dengan percaya diri dan sering kali menggunakan informasi yang sudah ketinggalan zaman. RAG (Retrieval-Augmented Generation) mengatasi kedua masalah tersebut dengan mengambil konteks yang relevan dari basis data vektor seperti <a href="https://milvus.io/">Milvus</a> sebelum model menghasilkan respons. Konteks tambahan tersebut mendasarkan jawaban pada sumber yang nyata dan membuatnya lebih terkini.</p>
-<p>Salah satu kasus penggunaan RAG yang paling umum adalah basis pengetahuan perusahaan. Seorang pengguna mengunggah PDF, file Word, atau dokumen internal lainnya, mengajukan pertanyaan dalam bahasa alami, dan menerima jawaban berdasarkan bahan-bahan tersebut, bukan hanya pada prapelatihan model.</p>
-<p>Tetapi menggunakan LLM yang sama dan basis data vektor yang sama tidak menjamin hasil yang sama. Dua tim dapat membangun di atas fondasi yang sama dan tetap menghasilkan kualitas sistem yang sangat berbeda. Perbedaannya biasanya berasal dari segala sesuatu di bagian hulu: <strong>bagaimana dokumen diuraikan, dipotong-potong, dan disematkan; bagaimana data diindeks; bagaimana hasil pencarian diurutkan; dan bagaimana jawaban akhir dikumpulkan</strong>.</p>
-<p>Dalam artikel ini, kita akan menggunakan <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> sebagai contoh dan menjelaskan bagaimana membangun basis pengetahuan berbasis RAG dengan <a href="https://github.com/PADDLEPADDLE/PADDLEOCR">PaddleOCR</a>, <a href="https://milvus.io/">Milvus</a>, dan ERNIE-4.5-Turbo.</p>
-<h2 id="Paddle-ERNIE-RAG-System-Architecture" class="common-anchor-header">Arsitektur Sistem Paddle-ERNIE-RAG<button data-href="#Paddle-ERNIE-RAG-System-Architecture" class="anchor-icon" translate="no">
+<p>Large language models are far more capable than they were in 2023, but they still hallucinate with confidence and often fall back on outdated information. RAG (Retrieval-Augmented Generation) addresses both problems by retrieving relevant context from a vector database such as <a href="https://milvus.io/">Milvus</a> before the model generates a response. That extra context grounds the answer in real sources and makes it more current.</p>
+<p>One of the most common RAG use cases is a company knowledge base. A user uploads PDFs, Word files, or other internal documents, asks a natural-language question, and receives an answer based on those materials rather than solely on the model’s pretraining.</p>
+<p>But using the same LLM and the same vector database does not guarantee the same outcome. Two teams can build on the same foundation and still end up with very different system quality. The difference usually comes from everything upstream: <strong>how documents are parsed, chunked, and embedded; how data is indexed; how retrieval results are ranked; and how the final answer is assembled.</strong></p>
+<p>In this article, we’ll use <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> as an example and explain how to build an RAG-based knowledge base with <a href="https://github.com/PADDLEPADDLE/PADDLEOCR">PaddleOCR</a>, <a href="https://milvus.io/">Milvus</a>, and ERNIE-4.5-Turbo.</p>
+<h2 id="Paddle-ERNIE-RAG-System-Architecture" class="common-anchor-header">Paddle-ERNIE-RAG System Architecture<button data-href="#Paddle-ERNIE-RAG-System-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,19 +39,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Arsitektur Paddle-ERNIE-RAG terdiri dari empat lapisan inti:</p>
+    </button></h2><p>The Paddle-ERNIE-RAG architecture consists of four core layers:</p>
 <ul>
-<li><strong>Lapisan ekstraksi data.</strong> <a href="https://github.com/PaddlePaddle/PaddleOCR">PP-StructureV3</a>, pipa pengurai dokumen di PaddleOCR, membaca PDF dan gambar dengan OCR yang sadar tata letak. Ini mempertahankan struktur dokumen - judul, tabel, urutan membaca - dan menghasilkan Markdown yang bersih, dibagi menjadi potongan-potongan yang tumpang tindih.</li>
-<li><strong>Lapisan penyimpanan vektor.</strong> Setiap potongan disematkan ke dalam vektor 384 dimensi dan disimpan di <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> bersama dengan metadata (nama file, nomor halaman, ID potongan). Indeks terbalik paralel mendukung pencarian kata kunci.</li>
-<li><strong>Lapisan pengambilan dan penjawaban.</strong> Setiap kueri dijalankan terhadap indeks vektor dan indeks kata kunci. Hasilnya digabungkan melalui RRF (Reciprocal Rank Fusion), diurutkan ulang, dan diteruskan ke model <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG">ERNIE</a> untuk menghasilkan jawaban.</li>
-<li><strong>Lapisan aplikasi.</strong> Antarmuka <a href="https://www.gradio.app/"></a><a href="https://www.gradio.app/">Gradio</a> memungkinkan Anda mengunggah dokumen, mengajukan pertanyaan, dan melihat jawaban dengan kutipan sumber dan skor kepercayaan.  <span class="img-wrapper">
+<li><strong>Data extraction layer.</strong> <a href="https://github.com/PaddlePaddle/PaddleOCR">PP-StructureV3</a>, the document parsing pipeline in PaddleOCR, reads PDFs and images with layout-aware OCR. It preserves document structure — headings, tables, reading order — and outputs clean Markdown, split into overlapping chunks.</li>
+<li><strong>Vector storage layer.</strong> Each chunk is embedded into a 384-dimensional vector and stored in <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> alongside metadata (file name, page number, chunk ID). A parallel inverted index supports keyword search.</li>
+<li><strong>Retrieval and answering layer.</strong> Each query runs against both the vector index and the keyword index. Results are merged via RRF (Reciprocal Rank Fusion), reranked, and passed to the <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG">ERNIE</a> model for answer generation.</li>
+<li><strong>Application layer.</strong> A <a href="https://www.gradio.app/"></a><a href="https://www.gradio.app/">Gradio</a> interface lets you upload documents, ask questions, and view answers with source citations and confidence scores.
+  <span class="img-wrapper">
     <img translate="no" src="blob:https://septemberfd.github.io/9043a059-de46-49b1-9399-f915aed555dc" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </li>
 </ul>
-<p>Bagian di bawah ini akan menjelaskan setiap tahap secara berurutan, dimulai dari bagaimana dokumen mentah menjadi teks yang dapat dicari.</p>
-<h2 id="How-to-Build-RAG-Pipeline-Step-by-Step" class="common-anchor-header">Cara Membuat Pipeline RAG Langkah demi Langkah<button data-href="#How-to-Build-RAG-Pipeline-Step-by-Step" class="anchor-icon" translate="no">
+<p>The sections below walk through each stage in order, starting with how raw documents become searchable text.</p>
+<h2 id="How-to-Build-RAG-Pipeline-Step-by-Step" class="common-anchor-header">How to Build RAG Pipeline Step by Step<button data-href="#How-to-Build-RAG-Pipeline-Step-by-Step" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,27 +67,27 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Step-1-Parse-Documents-with-PP-StructureV3" class="common-anchor-header">Langkah 1: Mengurai Dokumen dengan PP-StructureV3</h3><p>Dokumen mentah adalah tempat sebagian besar masalah akurasi dimulai. Makalah penelitian dan laporan teknis menggabungkan tata letak dua kolom, rumus, tabel, dan gambar. Mengekstrak teks dengan pustaka dasar seperti PyPDF2 biasanya mengacaukan output: paragraf muncul tidak berurutan, tabel runtuh, dan rumus menghilang.</p>
-<p>Untuk menghindari masalah ini, proyek ini membuat kelas OnlinePDFParser di backend.py. Kelas ini memanggil API online PP-StructureV3 untuk melakukan penguraian tata letak. Alih-alih mengekstrak teks mentah, API ini mengidentifikasi struktur dokumen, lalu mengubahnya menjadi format Markdown.</p>
-<p>Metode ini memiliki tiga manfaat yang jelas:</p>
+    </button></h2><h3 id="Step-1-Parse-Documents-with-PP-StructureV3" class="common-anchor-header">Step 1: Parse Documents with PP-StructureV3</h3><p>Raw documents are where most accuracy problems begin. Research papers and technical reports mix two-column layouts, formulas, tables, and images. Extracting text with a basic library like PyPDF2 usually garbles the output: paragraphs appear out of order, tables collapse, and formulas vanish.</p>
+<p>To avoid these problems, the project creates an OnlinePDFParser class in backend.py. This class calls the PP-StructureV3 online API to do layout parsing. Instead of extracting raw text, it identifies the structure of the document, then turns it into Markdown format.</p>
+<p>This method has three clear benefits:</p>
 <ul>
-<li><strong>Keluaran Markdown yang bersih</strong></li>
+<li><strong>Clean Markdown output</strong></li>
 </ul>
-<p>Output diformat sebagai Markdown dengan judul dan paragraf yang tepat. Hal ini membuat konten lebih mudah dipahami oleh model.</p>
+<p>The output is formatted as Markdown with proper headings and paragraphs. This makes the content easier for the model to understand.</p>
 <ul>
-<li><strong>Ekstraksi gambar terpisah</strong></li>
+<li><strong>Separate Image extraction</strong></li>
 </ul>
-<p>Sistem mengekstrak dan menyimpan gambar selama penguraian. Hal ini mencegah hilangnya informasi visual yang penting.</p>
+<p>The system extracts and saves images during parsing. This prevents important visual information from being lost.</p>
 <ul>
-<li><strong>Penanganan konteks yang lebih baik</strong></li>
+<li><strong>Better context handling</strong></li>
 </ul>
-<p>Teks dibagi menggunakan jendela geser dengan tumpang tindih. Hal ini untuk menghindari pemotongan kalimat atau rumus di tengah, yang membantu menjaga makna tetap jelas dan meningkatkan akurasi pencarian.</p>
-<p><strong>Alur Penguraian Dasar</strong></p>
-<p>Di backend.py, penguraian mengikuti tiga langkah sederhana:</p>
+<p>The text is split using a sliding window with overlap. This avoids cutting sentences or formulas in the middle, which helps keep the meaning clear and improves search accuracy.</p>
+<p><strong>Basic Parsing Flow</strong></p>
+<p>In backend.py, parsing follows three simple steps:</p>
 <ol>
-<li>Kirim berkas PDF ke API PP-StructureV3.</li>
-<li>Baca layoutParsingHasil yang dikembalikan.</li>
-<li>Ekstrak teks Penurunan Harga yang telah dibersihkan dan semua gambar.</li>
+<li>Send the PDF file to the PP-StructureV3 API.</li>
+<li>Read the returned layoutParsingResults.</li>
+<li>Extract the cleaned Markdown text and any images.</li>
 </ol>
 <pre><code translate="no"><span class="hljs-comment"># backend.py (Core logic summary of the OnlinePDFParser class)</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">predict</span>(<span class="hljs-params">self, file_path</span>):
@@ -114,8 +114,8 @@ origin: >-
         mock_outputs.append(MockResult(md_text, images))
     <span class="hljs-keyword">return</span> mock_outputs, <span class="hljs-string">&quot;Success&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Chunk-Text-with-Sliding-Window-Overlap" class="common-anchor-header">Langkah 2: Pisahkan Teks dengan Jendela Geser Tumpang Tindih</h3><p>Setelah penguraian, teks Diskon harus dibagi menjadi beberapa bagian yang lebih kecil (potongan) untuk pencarian. Jika teks dipotong dengan panjang yang tetap, kalimat atau rumus dapat terpecah menjadi dua.</p>
-<p>Untuk mencegah hal ini, sistem menggunakan pemotongan jendela geser dengan tumpang tindih. Setiap potongan berbagi bagian ekor dengan bagian berikutnya, sehingga konten yang berbatasan muncul di kedua jendela. Hal ini menjaga makna tetap utuh di tepi potongan dan meningkatkan daya ingat pengambilan.</p>
+<h3 id="Step-2-Chunk-Text-with-Sliding-Window-Overlap" class="common-anchor-header">Step 2: Chunk Text with Sliding Window Overlap</h3><p>After parsing, the Markdown text must be divided into smaller pieces (chunks) for search. If text is cut at fixed lengths, sentences or formulas may be split in half.</p>
+<p>To prevent this, the system uses sliding window chunking with overlap. Each chunk shares a tail portion with the next, so boundary content appears in both windows. This keeps meaning intact at chunk edges and improves retrieval recall.</p>
 <pre><code translate="no"><span class="hljs-comment"># backend.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">split_text_into_chunks</span>(<span class="hljs-params">text: <span class="hljs-built_in">str</span>, chunk_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">300</span>, overlap: <span class="hljs-built_in">int</span> = <span class="hljs-number">120</span></span>) -&gt; <span class="hljs-built_in">list</span>:
     <span class="hljs-string">&quot;&quot;&quot;Sliding window-based text chunking that preserves overlap-length contextual overlap&quot;&quot;&quot;</span>
@@ -144,9 +144,9 @@ origin: >-
         chunks.append(<span class="hljs-string">&quot;\n&quot;</span>.join(current_chunk).strip())
     <span class="hljs-keyword">return</span> chunks
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Store-Vectors-and-Metadata-in-Milvus" class="common-anchor-header">Langkah 3: Menyimpan Vektor dan Metadata di Milvus</h3><p>Dengan potongan yang bersih, langkah selanjutnya adalah menyimpannya dengan cara yang mendukung pengambilan yang cepat dan akurat.</p>
-<p><strong>Penyimpanan Vektor dan Metadata</strong></p>
-<p>Milvus memberlakukan aturan yang ketat untuk nama koleksi - hanya huruf, angka, dan garis bawah ASCII. Jika nama basis pengetahuan mengandung karakter non-ASCII, backend akan meng-encode dengan awalan kb_ sebelum membuat koleksi dan menerjemahkannya untuk ditampilkan. Sebuah detail kecil, tetapi dapat mencegah kesalahan samar.</p>
+<h3 id="Step-3-Store-Vectors-and-Metadata-in-Milvus" class="common-anchor-header">Step 3: Store Vectors and Metadata in Milvus</h3><p>With clean chunks ready, the next step is storing them in a way that supports fast, accurate retrieval.</p>
+<p><strong>Vector Storage and Metadata</strong></p>
+<p>Milvus enforces strict rules for collection names — only ASCII letters, numbers, and underscores. If a knowledge base name contains non-ASCII characters, the backend hex-encodes it with a kb_ prefix before creating the collection and decodes it for display. A small detail, but one that prevents cryptic errors.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> binascii
 <span class="hljs-keyword">import</span> re
 
@@ -169,19 +169,19 @@ origin: >-
             <span class="hljs-keyword">return</span> real_name
     <span class="hljs-keyword">return</span> real_name
 <button class="copy-code-btn"></button></code></pre>
-<p>Selain penamaan, setiap potongan melewati dua langkah sebelum disisipkan: membuat penyematan dan melampirkan metadata.</p>
+<p>Beyond naming, each chunk goes through two steps before insertion: generating an embedding and attaching metadata.</p>
 <ul>
-<li><strong>Apa yang disimpan:</strong></li>
+<li><strong>What is stored:</strong></li>
 </ul>
-<p>Setiap potongan diubah menjadi vektor padat 384 dimensi. Pada saat yang sama, skema Milvus menyimpan bidang tambahan seperti nama file, nomor halaman, dan ID chunk.</p>
+<p>Each chunk is converted into a 384-dimensional dense vector. At the same time, the Milvus schema stores extra fields such as file name, page number, and chunk ID.</p>
 <ul>
-<li><strong>Mengapa ini penting:</strong></li>
+<li><strong>Why this is important:</strong></li>
 </ul>
-<p>Hal ini memungkinkan untuk melacak jawaban kembali ke halaman yang sama persis dengan halaman asalnya. Hal ini juga mempersiapkan sistem untuk kasus penggunaan Tanya Jawab multimodal di masa depan.</p>
+<p>This makes it possible to trace an answer back to the exact page it came from. It also prepares the system for future multimodal Q&amp;A use cases.</p>
 <ul>
-<li><strong>Optimalisasi kinerja:</strong></li>
+<li><strong>Performance optimization:</strong></li>
 </ul>
-<p>Dalam vector_store.py, metode insert_documents menggunakan penyematan batch. Hal ini mengurangi jumlah permintaan jaringan dan membuat prosesnya lebih efisien.</p>
+<p>In vector_store.py, the insert_documents method uses batch embedding. This reduces the number of network requests and makes the process more efficient.</p>
 <pre><code translate="no"><span class="hljs-comment"># vector_store.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">insert_documents</span>(<span class="hljs-params">self, documents</span>):
     <span class="hljs-string">&quot;&quot;&quot;Batch vectorization and insertion into Milvus&quot;&quot;&quot;</span>
@@ -208,13 +208,13 @@ origin: >-
     <span class="hljs-variable language_">self</span>.collection.insert(data)
     <span class="hljs-variable language_">self</span>.collection.flush()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Retrieve-with-Hybrid-Search-and-RRF-Fusion" class="common-anchor-header">Langkah 4: Mengambil dengan Pencarian Hibrida dan Fusi RRF</h3><p>Metode pencarian tunggal jarang sekali cukup. Pencarian vektor menemukan konten yang secara semantik mirip tetapi dapat melewatkan istilah yang tepat; pencarian kata kunci menemukan istilah tertentu tetapi melewatkan parafrase. Menjalankan keduanya secara paralel dan menggabungkan hasilnya akan menghasilkan hasil yang lebih baik daripada salah satunya.</p>
-<p>Ketika bahasa kueri berbeda dengan bahasa dokumen, sistem pertama-tama menerjemahkan kueri menggunakan LLM sehingga kedua jalur pencarian dapat beroperasi dalam bahasa dokumen. Kemudian dua pencarian berjalan secara paralel:</p>
+<h3 id="Step-4-Retrieve-with-Hybrid-Search-and-RRF-Fusion" class="common-anchor-header">Step 4: Retrieve with Hybrid Search and RRF Fusion</h3><p>A single search method is rarely enough. Vector search finds semantically similar content but can miss exact terms; keyword search nails specific terms but misses paraphrases. Running both in parallel and merging the output produces better results than either alone.</p>
+<p>When the query language differs from the document language, the system first translates the query using an LLM so both search paths can operate in the document’s language. Then two searches run in parallel:</p>
 <ul>
-<li><strong>Pencarian vektor (padat):</strong> Menemukan konten dengan makna yang sama, bahkan lintas bahasa, tetapi mungkin memunculkan bagian terkait yang tidak secara langsung menjawab pertanyaan.</li>
-<li><strong>Pencarian kata kunci (jarang):</strong> Menemukan kecocokan yang tepat untuk istilah teknis, angka, atau variabel rumus - jenis token yang sering kali disematkan oleh penyematan vektor.</li>
+<li><strong>Vector search (dense):</strong> Finds content with similar meaning, even across languages, but may surface related passages that don’t directly answer the question.</li>
+<li><strong>Keyword search (sparse):</strong> Finds exact matches for technical terms, numbers, or formula variables — the kind of tokens that vector embeddings often smooth over.</li>
 </ul>
-<p>Sistem menggabungkan kedua daftar hasil menggunakan RRF (Reciprocal Rank Fusion). Setiap kandidat menerima skor berdasarkan peringkatnya di setiap daftar, sehingga bagian yang muncul di dekat bagian atas <em>kedua</em> daftar memiliki skor tertinggi. Pencarian vektor memberikan kontribusi cakupan semantik; pencarian kata kunci memberikan kontribusi ketepatan istilah.</p>
+<p>The system merges both result lists using RRF (Reciprocal Rank Fusion). Each candidate receives a score based on its rank in each list, so a chunk that appears near the top of <em>both</em> lists scores highest. Vector search contributes semantic coverage; keyword search contributes term precision.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_From_PD_Fsto_Answers_Buildinga_RAG_Knowledge_Bas_1_d241e95fc2.png" alt="" class="doc-image" id="" />
@@ -245,36 +245,36 @@ origin: >-
     sorted_docs = <span class="hljs-built_in">sorted</span>(rank_dict.values(), key=<span class="hljs-keyword">lambda</span> x: x[<span class="hljs-string">&#x27;score&#x27;</span>], reverse=<span class="hljs-literal">True</span>)
     <span class="hljs-keyword">return</span> [item[<span class="hljs-string">&#x27;data&#x27;</span>] <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> sorted_docs[:top_k * <span class="hljs-number">2</span>]]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Rerank-Results-Before-Answer-Generation" class="common-anchor-header">Langkah 5: Beri Peringkat Ulang Hasil Sebelum Pembuatan Jawaban</h3><p>Hasil yang dikembalikan oleh langkah pencarian tidak semuanya relevan. Jadi sebelum menghasilkan jawaban akhir, langkah perankingan ulang akan memberi skor ulang.</p>
-<p>Dalam reranker_v2.py, metode penilaian gabungan mengevaluasi setiap potongan, yang dinilai dari lima aspek:</p>
+<h3 id="Step-5-Rerank-Results-Before-Answer-Generation" class="common-anchor-header">Step 5: Rerank Results Before Answer Generation</h3><p>The chunks returned by the search step are not equally relevant. So before generating the final answer, a reranking step rescores them.</p>
+<p>In reranker_v2.py, a combined scoring method evaluates each chunk, which is scored from five aspects:</p>
 <ul>
-<li><strong>Pencocokan fuzzy</strong></li>
+<li><strong>Fuzzy matching</strong></li>
 </ul>
-<p>Dengan menggunakan fuzzywuzzy, kami memeriksa seberapa mirip kata-kata dari potongan dengan kueri. Hal ini mengukur tumpang tindih teks secara langsung.</p>
+<p>Using fuzzywuzzy, we check how similar the wording of the chunk is to the query. This measures direct text overlap.</p>
 <ul>
-<li><strong>Cakupan kata kunci</strong></li>
+<li><strong>Keyword coverage</strong></li>
 </ul>
-<p>Kami memeriksa berapa banyak kata penting dari kueri yang muncul dalam potongan. Semakin banyak kecocokan kata kunci berarti skor yang lebih tinggi.</p>
+<p>We check how many important words from the query appear in the chunk. More keyword matches mean a higher score.</p>
 <ul>
-<li><strong>Kesamaan semantik</strong></li>
+<li><strong>Semantic similarity</strong></li>
 </ul>
-<p>Kami menggunakan kembali skor kemiripan vektor yang dikembalikan oleh Milvus. Ini mencerminkan seberapa dekat maknanya.</p>
+<p>We reuse the vector similarity score returned by Milvus. This reflects how close the meanings are.</p>
 <ul>
-<li><strong>Panjang dan peringkat asli</strong></li>
+<li><strong>Length and original rank</strong></li>
 </ul>
-<p>Potongan yang sangat pendek dihukum karena sering kali tidak memiliki konteks. Potongan yang memiliki peringkat lebih tinggi pada hasil asli Milvus mendapatkan bonus kecil.</p>
+<p>Very short chunks are penalized because they often lack context. Chunks that ranked higher in the original Milvus results get a small bonus.</p>
 <ul>
-<li><strong>Deteksi entitas bernama</strong></li>
+<li><strong>Named entity detection</strong></li>
 </ul>
-<p>Sistem mendeteksi istilah yang menggunakan huruf besar seperti "Milvus" atau "RAG" sebagai kata benda yang tepat, dan mengidentifikasi istilah teknis multi-kata sebagai frasa kunci.</p>
-<p>Setiap faktor memiliki bobot dalam skor akhir (ditunjukkan pada gambar di bawah).</p>
+<p>The system detects capitalized terms like “Milvus” or “RAG” as likely proper nouns, and identifies multi-word technical terms as possible key phrases.</p>
+<p>Each factor has a weight in the final score (shown in the figure below).</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_From_PD_Fsto_Answers_Buildinga_RAG_Knowledge_Bas_2_2bce5d382a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Sistem ini tidak memerlukan data pelatihan, dan kontribusi setiap faktor dapat terlihat. Jika suatu bagian memiliki peringkat yang tinggi atau rendah secara tidak terduga, skor menjelaskan alasannya. Pemeringkat kotak hitam sepenuhnya tidak menawarkan hal itu.</p>
+<p>It requires no training data, and each factor’s contribution is visible. If a chunk ranks unexpectedly high or low, the scores explain why. A fully black-box reranker doesn’t offer that.</p>
 <pre><code translate="no"><span class="hljs-comment"># reranker_v2.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">_calculate_composite_score</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span>, chunk: <span class="hljs-type">Dict</span>[<span class="hljs-built_in">str</span>, <span class="hljs-type">Any</span>]</span>) -&gt; <span class="hljs-built_in">float</span>:
     content = chunk.get(<span class="hljs-string">&#x27;content&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)
@@ -310,11 +310,11 @@ origin: >-
     proper_noun_bonus = <span class="hljs-number">30</span> <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._check_proper_nouns(query, content) <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>
     <span class="hljs-keyword">return</span> base_score + proper_noun_bonus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Add-Multimodal-QA-for-Charts-and-Diagrams" class="common-anchor-header">Langkah 6: Tambahkan Tanya Jawab Multimodal untuk Bagan dan Diagram</h3><p>Makalah penelitian sering kali berisi bagan dan diagram penting yang membawa informasi yang tidak ada dalam teks. Pipeline RAG yang hanya berupa teks akan kehilangan sinyal-sinyal tersebut.  Untuk menangani hal ini, kami menambahkan fitur Tanya Jawab berbasis gambar sederhana dengan tiga bagian:</p>
-<p><strong>1. Menambahkan lebih banyak konteks ke prompt</strong></p>
-<p>Ketika mengirim gambar ke model, sistem juga mendapatkan teks OCR dari halaman yang sama.<br>
-Prompt mencakup: gambar, teks halaman, dan pertanyaan pengguna.<br>
-Hal ini membantu model memahami konteks lengkap dan mengurangi kesalahan saat membaca gambar.</p>
+<h3 id="Step-6-Add-Multimodal-QA-for-Charts-and-Diagrams" class="common-anchor-header">Step 6: Add Multimodal Q&amp;A for Charts and Diagrams</h3><p>Research papers often contain important charts and diagrams that carry information the text does not. A text-only RAG pipeline would miss those signals entirely.  To handle this, we added a simple image-based Q&amp;A feature with three parts:</p>
+<p><strong>1. Add more context to the prompt</strong></p>
+<p>When sending an image to the model, the system also gets the OCR text from the same page.<br>
+The prompt includes: the image, the page text, and the user’s question.<br>
+This helps the model understand the full context and reduces mistakes when reading the image.</p>
 <pre><code translate="no"><span class="hljs-comment"># backend.py - Core logic for multimodal Q&amp;A</span>
 <span class="hljs-comment"># 1. Retrieve OCR text from the current page as background context</span>
 <span class="hljs-comment"># The system pulls the full page text where the image appears from Milvus,</span>
@@ -335,8 +335,8 @@ final_prompt = <span class="hljs-string">f&quot;&quot;&quot;
 <span class="hljs-comment"># together with final_prompt to the ERNIE-VL model</span>
 answer = ernie_client.chat_with_image(query=final_prompt, image_path=img_path)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. Dukungan Vision API</strong></p>
-<p>Klien (ernie_client.py) mendukung format visi OpenAI. Gambar dikonversi ke Base64 dan dikirim dalam format image_url, yang memungkinkan model memproses gambar dan teks secara bersamaan.</p>
+<p><strong>2. Vision API support</strong></p>
+<p>The client (ernie_client.py) supports the OpenAI vision format. Images are converted to Base64 and sent in the image_url format, which lets the model process both image and text together.</p>
 <pre><code translate="no"><span class="hljs-comment"># ernie_client.py</span>
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">chat_with_image</span>(<span class="hljs-params">self, query: <span class="hljs-built_in">str</span>, image_path: <span class="hljs-built_in">str</span></span>):
    base64_image = <span class="hljs-variable language_">self</span>._encode_image(image_path)
@@ -357,9 +357,9 @@ answer = ernie_client.chat_with_image(query=final_prompt, image_path=img_path)
    ]
    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.chat(messages)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>3. Rencana mundur</strong></p>
-<p>Jika API gambar gagal (misalnya, karena masalah jaringan atau batasan model), sistem akan beralih kembali ke RAG berbasis teks normal.<br>
-Sistem ini menggunakan teks OCR untuk menjawab pertanyaan, sehingga sistem tetap bekerja tanpa gangguan.</p>
+<p><strong>3. Fallback plan</strong></p>
+<p>If the image API fails (for example, because of network issues or model limits), the system switches back to normal text-based RAG.<br>
+It uses the OCR text to answer the question, so the system keeps working without interruption.</p>
 <pre><code translate="no"><span class="hljs-comment"># Fallback logic in backend.py</span>
 <span class="hljs-keyword">try</span>:
    answer = ernie.chat_with_image(final_prompt, img_path)
@@ -369,7 +369,7 @@ Sistem ini menggunakan teks OCR untuk menjawab pertanyaan, sehingga sistem tetap
    <span class="hljs-comment"># Fallback: use the extracted text as context to continue answering</span>
    answer, metric = ask_question_logic(final_prompt, collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Key-UI-Features-and-Implementation-for-Pipeline" class="common-anchor-header">Fitur UI Utama dan Implementasi untuk Pipeline<button data-href="#Key-UI-Features-and-Implementation-for-Pipeline" class="anchor-icon" translate="no">
+<h2 id="Key-UI-Features-and-Implementation-for-Pipeline" class="common-anchor-header">Key UI Features and Implementation for Pipeline<button data-href="#Key-UI-Features-and-Implementation-for-Pipeline" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -384,8 +384,8 @@ Sistem ini menggunakan teks OCR untuk menjawab pertanyaan, sehingga sistem tetap
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="How-to-Handle-API-Rate-Limiting-and-Protection" class="common-anchor-header">Cara Menangani Pembatasan dan Perlindungan Tarif API</h3><p>Ketika memanggil LLM atau menyematkan API, sistem terkadang dapat menerima kesalahan <strong>429 Terlalu Banyak Permintaan</strong>. Hal ini biasanya terjadi ketika terlalu banyak permintaan yang dikirim dalam waktu singkat.</p>
-<p>Untuk menangani hal ini, proyek menambahkan mekanisme perlambatan adaptif di ernie_client.py. Jika terjadi kesalahan batas kecepatan, sistem akan secara otomatis mengurangi kecepatan permintaan dan mencoba kembali alih-alih berhenti.</p>
+    </button></h2><h3 id="How-to-Handle-API-Rate-Limiting-and-Protection" class="common-anchor-header">How to Handle API Rate Limiting and Protection</h3><p>When calling LLM or embedding APIs, the system may sometimes receive a <strong>429 Too Many Requests</strong> error. This usually happens when too many requests are sent in a short time.</p>
+<p>To handle this, the project adds an adaptive slowdown mechanism in ernie_client.py. If a rate limit error occurs, the system automatically reduces the request speed and retries instead of stopping.</p>
 <pre><code translate="no"><span class="hljs-comment"># Logic for handling rate limiting</span>
 <span class="hljs-keyword">if</span> is_rate_limit:
     <span class="hljs-variable language_">self</span>._adaptive_slow_down()  <span class="hljs-comment"># Permanently increase the request interval</span>
@@ -396,16 +396,16 @@ Sistem ini menggunakan teks OCR untuk menjawab pertanyaan, sehingga sistem tetap
     <span class="hljs-variable language_">self</span>.current_delay = <span class="hljs-built_in">min</span>(<span class="hljs-variable language_">self</span>.current_delay * <span class="hljs-number">2.0</span>, <span class="hljs-number">15.0</span>)
     logger.warning(<span class="hljs-string">f&quot;📉 Rate limit triggered (429), system automatically slowing down: new interval <span class="hljs-subst">{self.current_delay:<span class="hljs-number">.2</span>f}</span>s&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Hal ini membantu menjaga sistem tetap stabil, terutama ketika memproses dan menyematkan dokumen dalam jumlah besar.</p>
-<h3 id="Custom-Styling" class="common-anchor-header">Penataan Khusus</h3><p>Frontend menggunakan Gradio (main.py). Kami menambahkan CSS khusus (modern_css) untuk membuat antarmuka yang lebih bersih dan lebih mudah digunakan.</p>
+<p>This helps keep the system stable, especially when processing and embedding large numbers of documents.</p>
+<h3 id="Custom-Styling" class="common-anchor-header">Custom Styling</h3><p>The frontend uses Gradio (main.py). We added custom CSS (modern_css) to make the interface cleaner and easier to use.</p>
 <ul>
-<li><strong>Kotak masukan</strong></li>
+<li><strong>Input box</strong></li>
 </ul>
-<p>Diubah dari gaya abu-abu default menjadi desain bulat berwarna putih. Terlihat lebih sederhana dan lebih modern.</p>
+<p>Changed from the default gray style to a white, rounded design. It looks simpler and more modern.</p>
 <ul>
-<li><strong>Tombol kirim</strong></li>
+<li><strong>Send button</strong></li>
 </ul>
-<p>Menambahkan warna gradien dan efek hover sehingga lebih menonjol.</p>
+<p>Added a gradient color and hover effect so it stands out more.</p>
 <pre><code translate="no"><span class="hljs-comment">/* main.py - modern_css snippet */</span>
 <span class="hljs-comment">/* Force the input box to use a white background with rounded corners, simulating a modern chat app */</span>
 .custom-textbox textarea {
@@ -430,10 +430,12 @@ Sistem ini menggunakan teks OCR untuk menjawab pertanyaan, sehingga sistem tetap
     box-shadow: <span class="hljs-number">0</span> <span class="hljs-number">4</span>px <span class="hljs-number">10</span><span class="hljs-function">px <span class="hljs-title">rgba</span>(<span class="hljs-params"><span class="hljs-number">99</span>, <span class="hljs-number">102</span>, <span class="hljs-number">241</span>, <span class="hljs-number">0.3</span></span>) !important</span>;
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="LaTeX-Formula-Rendering" class="common-anchor-header">Perenderan Rumus LaTeX</h3><p>Banyak dokumen penelitian yang berisi rumus matematika, sehingga rendering yang benar adalah penting. Kami menambahkan dukungan LaTeX penuh untuk rumus sebaris dan blok.</p>
+<h3 id="LaTeX-Formula-Rendering" class="common-anchor-header">LaTeX Formula Rendering</h3><p>Many research documents contain math formulas, so correct rendering is important. We added full LaTeX support for both inline and block formulas.</p>
 <ul>
-<li><strong>Di mana hal ini berlaku</strong>Konfigurasi ini bekerja di jendela obrolan (Chatbot) dan area ringkasan (Penurunan harga).</li>
-<li><strong>Hasil praktis</strong>Baik rumus yang muncul di jawaban model atau di ringkasan dokumen, rumus tersebut dirender dengan benar di halaman.</li>
+<li><strong>Where it applies</strong>
+The configuration works in both the chat window (Chatbot) and the summary area (Markdown).</li>
+<li><strong>Practical result</strong>
+Whether formulas appear in the model’s answer or in document summaries, they are rendered correctly on the page.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Configure LaTeX rules in main.py</span>
 latex_config = [
@@ -455,12 +457,12 @@ doc_summary = gr.Markdown(
     latex_delimiters=latex_config
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Explainability-Relevance-Scores-and-Confidence" class="common-anchor-header">Kemampuan menjelaskan: Skor Relevansi dan Keyakinan</h3><p>Untuk menghindari pengalaman "kotak hitam", sistem menunjukkan dua indikator sederhana:</p>
+<h3 id="Explainability-Relevance-Scores-and-Confidence" class="common-anchor-header">Explainability: Relevance Scores and Confidence</h3><p>To avoid a “black box” experience, the system shows two simple indicators:</p>
 <ul>
-<li><p><strong>Relevansi</strong></p></li>
-<li><p>Ditampilkan di bawah setiap jawaban di bagian "Referensi".</p></li>
-<li><p>Menampilkan skor pemeringkat untuk setiap bagian yang dikutip.</p></li>
-<li><p>Membantu pengguna melihat mengapa halaman atau bagian tertentu digunakan.</p></li>
+<li><p><strong>Relevance</strong></p></li>
+<li><p>Shown under each answer in the “References” section.</p></li>
+<li><p>Displays the reranker score for each cited chunk.</p></li>
+<li><p>Helps users see why a specific page or passage was used.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># backend.py - Build reference source list</span>
 sources = <span class="hljs-string">&quot;\n\n📚 **References:**\n&quot;</span>
@@ -470,11 +472,11 @@ sources = <span class="hljs-string">&quot;\n\n📚 **References:**\n&quot;</span
     sources += <span class="hljs-string">f&quot;- <span class="hljs-subst">{key}</span> [Relevance:<span class="hljs-subst">{c.get(<span class="hljs-string">&#x27;composite_score&#x27;</span>,<span class="hljs-number">0</span>):<span class="hljs-number">.0</span>f}</span>%]\n&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p><strong>Keyakinan</strong></p></li>
-<li><p>Ditampilkan di panel "Rincian Analisis".</p></li>
-<li><p>Berdasarkan skor bagian teratas (diskalakan hingga 100%).</p></li>
-<li><p>Menunjukkan seberapa yakin sistem terhadap jawaban.</p></li>
-<li><p>Jika di bawah 60%, jawabannya mungkin kurang dapat diandalkan.</p></li>
+<li><p><strong>Confidence</strong></p></li>
+<li><p>Shown in the “Analysis Details” panel.</p></li>
+<li><p>Based on the top chunk’s score (scaled to 100%).</p></li>
+<li><p>Shows how confident the system is about the answer.</p></li>
+<li><p>If below 60%, the answer may be less reliable.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># backend.py - Calculate overall confidence</span>
 <span class="hljs-comment"># 1. Get the top-ranked chunk after reranking</span>
@@ -483,7 +485,7 @@ top_score = final[<span class="hljs-number">0</span>].get(<span class="hljs-stri
 <span class="hljs-comment"># 2. Normalize the score (capped at 100%) as the overall &quot;confidence&quot; for this Q&amp;A</span>
 metric = <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class="hljs-built_in">min</span>(<span class="hljs-number">100</span>, top_score):<span class="hljs-number">.1</span>f}</span>%&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Antarmuka ditampilkan di bawah ini. Di antarmuka, setiap jawaban menunjukkan nomor halaman sumber dan skor relevansinya.</p>
+<p>The UI is shown below. In the interface, each answer shows the page number of the source and its relevance score.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_ec01986414.png" alt="" class="doc-image" id="" />
@@ -508,7 +510,7 @@ metric = <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class=
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -523,14 +525,14 @@ metric = <span class="hljs-string">f&quot;<span class="hljs-subst">{<span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Akurasi RAG bergantung pada rekayasa antara LLM dan basis data vektor. Artikel ini membahas pembuatan <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> dengan <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> yang mencakup setiap tahap rekayasa tersebut:</p>
+    </button></h2><p>RAG accuracy is dependent on the engineering between an LLM and a vector database. This article walked through a <a href="https://github.com/LiaoYFBH/Paddle-ERNIE-RAG/blob/main/README_EN.md">Paddle-ERNIE-RAG</a> build with <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> that covers each stage of that engineering:</p>
 <ul>
-<li><strong>Penguraian dokumen.</strong> PP-StructureV3 (melalui <a href="https://github.com/PaddlePaddle/PaddleOCR"></a><a href="https://github.com/PaddlePaddle/PaddleOCR">PaddleOCR</a>) mengonversi PDF menjadi Markdown yang bersih dengan OCR yang memperhatikan tata letak, mempertahankan judul, tabel, dan gambar yang hilang dari ekstraktor dasar.</li>
-<li><strong>Pemotongan.</strong> Pemisahan jendela geser dengan tumpang tindih menjaga konteks tetap utuh pada batas-batas potongan, mencegah fragmen-fragmen yang rusak yang mengganggu pengambilan kembali.</li>
-<li><strong>Menyimpan Vektor dalam Milvus.</strong> Menyimpan vektor dengan cara yang mendukung pengambilan yang cepat dan akurat.</li>
-<li><strong>Pencarian hibrida.</strong> Menjalankan pencarian vektor dan pencarian kata kunci secara paralel, lalu menggabungkan hasilnya dengan RRF (Reciprocal Rank Fusion), menangkap kecocokan semantik dan istilah yang tepat yang tidak dapat ditemukan oleh salah satu metode.</li>
-<li><strong>Pemeringkatan ulang.</strong> Perangking ulang berbasis aturan yang transparan memberi nilai pada setiap bagian berdasarkan kecocokan fuzzy, cakupan kata kunci, kemiripan semantik, panjang, dan deteksi kata benda yang tepat - tidak perlu data pelatihan, dan setiap nilai dapat di-debug.</li>
-<li><strong>Tanya Jawab Multimodal.</strong> Memasangkan gambar dengan teks halaman OCR dalam prompt memberikan model visi konteks yang cukup untuk menjawab pertanyaan tentang bagan dan diagram, dengan fallback hanya teks jika API gambar gagal.</li>
+<li><strong>Document parsing.</strong> PP-StructureV3 (via <a href="https://github.com/PaddlePaddle/PaddleOCR"></a><a href="https://github.com/PaddlePaddle/PaddleOCR">PaddleOCR</a>) converts PDFs into clean Markdown with layout-aware OCR, preserving headings, tables, and images that basic extractors lose.</li>
+<li><strong>Chunking.</strong> Sliding window splits with overlap keep context intact at chunk boundaries, preventing the broken fragments that hurt retrieval recall.</li>
+<li><strong>Storing Vectors in Milvus.</strong> Store vectors in a way that supports fast, accurate retrieval.</li>
+<li><strong>Hybrid search.</strong> Running vector search and keyword search in parallel, then merging results with RRF (Reciprocal Rank Fusion), catches both semantic matches and exact-term hits that either method alone would miss.</li>
+<li><strong>Reranking.</strong> A transparent, rule-based reranker scores each chunk on fuzzy match, keyword coverage, semantic similarity, length, and proper noun detection — no training data required, and every score is debuggable.</li>
+<li><strong>Multimodal Q&amp;A.</strong> Pairing images with OCR page text in the prompt gives the vision model enough context to answer questions about charts and diagrams, with a text-only fallback if the image API fails.</li>
 </ul>
-<p>Jika Anda sedang membangun sistem RAG untuk Tanya Jawab dokumen dan menginginkan akurasi yang lebih baik, kami ingin mendengar bagaimana Anda mendekatinya.</p>
-<p>Ada pertanyaan tentang <a href="https://milvus.io/">Milvus</a>, pencarian hibrida, atau desain basis pengetahuan? Bergabunglah dengan <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">saluran Slack</a> kami atau pesan sesi <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Jam Kerja Milvus</a> selama 20 menit untuk mendiskusikan kasus penggunaan Anda.</p>
+<p>If you’re building a RAG system for document Q&amp;A and want better accuracy, we’d love to hear how you’re approaching it.</p>
+<p>Have questions about <a href="https://milvus.io/">Milvus</a>, hybrid search, or knowledge base design? Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session to discuss your use case.</p>

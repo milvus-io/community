@@ -1,6 +1,7 @@
 ---
 id: milvus-boost-ranker-business-aware-vector-search.md
-title: Wie man Milvus Boost Ranker für die geschäftsorientierte Vektorsuche verwendet
+title: |
+  How to Use Milvus Boost Ranker for Business-Aware Vector Search
 author: Wei Zang
 date: 2026-3-24
 cover: >-
@@ -12,16 +13,15 @@ tags: 'Milvus, vector database, vector search'
 meta_keywords: 'Milvus Boost Ranker, vector search ranking, metadata reranking, Milvus 2.6'
 meta_title: |
   Milvus Boost Ranker: Add Business Rules to Vector Search
-desc: >-
-  Erfahren Sie, wie Sie mit Milvus Boost Ranker Geschäftsregeln auf die
-  Vektorähnlichkeit aufsetzen können - offizielle Dokumente aufwerten, veraltete
-  Inhalte zurückstufen, mehr Vielfalt schaffen.
+desc: >
+  Learn how Milvus Boost Ranker lets you layer business rules on top of vector
+  similarity — boost official docs, demote stale content, add diversity.
 origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search.md'
 ---
-<p>Die Vektorsuche ordnet die Ergebnisse nach der Ähnlichkeit der Einbettung - je näher die Vektoren beieinander liegen, desto höher das Ergebnis. Einige Systeme fügen einen modellbasierten Reranker hinzu (BGE, Voyage, Cohere), um die Reihenfolge zu verbessern. Keiner der beiden Ansätze wird jedoch einer grundlegenden Anforderung in der Produktion gerecht: <strong>Der Geschäftskontext ist genauso wichtig wie die semantische Relevanz, manchmal sogar wichtiger.</strong></p>
-<p>Eine E-Commerce-Website muss zuerst die Produkte anzeigen, die in den offiziellen Geschäften vorrätig sind. Eine Content-Plattform möchte aktuelle Ankündigungen anzeigen. Eine Unternehmens-Wissensdatenbank benötigt maßgebliche Dokumente an der Spitze. Wenn sich das Ranking ausschließlich auf den Vektorabstand stützt, werden diese Regeln ignoriert. Die Ergebnisse mögen relevant sein, aber sie sind nicht angemessen.</p>
-<p><strong><a href="https://milvus.io/docs/reranking.md">Der Boost Ranker</a></strong>, der in <a href="https://milvus.io/intro">Milvus</a> 2.6 eingeführt wurde, löst dieses Problem. Mit ihm können Sie die Rangfolge der Suchergebnisse anhand von Metadatenregeln anpassen - ohne Neuaufbau des Index und ohne Änderung des Modells. Dieser Artikel beschreibt, wie er funktioniert, wann er eingesetzt werden sollte und wie er mit Code implementiert werden kann.</p>
-<h2 id="What-Is-Boost-Ranker" class="common-anchor-header">Was ist Boost Ranker?<button data-href="#What-Is-Boost-Ranker" class="anchor-icon" translate="no">
+<p>Vector search ranks results by embedding similarity — the closer the vectors, the higher the result. Some systems add a model-based reranker (BGE, Voyage, Cohere) to improve ordering. But neither approach handles a fundamental requirement in production: <strong>business context matters as much as semantic relevance, sometimes more.</strong></p>
+<p>An e-commerce site needs to surface in-stock products from official stores first. A content platform wants to pin recent announcements. An enterprise knowledge base needs authoritative documents at the top. When ranking relies solely on vector distance, these rules get ignored. The results may be relevant, but they’re not appropriate.</p>
+<p><strong><a href="https://milvus.io/docs/reranking.md">Boost Ranker</a></strong>, introduced in <a href="https://milvus.io/intro">Milvus</a> 2.6, solves this. It lets you adjust search result rankings using metadata rules — no index rebuild, no model change. This article covers how it works, when to use it, and how to implement it with code.</p>
+<h2 id="What-Is-Boost-Ranker" class="common-anchor-header">What Is Boost Ranker?<button data-href="#What-Is-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,21 +36,21 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Boost Ranker ist eine leichtgewichtige, regelbasierte Reranking-Funktion in Milvus 2.6.2</strong>, die <a href="https://zilliz.com/learn/vector-similarity-search">Vektorsuchergebnisse</a> mithilfe skalarer Metadatenfelder anpasst. Im Gegensatz zu modellbasierten Rerankern, die externe LLMs oder Einbettungsdienste aufrufen, arbeitet Boost Ranker vollständig innerhalb von Milvus mit einfachen Filter- und Gewichtungsregeln. Keine externen Abhängigkeiten, minimaler Latenz-Overhead - geeignet für den Einsatz in Echtzeit.</p>
-<p>Sie konfigurieren ihn über die <a href="https://milvus.io/docs/manage-functions.md">Funktions-API</a>. Nachdem die Vektorsuche eine Reihe von Kandidaten liefert, wendet Boost Ranker drei Operationen an:</p>
+    </button></h2><p><strong>Boost Ranker is a lightweight, rule-based reranking feature in Milvus 2.6.2</strong> that adjusts <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> results using scalar metadata fields. Unlike model-based rerankers that call external LLMs or embedding services, Boost Ranker operates entirely within Milvus using simple filter-and-weight rules. No external dependencies, minimal latency overhead — suitable for real-time use.</p>
+<p>You configure it through the <a href="https://milvus.io/docs/manage-functions.md">Function API</a>. After vector search returns a set of candidates, Boost Ranker applies three operations:</p>
 <ol>
-<li><strong>Filter:</strong> Identifizierung von Ergebnissen, die bestimmten Bedingungen entsprechen (z. B. <code translate="no">is_official == true</code>)</li>
-<li><strong>Verstärken:</strong> Multiplizieren der Ergebnisse mit einer konfigurierten Gewichtung</li>
-<li><strong>Shuffle:</strong> optionales Hinzufügen eines kleinen Zufallsfaktors (0-1), um Vielfalt einzuführen</li>
+<li><strong>Filter:</strong> identify results matching specific conditions (e.g., <code translate="no">is_official == true</code>)</li>
+<li><strong>Boost:</strong> multiply their scores by a configured weight</li>
+<li><strong>Shuffle:</strong> optionally add a small random factor (0–1) to introduce diversity</li>
 </ol>
-<h3 id="How-It-Works-Under-the-Hood" class="common-anchor-header">Wie es unter der Haube funktioniert</h3><p>Boost Ranker läuft innerhalb von Milvus als Nachbearbeitungsschritt:</p>
+<h3 id="How-It-Works-Under-the-Hood" class="common-anchor-header">How It Works Under the Hood</h3><p>Boost Ranker runs inside Milvus as a post-processing step:</p>
 <ol>
-<li><strong>Vektorsuche</strong> - jedes Segment gibt Kandidaten mit IDs, Ähnlichkeitswerten und Metadaten zurück.</li>
-<li><strong>Anwenden von Regeln</strong> - das System filtert übereinstimmende Datensätze und passt ihre Punktzahlen unter Verwendung der konfigurierten Gewichtung und der optionalen <code translate="no">random_score</code> an.</li>
-<li><strong>Zusammenführen und sortieren</strong> - alle Kandidaten werden kombiniert und nach aktualisierten Punktzahlen neu sortiert, um die endgültigen Top-K-Ergebnisse zu erhalten.</li>
+<li><strong>Vector search</strong> — each segment returns candidates with IDs, similarity scores, and metadata.</li>
+<li><strong>Apply rules</strong> — the system filters matching records and adjusts their scores using the configured weight and optional <code translate="no">random_score</code>.</li>
+<li><strong>Merge and sort</strong> — all candidates are combined and re-sorted by updated scores to produce the final Top-K results.</li>
 </ol>
-<p>Da Boost Ranker nur mit bereits abgerufenen Kandidaten und nicht mit dem gesamten Datensatz arbeitet, sind die zusätzlichen Rechenkosten vernachlässigbar.</p>
-<h2 id="When-Should-You-Use-Boost-Ranker" class="common-anchor-header">Wann sollten Sie Boost Ranker verwenden?<button data-href="#When-Should-You-Use-Boost-Ranker" class="anchor-icon" translate="no">
+<p>Because Boost Ranker only operates on already-retrieved candidates — not the full dataset — the additional computational cost is negligible.</p>
+<h2 id="When-Should-You-Use-Boost-Ranker" class="common-anchor-header">When Should You Use Boost Ranker?<button data-href="#When-Should-You-Use-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,40 +65,41 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Boosting-Important-Results" class="common-anchor-header">Boosten wichtiger Ergebnisse</h3><p>Der häufigste Anwendungsfall: Überlagern Sie die semantische Suche mit einfachen Geschäftsregeln.</p>
+    </button></h2><h3 id="Boosting-Important-Results" class="common-anchor-header">Boosting Important Results</h3><p>The most common use case: layer simple business rules on top of semantic search.</p>
 <ul>
-<li><strong>E-Commerce:</strong> Boosten Sie Produkte aus Flagship-Stores, von offiziellen Verkäufern oder aus bezahlten Werbeaktionen. Schieben Sie Artikel mit hohen aktuellen Verkäufen oder Klickraten nach oben.</li>
-<li><strong>Content-Plattformen:</strong> Priorisieren Sie kürzlich veröffentlichte Inhalte über ein <code translate="no">publish_time</code> -Feld, oder heben Sie Beiträge von verifizierten Accounts hervor.</li>
-<li><strong>Unternehmenssuche:</strong> Geben Sie Dokumenten mit <code translate="no">doctype == &quot;policy&quot;</code> oder <code translate="no">is_canonical == true</code> höhere Priorität.</li>
+<li><strong>E-commerce:</strong> boost products from flagship stores, official sellers, or paid promotions. Push items with high recent sales or click-through rates higher.</li>
+<li><strong>Content platforms:</strong> prioritize recently published content via a <code translate="no">publish_time</code> field, or boost posts from verified accounts.</li>
+<li><strong>Enterprise search:</strong> give higher priority to documents where <code translate="no">doctype == &quot;policy&quot;</code> or <code translate="no">is_canonical == true</code>.</li>
 </ul>
-<p>Alles konfigurierbar mit einem Filter + Gewichtung. Keine Änderungen des Einbettungsmodells, keine Index-Neuaufbauten.</p>
-<h3 id="Demoting-Without-Removing" class="common-anchor-header">Herabstufung ohne Entfernung</h3><p>Boost Ranker kann auch das Ranking für bestimmte Ergebnisse herabsetzen - eine sanftere Alternative zur harten Filterung.</p>
+<p>All configurable with a filter + weight. No embedding model changes, no index rebuilds.</p>
+<h3 id="Demoting-Without-Removing" class="common-anchor-header">Demoting Without Removing</h3><p>Boost Ranker can also lower ranking for certain results — a softer alternative to hard filtering.</p>
 <ul>
-<li><strong>Produkte mit geringem Lagerbestand:</strong> Wenn <code translate="no">stock &lt; 10</code>, wird ihr Gewicht leicht reduziert. Sie sind immer noch auffindbar, dominieren aber nicht mehr die Top-Positionen.</li>
-<li><strong>Sensible Inhalte:</strong> Senken Sie die Gewichtung von gekennzeichneten Inhalten, anstatt sie ganz zu entfernen. Begrenzt die Auffindbarkeit ohne harte Zensur.</li>
-<li><strong>Veraltete Dokumente:</strong> Dokumente mit <code translate="no">year &lt; 2020</code> werden niedriger eingestuft, damit neuere Inhalte zuerst auftauchen.</li>
+<li><strong>Low-stock products:</strong> if <code translate="no">stock &lt; 10</code>, reduce their weight slightly. Still findable, but won’t dominate top positions.</li>
+<li><strong>Sensitive content:</strong> lower the weight of flagged content instead of removing it entirely. Limits exposure without hard censorship.</li>
+<li><strong>Stale documents:</strong> documents where <code translate="no">year &lt; 2020</code> get ranked lower so newer content surfaces first.</li>
 </ul>
-<p>Die Nutzer können die zurückgestuften Ergebnisse immer noch finden, indem sie scrollen oder genauer suchen, aber sie verdrängen nicht die relevanteren Inhalte.</p>
-<h3 id="Adding-Diversity-with-Controlled-Randomness" class="common-anchor-header">Mehr Vielfalt durch kontrollierte Zufälligkeit</h3><p>Wenn viele Ergebnisse ähnliche Punktzahlen haben, kann das Top-K bei allen Abfragen identisch aussehen. Der Parameter <code translate="no">random_score</code> von Boost Ranker sorgt für leichte Variationen:</p>
+<p>Users can still find demoted results by scrolling or searching more precisely, but they won’t crowd out more relevant content.</p>
+<h3 id="Adding-Diversity-with-Controlled-Randomness" class="common-anchor-header">Adding Diversity with Controlled Randomness</h3><p>When many results have similar scores, the Top-K can look identical across queries. Boost Ranker’s <code translate="no">random_score</code> parameter introduces slight variation:</p>
 <pre><code translate="no" class="language-json"><span class="hljs-string">&quot;random_score&quot;</span>: {
   <span class="hljs-string">&quot;seed&quot;</span>: <span class="hljs-number">126</span>,
   <span class="hljs-string">&quot;field&quot;</span>: <span class="hljs-string">&quot;id&quot;</span>
 }
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">seed</code>: steuert die allgemeine Zufälligkeit für die Reproduzierbarkeit</li>
-<li><code translate="no">field</code>Normalerweise der Primärschlüssel <code translate="no">id</code>, damit derselbe Datensatz jedes Mal denselben Zufallswert erhält.</li>
+<li><code translate="no">seed</code>: controls overall randomness for reproducibility</li>
+<li><code translate="no">field</code>: usually the primary key <code translate="no">id</code>, ensures the same record gets the same random value each time</li>
 </ul>
-<p>Dies ist nützlich für die <strong>Diversifizierung von Empfehlungen</strong> (um zu verhindern, dass dieselben Elemente immer zuerst erscheinen) und für die <strong>Erkundung</strong> (Kombination fester Geschäftsgewichte mit kleinen Zufallsstörungen).</p>
-<h3 id="Combining-Boost-Ranker-with-Other-Rankers" class="common-anchor-header">Kombinieren von Boost Ranker mit anderen Rankern</h3><p>Boost Ranker wird über die Funktions-API mit <code translate="no">params.reranker = &quot;boost&quot;</code> eingestellt. Zwei Dinge sind bei der Kombination zu beachten:</p>
+<p>This is useful for <strong>diversifying recommendations</strong> (preventing the same items from always appearing first) and <strong>exploration</strong> (combining fixed business weights with small random perturbations).</p>
+<h3 id="Combining-Boost-Ranker-with-Other-Rankers" class="common-anchor-header">Combining Boost Ranker with Other Rankers</h3><p>Boost Ranker is set via the Function API with <code translate="no">params.reranker = &quot;boost&quot;</code>. Two things to know about combining it:</p>
 <ul>
-<li><strong>Einschränkung:</strong> Bei der hybriden (multivektoralen) Suche kann der Boost Ranker nicht als oberstes Ranglistenprogramm verwendet werden. Er kann jedoch innerhalb jedes einzelnen <code translate="no">AnnSearchRequest</code> verwendet werden, um die Ergebnisse anzupassen, bevor sie zusammengeführt werden.</li>
-<li><strong>Übliche Kombinationen:</strong><ul>
-<li><strong>RRF + Boost:</strong> Verwendung von RRF zum Zusammenführen multimodaler Ergebnisse, dann Anwendung von Boost zur metadatenbasierten Feinabstimmung.</li>
-<li><strong>Model Ranker + Boost:</strong> Verwenden Sie einen modellbasierten Ranker für die semantische Qualität und anschließend Boost für die Geschäftsregeln.</li>
+<li><strong>Limitation:</strong> in hybrid (multi-vector) search, Boost Ranker cannot be the top-level ranker. But it can be used inside each individual <code translate="no">AnnSearchRequest</code> to adjust results before they’re merged.</li>
+<li><strong>Common combinations:</strong>
+<ul>
+<li><strong>RRF + Boost:</strong> use RRF to merge multi-modal results, then apply Boost for metadata-based fine-tuning.</li>
+<li><strong>Model ranker + Boost:</strong> use a model-based ranker for semantic quality, then Boost for business rules.</li>
 </ul></li>
 </ul>
-<h2 id="How-to-Configure-Boost-Ranker" class="common-anchor-header">So konfigurieren Sie Boost Ranker<button data-href="#How-to-Configure-Boost-Ranker" class="anchor-icon" translate="no">
+<h2 id="How-to-Configure-Boost-Ranker" class="common-anchor-header">How to Configure Boost Ranker<button data-href="#How-to-Configure-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -113,42 +114,42 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Boost Ranker wird über die Funktions-API konfiguriert. Für komplexere Logik kombinieren Sie ihn mit <code translate="no">FunctionScore</code>, um mehrere Regeln gemeinsam anzuwenden.</p>
-<h3 id="Required-Fields" class="common-anchor-header">Erforderliche Felder</h3><p>Beim Erstellen eines <code translate="no">Function</code> Objekts:</p>
+    </button></h2><p>Boost Ranker is configured through the Function API. For more complex logic, combine it with <code translate="no">FunctionScore</code> to apply multiple rules together.</p>
+<h3 id="Required-Fields" class="common-anchor-header">Required Fields</h3><p>When creating a <code translate="no">Function</code> object:</p>
 <ul>
-<li><code translate="no">name</code>: beliebiger benutzerdefinierter Name</li>
-<li><code translate="no">input_field_names</code>: muss eine leere Liste sein <code translate="no">[]</code></li>
-<li><code translate="no">function_type</code>: festgelegt auf <code translate="no">FunctionType.RERANK</code></li>
-<li><code translate="no">params.reranker</code>: muss sein <code translate="no">&quot;boost&quot;</code></li>
+<li><code translate="no">name</code>: any custom name</li>
+<li><code translate="no">input_field_names</code>: must be an empty list <code translate="no">[]</code></li>
+<li><code translate="no">function_type</code>: set to <code translate="no">FunctionType.RERANK</code></li>
+<li><code translate="no">params.reranker</code>: must be <code translate="no">&quot;boost&quot;</code></li>
 </ul>
-<h3 id="Key-Parameters" class="common-anchor-header">Schlüssel-Parameter</h3><p><strong><code translate="no">params.weight</code> (erforderlich)</strong></p>
-<p>Der Multiplikator, der auf die Bewertungen der übereinstimmenden Datensätze angewendet wird. Wie Sie ihn festlegen, hängt von der Metrik ab:</p>
+<h3 id="Key-Parameters" class="common-anchor-header">Key Parameters</h3><p><strong><code translate="no">params.weight</code> (required)</strong></p>
+<p>The multiplier applied to matching records’ scores. How you set it depends on the metric:</p>
 <table>
 <thead>
-<tr><th>Metrik-Typ</th><th>Um Ergebnisse zu erhöhen</th><th>Um Ergebnisse herabzustufen</th></tr>
+<tr><th>Metric Type</th><th>To Boost Results</th><th>To Demote Results</th></tr>
 </thead>
 <tbody>
-<tr><td>Höher-ist-besser (COSINE, IP)</td><td><code translate="no">weight &gt; 1</code></td><td><code translate="no">weight &lt; 1</code></td></tr>
-<tr><td>Niedriger-ist-besser (L2/Euklidisch)</td><td><code translate="no">weight &lt; 1</code></td><td><code translate="no">weight &gt; 1</code></td></tr>
+<tr><td>Higher-is-better (COSINE, IP)</td><td><code translate="no">weight &gt; 1</code></td><td><code translate="no">weight &lt; 1</code></td></tr>
+<tr><td>Lower-is-better (L2/Euclidean)</td><td><code translate="no">weight &lt; 1</code></td><td><code translate="no">weight &gt; 1</code></td></tr>
 </tbody>
 </table>
 <p><strong><code translate="no">params.filter</code> (optional)</strong></p>
-<p>Eine Bedingung, die auswählt, für welche Datensätze die Punktzahlen angepasst werden:</p>
+<p>A condition that selects which records get their scores adjusted:</p>
 <ul>
 <li><code translate="no">&quot;doctype == 'abstract'&quot;</code></li>
 <li><code translate="no">&quot;is_premium == true&quot;</code></li>
 <li><code translate="no">&quot;views &gt; 1000 and category == 'tech'&quot;</code></li>
 </ul>
-<p>Nur übereinstimmende Datensätze sind betroffen. Alle anderen behalten ihre ursprüngliche Punktzahl.</p>
+<p>Only matching records are affected. Everything else keeps its original score.</p>
 <p><strong><code translate="no">params.random_score</code> (optional)</strong></p>
-<p>Fügt einen Zufallswert zwischen 0 und 1 für die Vielfalt hinzu. Weitere Informationen finden Sie im Abschnitt Zufälligkeit oben.</p>
-<h3 id="Single-vs-Multiple-Rules" class="common-anchor-header">Einzelne vs. mehrere Regeln</h3><p><strong>Einzelne Regel</strong> - wenn Sie eine geschäftliche Einschränkung haben (z. B. offizielle Dokumente fördern), übergeben Sie den Ranker direkt an <code translate="no">search(..., ranker=ranker)</code>.</p>
-<p><strong>Mehrere Regeln</strong> - wenn Sie mehrere Einschränkungen benötigen (vorrätige Artikel priorisieren + niedrig bewertete Produkte zurückstufen + Zufälligkeit hinzufügen), erstellen Sie mehrere <code translate="no">Function</code> Objekte und kombinieren sie mit <code translate="no">FunctionScore</code>. Sie konfigurieren:</p>
+<p>Adds a random value between 0 and 1 for diversity. See the randomness section above for details.</p>
+<h3 id="Single-vs-Multiple-Rules" class="common-anchor-header">Single vs. Multiple Rules</h3><p><strong>Single rule</strong> — when you have one business constraint (e.g., boost official docs), pass the ranker directly to <code translate="no">search(..., ranker=ranker)</code>.</p>
+<p><strong>Multiple rules</strong> — when you need several constraints (prioritize in-stock items + demote low-rated products + add randomness), create multiple <code translate="no">Function</code> objects and combine them with <code translate="no">FunctionScore</code>. You configure:</p>
 <ul>
-<li><code translate="no">boost_mode</code>: wie jede Regel mit der ursprünglichen Bewertung kombiniert wird (<code translate="no">multiply</code> oder <code translate="no">add</code>)</li>
-<li><code translate="no">function_mode</code>: wie mehrere Regeln miteinander kombiniert werden (<code translate="no">multiply</code> oder <code translate="no">add</code>)</li>
+<li><code translate="no">boost_mode</code>: how each rule combines with the original score (<code translate="no">multiply</code> or <code translate="no">add</code>)</li>
+<li><code translate="no">function_mode</code>: how multiple rules combine with each other (<code translate="no">multiply</code> or <code translate="no">add</code>)</li>
 </ul>
-<h2 id="Hands-On-Prioritizing-Official-Documents" class="common-anchor-header">Praktische Anwendung: Priorisierung von offiziellen Dokumenten<button data-href="#Hands-On-Prioritizing-Official-Documents" class="anchor-icon" translate="no">
+<h2 id="Hands-On-Prioritizing-Official-Documents" class="common-anchor-header">Hands-On: Prioritizing Official Documents<button data-href="#Hands-On-Prioritizing-Official-Documents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -163,22 +164,22 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Lassen Sie uns ein konkretes Beispiel durchgehen: Offizielle Dokumente werden in einem Dokumentensuchsystem höher eingestuft.</p>
-<h3 id="Schema" class="common-anchor-header">Schema</h3><p>Eine Sammlung namens <code translate="no">milvus_collection</code> mit diesen Feldern:</p>
+    </button></h2><p>Let’s walk through a concrete example: making official documents rank higher in a document search system.</p>
+<h3 id="Schema" class="common-anchor-header">Schema</h3><p>A collection called <code translate="no">milvus_collection</code> with these fields:</p>
 <table>
 <thead>
-<tr><th>Feld</th><th>Typ</th><th>Zweck</th></tr>
+<tr><th>Field</th><th>Type</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code translate="no">id</code></td><td>INT64</td><td>Primärschlüssel</td></tr>
-<tr><td><code translate="no">content</code></td><td>VARCHAR</td><td>Text des Dokuments</td></tr>
-<tr><td><code translate="no">embedding</code></td><td>FLIESSEND_VEKTOR (3072)</td><td>Semantischer Vektor</td></tr>
-<tr><td><code translate="no">source</code></td><td>VARCHAR</td><td>Herkunft: &quot;offiziell&quot;, &quot;Gemeinschaft&quot; oder &quot;Ticket&quot;</td></tr>
-<tr><td><code translate="no">is_official</code></td><td>BOOL</td><td><code translate="no">True</code> wenn <code translate="no">source == &quot;official&quot;</code></td></tr>
+<tr><td><code translate="no">id</code></td><td>INT64</td><td>Primary key</td></tr>
+<tr><td><code translate="no">content</code></td><td>VARCHAR</td><td>Document text</td></tr>
+<tr><td><code translate="no">embedding</code></td><td>FLOAT_VECTOR (3072)</td><td>Semantic vector</td></tr>
+<tr><td><code translate="no">source</code></td><td>VARCHAR</td><td>Origin: &quot;official&quot;, &quot;community&quot;, or “ticket”</td></tr>
+<tr><td><code translate="no">is_official</code></td><td>BOOL</td><td><code translate="no">True</code> if <code translate="no">source == &quot;official&quot;</code></td></tr>
 </tbody>
 </table>
-<p>Die Felder <code translate="no">source</code> und <code translate="no">is_official</code> sind die Metadaten, die Boost Ranker zur Anpassung der Rangliste verwendet.</p>
-<h3 id="Setup-Code" class="common-anchor-header">Einrichtungscode</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> (
+<p>The <code translate="no">source</code> and <code translate="no">is_official</code> fields are the metadata Boost Ranker will use to adjust rankings.</p>
+<h3 id="Setup-Code" class="common-anchor-header">Setup Code</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> (
     MilvusClient,
     DataType,
     Function,
@@ -293,7 +294,7 @@ client.insert(
     data=docs,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Comparing-Results-With-and-Without-Boost-Ranker" class="common-anchor-header">Vergleichen der Ergebnisse: Mit und ohne Boost Ranker</h3><p>Führen Sie zunächst eine Basissuche ohne Boost Ranker aus. Fügen Sie dann Boost Ranker mit <code translate="no">filter: is_official == true</code> und <code translate="no">weight: 1.2</code> hinzu, und vergleichen Sie.</p>
+<h3 id="Comparing-Results-With-and-Without-Boost-Ranker" class="common-anchor-header">Comparing Results: With and Without Boost Ranker</h3><p>First, run a baseline search without Boost Ranker. Then add Boost Ranker with <code translate="no">filter: is_official == true</code> and <code translate="no">weight: 1.2</code>, and compare.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># 6. Baseline search (without Boost Ranker)</span>
 query_vector = <span class="hljs-string">&quot;how to deploy milvus&quot;</span>
 
@@ -354,7 +355,7 @@ boosted_results = client.search(
         <span class="hljs-string">f&quot;is_official=<span class="hljs-subst">{entity[<span class="hljs-string">&#x27;is_official&#x27;</span>]}</span>&quot;</span>
     )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Results" class="common-anchor-header">Ergebnisse</h3><pre><code translate="no">=== Baseline search (no Boost Ranker) ===
+<h3 id="Results" class="common-anchor-header">Results</h3><pre><code translate="no">=== Baseline search (no Boost Ranker) ===
 <span class="hljs-built_in">id</span>=<span class="hljs-number">1</span>, score=<span class="hljs-number">0.7351</span>, source=official, is_official=<span class="hljs-literal">True</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">4</span>, score=<span class="hljs-number">0.7017</span>, source=ticket, is_official=<span class="hljs-literal">False</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">3</span>, score=<span class="hljs-number">0.6706</span>, source=community, is_official=<span class="hljs-literal">False</span>
@@ -366,8 +367,8 @@ boosted_results = client.search(
 <span class="hljs-built_in">id</span>=<span class="hljs-number">4</span>, score=<span class="hljs-number">0.7017</span>, source=ticket, is_official=<span class="hljs-literal">False</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">3</span>, score=<span class="hljs-number">0.6706</span>, source=community, is_official=<span class="hljs-literal">False</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Die wichtigste Änderung: Das Dokument <code translate="no">id=2</code> (offiziell) sprang von Platz 4 auf Platz 2, da seine Punktzahl mit 1,2 multipliziert wurde. Community-Beiträge und Ticket-Einträge werden nicht entfernt - sie werden nur niedriger eingestuft. Das ist der Sinn von Boost Ranker: die semantische Suche als Grundlage beibehalten und dann Geschäftsregeln darüber legen.</p>
-<h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>The key change: document <code translate="no">id=2</code> (official) jumped from 4th to 2nd place because its score was multiplied by 1.2. Community posts and ticket records aren’t removed — they just rank lower. That’s the point of Boost Ranker: keep semantic search as the foundation, then layer business rules on top.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -382,17 +383,21 @@ boosted_results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Mit<a href="https://milvus.io/docs/reranking.md">Boost Ranker</a> können Sie Geschäftslogik in die Vektorsuchergebnisse einbauen, ohne Ihre Einbettungen zu verändern oder Indizes neu zu erstellen. Steigern Sie offizielle Inhalte, degradieren Sie veraltete Ergebnisse, fügen Sie kontrollierte Vielfalt hinzu - alles durch einfache Filter- und Gewichtungskonfiguration in der <a href="https://milvus.io/docs/manage-functions.md">Milvus Function API</a>.</p>
-<p>Ganz gleich, ob Sie RAG-Pipelines, Empfehlungssysteme oder eine Unternehmenssuche aufbauen, Boost Ranker hilft Ihnen, die Lücke zwischen semantisch ähnlichen Inhalten und dem, was für Ihre Benutzer tatsächlich nützlich ist, zu schließen.</p>
-<p>Wenn Sie an einem Suchranking arbeiten und Ihren Anwendungsfall diskutieren möchten:</p>
+    </button></h2><p><a href="https://milvus.io/docs/reranking.md">Boost Ranker</a> gives you a way to inject business logic into vector search results without touching your embeddings or rebuilding indexes. Boost official content, demote stale results, add controlled diversity — all through simple filter + weight configuration in the <a href="https://milvus.io/docs/manage-functions.md">Milvus Function API</a>.</p>
+<p>Whether you’re building RAG pipelines, recommendation systems, or enterprise search, Boost Ranker helps bridge the gap between what’s semantically similar and what’s actually useful to your users.</p>
+<p>If you’re working on search ranking and want to discuss your use case:</p>
 <ul>
-<li>Treten Sie der <a href="https://slack.milvus.io/">Milvus-Slack-Community</a> bei, um sich mit anderen Entwicklern auszutauschen, die Such- und Retrievalsysteme entwickeln.</li>
-<li><a href="https://milvus.io/office-hours">Buchen Sie eine kostenlose 20-minütige Milvus-Sprechstunde</a>, um Ihre Ranking-Logik mit dem Team durchzugehen.</li>
-<li>Wenn Sie die Einrichtung der Infrastruktur lieber überspringen möchten, bietet die <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (verwaltet von Milvus) eine kostenlose Stufe für den Einstieg.</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to connect with other developers building search and retrieval systems.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your ranking logic with the team.</li>
+<li>If you’d rather skip infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) has a free tier to get started.</li>
 </ul>
 <hr>
-<p>Einige Fragen, die auftauchen, wenn Teams beginnen, Boost Ranker zu verwenden:</p>
-<p><strong>Kann Boost Ranker einen modellbasierten Reranker wie Cohere oder BGE ersetzen?</strong>Sie lösen unterschiedliche Probleme. Modellbasierte Reranker bewerten die Ergebnisse nach semantischer Qualität - sie sind gut darin zu entscheiden, "welches Dokument die Frage tatsächlich beantwortet". Boost Ranker passt die Ergebnisse anhand von Geschäftsregeln an - er entscheidet, "welches relevante Dokument zuerst erscheinen sollte". In der Praxis wollen Sie oft beides: einen Model Ranker für die semantische Relevanz, und dann Boost Ranker für die Geschäftslogik obendrauf.</p>
-<p>Erhöht<strong>Boost Ranker die Latenzzeit erheblich?</strong>Nein. Er arbeitet mit der bereits abgerufenen Kandidatengruppe (in der Regel die Top-K aus der Vektorsuche), nicht mit dem gesamten Datensatz. Die Operationen sind einfaches Filtern und Multiplizieren, so dass der Overhead im Vergleich zur Vektorsuche selbst vernachlässigbar ist.</p>
-<p><strong>Wie lege ich den Gewichtungswert fest?</strong>Beginnen Sie mit kleinen Anpassungen. Bei der COSINE-Ähnlichkeit (höher ist besser) reicht in der Regel eine Gewichtung von 1,1-1,3 aus, um die Rangfolge merklich zu verändern, ohne die semantische Relevanz völlig außer Kraft zu setzen. Testen Sie mit Ihren aktuellen Daten - wenn geboostete Ergebnisse mit geringer Ähnlichkeit zu dominieren beginnen, verringern Sie die Gewichtung.</p>
-<p><strong>Kann ich mehrere Boost Ranker-Regeln kombinieren?</strong>Ja. Erstellen Sie mehrere <code translate="no">Function</code> Objekte und kombinieren Sie sie mit <code translate="no">FunctionScore</code>. Sie steuern die Interaktion der Regeln über <code translate="no">boost_mode</code> (wie jede Regel mit dem ursprünglichen Ergebnis kombiniert wird) und <code translate="no">function_mode</code> (wie Regeln miteinander kombiniert werden) - beide unterstützen <code translate="no">multiply</code> und <code translate="no">add</code>.</p>
+<p>A few questions that come up when teams start using Boost Ranker:</p>
+<p><strong>Can Boost Ranker replace a model-based reranker like Cohere or BGE?</strong>
+They solve different problems. Model-based rerankers re-score results by semantic quality — they’re good at deciding “which document actually answers the question.” Boost Ranker adjusts scores by business rules — it decides “which relevant document should appear first.” In practice, you often want both: a model ranker for semantic relevance, then Boost Ranker for business logic on top.</p>
+<p><strong>Does Boost Ranker add significant latency?</strong>
+No. It operates on the already-retrieved candidate set (typically the Top-K from vector search), not the full dataset. The operations are simple filter-and-multiply, so the overhead is negligible compared to the vector search itself.</p>
+<p><strong>How do I set the weight value?</strong>
+Start with small adjustments. For COSINE similarity (higher is better), a weight of 1.1–1.3 is usually enough to noticeably shift rankings without overriding semantic relevance entirely. Test with your actual data — if boosted results with low similarity start dominating, lower the weight.</p>
+<p><strong>Can I combine multiple Boost Ranker rules?</strong>
+Yes. Create multiple <code translate="no">Function</code> objects and combine them using <code translate="no">FunctionScore</code>. You control how rules interact through <code translate="no">boost_mode</code> (how each rule combines with the original score) and <code translate="no">function_mode</code> (how rules combine with each other) — both support <code translate="no">multiply</code> and <code translate="no">add</code>.</p>

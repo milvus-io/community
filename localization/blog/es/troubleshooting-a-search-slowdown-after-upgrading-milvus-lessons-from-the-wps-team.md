@@ -1,9 +1,9 @@
 ---
 id: >-
   troubleshooting-a-search-slowdown-after-upgrading-milvus-lessons-from-the-wps-team.md
-title: >-
-  Solución de problemas de ralentización de la búsqueda tras actualizar Milvus:
-  Lecciones del equipo de WPS
+title: >
+  Troubleshooting a Search Slowdown After Upgrading Milvus: Lessons from the WPS
+  Team
 author: the WPS engineering team
 date: 2026-3-18
 cover: assets.zilliz.com/Version_A_Warm_Background_20b93359df.jpg
@@ -14,15 +14,15 @@ tags: Milvus
 meta_keywords: 'Milvus upgrade, milvus-backup, Milvus search latency, Milvus troubleshooting'
 meta_title: |
   Troubleshooting a Search Slowdown After Upgrading Milvus
-desc: >-
-  Después de actualizar Milvus de 2.2 a 2.5, el equipo de WPS encontró una
-  regresión de latencia de búsqueda de 3-5x. La causa: un único indicador de
-  restauración de milvus-backup que fragmentaba segmentos.
+desc: >
+  After upgrading Milvus from 2.2 to 2.5, the WPS team hit a 3-5x search latency
+  regression. The cause: a single milvus-backup restore flag that fragmented
+  segments.
 origin: >-
   https://milvus.io/blog/troubleshooting-a-search-slowdown-after-upgrading-milvus-lessons-from-the-wps-team.md
 ---
-<p><em>Este artículo ha sido escrito por el equipo de ingeniería de WPS en Kingsoft Office Software, que utiliza Milvus en un sistema de recomendación. Durante su actualización de Milvus 2.2.16 a 2.5.16, la latencia de búsqueda aumentó de 3 a 5 veces. Este artículo explica cómo investigaron el problema y lo solucionaron, y puede ser útil para otras personas de la comunidad que estén planeando una actualización similar.</em></p>
-<h2 id="Why-We-Upgraded-Milvus" class="common-anchor-header">Por qué actualizamos Milvus<button data-href="#Why-We-Upgraded-Milvus" class="anchor-icon" translate="no">
+<p><em>This post was contributed by the WPS engineering team at Kingsoft Office Software, who use Milvus in a recommendation system. During their upgrade from Milvus 2.2.16 to 2.5.16, search latency increased by 3 to 5 times. This article walks through how they investigated the problem and fixed it, and may be helpful to others in the community planning a similar upgrade.</em></p>
+<h2 id="Why-We-Upgraded-Milvus" class="common-anchor-header">Why We Upgraded Milvus<button data-href="#Why-We-Upgraded-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,9 +37,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Somos parte del equipo de ingeniería de WPS que construye software de productividad, y utilizamos Milvus como motor de búsqueda vectorial detrás de la búsqueda de similitud en tiempo real en nuestro sistema de recomendación en línea. Nuestro clúster de producción almacenaba decenas de millones de vectores, con una dimensión media de 768. Los datos eran servidos por 16 QueryNodes, y cada pod estaba configurado con límites de 16 núcleos de CPU y 48 GB de memoria.</p>
-<p>Mientras ejecutábamos Milvus 2.2.16, nos encontramos con un grave problema de estabilidad que ya estaba afectando a la empresa. Con una alta concurrencia de consultas, <code translate="no">planparserv2.HandleCompare</code> podía provocar una excepción de puntero nulo, haciendo que el componente Proxy entrara en pánico y se reiniciara con frecuencia. Este error era muy fácil de desencadenar en escenarios de alta concurrencia y afectaba directamente a la disponibilidad de nuestro servicio de recomendación en línea.</p>
-<p>A continuación se muestra el registro de errores real del Proxy y el seguimiento de la pila del incidente:</p>
+    </button></h2><p>We are part of the WPS engineering team building productivity software, and we use Milvus as the vector search engine behind real-time similarity search in our online recommendation system. Our production cluster stored tens of millions of vectors, with an average dimension of 768. The data was served by 16 QueryNodes, and each pod was configured with limits of 16 CPU cores and 48 GB of memory.</p>
+<p>While running Milvus 2.2.16, we ran into a serious stability issue that was already affecting the business. Under high query concurrency, <code translate="no">planparserv2.HandleCompare</code> could cause a null pointer exception, causing the Proxy component to panic and restart frequently. This bug was very easy to trigger in high-concurrency scenarios and directly affected the availability of our online recommendation service.</p>
+<p>Below is the actual Proxy error log and stack trace from the incident:</p>
 <pre><code translate="no">[<span class="hljs-meta">2025/12/23 10:43:13.581 +00:00</span>] [ERROR] [concurrency/pool_option.go:<span class="hljs-number">53</span>] [<span class="hljs-string">&quot;Conc pool panicked&quot;</span>]
 [<span class="hljs-meta">panic=<span class="hljs-string">&quot;runtime error: invalid memory address or nil pointer dereference&quot;</span></span>]
 [<span class="hljs-meta">stack=<span class="hljs-string">&quot;...
@@ -64,11 +64,11 @@ github.com/milvus-io/milvus/<span class="hljs-keyword">internal</span>/parser/pl
 github.com/milvus-io/milvus/<span class="hljs-keyword">internal</span>/parser/planparserv2.(*ParserVisitor).VisitEquality(...)
   /go/src/github.com/milvus-io/milvus/<span class="hljs-keyword">internal</span>/parser/planparserv2/parser_visitor.go:<span class="hljs-number">345</span> +<span class="hljs-number">0x7e5</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Lo que muestra el stack trace</strong>: El pánico se produjo durante el preprocesamiento de consultas en Proxy, dentro de <code translate="no">queryTask.PreExecute</code>. La ruta de llamada era:</p>
+<p><strong>What the stack trace shows</strong>: The panic occurred during query preprocessing in Proxy, within <code translate="no">queryTask.PreExecute</code>. The call path was:</p>
 <p><code translate="no">taskScheduler.processTask</code> → <code translate="no">queryTask.PreExecute</code> → <code translate="no">planparserv2.CreateRetrievePlan</code> → <code translate="no">planparserv2.HandleCompare</code></p>
-<p>El fallo se produjo cuando <code translate="no">HandleCompare</code> intentó acceder a memoria no válida en la dirección <code translate="no">0x8</code>, desencadenando un SIGSEGV y provocando el fallo del proceso Proxy.</p>
-<p><strong>Para eliminar completamente este riesgo de estabilidad, decidimos actualizar el clúster de Milvus 2.2.16 a 2.5.16.</strong></p>
-<h2 id="Backing-Up-Data-With-milvus-backup-Before-the-Upgrade" class="common-anchor-header">Copia de seguridad de datos con milvus-backup antes de la actualización<button data-href="#Backing-Up-Data-With-milvus-backup-Before-the-Upgrade" class="anchor-icon" translate="no">
+<p>The crash occurred when <code translate="no">HandleCompare</code> attempted to access invalid memory at address <code translate="no">0x8</code>, triggering a SIGSEGV and causing the Proxy process to crash.</p>
+<p><strong>To completely eliminate this stability risk, we decided to upgrade the cluster from Milvus 2.2.16 to 2.5.16.</strong></p>
+<h2 id="Backing-Up-Data-With-milvus-backup-Before-the-Upgrade" class="common-anchor-header">Backing Up Data With milvus-backup Before the Upgrade<button data-href="#Backing-Up-Data-With-milvus-backup-Before-the-Upgrade" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,16 +83,16 @@ github.com/milvus-io/milvus/<span class="hljs-keyword">internal</span>/parser/pl
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de tocar el cluster de producción, hicimos una copia de seguridad de todo utilizando la herramienta oficial <a href="https://github.com/zilliztech/milvus-backup">milvus-backup</a>. Soporta copias de seguridad y restauración dentro del mismo cluster, entre clusters y entre versiones de Milvus.</p>
-<h3 id="Checking-Version-Compatibility" class="common-anchor-header">Comprobación de la compatibilidad de versiones</h3><p>milvus-backup tiene dos reglas de versión para las <a href="https://milvus.io/docs/milvus_backup_overview.md">restauraciones entre versiones</a>:</p>
+    </button></h2><p>Before touching the production cluster, we backed up everything using the official <a href="https://github.com/zilliztech/milvus-backup">milvus-backup</a> tool. It supports backup and restore within the same cluster, across clusters, and across Milvus versions.</p>
+<h3 id="Checking-Version-Compatibility" class="common-anchor-header">Checking Version Compatibility</h3><p>milvus-backup has two version rules for <a href="https://milvus.io/docs/milvus_backup_overview.md">cross-version restores</a>:</p>
 <ol>
-<li><p><strong>El cluster de destino debe ejecutar la misma versión de Milvus o una más reciente.</strong> Una copia de seguridad de 2.2 puede cargarse en 2.5, pero no al revés.</p></li>
-<li><p><strong>El destino debe ser al menos Milvus 2.4.</strong> Los objetivos de restauración más antiguos no son compatibles.</p></li>
+<li><p><strong>The target cluster must run the same Milvus version or a newer one.</strong> A backup from 2.2 can load into 2.5, but not the other way around.</p></li>
+<li><p><strong>The target must be at least Milvus 2.4.</strong> Older restore targets aren’t supported.</p></li>
 </ol>
-<p>Nuestra ruta (copia de seguridad de 2.2.16, carga en 2.5.16) cumple ambas reglas.</p>
+<p>Our path (backup from 2.2.16, load into 2.5.16) satisfied both rules.</p>
 <table>
 <thead>
-<tr><th>Copia de seguridad de ↓ \ Restaurar a →</th><th>2.4</th><th>2.5</th><th>2.6</th></tr>
+<tr><th>Backup From ↓ \ Restore To →</th><th>2.4</th><th>2.5</th><th>2.6</th></tr>
 </thead>
 <tbody>
 <tr><td>2.2</td><td>✅</td><td>✅</td><td>✅</td></tr>
@@ -102,10 +102,10 @@ github.com/milvus-io/milvus/<span class="hljs-keyword">internal</span>/parser/pl
 <tr><td>2.6</td><td>❌</td><td>❌</td><td>✅</td></tr>
 </tbody>
 </table>
-<h3 id="How-Milvus-Backup-Works" class="common-anchor-header">Cómo funciona Milvus-Backup</h3><p>Milvus Backup facilita la copia de seguridad y la restauración de metadatos, segmentos y datos en todas las instancias de Milvus. Proporciona interfaces northbound, como una CLI, una API y un módulo Go basado en gRPC, para la manipulación flexible de los procesos de copia de seguridad y restauración.</p>
-<p>Milvus Backup lee los metadatos de la colección y los segmentos de la instancia Milvus de origen para crear una copia de seguridad. A continuación, copia los datos de la colección de la ruta raíz de la instancia Milvus de origen y los guarda en la ruta raíz de la copia de seguridad.</p>
-<p>Para restaurar a partir de una copia de seguridad, Milvus Backup crea una nueva colección en la instancia de Milvus de destino basándose en los metadatos de la colección y en la información de los segmentos de la copia de seguridad. A continuación, copia los datos de la copia de seguridad de la ruta raíz de la copia de seguridad a la ruta raíz de la instancia de destino.</p>
-<h3 id="Running-the-Backup" class="common-anchor-header">Ejecución de la copia de seguridad</h3><p>Preparamos un archivo de configuración dedicado, <code translate="no">configs/backup.yaml</code>. Los campos principales se muestran a continuación, con los valores sensibles eliminados:</p>
+<h3 id="How-Milvus-Backup-Works" class="common-anchor-header">How Milvus-Backup Works</h3><p>Milvus Backup facilitates backup and restore of metadata, segments, and data across Milvus instances. It provides northbound interfaces, such as a CLI, an API, and a gRPC-based Go module, for flexible manipulation of backup and restore processes.</p>
+<p>Milvus Backup reads collection metadata and segments from the source Milvus instance to create a backup. It then copies collection data from the root path of the source Milvus instance and saves it to the backup root path.</p>
+<p>To restore from a backup, Milvus Backup creates a new collection in the target Milvus instance based on the collection metadata and segment information in the backup. It then copies the backup data from the backup root path to the target instance’s root path.</p>
+<h3 id="Running-the-Backup" class="common-anchor-header">Running the Backup</h3><p>We prepared a dedicated config file, <code translate="no">configs/backup.yaml</code>. The main fields are shown below, with sensitive values removed:</p>
 <pre><code translate="no">milvus:
   address: <span class="hljs-number">1.1</span><span class="hljs-number">.1</span><span class="hljs-number">.1</span>  <span class="hljs-comment"># Source Milvus address</span>
   port: <span class="hljs-number">19530</span>  <span class="hljs-comment"># Source Milvus port</span>
@@ -138,18 +138,18 @@ minio:
   backupUseSSL: true <span class="hljs-comment"># Access MinIO/S3 with SSL</span>
   crossStorage: <span class="hljs-string">&quot;true&quot;</span>  <span class="hljs-comment"># Must be set to true when performing cross-storage backup</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>A continuación, ejecutamos este comando:</p>
+<p>We then ran this command:</p>
 <pre><code translate="no"><span class="hljs-comment"># Create a backup using milvus-backup</span>
 ./milvus-backup create --config configs/backup.yaml -n backup_v2216
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">milvus-backup</code> soporta <strong>backup en caliente</strong>, por lo que normalmente tiene poco impacto en el tráfico online. Ejecutarlo durante las horas de menor tráfico es más seguro para evitar la contención de recursos.</p>
-<h3 id="Verifying-the-Backup" class="common-anchor-header">Verificación de la copia de seguridad</h3><p>Una vez finalizada la copia de seguridad, comprobamos que estaba completa y era utilizable. Principalmente comprobamos si el número de colecciones y segmentos de la copia de seguridad coincidía con los del clúster de origen.</p>
+<p><code translate="no">milvus-backup</code> supports <strong>hot backup</strong>, so it usually has little impact on online traffic. Running during off-peak hours is still safer to avoid resource contention.</p>
+<h3 id="Verifying-the-Backup" class="common-anchor-header">Verifying the Backup</h3><p>After the backup finished, we verified it was complete and usable. We mainly checked whether the number of collections and segments in the backup matched those in the source cluster.</p>
 <pre><code translate="no" class="language-# List backups">./milvus-backup list --config configs/backup.yaml
 <span class="hljs-comment"># View backup details and confirm the number of Collections and Segments</span>
 ./milvus-backup get --config configs/backup.yaml -n backup_v2216
 <button class="copy-code-btn"></button></code></pre>
-<p>Coincidían, así que pasamos a la actualización.</p>
-<h2 id="Upgrading-With-Helm-Chart" class="common-anchor-header">Actualización con Helm Chart<button data-href="#Upgrading-With-Helm-Chart" class="anchor-icon" translate="no">
+<p>They matched, so we moved on to the upgrade.</p>
+<h2 id="Upgrading-With-Helm-Chart" class="common-anchor-header">Upgrading With Helm Chart<button data-href="#Upgrading-With-Helm-Chart" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,8 +164,8 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El salto de tres versiones principales (2.2 → 2.5) con decenas de millones de vectores hacía que una actualización in situ fuera demasiado arriesgada. En su lugar, creamos un nuevo clúster y migramos los datos a él. El clúster antiguo permaneció en línea para el rollback.</p>
-<h3 id="Deploying-the-New-Cluster" class="common-anchor-header">Despliegue del nuevo clúster</h3><p>Desplegamos el nuevo clúster Milvus 2.5.16 con Helm:</p>
+    </button></h2><p>Jumping three major versions (2.2 → 2.5) with tens of millions of vectors made an in-place upgrade too risky. We built a new cluster instead and migrated data into it. The old cluster stayed online for rollback.</p>
+<h3 id="Deploying-the-New-Cluster" class="common-anchor-header">Deploying the New Cluster</h3><p>We deployed the new Milvus 2.5.16 cluster with Helm:</p>
 <pre><code translate="no"><span class="hljs-comment"># Add the Milvus Helm repository</span>
 : helm repo add milvus https://zilliztech.github.io/milvus-helm/
 helm repo update  
@@ -180,18 +180,18 @@ helm install milvus-v25 milvus/milvus \
   --version <span class="hljs-number">4.2</span><span class="hljs-number">.58</span> \
   --wait
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Key-Configuration-Changes-values-v25yaml" class="common-anchor-header">Cambios clave en la configuración (<code translate="no">values-v25.yaml</code>)</h3><p>Para que la comparación del rendimiento fuera justa, mantuvimos el nuevo cluster lo más similar posible al antiguo. Sólo cambiamos unas pocas configuraciones que importaban para esta carga de trabajo:</p>
+<h3 id="Key-Configuration-Changes-values-v25yaml" class="common-anchor-header">Key Configuration Changes (<code translate="no">values-v25.yaml</code>)</h3><p>To make the performance comparison fair, we kept the new cluster as similar to the old one as possible. We only changed a few settings that mattered for this workload:</p>
 <ul>
-<li><p><strong>Desactivar Mmap</strong> (<code translate="no">mmap.enabled: false</code>): Nuestra carga de trabajo de recomendación es sensible a la latencia. Si Mmap está activado, algunos datos pueden ser leídos desde el disco cuando sea necesario, lo que puede añadir retraso de E/S de disco y causar picos de latencia. Lo desactivamos para que los datos permanezcan completamente en memoria y la latencia de la consulta sea más estable.</p></li>
-<li><p><strong>Recuento de QueryNode:</strong> se mantuvo en <strong>16</strong>, igual que en el clúster antiguo.</p></li>
-<li><p><strong>Límites de recursos:</strong> cada Pod sigue teniendo <strong>16 núcleos de CPU</strong>, igual que el clúster antiguo.</p></li>
+<li><p><strong>Disable Mmap</strong> (<code translate="no">mmap.enabled: false</code>): Our recommendation workload is sensitive to latency. If Mmap is enabled, some data may be read from disk when needed, which can add disk I/O delay and cause latency spikes. We turned it off so the data would stay fully in memory and query latency would be more stable.</p></li>
+<li><p><strong>QueryNode count:</strong> kept at <strong>16</strong>, same as the old cluster</p></li>
+<li><p><strong>Resource limits:</strong> each Pod still had <strong>16 CPU cores</strong>, the same as the old cluster</p></li>
 </ul>
-<h3 id="Tips-for-major-version-upgrades" class="common-anchor-header">Consejos para actualizaciones de versiones mayores:</h3><ul>
-<li><p><strong>Construya un nuevo clúster en lugar de actualizarlo in situ.</strong> Evitará riesgos de compatibilidad de metadatos y mantendrá una ruta de retroceso limpia.</p></li>
-<li><p><strong>Verifique su copia de seguridad antes de migrar.</strong> Una vez que los datos están en el formato de la nueva versión, no es fácil volver atrás.</p></li>
-<li><p><strong>Mantenga ambos clústeres en funcionamiento durante la transición.</strong> Cambie el tráfico gradualmente y retire el clúster antiguo sólo después de una verificación completa.</p></li>
+<h3 id="Tips-for-major-version-upgrades" class="common-anchor-header">Tips for major-version upgrades:</h3><ul>
+<li><p><strong>Build a new cluster instead of upgrading in place.</strong> You avoid metadata-compatibility risks and maintain a clean rollback path.</p></li>
+<li><p><strong>Verify your backup before migrating.</strong> Once data is in the new version’s format, you can’t easily go back.</p></li>
+<li><p><strong>Keep both clusters running during cutover.</strong> Shift traffic gradually and only decommission the old cluster after full verification.</p></li>
 </ul>
-<h2 id="Migrating-Data-After-the-Upgrade-with-Milvus-Backup-Restore" class="common-anchor-header">Migración de datos después de la actualización con Milvus-Backup Restore<button data-href="#Migrating-Data-After-the-Upgrade-with-Milvus-Backup-Restore" class="anchor-icon" translate="no">
+<h2 id="Migrating-Data-After-the-Upgrade-with-Milvus-Backup-Restore" class="common-anchor-header">Migrating Data After the Upgrade with Milvus-Backup Restore<button data-href="#Migrating-Data-After-the-Upgrade-with-Milvus-Backup-Restore" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -206,8 +206,8 @@ helm install milvus-v25 milvus/milvus \
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Utilizamos <code translate="no">milvus-backup restore</code> para cargar la copia de seguridad en el nuevo clúster. En la terminología de milvus-backup, "restaurar" significa "cargar los datos de la copia de seguridad en un clúster de destino". El destino debe ejecutar la misma versión de Milvus o una más reciente, por lo que, a pesar del nombre, las restauraciones siempre mueven los datos hacia adelante.</p>
-<h3 id="Running-the-Restore" class="common-anchor-header">Ejecutar la restauración</h3><p>El archivo de configuración de la restauración, <code translate="no">configs/restore.yaml</code>, tenía que apuntar al <strong>nuevo cluster</strong> y a su configuración de almacenamiento. Los campos principales tenían este aspecto:</p>
+    </button></h2><p>We used <code translate="no">milvus-backup restore</code> to load the backup into the new cluster. In milvus-backup’s terminology, “restore” means “load backup data into a target cluster.” The target must run the same Milvus version or a newer one, so, despite the name, restores always move data forward.</p>
+<h3 id="Running-the-Restore" class="common-anchor-header">Running the Restore</h3><p>The restore config file, <code translate="no">configs/restore.yaml</code>, had to point to the <strong>new cluster</strong> and its storage settings. The main fields looked like this:</p>
 <pre><code translate="no"><span class="hljs-comment"># Restore target Milvus connection information</span>
 milvus:
   address: <span class="hljs-number">1.1</span><span class="hljs-number">.1</span><span class="hljs-number">.1</span>  <span class="hljs-comment"># Milvus address</span>
@@ -240,18 +240,18 @@ minio:
   backupUseSSL: true <span class="hljs-comment"># Access MinIO/S3 with SSL</span>
   crossStorage: <span class="hljs-string">&quot;true&quot;</span>  <span class="hljs-comment"># Must be set to true when performing cross-storage backup</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>A continuación, ejecutamos:</p>
+<p>We then ran:</p>
 <pre><code translate="no">./milvus-backup restore --config configs/restore.yaml -n backup_v2216 --rebuild_index
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">restore.yaml</code> necesita la información de conexión de Milvus y MinIO del nuevo clúster para que los datos restaurados se escriban en el almacenamiento del nuevo clúster.</p>
-<h3 id="Checks-After-Restore" class="common-anchor-header">Comprobaciones tras la restauración</h3><p>Una vez finalizada la restauración, comprobamos cuatro cosas para asegurarnos de que la migración era correcta:</p>
+<p><code translate="no">restore.yaml</code> needs the new cluster’s Milvus and MinIO connection information so the restored data is written to the new cluster’s storage.</p>
+<h3 id="Checks-After-Restore" class="common-anchor-header">Checks After Restore</h3><p>After the restore finished, we checked four things to make sure the migration was correct:</p>
 <ul>
-<li><p><strong>Esquema.</strong> El esquema de la colección en el nuevo clúster tenía que coincidir exactamente con el antiguo, incluidas las definiciones de campo y las dimensiones del vector.</p></li>
-<li><p><strong>Recuento total de filas.</strong> Comparamos el número total de entidades en los clústeres antiguo y nuevo para asegurarnos de que no se había perdido ningún dato.</p></li>
-<li><p><strong>Estado de los índices.</strong> Confirmamos que todos los índices habían terminado de construirse y que su estado era <code translate="no">Finished</code>.</p></li>
-<li><p><strong>Resultados de las consultas.</strong> Ejecutamos las mismas consultas en ambos clústeres y comparamos los ID devueltos y las puntuaciones de distancia para asegurarnos de que los resultados coincidían.</p></li>
+<li><p><strong>Schema.</strong> The collection schema in the new cluster had to exactly match the old one, including field definitions and vector dimensions.</p></li>
+<li><p><strong>Total row count.</strong> We compared the total number of entities in the old and new clusters to make sure no data was lost.</p></li>
+<li><p><strong>Index status.</strong> We confirmed that all indexes had finished building and that their status was set to <code translate="no">Finished</code>.</p></li>
+<li><p><strong>Query results.</strong> We ran the same queries on both clusters and compared the returned IDs and distance scores to make sure the results matched.</p></li>
 </ul>
-<h2 id="Gradual-Traffic-Shift-and-the-Latency-Surprise" class="common-anchor-header">Cambio gradual del tráfico y la sorpresa de la latencia<button data-href="#Gradual-Traffic-Shift-and-the-Latency-Surprise" class="anchor-icon" translate="no">
+<h2 id="Gradual-Traffic-Shift-and-the-Latency-Surprise" class="common-anchor-header">Gradual Traffic Shift and the Latency Surprise<button data-href="#Gradual-Traffic-Shift-and-the-Latency-Surprise" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -266,21 +266,21 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Trasladamos el tráfico de producción al nuevo clúster por fases:</p>
+    </button></h2><p>We moved production traffic to the new cluster in stages:</p>
 <table>
 <thead>
-<tr><th>Fase</th><th>Proporción de tráfico</th><th>Duración</th><th>Lo que vimos</th></tr>
+<tr><th>Phase</th><th>Traffic Share</th><th>Duration</th><th>What We Watched</th></tr>
 </thead>
 <tbody>
-<tr><td>Fase 1</td><td>5%</td><td>24 horas</td><td>Latencia de la consulta P99, tasa de error y precisión de los resultados</td></tr>
-<tr><td>Fase 2</td><td>25%</td><td>48 horas</td><td>Latencia de consulta P99/P95, QPS, uso de CPU</td></tr>
-<tr><td>Fase 3</td><td>50%</td><td>48 horas</td><td>Métricas de extremo a extremo, uso de recursos</td></tr>
-<tr><td>Fase 4</td><td>100%</td><td>Seguimiento continuo</td><td>Estabilidad general de las métricas</td></tr>
+<tr><td>Phase 1</td><td>5%</td><td>24 hours</td><td>P99 query latency, error rate, and result accuracy</td></tr>
+<tr><td>Phase 2</td><td>25%</td><td>48 hours</td><td>P99/P95 query latency, QPS, CPU usage</td></tr>
+<tr><td>Phase 3</td><td>50%</td><td>48 hours</td><td>End-to-end metrics, resource usage</td></tr>
+<tr><td>Phase 4</td><td>100%</td><td>Continued monitoring</td><td>Overall metric stability</td></tr>
 </tbody>
 </table>
-<p>Mantuvimos el clúster antiguo en funcionamiento todo el tiempo para realizar un rollback instantáneo.</p>
-<p><strong>Durante este despliegue, detectamos el problema: la latencia de búsqueda en el nuevo clúster v2.5.16 era de 3 a 5 veces mayor que en el clúster v2.2.16 antiguo.</strong></p>
-<h2 id="Finding-the-Cause-of-the-Search-Slowdown" class="common-anchor-header">Encontrar la causa de la ralentización de la búsqueda<button data-href="#Finding-the-Cause-of-the-Search-Slowdown" class="anchor-icon" translate="no">
+<p>We kept the old cluster running the whole time for instant rollback.</p>
+<p><strong>During this rollout, we spotted the problem: search latency on the new v2.5.16 cluster was 3-5 times higher than on the old v2.2.16 cluster.</strong></p>
+<h2 id="Finding-the-Cause-of-the-Search-Slowdown" class="common-anchor-header">Finding the Cause of the Search Slowdown<button data-href="#Finding-the-Cause-of-the-Search-Slowdown" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -295,24 +295,24 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Step-1-Check-Overall-CPU-Usage" class="common-anchor-header">Paso 1: Comprobar el uso general de la CPU</h3><p>Comenzamos con el uso de CPU por componente para ver si el clúster estaba corto de recursos.</p>
+    </button></h2><h3 id="Step-1-Check-Overall-CPU-Usage" class="common-anchor-header">Step 1: Check Overall CPU Usage</h3><p>We started with CPU usage per component to see whether the cluster was short on resources.</p>
 <table>
 <thead>
-<tr><th>Componente</th><th>Uso de CPU (núcleos)</th><th>Análisis</th></tr>
+<tr><th>Component</th><th>CPU Usage (cores)</th><th>Analysis</th></tr>
 </thead>
 <tbody>
-<tr><td>Nodo de consulta</td><td>10.1</td><td>El límite era de 16 núcleos, por lo que el uso fue de alrededor del 63%. No se utiliza completamente</td></tr>
-<tr><td>Proxy</td><td>0.21</td><td>Muy bajo</td></tr>
-<tr><td>MixCoord</td><td>0.11</td><td>Muy bajo</td></tr>
-<tr><td>Nodo de datos</td><td>0.14</td><td>Muy bajo</td></tr>
-<tr><td>IndexNode</td><td>0.02</td><td>Muy bajo</td></tr>
+<tr><td>QueryNode</td><td>10.1</td><td>The limit was 16 cores, so usage was about 63%. Not fully used</td></tr>
+<tr><td>Proxy</td><td>0.21</td><td>Very low</td></tr>
+<tr><td>MixCoord</td><td>0.11</td><td>Very low</td></tr>
+<tr><td>DataNode</td><td>0.14</td><td>Very low</td></tr>
+<tr><td>IndexNode</td><td>0.02</td><td>Very low</td></tr>
 </tbody>
 </table>
-<p>Esto demostró que QueryNode todavía tenía suficiente CPU disponible. Por tanto, la ralentización <strong>no se debía a una escasez general de CPU</strong>.</p>
-<h3 id="Step-2-Check-QueryNode-Balance" class="common-anchor-header">Paso 2: Comprobar el equilibrio de QueryNode</h3><p>La CPU total parecía estar bien, pero los pods individuales de QueryNode tenían un <strong>claro desequilibrio</strong>:</p>
+<p>This showed that QueryNode still had enough CPU available. So the slowdown was <strong>not caused by overall CPU shortage</strong>.</p>
+<h3 id="Step-2-Check-QueryNode-Balance" class="common-anchor-header">Step 2: Check QueryNode Balance</h3><p>Total CPU looked fine, but individual QueryNode pods had a <strong>clear imbalance</strong>:</p>
 <table>
 <thead>
-<tr><th>Pod QueryNode</th><th>Uso de CPU (Último)</th><th>Uso de CPU (máximo)</th></tr>
+<tr><th>QueryNode Pod</th><th>CPU Usage (Last)</th><th>CPU Usage (Max)</th></tr>
 </thead>
 <tbody>
 <tr><td>querynode-pod-1</td><td>8.38%</td><td>9.91%</td></tr>
@@ -326,53 +326,53 @@ minio:
 <tr><td>querynode-pod-9</td><td>3.68%</td><td>3.69%</td></tr>
 </tbody>
 </table>
-<p>Pod-1 utilizó casi 5 veces más CPU que pod-8. Esto es un problema porque Milvus extiende una consulta a todos los QueryNodes y espera a que termine el más lento. Unos pocos pods sobrecargados estaban arrastrando todas las búsquedas.</p>
-<h3 id="Step-3-Compare-Segment-Distribution" class="common-anchor-header">Paso 3: Comparar la distribución de segmentos</h3><p>Una carga desigual suele indicar una distribución desigual de los datos, por lo que comparamos las distribuciones de segmentos entre los clusters antiguos y nuevos.</p>
-<p><strong>Distribución de segmentos v2.2.16 (13 segmentos en total)</strong></p>
+<p>Pod-1 used nearly 5x as much CPU as pod-8. That’s a problem because Milvus fans a query out to all QueryNodes and waits for the slowest one to finish. A few overloaded pods were dragging down every single search.</p>
+<h3 id="Step-3-Compare-Segment-Distribution" class="common-anchor-header">Step 3: Compare Segment Distribution</h3><p>Uneven load usually indicates an uneven data distribution, so we compared the segment layouts between the old and new clusters.</p>
+<p><strong>v2.2.16 segment layout (13 segments total)</strong></p>
 <table>
 <thead>
-<tr><th>Rango de recuento de filas</th><th>Número de segmentos</th><th>Estado</th></tr>
+<tr><th>Row count range</th><th>Segment count</th><th>State</th></tr>
 </thead>
 <tbody>
-<tr><td>740,000 ~ 745,000</td><td>12</td><td>Sellado</td></tr>
-<tr><td>533,630</td><td>1</td><td>Sellado</td></tr>
+<tr><td>740,000 ~ 745,000</td><td>12</td><td>Sealed</td></tr>
+<tr><td>533,630</td><td>1</td><td>Sealed</td></tr>
 </tbody>
 </table>
-<p>El antiguo clúster era bastante uniforme. Sólo tenía 13 segmentos, y la mayoría de ellos tenía unas <strong>740.000 filas</strong>.</p>
-<p><strong>Distribución de segmentos v2.5.16 (21 segmentos en total)</strong></p>
+<p>The old cluster was fairly even. It had only 13 segments, and most of them had about <strong>740,000 rows</strong>.</p>
+<p><strong>v2.5.16 segment layout (21 segments total)</strong></p>
 <table>
 <thead>
-<tr><th>Rango de recuento de filas</th><th>Recuento de segmentos</th><th>Estado</th></tr>
+<tr><th>Row count range</th><th>Segment count</th><th>State</th></tr>
 </thead>
 <tbody>
-<tr><td>680,000 ~ 685,000</td><td>4</td><td>Sellado</td></tr>
-<tr><td>560,000 ~ 682,550</td><td>5</td><td>Sellado</td></tr>
-<tr><td>421,575 ~ 481,800</td><td>4</td><td>Sellado</td></tr>
-<tr><td>358,575 ~ 399,725</td><td>4</td><td>Sellado</td></tr>
-<tr><td>379,650 ~ 461,725</td><td>4</td><td>Sellado</td></tr>
+<tr><td>680,000 ~ 685,000</td><td>4</td><td>Sealed</td></tr>
+<tr><td>560,000 ~ 682,550</td><td>5</td><td>Sealed</td></tr>
+<tr><td>421,575 ~ 481,800</td><td>4</td><td>Sealed</td></tr>
+<tr><td>358,575 ~ 399,725</td><td>4</td><td>Sealed</td></tr>
+<tr><td>379,650 ~ 461,725</td><td>4</td><td>Sealed</td></tr>
 </tbody>
 </table>
-<p>El nuevo clúster tenía un aspecto muy diferente. Tenía 21 segmentos (un 60% más), con distintos tamaños de segmento: algunos contenían ~685k filas, otros apenas 350k. La restauración había dispersado los datos de forma desigual.</p>
-<h3 id="Root-Cause" class="common-anchor-header">Causa principal</h3><p>Rastreamos el problema hasta nuestro comando de restauración original:</p>
+<p>The new cluster looked very different. It had 21 segments (60% more), with varying segment size: some held ~685k rows, others barely 350k. The restore had scattered data unevenly.</p>
+<h3 id="Root-Cause" class="common-anchor-header">Root Cause</h3><p>We traced the problem back to our original restore command:</p>
 <pre><code translate="no">./milvus-backup restore --config configs/restore.yaml -n backup_v2216 \
   --rebuild_index \
   --use_v2_restore \
   --drop_exist_collection \
   --drop_exist_index
 <button class="copy-code-btn"></button></code></pre>
-<p>El indicador <code translate="no">--use_v2_restore</code> activa el modo de restauración de fusión de segmentos, que agrupa varios segmentos en un único trabajo de restauración. Este modo está diseñado para acelerar las restauraciones cuando hay muchos segmentos pequeños.</p>
-<p>Pero en nuestra restauración de versiones cruzadas (2.2 → 2.5), la lógica v2 reconstruía los segmentos de forma diferente a la agrupación original: dividía los segmentos grandes en otros más pequeños y de tamaño desigual. Una vez cargados, algunos QueryNodes se atascaban con más datos que otros.</p>
-<p>Esto afectaba al rendimiento de tres formas:</p>
+<p>That <code translate="no">--use_v2_restore</code> flag enables segment merging restore mode, which groups multiple segments into a single restore job. This mode is designed to speed up restores when you have many small segments.</p>
+<p>But in our cross-version restore (2.2 → 2.5), the v2 logic rebuilt segments differently from the original cluster: it split large segments into smaller, unevenly sized ones. Once loaded, some QueryNodes got stuck with more data than others.</p>
+<p>This hurt performance in three ways:</p>
 <ul>
-<li><p><strong>Nodos calientes:</strong> Los QueryNodes con segmentos más grandes o más numerosos tenían que hacer más trabajo.</p></li>
-<li><p><strong>Efecto del nodo más lento:</strong> la latencia de la consulta distribuida depende del nodo más lento.</p></li>
-<li><p><strong>Más sobrecarga de</strong> fusión: más segmentos también significaban más trabajo a la hora de fusionar resultados.</p></li>
+<li><p><strong>Hot nodes:</strong> QueryNodes with larger or more segments had to do more work</p></li>
+<li><p><strong>Slowest-node effect:</strong> distributed query latency depends on the slowest node</p></li>
+<li><p><strong>More merge overhead:</strong> more segments also meant more work when merging results</p></li>
 </ul>
-<h3 id="The-Fix" class="common-anchor-header">La solución</h3><p>Hemos eliminado <code translate="no">--use_v2_restore</code> y restaurado la lógica por defecto:</p>
+<h3 id="The-Fix" class="common-anchor-header">The Fix</h3><p>We removed <code translate="no">--use_v2_restore</code> and restored with the default logic:</p>
 <pre><code translate="no">./milvus-backup restore --config configs/restore.yaml -n backup_v2216
 <button class="copy-code-btn"></button></code></pre>
-<p>Primero limpiamos los datos erróneos del nuevo clúster y luego ejecutamos la restauración por defecto. La distribución de segmentos volvió a estar equilibrada, la latencia de búsqueda volvió a la normalidad y el problema desapareció.</p>
-<h2 id="What-Wed-Do-Differently-Next-Time" class="common-anchor-header">Lo que haríamos diferente la próxima vez<button data-href="#What-Wed-Do-Differently-Next-Time" class="anchor-icon" translate="no">
+<p>We cleaned up the bad data from the new cluster first, then ran the default restore. Segment distribution returned to balance, search latency returned to normal, and the problem was gone.</p>
+<h2 id="What-Wed-Do-Differently-Next-Time" class="common-anchor-header">What We’d Do Differently Next Time<button data-href="#What-Wed-Do-Differently-Next-Time" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -387,24 +387,24 @@ minio:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En este caso, tardamos demasiado en encontrar el verdadero problema: la <strong>distribución desigual de los segmentos</strong>. Esto es lo que lo habría hecho más rápido.</p>
-<h3 id="Improve-Segment-Monitoring" class="common-anchor-header">Mejorar la supervisión de los segmentos</h3><p>Milvus no expone el recuento de segmentos, la distribución de filas o la distribución de tamaños por colección en los paneles estándar de Grafana. Tuvimos que buscar manualmente en <a href="https://github.com/zilliztech/attu">Attu</a> y etcd, lo que fue lento.</p>
-<p>Sería útil añadir</p>
+    </button></h2><p>In this case, it took us too long to find the real issue: <strong>uneven segment distribution</strong>. Here’s what would have made it faster.</p>
+<h3 id="Improve-Segment-Monitoring" class="common-anchor-header">Improve Segment Monitoring</h3><p>Milvus doesn’t expose segment count, row distribution, or size distribution per collection in standard Grafana dashboards. We had to manually dig through <a href="https://github.com/zilliztech/attu">Attu</a> and etcd, which was slow.</p>
+<p>It would help to add:</p>
 <ul>
-<li><p>un <strong>panel de distribución de segmentos</strong> en Grafana, que muestre cuántos segmentos ha cargado cada QueryNode, además de sus recuentos de filas y tamaños</p></li>
-<li><p>una <strong>alerta de desequilibrio</strong>, que se activa cuando los recuentos de filas de los segmentos en los nodos superan un umbral</p></li>
-<li><p>una <strong>vista de comparación de la migración</strong>, para que los usuarios puedan comparar la distribución de segmentos entre los clústeres antiguos y nuevos después de una actualización.</p></li>
+<li><p>a <strong>segment distribution dashboard</strong> in Grafana, showing how many segments each QueryNode has loaded, plus their row counts and sizes</p></li>
+<li><p>an <strong>imbalance alert</strong>, triggered when segment row counts across nodes skew beyond a threshold</p></li>
+<li><p>a <strong>migration comparison view</strong>, so users can compare segment distribution between the old and new clusters after an upgrade</p></li>
 </ul>
-<h3 id="Use-a-Standard-Migration-Checklist" class="common-anchor-header">Utilizar una lista de comprobación de migración estándar</h3><p>Comprobamos el recuento de filas y lo consideramos correcto. Pero no fue suficiente. Una validación completa posterior a la migración también debe cubrir:</p>
+<h3 id="Use-a-Standard-Migration-Checklist" class="common-anchor-header">Use a Standard Migration Checklist</h3><p>We checked the row count and deemed it fine. That wasn’t enough. A complete post-migration validation should also cover:</p>
 <ul>
-<li><p><strong>La coherencia del esquema.</strong> ¿Coinciden las definiciones de los campos y las dimensiones de los vectores?</p></li>
-<li><p><strong>Recuento de segmentos.</strong> ¿Ha cambiado drásticamente el número de segmentos?</p></li>
-<li><p><strong>Equilibrio de segmentos.</strong> ¿Son razonablemente uniformes los recuentos de filas entre segmentos?</p></li>
-<li><p><strong>Estado de los índices.</strong> ¿Están todos los índices en <code translate="no">finished</code>?</p></li>
-<li><p><strong>Referencia de latencia.</strong> ¿Las latencias de consulta P50, P95 y P99 son similares a las del clúster antiguo?</p></li>
-<li><p><strong>Equilibrio de carga.</strong> ¿Está el uso de CPU de QueryNode distribuido uniformemente entre los pods?</p></li>
+<li><p><strong>Schema consistency.</strong> Do field definitions and vector dimensions match?</p></li>
+<li><p><strong>Segment count.</strong> Did the number of segments change drastically?</p></li>
+<li><p><strong>Segment balance.</strong> Are row counts across segments reasonably even?</p></li>
+<li><p><strong>Index status.</strong> Are all the indexes <code translate="no">finished</code>?</p></li>
+<li><p><strong>Latency benchmark.</strong> Do P50, P95, and P99 query latencies look similar to the old cluster?</p></li>
+<li><p><strong>Load balance.</strong> Is the CPU usage of QueryNode evenly distributed across pods?</p></li>
 </ul>
-<h3 id="Add-Automated-Checks" class="common-anchor-header">Añadir comprobaciones automatizadas</h3><p>Puede programar esta validación con PyMilvus para detectar desequilibrios antes de que lleguen a producción:</p>
+<h3 id="Add-Automated-Checks" class="common-anchor-header">Add Automated Checks</h3><p>You can script this validation with PyMilvus to catch imbalance before it hits production:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> connections, utility, Collection  
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">check_segment_balance</span>(<span class="hljs-params">collection_name: <span class="hljs-built_in">str</span></span>):
     <span class="hljs-string">&quot;&quot;&quot;Check Segment distribution balance&quot;&quot;&quot;</span>
@@ -434,13 +434,13 @@ minio:
 connections.connect(host=<span class="hljs-string">&quot;localhost&quot;</span>, port=<span class="hljs-string">&quot;19530&quot;</span>)
 check_segment_balance(<span class="hljs-string">&quot;your_collection_name&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Use-Existing-Tools-Better" class="common-anchor-header">Utilizar mejor las herramientas existentes</h3><p>Algunas herramientas ya soportan diagnósticos a nivel de segmento:</p>
+<h3 id="Use-Existing-Tools-Better" class="common-anchor-header">Use Existing Tools Better</h3><p>A few tools already support segment-level diagnostics:</p>
 <ul>
-<li><p><strong>Birdwatcher:</strong> puede leer metadatos Etcd directamente y mostrar la disposición de los segmentos y la asignación de canales.</p></li>
-<li><p><strong>Milvus Web UI (v2.5+):</strong> le permite inspeccionar la información del segmento visualmente</p></li>
-<li><p><strong>Grafana + Prometheus:</strong> puede utilizarse para crear paneles personalizados para la supervisión de clústeres en tiempo real.</p></li>
+<li><p><strong>Birdwatcher:</strong> can read Etcd metadata directly and show segment layout and channel assignment</p></li>
+<li><p><strong>Milvus Web UI (v2.5+):</strong> lets you inspect segment information visually</p></li>
+<li><p><strong>Grafana + Prometheus:</strong> can be used to build custom dashboards for real-time cluster monitoring</p></li>
 </ul>
-<h2 id="Suggestions-for-the-Milvus-Community" class="common-anchor-header">Sugerencias para la comunidad de Milvus<button data-href="#Suggestions-for-the-Milvus-Community" class="anchor-icon" translate="no">
+<h2 id="Suggestions-for-the-Milvus-Community" class="common-anchor-header">Suggestions for the Milvus Community<button data-href="#Suggestions-for-the-Milvus-Community" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -455,14 +455,14 @@ check_segment_balance(<span class="hljs-string">&quot;your_collection_name&quot;
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Algunos cambios en Milvus facilitarían este tipo de resolución de problemas:</p>
+    </button></h2><p>A few changes to Milvus would make this kind of troubleshooting easier:</p>
 <ol>
-<li><p><strong>Explicar más claramente la compatibilidad de parámetrosLa</strong>documentación de <code translate="no">milvus-backup</code> debería explicar claramente cómo se comportan opciones como <code translate="no">--use_v2_restore</code> durante las restauraciones entre versiones y los riesgos que pueden introducir.</p></li>
-<li><p><strong>Añadir mejores comprobaciones tras la restauraciónUna vez</strong>finalizada la restauración de <code translate="no">restore</code>, sería útil que la herramienta imprimiera automáticamente un resumen de la distribución de segmentos.</p></li>
-<li><p><strong>Exponer métricas relacionadas con el equilibrio</strong>Las métricas de<strong>Prometheus</strong>deberían incluir información sobre el equilibrio de segmentos, para que los usuarios puedan controlarlo directamente.</p></li>
-<li><p><strong>Apoyar el análisis del plan de consultaSimilar</strong>a MySQL <code translate="no">EXPLAIN</code>, Milvus se beneficiaría de una herramienta que muestre cómo se ejecuta una consulta y ayude a localizar problemas de rendimiento.</p></li>
+<li><p><strong>Explain parameter compatibility more clearly</strong>The <code translate="no">milvus-backup</code> docs should clearly explain how options like <code translate="no">--use_v2_restore</code> behave during cross-version restores and the risks they may introduce.</p></li>
+<li><p><strong>Add better checks after restore</strong>After the <code translate="no">restore</code> finishes, it would be helpful if the tool automatically printed a summary of the segment distribution.</p></li>
+<li><p><strong>Expose balance-related metrics</strong>Prometheus metrics should include segment balance information, so users can monitor it directly.</p></li>
+<li><p><strong>Support query plan analysis</strong>Similar to MySQL <code translate="no">EXPLAIN</code>, Milvus would benefit from a tool that shows how a query is executed and helps locate performance issues.</p></li>
 </ol>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -477,24 +477,24 @@ check_segment_balance(<span class="hljs-string">&quot;your_collection_name&quot;
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En resumen:</p>
+    </button></h2><p>To sum up:</p>
 <table>
 <thead>
-<tr><th>Etapa</th><th>Herramienta / Método</th><th>Punto clave</th></tr>
+<tr><th>Stage</th><th>Tool / Method</th><th>Key Point</th></tr>
 </thead>
 <tbody>
-<tr><td>Copia de seguridad</td><td>milvus-backup crear</td><td>Se admite la copia de seguridad en caliente, pero la copia de seguridad debe comprobarse cuidadosamente</td></tr>
-<tr><td>Actualizar</td><td>Construya un nuevo cluster con Helm</td><td>Deshabilite Mmap para reducir las fluctuaciones de E/S y mantenga la configuración de recursos igual que en el clúster antiguo.</td></tr>
-<tr><td>Migración</td><td>Restaurar milvus-backup</td><td>Tenga cuidado con --use_v2_restore. En la restauración de versiones cruzadas, no utilice lógica no predeterminada a menos que la entienda claramente.</td></tr>
-<tr><td>Despliegue gris</td><td>Desplazamiento gradual del tráfico</td><td>Desplace el tráfico por etapas: 5% → 25% → 50% → 100%, y mantenga el clúster antiguo listo para el rollback</td></tr>
-<tr><td>Solución de problemas</td><td>Grafana + análisis de segmentos</td><td>No te fijes solo en la CPU y la memoria. Comprueba también el balance de segmentos y la distribución de datos</td></tr>
-<tr><td>Corregir</td><td>Eliminar los datos erróneos y restaurarlos de nuevo</td><td>Elimine el indicador erróneo, restaure con la lógica predeterminada y el rendimiento volverá a la normalidad</td></tr>
+<tr><td>Backup</td><td>milvus-backup create</td><td>Hot backup is supported, but the backup must be checked carefully</td></tr>
+<tr><td>Upgrade</td><td>Build a new cluster with Helm</td><td>Disable Mmap to reduce I/O jitter, and keep the resource settings the same as the old cluster</td></tr>
+<tr><td>Migration</td><td>milvus-backup restore</td><td>Be careful with --use_v2_restore. In cross-version restore, do not use non-default logic unless you clearly understand it</td></tr>
+<tr><td>Gray rollout</td><td>Gradual traffic shift</td><td>Move traffic in stages: 5% → 25% → 50% → 100%, and keep the old cluster ready for rollback</td></tr>
+<tr><td>Troubleshooting</td><td>Grafana + segment analysis</td><td>Do not only look at CPU and memory. Also check the segment balance and data distribution</td></tr>
+<tr><td>Fix</td><td>Remove bad data and restore it again</td><td>Remove the wrong flag, restore with the default logic, and performance returns to normal</td></tr>
 </tbody>
 </table>
-<p>Al migrar datos, es importante tener en cuenta algo más que si los datos están presentes y son precisos. También hay que prestar atención a <strong>cómo</strong> <strong>se distribuyen</strong> <strong>los datos</strong>.</p>
-<p>El recuento y el tamaño de los segmentos determinan la uniformidad con la que Milvus distribuye el trabajo de consulta entre los nodos. Cuando los segmentos están desequilibrados, unos pocos nodos acaban haciendo la mayor parte del trabajo, y cada búsqueda paga por ello. Las actualizaciones entre versiones conllevan un riesgo adicional porque el proceso de restauración puede reconstruir segmentos de forma diferente al cluster original. Los indicadores como <code translate="no">--use_v2_restore</code> pueden fragmentar los datos de formas que el recuento de filas por sí solo no muestra.</p>
-<p>Por lo tanto, el enfoque más seguro en la migración entre versiones es mantener la configuración de restauración predeterminada a menos que tenga una razón específica para hacer lo contrario. Además, la supervisión debe ir más allá de la CPU y la memoria; es necesario conocer la disposición subyacente de los datos, en particular la distribución y el equilibrio de los segmentos, para detectar antes los problemas.</p>
-<h2 id="A-Note-from-the-Milvus-Team" class="common-anchor-header">Nota del equipo de Milvus<button data-href="#A-Note-from-the-Milvus-Team" class="anchor-icon" translate="no">
+<p>When migrating data, it is important to consider more than just whether the data is present and accurate. You also need to pay attention to <strong>how the data</strong> <strong>is distributed</strong>.</p>
+<p>Segment count and segment sizes determine how evenly Milvus distributes query work across nodes. When segments are unbalanced, a few nodes end up doing most of the work, and every search pays for it. Cross-version upgrades carry extra risk here because the restore process may rebuild segments differently from the original cluster. Flags like <code translate="no">--use_v2_restore</code> can fragment your data in ways that row counts alone won’t show.</p>
+<p>Therefore, the safest approach in cross-version migration is to stick with the default restore settings unless you have a specific reason to do otherwise. Also, monitoring should go beyond CPU and memory; you need insight into the underlying data layout, particularly segment distribution and balance, to detect problems earlier.</p>
+<h2 id="A-Note-from-the-Milvus-Team" class="common-anchor-header">A Note from the Milvus Team<button data-href="#A-Note-from-the-Milvus-Team" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -509,9 +509,9 @@ check_segment_balance(<span class="hljs-string">&quot;your_collection_name&quot;
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nos gustaría dar las gracias al equipo de ingeniería de WPS por compartir esta experiencia con la comunidad Milvus. Escritos como éste son valiosos porque capturan lecciones reales de producción y las hacen útiles para otros que se enfrentan a problemas similares.</p>
-<p>Si su equipo tiene una lección técnica, una historia de solución de problemas o una experiencia práctica que valga la pena compartir, nos encantaría saber de usted. Únete a nuestro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal de Slack</a> y ponte en contacto con nosotros.</p>
-<p>Y si está trabajando en sus propios desafíos, esos mismos canales de la comunidad son un buen lugar para conectarse con los ingenieros de Milvus y otros usuarios. También puede reservar una sesión individual a través de <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> para obtener ayuda con la copia de seguridad y la restauración, las actualizaciones entre versiones y el rendimiento de las consultas.</p>
+    </button></h2><p>We’d like to thank the WPS engineering team for sharing this experience with the Milvus community. Write-ups like this are valuable because they capture real production lessons and make them useful to others facing similar issues.</p>
+<p>If your team has a technical lesson, a troubleshooting story, or practical experience worth sharing, we’d love to hear from you. Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a> and reach out to us there.</p>
+<p>And if you’re working through challenges of your own, those same community channels are a good place to connect with Milvus engineers and other users. You can also book a one-on-one session through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> for help with backup and restore, cross-version upgrades, and query performance.</p>
 <p><a href="https://zilliz.com/share-your-story">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Blog_Milvus_1_9eca411038.png" alt="" class="doc-image" id="" />

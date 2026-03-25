@@ -1,6 +1,7 @@
 ---
 id: fix-rag-retrieval-errors-crag-langgraph-milvus.md
-title: 'Corrigir erros de recuperação de RAG com CRAG, LangGraph e Milvus'
+title: |
+  Fix RAG Retrieval Errors with CRAG, LangGraph, and Milvus
 author: Min Yin
 date: 2026-3-23
 cover: assets.zilliz.com/cover_CRAG_a05dddbaa2_aafaad6bc0.jpg
@@ -11,17 +12,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'CRAG, RAG retrieval, LangGraph, Milvus, hybrid retrieval'
 meta_title: |
   Fix RAG Retrieval Errors with CRAG, LangGraph, and Milvus
-desc: >-
-  Elevada semelhança mas respostas erradas? Saiba como o CRAG adiciona avaliação
-  e correção aos pipelines RAG. Construa um sistema pronto para produção com
-  LangGraph + Milvus.
+desc: >
+  High similarity but wrong answers? Learn how CRAG adds evaluation and
+  correction to RAG pipelines. Build a production-ready system with LangGraph +
+  Milvus.
 origin: 'https://milvus.io/blog/fix-rag-retrieval-errors-crag-langgraph-milvus.md'
 ---
-<p>À medida que as aplicações LLM entram em produção, as equipas precisam cada vez mais que os seus modelos respondam a perguntas baseadas em dados privados ou informações em tempo real. A <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">geração aumentada por</a> recuperação (RAG) - em que o modelo obtém informações de uma base de conhecimentos externa no momento da consulta - é a abordagem padrão. Reduz as alucinações e mantém as respostas actualizadas.</p>
-<p>Mas aqui está um problema que surge rapidamente na prática: <strong>um documento pode ter uma pontuação elevada em termos de semelhança e, ainda assim, estar completamente errado para a pergunta.</strong> Os pipelines RAG tradicionais equiparam a similaridade à relevância. Na produção, esse pressuposto é quebrado. Um resultado com a melhor classificação pode estar desatualizado, estar apenas tangencialmente relacionado ou não conter o detalhe exato de que o utilizador necessita.</p>
-<p>O CRAG (Corrective Retrieval-Augmented Generation) resolve este problema adicionando avaliação e correção entre a recuperação e a geração. Em vez de confiar cegamente nas pontuações de semelhança, o sistema verifica se o conteúdo recuperado responde efetivamente à pergunta - e corrige a situação quando não responde.</p>
-<p>Este artigo apresenta a construção de um sistema CRAG pronto para produção usando LangChain, LangGraph e <a href="https://milvus.io/intro">Milvus</a>.</p>
-<h2 id="Three-Retrieval-Problems-Traditional-RAG-Doesnt-Solve" class="common-anchor-header">Três problemas de recuperação que o RAG tradicional não resolve<button data-href="#Three-Retrieval-Problems-Traditional-RAG-Doesnt-Solve" class="anchor-icon" translate="no">
+<p>As LLM applications go into production, teams increasingly need their models to answer questions grounded in private data or real-time information. <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval-augmented generation</a> (RAG)—where the model pulls from an external knowledge base at query time—is the standard approach. It cuts down on hallucinations and keeps answers current.</p>
+<p>But here’s a problem that surfaces quickly in practice: <strong>a document can score high on similarity and still be completely wrong for the question.</strong> Traditional RAG pipelines equate similarity with relevance. In production, that assumption breaks. A top-ranked result might be outdated, only tangentially related, or missing the exact detail the user needs.</p>
+<p>CRAG (Corrective Retrieval-Augmented Generation) addresses this by adding evaluation and correction between retrieval and generation. Instead of blindly trusting similarity scores, the system checks whether retrieved content actually answers the question—and fixes the situation when it doesn’t.</p>
+<p>This article walks through building a production-ready CRAG system using LangChain, LangGraph, and <a href="https://milvus.io/intro">Milvus</a>.</p>
+<h2 id="Three-Retrieval-Problems-Traditional-RAG-Doesnt-Solve" class="common-anchor-header">Three Retrieval Problems Traditional RAG Doesn’t Solve<button data-href="#Three-Retrieval-Problems-Traditional-RAG-Doesnt-Solve" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,12 +37,12 @@ origin: 'https://milvus.io/blog/fix-rag-retrieval-errors-crag-langgraph-milvus.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A maioria das falhas de RAG em produção tem origem num de três problemas:</p>
-<p><strong>Incompatibilidade de recuperação.</strong> O documento é topicamente semelhante, mas não responde à pergunta. Pergunte como configurar um certificado HTTPS no Nginx, e o sistema pode retornar um guia de configuração do Apache, um passo a passo de 2019 ou uma explicação geral sobre como o TLS funciona. Semanticamente próximo, praticamente inútil.</p>
-<p><strong>Conteúdo obsoleto.</strong> <a href="https://zilliz.com/learn/vector-similarity-search">A pesquisa vetorial</a> não tem qualquer conceito de atualidade. Consulte "Python async best practices" e você obterá uma mistura de padrões de 2018 e padrões de 2024, classificados puramente pela distância de incorporação. O sistema não consegue distinguir o que o utilizador realmente precisa.</p>
-<p><strong>Contaminação da memória.</strong> Este problema agrava-se com o tempo e é frequentemente o mais difícil de resolver. Digamos que o sistema recupera uma referência de API desactualizada e gera código incorreto. Essa saída incorrecta é armazenada na memória. Na próxima consulta semelhante, o sistema recupera-o novamente - reforçando o erro. As informações obsoletas e recentes misturam-se gradualmente e a fiabilidade do sistema diminui a cada ciclo.</p>
-<p>Estes não são casos isolados. Aparecem regularmente quando um sistema RAG lida com tráfego real. É isso que faz com que as verificações de qualidade da recuperação sejam um requisito, e não uma coisa boa de se ter.</p>
-<h2 id="What-Is-CRAG-Evaluate-First-Then-Generate" class="common-anchor-header">O que é o CRAG? Avaliar primeiro, depois gerar<button data-href="#What-Is-CRAG-Evaluate-First-Then-Generate" class="anchor-icon" translate="no">
+    </button></h2><p>Most RAG failures in production trace back to one of three issues:</p>
+<p><strong>Retrieval mismatch.</strong> The document is topically similar but doesn’t actually answer the question. Ask how to configure an HTTPS certificate in Nginx, and the system might return an Apache setup guide, a 2019 walkthrough, or a general explainer on how TLS works. Semantically close, practically useless.</p>
+<p><strong>Stale content.</strong> <a href="https://zilliz.com/learn/vector-similarity-search">Vector search</a> has no concept of recency. Query “Python async best practices” and you’ll get a mix of 2018 patterns and 2024 patterns, ranked purely by embedding distance. The system can’t distinguish which the user actually needs.</p>
+<p><strong>Memory contamination.</strong> This one compounds over time and is often the hardest to fix. Say the system retrieves an outdated API reference and generates incorrect code. That bad output gets stored back into memory. On the next similar query, the system retrieves it again—reinforcing the mistake. Stale and fresh information gradually mix, and system reliability erodes with every cycle.</p>
+<p>These aren’t corner cases. They show up regularly once a RAG system handles real traffic. That’s what makes retrieval quality checks a requirement, not a nice-to-have.</p>
+<h2 id="What-Is-CRAG-Evaluate-First-Then-Generate" class="common-anchor-header">What Is CRAG? Evaluate First, Then Generate<button data-href="#What-Is-CRAG-Evaluate-First-Then-Generate" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,54 +57,58 @@ origin: 'https://milvus.io/blog/fix-rag-retrieval-errors-crag-langgraph-milvus.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>O Corrective Retrieval-Augmented Generation (CRAG)</strong> é um método que adiciona uma etapa de avaliação e correção entre a recuperação e a geração numa cadeia de RAG. Foi introduzido no documento <a href="https://openreview.net/forum?id=JnWJbrnaUE"><em>Corrective Retrieval Augmented Generation</em></a> (Yan et al., 2024). Ao contrário do RAG tradicional, que toma uma decisão binária - utilizar o documento ou rejeitá-lo - o RAG avalia a relevância de cada resultado recuperado e encaminha-o através de uma de três vias de correção antes de chegar ao modelo linguístico.</p>
-<p>O RAG tradicional tem dificuldades quando os resultados da recuperação se situam numa zona cinzenta: parcialmente relevantes, algo datados ou com falta de uma peça-chave. Uma simples porta de sim/não ou descarta informações parciais úteis ou deixa passar conteúdo ruidoso. O CRAG reformula o pipeline de <strong>recuperar → gerar</strong> para <strong>recuperar → avaliar → corrigir → gerar</strong>, dando ao sistema a oportunidade de corrigir a qualidade da recuperação antes de começar a geração.</p>
+    </button></h2><p><strong>Corrective Retrieval-Augmented Generation (CRAG)</strong> is a method that adds an evaluation and correction step between retrieval and generation in a RAG pipeline. It was introduced in the paper <a href="https://openreview.net/forum?id=JnWJbrnaUE"><em>Corrective Retrieval Augmented Generation</em></a> (Yan et al., 2024). Unlike traditional RAG, which makes a binary decision—use the document or discard it—CRAG scores each retrieved result for relevance and routes it through one of three correction paths before it ever reaches the language model.</p>
+<p>Traditional RAG struggles when retrieval results land in a gray zone: partially relevant, somewhat dated, or missing a key piece. A simple yes/no gate either discards useful partial information or lets noisy content through. CRAG reframes the pipeline from <strong>retrieve → generate</strong> to <strong>retrieve → evaluate → correct → generate</strong>, giving the system a chance to fix retrieval quality before generation begins.</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/fix_rag_retrieval_errors_crag_langgraph_milvus_1_11a820f454.png" alt="CRAG four-step workflow: Retrieval → Evaluation → Correction → Generation, showing how documents are scored and routed" class="doc-image" id="crag-four-step-workflow:-retrieval-→-evaluation-→-correction-→-generation,-showing-how-documents-are-scored-and-routed" />
-   <span>Fluxo de trabalho em quatro etapas do CRAG: Recuperação → Avaliação → Correção → Geração, mostrando como os documentos são classificados e encaminhados</span> </span></p>
-<p>Os resultados recuperados são classificados numa de três categorias:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/fix_rag_retrieval_errors_crag_langgraph_milvus_1_11a820f454.png" alt="CRAG four-step workflow: Retrieval → Evaluation → Correction → Generation, showing how documents are scored and routed" class="doc-image" id="crag-four-step-workflow:-retrieval-→-evaluation-→-correction-→-generation,-showing-how-documents-are-scored-and-routed" />
+    <span>CRAG four-step workflow: Retrieval → Evaluation → Correction → Generation, showing how documents are scored and routed</span>
+  </span>
+</p>
+<p>Retrieved results are classified into one of three categories:</p>
 <ul>
-<li><strong>Correto:</strong> responde diretamente à consulta; utilizável após um ligeiro refinamento</li>
-<li><strong>Ambíguo:</strong> parcialmente relevante; necessita de informação suplementar</li>
-<li><strong>Incorreto:</strong> irrelevante; descartar e recorrer a fontes alternativas</li>
+<li><strong>Correct:</strong> directly answers the query; usable after light refinement</li>
+<li><strong>Ambiguous:</strong> partially relevant; needs supplemental information</li>
+<li><strong>Incorrect:</strong> irrelevant; discard and fall back to alternative sources</li>
 </ul>
 <table>
 <thead>
-<tr><th>Decisão</th><th>Confiança</th><th>Ação</th></tr>
+<tr><th>Decision</th><th>Confidence</th><th>Action</th></tr>
 </thead>
 <tbody>
-<tr><td>Correta</td><td>&gt; 0.9</td><td>Aperfeiçoar o conteúdo do documento</td></tr>
-<tr><td>Ambíguo</td><td>0.5-0.9</td><td>Refinar o documento + complementar com pesquisa na Web</td></tr>
-<tr><td>Incorreto</td><td>&lt; 0.5</td><td>Rejeitar os resultados da pesquisa; recorrer inteiramente à pesquisa na Web</td></tr>
+<tr><td>Correct</td><td>&gt; 0.9</td><td>Refine the document content</td></tr>
+<tr><td>Ambiguous</td><td>0.5–0.9</td><td>Refine the document + supplement with web search</td></tr>
+<tr><td>Incorrect</td><td>&lt; 0.5</td><td>Discard retrieval results; fall back entirely to web search</td></tr>
 </tbody>
 </table>
-<h3 id="Content-Refinement" class="common-anchor-header">Refinamento do conteúdo</h3><p>O CRAG também aborda um problema mais subtil com o RAG padrão: a maioria dos sistemas alimenta o modelo com o documento recuperado na íntegra. Isto desperdiça tokens e dilui o sinal - o modelo tem de percorrer parágrafos irrelevantes para encontrar a única frase que realmente interessa. O CRAG refina primeiro o conteúdo recuperado, extraindo partes relevantes e retirando o resto.</p>
-<p>O documento original utiliza tiras de conhecimento e regras heurísticas para este efeito. Na prática, a correspondência de palavras-chave funciona para muitos casos de utilização, e os sistemas de produção podem acrescentar a sumarização baseada em LLM ou a extração estruturada para uma maior qualidade.</p>
-<p>O processo de refinamento tem três partes:</p>
+<h3 id="Content-Refinement" class="common-anchor-header">Content Refinement</h3><p>CRAG also addresses a subtler issue with standard RAG: most systems feed the full retrieved document to the model. This wastes tokens and dilutes the signal—the model has to wade through irrelevant paragraphs to find the one sentence that actually matters. CRAG refines retrieved content first, extracting relevant portions and stripping the rest.</p>
+<p>The original paper uses knowledge strips and heuristic rules for this. In practice, keyword matching works for many use cases, and production systems can layer on LLM-based summarization or structured extraction for higher quality.</p>
+<p>The refinement process has three parts:</p>
 <ul>
-<li><strong>Decomposição do documento:</strong> extrair passagens-chave de um documento mais longo</li>
-<li><strong>Reescrita de consultas:</strong> transformar consultas vagas ou ambíguas em consultas mais direcionadas</li>
-<li><strong>Seleção de conhecimentos:</strong> deduplicar, classificar e reter apenas o conteúdo mais útil</li>
+<li><strong>Document decomposition:</strong> extract key passages from a longer document</li>
+<li><strong>Query rewriting:</strong> turn vague or ambiguous queries into more targeted ones</li>
+<li><strong>Knowledge selection:</strong> deduplicate, rank, and retain only the most useful content</li>
 </ul>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/fix_rag_retrieval_errors_crag_langgraph_milvus_2_9ec4b6aa81.png" alt="The three-step document refinement process: Document Decomposition (2000 → 500 tokens), Query Rewriting (improved search precision), and Knowledge Selection (filter, rank, and trim)" class="doc-image" id="the-three-step-document-refinement-process:-document-decomposition-(2000-→-500-tokens),-query-rewriting-(improved-search-precision),-and-knowledge-selection-(filter,-rank,-and-trim)" />
-   <span>O processo de refinamento de documentos em três etapas: Decomposição de documentos (2000 → 500 tokens), Reescrita de consultas (precisão de pesquisa melhorada) e Seleção de conhecimentos (filtrar, classificar e aparar)</span> </span></p>
-<h3 id="The-Evaluator" class="common-anchor-header">O avaliador</h3><p>O avaliador é o núcleo do CRAG. Não se destina a um raciocínio profundo - é uma porta de triagem rápida. Dada uma consulta e um conjunto de documentos recuperados, decide se o conteúdo é suficientemente bom para ser utilizado.</p>
-<p>O artigo original opta por um modelo T5-Large ajustado em vez de um LLM de uso geral. O raciocínio: a velocidade e a precisão são mais importantes do que a flexibilidade para esta tarefa específica.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/fix_rag_retrieval_errors_crag_langgraph_milvus_2_9ec4b6aa81.png" alt="The three-step document refinement process: Document Decomposition (2000 → 500 tokens), Query Rewriting (improved search precision), and Knowledge Selection (filter, rank, and trim)" class="doc-image" id="the-three-step-document-refinement-process:-document-decomposition-(2000-→-500-tokens),-query-rewriting-(improved-search-precision),-and-knowledge-selection-(filter,-rank,-and-trim)" />
+    <span>The three-step document refinement process: Document Decomposition (2000 → 500 tokens), Query Rewriting (improved search precision), and Knowledge Selection (filter, rank, and trim)</span>
+  </span>
+</p>
+<h3 id="The-Evaluator" class="common-anchor-header">The Evaluator</h3><p>The evaluator is the core of CRAG. It’s not meant for deep reasoning—it’s a fast triage gate. Given a query and a set of retrieved documents, it decides whether the content is good enough to use.</p>
+<p>The original paper opts for a fine-tuned T5-Large model rather than a general-purpose LLM. The reasoning: speed and precision matter more than flexibility for this particular task.</p>
 <table>
 <thead>
-<tr><th>Atributo</th><th>T5-Large ajustado</th><th>GPT-4</th></tr>
+<tr><th>Attribute</th><th>Fine-tuned T5-Large</th><th>GPT-4</th></tr>
 </thead>
 <tbody>
-<tr><td>Latência</td><td>10-20 ms</td><td>200 ms+</td></tr>
-<tr><td>Exatidão</td><td>92% (experiências em papel)</td><td>TBD</td></tr>
-<tr><td>Adequação à tarefa</td><td>Elevada - afinação fina para uma única tarefa, maior precisão</td><td>Média - objetivo geral, mais flexível mas menos especializado</td></tr>
+<tr><td>Latency</td><td>10–20 ms</td><td>200 ms+</td></tr>
+<tr><td>Accuracy</td><td>92% (paper experiments)</td><td>TBD</td></tr>
+<tr><td>Task Fit</td><td>High — single-task fine-tuned, higher precision</td><td>Medium — general-purpose, more flexible but less specialized</td></tr>
 </tbody>
 </table>
-<h3 id="Web-Search-Fallback" class="common-anchor-header">Apoio à pesquisa na Web</h3><p>Quando a recuperação interna é assinalada como incorrecta ou ambígua, o CRAG pode desencadear uma pesquisa na Web para obter informações mais recentes ou suplementares. Isto actua como uma rede de segurança para consultas sensíveis ao tempo e tópicos em que a base de conhecimentos interna tem lacunas.</p>
-<h2 id="Why-Milvus-Is-a-Good-Fit-for-CRAG-in-Production" class="common-anchor-header">Porque é que o Milvus é uma boa opção para o CRAG na produção<button data-href="#Why-Milvus-Is-a-Good-Fit-for-CRAG-in-Production" class="anchor-icon" translate="no">
+<h3 id="Web-Search-Fallback" class="common-anchor-header">Web Search Fallback</h3><p>When internal retrieval is flagged as incorrect or ambiguous, CRAG can trigger a web search to pull in fresher or supplemental information. This acts as a safety net for time-sensitive queries and topics where the internal knowledge base has gaps.</p>
+<h2 id="Why-Milvus-Is-a-Good-Fit-for-CRAG-in-Production" class="common-anchor-header">Why Milvus Is a Good Fit for CRAG in Production<button data-href="#Why-Milvus-Is-a-Good-Fit-for-CRAG-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,17 +123,17 @@ origin: 'https://milvus.io/blog/fix-rag-retrieval-errors-crag-langgraph-milvus.m
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A eficácia do CRAG depende do que lhe está subjacente. A <a href="https://zilliz.com/learn/what-is-vector-database">base de dados vetorial</a> tem de fazer mais do que a pesquisa básica de semelhanças - tem de suportar o isolamento multi-tenant, a recuperação híbrida e a flexibilidade de esquema que um sistema CRAG de produção exige.</p>
-<p>Depois de avaliar várias opções, escolhemos <a href="https://zilliz.com/what-is-milvus">o Milvus</a> por três motivos.</p>
-<h3 id="Multi-Tenant-Isolation" class="common-anchor-header">Isolamento de vários inquilinos</h3><p>Nos sistemas baseados em agentes, cada utilizador ou sessão necessita do seu próprio espaço de memória. A abordagem ingénua - uma coleção por inquilino - torna-se rapidamente uma dor de cabeça operacional, especialmente em escala.</p>
-<p>Milvus lida com isso com <a href="https://milvus.io/docs/use-partition-key.md">Partition Key</a>. Defina <code translate="no">is_partition_key=True</code> no campo <code translate="no">agent_id</code> e o Milvus encaminha automaticamente as consultas para a partição correta. Sem dispersão de colecções, sem código de encaminhamento manual.</p>
-<p>Nos nossos benchmarks com 10 milhões de vectores em 100 inquilinos, o Milvus com Compactação de Clustering forneceu <strong>QPS 3-5x superior</strong> em comparação com a linha de base não optimizada.</p>
-<h3 id="Hybrid-Retrieval" class="common-anchor-header">Recuperação híbrida</h3><p>A pesquisa pura de vectores é insuficiente para SKUs de conteúdo-produto de correspondência exacta, como <code translate="no">SKU-2024-X5</code>, cadeias de versões ou terminologia específica.</p>
-<p>O Milvus 2.5 suporta a <a href="https://milvus.io/docs/multi-vector-search.md">recuperação híbrida</a> nativamente: vetores densos para similaridade semântica, vetores esparsos para correspondência de palavras-chave no estilo BM25 e filtragem de metadados escalares - tudo em uma única consulta. Os resultados são fundidos usando o Reciprocal Rank Fusion (RRF), para que não seja necessário criar e fundir pipelines de recuperação separados.</p>
-<p>Em um conjunto de dados de 1 milhão de vetores, a latência de recuperação do Milvus Sparse-BM25 foi de <strong>6 ms</strong>, com impacto insignificante no desempenho do CRAG de ponta a ponta.</p>
-<h3 id="Flexible-Schema-for-Evolving-Memory" class="common-anchor-header">Esquema flexível para memória em evolução</h3><p>À medida que os pipelines CRAG amadurecem, o modelo de dados evolui com eles. Precisávamos adicionar campos como <code translate="no">confidence</code>, <code translate="no">verified</code>, e <code translate="no">source</code> enquanto iterávamos na lógica de avaliação. Na maioria das bases de dados, isso significa scripts de migração e tempo de inatividade.</p>
-<p>O Milvus suporta campos JSON dinâmicos, pelo que os metadados podem ser alargados em tempo real sem interrupções de serviço.</p>
-<p>Aqui está um esquema típico:</p>
+    </button></h2><p>CRAG’s effectiveness depends on what sits underneath it. The <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> needs to do more than basic similarity search—it needs to support the multi-tenant isolation, hybrid retrieval, and schema flexibility that a production CRAG system demands.</p>
+<p>After evaluating several options, we chose <a href="https://zilliz.com/what-is-milvus">Milvus</a> for three reasons.</p>
+<h3 id="Multi-Tenant-Isolation" class="common-anchor-header">Multi-Tenant Isolation</h3><p>In agent-based systems, each user or session needs its own memory space. The naive approach—one collection per tenant—becomes an operational headache fast, especially at scale.</p>
+<p>Milvus handles this with <a href="https://milvus.io/docs/use-partition-key.md">Partition Key</a>. Set <code translate="no">is_partition_key=True</code> on the <code translate="no">agent_id</code> field, and Milvus routes queries to the right partition automatically. No collection sprawl, no manual routing code.</p>
+<p>In our benchmarks with 10 million vectors across 100 tenants, Milvus with Clustering Compaction delivered <strong>3–5x higher QPS</strong> compared to the unoptimized baseline.</p>
+<h3 id="Hybrid-Retrieval" class="common-anchor-header">Hybrid Retrieval</h3><p>Pure vector search falls short on exact-match content—product SKUs like <code translate="no">SKU-2024-X5</code>, version strings, or specific terminology.</p>
+<p>Milvus 2.5 supports <a href="https://milvus.io/docs/multi-vector-search.md">hybrid retrieval</a> natively: dense vectors for semantic similarity, sparse vectors for BM25-style keyword matching, and scalar metadata filtering—all in one query. Results are fused using Reciprocal Rank Fusion (RRF), so you don’t need to build and merge separate retrieval pipelines.</p>
+<p>On a 1-million-vector dataset, Milvus Sparse-BM25 retrieval latency came in at <strong>6 ms</strong>, with negligible impact on end-to-end CRAG performance.</p>
+<h3 id="Flexible-Schema-for-Evolving-Memory" class="common-anchor-header">Flexible Schema for Evolving Memory</h3><p>As CRAG pipelines mature, the data model evolves with them. We needed to add fields like <code translate="no">confidence</code>, <code translate="no">verified</code>, and <code translate="no">source</code> while iterating on evaluation logic. In most databases, that means migration scripts and downtime.</p>
+<p>Milvus supports dynamic JSON fields, so metadata can be extended on the fly without service interruptions.</p>
+<p>Here’s a typical schema:</p>
 <pre><code translate="no" class="language-python">fields = [
     FieldSchema(name=<span class="hljs-string">&quot;agent_id&quot;</span>, dtype=DataType.VARCHAR, is_partition_key=<span class="hljs-literal">True</span>),  <span class="hljs-comment"># multi-tenancy</span>
     FieldSchema(name=<span class="hljs-string">&quot;dense_embedding&quot;</span>, dtype=DataType.FLOAT_VECTOR, dim=<span class="hljs-number">1536</span>),   <span class="hljs-comment"># semantic retrieval</span>
@@ -148,8 +153,8 @@ results = collection.hybrid_search(
     limit=<span class="hljs-number">5</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>O Milvus também simplifica o escalonamento da implantação. Ele oferece <a href="https://milvus.io/docs/install-overview.md">os modos Lite, Standalone e Distributed</a> que são compatíveis com o código - a mudança do desenvolvimento local para um cluster de produção requer apenas a alteração da cadeia de conexão.</p>
-<h2 id="Hands-On-Build-a-CRAG-System-with-LangGraph-Middleware-and-Milvus" class="common-anchor-header">Prático: Construir um sistema CRAG com LangGraph Middleware e Milvus<button data-href="#Hands-On-Build-a-CRAG-System-with-LangGraph-Middleware-and-Milvus" class="anchor-icon" translate="no">
+<p>Milvus also simplifies deployment scaling. It offers <a href="https://milvus.io/docs/install-overview.md">Lite, Standalone, and Distributed modes</a> that are code-compatible—switching from local development to a production cluster only requires changing the connection string.</p>
+<h2 id="Hands-On-Build-a-CRAG-System-with-LangGraph-Middleware-and-Milvus" class="common-anchor-header">Hands-On: Build a CRAG System with LangGraph Middleware and Milvus<button data-href="#Hands-On-Build-a-CRAG-System-with-LangGraph-Middleware-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,26 +169,26 @@ results = collection.hybrid_search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Why-the-Middleware-Approach" class="common-anchor-header">Por que a abordagem de middleware?</h3><p>Uma maneira comum de construir CRAG com LangGraph é conectar um gráfico de estado com nós e arestas controlando cada etapa. Isso funciona, mas o gráfico fica emaranhado à medida que a complexidade aumenta, e a depuração torna-se uma dor de cabeça.</p>
-<p>Decidimos usar o <strong>padrão Middleware</strong> no LangGraph 1.0. Este intercepta os pedidos antes da chamada do modelo, pelo que a recuperação, avaliação e correção são tratadas num único local coeso. Em comparação com a abordagem de gráfico de estado:</p>
+    </button></h2><h3 id="Why-the-Middleware-Approach" class="common-anchor-header">Why the Middleware Approach?</h3><p>A common way to build CRAG with LangGraph is to wire up a state graph with nodes and edges controlling each step. This works, but the graph gets tangled as complexity grows, and debugging becomes a headache.</p>
+<p>We settled on the <strong>Middleware pattern</strong> in LangGraph 1.0. It intercepts requests before the model call, so retrieval, evaluation, and correction are handled in one cohesive place. Compared to the state-graph approach:</p>
 <ul>
-<li><strong>Menos código:</strong> a lógica é centralizada, não espalhada pelos nós do gráfico</li>
-<li><strong>Mais fácil de seguir:</strong> o fluxo de controlo é lido linearmente</li>
-<li><strong>Mais fácil de depurar:</strong> as falhas apontam para um único local, não para uma travessia do grafo</li>
+<li><strong>Less code:</strong> logic is centralized, not scattered across graph nodes</li>
+<li><strong>Easier to follow:</strong> the control flow reads linearly</li>
+<li><strong>Easier to debug:</strong> failures point to a single location, not a graph traversal</li>
 </ul>
-<h3 id="Core-Workflow" class="common-anchor-header">Fluxo de trabalho principal</h3><p>O pipeline é executado em quatro etapas:</p>
+<h3 id="Core-Workflow" class="common-anchor-header">Core Workflow</h3><p>The pipeline runs in four steps:</p>
 <ol>
-<li><strong>Recuperação:</strong> buscar os 3 principais documentos relevantes do Milvus, com escopo para o locatário atual</li>
-<li><strong>Avaliação:</strong> avaliar a qualidade do documento com um modelo ligeiro</li>
-<li><strong>Correção:</strong> refinar, complementar com pesquisa na Web ou recuar totalmente com base no veredito</li>
-<li><strong>Injeção:</strong> passar o contexto finalizado para o modelo através de um prompt de sistema dinâmico</li>
+<li><strong>Retrieval:</strong> fetch the top 3 relevant documents from Milvus, scoped to the current tenant</li>
+<li><strong>Evaluation:</strong> assess document quality with a lightweight model</li>
+<li><strong>Correction:</strong> refine, supplement with web search, or fall back entirely—based on the verdict</li>
+<li><strong>Injection:</strong> pass the finalized context to the model through a dynamic system prompt</li>
 </ol>
-<h3 id="Environment-Setup-and-Data-Preparation" class="common-anchor-header">Configuração do ambiente e preparação de dados</h3><p><strong>Variáveis de ambiente</strong></p>
+<h3 id="Environment-Setup-and-Data-Preparation" class="common-anchor-header">Environment Setup and Data Preparation</h3><p><strong>Environment variables</strong></p>
 <pre><code translate="no" class="language-bash"><span class="hljs-keyword">export</span> <span class="hljs-variable constant_">OPENAI_API_KEY</span>=<span class="hljs-string">&quot;your-api-key&quot;</span>
 <span class="hljs-keyword">export</span> <span class="hljs-variable constant_">TAVILY_API_KEY</span>=<span class="hljs-string">&quot;your-tavily-key&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Criar a coleção Milvus</strong></p>
-<p>Antes de executar o código, crie uma coleção no Milvus com um esquema que corresponda à lógica de recuperação.</p>
+<p><strong>Create the Milvus collection</strong></p>
+<p>Before running the code, create a collection in Milvus with a schema that matches the retrieval logic.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># filename: crag_agent.py</span>
 
 <span class="hljs-comment"># ============ Import dependencies ============</span>
@@ -414,10 +419,10 @@ agent = create_agent(
     <span class="hljs-built_in">print</span>(response[<span class="hljs-string">&quot;messages&quot;</span>][-<span class="hljs-number">1</span>].content)
 <button class="copy-code-btn"></button></code></pre>
 <blockquote>
-<p><strong>Nota sobre a versão:</strong> este código utiliza as funcionalidades mais recentes do Middleware em LangGraph e LangChain. Essas APIs podem mudar à medida que os frameworks evoluem - verifique a <a href="https://langchain-ai.github.io/langgraph/">documentação do LangGraph</a> para obter o uso mais atual.</p>
+<p><strong>Version Note:</strong> This code uses the latest Middleware features in LangGraph and LangChain. These APIs may change as the frameworks evolve—check the <a href="https://langchain-ai.github.io/langgraph/">LangGraph documentation</a> for the most current usage.</p>
 </blockquote>
-<h3 id="Key-Modules" class="common-anchor-header">Módulos principais</h3><p><strong>1. Projeto do avaliador de nível de produção</strong></p>
-<p>O método <code translate="no">_evaluate_relevance()</code> no código acima é intencionalmente simplificado para testes rápidos. Para a produção, vai querer um resultado estruturado com pontuação de confiança e explicabilidade:</p>
+<h3 id="Key-Modules" class="common-anchor-header">Key Modules</h3><p><strong>1. Production-grade evaluator design</strong></p>
+<p>The <code translate="no">_evaluate_relevance()</code> method in the code above is intentionally simplified for quick testing. For production, you’ll want structured output with confidence scoring and explainability:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pydantic <span class="hljs-keyword">import</span> BaseModel
 <span class="hljs-keyword">from</span> langchain.prompts <span class="hljs-keyword">import</span> PromptTemplate
 
@@ -483,14 +488,14 @@ grader_chain = grader_prompt | grader_llm.with_structured_output(RelevanceVerdic
     <span class="hljs-comment"># In actual use, you need to create the evaluation_metrics Collection</span>
     <span class="hljs-keyword">pass</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>2. Refinamento do conhecimento e recurso</strong></p>
-<p>Três mecanismos trabalham em conjunto para manter a alta qualidade do contexto do modelo:</p>
+<p><strong>2. Knowledge refinement and fallback</strong></p>
+<p>Three mechanisms work together to keep model context high-quality:</p>
 <ul>
-<li><strong>O refinamento do conhecimento</strong> extrai as frases mais relevantes para a consulta e elimina o ruído.</li>
-<li><strong>A pesquisa de recurso</strong> é acionada quando a recuperação local é insuficiente, recorrendo a conhecimentos externos através do Tavily.</li>
-<li><strong>A fusão de contexto</strong> combina a memória interna com resultados externos num único bloco de contexto desduplicado antes de chegar ao modelo.</li>
+<li><strong>Knowledge refinement</strong> extracts the most query-relevant sentences and strips out noise.</li>
+<li><strong>Fallback search</strong> triggers when local retrieval is insufficient, pulling in external knowledge via Tavily.</li>
+<li><strong>Context merging</strong> combines internal memory with external results into a single, deduplicated context block before it reaches the model.</li>
 </ul>
-<h2 id="Tips-for-Running-CRAG-in-Production" class="common-anchor-header">Dicas para executar o CRAG na produção<button data-href="#Tips-for-Running-CRAG-in-Production" class="anchor-icon" translate="no">
+<h2 id="Tips-for-Running-CRAG-in-Production" class="common-anchor-header">Tips for Running CRAG in Production<button data-href="#Tips-for-Running-CRAG-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -505,24 +510,24 @@ grader_chain = grader_prompt | grader_llm.with_structured_output(RelevanceVerdic
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Três áreas são mais importantes quando se vai para além da prototipagem.</p>
-<h3 id="1-Cost-Pick-the-Right-Evaluator" class="common-anchor-header">1. Custo: Escolha o avaliador certo</h3><p>O avaliador é executado em cada consulta, o que o torna a maior alavanca para a latência e o custo.</p>
+    </button></h2><p>Three areas matter most once you move beyond prototyping.</p>
+<h3 id="1-Cost-Pick-the-Right-Evaluator" class="common-anchor-header">1. Cost: Pick the Right Evaluator</h3><p>The evaluator runs on every single query, making it the biggest lever for both latency and cost.</p>
 <ul>
-<li><strong>Cargas de trabalho de alta simultaneidade:</strong> Um modelo leve e bem ajustado como o T5-Large mantém a latência em 10-20 ms e os custos previsíveis.</li>
-<li><strong>Baixo tráfego ou prototipagem:</strong> Um modelo hospedado como o <code translate="no">gpt-4o-mini</code> é mais rápido de configurar e precisa de menos trabalho operacional, mas a latência e os custos por chamada são mais altos.</li>
+<li><strong>High-concurrency workloads:</strong> A fine-tuned lightweight model like T5-Large keeps latency at 10–20 ms and costs predictable.</li>
+<li><strong>Low-traffic or prototyping:</strong> A hosted model like <code translate="no">gpt-4o-mini</code> is faster to set up and needs less operational work, but latency and per-call costs run higher.</li>
 </ul>
-<h3 id="2-Observability-Instrument-from-Day-One" class="common-anchor-header">2. Observabilidade: Instrumento desde o primeiro dia</h3><p>Os problemas de produção mais difíceis são os que não se conseguem ver até que a qualidade da resposta já se tenha degradado.</p>
+<h3 id="2-Observability-Instrument-from-Day-One" class="common-anchor-header">2. Observability: Instrument from Day One</h3><p>The hardest production issues are the ones you can’t see until answer quality has already degraded.</p>
 <ul>
-<li><strong>Monitorização da infraestrutura:</strong> O Milvus integra-se com o <a href="https://milvus.io/docs/monitor_overview.md">Prometheus</a>. Comece com três métricas: <code translate="no">milvus_query_latency_seconds</code>, <code translate="no">milvus_search_qps</code>, e <code translate="no">milvus_insert_throughput</code>.</li>
-<li><strong>Monitorização de aplicações:</strong> Acompanhe a distribuição do veredito CRAG, a taxa de acionamento da pesquisa na Web e a distribuição da pontuação de confiança. Sem estes sinais, não é possível saber se uma queda de qualidade é causada por uma má recuperação ou por um erro de avaliação.</li>
+<li><strong>Infrastructure monitoring:</strong> Milvus integrates with <a href="https://milvus.io/docs/monitor_overview.md">Prometheus</a>. Start with three metrics: <code translate="no">milvus_query_latency_seconds</code>, <code translate="no">milvus_search_qps</code>, and <code translate="no">milvus_insert_throughput</code>.</li>
+<li><strong>Application monitoring:</strong> Track CRAG verdict distribution, web search trigger rate, and confidence score distribution. Without these signals, you can’t tell whether a quality drop is caused by bad retrieval or evaluator misjudgment.</li>
 </ul>
-<h3 id="3-Long-Term-Maintenance-Prevent-Memory-Contamination" class="common-anchor-header">3. Manutenção a longo prazo: Evitar a contaminação da memória</h3><p>Quanto mais tempo um agente é executado, mais dados obsoletos e de baixa qualidade se acumulam na memória. Estabeleça barreiras de proteção desde o início:</p>
+<h3 id="3-Long-Term-Maintenance-Prevent-Memory-Contamination" class="common-anchor-header">3. Long-Term Maintenance: Prevent Memory Contamination</h3><p>The longer an agent runs, the more stale and low-quality data accumulates in memory. Set up guardrails early:</p>
 <ul>
-<li><strong>Pré-filtragem:</strong> Apenas as memórias de superfície com <code translate="no">confidence &gt; 0.7</code> para que o conteúdo de baixa qualidade seja bloqueado antes de chegar ao avaliador.</li>
-<li><strong>Decaimento do tempo:</strong> Reduzir gradualmente o peso das memórias mais antigas. Trinta dias é um padrão inicial razoável, ajustável por caso de uso.</li>
-<li><strong>Limpeza programada:</strong> Execute um trabalho semanal para limpar memórias antigas, de baixa confiança e não verificadas. Isso evita o ciclo de feedback em que dados obsoletos são recuperados, usados e armazenados novamente.</li>
+<li><strong>Pre-filtering:</strong> Only surface memories with <code translate="no">confidence &gt; 0.7</code> so low-quality content gets blocked before it reaches the evaluator.</li>
+<li><strong>Time decay:</strong> Gradually reduce the weight of older memories. Thirty days is a reasonable starting default, tunable per use case.</li>
+<li><strong>Scheduled cleanup:</strong> Run a weekly job to purge old, low-confidence, unverified memories. This prevents the feedback loop where stale data gets retrieved, used, and re-stored.</li>
 </ul>
-<h2 id="Wrapping-Up--and-a-Few-Common-Questions" class="common-anchor-header">Conclusão - e algumas perguntas comuns<button data-href="#Wrapping-Up--and-a-Few-Common-Questions" class="anchor-icon" translate="no">
+<h2 id="Wrapping-Up--and-a-Few-Common-Questions" class="common-anchor-header">Wrapping Up — and a Few Common Questions<button data-href="#Wrapping-Up--and-a-Few-Common-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -537,21 +542,21 @@ grader_chain = grader_prompt | grader_llm.with_structured_output(RelevanceVerdic
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O CRAG aborda um dos problemas mais persistentes no RAG de produção: resultados de recuperação que parecem relevantes mas não o são. Ao inserir uma etapa de avaliação e correção entre a recuperação e a geração, filtra os maus resultados, preenche as lacunas com a pesquisa externa e dá ao modelo um contexto mais limpo para trabalhar.</p>
-<p>No entanto, para que o CRAG funcione de forma fiável na produção, é necessário mais do que uma boa lógica de recuperação. Requer uma base de dados vetorial que lide com o isolamento multi-tenant, a pesquisa híbrida e os esquemas em evolução - que é onde <a href="https://milvus.io/intro">o Milvus</a> se enquadra. Do lado da aplicação, escolher o avaliador certo, instrumentar a observabilidade cedo e gerir ativamente a qualidade da memória é o que separa uma demonstração de um sistema em que se pode confiar.</p>
-<p>Se estiver a construir sistemas RAG ou de agentes e a deparar-se com problemas de qualidade de recuperação, gostaríamos de ajudar:</p>
+    </button></h2><p>CRAG addresses one of the most persistent problems in production RAG: retrieval results that look relevant but aren’t. By inserting an evaluation and correction step between retrieval and generation, it filters out bad results, fills in gaps with external search, and gives the model cleaner context to work with.</p>
+<p>Getting CRAG to work reliably in production takes more than good retrieval logic, though. It requires a vector database that handles multi-tenant isolation, hybrid search, and evolving schemas—which is where <a href="https://milvus.io/intro">Milvus</a> fits in. On the application side, choosing the right evaluator, instrumenting observability early, and actively managing memory quality are what separate a demo from a system you can trust.</p>
+<p>If you’re building RAG or agent systems and running into retrieval quality issues, we’d love to help:</p>
 <ul>
-<li>Junte-se à <a href="https://slack.milvus.io/">comunidade Milvus Slack</a> para fazer perguntas, partilhar a sua arquitetura e aprender com outros programadores que trabalham em problemas semelhantes.</li>
-<li><a href="https://milvus.io/office-hours">Reserve uma sessão gratuita de 20 minutos do Milvus Office Hours</a> para analisar o seu caso de utilização com a equipa - quer se trate do design CRAG, da recuperação híbrida ou do escalonamento multi-tenant.</li>
-<li>Se preferir ignorar a configuração da infraestrutura e passar diretamente à construção, <a href="https://cloud.zilliz.com/signup">a Zilliz Cloud</a> (Milvus gerida) oferece um nível gratuito para começar.</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to ask questions, share your architecture, and learn from other developers working on similar problems.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your use case with the team—whether it’s CRAG design, hybrid retrieval, or multi-tenant scaling.</li>
+<li>If you’d rather skip the infrastructure setup and jump straight to building, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers a free tier to get started.</li>
 </ul>
 <hr>
-<p>Algumas perguntas que surgem frequentemente quando as equipas começam a implementar o CRAG:</p>
-<p><strong>Qual é a diferença entre o CRAG e a simples adição de um reranker ao RAG?</strong></p>
-<p>Um reranker reordena os resultados por relevância, mas ainda assume que os documentos recuperados são utilizáveis. O CRAG vai mais longe - avalia se o conteúdo recuperado responde efetivamente à consulta e toma medidas corretivas quando tal não acontece: refina as correspondências parciais, complementa com pesquisa na Web ou elimina completamente os resultados. Trata-se de um ciclo de controlo de qualidade, não apenas de uma melhor classificação.</p>
-<p><strong>Porque é que uma pontuação de similaridade elevada por vezes devolve o documento errado?</strong></p>
-<p>A similaridade de incorporação mede a proximidade semântica no espaço vetorial, mas isso não é o mesmo que responder à pergunta. Um documento sobre a configuração de HTTPS no Apache é semanticamente próximo de uma pergunta sobre HTTPS no Nginx - mas não ajuda. O CRAG detecta isso avaliando a relevância para a consulta real, não apenas a distância vetorial.</p>
-<p><strong>O que devo procurar numa base de dados vetorial para o CRAG?</strong></p>
-<p>Três coisas são mais importantes: recuperação híbrida (para que possa combinar a pesquisa semântica com a correspondência de palavras-chave para termos exactos), isolamento multi-tenant (para que cada utilizador ou sessão de agente tenha o seu próprio espaço de memória) e um esquema flexível (para que possa adicionar campos como <code translate="no">confidence</code> ou <code translate="no">verified</code> sem tempo de inatividade à medida que o seu pipeline evolui).</p>
-<p><strong>O que acontece quando nenhum dos documentos recuperados é relevante?</strong></p>
-<p>O CRAG não desiste simplesmente. Quando a confiança desce abaixo de 0,5, regressa à pesquisa na Web. Quando os resultados são ambíguos (0,5-0,9), funde documentos internos refinados com resultados de pesquisa externos. O modelo obtém sempre algum contexto para trabalhar, mesmo quando a base de conhecimentos tem lacunas.</p>
+<p>A few questions that come up often when teams start implementing CRAG:</p>
+<p><strong>How is CRAG different from just adding a reranker to RAG?</strong></p>
+<p>A reranker reorders results by relevance but still assumes the retrieved documents are usable. CRAG goes further—it evaluates whether retrieved content actually answers the query at all, and takes corrective action when it doesn’t: refining partial matches, supplementing with web search, or discarding results entirely. It’s a quality control loop, not just a better sort.</p>
+<p><strong>Why does a high similarity score sometimes return the wrong document?</strong></p>
+<p>Embedding similarity measures semantic closeness in vector space, but that’s not the same as answering the question. A document about configuring HTTPS on Apache is semantically close to a question about HTTPS on Nginx—but it won’t help. CRAG catches this by evaluating relevance to the actual query, not just vector distance.</p>
+<p><strong>What should I look for in a vector database for CRAG?</strong></p>
+<p>Three things matter most: hybrid retrieval (so you can combine semantic search with keyword matching for exact terms), multi-tenant isolation (so each user or agent session has its own memory space), and a flexible schema (so you can add fields like <code translate="no">confidence</code> or <code translate="no">verified</code> without downtime as your pipeline evolves).</p>
+<p><strong>What happens when none of the retrieved documents are relevant?</strong></p>
+<p>CRAG doesn’t just give up. When confidence drops below 0.5, it falls back to web search. When results are ambiguous (0.5–0.9), it merges refined internal documents with external search results. The model always gets some context to work with, even when the knowledge base has gaps.</p>
