@@ -2,7 +2,7 @@
 id: build-smarter-rag-routing-hybrid-retrieval.md
 title: >
  Beyond Naive RAG: Build Smarter Systems with Query Routing and Hybrid Retrieval
-author: 
+author: Min Yin
 date: 2026-3-25
 cover: assets.zilliz.com/cover_new_565494b6a6.jpg
 tag: Engineering
