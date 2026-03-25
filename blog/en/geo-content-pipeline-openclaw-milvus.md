@@ -73,13 +73,17 @@ What separates this pipeline from "just prompting ChatGPT" is the knowledge laye
 
 **A feedback loop that improves with scale.** Each generated article writes back to Milvus immediately. The next batch has a larger dedup pool and richer RAG context. Quality compounds over time.
 
-**Zero-setup local development.** [Milvus Lite](https://milvus.io/docs/milvus_lite.md) runs locally with one line of code — no Docker needed. For production, switching to a Milvus cluster or Zilliz Cloud means changing a single URI:
+**Zero-setup local development.** [Milvus Lite](https://milvus.io/docs/milvus_lite.md) runs locally with one line of code, no Docker needed. For production, switching to a Milvus cluster or [Zilliz Cloud](https://cloud.zilliz.com/signup) means changing a single URI:
 
-```python
-MILVUS_URI = "./geo_milvus.db"           # Local dev (Milvus Lite, no Docker needed)
+python
+
+```
+MILVUS_URI = "./geo_milvus.db"              # Local dev (Milvus Lite, no Docker needed)
 MILVUS_URI = "https://xxx.zillizcloud.com"  # Production (Zilliz Cloud)
 client = MilvusClient(uri=MILVUS_URI)
 ```
+
+**Don't want to manage infrastructure at all?** [Zilliz Cloud](https://cloud.zilliz.com/signup) is fully managed Milvus — the server stays online, storage scales with your knowledge base, and updates happen automatically. Free tier included. [Sign up](https://cloud.zilliz.com/signup), grab your URI from the dashboard, and move on to the tutorial.
 
 ## Step-by-Step Tutorial
 
