@@ -1,9 +1,9 @@
 ---
 id: >-
   productionizing-semantic-search-how-we-built-and-scaled-vector-infrastructure-at-airtable.md
-title: >-
-  Produktion der semantischen Suche: Wie wir die Vektorinfrastruktur bei
-  Airtable aufgebaut und skaliert haben
+title: >
+  Productionizing Semantic Search: How We Built and Scaled Vector Infrastructure
+  at Airtable
 author: Aria Malkani and Cole Dearmon-Moore
 date: 2026-3-18
 cover: assets.zilliz.com/cover_airtable_milvus_3c77b22ee2.jpg
@@ -16,17 +16,16 @@ meta_keywords: >-
   multi-tenant vector search, scalable AI retrieval
 meta_title: |
   How Airtable Built and Scaled Vector Infrastructure with Milvus
-desc: >-
-  Erfahren Sie, wie Airtable eine skalierbare Milvus-basierte
-  Vektorinfrastruktur für semantische Suche, mandantenfähiges Retrieval und
-  KI-Erlebnisse mit niedriger Latenz aufgebaut hat.
+desc: >
+  Learn how Airtable built a scalable Milvus-based vector infrastructure for
+  semantic search, multi-tenant retrieval, and low-latency AI experiences.
 origin: >-
   https://milvus.io/blog/productionizing-semantic-search-how-we-built-and-scaled-vector-infrastructure-at-airtable.md
 ---
-<p><em>Dieser Beitrag wurde ursprünglich auf dem</em> <em>Airtable-Medium-Kanal</em><em>veröffentlicht</em> <em>und wird hier mit Genehmigung wiederveröffentlicht.</em></p>
-<p>Als sich die semantische Suche bei Airtable von einem Konzept zu einer Kernfunktion des Produkts entwickelte, stand das Dateninfrastrukturteam vor der Herausforderung, sie zu skalieren. Wie in unserem <a href="https://medium.com/airtable-eng/building-a-resilient-embedding-system-for-semantic-search-at-airtable-d5fdf27807e2">vorherigen Beitrag über den Aufbau des Einbettungssystems</a> beschrieben, hatten wir bereits eine robuste, letztendlich konsistente Anwendungsschicht entwickelt, um den Einbettungslebenszyklus zu handhaben. Aber ein entscheidendes Element fehlte noch in unserem Architekturdiagramm: die Vektordatenbank selbst.</p>
-<p>Wir brauchten eine Speicher-Engine, die in der Lage war, Milliarden von Einbettungen zu indizieren und bereitzustellen, massive Mandantenfähigkeit zu unterstützen und die Leistungs- und Verfügbarkeitsziele in einer verteilten Cloud-Umgebung einzuhalten. Dies ist die Geschichte, wie wir unsere Vektorsuchplattform entwickelt, gehärtet und weiterentwickelt haben, so dass sie zu einer tragenden Säule der Infrastruktur von Airtable wurde.</p>
-<h2 id="Background" class="common-anchor-header">Hintergrund<button data-href="#Background" class="anchor-icon" translate="no">
+<p><em>This post was originally published on</em> <em><a href="https://medium.com/airtable-eng/productionizing-semantic-search-how-we-built-and-scaled-vector-infrastructure-at-airtable-180fff11a136">the Airtable Medium</a></em> <em>channel and is reposted here with permission.</em></p>
+<p>As semantic search at Airtable evolved from a concept into a core product feature, the Data Infrastructure team faced the challenge of scaling it. As detailed in our <a href="https://medium.com/airtable-eng/building-a-resilient-embedding-system-for-semantic-search-at-airtable-d5fdf27807e2">previous post on Building the Embedding System</a>, we had already designed a robust, eventually consistent application layer to handle the embedding lifecycle. But one critical piece was still missing from our architecture diagram: the vector database itself.</p>
+<p>We needed a storage engine capable of indexing and serving billions of embeddings, supporting massive multi-tenancy, and maintaining performance and availability targets in a distributed cloud environment. This is the story of how we architected, hardened, and evolved our vector search platform to become a core pillar of Airtable’s infrastructure stack.</p>
+<h2 id="Background" class="common-anchor-header">Background<button data-href="#Background" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,8 +40,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Unser Ziel bei Airtable ist es, Kunden bei der Arbeit mit ihren Daten auf leistungsstarke und intuitive Weise zu unterstützen. Mit dem Aufkommen von immer leistungsfähigeren und genaueren LLMs sind Funktionen, die die semantische Bedeutung Ihrer Daten nutzen, zum Kern unseres Produkts geworden.</p>
-<h2 id="How-We-Use-Semantic-Search" class="common-anchor-header">Wie wir die semantische Suche nutzen<button data-href="#How-We-Use-Semantic-Search" class="anchor-icon" translate="no">
+    </button></h2><p>At Airtable, our goal is to help customers work with their data in powerful, intuitive ways. With the emergence of increasingly powerful and accurate LLMs, features that leverage the semantic meaning of your data have become core to our product.</p>
+<h2 id="How-We-Use-Semantic-Search" class="common-anchor-header">How We Use Semantic Search<button data-href="#How-We-Use-Semantic-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,18 +56,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Omni-Airtable’s-AI-Chat-answering-real-questions-from-large-datasets" class="common-anchor-header">Omni (der KI-Chat von Airtable) bei der Beantwortung echter Fragen aus großen Datenbeständen</h3><p>Stellen Sie sich vor, Sie stellen eine Frage in natürlicher Sprache an Ihre Datenbank mit einer halben Million Zeilen und erhalten eine korrekte, kontextreiche Antwort. Zum Beispiel:</p>
-<p>"Was sagen die Kunden in letzter Zeit über die Akkulaufzeit?"</p>
-<p>Bei kleinen Datensätzen ist es möglich, alle Zeilen direkt an einen LLM zu senden. Bei großen Datenmengen wird dies jedoch schnell unpraktikabel. Stattdessen brauchten wir ein System, das Folgendes kann:</p>
+    </button></h2><h3 id="Omni-Airtable’s-AI-Chat-answering-real-questions-from-large-datasets" class="common-anchor-header">Omni (Airtable’s AI Chat) answering real questions from large datasets</h3><p>Imagine asking a natural-language question of your base (database) with half a million rows, and getting a correct, context-rich answer. For example:</p>
+<p>“What are customers saying about battery life lately?”</p>
+<p>On small datasets, it’s possible to send all rows directly to an LLM. At scale, that quickly becomes infeasible. Instead, we needed a system capable of:</p>
 <ul>
-<li>Verstehen der semantischen Absicht einer Abfrage</li>
-<li>Abrufen der relevantesten Zeilen über eine Vektorähnlichkeitssuche</li>
-<li>Bereitstellung dieser Zeilen als Kontext für ein LLM</li>
+<li>Understanding the semantic intent of a query</li>
+<li>Retrieving the most relevant rows via vector similarity search</li>
+<li>Supplying those rows as context to an LLM</li>
 </ul>
-<p>Diese Anforderung prägte fast jede nachfolgende Designentscheidung: Omni musste sich sofort und intelligent anfühlen, selbst bei sehr großen Datenbanken.</p>
-<h3 id="Linked-record-recommendations-Meaning-over-exact-matches" class="common-anchor-header">Verknüpfte Datensatzempfehlungen: Bedeutung statt exakter Übereinstimmungen</h3><p>Die semantische Suche verbessert auch eine Kernfunktion von Airtable: verknüpfte Datensätze. Benutzer benötigen Beziehungsvorschläge, die auf dem Kontext und nicht auf exakten Textübereinstimmungen basieren. Eine Projektbeschreibung könnte beispielsweise eine Beziehung zu "Team Infrastructure" andeuten, ohne dass dieser spezifische Ausdruck jemals verwendet wird.</p>
-<p>Die Bereitstellung dieser On-Demand-Vorschläge erfordert eine qualitativ hochwertige semantische Suche mit konsistenter, vorhersehbarer Latenzzeit.</p>
-<h2 id="Our-Design-Priorities" class="common-anchor-header">Unsere Design-Prioritäten<button data-href="#Our-Design-Priorities" class="anchor-icon" translate="no">
+<p>This requirement shaped nearly every design decision that followed: Omni needed to feel instant and intelligent, even on very large bases.</p>
+<h3 id="Linked-record-recommendations-Meaning-over-exact-matches" class="common-anchor-header">Linked record recommendations: Meaning over exact matches</h3><p>Semantic search also enhances a core Airtable feature: linked records. Users need relationship suggestions based on context rather than exact text matches. For instance, a project description might imply a relationship with “Team Infrastructure” without ever using that specific phrase.</p>
+<p>Delivering these on-demand suggestions requires high-quality semantic retrieval with consistent, predictable latency.</p>
+<h2 id="Our-Design-Priorities" class="common-anchor-header">Our Design Priorities<button data-href="#Our-Design-Priorities" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,15 +82,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Um diese und weitere Funktionen zu unterstützen, haben wir das System auf 4 Ziele ausgerichtet:</p>
+    </button></h2><p>To support these features and more, we anchored the system around 4 goals:</p>
 <ul>
-<li><strong>Abfragen mit geringer Latenz (500ms p99):</strong> Vorhersagbare Leistung ist entscheidend für das Vertrauen der Nutzer</li>
-<li><strong>Hoher Schreibdurchsatz:</strong> Basen ändern sich ständig, und die Einbettungen müssen synchron bleiben</li>
-<li><strong>Horizontale Skalierbarkeit:</strong> Das System muss Millionen von unabhängigen Datenbanken unterstützen</li>
-<li><strong>Selbst-Hosting:</strong> Alle Kundendaten müssen innerhalb der von Airtable kontrollierten Infrastruktur bleiben.</li>
+<li><strong>Low-latency queries (500ms p99):</strong> predictable performance is critical for user trust</li>
+<li><strong>High-throughput writes:</strong> bases change constantly, and embeddings must stay in sync</li>
+<li><strong>Horizontal scalability:</strong> the system must support millions of independent bases</li>
+<li><strong>Self-hosting:</strong> all customer data must remain inside Airtable-controlled infrastructure</li>
 </ul>
-<p>Diese Ziele beeinflussten jede nachfolgende architektonische Entscheidung.</p>
-<h2 id="Vector-Database-Vendor-Evaluation" class="common-anchor-header">Bewertung von Vektordatenbankanbietern<button data-href="#Vector-Database-Vendor-Evaluation" class="anchor-icon" translate="no">
+<p>These goals shaped every architectural decision that followed.</p>
+<h2 id="Vector-Database-Vendor-Evaluation" class="common-anchor-header">Vector Database Vendor Evaluation<button data-href="#Vector-Database-Vendor-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,14 +105,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ende 2024 bewerteten wir mehrere Vektordatenbankoptionen und entschieden uns schließlich für <a href="https://milvus.io/">Milvus</a> auf der Grundlage von drei Hauptanforderungen.</p>
+    </button></h2><p>In late 2024, we evaluated several vector database options and ultimately selected <a href="https://milvus.io/">Milvus</a> based on three key requirements.</p>
 <ul>
-<li>Erstens legten wir Wert auf eine selbst gehostete Lösung, um den Datenschutz zu gewährleisten und die Kontrolle über unsere Infrastruktur zu behalten.</li>
-<li>Zweitens erforderten unsere schreibintensive Arbeitslast und die stoßweisen Abfragemuster ein System, das elastisch skaliert werden kann und gleichzeitig eine niedrige, vorhersehbare Latenz aufweist.</li>
-<li>Schließlich erforderte unsere Architektur eine starke Isolierung über Millionen von Kundenmietern hinweg.</li>
+<li>First, we prioritized a self-hosted solution to ensure data privacy and maintain fine-grained control of our infrastructure.</li>
+<li>Second, our write-heavy workload and bursty query patterns required a system that could scale elastically while maintaining low, predictable latency.</li>
+<li>Finally, our architecture required strong isolation across millions of customer tenants.</li>
 </ul>
-<p><strong>Milvus</strong> erwies sich als die beste Lösung: Sein verteilter Charakter unterstützt eine massive Mandantenfähigkeit und ermöglicht es uns, Ingestion, Indizierung und Abfrageausführung unabhängig voneinander zu skalieren, um die Leistung zu steigern und gleichzeitig die Kosten kalkulierbar zu halten.</p>
-<h2 id="Architecture-Design" class="common-anchor-header">Entwurf der Architektur<button data-href="#Architecture-Design" class="anchor-icon" translate="no">
+<p><strong>Milvus</strong> emerged as the best fit: its distributed nature supports massive multi-tenancy and allows us to scale ingestion, indexing, and query execution independently, delivering performance while keeping costs predictable.</p>
+<h2 id="Architecture-Design" class="common-anchor-header">Architecture Design<button data-href="#Architecture-Design" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -128,8 +127,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nachdem wir uns für eine Technologie entschieden hatten, mussten wir eine Architektur festlegen, die die einzigartige Datenform von Airtable abbildet: Millionen von unterschiedlichen "Basen", die verschiedenen Kunden gehören.</p>
-<h2 id="The-Partitioning-Challenge" class="common-anchor-header">Die Herausforderung der Partitionierung<button data-href="#The-Partitioning-Challenge" class="anchor-icon" translate="no">
+    </button></h2><p>After choosing a technology, we then had to determine an architecture to represent Airtable’s unique data shape: millions of distinct “bases” owned by different customers.</p>
+<h2 id="The-Partitioning-Challenge" class="common-anchor-header">The Partitioning Challenge<button data-href="#The-Partitioning-Challenge" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,16 +143,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wir evaluierten zwei primäre Strategien zur Datenpartitionierung:</p>
-<h3 id="Option-1-Shared-Partitions" class="common-anchor-header">Option 1: Gemeinsam genutzte Partitionen</h3><p>Mehrere Basen teilen sich eine Partition, und die Abfragen werden durch Filterung auf eine Basis-ID eingeschränkt. Dies verbessert die Ressourcennutzung, führt aber zu zusätzlichem Filter-Overhead und macht das Löschen von Datenbanken komplexer.</p>
-<h3 id="Option-2-One-Base-per-Partition" class="common-anchor-header">Option 2: Eine Basis pro Partition</h3><p>Jede Airtable-Basis wird in Milvus auf eine eigene physische Partition abgebildet. Dies bietet eine starke Isolierung, ermöglicht ein schnelles und einfaches Löschen von Basen und vermeidet die Leistungsauswirkungen der Filterung nach der Abfrage.</p>
-<h3 id="Final-Strategy" class="common-anchor-header">Endgültige Strategie</h3><p>Wir haben uns für Option 2 entschieden, weil sie so einfach ist und eine starke Isolierung bietet. Erste Tests zeigten jedoch, dass die Erstellung von 100k Partitionen in einer einzigen Milvus-Sammlung zu einer erheblichen Leistungsverschlechterung führte:</p>
+    </button></h2><p>We evaluated two primary data partitioning strategies:</p>
+<h3 id="Option-1-Shared-Partitions" class="common-anchor-header">Option 1: Shared Partitions</h3><p>Multiple bases share a partition, and queries are scoped by filtering on a base id. This improves resource utilization, but introduces additional filtering overhead and makes base deletion more complex.</p>
+<h3 id="Option-2-One-Base-per-Partition" class="common-anchor-header">Option 2: One Base per Partition</h3><p>Each Airtable base is mapped to its own physical partition in Milvus. This provides strong isolation, enables fast and simple base deletion, and avoids the performance impact of post-query filtering.</p>
+<h3 id="Final-Strategy" class="common-anchor-header">Final Strategy</h3><p>We chose option 2 for its simplicity and strong isolation. However, early tests showed that creating 100k partitions in a single Milvus collection caused significant performance degradation:</p>
 <ul>
-<li>Die Latenzzeit bei der Partitionserstellung stieg von ~20 ms auf ~250 ms.</li>
-<li>Die Ladezeiten für Partitionen überstiegen 30 Sekunden.</li>
+<li>Partition creation latency increased from ~20 ms to ~250 ms</li>
+<li>Partition load times exceeded 30 seconds</li>
 </ul>
-<p>Um dieses Problem zu lösen, haben wir die Anzahl der Partitionen pro Sammlung begrenzt. Für jeden Milvus-Cluster erstellen wir 400 Sammlungen mit jeweils höchstens 1.000 Partitionen. Dadurch wird die Gesamtzahl der Basen pro Cluster auf 400k begrenzt, und neue Cluster werden bereitgestellt, wenn zusätzliche Kunden hinzukommen.</p>
-<h2 id="Indexing--Recall" class="common-anchor-header">Indizierung und Abruf<button data-href="#Indexing--Recall" class="anchor-icon" translate="no">
+<p>To address this, we capped the number of partitions per collection. For each Milvus cluster, we create 400 collections, each with at most 1,000 partitions. This limits the total number of bases per cluster to 400k, and new clusters are provisioned as additional customers are onboarded.</p>
+<h2 id="Indexing--Recall" class="common-anchor-header">Indexing &amp; Recall<button data-href="#Indexing--Recall" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -168,14 +167,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die Wahl des Indexes erwies sich als einer der folgenreichsten Kompromisse in unserem System. Wenn eine Partition geladen wird, wird ihr Index im Speicher oder auf der Festplatte zwischengespeichert. Um ein Gleichgewicht zwischen Abrufrate, Indexgröße und Leistung zu finden, haben wir verschiedene Indexarten getestet.</p>
+    </button></h2><p>Index choice turned out to be one of the most consequential trade-offs in our system. When a partition is loaded, its index is cached in memory or on disk. To strike a balance between recall rate, index size, and performance, we benchmarked several index types.</p>
 <ul>
-<li><strong>IVF-SQ8:</strong> Bietet einen kleinen Speicherplatzbedarf, aber eine geringere Abrufrate.</li>
-<li><strong>HNSW:</strong> Liefert den besten Abruf (99 %-100 %), ist aber sehr speicherintensiv.</li>
-<li><strong>DiskANN:</strong> Bietet eine ähnliche Auffindbarkeit wie HNSW, jedoch mit höherer Abfragelatenz.</li>
+<li><strong>IVF-SQ8:</strong> Offered a small memory footprint but lower recall.</li>
+<li><strong>HNSW:</strong> Delivers the best recall (99%-100%) but is memory-hungry.</li>
+<li><strong>DiskANN:</strong> Offers a recall similar to HNSW but with higher query latency</li>
 </ul>
-<p>Letztendlich haben wir uns für HNSW entschieden, weil es die besten Abruf- und Leistungsmerkmale aufweist.</p>
-<h2 id="The-Application-layer" class="common-anchor-header">Die Anwendungsschicht<button data-href="#The-Application-layer" class="anchor-icon" translate="no">
+<p>Ultimately, we selected HNSW for its superior recall and performance characteristics.</p>
+<h2 id="The-Application-layer" class="common-anchor-header">The Application layer<button data-href="#The-Application-layer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -190,13 +189,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die semantische Suchpipeline von Airtable besteht im Wesentlichen aus zwei Abläufen:</p>
+    </button></h2><p>At a high level, Airtable’s semantic search pipeline involves two core flows:</p>
 <ol>
-<li><strong>Ingestion-Flow:</strong> Konvertierung von Airtable-Zeilen in Einbettungen und Speicherung in Milvus</li>
-<li><strong>Abfrage-Fluss:</strong> Einbettung von Benutzerabfragen, Abruf relevanter Zeilen-IDs und Bereitstellung von Kontext für den LLM</li>
+<li><strong>Ingestion flow:</strong> Convert Airtable rows into embeddings and store them in Milvus</li>
+<li><strong>Query flow:</strong> Embed user queries, retrieve relevant row IDs, and provide context to the LLM</li>
 </ol>
-<p>Beide Ströme müssen kontinuierlich und zuverlässig in großem Umfang funktionieren und werden im Folgenden beschrieben. Im Folgenden werden beide Abläufe erläutert.</p>
-<h2 id="Ingestion-Flow-Keeping-Milvus-in-Sync-with-Airtable" class="common-anchor-header">Ingestion Flow: Synchronisierung von Milvus mit Airtable<button data-href="#Ingestion-Flow-Keeping-Milvus-in-Sync-with-Airtable" class="anchor-icon" translate="no">
+<p>Both flows must operate continuously and reliably at scale, and we walk through each below. We walk through each below.</p>
+<h2 id="Ingestion-Flow-Keeping-Milvus-in-Sync-with-Airtable" class="common-anchor-header">Ingestion Flow: Keeping Milvus in Sync with Airtable<button data-href="#Ingestion-Flow-Keeping-Milvus-in-Sync-with-Airtable" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -211,14 +210,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wenn ein Benutzer Omni öffnet, beginnt Airtable mit der Synchronisierung seiner Basis mit Milvus. Wir erstellen eine Partition, verarbeiten dann die Zeilen in Chunks, erzeugen Einbettungen und fügen sie in Milvus ein. Von da an erfassen wir alle an der Datenbank vorgenommenen Änderungen und fügen diese Zeilen erneut ein, um die Daten konsistent zu halten.</p>
+    </button></h2><p>When a user opens Omni, Airtable begins syncing their base to Milvus. We create a partition, then process the rows in chunks, generating embeddings and upserting into Milvus. From then on, we capture any changes made to the base, and re-embed and upsert those rows to keep the data consistent.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Airtable_Milvusblog_1_aac199ae50.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Query-Flow-How-we-use-the-Data" class="common-anchor-header">Abfragefluss: Wie wir die Daten verwenden<button data-href="#Query-Flow-How-we-use-the-Data" class="anchor-icon" translate="no">
+<h2 id="Query-Flow-How-we-use-the-Data" class="common-anchor-header">Query Flow: How we use the Data<button data-href="#Query-Flow-How-we-use-the-Data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -233,14 +232,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Auf der Abfrageseite betten wir die Anfrage des Benutzers ein und senden sie an Milvus, um die wichtigsten Zeilen-IDs abzurufen. Anschließend rufen wir die neuesten Versionen dieser Zeilen ab und fügen sie als Kontext in die Anfrage an den LLM ein.</p>
+    </button></h2><p>On the query side, we embed the user’s request and send it to Milvus to retrieve the most relevant row IDs. We then fetch the latest versions of those rows and include them as context in the request to the LLM.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Airtable_Milvusblog_2_6e9067b16d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Operational-Challenges--How-We-Solved-Them" class="common-anchor-header">Betriebliche Herausforderungen und deren Lösung<button data-href="#Operational-Challenges--How-We-Solved-Them" class="anchor-icon" translate="no">
+<h2 id="Operational-Challenges--How-We-Solved-Them" class="common-anchor-header">Operational Challenges &amp; How We Solved Them<button data-href="#Operational-Challenges--How-We-Solved-Them" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -255,20 +254,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Aufbau einer semantischen Sucharchitektur ist eine Herausforderung; sie zuverlässig für Hunderttausende von Datenbanken zu betreiben, ist eine andere. Nachfolgend finden Sie einige wichtige betriebliche Lektionen, die wir auf diesem Weg gelernt haben.</p>
-<h3 id="Deployment" class="common-anchor-header">Bereitstellung</h3><p>Wir stellen Milvus über die Kubernetes-CRD mit dem <a href="https://github.com/zilliztech/milvus-operator">Milvus-Operator</a> bereit, was uns die deklarative Definition und Verwaltung von Clustern ermöglicht. Jede Änderung, egal ob es sich um eine Konfigurationsaktualisierung, eine Client-Verbesserung oder ein Milvus-Upgrade handelt, durchläuft Unit-Tests und einen On-Demand-Lasttest, der den Produktionsverkehr simuliert, bevor er an die Benutzer ausgerollt wird.</p>
-<p>In Version 2.5 besteht der Milvus-Cluster aus diesen Kernkomponenten:</p>
+    </button></h2><p>Building a semantic search architecture is one challenge; running it reliably for hundreds of thousands of bases is another. Below are a few key operational lessons we learned along the way.</p>
+<h3 id="Deployment" class="common-anchor-header">Deployment</h3><p>We deploy Milvus via its Kubernetes CRD with the <a href="https://github.com/zilliztech/milvus-operator">Milvus operator</a>, allowing us to define and manage clusters declaratively. Every change, whether it’s a configuration update, client improvement, or Milvus upgrade, runs through unit tests and an on-demand load test that simulates production traffic before rolling out to users.</p>
+<p>In version 2.5, the Milvus cluster is made up of these core components:</p>
 <ul>
-<li>Abfrageknoten halten die Vektorindizes im Speicher und führen Vektorsuchen aus</li>
-<li>Datenknoten verarbeiten die Datenaufnahme und -verdichtung und halten neue Daten im Speicher vor.</li>
-<li>Indexknoten erstellen und pflegen Vektorindizes, um die Suche bei wachsenden Daten schnell zu halten</li>
-<li>Der Koordinationsknoten koordiniert alle Clusteraktivitäten und die Shard-Zuweisung</li>
-<li>Proxy-Knoten leiten den API-Verkehr und verteilen die Last auf die Knoten</li>
-<li>Kafka liefert das Protokoll-/Streaming-Backbone für den internen Nachrichten- und Datenfluss</li>
-<li>Etcd speichert Cluster-Metadaten und Koordinationsstatus</li>
+<li>Query Nodes hold the vector indices in memory and execute vector searches</li>
+<li>Data Nodes handle ingestion and compaction, and persist new data to storage</li>
+<li>Index Nodes build and maintain vector indexes to keep search fast as data grows</li>
+<li>The Coordinator Node orchestrates all cluster activity and shard assignment</li>
+<li>Proxy nodes route API traffic and balance load across nodes</li>
+<li>Kafka provides the log/streaming backbone for internal messaging and data flow</li>
+<li>Etcd stores cluster metadata and coordination state</li>
 </ul>
-<p>Mit CRD-gesteuerter Automatisierung und einer rigorosen Testpipeline können wir Aktualisierungen schnell und sicher einführen.</p>
-<h2 id="Observability-Understanding-System-Health-End-to-End" class="common-anchor-header">Beobachtbarkeit: End-to-End-Verständnis des Systemzustands<button data-href="#Observability-Understanding-System-Health-End-to-End" class="anchor-icon" translate="no">
+<p>With CRD-driven automation and a rigorous testing pipeline, we can roll out updates quickly and safely.</p>
+<h2 id="Observability-Understanding-System-Health-End-to-End" class="common-anchor-header">Observability: Understanding System Health End-to-End<button data-href="#Observability-Understanding-System-Health-End-to-End" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -283,10 +282,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wir überwachen das System auf zwei Ebenen, um sicherzustellen, dass die semantische Suche schnell und vorhersehbar bleibt.</p>
-<p>Auf der Infrastrukturebene verfolgen wir die CPU- und Speichernutzung sowie den Zustand der Pods in allen Milvus-Komponenten. Diese Signale zeigen uns, ob der Cluster innerhalb sicherer Grenzen arbeitet und helfen uns, Probleme wie Ressourcensättigung oder kranke Knoten zu erkennen, bevor sie sich auf die Benutzer auswirken.</p>
-<p>Auf der Service-Ebene konzentrieren wir uns darauf, wie gut die einzelnen Basen mit unseren Ingestion- und Query-Workloads mithalten können. Metriken wie Verdichtungs- und Indizierungsdurchsatz geben uns Aufschluss darüber, wie effizient die Daten übernommen werden. Abfrageerfolgsraten und Latenzzeiten vermitteln uns ein Verständnis für die Benutzererfahrung bei der Abfrage der Daten, und das Partitionswachstum lässt uns wissen, wie unsere Daten wachsen, sodass wir gewarnt werden, wenn wir skalieren müssen.</p>
-<h2 id="Node-Rotation" class="common-anchor-header">Knotenrotation<button data-href="#Node-Rotation" class="anchor-icon" translate="no">
+    </button></h2><p>We monitor the system on two levels to ensure semantic search remains fast and predictable.</p>
+<p>At the infrastructure level, we track CPU, memory usage, and pod health across all Milvus components. These signals tell us whether the cluster is operating within safe limits and help us catch issues such as resource saturation or unhealthy nodes before they affect users.</p>
+<p>At the service layer, we focus on how well each base is keeping up with our ingestion and query workloads. Metrics like compaction and indexing throughput give us visibility into how efficiently data is being ingested. Query success rates and latency give us an understanding of the user experience querying the data, and partition growth lets us know how our data is growing, so we are alerted if we need to scale.</p>
+<h2 id="Node-Rotation" class="common-anchor-header">Node Rotation<button data-href="#Node-Rotation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -301,12 +300,12 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Aus Sicherheits- und Compliance-Gründen rotieren wir regelmäßig die Kubernetes-Knoten. In einem Vektorsuchcluster ist dies nicht trivial:</p>
+    </button></h2><p>For security and compliance reasons, we regularly rotate Kubernetes nodes. In a vector search cluster, this is non-trivial:</p>
 <ul>
-<li>Wenn die Abfrageknoten rotiert werden, gleicht der Koordinator die In-Memory-Daten zwischen den Abfrageknoten neu aus.</li>
-<li>Kafka und Etcd speichern zustandsbehaftete Informationen und erfordern Quorum und kontinuierliche Verfügbarkeit.</li>
+<li>As the query nodes are rotated, the coordinator will rebalance the in-memory data between the query nodes</li>
+<li>Kafka and Etcd store stateful information and require quorum and continuous availability</li>
 </ul>
-<p>Wir begegnen diesem Problem mit strengen Störungsbudgets und einer Rotationspolitik für jeweils einen Knoten. Der Milvus-Koordinator erhält Zeit, um das Gleichgewicht wiederherzustellen, bevor der nächste Knoten rotiert wird. Durch diese sorgfältige Orchestrierung wird die Zuverlässigkeit gewahrt, ohne die Geschwindigkeit zu verlangsamen.</p>
+<p>We address this with strict disruption budgets and a one-node-at-a-time rotation policy. The Milvus coordinator is given time to rebalance before the next node is cycled. This careful orchestration preserves reliability without slowing down our velocity.</p>
 <h2 id="Cold-Partition-Offloading" class="common-anchor-header">Cold Partition Offloading<button data-href="#Cold-Partition-Offloading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -322,8 +321,8 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Einer unserer größten betrieblichen Erfolge war die Erkenntnis, dass unsere Daten klare Hot/Cold-Zugriffsmuster aufweisen. Bei der Analyse der Nutzung haben wir festgestellt, dass in einer bestimmten Woche nur ~25 % der Daten in Milvus geschrieben oder ausgelesen werden. Mit Milvus können wir ganze Partitionen auslagern und so Speicher auf den Abfrageknoten freigeben. Wenn diese Daten später benötigt werden, können wir sie innerhalb von Sekunden neu laden. Auf diese Weise können wir heiße Daten im Speicher behalten und den Rest auslagern, was die Kosten senkt und uns eine effizientere Skalierung im Laufe der Zeit ermöglicht.</p>
-<h2 id="Data-Recovery" class="common-anchor-header">Datenwiederherstellung<button data-href="#Data-Recovery" class="anchor-icon" translate="no">
+    </button></h2><p>One of our biggest operational wins was recognizing that our data has clear hot/cold access patterns. By analyzing usage, we found that only ~25% of the data in Milvus is written to or read from in a given week. Milvus lets us offload entire partitions, freeing memory on the Query Nodes. If that data is needed later, we can reload it within seconds. This allows us to keep hot data in memory and offload the rest, reducing costs and allowing us to scale more efficiently over time.</p>
+<h2 id="Data-Recovery" class="common-anchor-header">Data Recovery<button data-href="#Data-Recovery" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -338,9 +337,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bevor wir Milvus auf breiter Basis einführen konnten, mussten wir uns darauf verlassen können, dass wir uns von jedem Fehlerszenario schnell erholen können. Während die meisten Probleme durch die eingebaute Fehlertoleranz des Clusters abgedeckt sind, haben wir auch für seltene Fälle vorgesorgt, in denen Daten beschädigt werden oder das System in einen nicht wiederherstellbaren Zustand geraten könnte.</p>
-<p>In solchen Situationen ist unser Wiederherstellungspfad unkompliziert. Wir richten zunächst einen neuen Milvus-Cluster ein, damit wir den Datenverkehr fast sofort wieder aufnehmen können. Sobald der neue Cluster in Betrieb ist, werden die am häufigsten genutzten Basen proaktiv neu eingebettet und die übrigen Basen nach und nach verarbeitet, sobald auf sie zugegriffen wird. Auf diese Weise wird die Ausfallzeit für die am häufigsten genutzten Daten minimiert, während das System nach und nach einen konsistenten semantischen Index aufbaut.</p>
-<h2 id="What’s-Next" class="common-anchor-header">Was kommt als Nächstes?<button data-href="#What’s-Next" class="anchor-icon" translate="no">
+    </button></h2><p>Before rolling Milvus out broadly, we needed confidence that we could recover quickly from any failure scenario. While most issues are covered by the cluster’s built-in fault tolerance, we also planned for rare cases where data might become corrupted or the system might enter an unrecoverable state.</p>
+<p>In those situations, our recovery path is straightforward. We first bring up a fresh Milvus cluster so we can resume serving traffic almost immediately. Once the new cluster is live, we proactively re-embed the most commonly used bases, then lazily process the rest as they are accessed. This minimizes downtime for most-accessed data while the system gradually rebuilds a consistent semantic index.</p>
+<h2 id="What’s-Next" class="common-anchor-header">What’s Next<button data-href="#What’s-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -355,9 +354,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Unsere Arbeit mit <a href="https://milvus.io/">Milvus</a> hat eine solide Grundlage für die semantische Suche bei Airtable geschaffen: schnelle, aussagekräftige KI-Erlebnisse in großem Maßstab. Mit diesem System erforschen wir nun umfangreichere Abfrage-Pipelines und tiefere KI-Integrationen im gesamten Produkt. Es liegt eine Menge aufregender Arbeit vor uns, und wir stehen erst am Anfang.</p>
-<p><em>Vielen Dank an alle ehemaligen und aktuellen Airtablets bei Data Infrastructure und im gesamten Unternehmen, die zu diesem Projekt beigetragen haben: Alex Sorokin, Andrew Wang, Aria Malkani, Cole Dearmon-Moore, Nabeel Farooqui, Will Powelson, Xiaobing Xia.</em></p>
-<h2 id="About-Airtable" class="common-anchor-header">Über Airtable<button data-href="#About-Airtable" class="anchor-icon" translate="no">
+    </button></h2><p>Our work with <a href="https://milvus.io/">Milvus</a> has laid a strong foundation for semantic search at Airtable: powering fast, meaningful AI experiences at scale. With this system in place, we’re now exploring richer retrieval pipelines and deeper AI integrations across the product. There’s a lot of exciting work ahead, and we’re just getting started.</p>
+<p><em>Thanks to all past and present Airtablets on Data Infrastructure and across the organization who contributed to this project: Alex Sorokin, Andrew Wang, Aria Malkani, Cole Dearmon-Moore, Nabeel Farooqui, Will Powelson, Xiaobing Xia.</em></p>
+<h2 id="About-Airtable" class="common-anchor-header">About Airtable<button data-href="#About-Airtable" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -372,4 +371,4 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://www.airtable.com/">Airtable</a> ist eine führende Plattform für digitale Abläufe, die es Unternehmen ermöglicht, benutzerdefinierte Anwendungen zu erstellen, Workflows zu automatisieren und gemeinsam genutzte Daten auf Unternehmensebene zu verwalten. Airtable wurde entwickelt, um komplexe, funktionsübergreifende Prozesse zu unterstützen, und hilft Teams, flexible Systeme für die Planung, Koordination und Ausführung auf Basis einer gemeinsamen Quelle der Wahrheit aufzubauen. Während Airtable seine KI-gestützte Plattform ausbaut, spielen Technologien wie Milvus eine wichtige Rolle bei der Stärkung der Retrieval-Infrastruktur, die für die Bereitstellung schnellerer, intelligenterer Produkterlebnisse erforderlich ist.</p>
+    </button></h2><p><a href="https://www.airtable.com/">Airtable</a> is a leading digital operations platform that enables organizations to build custom apps, automate workflows, and manage shared data at enterprise scale. Designed to support complex, cross-functional processes, Airtable helps teams build flexible systems for planning, coordination, and execution on a shared source of truth. As Airtable expands its AI-powered platform, technologies like Milvus play an important role in strengthening the retrieval infrastructure needed to deliver faster, smarter product experiences.</p>

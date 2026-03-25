@@ -1,8 +1,7 @@
 ---
 id: i-built-a-stock-monitoring-agent-with-openclaw-exa-and-milvus-for-20month.md
-title: >-
-  لقد أنشأت وكيلًا لمراقبة الأسهم باستخدام OpenClaw وExa وMilvus مقابل 20
-  دولارًا شهريًا
+title: |
+  I Built a Stock Monitoring Agent with OpenClaw, Exa, and Milvus for $20/Month
 author: Cheney Zhang
 date: 2026-3-13
 cover: assets.zilliz.com/blog_Open_Claw_3_510bc283aa.png
@@ -13,24 +12,23 @@ tags: 'AI agent, stock monitoring agent, Milvus, vector database, OpenClaw'
 meta_keywords: 'AI agent, stock monitoring agent, Milvus, vector database, OpenClaw'
 meta_title: |
   OpenClaw Tutorial: AI Stock Agent with Exa and Milvus
-desc: >-
-  دليل تفصيلي خطوة بخطوة لبناء وكيل لمراقبة الأسهم بالذكاء الاصطناعي باستخدام
-  OpenClaw وExa وMilvus. ملخصات صباحية وذاكرة تداول وتنبيهات مقابل 20 دولارًا
-  شهريًا.
+desc: >
+  A step-by-step guide to building an AI stock monitoring agent using OpenClaw,
+  Exa, and Milvus. Morning briefs, trade memory, and alerts for $20/month.
 origin: >-
   https://milvus.io/blog/i-built-a-stock-monitoring-agent-with-openclaw-exa-and-milvus-for-20month.md
 ---
-<p>أتداول في الأسهم الأمريكية بشكل جانبي، وهي طريقة مهذبة للقول بأنني أخسر المال كهواية. ويمزح زملائي في العمل بأن استراتيجيتي هي "الشراء عند الإثارة والبيع عند الخوف، والتكرار أسبوعيًا."</p>
-<p>جزء التكرار هو ما يقتلني. في كل مرة أحدق فيها في السوق، ينتهي بي الأمر بإجراء صفقة لم أخطط لها. يرتفع النفط، فأقوم بالبيع بدافع الذعر. يرتفع سهم التكنولوجيا بنسبة 4%، فأقوم بمطاردته. وبعد مرور أسبوع، أنظر إلى سجل تداولاتي وأتساءل: <em>ألم أفعل هذا الشيء بالضبط في الربع الأخير؟</em></p>
-<p>لذلك قمت بإنشاء وكيل مع OpenClaw يراقب السوق بدلاً مني ويمنعني من ارتكاب نفس الأخطاء. إنه لا يتداول أو يلمس أموالي، لأن ذلك سيكون مخاطرة أمنية كبيرة. بدلاً من ذلك، يوفر لي الوقت الذي أقضيه في مراقبة السوق، ويمنعني من ارتكاب نفس الأخطاء.</p>
-<p>يتكون هذا الوكيل من ثلاثة أجزاء، ويكلف حوالي 20 دولارًا شهريًا:</p>
+<p>I trade U.S. stocks on the side, which is a polite way of saying I lose money as a hobby. My coworkers joke that my strategy is “buy high on excitement, sell low on fear, repeat weekly.”</p>
+<p>The repeat part is what kills me. Every time I stare at the market, I end up making a trade I didn’t plan on. Oil spikes, I panic-sell. That one tech stock pops 4%, I chase it. A week later, I’m looking at my trade history going, <em>didn’t I do this exact thing last quarter?</em></p>
+<p>So I built an agent with OpenClaw that watches the market instead of me and stops me from making the same mistakes. It doesn’t trade or touch my money, because that’d be too much of a security risk. Instead, it saves me time spent on market watching, and keeps me from making the same mistakes.</p>
+<p>This agent consists of three parts, and costs about $20/month:</p>
 <ul>
-<li><strong><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a></strong> <strong>لتشغيل كل شيء على الطيار الآلي.</strong> يقوم OpenClaw بتشغيل الوكيل على نبضات القلب لمدة 30 دقيقة ولا يرسل لي أزيزًا إلا عندما يكون هناك شيء مهم بالفعل، مما يخفف من حالة الهلع التي كانت تبقيني ملتصقًا بالشاشة. في السابق، كنت كلما شاهدت الأسعار، كلما زاد تفاعلي مع الأسعار، كلما كان رد فعلي أكثر اندفاعاً.</li>
-<li><strong><a href="https://exa.ai/">إكسا</a></strong> <strong>لعمليات البحث الدقيقة في الوقت الحقيقي.</strong> يتصفح Exa مصادر المعلومات المنتقاة بعناية ويلخصها وفقًا لجدول زمني، حتى أحصل على موجز دقيق كل صباح. في السابق، كنت أقضي ساعة يوميًا في غربلة الرسائل غير المرغوب فيها والتكهنات لتحسين محركات البحث للعثور على أخبار موثوقة - ولا يمكن أن يكون ذلك آليًا لأن المواقع المالية تُحدَّث يوميًا لمحاربة الكاشطات.</li>
-<li><strong><a href="https://milvus.io/">Milvus</a></strong> <strong>للتاريخ الشخصي والتفضيلات.</strong> يقوم Milvus بتخزين تاريخ تداولاتي، ويقوم الوكيل بالبحث فيه قبل أن أتخذ قرارًا ما - إذا كنت على وشك تكرار شيء ندمت عليه، فإنه يخبرني بذلك. في السابق، كانت مراجعة التداولات السابقة مملة بما فيه الكفاية لدرجة أنني لم أفعل ذلك، لذا استمرت الأخطاء نفسها في الحدوث مع مؤشرات مختلفة. <a href="https://zilliz.com/cloud">Zilliz Cloud</a> هو الإصدار المُدار بالكامل من Milvus. إذا كنت ترغب في تجربة خالية من المتاعب، فإن Zilliz Cloud هو خيار رائع<a href="https://cloud.zilliz.com/signup">(الفئة المجانية متاحة</a>).</li>
+<li><strong><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a></strong> <strong>for running it all on autopilot.</strong> OpenClaw runs the agent on a 30-minute heartbeat and only pings me when something actually matters, which relieves the FOMO that used to keep me glued to the screen. Before, the more I watched prices, the more I reacted on impulse.</li>
+<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>for accurate, real-time searches.</strong> Exa browses and summarizes hand-picked information sources on a schedule, so I get a clean briefing every morning. Before, I was spending an hour a day sifting through SEO spam and speculation to find reliable news — and it couldn’t be automated because finance sites update daily to fight scrapers.</li>
+<li><strong><a href="https://milvus.io/">Milvus</a></strong> <strong>for personal history and preferences.</strong> Milvus stores my trading history, and the agent searches it before I make a decision — if I’m about to repeat something I’ve regretted, it tells me. Before, reviewing past trades was tedious enough that I just didn’t, so the same mistakes kept happening with different tickers. <a href="https://zilliz.com/cloud">Zilliz Cloud</a> is the fully managed version of Milvus. If you’d like a hassle-free experience, Zilliz Cloud is a great option (<a href="https://cloud.zilliz.com/signup">free tier available</a>).</li>
 </ul>
-<p>إليك كيفية إعداده، خطوة بخطوة.</p>
-<h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">الخطوة 1: احصل على معلومات السوق في الوقت الفعلي باستخدام Exa<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
+<p>Here’s how I set it up, step by step.</p>
+<h2 id="Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="common-anchor-header">Step 1: Get Real-Time Market Intelligence with Exa<button data-href="#Step-1-Get-Real-Time-Market-Intelligence-with-Exa" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,19 +43,19 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>جربت من قبل تصفح التطبيقات المالية، وكتابة أدوات الكشط، والبحث في محطات البيانات الاحترافية. تجربتي؟ دفنت التطبيقات الإشارة تحت الضوضاء، وتعطلت أدوات الكشط باستمرار، وكانت واجهات برمجة التطبيقات الاحترافية باهظة الثمن. Exa عبارة عن واجهة برمجة تطبيقات بحث مصممة لوكلاء الذكاء الاصطناعي تحل المشكلات المذكورة أعلاه.</p>
+    </button></h2><p>Before, I’d tried browsing financial apps, writing scrapers, and looking into professional data terminals. My experience? Apps buried the signal under noise, scrapers broke constantly, and professional APIs were prohibitively expensive. Exa is a search API built for AI agents that solves the issues above.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Open_Claw_1_d15ac4d2e3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong><a href="https://exa.ai/">Exa</a></strong> هي واجهة برمجة تطبيقات بحث على الويب تُعيد بيانات منظمة وجاهزة للذكاء الاصطناعي لوكلاء الذكاء الاصطناعي. يتم تشغيله بواسطة <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (الخدمة المُدارة بالكامل من Milvus). إذا كان Perplexity هو محرك بحث يستخدمه البشر، فإن Exa يستخدمه الذكاء الاصطناعي. يقوم الوكيل بإرسال استعلام، وتقوم إكسا بإرجاع نص المقالة والجمل الرئيسية والملخصات على هيئة JSON - وهو مخرجات منظمة يمكن للوكيل تحليلها والتصرف عليها مباشرة، دون الحاجة إلى كشط.</p>
-<p>تستخدم إكسا أيضًا البحث الدلالي تحت الغطاء، بحيث يمكن للوكيل الاستعلام بلغة طبيعية. فالاستعلام مثل "لماذا انخفض سهم NVIDIA على الرغم من الأرباح القوية للربع الرابع من عام 2026" يُرجع تفاصيل المحللين من رويترز وبلومبرج، وليس صفحة من طعم النقر على محركات البحث.</p>
-<p>لدى Exa فئة مجانية - 1000 عملية بحث في الشهر، وهي أكثر من كافية للبدء. للمتابعة، قم بتثبيت SDK واستبدل مفتاح API الخاص بك:</p>
+<p><strong><a href="https://exa.ai/">Exa</a></strong> is a web search API that returns structured, AI-ready data for AI agents. It is powered by <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (the fully managed service of Milvus). If Perplexity is a search engine used by humans, Exa is used by AI. The agent sends a query, and Exa returns article text, key sentences, and summaries as JSON — structured output the agent can parse and act on directly, no scraping required.</p>
+<p>Exa also uses semantic search under the hood, so the agent can query in natural language. A query like “Why did NVIDIA stock drop despite strong Q4 2026 earnings” returns analyst breakdowns from Reuters and Bloomberg, not a page of SEO clickbait.</p>
+<p>Exa has a free tier — 1,000 searches per month, which is more than enough to get started. To follow along, install the SDK and swap in your own API key:</p>
 <pre><code translate="no">pip install exa-py
 <button class="copy-code-btn"></button></code></pre>
-<p>إليك المكالمة الأساسية:</p>
+<p>Here’s the core call:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> exa_py <span class="hljs-keyword">import</span> Exa
 
 exa = Exa(api_key=<span class="hljs-string">&quot;your-api-key&quot;</span>)
@@ -80,10 +78,10 @@ result = exa.search(
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  Summary: <span class="hljs-subst">{r.summary}</span>&quot;</span>)
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;  URL: <span class="hljs-subst">{r.url}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>تقوم معلمة المحتويات بمعظم العمل الشاق هنا - يسحب النص المقال كاملاً، ويستخرج النص النص الكامل، ويستخرج الملخص الجمل الرئيسية، ويُنشئ الملخص ملخصًا مركزًا بناءً على سؤال تقدمه. تستبدل مكالمة واحدة لواجهة برمجة التطبيقات عشرين دقيقة من التنقل بين علامات التبويب.</p>
-<p>هذا النمط الأساسي يغطي الكثير، لكن انتهى بي الأمر ببناء أربعة أشكال مختلفة للتعامل مع المواقف المختلفة التي أواجهها بانتظام:</p>
+<p>The contents parameter does most of the heavy lifting here — text pulls the full article, highlights extracts key sentences, and summary generates a focused summary based on a question you provide. One API call replaces twenty minutes of tab-hopping.</p>
+<p>That basic pattern covers a lot, but I ended up building four variations to handle different situations I run into regularly:</p>
 <ul>
-<li><strong>التصفية حسب مصداقية المصدر.</strong> بالنسبة لتحليل الأرباح، أريد فقط رويترز أو بلومبرج أو وول ستريت جورنال - وليس مزارع المحتوى التي تعيد كتابة تقاريرها بعد اثنتي عشرة ساعة.</li>
+<li><strong>Filtering by source credibility.</strong> For earnings analysis, I only want Reuters, Bloomberg, or the Wall Street Journal — not content farms rewriting their reporting twelve hours later.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Only financial reports from trusted sources</span>
 earnings = exa.search(
@@ -95,7 +93,7 @@ earnings = exa.search(
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>العثور على تحليلات متشابهة.</strong> عندما أقرأ مقالاً واحداً جيداً، أريد المزيد من وجهات النظر حول نفس الموضوع دون البحث عنها يدوياً.</li>
+<li><strong>Finding similar analysis.</strong> When I read one good article, I want more perspectives on the same topic without manually searching for them.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># &quot;Show me more analysis like this one&quot;</span>
 similar = exa.find_similar(
@@ -106,7 +104,7 @@ similar = exa.find_similar(
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>البحث العميق عن الأسئلة المعقدة.</strong> لا يمكن الإجابة على بعض الأسئلة من خلال مقال واحد - مثل كيفية تأثير التوترات في الشرق الأوسط على سلاسل توريد أشباه الموصلات. يجمع البحث العميق بين مصادر متعددة ويعيد ملخصات منظمة.</li>
+<li><strong>Deep search for complex questions.</strong> Some questions can’t be answered by a single article — like how Middle East tensions affect semiconductor supply chains. Deep search synthesizes across multiple sources and returns structured summaries.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Complex question — needs multi-source synthesis</span>
 deep_result = exa.search(
@@ -121,7 +119,7 @@ deep_result = exa.search(
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>رصد الأخبار في الوقت الحقيقي.</strong> خلال ساعات عمل السوق، أحتاج إلى تصفية الأخبار العاجلة إلى اليوم الحالي فقط.</li>
+<li><strong>Real-time news monitoring.</strong> During market hours, I need breaking news filtered to the current day only.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Breaking news only — today&#x27; iss date 2026-03-05</span>
 breaking = exa.search(
@@ -132,8 +130,8 @@ breaking = exa.search(
     contents={<span class="hljs-string">&quot;highlights&quot;</span>: {<span class="hljs-string">&quot;num_sentences&quot;</span>: <span class="hljs-number">2</span>}}
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>لقد كتبت حوالي عشرة نماذج باستخدام هذه الأنماط، تغطي سياسة الاحتياطي الفيدرالي وأرباح التكنولوجيا وأسعار النفط والمؤشرات الكلية. يتم تشغيلها تلقائيًا كل صباح ودفع النتائج إلى هاتفي. ما كان يستغرق ساعة من التصفح يستغرق الآن خمس دقائق من قراءة الملخصات أثناء تناول القهوة.</p>
-<h2 id="Step-2-Store-Trading-History-in-Milvus-for-Smarter-Decisions" class="common-anchor-header">الخطوة 2: تخزين سجل التداول في Milvus لاتخاذ قرارات أكثر ذكاءً<button data-href="#Step-2-Store-Trading-History-in-Milvus-for-Smarter-Decisions" class="anchor-icon" translate="no">
+<p>I wrote about a dozen templates using these patterns, covering Fed policy, tech earnings, oil prices, and macro indicators. They run automatically every morning and push results to my phone. What used to take an hour of browsing now takes five minutes of reading summaries over coffee.</p>
+<h2 id="Step-2-Store-Trading-History-in-Milvus-for-Smarter-Decisions" class="common-anchor-header">Step 2: Store Trading History in Milvus for Smarter Decisions<button data-href="#Step-2-Store-Trading-History-in-Milvus-for-Smarter-Decisions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -148,9 +146,9 @@ breaking = exa.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>أصلحت Exa مشكلة معلوماتي. ولكنني كنت ما زلت أكرر نفس الصفقات - البيع بدافع الذعر أثناء الانخفاضات التي تعافت في غضون أيام، ومطاردة الزخم في الأسهم التي كانت بالفعل مبالغًا في أسعارها. كنت أتصرف بناءً على العاطفة وأندم على ذلك وأنسى الدرس في الوقت الذي يأتي فيه موقف مماثل.</p>
-<p>كنت بحاجة إلى قاعدة معرفية شخصية: شيء يمكن أن يخزن صفقاتي السابقة ومنطقي وإخفاقاتي. ليس شيئًا يجب أن أراجعه يدويًا (لقد جربت ذلك ولم أحافظ عليه أبدًا)، ولكن شيئًا يمكن للوكيل البحث فيه من تلقاء نفسه كلما ظهر موقف مماثل. إذا كنت على وشك تكرار الخطأ، أريد أن يخبرني الوكيل قبل أن أضغط على الزر. إن مطابقة "الموقف الحالي" مع "التجربة السابقة" هي مشكلة بحث عن التشابه تحلّها قواعد البيانات المتجهة، لذا اخترت واحدة لتخزين بياناتي.</p>
-<p>استخدمت <a href="https://github.com/milvus-io/milvus-lite">Milvus Lite،</a> وهي نسخة خفيفة الوزن من Milvus تعمل محليًا. لا يحتوي على مجموعة خوادم، وهو مثالي للنماذج الأولية والتجريب. قسمت بياناتي إلى ثلاث مجموعات. بُعد التضمين هو 1536 لمطابقة نموذج التضمين النصي 3-التضمين الصغير الخاص بـ OpenAI، والذي يمكن استخدامه مباشرةً:</p>
+    </button></h2><p>Exa fixed my information problem. But I was still repeating the same trades — panic-selling during dips that recovered within days, and chasing momentum into stocks that were already overpriced. I’d act on emotion, regret it, and forget the lesson by the time a similar situation came around.</p>
+<p>I needed a personal knowledge base: something that could store my past trades, my reasoning, and my screw-ups. Not something I’d have to review manually (I’d tried that and never kept it up), but something the agent could search on its own whenever a similar situation came up. If I’m about to repeat a mistake, I want the agent to tell me before I hit the button. Matching “current situation” to “past experience” is a similarity search problem that vector databases solve, so I picked one to store my data.</p>
+<p>I used <a href="https://github.com/milvus-io/milvus-lite">Milvus Lite</a>, a lightweight version of Milvus that runs locally. It has no server setu, and is perfect for prototyping and experimenting. I split my data into three collections. The embedding dimension is 1536 to match OpenAI’s text-embedding-3-small model, which can be used directly:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 
@@ -186,20 +184,20 @@ milvus.create_collection(
     auto_id=<span class="hljs-literal">True</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>ترسم المجموعات الثلاث خريطة لثلاثة أنواع من البيانات الشخصية، لكل منها استراتيجية استرجاع مختلفة:</p>
+<p>The three collections map to three types of personal data, each with a different retrieval strategy:</p>
 <table>
 <thead>
-<tr><th><strong>النوع</strong></th><th><strong>ما يخزنه</strong></th><th><strong>كيف يستخدمها الوكيل</strong></th></tr>
+<tr><th><strong>Type</strong></th><th><strong>What it stores</strong></th><th><strong>How the agent uses it</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>التفضيلات</strong></td><td>التحيزات، وتحمّل المخاطر، وفلسفة الاستثمار ("أميل إلى الاحتفاظ بأسهم التكنولوجيا لفترة طويلة جدًا")</td><td>يتم تحميلها في سياق الوكيل في كل عملية تشغيل</td></tr>
-<tr><td><strong>القرارات والأنماط</strong></td><td>الصفقات السابقة المحددة، والدروس المستفادة، وملاحظات السوق</td><td>يتم استرجاعها عن طريق البحث عن التشابه فقط عند ظهور موقف ذي صلة</td></tr>
-<tr><td><strong>المعرفة الخارجية</strong></td><td>تقارير الأبحاث، وإيداعات هيئة الأوراق المالية والبورصات، والبيانات العامة</td><td>غير مخزنة في ميلفوس - يمكن البحث فيها من خلال إكسا</td></tr>
+<tr><td><strong>Preferences</strong></td><td>Biases, risk tolerance, investing philosophy (“I tend to hold tech stocks too long”)</td><td>Loaded into the agent’s context on every run</td></tr>
+<tr><td><strong>Decisions &amp; Patterns</strong></td><td>Specific past trades, lessons learned, market observations</td><td>Retrieved via similarity search only when a relevant situation comes up</td></tr>
+<tr><td><strong>External knowledge</strong></td><td>Research reports, SEC filings, public data</td><td>Not stored in Milvus — searchable through Exa</td></tr>
 </tbody>
 </table>
-<p>لقد أنشأتُ ثلاث مجموعات مختلفة لأن خلطها في مجموعة واحدة يعني إما أن يؤدي إلى تضخيم كل مطالبة بسجل تداول غير ذي صلة، أو فقدان التحيزات الأساسية عندما لا تتطابق مع الاستعلام الحالي بشكل كافٍ.</p>
-<p>بمجرد وجود المجموعات، كنت بحاجة إلى طريقة لتعبئتها تلقائيًا. لم أكن أرغب في نسخ المعلومات ولصقها بعد كل محادثة مع الوكيل، لذا أنشأت مستخرج ذاكرة يعمل في نهاية كل جلسة دردشة.</p>
-<p>يقوم المستخرج بشيئين: الاستخراج وإلغاء التكرار. يطلب المستخرج من LLM سحب رؤى منظمة من المحادثة - القرارات والتفضيلات والأنماط والدروس - ويوجه كل منها إلى المجموعة الصحيحة. قبل تخزين أي شيء، يتحقق من التشابه مع ما هو موجود بالفعل. إذا كانت البصيرة الجديدة مشابهة بنسبة تزيد عن 92% لرؤية جديدة أكثر من 92% لمدخل موجود بالفعل، يتم تخطيها.</p>
+<p>I built three different collections because mixing these into one collection would mean either bloating every prompt with irrelevant trade history, or losing core biases when they don’t match the current query closely enough.</p>
+<p>Once the collections existed, I needed a way to populate them automatically. I didn’t want to copy-paste information after every conversation with the agent, so I built a memory extractor that runs at the end of each chat session.</p>
+<p>The extractor does two things: extract and deduplicate. The extractor asks the LLM to pull structured insights from the conversation — decisions, preferences, patterns, lessons — and routes each one to the right collection. Before storing anything, it checks similarity against what’s already there. If a new insight is more than 92% similar to an existing entry, it gets skipped.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">extract_and_store_memories</span>(<span class="hljs-params">conversation: <span class="hljs-built_in">list</span>[<span class="hljs-built_in">dict</span>]</span>) -&gt; <span class="hljs-built_in">int</span>:
@@ -270,7 +268,7 @@ milvus.create_collection(
 
     <span class="hljs-keyword">return</span> stored
 <button class="copy-code-btn"></button></code></pre>
-<p>عندما أواجه وضعًا جديدًا في السوق وتبدأ الرغبة في التداول، يقوم الوكيل بتشغيل وظيفة الاستدعاء. أصف ما يحدث، فيقوم بالبحث في المجموعات الثلاث عن السجل التاريخي ذي الصلة:</p>
+<p>When I’m facing a new market situation and the urge to trade kicks in, the agent runs a recall function. I describe what’s happening, and it searches all three collections for relevant history:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">recall_my_experience</span>(<span class="hljs-params">situation: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;
     Given a current market situation, retrieve my relevant
@@ -308,9 +306,9 @@ context = recall_my_experience(
 <span class="hljs-comment"># - My preference: &quot;I tend to overweight geopolitical risk&quot;</span>
 <span class="hljs-comment"># - My pattern: &quot;tech selloffs from geopolitics recover in 1-3 weeks&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>على سبيل المثال، عندما انخفضت أسهم شركات التكنولوجيا بنسبة 3-4% بسبب التوترات في الشرق الأوسط في أوائل شهر مارس، قام الوكيل بسحب ثلاثة أشياء: درس من أكتوبر 2024 حول عدم البيع بدافع الذعر أثناء الانخفاض الجيوسياسي، وملاحظة تفضيلية بأنني أميل إلى زيادة الوزن الزائد للمخاطر الجيوسياسية، ونمط سجلته (عادةً ما تتعافى عمليات البيع في التكنولوجيا المدفوعة بالتوترات الجيوسياسية في غضون أسبوع إلى ثلاثة أسابيع).</p>
-<p>رأي زميلي في العمل: إذا كانت بيانات التدريب الخاصة بك هي سجل خاسر، فما الذي يتعلمه الذكاء الاصطناعي بالضبط؟ ولكن هذا هو بيت القصيد - فالوكيل لا ينسخ صفقاتي، بل يحفظها حتى يتمكن من إقناعي بالخروج من الصفقة التالية.</p>
-<h2 id="Step-3-Teach-Your-Agent-to-Analyze-with-OpenClaw-Skills" class="common-anchor-header">الخطوة 3: علّم وكيلك التحليل باستخدام مهارات OpenClaw<button data-href="#Step-3-Teach-Your-Agent-to-Analyze-with-OpenClaw-Skills" class="anchor-icon" translate="no">
+<p>For example, when tech stocks dropped 3-4% on Middle East tensions in early March, the agent pulled up three things: a lesson from October 2024 about not panic-selling during a geopolitical dip, a preference note that I tend to overweight geopolitical risk, and a pattern I’d recorded (tech selloffs driven by geopolitics typically recover in one to three weeks.)</p>
+<p>My coworker’s take: if your training data is a losing record, what exactly is the AI learning? But that’s the whole point — the agent isn’t copying my trades, it’s memorizing them so it can talk me out of the next one.</p>
+<h2 id="Step-3-Teach-Your-Agent-to-Analyze-with-OpenClaw-Skills" class="common-anchor-header">Step 3: Teach Your Agent to Analyze with OpenClaw Skills<button data-href="#Step-3-Teach-Your-Agent-to-Analyze-with-OpenClaw-Skills" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -325,10 +323,10 @@ context = recall_my_experience(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في هذه المرحلة، يكون لدى الوكيل معلومات موثوقة<a href="https://exa.ai/">(إكسا</a>) وذاكرة شخصية<a href="https://github.com/milvus-io/milvus-lite">(ميلفوس</a>). ولكن إذا سلمت كلاهما إلى العميل وقلت له "حلل هذا"، فستحصل على استجابة عامة تحوطية لكل شيء. فهي تذكر كل زاوية ممكنة وتختتم بـ "يجب على المستثمرين أن يزنوا المخاطر". ربما لم يقل شيئًا أيضًا.</p>
-<p>يكمن الحل في كتابة إطار العمل التحليلي الخاص بك وإعطائه للوكيل كتعليمات واضحة. عليك أن تخبره بالمؤشرات التي تهتم بها، والمواقف التي تعتبرها خطيرة، ومتى تكون متحفظًا مقابل العدوانية. تختلف هذه القواعد من مستثمر لآخر، لذا عليك أن تحددها بنفسك.</p>
-<p>يقوم OpenClaw بذلك من خلال المهارات - ملفات تخفيض السعر في دليل المهارات/الدليل. عندما يواجه الوكيل موقفًا ذا صلة، يقوم بتحميل المهارة المطابقة ويتبع إطار العمل الخاص بك بدلاً من الانطلاق الحر.</p>
-<p>إليك واحدة كتبتها لتقييم الأسهم بعد تقرير الأرباح:</p>
+    </button></h2><p>At this point, the agent has reliable information (<a href="https://exa.ai/">Exa</a>) and personal memory (<a href="https://github.com/milvus-io/milvus-lite">Milvus</a>). But if you hand both to an LLM and say “analyze this,” you get a generic, hedge-everything response. It mentions every possible angle and concludes with “investors should weigh the risks.” It might as well have said nothing.</p>
+<p>The fix is to write your own analytical framework and give it to the agent as explicit instructions. You have to tell it which indicators you care about, which situations you consider dangerous, and when to be conservative versus aggressive. These rules are different for every investor, so you have to define them yourself.</p>
+<p>OpenClaw does this through Skills — markdown files in a skills/ directory. When the agent encounters a relevant situation, it loads the matching Skill and follows your framework instead of freewheeling.</p>
+<p>Here’s one I wrote for evaluating stocks after an earnings report:</p>
 <pre><code translate="no">---
 name: post-earnings-eval
 description: &gt;
@@ -370,10 +368,10 @@ IMPORTANT: Always surface my past mistakes. I have a tendency to
 let fear override data. If my Milvus history shows I regretted
 selling after a dip, say so explicitly.
 <button class="copy-code-btn"></button></code></pre>
-<p>السطر الأخير هو الأكثر أهمية: "أظهر دائمًا أخطائي السابقة. لدي ميل للسماح للخوف بتجاوز البيانات. إذا أظهر تاريخي في ميلفوس أنني ندمت على البيع بعد الانخفاض، فقل ذلك صراحةً." هذه هي الطريقة التي أخبر بها الوكيل أين أخطأت بالضبط، حتى يعرف متى يتراجع. إذا قمت ببناء المهارات الخاصة بك، فهذا هو الجزء الذي ستقوم بتخصيصه بناءً على تحيزاتك.</p>
-<p>لقد كتبت مهارات مماثلة لتحليل المشاعر، والمؤشرات الكلية، وإشارات دوران القطاع. كتبتُ أيضًا مهارات تحاكي كيف سيقيّم المستثمرون الذين أعجب بهم نفس الموقف - إطار عمل بافيت القيمي، والنهج الكلي لبريدج ووتر. هذه ليست منطلقات لاتخاذ القرار؛ إنها وجهات نظر إضافية.</p>
-<p>تحذير: لا تدع أصحاب الماجستير في القانون يحسبون المؤشرات الفنية مثل مؤشر القوة النسبية RSI أو MACD. فهم يهلوسون الأرقام بثقة. قم بحسابها بنفسك أو اتصل بواجهة برمجة تطبيقات مخصصة، وأدخل النتائج في المهارة كمدخلات.</p>
-<h2 id="Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="common-anchor-header">الخطوة 4: ابدأ عميلك باستخدام OpenClaw Heartbeat<button data-href="#Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="anchor-icon" translate="no">
+<p>The last line is the most important: “Always surface my past mistakes. I have a tendency to let fear override data. If my Milvus history shows I regretted selling after a dip, say so explicitly.” That’s me telling the agent exactly where I go wrong, so it knows when to push back. If you build your own, this is the part you’d customize based on your biases.</p>
+<p>I wrote similar Skills for sentiment analysis, macro indicators, and sector rotation signals. I also wrote Skills that simulate how investors I admire would evaluate the same situation — Buffett’s value framework, Bridgewater’s macro approach. These aren’t decision-makers; they’re additional perspectives.</p>
+<p>A warning: don’t let LLMs calculate technical indicators like RSI or MACD. They hallucinate numbers confidently. Compute those yourself or call a dedicated API, and feed the results into the Skill as inputs.</p>
+<h2 id="Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="common-anchor-header">Step 4: Start Your Agent with OpenClaw Heartbeat<button data-href="#Step-4-Start-Your-Agent-with-OpenClaw-Heartbeat" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -388,8 +386,8 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>كل شيء أعلاه لا يزال يتطلب منك تشغيله يدويًا. إذا اضطررت إلى فتح محطة طرفية في كل مرة تريد فيها تحديثًا، فستعود عمليًا إلى تطبيق الوساطة الخاص بك أثناء الاجتماعات مرة أخرى.</p>
-<p>تعمل آلية نبضات القلب في OpenClaw على إصلاح ذلك. تقوم البوابة باستدعاء الوكيل كل 30 دقيقة (قابلة للتكوين)، ويتحقق الوكيل من ملف HEARTBEAT.md ليقرر ما يجب فعله في تلك اللحظة. إنه ملف ترميز بقواعد تستند إلى الوقت:</p>
+    </button></h2><p>Everything above still requires you to trigger it manually. If you have to open a terminal every time you want an update, you’re practically back to doomscrolling your brokerage app during meetings again.</p>
+<p>OpenClaw’s Heartbeat mechanism fixes this. A gateway pings the agent every 30 minutes (configurable), and the agent checks a HEARTBEAT.md file to decide what to do at that moment. It’s a markdown file with time-based rules:</p>
 <pre><code translate="no"><span class="hljs-meta"># HEARTBEAT.md — runs every 30 minutes automatically</span>
 
 <span class="hljs-meta">## Morning brief (6:30-7:30 AM only)</span>
@@ -418,7 +416,7 @@ selling after a dip, say so explicitly.
     <span></span>
   </span>
 </p>
-<h2 id="Results-Less-Screen-Time-Fewer-Impulsive-Trades" class="common-anchor-header">النتائج: وقت أقل على الشاشة، وتداولات أقل اندفاعًا<button data-href="#Results-Less-Screen-Time-Fewer-Impulsive-Trades" class="anchor-icon" translate="no">
+<h2 id="Results-Less-Screen-Time-Fewer-Impulsive-Trades" class="common-anchor-header">Results: Less Screen Time, Fewer Impulsive Trades<button data-href="#Results-Less-Screen-Time-Fewer-Impulsive-Trades" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -433,17 +431,17 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إليك ما ينتجه النظام بالفعل يومًا بعد يوم:</p>
+    </button></h2><p>Here’s what the system actually produces day to day:</p>
 <ul>
-<li><strong>موجز الصباح (7:00 صباحًا).</strong> يقوم الوكيل بتشغيل Exa طوال الليل، ويسحب مواقعي والتاريخ ذي الصلة من Milvus، ويرسل ملخصًا مخصصًا إلى هاتفي - أقل من 500 كلمة. ما حدث خلال الليل، وما علاقته بممتلكاتي، وما بين بند إلى ثلاثة بنود للعمل. أقرأه أثناء تنظيف أسناني بالفرشاة.</li>
-<li><strong>التنبيهات اليومية (9:30 صباحًا - 4:00 مساءً بالتوقيت الشرقي).</strong> كل 30 دقيقة، يتحقق الوكيل من قائمة المراقبة الخاصة بي. إذا تحرك أي سهم بأكثر من 3%، أتلقى إشعارًا يتضمن السياق: لماذا اشتريته، وأين هو وقف الخسارة، وما إذا كنت قد مررت بموقف مماثل من قبل.</li>
-<li><strong>المراجعة الأسبوعية (عطلات نهاية الأسبوع).</strong> يقوم الوكيل بتجميع الأسبوع كاملاً - تحركات السوق، وكيفية مقارنتها بتوقعاتي الصباحية، والأنماط التي تستحق التذكر. أقضي 30 دقيقة في قراءتها يوم السبت. أما باقي أيام الأسبوع، أتعمد الابتعاد عن الشاشة.</li>
+<li><strong>Morning brief (7:00 AM).</strong> The agent runs Exa overnight, pulls my positions and relevant history from Milvus, and pushes a personalized summary to my phone — under 500 words. What happened overnight, how it relates to my holdings, and one to three action items. I read it while brushing my teeth.</li>
+<li><strong>Intraday alerts (9:30 AM–4:00 PM ET).</strong> Every 30 minutes, the agent checks my watchlist. If any stock moved more than 3%, I get a notification with context: why I bought it, where my stop-loss is, and whether I’ve been in a similar situation before.</li>
+<li><strong>Weekly review (weekends).</strong> The agent compiles the full week — market moves, how they compared to my morning expectations, and patterns worth remembering. I spend 30 minutes reading it on Saturday. The rest of the week, I deliberately stay away from the screen.</li>
 </ul>
-<p>هذه النقطة الأخيرة هي التغيير الأكبر. فالوكيل لا يوفر الوقت فحسب، بل يحررني أيضًا من مراقبة السوق. لا يمكنك البيع بذعر إذا لم تكن تراقب الأسعار.</p>
-<p>قبل هذا النظام، كنت أقضي من 10 إلى 15 ساعة أسبوعيًا في جمع المعلومات ومراقبة السوق ومراجعة الصفقات، مبعثرة عبر الاجتماعات ووقت التنقل والتمرير في وقت متأخر من الليل. أما الآن فهي ساعتان تقريبًا: خمس دقائق في الموجز الصباحي كل يوم، بالإضافة إلى 30 دقيقة في مراجعة نهاية الأسبوع.</p>
-<p>جودة المعلومات أفضل أيضًا. فأنا أقرأ ملخصات من رويترز وبلومبرج بدلاً من أي شيء انتشر على تويتر. ومع قيام الوكيل بسحب أخطائي السابقة في كل مرة أميل فيها إلى التصرف، فقد قللت من صفقاتي المتهورة بشكل كبير. لا أستطيع إثبات أن هذا جعلني مستثمرًا أفضل حتى الآن، لكنه جعلني مستثمرًا أقل تهورًا.</p>
-<p>التكلفة الإجمالية: 10 دولارات شهريًا لـ OpenClaw، و10 دولارات شهريًا لـ Exa، وقليل من الكهرباء للحفاظ على تشغيل Milvus Lite.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>That last point is the biggest change. The agent doesn’t only save time, it also frees me from watching the market. You can’t panic-sell if you’re not looking at prices.</p>
+<p>Before this system, I was spending 10–15 hours a week on information gathering, market monitoring, and trade review, scattered across meetings, commute time, and late-night scrolling. Now it’s about two hours: five minutes on the morning brief each day, plus 30 minutes on the weekend review.</p>
+<p>The information quality is also better. I’m reading summaries from Reuters and Bloomberg instead of whatever went viral on Twitter. And with the agent pulling up my past mistakes every time I’m tempted to act, I’ve cut my impulsive trades significantly. I can’t prove this has made me a better investor yet, but it’s made me a less reckless one.</p>
+<p>The total cost: $10/month for OpenClaw, $10/month for Exa, and a bit of electricity to keep Milvus Lite running.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -458,24 +456,24 @@ selling after a dip, say so explicitly.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ظللت أقوم بنفس التداولات المتهورة لأن معلوماتي كانت سيئة، ونادراً ما كنت أراجع تاريخي الخاص، كما أن التحديق في السوق طوال اليوم جعل الأمر أسوأ. لذلك قمتُ ببناء وكيل ذكاء اصطناعي يحل هذه المشاكل من خلال القيام بثلاثة أمور</p>
+    </button></h2><p>I kept making the same impulsive trades because my information was bad, I seldom reviewed my own history, and staring at the market all day made it worse. So I built an AI agent that solves those problems by doing three things:</p>
 <ul>
-<li><strong>يجمع أخبار السوق الموثوق بها</strong> مع <strong><a href="https://exa.ai/">Exa،</a></strong> ليحل محل ساعة من التمرير عبر البريد المزعج لتحسين محركات البحث والمواقع المدفوعة.</li>
-<li><strong>يتذكر صفقاتي السابقة</strong> مع <a href="http://milvus.io">Milvus</a> ويحذرني عندما أكون على وشك تكرار خطأ ندمت عليه بالفعل.</li>
-<li><strong>يعمل على الطيار الآلي</strong> مع <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> ولا يرسل لي التنبيهات إلا عندما يكون هناك شيء مهم بالفعل.</li>
+<li><strong>Gathers reliable market news</strong> with <strong><a href="https://exa.ai/">Exa</a></strong>, replacing an hour of scrolling through SEO spam and paywalled sites.</li>
+<li><strong>Remembers my past trades</strong> with <a href="http://milvus.io">Milvus</a> and warns me when I’m about to repeat a mistake I’ve already regretted.</li>
+<li><strong>Runs on autopilot</strong> with <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> and only pings me when something actually matters.</li>
 </ul>
-<p>التكلفة الإجمالية: 20 دولارًا شهريًا. الوكيل لا يتداول أو يلمس أموالي.</p>
-<p>لم يكن التغيير الأكبر هو البيانات أو التنبيهات. بل هو أنني توقفت عن مراقبة السوق. لقد نسيت أمرها تمامًا يوم الأربعاء الماضي، وهو ما لم يحدث أبدًا طوال سنوات تداولي. ما زلت أخسر المال في بعض الأحيان، ولكن في كثير من الأحيان أقل بكثير، وأنا في الواقع أستمتع بعطلات نهاية الأسبوع مرة أخرى. لم يقم زملائي في العمل بتحديث النكتة حتى الآن، ولكن امنح الأمر بعض الوقت.</p>
-<p>استغرق بناء الوكيل أيضًا عطلتي نهاية أسبوع فقط. قبل عام مضى، كان نفس الإعداد يعني كتابة برامج الجدولة وخطوط أنابيب الإشعارات وإدارة الذاكرة من الصفر. مع OpenClaw، استغرقت معظم ذلك الوقت في توضيح قواعد التداول الخاصة بي، وليس كتابة البنية التحتية.</p>
-<p>وبمجرد إنشائها لحالة استخدام واحدة، تكون البنية قابلة للنقل. استبدل قوالب البحث في Exa بقوالب البحث في OpenClaw، وسيكون لديك وكيل يراقب الأوراق البحثية أو يتتبع المنافسين أو يراقب التغييرات التنظيمية أو يتابع اضطرابات سلسلة التوريد.</p>
-<p>إذا كنت ترغب في تجربته</p>
+<p>Total cost: $20/month. The agent doesn’t trade or touch my money.</p>
+<p>The biggest change wasn’t the data or the alerts. It was that I stopped watching the market. I forgot about it entirely last Wednesday, which has never happened in my years of trading. I still lose money sometimes, but way less often, and I actually enjoy my weekends again. My coworkers haven’t updated the joke yet, but give it time.</p>
+<p>The agent also took just two weekends to build. A year ago, the same setup would have meant writing schedulers, notification pipelines, and memory management from scratch. With OpenClaw, most of that time went into clarifying my own trading rules, not writing infrastructure.</p>
+<p>And once you’ve built it for one use case, the architecture is portable. Swap the Exa search templates and the OpenClaw Skills, and you have an agent that monitors research papers, tracks competitors, watches regulatory changes, or follows supply chain disruptions.</p>
+<p>If you want to try it:</p>
 <ul>
-<li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a></strong> - احصل على قاعدة بيانات متجهة تعمل محليًا في أقل من خمس دقائق</li>
-<li><strong>مستندات</strong><strong><a href="https://docs.openclaw.ai/">OpenClaw</a></strong> - قم بإعداد وكيلك الأول باستخدام المهارات ونبض القلب</li>
-<li><strong>واجهة برمجة تطبيقات</strong><strong><a href="https://exa.ai/">إكسا</a></strong> - 1,000 عملية بحث مجانية شهريًا للبدء</li>
+<li><strong><a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a></strong> — get a vector database running locally in under five minutes</li>
+<li><strong><a href="https://docs.openclaw.ai/">OpenClaw</a></strong> <strong>docs</strong> — set up your first agent with Skills and Heartbeat</li>
+<li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>API</strong> — 1,000 free searches per month to start</li>
 </ul>
-<p>هل لديك أسئلة أو تريد مساعدة في تصحيح الأخطاء أو تريد فقط إظهار ما قمت ببنائه؟ انضم إلى قناة <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus Slack</a> - إنها أسرع طريقة للحصول على المساعدة من المجتمع والفريق على حد سواء. وإذا كنت تفضل التحدث عن الإعداد الخاص بك على انفراد، فاحجز <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?__hstc=175614333.156cb1e50b398e3753dedcd15f8758f6.1769685782884.1773222362027.1773227913204.54&amp;__hssc=175614333.2.1773227913204&amp;__hsfp=1c9f7a3cc56fa6c486704004556598ad&amp;uuid=be611eac-2f37-4c1d-9494-71ae4e097f89">ساعة مكتبية في Milvus</a> لمدة 20 دقيقة.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">تابع القراءة<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p>Got questions, want help debugging, or just want to show off what you’ve built? Join the <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus Slack</a> channel— it’s the fastest way to get help from both the community and the team. And if you’d rather talk through your setup one-on-one, book a 20-minute <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?__hstc=175614333.156cb1e50b398e3753dedcd15f8758f6.1769685782884.1773222362027.1773227913204.54&amp;__hssc=175614333.2.1773227913204&amp;__hsfp=1c9f7a3cc56fa6c486704004556598ad&amp;uuid=be611eac-2f37-4c1d-9494-71ae4e097f89">Milvus office hour.</a></p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -491,8 +489,8 @@ selling after a dip, say so explicitly.
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">شرح OpenClaw (المعروف سابقاً باسم Clawdbot وMoltbot): الدليل الكامل لوكيل الذكاء الاصطناعي المستقل</a></li>
-<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">دليل خطوة بخطوة لإعداد OpenClaw (Clawdbot/Moltbot سابقاً) مع Slack</a></li>
-<li><a href="https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md">لماذا يحرق وكلاء الذكاء الاصطناعي مثل OpenClaw الرموز وكيفية خفض التكاليف</a></li>
-<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">لقد استخرجنا نظام ذاكرة OpenClaw وقمنا بفتح مصادره (memsearch)</a></li>
+<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw (Formerly Clawdbot &amp; Moltbot) Explained: A Complete Guide to the Autonomous AI Agent</a></li>
+<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Step-by-Step Guide to Setting Up OpenClaw (Previously Clawdbot/Moltbot) with Slack</a></li>
+<li><a href="https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md">Why AI Agents like OpenClaw Burn Through Tokens and How to Cut Costs</a></li>
+<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)</a></li>
 </ul>

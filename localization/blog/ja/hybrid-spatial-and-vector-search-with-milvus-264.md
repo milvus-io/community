@@ -1,6 +1,7 @@
 ---
 id: hybrid-spatial-and-vector-search-with-milvus-264.md
-title: Milvusを使ったハイブリッド空間検索とベクトル検索の使い方
+title: |
+  How to Use Hybrid Spatial and Vector Search with Milvus 
 author: Alden
 date: 2026-3-18
 cover: assets.zilliz.com/cover_8b550decfe.jpg
@@ -13,15 +14,15 @@ meta_keywords: >-
   vector database geospatial search
 meta_title: |
   Hybrid Spatial and Vector Search with Milvus 2.6.4 (Geometry & R-Tree)
-desc: >-
-  Milvus
-  2.6.4でGeometryとR-Treeを使用したハイブリッド空間検索とベクトル検索がどのように可能になったかを、パフォーマンスに関する洞察と実践例を交えてご紹介します。
+desc: >
+  Learn how Milvus 2.6.4 enables hybrid spatial and vector search using Geometry
+  and R-Tree, with performance insights and practical examples.
 origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264.md'
 ---
-<p>3キロ圏内のロマンチックなレストランを探す」というクエリは単純に聞こえる。なぜなら、これはロケーションフィルタリングとセマンティック検索を組み合わせたものだからだ。ほとんどのシステムでは、このクエリを2つのデータベースに分割する必要があり、データの同期、コード内での結果のマージ、そして余分な待ち時間を意味する。</p>
-<p><a href="https://milvus.io">Milvus</a>2.6.4は、この分割を排除します。ネイティブの<strong>GEOMETRY</strong>データ型と<strong>R-Tree</strong>インデックスにより、Milvusは1つのクエリでロケーション制約とセマンティック制約を一緒に適用することができます。これにより、空間とセマンティックのハイブリッド検索がより簡単で効率的になりました。</p>
-<p>この記事では、なぜこの変更が必要だったのか、Milvus内部でGEOMETRYとR-Treeがどのように機能するのか、どのようなパフォーマンス向上が期待できるのか、Python SDKを使った設定方法について説明します。</p>
-<h2 id="The-Limitations-of-Traditional-Geo-and-Semantic-Search" class="common-anchor-header">従来の地理検索とセマンティック検索の限界<button data-href="#The-Limitations-of-Traditional-Geo-and-Semantic-Search" class="anchor-icon" translate="no">
+<p>A query like “find romantic restaurants within 3 km” sounds simple. It’s not, because it combines location filtering and semantic search. Most systems need to split this query across two databases, which means syncing data, merging results in code, and extra latency.</p>
+<p><a href="https://milvus.io">Milvus</a> 2.6.4 eliminates this split. With a native <strong>GEOMETRY</strong> data type and an <strong>R-Tree</strong> index, Milvus can apply location and semantic constraints together in a single query. This makes hybrid spatial and semantic search much easier and more efficient.</p>
+<p>This article explains why this change was needed, how GEOMETRY and R-Tree work inside Milvus, what performance gains to expect, and how to set it up with the Python SDK.</p>
+<h2 id="The-Limitations-of-Traditional-Geo-and-Semantic-Search" class="common-anchor-header">The Limitations of Traditional Geo and Semantic Search<button data-href="#The-Limitations-of-Traditional-Geo-and-Semantic-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,24 +37,24 @@ origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>3km以内にあるロマンチックなレストラン "のようなクエリは、2つの理由から扱いにくい：</p>
+    </button></h2><p>Queries like “romantic restaurants within 3 km”  are hard to handle for two reasons:</p>
 <ul>
-<li><strong>「ロマンチック "はセマンティック検索を必要とする。</strong>システムはレストランのレビューとタグをベクトル化し、埋め込み空間の類似性によってマッチを見つけなければならない。これはベクトルデータベースでしか機能しない。</li>
-<li><strong>「3km以内 "は空間フィルタリングが必要である。</strong>検索結果は、"ユーザーから3km以内"、場合によっては "特定の配達多角形や行政境界の内側 "に制限されなければならない。</li>
+<li><strong>“Romantic” needs semantic search.</strong> The system has to vectorize restaurant reviews and tags, then find matches by similarity in embedding space. This only works in a vector database.</li>
+<li><strong>“Within 3 km” needs spatial filtering.</strong> Results must be restricted to “within 3 km of the user,” or sometimes “inside a specific delivery polygon or administrative boundary.”</li>
 </ul>
-<p>従来のアーキテクチャでは、両方のニーズを満たすには、通常2つのシステムを並行して稼働させる必要がありました：</p>
+<p>In a traditional architecture, meeting both needs usually meant running two systems side by side:</p>
 <ul>
-<li>ジオフェンシング、距離計算、空間フィルタリングのための<strong>PostGIS / Elasticsearch</strong>。</li>
-<li>埋め込みに対する近似最近傍（ANN）検索用の<strong>ベクトルデータベース</strong>。</li>
+<li><strong>PostGIS / Elasticsearch</strong> for geofencing, distance calculations, and spatial filtering.</li>
+<li>A <strong>vector database</strong> for approximate nearest neighbor (ANN) search over embeddings.</li>
 </ul>
-<p>この "2データベース "デザインは、3つの現実的な問題を引き起こす：</p>
+<p>This “two-database” design creates three practical problems:</p>
 <ul>
-<li><strong>データの同期。</strong>レストランが住所を変更した場合、ジオシステムとベクトルデータベースの両方を更新しなければならない。1つの更新を逃すと、結果に一貫性がなくなる。</li>
-<li><strong>待ち時間の増加。</strong>アプリケーションは2つのシステムを呼び出して出力をマージする必要があり、ネットワークの往復と処理時間が増える。</li>
-<li><strong>非効率的なフィルタリング。</strong>システムが最初にベクトル検索を実行した場合、多くの場合、ユーザーから遠く離れた結果が返され、後で破棄しなければならなかった。最初に位置フィルタリングを適用した場合、残りのセットはまだ大きいため、ベクトル検索ステップはまだ高価であった。</li>
+<li><strong>Painful data synchronization.</strong> If a restaurant changes its address, you must update both the geo system and the vector database. Missing one update produces inconsistent results.</li>
+<li><strong>Higher latency.</strong> The application has to call two systems and merge their outputs, adding network round-trips and processing time.</li>
+<li><strong>Inefficient filtering.</strong> If the system ran vector search first, it often returned many results that were far from the user and had to be discarded later. If it applied location filtering first, the remaining set was still large, so the vector search step was still expensive.</li>
 </ul>
-<p>Milvus 2.6.4では、ベクトルデータベースに直接空間ジオメトリサポートを追加することで、これを解決した。セマンティック検索とロケーションフィルタリングが同じクエリーで実行されるようになった。1つのシステムですべてが完結するため、ハイブリッド検索はより速く、管理しやすくなりました。</p>
-<h2 id="What-GEOMETRY-Adds-to-Milvus" class="common-anchor-header">GEOMETRYがMilvusに追加したもの<button data-href="#What-GEOMETRY-Adds-to-Milvus" class="anchor-icon" translate="no">
+<p>Milvus 2.6.4 solves this by adding spatial geometry support directly to the vector database. Semantic search and location filtering now run in the same query. With everything in one system, hybrid search is faster and easier to manage.</p>
+<h2 id="What-GEOMETRY-Adds-to-Milvus" class="common-anchor-header">What GEOMETRY Adds to Milvus<button data-href="#What-GEOMETRY-Adds-to-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,21 +69,21 @@ origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6では、DataType.GEOMETRYというスカラーフィールド型が導入されました。Milvusは、位置を経度と緯度の数値として別々に保存する代わりに、点、線、多角形といった幾何学的なオブジェクトを保存するようになりました。この点は地域内にあるか」、「Xメートル以内にあるか」といったクエリはネイティブな操作になります。生の座標上で回避策を構築する必要はありません。</p>
-<p>実装は<a href="https://www.ogc.org/standard/sfa/"></a><strong>OpenGIS Simple Features Access標準に従って</strong>いるため、既存のほとんどの地理空間ツールで動作する。ジオメトリデータは、<strong>WKT（Well-Known Text）を</strong>使用して保存および照会されます。<strong>WKT</strong> は、人間が読むことができ、プログラムが解析可能な標準テキスト形式です。</p>
-<p>サポートされているジオメトリタイプ</p>
+    </button></h2><p>Milvus 2.6 introduces a scalar field type called DataType.GEOMETRY. Instead of storing locations as separate longitude and latitude numbers, Milvus now stores geometric objects: points, lines, and polygons. Queries like “is this point inside a region?” or “is it within X meters?” become native operations. There’s no need to build workarounds over raw coordinates.</p>
+<p>The implementation follows the <a href="https://www.ogc.org/standard/sfa/"></a><strong>OpenGIS Simple Features Access standard</strong>, so it works with most existing geospatial tooling. Geometry data is stored and queried using <strong>WKT (Well-Known Text)</strong>, a standard text format that is readable by humans and parseable by programs.</p>
+<p>Supported geometry types:</p>
 <ul>
-<li><strong>POINT</strong>: 店舗の住所や車両のリアルタイム位置などの単一位置</li>
-<li><strong>LINESTRING</strong>: 道路のセンターラインや移動経路などのライン</li>
-<li><strong>ポリゴン</strong>：行政境界やジオフェンスなどのエリア</li>
-<li><strong>収集タイプ</strong>：MULTIPOINT、MULTILINESTRING、MULTIPOLYGON、GEOMETRYCOLLECTION。</li>
+<li><strong>POINT</strong>: a single location, such as a store address or a vehicle’s real-time position</li>
+<li><strong>LINESTRING</strong>: a line, such as a road centerline or a movement path</li>
+<li><strong>POLYGON</strong>: an area, such as an administrative boundary or a geofence</li>
+<li><strong>Collection types</strong>: MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, and GEOMETRYCOLLECTION</li>
 </ul>
-<p>また、以下のような標準的な空間演算子もサポートしています：</p>
+<p>It also supports standard spatial operators, including:</p>
 <ul>
-<li><strong>空間関係</strong>：包含（ST_CONTAINS、ST_WITHIN）、交差（ST_INTERSECTS、ST_CROSSES）、接触（ST_TOUCHES）</li>
-<li><strong>距離演算</strong>：ジオメトリ間の距離の計算（ST_DISTANCE）、指定された距離内のオブジェクトのフィルタリング（ST_DWITHIN）</li>
+<li><strong>Spatial relationships</strong>: containment (ST_CONTAINS, ST_WITHIN), intersection (ST_INTERSECTS, ST_CROSSES), and contact (ST_TOUCHES)</li>
+<li><strong>Distance operations</strong>: computing distances between geometries (ST_DISTANCE) and filtering objects within a given distance (ST_DWITHIN)</li>
 </ul>
-<h2 id="How-R-Tree-Indexing-Works-Inside-Milvus" class="common-anchor-header">MilvusにおけるR-Treeインデックスの仕組み<button data-href="#How-R-Tree-Indexing-Works-Inside-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-R-Tree-Indexing-Works-Inside-Milvus" class="common-anchor-header">How R-Tree Indexing Works Inside Milvus<button data-href="#How-R-Tree-Indexing-Works-Inside-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -97,24 +98,24 @@ origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GEOMETRYのサポートはMilvusのクエリーエンジンに組み込まれており、API機能として公開されているだけではありません。ISpatial データは R-Tree (Rectangle Tree) インデックスを使用してエンジン内部で直接インデックス付けされ処理されます。</p>
-<p><strong>R-Treeは</strong> <strong>最小境界矩形(MBR)を使って</strong>近くのオブジェクトをグループ化します。クエリ中、エンジンはクエリジオメトリと重ならない大きな領域をスキップし、小さな候補セットに対してのみ詳細なチェックを実行します。これは、すべてのオブジェクトをスキャンするよりもはるかに高速です。</p>
-<h3 id="How-Milvus-Builds-the-R-Tree" class="common-anchor-header">MilvusのRツリー構築方法</h3><p>R-Treeの構築は階層的に行われます：</p>
+    </button></h2><p>GEOMETRY support is built into the Milvus query engine, not just exposed as an API feature. ISpatial data is indexed and processed directly inside the engine using the R-Tree (Rectangle Tree) index.</p>
+<p>An <strong>R-Tree</strong> groups nearby objects using <strong>minimum bounding rectangles (MBRs)</strong>. During a query, the engine skips large regions that do not overlap with the query geometry and only runs detailed checks on a small set of candidates. This is much faster than scanning every object.</p>
+<h3 id="How-Milvus-Builds-the-R-Tree" class="common-anchor-header">How Milvus Builds the R-Tree</h3><p>R-Tree construction happens in layers:</p>
 <table>
 <thead>
-<tr><th><strong>レベル</strong></th><th><strong>Milvusの機能</strong></th><th><strong>直感的な例え</strong></th></tr>
+<tr><th><strong>Level</strong></th><th><strong>What Milvus Does</strong></th><th><strong>Intuitive Analogy</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>リーフレベル</strong></td><td>各ジオメトリオブジェクト（点、線、多角形）に対して、Milvusは最小外接矩形（MBR）を計算し、リーフノードとして保存します。</td><td>各アイテムを正確にフィットする透明なボックスで包みます。</td></tr>
-<tr><td><strong>中間レベル</strong></td><td>近隣のリーフノードがグループ化され（通常一度に50-100）、それらすべてをカバーするためにより大きな親MBRが作成されます。</td><td>同じ近隣からの荷物を1つの配送箱に入れる。</td></tr>
-<tr><td><strong>ルート・レベル</strong></td><td>このグループ化は、すべてのデータが単一のルートMBRでカバーされるまで、上へ上へと続きます。</td><td>すべての木箱を1台の長距離トラックに積み込む。</td></tr>
+<tr><td><strong>Leaf level</strong></td><td>For each geometry object (point, line, or polygon), Milvus computes its minimum bounding rectangle (MBR) and stores it as a leaf node.</td><td>Wrapping each item in a transparent box that fits it exactly.</td></tr>
+<tr><td><strong>Intermediate levels</strong></td><td>Nearby leaf nodes are grouped together (typically 50–100 at a time), and a larger parent MBR is created to cover all of them.</td><td>Putting packages from the same neighborhood into a single delivery crate.</td></tr>
+<tr><td><strong>Root level</strong></td><td>This grouping continues upward until all data is covered by a single root MBR.</td><td>Loading all crates onto one long-haul truck.</td></tr>
 </tbody>
 </table>
-<p>この構造により、空間クエリの複雑さはフルスキャン<strong>O(n)</strong>から<strong>O(log n)</strong>に低下します。実際には、数百万レコードのクエリを、精度を落とすことなく、数百ミリ秒から数ミリ秒に短縮することができます。</p>
-<h3 id="How-Queries-are-Executed-Two-Phase-Filtering" class="common-anchor-header">クエリの実行方法二相フィルタリング</h3><p>スピードと正確さのバランスをとるため、Milvusは<strong>2段階のフィルタリング</strong>戦略を採用している：</p>
+<p>With this structure in place, spatial query complexity drops from a full scan <strong>O(n)</strong> to <strong>O(log n)</strong>. In practice, queries over millions of records can go from hundreds of milliseconds down to just a few milliseconds, without losing accuracy.</p>
+<h3 id="How-Queries-are-Executed-Two-Phase-Filtering" class="common-anchor-header">How Queries are Executed: Two-Phase Filtering</h3><p>To balance speed and correctness, Milvus uses a <strong>two-phase filtering</strong> strategy:</p>
 <ul>
-<li><strong>ラフフィルター：</strong>R-Treeインデックスはまず、クエリの境界矩形がインデックス内の他の境界矩形と重なるかどうかをチェックします。これにより、ほとんどの無関係なデータが素早く取り除かれ、候補の小さなセットだけが保持される。これらの矩形は単純な形状であるため、チェックは非常に高速ですが、実際には一致しない結果も含まれる可能性があります。</li>
-<li><strong>ファインフィルタ</strong>：残りの候補は、PostGISのようなシステムで使用されているジオメトリライブラリである<strong>GEOSを</strong>使用してチェックされます。GEOSは、形状が交差しているか、ある形状が別の形状を含んでいるかなど、正確なジオメトリ計算を実行し、正しい最終結果を生成します。</li>
+<li><strong>Rough filter:</strong> the R-Tree index first checks whether the query’s bounding rectangle overlaps with other bounding rectangles in the index. This quickly removes most unrelated data and keeps only a small set of candidates. Because these rectangles are simple shapes, the check is very fast, but it can include some results that don’t actually match.</li>
+<li><strong>Fine filter</strong>: the remaining candidates are then checked using <strong>GEOS</strong>, the same geometry library used by systems like PostGIS. GEOS runs exact geometry calculations, such as whether shapes intersect or one contains another, to produce correct final results.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -122,8 +123,8 @@ origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264
     <span></span>
   </span>
 </p>
-<p>Milvusはジオメトリデータを<strong>WKT（Well-Known Text）</strong>フォーマットで受け付けるが、内部的には<strong>WKB（Well-Known Binary</strong>）として保存する<strong>。</strong>WKBはよりコンパクトで、ストレージを削減し、I/Oを改善します。GEOMETRYフィールドはメモリマップド（mmap）ストレージもサポートしているため、大規模な空間データセットがRAMに完全に収まる必要はありません。</p>
-<h2 id="Performance-Improvements-with-R-Tree" class="common-anchor-header">R-Treeによるパフォーマンスの向上<button data-href="#Performance-Improvements-with-R-Tree" class="anchor-icon" translate="no">
+<p>Milvus accepts geometry data in <strong>WKT (Well-Known Text)</strong> format but stores it internally as <strong>WKB (Well-Known Binary).</strong> WKB is more compact, which cuts storage and improves I/O. GEOMETRY fields also support memory-mapped (mmap) storage, so large spatial datasets don’t need to fit entirely in RAM.</p>
+<h2 id="Performance-Improvements-with-R-Tree" class="common-anchor-header">Performance Improvements with R-Tree<button data-href="#Performance-Improvements-with-R-Tree" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -138,17 +139,17 @@ origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Query-Latency-Stays-Flat-as-Data-Grows" class="common-anchor-header">データが増えてもクエリ待ち時間は横ばい。</h3><p>R-Treeインデックスがない場合、クエリにかかる時間はデータサイズに比例し、10倍以上のデータがあれば、クエリにかかる時間はおよそ10倍遅くなります。</p>
-<p>R-Treeを使用すると、クエリ時間は対数的に増加します。数百万レコードのデータセットでは、空間フィルタリングはフルスキャンの数十倍から数百倍速くなります。</p>
-<h3 id="Accuracy-is-Not-Sacrificed-For-Speed" class="common-anchor-header">スピードのために精度を犠牲にしない</h3><p>R-Treeはバウンディングボックスで候補を絞り込み、GEOSは正確なジオメトリー計算で各候補をチェックします。一致するように見えても、実際にはクエリーエリアの外側にあるものは、2回目のパスで削除されます。</p>
-<h3 id="Hybrid-Search-Throughput-Improves" class="common-anchor-header">ハイブリッド検索のスループット向上</h3><p>
+    </button></h2><h3 id="Query-Latency-Stays-Flat-as-Data-Grows" class="common-anchor-header">Query Latency Stays Flat as Data Grows.</h3><p>Without an R-Tree index, query time scales linearly with data size — 10x more data means roughly 10x slower queries.</p>
+<p>With R-Tree, query time grows logarithmically. On datasets with millions of records, spatial filtering can be tens to hundreds of times faster than a full scan.</p>
+<h3 id="Accuracy-is-Not-Sacrificed-For-Speed" class="common-anchor-header">Accuracy is Not Sacrificed For Speed</h3><p>The R-Tree narrows candidates by bounding box, then GEOS checks each one with exact geometry math. Anything that looks like a match but actually falls outside the query area gets removed in the second pass.</p>
+<h3 id="Hybrid-Search-Throughput-Improves" class="common-anchor-header">Hybrid Search Throughput Improves</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog_Hybrid_Spatialand_Vector_Searchwith_Milvus2_6_2_b458b24bf6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>R-Treeは、まずターゲット領域外のレコードを削除する。milvusは次に、残った候補に対してのみベクトル類似度（L2、IP、コサイン）を実行する。候補が少ないということは、検索コストが削減され、1秒あたりのクエリー数（QPS）が向上することを意味します。</p>
-<h2 id="Getting-Started-GEOMETRY-with-the-Python-SDK" class="common-anchor-header">はじめにPython SDKを使用したGEOMETRY<button data-href="#Getting-Started-GEOMETRY-with-the-Python-SDK" class="anchor-icon" translate="no">
+<p>The R-Tree removes records outside the target area first. Milvus then runs vector similarity (L2, IP, or cosine) only on the remaining candidates. Fewer candidates means lower search cost and higher queries per second (QPS).</p>
+<h2 id="Getting-Started-GEOMETRY-with-the-Python-SDK" class="common-anchor-header">Getting Started: GEOMETRY with the Python SDK<button data-href="#Getting-Started-GEOMETRY-with-the-Python-SDK" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -163,7 +164,7 @@ origin: 'https://milvus.io/blog/hybrid-spatial-and-vector-search-with-milvus-264
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Define-the-Collection-and-Create-Indexes" class="common-anchor-header">コレクションの定義とインデックスの作成</h3><p>まず、コレクションスキーマにDataType.GEOMETRYフィールドを定義します。これにより、Milvusは幾何学的データを格納し、クエリできるようになります。</p>
+    </button></h2><h3 id="Define-the-Collection-and-Create-Indexes" class="common-anchor-header">Define the Collection and Create Indexes</h3><p>First, define a DataType.GEOMETRY field in the collection schema. This allows Milvus to store and query geometric data.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType  
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np  
 <span class="hljs-comment"># Connect to Milvus  </span>
@@ -201,7 +202,7 @@ milvus_client.create_collection(
 )  
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection <span class="hljs-subst">{collection_name}</span> created with R-Tree index.&quot;</span>)  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Insert-Data" class="common-anchor-header">データの挿入</h3><p>データを挿入する場合、ジオメトリ値はWKT（Well-Known Text）形式でなければなりません。各レコードにはジオメトリ、ベクトル、その他のフィールドが含まれます。</p>
+<h3 id="Insert-Data" class="common-anchor-header">Insert Data</h3><p>When inserting data, geometry values must be in WKT (Well-Known Text) format. Each record includes the geometry, the vector, and other fields.</p>
 <pre><code translate="no"><span class="hljs-comment"># Mock data: random POIs in a region of Beijing  </span>
 data = []  
 <span class="hljs-comment"># Example WKT: POINT(longitude latitude)  </span>
@@ -221,8 +222,8 @@ geo_points = [
 res = milvus_client.insert(collection_name=collection_name, data=data)  
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Inserted <span class="hljs-subst">{res[<span class="hljs-string">&#x27;insert_count&#x27;</span>]}</span> entities.&quot;</span>)  
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Run-a-Hybrid-Spatial-Vector-Query-Example" class="common-anchor-header">空間とベクトルのハイブリッドクエリの実行（例）</h3><p><strong>シナリオ：</strong>ベクトル空間で最も類似しており、ユーザーの位置など、指定されたポイントから2キロメートル以内に位置する上位3つのPOIを検索します。</p>
-<p>ST_DWITHIN演算子を使用して、距離フィルタを適用します。距離の値は<strong>メートルで</strong>指定します<strong>。</strong></p>
+<h3 id="Run-a-Hybrid-Spatial-Vector-Query-Example" class="common-anchor-header">Run a Hybrid Spatial-Vector Query (Example)</h3><p><strong>Scenario:</strong> find the top 3 POIs that are most similar in vector space and located within 2 kilometers of a given point, such as the user’s location.</p>
+<p>Use the ST_DWITHIN operator to apply the distance filter. The distance value is specified in <strong>meters.</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Load the collection into memory  </span>
 milvus_client.load_collection(collection_name)  
 <span class="hljs-comment"># User location (WKT)  </span>
@@ -243,7 +244,7 @@ search_res = milvus_client.search(
    <span class="hljs-keyword">for</span> hit <span class="hljs-keyword">in</span> hits:  
        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;ID: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;id&#x27;</span>]}</span>, Score: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;distance&#x27;</span>]:<span class="hljs-number">.4</span>f}</span>, Name: <span class="hljs-subst">{hit[<span class="hljs-string">&#x27;entity&#x27;</span>][<span class="hljs-string">&#x27;poi_name&#x27;</span>]}</span>&quot;</span>)  
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Tips-for-Production-Use" class="common-anchor-header">実運用でのヒント<button data-href="#Tips-for-Production-Use" class="anchor-icon" translate="no">
+<h2 id="Tips-for-Production-Use" class="common-anchor-header">Tips for Production Use<button data-href="#Tips-for-Production-Use" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -259,12 +260,12 @@ search_res = milvus_client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><strong>GEOMETRY フィールドには常に R-Tree インデックスを作成してください。</strong>10,000 エンティティを超えるデータセットでは、RTREE インデックスのない空間フィルタはフル スキャンに戻り、パフォーマンスが急激に低下します。</li>
-<li><strong>一貫した座標系を使用する。</strong>すべての位置データは、同じ座標系（例<a href="https://en.wikipedia.org/wiki/World_Geodetic_System">：</a> <a href="https://en.wikipedia.org/wiki/World_Geodetic_System"></a><a href="https://en.wikipedia.org/wiki/World_Geodetic_System"></a> WGS<a href="https://en.wikipedia.org/wiki/World_Geodetic_System">84</a>）を使用する必要があります。座標系が混在していると、距離や封じ込めの計算が破綻します。</li>
-<li><strong>クエリに適した空間演算子を選択する。</strong>ST_DWITHINは「Xメートル以内」の検索に使用します。ジオフェンシングと封じ込めチェックには ST_CONTAINS または ST_WITHIN を使用します。</li>
-<li><strong>NULL ジオメトリ値は自動的に処理されます。</strong>GEOMETRYフィールドがNULL可能な場合（NULLABLE=True）、Milvusは空間クエリ中にNULL値をスキップします。追加のフィルタリングロジックは必要ありません。</li>
+<li><strong>Always create an R-Tree index on GEOMETRY fields.</strong> For datasets above 10,000 entities, spatial filters without an RTREE index fall back to a full scan, and performance drops sharply.</li>
+<li><strong>Use a consistent coordinate system.</strong> All location data must use the same system (e.g., <a href="https://en.wikipedia.org/wiki/World_Geodetic_System"></a><a href="https://en.wikipedia.org/wiki/World_Geodetic_System">WGS 84</a>). Mixing coordinate systems breaks distance and containment calculations.</li>
+<li><strong>Pick the right spatial operator for the query.</strong> ST_DWITHIN for “within X meters” searches. ST_CONTAINS or ST_WITHIN for geofencing and containment checks.</li>
+<li><strong>NULL geometry values are handled automatically.</strong> If the GEOMETRY field is nullable (nullable=True), Milvus skips NULL values during spatial queries. No extra filtering logic needed.</li>
 </ul>
-<h2 id="Deployment-Requirements" class="common-anchor-header">展開要件<button data-href="#Deployment-Requirements" class="anchor-icon" translate="no">
+<h2 id="Deployment-Requirements" class="common-anchor-header">Deployment Requirements<button data-href="#Deployment-Requirements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -279,19 +280,19 @@ search_res = milvus_client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>本番環境でこれらの機能を使用するには、お使いの環境が以下の要件を満たしていることを確認してください。</p>
-<p><strong>1.Milvusのバージョン</strong></p>
-<p><strong>Milvus 2.6.4以降が</strong>必要です。それ以前のバージョンはDataType.GEOMETRYまたは<strong>RTREE</strong>インデックスタイプをサポートしていません。</p>
-<p><strong>2.SDKバージョン</strong></p>
+    </button></h2><p>To use these features in production, make sure your environment meets the following requirements.</p>
+<p><strong>1. Milvus Version</strong></p>
+<p>You must run <strong>Milvus 2.6.4 or later</strong>. Earlier versions do not support DataType.GEOMETRY or the <strong>RTREE</strong> index type.</p>
+<p><strong>2. SDK Versions</strong></p>
 <ul>
-<li><strong>PyMilvus</strong>: 最新バージョンにアップグレードしてください。これは、適切な WKT シリアライズと、RTREE インデッ クスパラメータを渡すために必要です。</li>
-<li><strong>Java / Go / Node SDK</strong>：各SDKのリリースノートを確認し、<strong>2.6.4</strong>proto定義と一致していることを確認してください。</li>
+<li><strong>PyMilvus</strong>: upgrade to the latest version (the <strong>2.6.x</strong> series is recommended). This is required for proper WKT serialization and for passing RTREE index parameters.</li>
+<li><strong>Java / Go / Node SDKs</strong>: check the release notes for each SDK and confirm that they are aligned with the <strong>2.6.4</strong> proto definitions.</li>
 </ul>
-<p><strong>3.組み込みジオメトリライブラリ</strong></p>
-<p>Milvusサーバーには、Boost.GeometryとGEOSが既に組み込まれているため、これらのライブラリを自分でインストールする必要はありません。</p>
-<p><strong>4.メモリ使用量と容量計画</strong></p>
-<p>R-Treeインデックスは余分なメモリを使用します。容量を計画する際には、HNSW や IVF のようなベクトル・インデックスだけでなく、ジオメトリ・インデックスにも予算を割くことを忘れないでください。GEOMETRY フィールドは、メモリマップド（mmap）ストレージをサポートしており、データの一部をディスク上に保持することで、メモリ使用量を削減することができます。</p>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><strong>3. Built-in Geometry Libraries</strong></p>
+<p>The Milvus server already includes Boost.Geometry and GEOS, so you don’t need to install these libraries yourself.</p>
+<p><strong>4. Memory Usage and Capacity Planning</strong></p>
+<p>R-Tree indexes use extra memory. When planning capacity, remember to budget for geometry indexes as well as vector indexes like HNSW or IVF. The GEOMETRY field supports memory-mapped (mmap) storage, which can reduce memory usage by keeping part of the data on disk.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -306,8 +307,8 @@ search_res = milvus_client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ロケーションベースのセマンティック検索は、ベクトル検索にジオフィルターを追加するだけでは不十分です。組み込みの空間データ型、適切なインデックス、位置情報とベクトルを一緒に扱えるクエリーエンジンが必要です。</p>
-<p><strong>Milvus 2.6.4は</strong>ネイティブの<strong>GEOMETRY</strong>フィールドと<strong>R-Tree</strong>インデックスでこれを解決します。空間フィルタリングとベクトル検索は単一のクエリで、単一のデータストアに対して実行されます。R-Treeは高速な空間プルーニングを処理し、GEOSは正確な結果を保証します。</p>
-<p>位置を認識した検索が必要なアプリケーションでは、2つの別々のシステムを実行し、同期させる複雑さがなくなります。</p>
-<p>位置認識、または空間とベクトルのハイブリッド検索に取り組んでいる方は、ぜひその経験をお聞かせください。</p>
-<p><strong>Milvusについてご質問がありますか？</strong> <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slackチャンネルに</a>ご参加いただくか、<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワー（</a>20分）をご予約ください。</p>
+    </button></h2><p>Location-based semantic search needs more than bolting a geo filter onto a vector query. It requires built-in spatial data types, proper indexes, and a query engine that can handle location and vectors together.</p>
+<p><strong>Milvus 2.6.4</strong> solves this with native <strong>GEOMETRY</strong> fields and <strong>R-Tree</strong> indexes. Spatial filtering and vector search run in a single query, against a single data store. The R-Tree handles fast spatial pruning while GEOS ensures exact results.</p>
+<p>For applications that need location-aware retrieval, this removes the complexity of running and syncing two separate systems.</p>
+<p>If you’re working on location-aware or hybrid spatial and vector search, we’d love to hear your experience.</p>
+<p><strong>Have questions about Milvus?</strong> Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session.</p>
