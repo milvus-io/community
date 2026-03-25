@@ -5,7 +5,7 @@ title: >-
   delle query e il recupero ibrido
 author: Min Yin
 date: 2026-3-25
-cover: assets.zilliz.com/cover_new_565494b6a6.jpg
+cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -93,7 +93,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 <tr><th>Tipo di query</th><th>Esempio</th><th>Azione</th></tr>
 </thead>
 <tbody>
-<tr><td>Senso comune/conoscenza generale</td><td>"Che cos'è 2 + 2?"</td><td>Rispondere direttamente con il recupero di LLM-skip</td></tr>
+<tr><td>Senso comune/conoscenza generale</td><td>"Che cos'è 2 + 2?"</td><td>Rispondere direttamente con il recupero LLM-skip</td></tr>
 <tr><td>Domanda di base di conoscenza</td><td>"Quali sono le specifiche del Modello X?".</td><td>Invio alla pipeline di reperimento</td></tr>
 <tr><td>Informazioni in tempo reale</td><td>"Il tempo a Parigi questo fine settimana"</td><td>Chiamare un'API esterna</td></tr>
 </tbody>
@@ -139,7 +139,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
     </button></h2><p>In pratica, la selezione della strategia di recupero (nodo 3) è il punto in cui la maggior parte dei team si blocca. Nessun metodo di recupero copre tutti i tipi di documenti aziendali.</p>
 <p>Alcuni sostengono che la ricerca per parole chiave sia sufficiente, dopotutto la ricerca del codice basata su grep di Claude Code funziona bene. Ma il codice è altamente strutturato, con convenzioni di denominazione coerenti. I documenti aziendali sono una storia diversa.</p>
 <h3 id="Enterprise-Documents-Are-Messy" class="common-anchor-header">I documenti aziendali sono disordinati</h3><p><strong>Sinonimi e frasi varie.</strong> "Ottimizzare l'uso della memoria" e "ridurre l'impronta di memoria" hanno lo stesso significato, ma utilizzano parole diverse. La ricerca per parole chiave corrisponde a una e non all'altra. In ambienti multilingue - il cinese con la segmentazione delle parole, il giapponese con le scritture miste, il tedesco con le parole composte - il problema si moltiplica.</p>
-<p><strong>La struttura visiva è importante.</strong> I disegni tecnici dipendono dal layout. I rapporti finanziari dipendono dalle tabelle. Le immagini mediche dipendono dalle relazioni spaziali. L'OCR estrae il testo ma perde la struttura. Il recupero del solo testo non può gestire questi documenti in modo affidabile.</p>
+<p><strong>La struttura visiva è importante.</strong> I disegni tecnici dipendono dal layout. I rapporti finanziari dipendono dalle tabelle. Le immagini mediche dipendono dalle relazioni spaziali. L'OCR estrae il testo ma perde la struttura. Il recupero del solo testo non è in grado di gestire questi documenti in modo affidabile.</p>
 <h3 id="How-to-Implement-Hybrid-Retrieval" class="common-anchor-header">Come implementare il recupero ibrido</h3><p>Il recupero ibrido combina più metodi di ricerca - tipicamente <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">BM25 per la corrispondenza delle parole chiave e vettori densi per la ricerca semantica - per</a>coprire ciò che nessuno dei due metodi gestisce da solo.</p>
 <p>
   <span class="img-wrapper">
@@ -147,7 +147,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
     <span></span>
   </span>
 </p>
-<p>L'approccio tradizionale prevede due sistemi separati: uno per il BM25 e uno per la ricerca vettoriale. Ogni query viene eseguita su entrambi e i risultati vengono poi uniti. Funziona, ma comporta dei costi aggiuntivi:</p>
+<p>L'approccio tradizionale prevede due sistemi separati: uno per il BM25 e uno per la ricerca vettoriale. Ogni query viene eseguita su entrambi e i risultati vengono poi uniti. Funziona, ma comporta un notevole sovraccarico di lavoro:</p>
 <table>
 <thead>
 <tr><th></th><th>Tradizionale (sistemi separati)</th><th>Unificato (raccolta unica)</th></tr>

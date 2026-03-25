@@ -3,7 +3,7 @@ id: build-smarter-rag-routing-hybrid-retrieval.md
 title: 超越 Naive RAG：利用查詢路由和混合檢索建立更聰明的系統
 author: Min Yin
 date: 2026-3-25
-cover: assets.zilliz.com/cover_new_565494b6a6.jpg
+cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
 tag: Engineering
 recommend: false
 publishToMedium: true

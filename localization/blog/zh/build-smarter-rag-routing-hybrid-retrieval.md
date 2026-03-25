@@ -3,7 +3,7 @@ id: build-smarter-rag-routing-hybrid-retrieval.md
 title: 超越 Naive RAG：利用查询路由和混合检索构建更智能的系统
 author: Min Yin
 date: 2026-3-25
-cover: assets.zilliz.com/cover_new_565494b6a6.jpg
+cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -135,7 +135,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 <p>有些人认为关键词搜索就足够了，毕竟 Claude Code 基于 grep 的代码搜索效果很好。但代码是高度结构化的，具有一致的命名约定。企业文档则不同。</p>
 <h3 id="Enterprise-Documents-Are-Messy" class="common-anchor-header">企业文档杂乱无章</h3><p><strong>同义词和不同的措辞。</strong>"优化内存使用 "和 "减少内存占用 "意思相同，但用词不同。关键字搜索匹配了其中一个，却忽略了另一个。在多语言环境中--有分词的中文、有混合脚本的日文、有复合词的德文--问题会成倍增加。</p>
 <p><strong>视觉结构很重要。</strong>工程图纸依赖于布局。财务报告依赖表格。医学图像取决于空间关系。OCR 可以提取文本，但会丢失结构。纯文本检索无法可靠地处理这些文档。</p>
-<h3 id="How-to-Implement-Hybrid-Retrieval" class="common-anchor-header">如何实现混合检索</h3><p>混合检索结合了多种检索方法--通常是<a href="https://zilliz.com/learn/sparse-and-dense-embeddings">用于关键词匹配的 BM25 和用于语义检索的密集向量--以</a>涵盖两种方法都无法单独处理的内容。</p>
+<h3 id="How-to-Implement-Hybrid-Retrieval" class="common-anchor-header">如何实现混合检索</h3><p>混合检索结合了多种检索方法--通常是<a href="https://zilliz.com/learn/sparse-and-dense-embeddings">用于关键字匹配的 BM25 和用于语义检索的密集向量，以</a>涵盖两种方法都无法单独处理的内容。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/build_smarter_rag_routing_hybrid_retrieval_2_7f305f024e.png" alt="" class="doc-image" id="" />
@@ -221,7 +221,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 <p><strong>问：现在模型支持 128K+ 上下文窗口，RAG 还有必要吗？</strong></p>
 <p>有必要。当您需要处理单个大型文档时，长上下文窗口会有所帮助，但它们不能取代知识库查询检索。每次请求都发送整个语料库会使成本呈线性上升，而且模型在长上下文中会失去对相关信息的关注--这个问题已被充分证明，被称为 "迷失在中间 "效应（Liu et al.）RAG 只检索相关信息，从而保持成本和延迟的可预测性。</p>
 <p><strong>问：如何在不运行两个独立系统的情况下将 BM25 和向量搜索结合起来？</strong></p>
-<p>使用在同一个 Collections 中同时支持密集向量和稀疏向量的向量数据库。Milvus 2.6 可在每个文档中存储两种向量类型，并从单个查询中返回融合结果。你可以通过改变权重参数来调整关键词和语义匹配之间的平衡--无需单独的索引，无需合并结果，也无需头疼同步问题。</p>
+<p>使用在同一个 Collections 中同时支持密集向量和稀疏向量的向量数据库。Milvus 2.6 可在每个文档中存储两种向量类型，并从单个查询中返回融合结果。你可以通过改变权重参数来调整关键字和语义匹配之间的平衡--无需单独的索引，无需合并结果，也无需头疼同步问题。</p>
 <p><strong>问：要改进现有的 RAG 管道，首先应该添加什么？</strong></p>
 <p>查询路由。这是影响最大、成本最低的改进措施。在大多数生产系统中，有相当一部分查询根本不需要检索--常识性问题、简单计算、常识。将这些查询直接路由到 LLM 可以减少不必要的检索调用，并立即缩短响应时间。</p>
 <p><strong>问：如何找出 RAG 管道的哪个阶段造成了不良结果？</strong></p>

@@ -5,7 +5,7 @@ title: >-
   routage des requêtes et la recherche hybride
 author: Min Yin
 date: 2026-3-25
-cover: assets.zilliz.com/cover_new_565494b6a6.jpg
+cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -21,7 +21,7 @@ desc: >-
   meilleures réponses à moindre coût.
 origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 ---
-<p>Votre pipeline <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> récupère des documents pour chaque requête, qu'elle soit nécessaire ou non. Il effectue la même recherche de similarité sur le code, le langage naturel et les rapports financiers. Et lorsque les résultats sont mauvais, vous n'avez aucun moyen de savoir quelle étape est tombée en panne.</p>
+<p>Votre pipeline <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> récupère des documents pour chaque requête, qu'elle soit nécessaire ou non. Il exécute la même recherche de similarité sur le code, le langage naturel et les rapports financiers. Et lorsque les résultats sont mauvais, vous n'avez aucun moyen de savoir quelle étape est tombée en panne.</p>
 <p>Ce sont les symptômes d'un système RAG naïf - un pipeline fixe qui traite toutes les requêtes de la même manière. Les systèmes RAG modernes fonctionnent différemment. Ils acheminent les requêtes vers le bon gestionnaire, combinent plusieurs méthodes de recherche et évaluent chaque étape de manière indépendante.</p>
 <p>Cet article présente une architecture à quatre nœuds pour construire des systèmes RAG plus intelligents, explique comment mettre en œuvre la <a href="https://zilliz.com/learn/hybrid-search-a-practical-guide">récupération hybride</a> sans maintenir d'index séparés et montre comment évaluer chaque étape du pipeline afin de déboguer les problèmes plus rapidement.</p>
 <h2 id="Why-Long-Context-Doesnt-Replace-RAG" class="common-anchor-header">Pourquoi le contexte long ne remplace pas le RAG<button data-href="#Why-Long-Context-Doesnt-Replace-RAG" class="anchor-icon" translate="no">
@@ -226,7 +226,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 <p><strong>Q : RAG est-il toujours nécessaire maintenant que les modèles prennent en charge des fenêtres contextuelles de plus de 128 Ko ?</strong></p>
 <p>Oui. Les longues fenêtres contextuelles sont utiles lorsque vous devez traiter un seul document volumineux, mais elles ne remplacent pas la recherche pour les requêtes de la base de connaissances. L'envoi de l'ensemble du corpus à chaque requête fait augmenter les coûts de façon linéaire, et les modèles perdent de vue les informations pertinentes dans les longs contextes - un problème bien documenté connu sous le nom d'effet "lost in the middle" (Liu et al., 2023). RAG ne récupère que ce qui est pertinent, ce qui rend les coûts et la latence prévisibles.</p>
 <p><strong>Q : Comment combiner BM25 et la recherche vectorielle sans utiliser deux systèmes distincts ?</strong></p>
-<p>Utilisez une base de données vectorielle qui prend en charge les vecteurs denses et épars dans la même collection. Milvus 2.6 stocke les deux types de vecteurs par document et renvoie des résultats fusionnés à partir d'une seule requête. Vous réglez l'équilibre entre la correspondance par mot-clé et la correspondance sémantique en modifiant un paramètre de pondération - pas d'index séparés, pas de fusion des résultats, pas de problèmes de synchronisation.</p>
+<p>Utilisez une base de données vectorielle qui prend en charge les vecteurs denses et épars dans la même collection. Milvus 2.6 stocke les deux types de vecteurs par document et renvoie des résultats fusionnés à partir d'une seule requête. Vous réglez l'équilibre entre la correspondance par mot-clé et la correspondance sémantique en modifiant un paramètre de poids - pas d'index séparés, pas de fusion des résultats, pas de problèmes de synchronisation.</p>
 <p><strong>Q : Quelle est la première chose que je devrais ajouter pour améliorer mon pipeline RAG existant ?</strong></p>
 <p>Le routage des requêtes. C'est l'amélioration qui a le plus d'impact et qui demande le moins d'efforts. La plupart des systèmes de production voient une part importante de requêtes qui n'ont pas du tout besoin d'être récupérées - des questions de bon sens, des calculs simples, des connaissances générales. L'acheminement de ces requêtes directement vers le LLM réduit les appels de recherche inutiles et améliore immédiatement le temps de réponse.</p>
 <p><strong>Q : Comment puis-je déterminer quelle étape de mon pipeline RAG est à l'origine des mauvais résultats ?</strong></p>

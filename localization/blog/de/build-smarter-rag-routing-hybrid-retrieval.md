@@ -5,7 +5,7 @@ title: >-
   Hybrid Retrieval
 author: Min Yin
 date: 2026-3-25
-cover: assets.zilliz.com/cover_new_565494b6a6.jpg
+cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -160,7 +160,7 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 <tr><td>Operative Komplexität</td><td>Hoch</td><td>Niedrig</td></tr>
 </tbody>
 </table>
-<p><a href="https://milvus.io/">Milvus</a> 2.6 unterstützt sowohl dichte Vektoren (für die semantische Suche) als auch spärliche Vektoren (für die BM25-ähnliche Stichwortsuche) in derselben Sammlung. Ein einziger API-Aufruf liefert fusionierte Ergebnisse, wobei das Abrufverhalten durch Änderung der Gewichtung zwischen den Vektortypen angepasst werden kann. Keine separaten Indizes, keine Synchronisationsprobleme, keine Latenz bei der Zusammenführung.</p>
+<p><a href="https://milvus.io/">Milvus</a> 2.6 unterstützt sowohl dichte Vektoren (für die semantische Suche) als auch spärliche Vektoren (für die BM25-ähnliche Stichwortsuche) in derselben Sammlung. Ein einziger API-Aufruf liefert fusionierte Ergebnisse, wobei das Abrufverhalten durch Änderung der Gewichtung zwischen den Vektortypen angepasst werden kann. Keine separaten Indizes, keine Synchronisationsprobleme, keine Latenz beim Zusammenführen.</p>
 <h2 id="How-to-Evaluate-a-RAG-Pipeline-Stage-by-Stage" class="common-anchor-header">Wie man eine RAG-Pipeline Stufe für Stufe auswertet<button data-href="#How-to-Evaluate-a-RAG-Pipeline-Stage-by-Stage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -228,6 +228,6 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 <p><strong>F: Wie kombiniere ich BM25 und Vektorsuche, ohne zwei getrennte Systeme zu betreiben?</strong></p>
 <p>Verwenden Sie eine Vektordatenbank, die sowohl dichte als auch spärliche Vektoren in derselben Sammlung unterstützt. Milvus 2.6 speichert beide Vektortypen pro Dokument und liefert fusionierte Ergebnisse aus einer einzigen Abfrage. Sie können das Gleichgewicht zwischen Schlüsselwort- und semantischem Abgleich durch Ändern eines Gewichtungsparameters einstellen - keine separaten Indizes, kein Zusammenführen von Ergebnissen, keine Synchronisationsprobleme.</p>
 <p><strong>F: Was sollte ich als erstes hinzufügen, um meine bestehende RAG-Pipeline zu verbessern?</strong></p>
-<p>Abfrage-Routing. Das ist die Verbesserung mit der größten Auswirkung und dem geringsten Aufwand. In den meisten Produktionssystemen gibt es einen erheblichen Anteil an Abfragen, die überhaupt nicht abgerufen werden müssen - Fragen des gesunden Menschenverstands, einfache Berechnungen, allgemeines Wissen. Wenn diese direkt an den LLM weitergeleitet werden, werden unnötige Abrufe vermieden und die Antwortzeit sofort verbessert.</p>
+<p>Abfrage-Routing. Das ist die Verbesserung mit der größten Auswirkung und dem geringsten Aufwand. In den meisten Produktionssystemen gibt es einen beträchtlichen Anteil an Abfragen, die überhaupt nicht abgerufen werden müssen - Fragen des gesunden Menschenverstands, einfache Berechnungen, allgemeines Wissen. Wenn diese direkt an den LLM weitergeleitet werden, werden unnötige Abrufe vermieden und die Antwortzeit sofort verbessert.</p>
 <p><strong>F: Wie kann ich herausfinden, welche Phase meiner RAG-Pipeline schlechte Ergebnisse verursacht?</strong></p>
 <p>Bewerten Sie jede Stufe unabhängig. Verwenden Sie den F1-Wert für die Routing-Genauigkeit, Recall@K und NDCG@10 für die Abrufqualität, Precision@3 für das Reranking und die Treuemetriken für die Generierung. Legen Sie Basiswerte aus Offline-Testdaten fest und überwachen Sie jede Phase in der Produktion. Wenn die Qualität der Antworten abnimmt, können Sie die Ursache für den Rückgang auf die jeweilige Stufe zurückführen, anstatt zu raten.</p>
