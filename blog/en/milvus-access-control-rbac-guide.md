@@ -2,7 +2,7 @@
 id: milvus-access-control-rbac-guide.md
 title: >
  Milvus Access Control Guide: How to Configure RBAC for Production
-author: default, Milvus runs with authentication disabled — every connection has full access. The first step is turning it on.
+author: Jack Li and Juan Xu
 date: 2026-3-26
 cover: assets.zilliz.com/cover_access_control_2_3e211dd48b.png
 tag: Tutorials
