@@ -1,7 +1,6 @@
 ---
 id: geo-content-pipeline-openclaw-milvus.md
-title: |
-  GEO Content at Scale: How to Rank in AI Search Without Poisoning Your Brand
+title: GEOコンテンツをスケールで：AI検索でブランドに毒されずにランクインする方法
 author: 'Dean Luo, Lumina Wang'
 date: 2026-3-24
 cover: assets.zilliz.com/1774360780756_980bb85342.jpg
@@ -14,32 +13,31 @@ meta_keywords: >-
   content at scale, SEO to GEO
 meta_title: |
   GEO at Scale: Rank in AI Search Without AI Content Spam
-desc: >
-  Your organic traffic is declining as AI answers replace clicks. Learn how to
-  generate GEO content at scale without the hallucinations and brand damage.
+desc: >-
+  AI回答がクリックに取って代わるにつれ、オーガニックトラフィックが減少しています。幻覚を見たりブランドを傷つけたりすることなく、GEOコンテンツを大規模に生成する方法を学びましょう。
 origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
 ---
-<p>Your organic search traffic is declining, and it’s not because your SEO got worse. Roughly 70% of Google queries now end in zero clicks <a href="https://sparktoro.com/blog/in-2024-half-of-google-searches-end-without-a-click-to-another-web-property/">according to SparkToro</a> — users get their answers from AI-generated summaries instead of clicking through to your page. Perplexity, ChatGPT Search, Google AI Overview — these aren’t future threats. They’re already eating your traffic.</p>
-<p><strong>Generative Engine Optimization (GEO)</strong> is how you fight back. Where traditional SEO optimizes for ranking algorithms (keywords, backlinks, page speed), GEO optimizes for AI models that compose answers by pulling from multiple sources. The goal: structure your content so that AI search engines cite <em>your brand</em> in their responses.</p>
-<p>The problem is that GEO requires content at a scale most marketing teams can’t produce manually. AI models don’t rely on a single source — they synthesize across dozens. To show up consistently, you need coverage across hundreds of long-tail queries, each targeting a specific question a user might ask an AI assistant.</p>
-<p>The obvious shortcut — having an LLM batch-generate articles — creates a worse problem. Ask GPT-4 to produce 50 articles and you’ll get 50 articles full of fabricated statistics, recycled phrasing, and claims your brand never made. That’s not GEO. That’s <strong>AI content spam with your brand name on it</strong>.</p>
-<p>The fix is grounding every generation call in verified source documents — real product specs, approved brand messaging, and actual data that the LLM draws on instead of inventing. This tutorial walks through a production pipeline that does exactly that, built on three components:</p>
+<p>オーガニック検索のトラフィックが減少していますが、それはSEOが悪化したからではありません。<a href="https://sparktoro.com/blog/in-2024-half-of-google-searches-end-without-a-click-to-another-web-property/">SparkToroによると、</a>グーグルクエリのおよそ60％がゼロクリックで終わっている。ユーザーは、あなたのページをクリックする代わりに、AIが生成した要約から答えを得るのだ。Perplexity、ChatGPT Search、Google AI Overview - これらは将来の脅威ではありません。すでにあなたのトラフィックを食っているのだ。</p>
+<p><strong>ジェネレーティブ・エンジン最適化（GEO</strong>）は、あなたがそれに対抗する方法です。従来のSEOがランキングアルゴリズム（キーワード、バックリンク、ページスピード）を最適化するのに対して、GEOは複数のソースから答えを導き出すAIモデルを最適化する。目標は、AI検索エンジンが回答で<em>あなたのブランドを</em>引用するようにコンテンツを構成することだ。</p>
+<p>問題は、GEOはほとんどのマーケティングチームが手作業で作成できない規模のコンテンツを必要とすることだ。AIモデルは単一のソースに依存するのではなく、何十ものソースを総合的に判断する。一貫して表示されるためには、数百のロングテールクエリをカバーする必要があり、それぞれがユーザーがAIアシスタントに尋ねる可能性のある特定の質問をターゲットにしている。</p>
+<p>LLMに記事をバッチ生成させるという明らかな近道は、より悪い問題を引き起こす。GPT-4に50記事の作成を依頼すれば、捏造された統計、再利用された言い回し、あなたのブランドが行ったことのない主張でいっぱいの50記事が出来上がるだろう。それはGEOではない。それは、<strong>あなたのブランド名を冠したAIコンテンツスパム</strong>だ。</p>
+<p>この問題を解決するには、すべてのジェネレーションコールを検証済みのソース文書、つまり本物の製品仕様書、承認されたブランドメッセージ、そしてLLMが捏造する代わりに利用する実際のデータに基づかせることです。このチュートリアルでは、3つのコンポーネントに基づいて構築された、まさにそれを実行するプロダクションパイプラインについて説明します：</p>
 <ul>
-<li><strong><a href="https://github.com/nicepkg/openclaw">OpenClaw</a></strong> — an open-source AI agent framework that orchestrates the workflow and connects to messaging platforms like Telegram, WhatsApp, and Slack</li>
-<li><strong><a href="https://milvus.io/intro">Milvus</a></strong> — a <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> that handles knowledge storage, semantic deduplication, and RAG retrieval</li>
-<li><strong>LLMs (GPT-4o, Claude, Gemini)</strong> — the generation and evaluation engines</li>
+<li><strong><a href="https://github.com/nicepkg/openclaw">OpenClaw</a></strong>- ワークフローをオーケストレーションし、Telegram、WhatsApp、Slackのようなメッセージングプラットフォームに接続するオープンソースのAIエージェントフレームワーク。</li>
+<li><strong><a href="https://milvus.io/intro">Milvus</a></strong>- 知識の保存、セマンティック重複排除、RAG検索を処理する<a href="https://zilliz.com/learn/what-is-vector-database">ベクトルデータベース</a></li>
+<li><strong>LLM（GPT-4o、Claude、Gemini）</strong>- 生成および評価エンジン。</li>
 </ul>
-<p>By the end, you’ll have a working system that ingests brand documents into a Milvus-backed knowledge base, expands seed topics into long-tail queries, deduplicates them semantically, and batch-generates articles with built-in quality scoring.</p>
+<p>最終的には、ブランド文書をMilvusの知識ベースに取り込み、シードトピックをロングテールクエリに展開し、それらを意味的に重複排除し、品質スコアリングを組み込んだ記事をバッチ生成する実用的なシステムを手に入れることができる。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_4_8ef2bfd688.png" alt="GEO strategy overview — four pillars: Semantic analysis, Content structuring, Brand authority, and Performance tracking" class="doc-image" id="geo-strategy-overview-—-four-pillars:-semantic-analysis,-content-structuring,-brand-authority,-and-performance-tracking" />
-    <span>GEO strategy overview — four pillars: Semantic analysis, Content structuring, Brand authority, and Performance tracking</span>
+    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_4_8ef2bfd688.png" alt="" class="doc-image" id="" />
+    <span></span>
   </span>
 </p>
 <blockquote>
-<p><strong>Note:</strong> This is a working system built for a real marketing workflow, but the code is a starting point. You’ll want to adapt the prompts, scoring thresholds, and knowledge base structure to your own use case.</p>
+<p><strong>注：</strong>これは実際のマーケティングワークフローのために構築された実用的なシステムですが、コードは出発点です。プロンプト、スコアリングのしきい値、およびナレッジベースの構造を、あなた自身のユースケースに適応させたいでしょう。</p>
 </blockquote>
-<h2 id="How-the-Pipeline-Solves-Volume-×-Quality" class="common-anchor-header">How the Pipeline Solves Volume × Quality<button data-href="#How-the-Pipeline-Solves-Volume-×-Quality" class="anchor-icon" translate="no">
+<h2 id="How-the-Pipeline-Solves-Volume-×-Quality" class="common-anchor-header">パイプラインがボリューム×クオリティを解決する方法<button data-href="#How-the-Pipeline-Solves-Volume-×-Quality" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,34 +54,34 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>Component</th><th>Role</th></tr>
+<tr><th>コンポーネント</th><th>役割</th></tr>
 </thead>
 <tbody>
-<tr><td>OpenClaw</td><td>Agent orchestration, messaging integration (Lark, Telegram, WhatsApp)</td></tr>
-<tr><td>Milvus</td><td>Knowledge storage, semantic deduplication, RAG retrieval</td></tr>
-<tr><td>LLMs (GPT-4o, Claude, Gemini)</td><td>Query expansion, article generation, quality scoring</td></tr>
-<tr><td>Embedding model</td><td>Text to vectors for Milvus (OpenAI, 1536 dimensions by default)</td></tr>
+<tr><td>OpenClaw</td><td>エージェントオーケストレーション、メッセージング統合（Lark、Telegram、WhatsApp）</td></tr>
+<tr><td>Milvus</td><td>知識ストレージ、セマンティック重複排除、RAG検索</td></tr>
+<tr><td>LLM (GPT-4o, Claude, Gemini)</td><td>クエリ展開、記事生成、品質スコアリング</td></tr>
+<tr><td>埋め込みモデル</td><td>テキストからMilvusのベクトルへ（OpenAI、デフォルトで1536次元）</td></tr>
 </tbody>
 </table>
-<p>The pipeline runs in two phases. <strong>Phase 0</strong> ingests source material into the knowledge base. <strong>Phase 1</strong> generates articles from it.</p>
+<p>パイプラインは2つのフェーズで実行される。<strong>フェーズ0は</strong>ソースを知識ベースに取り込む。<strong>フェーズ1は</strong>そこから記事を生成する。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_6_e03b129785.png" alt="How the OpenClaw GEO Pipeline works — Phase 0 (Ingest: fetch, chunk, embed, store) and Phase 1 (Generate: expand queries, dedup via Milvus, RAG retrieval, generate articles, score, and store)" class="doc-image" id="how-the-openclaw-geo-pipeline-works-—-phase-0-(ingest:-fetch,-chunk,-embed,-store)-and-phase-1-(generate:-expand-queries,-dedup-via-milvus,-rag-retrieval,-generate-articles,-score,-and-store)" />
-    <span>How the OpenClaw GEO Pipeline works — Phase 0 (Ingest: fetch, chunk, embed, store) and Phase 1 (Generate: expand queries, dedup via Milvus, RAG retrieval, generate articles, score, and store)</span>
+    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_6_e03b129785.png" alt="" class="doc-image" id="" />
+    <span></span>
   </span>
 </p>
-<p>Here’s what happens inside Phase 1:</p>
+<p>フェーズ1の内部では以下のようなことが行われる：</p>
 <ol>
-<li>A user sends a message through Lark, Telegram, or WhatsApp. OpenClaw receives it and routes it to the GEO generation skill.</li>
-<li>The skill expands the user’s topic into long-tail search queries using an LLM — the specific questions real users ask AI search engines.</li>
-<li>Each query is embedded and checked against Milvus for semantic duplicates. Queries too similar to existing content (cosine similarity &gt; 0.85) are dropped.</li>
-<li>Surviving queries trigger RAG retrieval from <strong>two Milvus collections at once</strong>: the knowledge base (brand documents) and the article archive (previously generated content). This dual retrieval keeps output grounded in real source material.</li>
-<li>The LLM generates each article using the retrieved context, then scores it against a GEO quality rubric.</li>
-<li>The finished article writes back to Milvus, enriching the dedup and RAG pools for the next batch.</li>
+<li>ユーザーがLark、Telegram、WhatsAppを通じてメッセージを送信する。OpenClawはそれを受信し、GEO生成スキルにルーティングする。</li>
+<li>このスキルは、ユーザーのトピックをLLM（実際のユーザーがAI検索エンジンに尋ねる具体的な質問）を使ってロングテールの検索クエリに展開する。</li>
+<li>各クエリはmilvusに埋め込まれ、意味的な重複がないかチェックされる。既存のコンテンツと類似しすぎているクエリ（余弦類似度 &gt; 0.85）は削除される。</li>
+<li>生き残ったクエリは、<strong>Milvusの2つのコレクション</strong>（知識ベース（ブランド文書）と記事アーカイブ（以前に生成されたコンテンツ））から同時にRAG検索をトリガーする。この二重検索により、出力は実際のソース資料に基づいたものとなる。</li>
+<li>LLMは、検索されたコンテキストを使用して各記事を生成し、GEOの品質ルーブリックに照らして採点する。</li>
+<li>完成した記事はmilvusに書き戻され、次のバッチのためにdedupとRAGプールを充実させる。</li>
 </ol>
-<p>The GEO skill definition also bakes in optimization rules: lead with a direct answer, use structured formatting, cite sources explicitly, and include original analysis. AI search engines parse content by structure and deprioritize unsourced claims, so each rule maps to a specific retrieval behavior.</p>
-<p>Generation runs in batches. A first round goes to the client for review. Once the direction is confirmed, the pipeline scales to full production.</p>
-<h2 id="Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="common-anchor-header">Why a Knowledge Layer Is the Difference Between GEO and AI Spam<button data-href="#Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="anchor-icon" translate="no">
+<p>GEOスキル定義には、最適化ルールも組み込まれている：直接的な回答でリードする、構造化されたフォーマットを使用する、ソースを明確に引用する、オリジナルの分析を含める。AI検索エンジンは、構造によってコンテンツを解析し、ソースのない主張を優先しないため、各ルールは特定の検索行動に対応する。</p>
+<p>生成はバッチ処理で行われる。最初のラウンドは、レビューのためにクライアントに送られる。方向性が確認されると、パイプラインは本番稼動へとスケールする。</p>
+<h2 id="Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="common-anchor-header">知識層がGEOとAIスパムを分ける理由<button data-href="#Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -98,16 +96,23 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>What separates this pipeline from “just prompting ChatGPT” is the knowledge layer. Without it, LLM output looks polished but says nothing verifiable — and AI search engines are increasingly good at detecting that. <a href="https://zilliz.com/what-is-milvus">Milvus</a>, the vector database powering this pipeline, brings several capabilities that matter here:</p>
-<p><strong>Semantic deduplication catches what keywords miss.</strong> Keyword matching treats “Milvus performance benchmarks” and “How does Milvus compare to other vector databases?” as unrelated queries. <a href="https://zilliz.com/learn/vector-similarity-search">Vector similarity</a> recognizes they’re asking the same question, so the pipeline skips the duplicate instead of wasting a generation call.</p>
-<p><strong>Dual-collection RAG keeps sources and outputs separate.</strong> <code translate="no">geo_knowledge</code> stores ingested brand documents. <code translate="no">geo_articles</code> stores generated content. Every generation query hits both — the knowledge base keeps facts accurate, and the article archive keeps tone consistent across the batch. The two collections are maintained independently, so updating source materials never disrupts existing articles.</p>
-<p><strong>A feedback loop that improves with scale.</strong> Each generated article writes back to Milvus immediately. The next batch has a larger dedup pool and richer RAG context. Quality compounds over time.</p>
-<p><strong>Zero-setup local development.</strong> <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> runs locally with one line of code — no Docker needed. For production, switching to a Milvus cluster or Zilliz Cloud means changing a single URI:</p>
+    </button></h2><p>このパイプラインを "単なるChatGPTのプロンプト "と区別しているのは、ナレッジレイヤーである。知識層がなければ、LLMの出力は洗練されているように見えるが、検証可能なことは何も言っていない。<a href="https://zilliz.com/what-is-milvus">Milvusは</a>、このパイプラインを駆動するベクトルデータベースであり、ここで重要ないくつかの機能をもたらす：</p>
+<p><strong>セマンティック重複排除は、キーワードが見逃すものをキャッチする。</strong>キーワードマッチングは、「Milvusのパフォーマンスベンチマーク」と「Milvusは他のベクトルデータベースと比較してどうなのか」を無関係なクエリとして扱う。<a href="https://zilliz.com/learn/vector-similarity-search">ベクターの類似性は</a>、これらが同じ質問であることを認識し、パイプラインは世代コールを無駄にする代わりに重複をスキップする。</p>
+<p><strong>デュアルコレクションRAGは、ソースとアウトプットを別々に保持する。</strong> <code translate="no">geo_knowledge</code> は、取り込まれたブランド文書を格納する。<code translate="no">geo_articles</code> は、生成されたコンテンツを格納する。知識ベースは事実を正確に保ち、記事アーカイブはバッチ全体で一貫したトーンを保つ。2つのコレクションは独立して管理されているため、ソースを更新しても既存の記事が中断されることはない。</p>
+<p><strong>規模に応じて改善されるフィードバック・ループ。</strong>生成された各記事は即座にMilvusに書き戻される。次のバッチは、より大きなDedupプールと豊富なRAGコンテキストを持つ。品質が時間とともに向上する。</p>
+<p><strong>様々なニーズに対応する複数の導入オプション。</strong></p>
+<ul>
+<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite</strong></a>：Milvusの軽量版で、Dockerは必要なく、1行のコードでラップトップ上で動作します。プロトタイピングに最適で、このチュートリアルで必要なのはこれだけです。</p></li>
+<li><p><a href="https://milvus.io/docs/install_standalone-docker.md"><strong>Milvus</strong></a>StandaloneとMilvus Distributed: よりスケーラブルな本番用バージョンです。</p></li>
+<li><p><a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloudは</strong></a>手間のかからないマネージドMilvusです。技術的なセットアップやメンテナンスについて心配する必要は全くありません。無料版もあります。</p></li>
+</ul>
+<p>このチュートリアルでは、Milvus Liteを使用します。アカウントの作成、<code translate="no">pip install pymilvus</code> を超えるインストールは不要で、すべてがローカルで実行されるため、何かをコミットする前に完全なパイプラインを試すことができます。</p>
+<p>デプロイの違いはURIにあります：</p>
 <pre><code translate="no" class="language-python">MILVUS_URI = <span class="hljs-string">&quot;./geo_milvus.db&quot;</span>           <span class="hljs-comment"># Local dev (Milvus Lite, no Docker needed)</span>
 MILVUS_URI = <span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>  <span class="hljs-comment"># Production (Zilliz Cloud)</span>
 client = MilvusClient(uri=MILVUS_URI)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Step-by-Step-Tutorial" class="common-anchor-header">Step-by-Step Tutorial<button data-href="#Step-by-Step-Tutorial" class="anchor-icon" translate="no">
+<h2 id="Step-by-Step-Tutorial" class="common-anchor-header">ステップバイステップのチュートリアル<button data-href="#Step-by-Step-Tutorial" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -122,7 +127,7 @@ client = MilvusClient(uri=MILVUS_URI)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The entire pipeline is packaged as an OpenClaw Skill — a directory containing a <code translate="no">SKILL.MD</code> instruction file and the code implementation.</p>
+    </button></h2><p>パイプライン全体は、OpenClaw スキル（<code translate="no">SKILL.MD</code> 命令ファイルとコード実装を含むディレクトリ）としてパッケージ化されます。</p>
 <pre><code translate="no">skills/geo-generator/
 ├── SKILL.md                    <span class="hljs-comment"># Skill definition (instructions + metadata)</span>
 ├── index.js                    <span class="hljs-comment"># OpenClaw tool registration, bridges to Python</span>
@@ -139,7 +144,7 @@ client = MilvusClient(uri=MILVUS_URI)
     └── templates/
         └── geo_template.md     <span class="hljs-comment"># GEO article prompt template</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-1-Define-the-OpenClaw-Skill" class="common-anchor-header">Step 1: Define the OpenClaw Skill</h3><p><code translate="no">SKILL.md</code> tells OpenClaw what this skill can do and how to invoke it. It exposes two tools: <code translate="no">geo_ingest</code> for feeding the knowledge base and <code translate="no">geo_generate</code> for batch article generation. It also contains the GEO optimization rules that shape what the LLM produces.</p>
+<h3 id="Step-1-Define-the-OpenClaw-Skill" class="common-anchor-header">ステップ 1: OpenClaw スキルの定義</h3><p><code translate="no">SKILL.md</code> は、OpenClaw にこのスキルで何ができるか、どのように呼び出すかを指示します。知識ベースへのフィードのための<code translate="no">geo_ingest</code> と、アーティクルのバッチ生成のための<code translate="no">geo_generate</code> です。また、LLM が生成する GEO 最適化ルールも含まれています。</p>
 <pre><code translate="no" class="language-markdown">---
 name: geo-generator
 description: Batch generate GEO-optimized articles <span class="hljs-keyword">using</span> Milvus vector database <span class="hljs-keyword">and</span> LLM, <span class="hljs-keyword">with</span> knowledge <span class="hljs-keyword">base</span> ingestion
@@ -209,7 +214,7 @@ For each article, <span class="hljs-keyword">return</span>:
 - Respect the user&#x27;s specified count — <span class="hljs-keyword">do</span> <span class="hljs-keyword">not</span> over-generate
 - All progress updates should include current/total count
 </span><button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Register-Tools-and-Bridge-to-Python" class="common-anchor-header">Step 2: Register Tools and Bridge to Python</h3><p>OpenClaw runs on Node.js, but the GEO pipeline is in Python. <code translate="no">index.js</code> bridges the two — it registers each tool with OpenClaw and delegates execution to the corresponding Python script.</p>
+<h3 id="Step-2-Register-Tools-and-Bridge-to-Python" class="common-anchor-header">ステップ2：ツールの登録とPythonへのブリッジ</h3><p>OpenClawはNode.js上で動作しますが、GEOパイプラインはPythonです。<code translate="no">index.js</code> 、OpenClawに各ツールを登録し、対応するPythonスクリプトに実行を委任します。</p>
 <pre><code translate="no" class="language-javascript">function _runPython(script, <span class="hljs-keyword">args</span>, config) {
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Promise((resolve) =&gt; {
     <span class="hljs-keyword">const</span> child = execFile(<span class="hljs-string">&quot;python3&quot;</span>, [script, ...<span class="hljs-keyword">args</span>], {
@@ -239,7 +244,7 @@ For each article, <span class="hljs-keyword">return</span>:
   ], config);
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Ingest-Source-Material" class="common-anchor-header">Step 3: Ingest Source Material</h3><p>Before generating anything, you need a knowledge base. <code translate="no">ingest.py</code> fetches web pages or reads local documents, chunks the text, embeds it, and writes it to the <code translate="no">geo_knowledge</code> collection in Milvus. This is what keeps generated content grounded in real information rather than LLM hallucinations.</p>
+<h3 id="Step-3-Ingest-Source-Material" class="common-anchor-header">ステップ3：ソースの取り込み</h3><p>何かを生成する前に、ナレッジベースが必要である。<code translate="no">ingest.py</code> 、ウェブページをフェッチするか、ローカルドキュメントを読み込み、テキストをチャンクし、埋め込み、Milvusの<code translate="no">geo_knowledge</code> コレクションに書き込む。これによって、生成されたコンテンツはLLMの幻覚ではなく、実際の情報に基づいたものになる。</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">ingest_sources</span>(<span class="hljs-params">files=<span class="hljs-literal">None</span>, urls=<span class="hljs-literal">None</span></span>):
     llm = get_llm_client()
     milvus = get_milvus_client()
@@ -256,7 +261,7 @@ For each article, <span class="hljs-keyword">return</span>:
         ]
         insert_knowledge(milvus, records)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Expand-Long-Tail-Queries" class="common-anchor-header">Step 4: Expand Long-Tail Queries</h3><p>Given a topic like “Milvus vector database,” the LLM generates a set of specific, realistic search queries — the kind of questions real users type into AI search engines. The prompt covers different intent types: informational, comparison, how-to, problem-solving, and FAQ.</p>
+<h3 id="Step-4-Expand-Long-Tail-Queries" class="common-anchor-header">ステップ4：ロングテールクエリの展開</h3><p>Milvusベクトルデータベース」のようなトピックが与えられると、LLMは具体的で現実的な検索クエリのセットを生成する。このプロンプトは、情報、比較、ハウツー、問題解決、FAQなど、さまざまなインテント・タイプをカバーしている。</p>
 <pre><code translate="no" class="language-python">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;\
 You are an SEO/GEO keyword research expert. Generate long-tail search queries.
 Requirements:
@@ -271,7 +276,7 @@ Requirements:
     queries = [q.strip() <span class="hljs-keyword">for</span> q <span class="hljs-keyword">in</span> result.strip().splitlines() <span class="hljs-keyword">if</span> q.strip()]
     <span class="hljs-keyword">return</span> queries[:count]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Deduplicate-via-Milvus" class="common-anchor-header">Step 5: Deduplicate via Milvus</h3><p>This is where <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> earns its place. Each expanded query is embedded and compared against both the <code translate="no">geo_knowledge</code> and <code translate="no">geo_articles</code> collections. If cosine similarity exceeds 0.85, the query is a semantic duplicate of something already in the system and gets dropped — preventing the pipeline from generating five slightly different articles that all answer the same question.</p>
+<h3 id="Step-5-Deduplicate-via-Milvus" class="common-anchor-header">ステップ5：Milvusによる重複排除</h3><p><a href="https://zilliz.com/learn/vector-similarity-search">ベクトル検索は</a>ここでその地位を獲得する。各拡張クエリは埋め込まれ、<code translate="no">geo_knowledge</code> と<code translate="no">geo_articles</code> コレクションの両方と比較される。コサイン類似度が0.85を超える場合、クエリはすでにシステム内にあるものと意味的に重複しており、削除される。</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">deduplicate_queries</span>(<span class="hljs-params">llm_client, milvus_client, queries</span>):
     embeddings = get_embeddings_batch(llm_client, queries)
     unique = []
@@ -282,7 +287,7 @@ Requirements:
         unique.append((query, emb))
     <span class="hljs-keyword">return</span> unique
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Generate-Articles-with-Dual-Source-RAG" class="common-anchor-header">Step 6: Generate Articles with Dual-Source RAG</h3><p>For each surviving query, the generator retrieves context from both Milvus collections: authoritative source material from <code translate="no">geo_knowledge</code> and previously generated articles from <code translate="no">geo_articles</code>. This dual retrieval keeps content factually grounded (knowledge base) and internally consistent (article history).</p>
+<h3 id="Step-6-Generate-Articles-with-Dual-Source-RAG" class="common-anchor-header">ステップ6：デュアルソースRAGで記事を生成する</h3><p>生存している各クエリに対して、ジェネレーターはMilvusの両方のコレクションからコンテキストを検索する。<code translate="no">geo_knowledge</code> からの権威あるソース資料と、<code translate="no">geo_articles</code> からの以前に生成された記事である。この二重の検索は、コンテンツを事実に基づいて（知識ベース）、内部的に一貫性を保つ（記事履歴）。</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_context</span>(<span class="hljs-params">client, embedding, top_k=<span class="hljs-number">3</span></span>):
     context_parts = []
 
@@ -297,7 +302,7 @@ Requirements:
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n\n&quot;</span>.join(context_parts)
 <button class="copy-code-btn"></button></code></pre>
-<p>The two collections use the same embedding dimension (1536) but store different metadata because they serve different roles: <code translate="no">geo_knowledge</code> tracks where each chunk came from (for source attribution), while <code translate="no">geo_articles</code> stores the original query and GEO score (for dedup matching and quality filtering).</p>
+<p>2つのコレクションは同じエンベッディングディメンション（1536）を使用するが、異なる役割を果たすため、異なるメタデータを格納する。<code translate="no">geo_knowledge</code> は各チャンクがどこから来たかを追跡し（ソース帰属のため）、<code translate="no">geo_articles</code> は元のクエリとGEOスコアを格納する（dedupマッチングと品質フィルタリングのため）。</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_one</span>(<span class="hljs-params">llm_client, milvus_client, query, embedding</span>):
     context = get_context(milvus_client, embedding)  <span class="hljs-comment"># Dual-source RAG</span>
     template = _load_template()                       <span class="hljs-comment"># GEO template</span>
@@ -309,7 +314,7 @@ Requirements:
     insert_article(milvus_client, article)  <span class="hljs-comment"># Write back for future dedup &amp; RAG</span>
     <span class="hljs-keyword">return</span> article
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="The-Milvus-Data-Model" class="common-anchor-header">The Milvus Data Model</h3><p>Here’s what each collection looks like if you’re creating them from scratch:</p>
+<h3 id="The-Milvus-Data-Model" class="common-anchor-header">Milvusデータモデル</h3><p>各コレクションをゼロから作成する場合、以下のようになります：</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># geo_knowledge — Source material for RAG retrieval</span>
 schema.add_field(<span class="hljs-string">&quot;embedding&quot;</span>, DataType.FLOAT_VECTOR, dim=<span class="hljs-number">1536</span>)
 schema.add_field(<span class="hljs-string">&quot;content&quot;</span>, DataType.VARCHAR, max_length=<span class="hljs-number">65535</span>)
@@ -323,7 +328,7 @@ schema.add_field(<span class="hljs-string">&quot;title&quot;</span>, DataType.VA
 schema.add_field(<span class="hljs-string">&quot;content&quot;</span>, DataType.VARCHAR, max_length=<span class="hljs-number">65535</span>)
 schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataType.INT64)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Running-the-Pipeline" class="common-anchor-header">Running the Pipeline<button data-href="#Running-the-Pipeline" class="anchor-icon" translate="no">
+<h2 id="Running-the-Pipeline" class="common-anchor-header">パイプラインの実行<button data-href="#Running-the-Pipeline" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -338,29 +343,29 @@ schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataTyp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Drop the <code translate="no">skills/geo-generator/</code> directory into your OpenClaw skills folder, or send the zip file to Lark and let OpenClaw install it. You’ll need to configure your <code translate="no">OPENAI_API_KEY</code>.</p>
+    </button></h2><p><code translate="no">skills/geo-generator/</code> ディレクトリを OpenClaw のスキルフォルダにドロップするか、zip ファイルを Lark に送って OpenClaw にインストールさせます。<code translate="no">OPENAI_API_KEY</code> を設定する必要があります。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_3_da7d249862.png" alt="Screenshot showing the OpenClaw skill installation via Lark chat — uploading geo-generator.zip and the bot confirming successful installation with dependency list" class="doc-image" id="screenshot-showing-the-openclaw-skill-installation-via-lark-chat-—-uploading-geo-generator.zip-and-the-bot-confirming-successful-installation-with-dependency-list" />
-    <span>Screenshot showing the OpenClaw skill installation via Lark chat — uploading geo-generator.zip and the bot confirming successful installation with dependency list</span>
+    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_3_da7d249862.png" alt="" class="doc-image" id="" />
+    <span></span>
   </span>
 </p>
-<p>From there, interact with the pipeline through chat messages:</p>
-<p><strong>Example 1:</strong> Ingest source URLs into the knowledge base, then generate articles.</p>
+<p>そこから、チャットメッセージを通してパイプラインとやりとりします：</p>
+<p><strong>例 1:</strong>ソース URL をナレッジベースに取り込み、記事を生成する。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_2_db83ddb4bd.png" alt="Chat screenshot showing the workflow: user ingests 3 Aristotle URLs (245 chunks added), then generates 3 GEO articles with an average score of 81.7/100" class="doc-image" id="chat-screenshot-showing-the-workflow:-user-ingests-3-aristotle-urls-(245-chunks-added),-then-generates-3-geo-articles-with-an-average-score-of-81.7/100" />
-    <span>Chat screenshot showing the workflow: user ingests 3 Aristotle URLs (245 chunks added), then generates 3 GEO articles with an average score of 81.7/100</span>
+    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_2_db83ddb4bd.png" alt="" class="doc-image" id="" />
+    <span></span>
   </span>
 </p>
-<p><strong>Example 2:</strong> Upload a book (Wuthering Heights), then generate 3 GEO articles and export them to a Lark doc.</p>
+<p><strong>例2：</strong>本（Wuthering Heights）をアップロードし、3つのGEO記事を生成し、Larkのドキュメントにエクスポートする。</p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_1_33657096fc.png" alt="Chat screenshot showing book ingestion (941 chunks from Wuthering Heights), then 3 generated articles exported to a Lark doc with an average GEO score of 77.3/100" class="doc-image" id="chat-screenshot-showing-book-ingestion-(941-chunks-from-wuthering-heights),-then-3-generated-articles-exported-to-a-lark-doc-with-an-average-geo-score-of-77.3/100" />
-    <span>Chat screenshot showing book ingestion (941 chunks from Wuthering Heights), then 3 generated articles exported to a Lark doc with an average GEO score of 77.3/100</span>
+    <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_1_33657096fc.png" alt="" class="doc-image" id="" />
+    <span></span>
   </span>
 </p>
-<h2 id="When-GEO-Content-Generation-Backfires" class="common-anchor-header">When GEO Content Generation Backfires<button data-href="#When-GEO-Content-Generation-Backfires" class="anchor-icon" translate="no">
+<h2 id="Taking-This-Pipeline-to-Production" class="common-anchor-header">このパイプラインを実運用に移す<button data-href="#Taking-This-Pipeline-to-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -375,41 +380,68 @@ schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataTyp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GEO content generation only works as well as the knowledge base behind it. A few cases where this approach does more harm than good:</p>
-<p><strong>No authoritative source material.</strong> Without a solid knowledge base, the LLM falls back on training data. The output ends up generic at best, hallucinated at worst. The entire point of the RAG step is to ground generation in verified information — skip that, and you’re just doing prompt engineering with extra steps.</p>
-<p><strong>Promoting something that doesn’t exist.</strong> If the product doesn’t work as described, that’s not GEO — that’s misinformation. The self-scoring step catches some quality issues, but it can’t verify claims the knowledge base doesn’t contradict.</p>
-<p><strong>Your audience is purely human.</strong> GEO optimization (structured headings, direct first-paragraph answers, citation density) is designed for AI discoverability. It can feel formulaic if you’re writing purely for human readers. Know which audience you’re targeting.</p>
-<p><strong>A note on the dedup threshold.</strong> The pipeline drops queries with cosine similarity above 0.85. If too many near-duplicates are getting through, lower it. If the pipeline discards queries that seem genuinely different, raise it. 0.85 is a reasonable starting point, but the right value depends on how narrow your topic is.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
-      <svg translate="no"
-        aria-hidden="true"
-        focusable="false"
-        height="20"
-        version="1.1"
-        viewBox="0 0 16 16"
-        width="16"
-      >
-        <path
-          fill="#0092E4"
-          fill-rule="evenodd"
-          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
-        ></path>
-      </svg>
-    </button></h2><p>GEO is where SEO was ten years ago — early enough that the right infrastructure gives you a real edge. This tutorial builds a pipeline that generates articles AI search engines actually cite, grounded in your brand’s own source material instead of LLM hallucinations. The stack is <a href="https://github.com/nicepkg/openclaw">OpenClaw</a> for orchestration, <a href="https://milvus.io/intro">Milvus</a> for knowledge storage and <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> retrieval, and LLMs for generation and scoring.</p>
-<p>The full source code is available at <a href="https://github.com/nicepkg/openclaw">github.com/nicepkg/openclaw</a>.</p>
-<p>If you’re building a GEO strategy and need the infrastructure to support it:</p>
+    </button></h2><p>このチュートリアルのすべてはMilvus Lite上で実行されます。つまり、ラップトップ上で実行され、ラップトップが終了すると停止します。実際のGEOパイプラインでは、これでは不十分です。会議中に記事を作成したい。来週火曜日に同僚がバッチを実行するときに、ナレッジベースを利用できるようにしたい。</p>
+<p>この時点で、解決策は2つある。</p>
+<p><strong>Milvusをスタンドアロンまたは分散モードでセルフホストする。</strong>エンジニアリングチームは、サーバー（物理的またはAWSのようなクラウドプロバイダーからレンタルした専用コンピューター）にフルバージョンをインストールする。これは非常に高性能で、デプロイメントを完全にコントロールすることができますが、セットアップ、メンテナンス、スケーリングに専門のエンジニアリングチームが必要です。</p>
+<p><a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloudを</strong></a><strong>使う</strong><strong>。</strong>Zilliz Cloudは、同じチームによって構築された、より高度なエンタープライズグレードの機能を備えたフルマネージドMilvusです。</p>
 <ul>
-<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to see how other teams are using vector search for content, dedup, and RAG.</li>
-<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your use case with the team.</li>
-<li>If you’d rather skip infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) has a free tier — one URI change and you’re in production.</li>
+<li><p><strong>運用・保守の手間がかかりません。</strong></p></li>
+<li><p><strong>無料ティアあり。</strong> <a href="https://cloud.zilliz.com/signup">無料ティアには</a>5GBのストレージが含まれ、これは360回分の<em>『ウザーリングハイツ』</em>（360冊の本）のすべてをインジェストするのに十分な容量だ。より大きなワークロードには30日間の無料トライアルもあります。</p></li>
+<li><p><strong>常に新機能の先頭に</strong>Milvusが改良版をリリースすると、Zilliz Cloudは自動的にそれを入手します。</p></li>
+</ul>
+<pre><code translate="no">
+MILVUS_URI = <span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>  <span class="hljs-comment"># That&#x27;s the only change.</span>
+
+client = MilvusClient(uri=MILVUS_URI)
+
+<button class="copy-code-btn"></button></code></pre>
+<p><a href="https://cloud.zilliz.com/signup">Zilliz Cloudにサインアップして</a>、試してみてください。</p>
+<h2 id="When-GEO-Content-Generation-Backfires" class="common-anchor-header">GEOコンテンツ生成が裏目に出る場合<button data-href="#When-GEO-Content-Generation-Backfires" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>GEOコンテンツ生成は、その背後にある知識ベースと同じくらいうまく機能します。このアプローチが良いことよりも悪いことの方が多いケースをいくつかご紹介します：</p>
+<p><strong>権威あるソースがない。</strong>確かな知識ベースがなければ、LLMはトレーニングデータに頼ってしまう。出力はよくても一般的なもの、悪くすれば幻覚に終わる。RAGステップの全ポイントは、検証された情報を基に生成することである。これをスキップすると、余分なステップでプロンプト・エンジニアリングを行っているだけになる。</p>
+<p><strong>存在しないものを宣伝する。</strong>もし製品が説明通りに機能しなければ、それはGEOではなく、誤った情報である。自己採点ステップは、品質上の問題をいくつかキャッチするが、知識ベースが矛盾しない主張を検証することはできない。</p>
+<p><strong>オーディエンスは純粋に人間である。</strong>GEO最適化（構造化された見出し、直接的な第一段落の回答、引用密度）は、AIが発見しやすいように設計されている。純粋に人間の読者のために書いているのであれば、定型的だと感じるかもしれません。どの読者をターゲットにしているのかを知ること。</p>
+<p><strong>dedupのしきい値について。</strong>パイプラインはコサイン類似度が0.85以上のクエリを削除します。重複するクエリが多すぎる場合は、閾値を下げましょう。パイプラインが本当に異なるクエリを破棄する場合は、閾値を上げます。0.85は妥当なスタートポイントですが、適切な値はトピックの狭さによって異なります。</p>
+<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+      <svg translate="no"
+        aria-hidden="true"
+        focusable="false"
+        height="20"
+        version="1.1"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        <path
+          fill="#0092E4"
+          fill-rule="evenodd"
+          d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
+        ></path>
+      </svg>
+    </button></h2><p>GEOは10年前のSEOのようなものであり、適切なインフラが真の優位性を与えるのに十分な時期である。このチュートリアルでは、LLMの幻覚ではなく、あなたのブランド自身のソースに基づいた、AI検索エンジンが実際に引用する記事を生成するパイプラインを構築する。スタックは、オーケストレーションに<a href="https://github.com/nicepkg/openclaw">OpenClaw</a>、ナレッジストレージと<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>検索に<a href="https://milvus.io/intro">milvus</a>、生成とスコアリングにLLMを使用している。</p>
+<p>完全なソースコードは<a href="https://github.com/nicepkg/openclaw">github.com/nicepkg/openclawで</a>入手できる。</p>
+<p>GEO戦略を構築中で、それをサポートするインフラが必要な場合：</p>
+<ul>
+<li><a href="https://slack.milvus.io/">MilvusのSlackコミュニティに</a>参加して、他のチームがどのようにコンテンツ、dedup、RAGのためにベクトル検索を使用しているかをご覧ください。</li>
+<li><a href="https://milvus.io/office-hours">Milvusオフィスアワー（20分）の無料セッションを予約して</a>、あなたのユースケースをチームと検討しましょう。</li>
+<li>インフラストラクチャのセットアップを省きたい場合は、Milvusが管理する<a href="https://cloud.zilliz.com/signup">Zilliz Cloudの</a>無料ティアをご利用ください。</li>
 </ul>
 <hr>
-<p>A few questions that come up when marketing teams start exploring GEO:</p>
-<p><strong>My SEO traffic is dropping. Is GEO the replacement?</strong>
-GEO doesn’t replace SEO — it extends it to a new channel. Traditional SEO still drives traffic from users who click through to pages. GEO targets the growing share of queries where users get answers directly from AI (Perplexity, ChatGPT Search, Google AI Overview) without ever visiting a website. If you’re seeing zero-click rates climb in your analytics, that’s the traffic GEO is designed to recapture — not through clicks, but through brand citations in AI-generated answers.</p>
-<p><strong>How is GEO content different from regular AI-generated content?</strong>
-Most AI-generated content is generic — the LLM draws from training data and produces something that sounds reasonable but isn’t grounded in your brand’s actual facts, claims, or data. GEO content is grounded in a knowledge base of verified source material using RAG (retrieval-augmented generation). The difference shows in the output: specific product details instead of vague generalizations, real numbers instead of fabricated stats, and consistent brand voice across dozens of articles.</p>
-<p><strong>How many articles do I need for GEO to work?</strong>
-There’s no magic number, but the logic is straightforward: AI models synthesize from multiple sources per answer. The more long-tail queries you cover with quality content, the more often your brand shows up. Start with 20-30 articles around your core topic, measure which ones get cited (check your AI mention rate and referral traffic), and scale from there.</p>
-<p><strong>Won’t AI search engines penalize mass-generated content?</strong>
-They will if it’s low-quality. AI search engines are getting better at detecting unsourced claims, recycled phrasing, and content that doesn’t add original value. That’s exactly why this pipeline includes a knowledge base for grounding and a self-scoring step for quality control. The goal isn’t to generate more content — it’s to generate content that’s genuinely useful enough for AI models to cite.</p>
+<p>マーケティングチームがGEOを検討し始めたときに出てくるいくつかの質問：</p>
+<p><strong>SEOのトラフィックが落ちている。GEOは</strong>SEOを置き換えるものではなく、新しいチャネルに拡張するものです。従来のSEOは、依然としてページをクリックしたユーザーからのトラフィックを促進します。GEOは、ユーザーがウェブサイトを訪問することなく、AI（Perplexity、ChatGPT Search、Google AI Overview）から直接回答を得るクエリのシェアを拡大していることをターゲットにしています。アナリティクスでゼロクリック率が上昇しているとしたら、それはGEOがクリックではなく、AIが生成した回答におけるブランドの引用を通じて、トラフィックを取り戻すために設計されたものです。</p>
+<p><strong>ゲオのコンテンツは、通常のAIが生成するコンテンツとどのように違うのでしょうか？</strong>ほとんどのAIが生成するコンテンツは、一般的なものです。LLMは学習データから導き出し、合理的に聞こえるものを生成しますが、ブランドの実際の事実、主張、またはデータに基づいたものではありません。GEOのコンテンツは、RAG（検索補強型生成）を使用して検証されたソースの知識ベースに基づいています。漠然とした一般論ではなく具体的な商品の詳細、捏造された統計ではなく実際の数字、何十もの記事にわたる一貫したブランドボイスなど、その違いはアウトプットに表れます。</p>
+<p><strong>GEOを機能させるために必要な記事の数は？</strong>魔法の数はありませんが、ロジックは単純です：AIモデルは、回答ごとに複数のソースから合成します。質の高いコンテンツでカバーするロングテールクエリが多ければ多いほど、あなたのブランドが表示される頻度も高くなります。コアトピックを中心に20-30記事から始め、どの記事が引用されるかを測定し（AIによる言及率とリファラートラフィックをチェックする）、そこから規模を拡大する。</p>
+<p><strong>AI検索エンジンは、大量に作成されたコンテンツにペナルティを与えないのか？</strong>低品質なものであれば、ペナルティを与えるだろう。AI検索エンジンは、ソースのない主張、リサイクルされたフレーズ、オリジナルの価値を付加しないコンテンツを検出する能力が向上している。だからこそ、このパイプラインには、基礎となる知識ベースと、品質管理のための自己採点ステップが含まれているのだ。目標は、より多くのコンテンツを生成することではなく、AIモデルが引用するのに十分な純粋に有用なコンテンツを生成することなのだ。</p>
