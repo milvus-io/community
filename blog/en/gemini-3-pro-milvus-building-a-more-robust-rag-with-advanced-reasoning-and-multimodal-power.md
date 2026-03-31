@@ -4,8 +4,8 @@ title: >
  Gemini 3 Pro + Milvus: Building a More Robust RAG With Advanced Reasoning and Multimodal Power
 author: Lumina Wang
 date: 2025-11-20
-cover: assets.zilliz.com/gemini3pro_cover_2f88fb0fe6.png
-tag: Tutorial
+cover: assets.zilliz.com/Chat_GPT_Image_Mar_31_2026_06_51_06_PM_1_054060a717.png
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
