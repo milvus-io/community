@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2026-03-25T12:10:19.428Z",
+  "homepage/index.json": "2026-04-09T15:52:06.557Z",
   "blog/en/2019-11-08-data-management.md": "2026-03-25T12:10:40.948Z",
   "blog/en/2019-12-05-Accelerating-Similarity-Search-on-Really-Big-Data-with-Vector-Indexing.md": "2026-03-25T12:10:44.060Z",
   "blog/en/2019-12-18-datafile-cleanup.md": "2026-03-25T12:10:47.366Z",
@@ -275,5 +275,6 @@
   "blog/en/choose-embedding-model-rag-2026.md": "2026-03-26T13:22:53.768Z",
   "blog/en/turboquant-rabitq-vector-database-cost.md": "2026-04-04T16:31:37.530Z",
   "blog/en/is-mcp-dead-cli-and-skills-for-ai-agents.md": "2026-04-04T20:30:57.232Z",
-  "blog/en/claude-code-memory-memsearch.md": "2026-04-05T10:26:30.316Z"
+  "blog/en/claude-code-memory-memsearch.md": "2026-04-05T10:26:30.316Z",
+  "blog/en/harness-engineering-ai-agents.md": "2026-04-09T15:54:25.394Z"
 }

@@ -1,7 +1,12 @@
 {
-  "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
+  "label": "Наше путешествие к 35K+ звездам GitHub: Реальная история создания Milvus с нуля",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
+    {
+      "tag": "SKILL",
+      "label": "Milvus Skill — Operate Milvus from Any AI Coding Agent via Natural Language",
+      "link": "https://github.com/zilliztech/milvus-skill"
+    },
     {
       "tag": "Blog",
       "label": "Our Journey to 35K+ Stars: The Story of Building Milvus from Scratch",
