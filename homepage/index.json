@@ -1,10 +1,10 @@
 {
-  "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
-  "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
+  "label": "Introducing Milvus Skills: Operate Milvus from AI Agents with Natural Language",
+  "link": "https://milvus.io/docs/milvus_for_agents.md",
   "headlines": [
     {
       "tag": "SKILL",
-      "label": "Milvus Skill — Operate Milvus from Any AI Coding Agent via Natural Language",
+      "label": "Milvus Skills — Natural-Language Control for AI Coding Agents",
       "link": "https://github.com/zilliztech/milvus-skill"
     },
     {
