@@ -1,4 +1,10 @@
-{
-  "label": "Introducing Milvus Skills: Operate Milvus from AI Agents with Natural Language",
-  "link": "https://milvus.io/docs/milvus_for_agents.md"
-}
+[
+  {
+    "label": "Introducing Milvus Skills: Operate Milvus from AI Agents with Natural Language",
+    "link": "https://milvus.io/docs/milvus_for_agents.md"
+  },
+  {
+    "label": "Webinar | Make Your AI Search Always-On with Zilliz Global Cluster",
+    "link": "https://zilliz.com/event/going-global-scaling-zilliz-for-high-availability-and-low-latency"
+  }
+]
