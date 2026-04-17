@@ -10,7 +10,7 @@ desc: >-
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
 canonicalUrl: >-
-  https://milvus.io/blog/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md
+  https://milvus.io/blog/what-is-a-vector-database.md
 ---
 <p>Un database vettoriale indicizza e memorizza le incorporazioni vettoriali per un rapido recupero e una ricerca di similarità, con funzionalità come le operazioni CRUD, il filtraggio dei metadati e la scalabilità orizzontale progettata appositamente per le applicazioni di intelligenza artificiale.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

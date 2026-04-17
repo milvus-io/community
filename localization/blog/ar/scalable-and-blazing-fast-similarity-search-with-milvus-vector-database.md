@@ -10,7 +10,7 @@ cover: assets.zilliz.com/69eba74e_4a9a_4c38_a2d9_2cde283e8a1d_e265515238.png
 tag: Engineering
 tags: 'Data science, Database, Tech, Artificial Intelligence, Vector Management'
 canonicalUrl: >-
-  https://milvus.io/blog/scalable_and_blazing_fast_similarity_search_with_milvus_vector_database.md
+  https://milvus.io/blog/scalable-and-blazing-fast-similarity-search-with-milvus-vector-database.md
 ---
 <p>
   
