@@ -15,14 +15,14 @@ meta_keywords: 'Gemini 3 Pro, vibe coding, Milvus, RAG'
 meta_title: |
   Gemini 3 Pro + Milvus: Robust RAG With Advanced Reasoning and Multimodal Power
 desc: >-
-  Conozca las actualizaciones básicas de Gemini 3 Pro, vea su rendimiento en
+  Conozca las actualizaciones básicas de Gemini 3 Pro, vea cómo se comporta en
   pruebas de referencia clave y siga una guía para crear una canalización RAG de
   alto rendimiento con Milvus.
 origin: >-
   https://milvus.io/blog/gemini-3-pro-milvus-building-a-more-robust-rag-with-advanced-reasoning-and-multimodal-power.md
 ---
 <p>Gemini 3 Pro de Google aterrizó con el raro tipo de lanzamiento que realmente cambia las expectativas de los desarrolladores: no sólo bombo y platillo, sino capacidades que amplían materialmente lo que las interfaces de lenguaje natural pueden hacer. Convierte "describe la aplicación que quieres" en un flujo de trabajo ejecutable: enrutamiento dinámico de herramientas, planificación en varios pasos, orquestación de API y generación interactiva de UX, todo ello cosido a la perfección. Este es el modelo que más se ha acercado a hacer que la codificación vibe parezca viable en producción.</p>
-<p>Y las cifras respaldan esta afirmación. Gemini 3 Pro obtiene resultados sobresalientes en casi todas las pruebas de referencia importantes:</p>
+<p>Y las cifras respaldan esta afirmación. Gemini 3 Pro obtiene resultados sobresalientes en casi todas las pruebas principales:</p>
 <ul>
 <li><p><strong>Humanity's Last Exam:</strong> 37,5% sin herramientas, 45,8% con herramientas; el competidor más cercano se sitúa en el 26,5%.</p></li>
 <li><p><strong>MathArena Apex:</strong> 23,4%, mientras que la mayoría de los modelos no superan el 2%.</p></li>

@@ -1,8 +1,8 @@
 ---
 id: build-smarter-rag-routing-hybrid-retrieval.md
-title: >
-  Beyond Naive RAG: Build Smarter Systems with Query Routing and Hybrid
-  Retrieval
+title: >-
+  Au-delà du RAG naïf : construire des systèmes plus intelligents avec le
+  routage des requêtes et la recherche hybride
 author: Min Yin
 date: 2026-3-25
 cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
@@ -15,15 +15,16 @@ meta_keywords: >-
   evaluation
 meta_title: |
   Build Smarter RAG with Routing and Hybrid Retrieval
-desc: >
-  Learn how modern RAG systems use query routing, hybrid retrieval, and
-  stage-by-stage evaluation to deliver better answers at lower cost.
+desc: >-
+  Découvrez comment les systèmes RAG modernes utilisent le routage des requêtes,
+  la recherche hybride et l'évaluation étape par étape pour fournir de
+  meilleures réponses à moindre coût.
 origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
 ---
-<p>Your <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> pipeline retrieves documents for every query, regardless of whether retrieval is needed. It runs the same similarity search on code, natural language, and financial reports. And when results are bad, you have no way to tell which stage broke.</p>
-<p>These are symptoms of naive RAG—a fixed pipeline that treats every query the same way. Modern RAG systems work differently. They route queries to the right handler, combine multiple retrieval methods, and evaluate each stage independently.</p>
-<p>This article walks through a four-node architecture for building smarter RAG systems, explains how to implement <a href="https://zilliz.com/learn/hybrid-search-a-practical-guide">hybrid retrieval</a> without maintaining separate indexes, and shows how to evaluate each pipeline stage so you can debug problems faster.</p>
-<h2 id="Why-Long-Context-Doesnt-Replace-RAG" class="common-anchor-header">Why Long Context Doesn’t Replace RAG<button data-href="#Why-Long-Context-Doesnt-Replace-RAG" class="anchor-icon" translate="no">
+<p>Votre pipeline <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> récupère des documents pour chaque requête, qu'elle soit nécessaire ou non. Il exécute la même recherche de similarité sur le code, le langage naturel et les rapports financiers. Et lorsque les résultats sont mauvais, vous n'avez aucun moyen de savoir quelle étape est tombée en panne.</p>
+<p>Ce sont les symptômes d'un système RAG naïf - un pipeline fixe qui traite toutes les requêtes de la même manière. Les systèmes RAG modernes fonctionnent différemment. Ils acheminent les requêtes vers le bon gestionnaire, combinent plusieurs méthodes de recherche et évaluent chaque étape de manière indépendante.</p>
+<p>Cet article présente une architecture à quatre nœuds pour construire des systèmes RAG plus intelligents, explique comment mettre en œuvre la <a href="https://zilliz.com/learn/hybrid-search-a-practical-guide">récupération hybride</a> sans maintenir d'index séparés et montre comment évaluer chaque étape du pipeline afin de déboguer les problèmes plus rapidement.</p>
+<h2 id="Why-Long-Context-Doesnt-Replace-RAG" class="common-anchor-header">Pourquoi le contexte long ne remplace pas le RAG<button data-href="#Why-Long-Context-Doesnt-Replace-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,11 +39,11 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>“Just put everything in the prompt” is a common suggestion now that models support 128K+ token windows. It doesn’t hold up in production for two reasons.</p>
-<p><strong>Cost scales with your knowledge base, not your query.</strong> Every request sends the full knowledge base through the model. For a 100K-token corpus, that’s 100K input tokens per request—regardless of whether the answer requires one paragraph or ten. Monthly inference costs grow linearly with corpus size.</p>
-<p><strong>Attention degrades with context length.</strong> Models struggle to focus on relevant information buried in long contexts. Research on the “lost in the middle” effect (Liu et al., 2023) shows that models are more likely to miss information placed in the middle of long inputs. Larger context windows haven’t solved this—attention quality hasn’t kept pace with window size.</p>
-<p>RAG avoids both problems by retrieving only the relevant passages before generation. The question isn’t whether RAG is needed—it’s how to build RAG that actually works.</p>
-<h2 id="Whats-Wrong-with-Traditional-RAG" class="common-anchor-header">What’s Wrong with Traditional RAG?<button data-href="#Whats-Wrong-with-Traditional-RAG" class="anchor-icon" translate="no">
+    </button></h2><p>"Mettez tout dans le prompt" est une suggestion courante maintenant que les modèles supportent des fenêtres de jetons de 128K+. Elle ne tient pas la route en production pour deux raisons.</p>
+<p><strong>Le coût évolue en fonction de la base de connaissances, et non de la requête.</strong> Chaque requête envoie la totalité de la base de connaissances à travers le modèle. Pour un corpus de 100 000 jetons, cela représente 100 000 jetons d'entrée par requête, que la réponse nécessite un paragraphe ou dix. Les coûts mensuels d'inférence augmentent linéairement avec la taille du corpus.</p>
+<p><strong>L'attention se dégrade avec la longueur du contexte.</strong> Les modèles peinent à se concentrer sur les informations pertinentes enfouies dans de longs contextes. La recherche sur l'effet "lost in the middle" (Liu et al., 2023) montre que les modèles sont plus susceptibles de manquer des informations placées au milieu de longues entrées. Des fenêtres contextuelles plus grandes n'ont pas résolu ce problème - la qualité de l'attention n'a pas suivi le rythme de la taille de la fenêtre.</p>
+<p>RAG évite ces deux problèmes en ne récupérant que les passages pertinents avant la génération. La question n'est pas de savoir si la RAG est nécessaire, mais comment construire une RAG qui fonctionne réellement.</p>
+<h2 id="Whats-Wrong-with-Traditional-RAG" class="common-anchor-header">Qu'est-ce qui ne va pas avec les RAG traditionnels ?<button data-href="#Whats-Wrong-with-Traditional-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,14 +58,14 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Traditional RAG follows a fixed pipeline: embed the query, run <a href="https://zilliz.com/learn/what-is-vector-search">vector similarity search</a>, take the top-K results, generate an answer. Every query follows the same path.</p>
-<p>This creates two problems:</p>
+    </button></h2><p>Les RAG traditionnels suivent un pipeline fixe : intégrer la requête, exécuter une <a href="https://zilliz.com/learn/what-is-vector-search">recherche vectorielle de similarité</a>, prendre les K premiers résultats, générer une réponse. Chaque requête suit le même chemin.</p>
+<p>Cela crée deux problèmes :</p>
 <ol>
-<li><p><strong>Wasted compute on trivial queries.</strong> “What is 2 + 2?” doesn’t need retrieval, but the system runs it anyway—adding latency and cost for no benefit.</p></li>
-<li><p><strong>Brittle retrieval on complex queries.</strong> Ambiguous phrasing, synonyms, or mixed-language queries often defeat pure vector similarity. When retrieval misses relevant documents, generation quality drops with no fallback.</p></li>
+<li><p><strong>Le gaspillage de calcul sur des requêtes triviales.</strong> La question "Qu'est-ce que 2 + 2 ?" ne nécessite pas de recherche, mais le système l'exécute quand même, ce qui augmente le temps de latence et les coûts sans aucun avantage.</p></li>
+<li><p><strong>Recherche fragile pour les requêtes complexes.</strong> Les formulations ambiguës, les synonymes ou les requêtes en langues mixtes mettent souvent en échec la similarité vectorielle pure. Lorsque la recherche passe à côté de documents pertinents, la qualité de la génération chute sans qu'il y ait de solution de repli.</p></li>
 </ol>
-<p>The fix: add decision-making before retrieval. A modern RAG system decides <em>whether</em> to retrieve, <em>what</em> to search for, and <em>how</em> to search—rather than blindly running the same pipeline every time.</p>
-<h2 id="How-Modern-RAG-Systems-Work-A-Four-Node-Architecture" class="common-anchor-header">How Modern RAG Systems Work: A Four-Node Architecture<button data-href="#How-Modern-RAG-Systems-Work-A-Four-Node-Architecture" class="anchor-icon" translate="no">
+<p>La solution : ajouter la prise de décision avant la recherche. Un système RAG moderne décide <em>s'il</em> faut récupérer des documents, <em>ce qu'</em> il faut rechercher et <em>comment</em> le faire, plutôt que d'exécuter aveuglément le même pipeline à chaque fois.</p>
+<h2 id="How-Modern-RAG-Systems-Work-A-Four-Node-Architecture" class="common-anchor-header">Comment fonctionnent les systèmes RAG modernes : Une architecture à quatre nœuds<button data-href="#How-Modern-RAG-Systems-Work-A-Four-Node-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -85,42 +86,42 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
     <span></span>
   </span>
 </p>
-<p>Instead of a fixed pipeline, a modern RAG system routes each query through four decision nodes. Each node answers one question about how to handle the current query.</p>
-<h3 id="Node-1-Query-Routing--Does-This-Query-Need-Retrieval" class="common-anchor-header">Node 1: Query Routing — Does This Query Need Retrieval?</h3><p>Query routing is the first decision in the pipeline. It classifies the incoming query and sends it down the appropriate path:</p>
+<p>Au lieu d'un pipeline fixe, un système RAG moderne fait passer chaque requête par quatre nœuds de décision. Chaque nœud répond à une question sur la manière de traiter la requête en cours.</p>
+<h3 id="Node-1-Query-Routing--Does-This-Query-Need-Retrieval" class="common-anchor-header">Nœud 1 : Acheminement de la requête - Cette requête doit-elle être récupérée ?</h3><p>L'acheminement de la requête est la première décision dans le pipeline. Il classe la requête entrante et l'envoie sur le chemin approprié :</p>
 <table>
 <thead>
-<tr><th>Query Type</th><th>Example</th><th>Action</th></tr>
+<tr><th>Type de requête</th><th>Exemple d'action</th><th>Action</th></tr>
 </thead>
 <tbody>
-<tr><td>Common-sense / general knowledge</td><td>“What is 2 + 2?”</td><td>Answer directly with the LLM—skip retrieval</td></tr>
-<tr><td>Knowledge-base question</td><td>“What are the specs for Model X?”</td><td>Route to the retrieval pipeline</td></tr>
-<tr><td>Real-time information</td><td>“Weather in Paris this weekend”</td><td>Call an external API</td></tr>
+<tr><td>Sens commun / connaissances générales</td><td>"Qu'est-ce que 2 + 2 ?</td><td>Réponse directe avec l'extraction LLM-skip</td></tr>
+<tr><td>Question de base de connaissances</td><td>"Quelles sont les spécifications du modèle X ?</td><td>Acheminer vers le pipeline de recherche</td></tr>
+<tr><td>Informations en temps réel</td><td>"Météo à Paris ce week-end</td><td>Appeler une API externe</td></tr>
 </tbody>
 </table>
-<p>Routing upfront avoids unnecessary retrieval for queries that don’t need it. In systems where a large share of queries are simple or general-knowledge, this alone can cut compute costs significantly.</p>
-<h3 id="Node-2-Query-Rewriting--What-Should-the-System-Search-For" class="common-anchor-header">Node 2: Query Rewriting — What Should the System Search For?</h3><p>User queries are often vague. A question like “the main numbers in LightOn’s Q3 report” doesn’t translate well into a search query.</p>
-<p>Query rewriting transforms the original question into structured search conditions:</p>
+<p>Le routage en amont permet d'éviter les recherches inutiles pour les requêtes qui n'en ont pas besoin. Dans les systèmes où une grande partie des requêtes sont simples ou de connaissance générale, cette seule mesure peut réduire les coûts de calcul de manière significative.</p>
+<h3 id="Node-2-Query-Rewriting--What-Should-the-System-Search-For" class="common-anchor-header">Nœud 2 : Réécriture des requêtes - Que doit rechercher le système ?</h3><p>Les requêtes des utilisateurs sont souvent vagues. Une question telle que "les principaux chiffres du rapport du troisième trimestre de LightOn" ne se traduit pas bien dans une requête de recherche.</p>
+<p>La réécriture des requêtes transforme la question originale en conditions de recherche structurées :</p>
 <ul>
-<li><strong>Time range:</strong> July 1 – September 30, 2025 (Q3)</li>
-<li><strong>Document type:</strong> Financial report</li>
-<li><strong>Entity:</strong> LightOn, Finance department</li>
+<li><strong>Période de temps :</strong> 1er juillet - 30 septembre 2025 (Q3)</li>
+<li><strong>Type de document :</strong> Rapport financier</li>
+<li><strong>Entité :</strong> LightOn, département des finances</li>
 </ul>
-<p>This step bridges the gap between how users ask questions and how retrieval systems index documents. Better queries mean fewer irrelevant results.</p>
-<h3 id="Node-3-Retrieval-Strategy-Selection--How-Should-the-System-Search" class="common-anchor-header">Node 3: Retrieval Strategy Selection — How Should the System Search?</h3><p>Different content types need different retrieval strategies. A single method can’t cover everything:</p>
+<p>Cette étape permet de combler le fossé entre la façon dont les utilisateurs posent des questions et la façon dont les systèmes de recherche indexent les documents. De meilleures requêtes signifient moins de résultats non pertinents.</p>
+<h3 id="Node-3-Retrieval-Strategy-Selection--How-Should-the-System-Search" class="common-anchor-header">Nœud 3 : Sélection de la stratégie de recherche - Comment le système doit-il chercher ?</h3><p>Des types de contenu différents nécessitent des stratégies de recherche différentes. Une seule méthode ne peut pas tout couvrir :</p>
 <table>
 <thead>
-<tr><th>Content Type</th><th>Best Retrieval Method</th><th>Why</th></tr>
+<tr><th>Type de contenu</th><th>Meilleure méthode de recherche</th><th>Pourquoi</th></tr>
 </thead>
 <tbody>
-<tr><td>Code (variable names, function signatures)</td><td>Lexical search (<a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">BM25</a>)</td><td>Exact keyword matching works well on structured tokens</td></tr>
-<tr><td>Natural language (docs, articles)</td><td>Semantic search (dense vectors)</td><td>Handles synonyms, paraphrases, and intent</td></tr>
-<tr><td>Multimodal (charts, diagrams, drawings)</td><td>Multimodal retrieval</td><td>Captures visual structure that text extraction misses</td></tr>
+<tr><td>Code (noms de variables, signatures de fonctions)</td><td>Recherche lexicale<a href="https://zilliz.com/learn/mastering-bm25-a-deep-dive-into-the-algorithm-and-application-in-milvus">(BM25</a>)</td><td>La recherche par mot-clé exact fonctionne bien sur les mots-clés structurés</td></tr>
+<tr><td>Langage naturel (documents, articles)</td><td>Recherche sémantique (vecteurs denses)</td><td>Traite les synonymes, les paraphrases et l'intention</td></tr>
+<tr><td>Multimodal (tableaux, diagrammes, dessins)</td><td>Recherche multimodale</td><td>Capture la structure visuelle qui échappe à l'extraction de texte</td></tr>
 </tbody>
 </table>
-<p>Documents are tagged with metadata at indexing time. At query time, these tags guide both which documents to search and which retrieval method to use.</p>
-<h3 id="Node-4-Minimal-Context-Generation--How-Much-Context-Does-the-Model-Need" class="common-anchor-header">Node 4: Minimal-Context Generation — How Much Context Does the Model Need?</h3><p>After retrieval and <a href="https://zilliz.com/learn/optimize-rag-with-rerankers-the-role-and-tradeoffs">reranking</a>, the system sends only the most relevant passages to the model—not entire documents.</p>
-<p>This matters more than it sounds. Compared with full-document loading, passing only the relevant passages can reduce token usage by over 90%. Lower token counts mean faster responses and lower costs, even when caching is in play.</p>
-<h2 id="Why-Hybrid-Retrieval-Matters-for-Enterprise-RAG" class="common-anchor-header">Why Hybrid Retrieval Matters for Enterprise RAG<button data-href="#Why-Hybrid-Retrieval-Matters-for-Enterprise-RAG" class="anchor-icon" translate="no">
+<p>Les documents sont étiquetés avec des métadonnées au moment de l'indexation. Au moment de l'interrogation, ces étiquettes guident à la fois les documents à rechercher et la méthode d'extraction à utiliser.</p>
+<h3 id="Node-4-Minimal-Context-Generation--How-Much-Context-Does-the-Model-Need" class="common-anchor-header">Nœud 4 : Génération d'un contexte minimal - De quelle quantité de contexte le modèle a-t-il besoin ?</h3><p>Après l'extraction et le <a href="https://zilliz.com/learn/optimize-rag-with-rerankers-the-role-and-tradeoffs">reclassement</a>, le système n'envoie au modèle que les passages les plus pertinents, et non des documents entiers.</p>
+<p>Ce point est plus important qu'il n'y paraît. Par rapport au chargement d'un document complet, le fait de ne transmettre que les passages pertinents peut réduire l'utilisation des jetons de plus de 90 %. Un nombre réduit de jetons signifie des réponses plus rapides et des coûts moindres, même lorsque la mise en cache est en jeu.</p>
+<h2 id="Why-Hybrid-Retrieval-Matters-for-Enterprise-RAG" class="common-anchor-header">L'importance de la recherche hybride pour le RAG d'entreprise<button data-href="#Why-Hybrid-Retrieval-Matters-for-Enterprise-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -135,32 +136,32 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In practice, retrieval strategy selection (Node 3) is where most teams get stuck. No single retrieval method covers all enterprise document types.</p>
-<p>Some argue that keyword search is sufficient—after all, Claude Code’s grep-based code search works well. But code is highly structured, with consistent naming conventions. Enterprise documents are a different story.</p>
-<h3 id="Enterprise-Documents-Are-Messy" class="common-anchor-header">Enterprise Documents Are Messy</h3><p><strong>Synonyms and varied phrasing.</strong> “Optimize memory usage” and “reduce memory footprint” mean the same thing but use different words. Keyword search matches one and misses the other. In multilingual environments—Chinese with word segmentation, Japanese with mixed scripts, German with compound words—the problem multiplies.</p>
-<p><strong>Visual structure matters.</strong> Engineering drawings depend on layout. Financial reports rely on tables. Medical images depend on spatial relationships. OCR extracts text but loses structure. Text-only retrieval can’t handle these documents reliably.</p>
-<h3 id="How-to-Implement-Hybrid-Retrieval" class="common-anchor-header">How to Implement Hybrid Retrieval</h3><p>Hybrid retrieval combines multiple search methods—typically <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">BM25 for keyword matching and dense vectors for semantic search</a>—to cover what neither method handles alone.</p>
+    </button></h2><p>En pratique, la sélection de la stratégie de recherche (nœud 3) est l'étape où la plupart des équipes se retrouvent bloquées. Aucune méthode de recherche ne couvre à elle seule tous les types de documents d'entreprise.</p>
+<p>Certains affirment que la recherche par mot-clé est suffisante - après tout, la recherche de code basée sur le grep de Claude Code fonctionne bien. Mais le code est très structuré, avec des conventions de dénomination cohérentes. Il en va tout autrement des documents d'entreprise.</p>
+<h3 id="Enterprise-Documents-Are-Messy" class="common-anchor-header">Les documents d'entreprise sont confus</h3><p><strong>Synonymes et formulation variée.</strong> "Optimiser l'utilisation de la mémoire" et "réduire l'empreinte mémoire" signifient la même chose mais utilisent des mots différents. La recherche par mot-clé correspond à l'un mais pas à l'autre. Dans les environnements multilingues - le chinois avec la segmentation des mots, le japonais avec les écritures mixtes, l'allemand avec les mots composés - le problème se multiplie.</p>
+<p><strong>La structure visuelle est importante.</strong> Les dessins techniques dépendent de la mise en page. Les rapports financiers s'appuient sur des tableaux. Les images médicales dépendent des relations spatiales. L'OCR extrait le texte mais perd la structure. L'extraction de texte seul ne peut pas traiter ces documents de manière fiable.</p>
+<h3 id="How-to-Implement-Hybrid-Retrieval" class="common-anchor-header">Comment mettre en œuvre la recherche hybride</h3><p>La recherche hybride combine plusieurs méthodes de recherche - généralement <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">BM25 pour la recherche par mots-clés et les vecteurs denses pour la recherche sémantique - afin de</a>couvrir ce qu'aucune méthode ne peut gérer seule.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/build_smarter_rag_routing_hybrid_retrieval_2_7f305f024e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>The traditional approach runs two separate systems: one for BM25, one for vector search. Each query hits both, and results are merged afterward. It works, but it comes with real overhead:</p>
+<p>L'approche traditionnelle utilise deux systèmes distincts : l'un pour le BM25, l'autre pour la recherche vectorielle. Chaque requête est traitée par les deux systèmes et les résultats sont ensuite fusionnés. Cette méthode fonctionne, mais elle s'accompagne d'un réel surcoût :</p>
 <table>
 <thead>
-<tr><th></th><th>Traditional (Separate Systems)</th><th>Unified (Single Collection)</th></tr>
+<tr><th></th><th>Traditionnelle (systèmes séparés)</th><th>Unifié (collection unique)</th></tr>
 </thead>
 <tbody>
-<tr><td>Storage</td><td>Two separate indexes</td><td>One collection, both vector types</td></tr>
-<tr><td>Data sync</td><td>Must keep two systems in sync</td><td>Single write path</td></tr>
-<tr><td>Query path</td><td>Two queries + result merging</td><td>One API call, automatic fusion</td></tr>
-<tr><td>Tuning</td><td>Adjust merge weights across systems</td><td>Change dense/sparse weight in one query</td></tr>
-<tr><td>Operational complexity</td><td>High</td><td>Low</td></tr>
+<tr><td>Stockage</td><td>Deux index distincts</td><td>Une collection, les deux types de vecteurs</td></tr>
+<tr><td>Synchronisation des données</td><td>Les deux systèmes doivent rester synchronisés</td><td>Chemin d'écriture unique</td></tr>
+<tr><td>Chemin d'accès aux requêtes</td><td>Deux requêtes + fusion des résultats</td><td>Un appel API, fusion automatique</td></tr>
+<tr><td>Ajustement</td><td>Ajuster les poids de fusion entre les systèmes</td><td>Modifier les poids denses/éparses en une seule requête</td></tr>
+<tr><td>Complexité opérationnelle</td><td>Élevée</td><td>Faible</td></tr>
 </tbody>
 </table>
-<p><a href="https://milvus.io/">Milvus</a> 2.6 supports both dense vectors (for semantic search) and sparse vectors (for BM25-style keyword search) in the same collection. A single API call returns fused results, with retrieval behavior adjustable by changing the weight between vector types. No separate indexes, no sync issues, no merge latency.</p>
-<h2 id="How-to-Evaluate-a-RAG-Pipeline-Stage-by-Stage" class="common-anchor-header">How to Evaluate a RAG Pipeline Stage by Stage<button data-href="#How-to-Evaluate-a-RAG-Pipeline-Stage-by-Stage" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus</a> 2.6 prend en charge les vecteurs denses (pour la recherche sémantique) et les vecteurs épars (pour la recherche par mot-clé de type BM25) dans la même collection. Un seul appel à l'API renvoie des résultats fusionnés, avec un comportement de recherche réglable en modifiant le poids entre les types de vecteurs. Pas d'index séparés, pas de problèmes de synchronisation, pas de latence de fusion.</p>
+<h2 id="How-to-Evaluate-a-RAG-Pipeline-Stage-by-Stage" class="common-anchor-header">Comment évaluer un pipeline RAG étape par étape<button data-href="#How-to-Evaluate-a-RAG-Pipeline-Stage-by-Stage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,23 +176,23 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Checking only the final answer isn’t enough. RAG is a multi-stage pipeline, and a failure at any stage propagates downstream. If you only measure answer quality, you can’t tell whether the problem is in routing, rewriting, retrieval, reranking, or generation.</p>
-<p>When users report “inaccurate results,” the root cause could be anywhere: routing may skip retrieval when it shouldn’t; query rewriting may drop key entities; retrieval may miss relevant documents; reranking may bury good results; or the model may ignore the retrieved context entirely.</p>
-<p>Evaluate each stage with its own metrics:</p>
+    </button></h2><p>Vérifier uniquement la réponse finale n'est pas suffisant. RAG est un pipeline à plusieurs étapes, et un échec à n'importe quelle étape se propage en aval. Si vous ne mesurez que la qualité des réponses, vous ne pouvez pas savoir si le problème se situe au niveau du routage, de la réécriture, de l'extraction, du reclassement ou de la génération.</p>
+<p>Lorsque les utilisateurs signalent des "résultats inexacts", la cause première peut se situer n'importe où : le routage peut sauter la recherche alors qu'il ne le devrait pas ; la réécriture de la requête peut laisser de côté des entités clés ; la recherche peut manquer des documents pertinents ; le reclassement peut enterrer de bons résultats ; ou le modèle peut ignorer complètement le contexte de la recherche.</p>
+<p>Évaluez chaque étape avec ses propres mesures :</p>
 <table>
 <thead>
-<tr><th>Stage</th><th>Metric</th><th>What It Catches</th></tr>
+<tr><th>Étape</th><th>Métrique</th><th>Ce qu'il attrape</th></tr>
 </thead>
 <tbody>
-<tr><td>Routing</td><td>F1 score</td><td>High false-negative rate = queries needing retrieval are skipped</td></tr>
-<tr><td>Query rewriting</td><td>Entity extraction accuracy, synonym coverage</td><td>Rewritten query drops important terms or changes intent</td></tr>
-<tr><td>Retrieval</td><td>Recall@K, NDCG@10</td><td>Relevant documents aren’t retrieved, or are ranked too low</td></tr>
-<tr><td>Reranking</td><td>Precision@3</td><td>Top results aren’t actually relevant</td></tr>
-<tr><td>Generation</td><td>Faithfulness, answer completeness</td><td>Model ignores retrieved context or gives partial answers</td></tr>
+<tr><td>Routage</td><td>Score F1</td><td>Taux élevé de faux négatifs = les requêtes nécessitant une recherche sont ignorées</td></tr>
+<tr><td>Réécriture de requêtes</td><td>Précision de l'extraction des entités, couverture des synonymes</td><td>La requête réécrite supprime des termes importants ou modifie l'intention.</td></tr>
+<tr><td>Récupération</td><td>Recall@K, NDCG@10</td><td>Les documents pertinents ne sont pas retrouvés ou sont classés trop bas.</td></tr>
+<tr><td>Reclassement</td><td>Précision@3</td><td>Les premiers résultats ne sont pas réellement pertinents</td></tr>
+<tr><td>Génération</td><td>Fidélité, exhaustivité des réponses</td><td>Le modèle ignore le contexte récupéré ou donne des réponses partielles.</td></tr>
 </tbody>
 </table>
-<p><strong>Set up layered monitoring.</strong> Use offline test sets to define baseline metric ranges for each stage. In production, trigger alerts when any stage drops below its baseline. This lets you catch regressions early and trace them to a specific stage—instead of guessing.</p>
-<h2 id="What-to-Build-First" class="common-anchor-header">What to Build First<button data-href="#What-to-Build-First" class="anchor-icon" translate="no">
+<p><strong>Mettez en place une surveillance en couches.</strong> Utilisez des ensembles de tests hors ligne pour définir des fourchettes de mesures de référence pour chaque étape. En production, déclenchez des alertes lorsqu'une étape tombe en dessous de sa ligne de base. Cela vous permet de détecter rapidement les régressions et de les relier à une étape spécifique - au lieu de deviner.</p>
+<h2 id="What-to-Build-First" class="common-anchor-header">Ce qu'il faut construire en premier<button data-href="#What-to-Build-First" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -206,27 +207,27 @@ origin: 'https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Three priorities stand out from real-world RAG deployments:</p>
+    </button></h2><p>Trois priorités ressortent des déploiements réels de RAG :</p>
 <ol>
-<li><p><strong>Add routing early.</strong> Many queries don’t need retrieval at all. Filtering them upfront reduces load and improves response time with minimal engineering effort.</p></li>
-<li><p><strong>Use unified hybrid retrieval.</strong> Maintaining separate BM25 and vector search systems doubles storage costs, creates sync complexity, and adds merge latency. A unified system like Milvus 2.6—where dense and sparse vectors live in the same collection—eliminates these issues.</p></li>
-<li><p><strong>Evaluate each stage independently.</strong> End-to-end answer quality alone is not a useful signal. Per-stage metrics (F1 for routing, Recall@K and NDCG for retrieval) let you debug faster and avoid breaking one stage while tuning another.</p></li>
+<li><p><strong>Ajouter le routage au plus tôt.</strong> De nombreuses requêtes n'ont pas besoin d'être récupérées. Les filtrer en amont permet de réduire la charge et d'améliorer le temps de réponse avec un minimum d'effort d'ingénierie.</p></li>
+<li><p><strong>Utiliser une recherche hybride unifiée.</strong> La maintenance de systèmes de recherche BM25 et vectorielle distincts double les coûts de stockage, crée une complexité de synchronisation et ajoute une latence de fusion. Un système unifié tel que Milvus 2.6, dans lequel les vecteurs denses et épars se trouvent dans la même collection, élimine ces problèmes.</p></li>
+<li><p><strong>Évaluer chaque étape indépendamment.</strong> La qualité des réponses de bout en bout ne constitue pas à elle seule un signal utile. Les mesures par étape (F1 pour le routage, Recall@K et NDCG pour la recherche) vous permettent de déboguer plus rapidement et d'éviter de casser une étape tout en en réglant une autre.</p></li>
 </ol>
-<p>The real value of a modern RAG system isn’t just retrieval—it’s knowing <em>when</em> to retrieve and <em>how</em> to retrieve. Start with routing and unified hybrid search, and you’ll have a foundation that scales.</p>
+<p>La valeur réelle d'un système RAG moderne n'est pas seulement la recherche - il s'agit de savoir <em>quand</em> et <em>comment</em> rechercher. Commencez par le routage et la recherche hybride unifiée, et vous aurez une base évolutive.</p>
 <hr>
-<p>If you’re building or upgrading a RAG system and running into retrieval quality issues, we’d love to help:</p>
+<p>Si vous construisez ou mettez à niveau un système RAG et que vous rencontrez des problèmes de qualité d'extraction, nous serions ravis de vous aider :</p>
 <ul>
-<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to ask questions, share your architecture, and learn from other developers working on similar problems.</li>
-<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your use case—whether it’s routing design, hybrid retrieval setup, or multi-stage evaluation.</li>
-<li>If you’d rather skip the infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers a free tier to get started.</li>
+<li>Rejoignez la <a href="https://slack.milvus.io/">communauté Milvus Slack</a> pour poser des questions, partager votre architecture et apprendre des autres développeurs qui travaillent sur des problèmes similaires.</li>
+<li><a href="https://milvus.io/office-hours">Réservez une session Milvus Office Hours gratuite de 20 minutes</a> pour étudier votre cas d'utilisation, qu'il s'agisse de la conception du routage, de la configuration de la recherche hybride ou de l'évaluation en plusieurs étapes.</li>
+<li>Si vous préférez ignorer la configuration de l'infrastructure, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (géré par Milvus) propose un niveau gratuit pour commencer.</li>
 </ul>
 <hr>
-<p>A few questions that come up often when teams start building smarter RAG systems:</p>
-<p><strong>Q: Is RAG still necessary now that models support 128K+ context windows?</strong></p>
-<p>Yes. Long context windows help when you need to process a single large document, but they don’t replace retrieval for knowledge-base queries. Sending your entire corpus with every request drives up costs linearly, and models lose focus on relevant information in long contexts—a well-documented issue known as the “lost in the middle” effect (Liu et al., 2023). RAG retrieves only what’s relevant, keeping costs and latency predictable.</p>
-<p><strong>Q: How do I combine BM25 and vector search without running two separate systems?</strong></p>
-<p>Use a vector database that supports both dense and sparse vectors in the same collection. Milvus 2.6 stores both vector types per document and returns fused results from a single query. You adjust the balance between keyword and semantic matching by changing a weight parameter—no separate indexes, no result merging, no sync headaches.</p>
-<p><strong>Q: What’s the first thing I should add to improve my existing RAG pipeline?</strong></p>
-<p>Query routing. It’s the highest-impact, lowest-effort improvement. Most production systems see a significant share of queries that don’t need retrieval at all—common-sense questions, simple calculations, general knowledge. Routing these directly to the LLM cuts unnecessary retrieval calls and improves response time immediately.</p>
-<p><strong>Q: How do I figure out which stage of my RAG pipeline is causing bad results?</strong></p>
-<p>Evaluate each stage independently. Use F1 score for routing accuracy, Recall@K and NDCG@10 for retrieval quality, Precision@3 for reranking, and faithfulness metrics for generation. Set baselines from offline test data and monitor each stage in production. When answer quality drops, you can trace it to the specific stage that regressed instead of guessing.</p>
+<p>Voici quelques questions qui reviennent souvent lorsque les équipes commencent à construire des systèmes RAG plus intelligents :</p>
+<p><strong>Q : RAG est-il toujours nécessaire maintenant que les modèles prennent en charge des fenêtres contextuelles de plus de 128 Ko ?</strong></p>
+<p>Oui. Les longues fenêtres contextuelles sont utiles lorsque vous devez traiter un seul document volumineux, mais elles ne remplacent pas la recherche pour les requêtes de la base de connaissances. L'envoi de l'ensemble du corpus à chaque requête fait augmenter les coûts de façon linéaire, et les modèles perdent de vue les informations pertinentes dans les longs contextes - un problème bien documenté connu sous le nom d'effet "lost in the middle" (Liu et al., 2023). RAG ne récupère que ce qui est pertinent, ce qui rend les coûts et la latence prévisibles.</p>
+<p><strong>Q : Comment combiner BM25 et la recherche vectorielle sans utiliser deux systèmes distincts ?</strong></p>
+<p>Utilisez une base de données vectorielle qui prend en charge les vecteurs denses et épars dans la même collection. Milvus 2.6 stocke les deux types de vecteurs par document et renvoie des résultats fusionnés à partir d'une seule requête. Vous réglez l'équilibre entre la correspondance par mot-clé et la correspondance sémantique en modifiant un paramètre de poids - pas d'index séparés, pas de fusion des résultats, pas de problèmes de synchronisation.</p>
+<p><strong>Q : Quelle est la première chose que je devrais ajouter pour améliorer mon pipeline RAG existant ?</strong></p>
+<p>Le routage des requêtes. C'est l'amélioration qui a le plus d'impact et qui demande le moins d'efforts. La plupart des systèmes de production voient une part importante de requêtes qui n'ont pas du tout besoin d'être récupérées - des questions de bon sens, des calculs simples, des connaissances générales. L'acheminement de ces requêtes directement vers le LLM réduit les appels de recherche inutiles et améliore immédiatement le temps de réponse.</p>
+<p><strong>Q : Comment puis-je déterminer quelle étape de mon pipeline RAG est à l'origine des mauvais résultats ?</strong></p>
+<p>Évaluez chaque étape indépendamment. Utilisez le score F1 pour la précision du routage, Recall@K et NDCG@10 pour la qualité de la recherche, Precision@3 pour le reclassement et les mesures de fidélité pour la génération. Définissez des lignes de base à partir de données de test hors ligne et surveillez chaque étape en production. Lorsque la qualité des réponses baisse, vous pouvez remonter à l'étape spécifique qui a régressé au lieu de deviner.</p>

@@ -74,7 +74,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Neben den Benchmark-Ergebnissen haben wir eine Reihe praktischer Tests durchgeführt, um zu verstehen, wie sich Gemini 3 Pro in realen Arbeitsabläufen verhält. Die Ergebnisse verdeutlichen, wie sein multimodales Verständnis, seine generativen Fähigkeiten und seine langfristige Planung einen praktischen Nutzen für Entwickler darstellen.</p>
-<h3 id="Multimodal-understanding" class="common-anchor-header">Multimodales Verständnis</h3><p>Gemini 3 Pro zeigt eine beeindruckende Vielseitigkeit in Bezug auf Text, Bilder, Video und Code. In unserem Test haben wir ein Zilliz-Video direkt von YouTube hochgeladen. Das Modell verarbeitete den gesamten Clip - einschließlich der Erzählung, der Übergänge und des Bildschirmtextes - in etwa <strong>40 Sekunden</strong>, was für lange multimodale Inhalte ungewöhnlich schnell ist.</p>
+<h3 id="Multimodal-understanding" class="common-anchor-header">Multimodales Verständnis</h3><p>Gemini 3 Pro zeigt eine beeindruckende Vielseitigkeit in Bezug auf Text, Bilder, Video und Code. In unserem Test haben wir ein Zilliz-Video direkt von YouTube hochgeladen. Das Modell verarbeitete den gesamten Clip - einschließlich der Erzählung, der Übergänge und des Bildschirmtextes - in etwa <strong>40 Sekunden</strong>, eine ungewöhnlich schnelle Bearbeitungszeit für lange multimodale Inhalte.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/ytb1_39f31b728a.png" alt="" class="doc-image" id="" />
@@ -163,7 +163,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <p>Bei der Erstellung einer <code translate="no">MilvusClient</code> können Sie je nach Umfang und Umgebung aus drei Konfigurationsoptionen wählen:</p>
 <ul>
 <li><p><strong>Lokaler Modus (Milvus Lite):</strong> Setzen Sie den URI auf einen lokalen Dateipfad (z. B. <code translate="no">./milvus.db</code>). Dies ist der einfachste Weg, um loszulegen - <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> speichert automatisch alle Daten in dieser Datei.</p></li>
-<li><p><strong>Selbstgehostetes Milvus (Docker oder Kubernetes):</strong> Für größere Datensätze oder Produktions-Workloads können Sie Milvus auf Docker oder Kubernetes ausführen. Setzen Sie die URI auf Ihren Milvus-Server-Endpunkt, z. B. <code translate="no">http://localhost:19530</code>.</p></li>
+<li><p><strong>Selbstgehostetes Milvus (Docker oder Kubernetes):</strong> Für größere Datensätze oder Produktions-Workloads können Sie Milvus auf Docker oder Kubernetes ausführen. Legen Sie die URI auf Ihren Milvus-Server-Endpunkt fest, z. B. auf <code translate="no">http://localhost:19530</code>.</p></li>
 <li><p><strong>Zilliz Cloud (der vollständig verwaltete Milvus-Dienst):</strong> Wenn Sie eine verwaltete Lösung bevorzugen, verwenden Sie Zilliz Cloud. Setzen Sie den URI auf Ihren öffentlichen Endpunkt und geben Sie Ihren API-Schlüssel als Authentifizierungstoken an.</p></li>
 </ul>
 <p>Bevor Sie eine neue Sammlung erstellen, prüfen Sie zunächst, ob sie bereits existiert. Falls ja, löschen Sie sie und erstellen Sie sie neu, um eine saubere Einrichtung zu gewährleisten.</p>

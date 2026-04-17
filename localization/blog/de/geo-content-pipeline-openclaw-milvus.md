@@ -41,7 +41,7 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
 <blockquote>
 <p><strong>Hinweis:</strong> Dies ist ein funktionierendes System, das für einen echten Marketing-Workflow entwickelt wurde, aber der Code ist ein Ausgangspunkt. Sie müssen die Eingabeaufforderungen, die Schwellenwerte für die Bewertung und die Struktur der Wissensdatenbank an Ihren eigenen Anwendungsfall anpassen.</p>
 </blockquote>
-<h2 id="How-the-Pipeline-Solves-Volume-×-Quality" class="common-anchor-header">Wie die Pipeline Volumen × Qualität löst<button data-href="#How-the-Pipeline-Solves-Volume-×-Quality" class="anchor-icon" translate="no">
+<h2 id="How-the-Pipeline-Solves-Volume-×-Quality" class="common-anchor-header">Wie die Pipeline das Problem von Volumen und Qualität löst<button data-href="#How-the-Pipeline-Solves-Volume-×-Quality" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,7 +83,7 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
 <li>Der LLM generiert jeden Artikel unter Verwendung des abgerufenen Kontexts und bewertet ihn dann anhand einer GEO-Qualitätsrubrik.</li>
 <li>Der fertige Artikel wird an Milvus zurückgeschrieben und bereichert die Dedup- und RAG-Pools für den nächsten Stapel.</li>
 </ol>
-<p>Die GEO-Skill-Definition beinhaltet auch Optimierungsregeln: Führen Sie den Artikel mit einer direkten Antwort ein, verwenden Sie eine strukturierte Formatierung, geben Sie Quellen explizit an und fügen Sie Originalanalysen ein. KI-Suchmaschinen analysieren Inhalte nach ihrer Struktur und bevorzugen Aussagen ohne Quellenangabe, so dass jede Regel einem bestimmten Suchverhalten entspricht.</p>
+<p>Die GEO-Skill-Definition beinhaltet auch Optimierungsregeln: Führen Sie den Artikel mit einer direkten Antwort ein, verwenden Sie eine strukturierte Formatierung, geben Sie Quellen explizit an und fügen Sie eine Originalanalyse ein. KI-Suchmaschinen analysieren Inhalte nach ihrer Struktur und bevorzugen Aussagen ohne Quellenangabe, so dass jede Regel einem bestimmten Suchverhalten entspricht.</p>
 <p>Die Generierung erfolgt in Stapeln. Eine erste Runde geht zur Überprüfung an den Kunden. Sobald die Richtung bestätigt ist, wird die Pipeline auf die volle Produktion skaliert.</p>
 <h2 id="Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="common-anchor-header">Warum eine Wissensschicht den Unterschied zwischen GEO und KI-Spam ausmacht<button data-href="#Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="anchor-icon" translate="no">
       <svg translate="no"

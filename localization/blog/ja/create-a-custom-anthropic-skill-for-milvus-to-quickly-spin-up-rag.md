@@ -1,8 +1,6 @@
 ---
 id: create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md
-title: >
-  How Anthropic Skills Change Agent Tooling — and How to Build a Custom Skill
-  for Milvus to Quickly Spin Up RAG
+title: 人間性スキルがエージェント・ツールを変える - MilvusがRAGを素早くスピンアップさせるカスタムスキルの作り方
 author: Min Yin
 date: 2026-01-23T00:00:00.000Z
 cover: assets.zilliz.com/skills_cover_new_8caa774cc5.png
@@ -13,18 +11,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Claude Code, Anthropic Skills, MCP, RAG, Milvus'
 meta_title: |
   Create a Custom Anthropic Skill for Milvus to Quickly Spin Up RAG
-desc: >
-  Learn what Skills are and how to create a custom Skill in Claude Code that
-  builds Milvus-backed RAG systems from natural-language instructions using a
-  reusable workflow.
+desc: >-
+  スキルとは何か、そして再利用可能なワークフローを使用して自然言語命令からMilvusに裏打ちされたRAGシステムを構築するClaude
+  Codeのカスタムスキルの作成方法を学びます。
 origin: >-
   https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md
 ---
-<p>Tool usage is a big part of making an agent work. The agent needs to choose the right tool, decide when to call it, and format the inputs correctly. On paper that sounds straightforward, but once you start building real systems, you find a lot of edge cases and failure modes.</p>
-<p>Many teams use MCP-style tool definitions to organize this, but MCP has some rough edges. The model has to reason over all tools at once, and there isn’t much structure to guide its decisions. On top of that, every tool definition has to live in the context window. Some of these are large — the GitHub MCP is around 26k tokens — which eats context before the agent even starts doing real work.</p>
-<p>Anthropic introduced <a href="https://github.com/anthropics/skills?tab=readme-ov-file"><strong>Skills</strong></a> to improve this situation. Skills are smaller, more focused, and easier to load on demand. Instead of dumping everything into context, you package domain logic, workflows, or scripts into compact units that the agent can pull in only when needed.</p>
-<p>In this post, I’ll go over how Anthropic Skills work and then walk through building a simple Skill in Claude Code that turns natural language into a <a href="https://milvus.io/">Milvus</a>-backed knowledge base — a quick setup for RAG without extra wiring.</p>
-<h2 id="What-Are-Anthropic-Skills" class="common-anchor-header">What Are Anthropic Skills?<button data-href="#What-Are-Anthropic-Skills" class="anchor-icon" translate="no">
+<p>ツールの使い方は、エージェントを機能させる大きな要素である。エージェントは適切なツールを選択し、それを呼び出すタイミングを決定し、入力を正しくフォーマットする必要がある。紙の上では簡単なことのように聞こえますが、実際のシステムを構築し始めると、多くのエッジケースや失敗モードが見つかります。</p>
+<p>多くのチームは、これを整理するためにMCPスタイルのツール定義を使っているが、MCPには荒削りな部分がある。モデルはすべてのツールを一度に推論しなければならず、その決定を導くための構造はあまりない。その上、すべてのツール定義はコンテキストウィンドウの中に置かなければならない。これらのいくつかは大きく、GitHubのMCPは約26kトークンで、エージェントが実際の作業を始める前にコンテキストを食いつぶしてしまいます。</p>
+<p>Anthropicはこの状況を改善するために<a href="https://github.com/anthropics/skills?tab=readme-ov-file"><strong>スキルを</strong></a>導入しました。スキルはより小さく、より集中的で、オンデマンドでロードするのが簡単です。全てをコンテキストにダンプする代わりに、ドメインロジック、ワークフロー、スクリプトをコンパクトなユニットにパッケージ化し、エージェントは必要な時だけ取り込むことができます。</p>
+<p>この投稿では、Anthropic Skillsがどのように機能するのかを説明し、Claude Codeで自然言語を<a href="https://milvus.io/">milvusに裏付けされた</a>ナレッジベースに変換するシンプルなSkillを構築する方法を説明します。</p>
+<h2 id="What-Are-Anthropic-Skills" class="common-anchor-header">人間性スキルとは？<button data-href="#What-Are-Anthropic-Skills" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,10 +36,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md">Anthropic Skills</a> (or Agent Skills) are just folders that bundle the instructions, scripts, and reference files an agent needs to handle a specific task. Think of them as small, self-contained capability packs. A Skill might define how to generate a report, run an analysis, or follow a particular workflow or set of rules.</p>
-<p>The key idea is that Skills are modular and can be loaded on demand. Instead of stuffing huge tool definitions into the context window, the agent pulls in only the Skill it needs. This keeps context usage low while giving the model clear guidance on what tools exist, when to call them, and how to execute each step.</p>
-<p>The format is intentionally simple, and because of that, it’s already supported or easily adapted across a bunch of developer tools — Claude Code, Cursor, VS Code extensions, GitHub integrations, Codex-style setups, and so on.</p>
-<p>A Skill follows a consistent folder structure:</p>
+    </button></h2><p><a href="https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md">Anthropicスキル</a>（またはエージェントスキル）は、エージェントが特定のタスクを処理するために必要な命令、スクリプト、リファレンスファイルをバンドルしたフォルダです。小さな自己完結型の能力パックと考えてください。スキルは、レポートの生成、分析の実行、特定のワークフローやルールに従う方法などを定義します。</p>
+<p>重要なのは、スキルはモジュール化されており、オンデマンドでロードできるということです。巨大なツール定義をコンテキストウィンドウに詰め込む代わりに、エージェントは必要なスキルのみを取り込みます。これにより、コンテキストの使用量を抑えながら、どのようなツールが存在し、いつそれらを呼び出すか、そして各ステップをどのように実行するかについて、モデルに明確なガイダンスを与えることができる。</p>
+<p>フォーマットは意図的にシンプルで、そのため、Claude Code、Cursor、VS Code拡張、GitHub統合、Codexスタイルのセットアップなど、多くの開発者ツールですでにサポートされているか、簡単に適応できます。</p>
+<p>スキルは一貫したフォルダ構造に従います：</p>
 <pre><code translate="no">skill-name/
 
 ├── SKILL.md       <span class="hljs-comment"># Required: Skill instructions and metadata</span>
@@ -53,21 +50,21 @@ origin: >-
 
 └── resources/       <span class="hljs-comment"># Optional: reference materials</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>1.</strong> <code translate="no">SKILL.md</code> <strong>(Core File)</strong></p>
-<p>This is the execution guide for the agent—the document that tells the agent exactly how the task should be carried out. It defines the Skill’s metadata (such as name, description, and trigger keywords), the execution flow, and default settings. In this file, you should clearly describe:</p>
+<p><strong>1.</strong> <code translate="no">SKILL.md</code> <strong>(コアファイル)</strong></p>
+<p>これはエージェントの実行ガイドで、タスクの実行方法をエージェントに正確に伝えるドキュメントです。スキルのメタデータ(名前、説明、トリガーキーワードなど)、実行フロー、およびデフォルト設定を定義します。このファイルでは、以下を明確に記述する必要があります：</p>
 <ul>
-<li><p><strong>When the Skill should run:</strong> For example, trigger the Skill when the user input includes a phrase like “process CSV files with Python.”</p></li>
-<li><p><strong>How the task should be performed:</strong> Lay out the execution steps in order, such as: interpret the user’s request → call preprocessing scripts from the <code translate="no">scripts/</code> directory → generate the required code → format the output using templates from <code translate="no">templates/</code>.</p></li>
-<li><p><strong>Rules and constraints:</strong> Specify details such as coding conventions, output formats, and how errors should be handled.</p></li>
+<li><p><strong>スキルの実行タイミング：</strong>たとえば、ユーザー入力に "Python で CSV ファイルを処理する" というようなフレーズが含まれる場合にスキルをトリガーします。</p></li>
+<li><p><strong>タスクの実行方法：</strong>ユーザーのリクエストを解釈する →<code translate="no">scripts/</code> ディレクトリから前処理スクリプトを呼び出す → 必要なコードを生成する →<code translate="no">templates/</code> のテンプレートを使用して出力をフォーマットする。</p></li>
+<li><p><strong>ルールと制約：</strong>ルールと制約：コーディング規約、出力フォーマット、エラーの処理方法などの詳細を指定する。</p></li>
 </ul>
-<p><strong>2.</strong> <code translate="no">scripts/</code> <strong>(Execution Scripts)</strong></p>
-<p>This directory contains prewritten scripts in languages such as Python, Shell, or Node.js. The agent can call these scripts directly, instead of generating the same code repeatedly at runtime. Typical examples include <code translate="no">create_collection.py</code> and <code translate="no">check_env.py</code>.</p>
-<p><strong>3.</strong> <code translate="no">templates/</code> <strong>(Document Templates)</strong></p>
-<p>Reusable template files that the agent can use to generate customized content. Common examples include report templates or configuration templates.</p>
-<p><strong>4.</strong> <code translate="no">resources/</code> <strong>(Reference Materials)</strong></p>
-<p>Reference documents the agent can consult during execution, such as API documentation, technical specifications, or best-practice guides.</p>
-<p>Overall, this structure mirrors how work is handed off to a new teammate: <code translate="no">SKILL.md</code> explains the job, <code translate="no">scripts/</code> provide ready-to-use tools, <code translate="no">templates/</code> define standard formats, and <code translate="no">resources/</code> supply background information. With all of this in place, the agent can execute the task reliably and with minimal guesswork.</p>
-<h2 id="Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">Hands-on Tutorial: Creating a Custom Skill for a Milvus-Powered RAG System<button data-href="#Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
+<p><strong>2.</strong> <code translate="no">scripts/</code> <strong>(実行スクリプト)</strong></p>
+<p>このディレクトリには、Python、Shell、Node.js などの言語で事前に書き込まれたスクリプトが含まれます。エージェントは、実行時に同じコードを繰り返し生成する代わりに、これらのスクリプトを直接呼び出すことができます。典型的な例は、<code translate="no">create_collection.py</code> と<code translate="no">check_env.py</code> です。</p>
+<p><strong>3.</strong> <code translate="no">templates/</code> <strong>(ドキュメントテンプレート)</strong></p>
+<p>エージェントがカスタマイズされたコンテンツを生成するために使用できる再利用可能なテンプレートファイル。一般的な例として、レポートテンプレートや設定テンプレートがあります。</p>
+<p><strong>4.</strong> <code translate="no">resources/</code> <strong>(参考資料)</strong></p>
+<p>API ドキュメント、技術仕様書、ベストプラクティスガイドなど、エージェントが実行中に参照できるドキュメント。</p>
+<p>全体として、この構成は、新しいチームメイトに仕事を引き継ぐ方法を反映しています。<code translate="no">SKILL.md</code> は仕事を説明し、<code translate="no">scripts/</code> はすぐに使えるツールを提供し、<code translate="no">templates/</code> は標準フォーマットを定義し、<code translate="no">resources/</code> は背景情報を提供します。これらすべてが揃うことで、エージェントは推測を最小限に抑えながら、確実にタスクを実行することができます。</p>
+<h2 id="Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">ハンズオンチュートリアルmilvusを使用したRAGシステムのカスタムスキルの作成<button data-href="#Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -82,34 +79,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In this section, we’ll walk through building a custom Skill that can set up a Milvus collection and assemble a full RAG pipeline from plain natural-language instructions. The goal is to skip all the usual setup work — no manual schema design, no index configuration, no boilerplate code. You tell the agent what you want, and the Skill handles the Milvus pieces for you.</p>
-<h3 id="Design-Overview" class="common-anchor-header">Design Overview</h3><p>
+    </button></h2><p>このセクションでは、Milvusコレクションをセットアップし、自然言語の命令から完全なRAGパイプラインを組み立てることができるカスタムスキルの作成について説明します。スキーマの設計、インデックスの設定、定型的なコードなど、通常のセットアップ作業をすべて省略することが目標です。スキーマ設計、インデックス設定、定型的なコードなど、通常の設定作業をすべて省略することです。</p>
+<h3 id="Design-Overview" class="common-anchor-header">設計の概要</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/design_overview_d4c886291b.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><table>
+<h3 id="Prerequisites" class="common-anchor-header">前提条件</h3><table>
 <thead>
-<tr><th>Component</th><th>Requirement</th></tr>
+<tr><th>コンポーネント</th><th>要件</th></tr>
 </thead>
 <tbody>
 <tr><td>CLI</td><td><code translate="no">claude-code</code></td></tr>
-<tr><td>Models</td><td>GLM 4.7, OpenAI</td></tr>
-<tr><td>Container</td><td>Docker</td></tr>
+<tr><td>モデル</td><td>GLM 4.7、OpenAI</td></tr>
+<tr><td>コンテナ</td><td>ドッカー</td></tr>
 <tr><td>Milvus</td><td>2.6.8</td></tr>
-<tr><td>Model Configuration Platform</td><td>CC-Switch</td></tr>
-<tr><td>Package Manager</td><td>npm</td></tr>
-<tr><td>Development Language</td><td>Python</td></tr>
+<tr><td>モデル構成プラットフォーム</td><td>CC-スイッチ</td></tr>
+<tr><td>パッケージ・マネージャー</td><td>npm</td></tr>
+<tr><td>開発言語</td><td>Python</td></tr>
 </tbody>
 </table>
-<h3 id="Step-1-Environment-Setup" class="common-anchor-header">Step 1: Environment Setup</h3><p><strong>Install</strong> <code translate="no">claude-code</code></p>
+<h3 id="Step-1-Environment-Setup" class="common-anchor-header">ステップ1: 環境のセットアップ</h3><p><strong>インストール</strong> <code translate="no">claude-code</code></p>
 <pre><code translate="no">npm install -g <span class="hljs-meta">@anthropic</span>-ai/claude-code
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Install CC-Switch</strong></p>
-<p><strong>Note:</strong> CC-Switch is a model-switching tool that makes it easy to switch between different model APIs when running AI models locally.</p>
-<p>Project repository: <a href="https://github.com/farion1231/cc-switch">https://github.com/farion1231/cc-switch</a></p>
-<p><strong>Select Claude and Add an API Key</strong></p>
+<p><strong>CC-Switchのインストール</strong></p>
+<p><strong>注：</strong>CC-Switchは、AIモデルをローカルで実行する際に、異なるモデルAPIを簡単に切り替えることができるモデル切り替えツールです。</p>
+<p>プロジェクト・リポジトリ<a href="https://github.com/farion1231/cc-switch">：https://github.com/farion1231/cc-switch</a></p>
+<p><strong>Claudeを選択し、APIキーを追加する</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_0cdfab2e54.PNG" alt="" class="doc-image" id="" />
@@ -122,14 +119,14 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>Check the Current Status</strong></p>
+<p><strong>現在のステータスを確認する</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_f1c13da1fe.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Deploy and Start Milvus-Standalone</strong></p>
+<p><strong>Milvusのデプロイと起動</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Download docker-compose.yml</span>
 
 wget https://github.com/milvus-io/milvus/releases/download/v2<span class="hljs-number">.6</span><span class="hljs-number">.8</span>/milvus-standalone-docker-compose.yml -O docker-compose.yml
@@ -154,38 +151,38 @@ docker ps | grep milvus
     <span></span>
   </span>
 </p>
-<p><strong>Configure the OpenAI API Key</strong></p>
+<p><strong>OpenAI API キーを設定する</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Add this to ~/.bashrc or ~/.zshrc</span>
 
 OPENAI_API_KEY=your_openai_api_key_here
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Create-the-Custom-Skill-for-Milvus" class="common-anchor-header">Step 2: Create the Custom Skill for Milvus</h3><p><strong>Create the Directory Structure</strong></p>
+<h3 id="Step-2-Create-the-Custom-Skill-for-Milvus" class="common-anchor-header">ステップ 2: Milvusのカスタムスキルの作成</h3><p><strong>ディレクトリ構造を作成する</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">cd</span> ~/.claude/skills/
 
 <span class="hljs-built_in">mkdir</span> -p milvus-skills/example milvus-skills/scripts
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Initialize</strong> <code translate="no">SKILL.md</code></p>
-<p><strong>Note:</strong> SKILL.md serves as the agent’s execution guide. It defines what the Skill does and how it should be triggered.</p>
+<p><strong>初期化</strong> <code translate="no">SKILL.md</code></p>
+<p><strong>注意:</strong>SKILL.mdはエージェントの実行ガイドの役割を果たします。SKILL.mdはエージェントの実行ガイドとなり、Skillが何を行い、どのようにトリガーされるかを定義します。</p>
 <pre><code translate="no"><span class="hljs-attr">name</span>: milvus-collection-builder
 
 <span class="hljs-attr">description</span>: <span class="hljs-title class_">Create</span> <span class="hljs-title class_">Milvus</span> collections <span class="hljs-keyword">using</span> natural language, supporting both <span class="hljs-variable constant_">RAG</span> and text search scenarios
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Write the Core Scripts</strong></p>
+<p><strong>コアスクリプトの作成</strong></p>
 <table>
 <thead>
-<tr><th>Script Type</th><th>File Name</th><th>Purpose</th></tr>
+<tr><th>スクリプトの種類</th><th>ファイル名</th><th>目的</th></tr>
 </thead>
 <tbody>
-<tr><td>Environment check</td><td><code translate="no">check_env.py</code></td><td>Checks the Python version, required dependencies, and the Milvus connection</td></tr>
-<tr><td>Intent parsing</td><td><code translate="no">intent_parser.py</code></td><td>Converts requests like “build a RAG database” into a structured intent such as <code translate="no">scene=rag</code></td></tr>
-<tr><td>Collection creation</td><td><code translate="no">milvus_builder.py</code></td><td>The core builder that generates the collection schema and index configuration</td></tr>
-<tr><td>Data ingestion</td><td><code translate="no">insert_milvus_data.py</code></td><td>Loads documents, chunks them, generates embeddings, and writes data into Milvus</td></tr>
-<tr><td>Example 1</td><td><code translate="no">basic_text_search.py</code></td><td>Demonstrates how to create a document search system</td></tr>
-<tr><td>Example 2</td><td><code translate="no">rag_knowledge_base.py</code></td><td>Demonstrates how to build a complete RAG knowledge base</td></tr>
+<tr><td>環境チェック</td><td><code translate="no">check_env.py</code></td><td>Pythonのバージョン、必要な依存関係、milvusの接続をチェックする。</td></tr>
+<tr><td>インテント解析</td><td><code translate="no">intent_parser.py</code></td><td>"RAGデータベースを構築する "のようなリクエストを次のような構造化されたインテントに変換する。<code translate="no">scene=rag</code></td></tr>
+<tr><td>コレクションの作成</td><td><code translate="no">milvus_builder.py</code></td><td>コレクションスキーマとインデックス構成を生成するコアビルダー</td></tr>
+<tr><td>データ取り込み</td><td><code translate="no">insert_milvus_data.py</code></td><td>ドキュメントを読み込み、チャンクし、エンベッディングを生成し、Milvusにデータを書き込む。</td></tr>
+<tr><td>例1</td><td><code translate="no">basic_text_search.py</code></td><td>ドキュメント検索システムの作成方法のデモンストレーション</td></tr>
+<tr><td>例2</td><td><code translate="no">rag_knowledge_base.py</code></td><td>完全なRAG知識ベースを構築する方法を示す</td></tr>
 </tbody>
 </table>
-<p>These scripts show how to turn a Milvus-focused Skill into something practical: a working document search system and an intelligent Q&amp;A (RAG) setup.</p>
-<h3 id="Step-3-Enable-the-Skill-and-Run-a-Test" class="common-anchor-header">Step 3: Enable the Skill and Run a Test</h3><p><strong>Describe the Request in Natural Language</strong></p>
+<p>これらのスクリプトは、Milvusにフォーカスしたスキルを実用的なもの、つまりドキュメント検索システムとインテリジェントQ&amp;A（RAG）のセットアップに変える方法を示しています。</p>
+<h3 id="Step-3-Enable-the-Skill-and-Run-a-Test" class="common-anchor-header">ステップ3: スキルを有効にしてテストを実行する</h3><p><strong>自然言語でリクエストを記述する</strong></p>
 <pre><code translate="no"><span class="hljs-string">&quot;I want to build an RAG system.&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -194,28 +191,28 @@ OPENAI_API_KEY=your_openai_api_key_here
     <span></span>
   </span>
 </p>
-<p><strong>RAG System Created</strong></p>
+<p><strong>RAGシステムの作成</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/test2_80656d59b1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Insert Sample Data</strong></p>
+<p><strong>サンプルデータの挿入</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/test3_392753eb73.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Run a Query</strong></p>
+<p><strong>クエリを実行する</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/test4_75e23c6a3a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">まとめ<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,11 +227,11 @@ OPENAI_API_KEY=your_openai_api_key_here
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In this tutorial, we walked through building a Milvus-powered RAG system using a custom Skill. The goal wasn’t just to show another way to call Milvus—it was to show how Skills can turn what is normally a multi-step, configuration-heavy setup into something you can reuse and iterate on. Instead of manually defining schemas, tuning indexes, or stitching together workflow code, the Skill handles most of the boilerplate so you can focus on the parts of RAG that actually matter.</p>
-<p>This is only the start. A full RAG pipeline has plenty of moving pieces: preprocessing, chunking, hybrid search settings, reranking, evaluation, and more. All of these can be packaged as separate Skills and composed depending on your use case. If your team has internal standards for vector dimensions, index params, prompt templates, or retrieval logic, Skills are a clean way to encode that knowledge and make it repeatable.</p>
-<p>For new developers, this lowers the entry barrier—no need to learn every detail of Milvus before getting something running. For experienced teams, it cuts down on repeated setup and helps keep projects consistent across environments. Skills won’t replace thoughtful system design, but they remove a lot of unnecessary friction.</p>
-<p>👉 The full implementation is available in the <a href="https://github.com/yinmin2020/open-milvus-skills">open-source repository</a>, and you can explore more community-built examples in the <a href="https://skillsmp.com/">Skill marketplace</a>.</p>
-<h2 id="Stay-tuned" class="common-anchor-header">Stay tuned!<button data-href="#Stay-tuned" class="anchor-icon" translate="no">
+    </button></h2><p>このチュートリアルでは、カスタムスキルを使用してMilvusを利用したRAGシステムを構築しました。その目的は、単にMilvusを呼び出す別の方法を紹介することではなく、通常であれば複数ステップの設定が必要となるものを、Skillを使用することで再利用や反復が可能なものに変えることができることを紹介することでした。手作業でスキーマを定義したり、インデックスを調整したり、ワークフローのコードをつなぎ合わせたりする代わりに、スキルが定型的なことのほとんどを処理してくれるので、RAGの実際に重要な部分に集中することができます。</p>
+<p>これは始まりに過ぎません。完全なRAGパイプラインには、前処理、チャンキング、ハイブリッド検索設定、リランキング、評価など、多くの可動部分があります。これら全てを別々のスキルとしてパッケージ化し、ユースケースに応じて構成することができる。ベクターのディメンション、インデックスパラメータ、プロンプトテンプレート、検索ロジックの社内標準がある場合、スキルはその知識をエンコードし、繰り返し使用できるようにするためのクリーンな方法です。</p>
+<p>新しい開発者にとっては、Milvusを使いこなすまでの障壁を低くすることができます。経験豊富なチームにとっては、繰り返しのセットアップを削減し、環境間で一貫したプロジェクトを維持するのに役立ちます。スキルは熟考されたシステム設計の代わりにはならないが、不必要な摩擦の多くを取り除くことができる。</p>
+<p>👉完全な実装は<a href="https://github.com/yinmin2020/open-milvus-skills">オープンソースリポジトリで</a>入手可能で、<a href="https://skillsmp.com/">Skillマーケットプレイスでは</a>コミュニティが構築したより多くの例を調べることができます。</p>
+<h2 id="Stay-tuned" class="common-anchor-header">ご期待ください！<button data-href="#Stay-tuned" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -249,4 +246,4 @@ OPENAI_API_KEY=your_openai_api_key_here
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>We’re also working on introducing official Milvus and Zilliz Cloud Skills that cover common RAG patterns and production best practices. If you have ideas or specific workflows you want supported, join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a> and chat with our engineers. And if you want guidance for your own setup, you can always book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session.</p>
+    </button></h2><p>また、一般的なRAGパターンやプロダクションのベストプラクティスをカバーするMilvusとZillizの公式クラウドスキルの導入にも取り組んでいます。アイデアやサポートしてほしい特定のワークフローがある場合は、<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channelに</a>参加してエンジニアとチャットしてください。また、ご自身のセットアップについてガイダンスが必要な場合は、いつでも<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvusオフィスアワーの</a>セッションをご予約いただけます。</p>

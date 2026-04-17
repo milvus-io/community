@@ -1,6 +1,6 @@
 ---
 id: introducing-pymilvus-integrations-with-embedding-models.md
-title: Introducing PyMilvus Integration with Embedding Models
+title: تقديم تكامل PyMilvus مع نماذج التضمين
 author: Stephen Batifol
 date: 2024-06-05T00:00:00.000Z
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
@@ -12,10 +12,10 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/introducing-pymilvus-integrations-with-embedding-models.md
 ---
-<p><a href="https://milvus.io/intro">Milvus</a> is an open-source vector database designed specifically for AI applications. Whether you’re working on machine learning, deep learning, or any other AI-related project, Milvus offers a robust and efficient way to handle large-scale vector data.</p>
-<p>Now, with the <a href="https://milvus.io/docs/embeddings.md">model module integration</a> in PyMilvus, the Python SDK for Milvus, it’s even easier to add Embedding and Reranking models. This integration simplifies transforming your data into searchable vectors or reranking results for more accurate outcomes, such as in <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Retrieval Augmented Generation (RAG)</a>.</p>
-<p>In this blog, we will review dense embedding models, sparse embedding models, and re-rankers and demonstrate how to use them in practice using <a href="https://milvus.io/blog/introducing-milvus-lite.md">Milvus Lite</a>, a lightweight version of Milvus that can run locally in your Python applications.</p>
-<h2 id="Dense-vs-Sparse-Embeddings" class="common-anchor-header">Dense vs Sparse Embeddings<button data-href="#Dense-vs-Sparse-Embeddings" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/intro">Milvus</a> هي قاعدة بيانات متجهة مفتوحة المصدر مصممة خصيصًا لتطبيقات الذكاء الاصطناعي. سواء كنت تعمل على التعلم الآلي، أو التعلم العميق، أو أي مشروع آخر متعلق بالذكاء الاصطناعي، فإن Milvus يوفر طريقة قوية وفعالة للتعامل مع البيانات المتجهة واسعة النطاق.</p>
+<p>والآن، مع <a href="https://milvus.io/docs/embeddings.md">تكامل وحدة النموذج</a> في PyMilvus، وهي مجموعة أدوات تطوير البرمجيات Python SDK لـ Milvus، أصبح من الأسهل إضافة نماذج التضمين وإعادة التصنيف. يعمل هذا التكامل على تبسيط تحويل بياناتك إلى متجهات قابلة للبحث أو إعادة ترتيب النتائج للحصول على نتائج أكثر دقة، كما هو الحال في <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">التوليد المعزز للاسترجاع (RAG)</a>.</p>
+<p>في هذه المدونة، سنستعرض نماذج التضمين الكثيف ونماذج التضمين المتناثرة، ونماذج إعادة التصنيف، وسنوضح كيفية استخدامها عمليًا باستخدام <a href="https://milvus.io/blog/introducing-milvus-lite.md">Milvus Lite،</a> وهو إصدار خفيف الوزن من Milvus يمكن تشغيله محليًا في تطبيقات Python الخاصة بك.</p>
+<h2 id="Dense-vs-Sparse-Embeddings" class="common-anchor-header">التضمينات الكثيفة مقابل التضمينات المتفرقة<button data-href="#Dense-vs-Sparse-Embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,14 +30,14 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Before we walk you through how to use our integrations, let’s look at two main categories of vector embeddings.</p>
-<p><a href="https://zilliz.com/glossary/vector-embeddings">Vector Embeddings</a> generally fall into two main categories: <a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>Dense Embeddings</strong> and <strong>Sparse Embeddings</strong></a>.</p>
+    </button></h2><p>قبل أن نطلعك على كيفية استخدام عمليات التكامل الخاصة بنا، دعنا نلقي نظرة على فئتين رئيسيتين من التضمينات المتجهة.</p>
+<p>تنقسم<a href="https://zilliz.com/glossary/vector-embeddings">تضمينات المتجهات</a> عمومًا إلى فئتين رئيسيتين: <a href="https://zilliz.com/learn/sparse-and-dense-embeddings"><strong>التضمينات الكثيفة</strong> والتضمينات <strong>المتفرقة</strong></a>.</p>
 <ul>
-<li><p>Dense Embeddings are high-dimensional vectors in which most or all elements are non-zero, making them ideal for encoding text semantics or fuzzy meaning.</p></li>
-<li><p>Sparse Embeddings are high-dimensional vectors with many zero elements, better suited for encoding exact or adjacent concepts.</p></li>
+<li><p>التضمينات الكثيفة هي متجهات عالية الأبعاد تكون فيها معظم العناصر أو كلها غير صفرية، مما يجعلها مثالية لترميز دلالات النص أو المعنى الضبابي.</p></li>
+<li><p>أما التضمينات المتفرقة فهي متجهات عالية الأبعاد تحتوي على العديد من العناصر الصفرية، وهي مناسبة بشكل أفضل لترميز المفاهيم الدقيقة أو المتجاورة.</p></li>
 </ul>
-<p>Milvus supports both types of embeddings and offers hybrid search. <a href="https://zilliz.com/blog/hybrid-search-with-milvus">Hybrid Search</a> allows you to conduct searches across various vector fields within the same collection. These vectors can represent different facets of data, use diverse embedding models, or employ distinct data processing methods, combining the results using re-rankers.</p>
-<h2 id="How-to-Use-Our-Embedding-and-Reranking-Integrations" class="common-anchor-header">How to Use Our Embedding and Reranking Integrations<button data-href="#How-to-Use-Our-Embedding-and-Reranking-Integrations" class="anchor-icon" translate="no">
+<p>يدعم Milvus كلا النوعين من التضمينات ويوفر بحثًا هجينًا. يتيح لك <a href="https://zilliz.com/blog/hybrid-search-with-milvus">البحث الهجين</a> إجراء عمليات بحث عبر حقول متجهات مختلفة ضمن نفس المجموعة. يمكن أن تمثل هذه المتجهات أوجهًا مختلفة من البيانات، أو استخدام نماذج تضمين متنوعة، أو استخدام طرق معالجة بيانات مختلفة، ودمج النتائج باستخدام أدوات إعادة الترتيب.</p>
+<h2 id="How-to-Use-Our-Embedding-and-Reranking-Integrations" class="common-anchor-header">كيفية استخدام تكاملات التضمين وإعادة التصنيف الخاصة بنا<button data-href="#How-to-Use-Our-Embedding-and-Reranking-Integrations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,13 +52,13 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In the following sections, we’ll demonstrate three practical examples of using our integrations to generate embeddings and conduct vector searches.</p>
-<h3 id="Example-1-Use-the-Default-Embedding-Function-to-Generate-Dense-Vectors" class="common-anchor-header">Example 1: Use the Default Embedding Function to Generate Dense Vectors</h3><p>You must install the <code translate="no">pymilvus</code> client with the <code translate="no">model</code> package to use embedding and reranking functions with Milvus.</p>
+    </button></h2><p>في الأقسام التالية، سنشرح ثلاثة أمثلة عملية لاستخدام عمليات التكامل الخاصة بنا لتوليد التضمينات وإجراء عمليات البحث عن المتجهات.</p>
+<h3 id="Example-1-Use-the-Default-Embedding-Function-to-Generate-Dense-Vectors" class="common-anchor-header">مثال 1: استخدام وظيفة التضمين الافتراضية لتوليد متجهات كثيفة</h3><p>يجب عليك تثبيت العميل <code translate="no">pymilvus</code> مع الحزمة <code translate="no">model</code> لاستخدام وظائف التضمين وإعادة الترتيب مع ميلفوس.</p>
 <pre><code translate="no">pip install <span class="hljs-string">&quot;pymilvus[model]&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>This step will install <a href="https://milvus.io/docs/quickstart.md">Milvus Lite</a>, allowing you to run Milvus locally within your Python application. It also includes the model subpackage, which includes all utilities for Embedding and reranking.</p>
-<p>The model subpackage supports various embedding models, including those from OpenAI, <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence Transformers</a>, <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3</a>, BM25, <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">SPLADE</a>, and Jina AI pre-trained models.</p>
-<p>This example uses the <code translate="no">DefaultEmbeddingFunction</code>, based on the <code translate="no">all-MiniLM-L6-v2</code> Sentence Transformer model for simplicity. The model is about 70MB and will be downloaded during the first use:</p>
+<p>ستعمل هذه الخطوة على تثبيت Milvus <a href="https://milvus.io/docs/quickstart.md">Lite،</a> مما يسمح لك بتشغيل Milvus محليًا داخل تطبيق Python الخاص بك. تتضمن أيضًا الحزمة الفرعية للنموذج، والتي تتضمن جميع الأدوات المساعدة للتضمين وإعادة الترتيب.</p>
+<p>تدعم الحزمة الفرعية للنموذج نماذج التضمين المختلفة، بما في ذلك نماذج OpenAI، و <a href="https://zilliz.com/learn/Sentence-Transformers-for-Long-Form-Text">Sentence Transformers،</a> و <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3،</a> و BM25، و <a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">SPLADE،</a> ونماذج Jina AI المدربة مسبقًا.</p>
+<p>يستخدم هذا المثال <code translate="no">DefaultEmbeddingFunction</code> ، استنادًا إلى نموذج <code translate="no">all-MiniLM-L6-v2</code> Sentence Transformer Sentence Transformer للتبسيط. يبلغ حجم النموذج حوالي 70 ميغابايت وسيتم تنزيله أثناء الاستخدام الأول:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model
 
 <span class="hljs-comment"># This will download &quot;all-MiniLM-L6-v2&quot;, a lightweight model.</span>
@@ -77,7 +77,7 @@ embeddings = ef.encode_documents(docs)
 <span class="hljs-comment"># Print dimension and shape of embeddings</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Dim:&quot;</span>, ef.dim, embeddings[<span class="hljs-number">0</span>].shape)
 <button class="copy-code-btn"></button></code></pre>
-<p>The expected output should be something like the following:</p>
+<p>يجب أن تكون المخرجات المتوقعة مثل ما يلي:</p>
 <pre><code translate="no">Embeddings: [array([<span class="hljs-number">-3.09392996e-02</span>, <span class="hljs-number">-1.80662833e-02</span>,  <span class="hljs-number">1.34775648e-02</span>,  <span class="hljs-number">2.77156215e-02</span>,
       <span class="hljs-number">-4.86349640e-03</span>, <span class="hljs-number">-3.12581174e-02</span>, <span class="hljs-number">-3.55921760e-02</span>,  <span class="hljs-number">5.76934684e-03</span>,
        <span class="hljs-number">2.80773244e-03</span>,  <span class="hljs-number">1.35783911e-01</span>,  <span class="hljs-number">3.59678417e-02</span>,  <span class="hljs-number">6.17732145e-02</span>,
@@ -87,8 +87,8 @@ embeddings = ef.encode_documents(docs)
      dtype=<span class="hljs-type">float32</span>)]
 Dim: <span class="hljs-number">384</span> (<span class="hljs-number">384</span>,)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Example-2-Generate-Sparse-Vectors-Using-The-BM25-Model" class="common-anchor-header">Example 2: Generate Sparse Vectors Using The BM25 Model</h3><p>BM25 is a well-known method that uses word occurrence frequencies to determine the relevance between queries and documents. In this example, we’ll show how to use <code translate="no">BM25EmbeddingFunction</code> to generate sparse embeddings for queries and documents.</p>
-<p>In BM25, it’s important to calculate the statistics in your documents to obtain the IDF (Inverse Document Frequency), which can represent the patterns in your documents. The IDF measures how much information a word provides, whether it’s common or rare across all documents.</p>
+<h3 id="Example-2-Generate-Sparse-Vectors-Using-The-BM25-Model" class="common-anchor-header">مثال 2: توليد متجهات متفرقة باستخدام نموذج BM25</h3><p>BM25 هي طريقة معروفة تستخدم ترددات تكرار الكلمات لتحديد العلاقة بين الاستعلامات والمستندات. في هذا المثال، سنوضح في هذا المثال كيفية استخدام <code translate="no">BM25EmbeddingFunction</code> لتوليد تضمينات متفرقة للاستعلامات والمستندات.</p>
+<p>في BM25، من المهم حساب الإحصائيات في مستنداتك للحصول على IDF (التردد العكسي للمستند)، والذي يمكن أن يمثل الأنماط في مستنداتك. يقيس IDF مقدار المعلومات التي توفرها الكلمة، سواء كانت شائعة أو نادرة في جميع المستندات.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus.model.sparse <span class="hljs-keyword">import</span> BM25EmbeddingFunction
 
 <span class="hljs-comment"># 1. Prepare a small corpus to search</span>
@@ -114,9 +114,9 @@ docs_embeddings = new_bm25_ef.encode_documents(docs)
 query_embeddings = new_bm25_ef.encode_queries([query])
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Dim:&quot;</span>, new_bm25_ef.dim, <span class="hljs-built_in">list</span>(docs_embeddings)[<span class="hljs-number">0</span>].shape)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Example-3-Using-a-ReRanker" class="common-anchor-header">Example 3: Using a ReRanker</h3><p>A search system aims to find the most relevant results quickly and efficiently. Traditionally, methods like BM25 or TF-IDF have been used to rank search results based on keyword matching. Recent methods, such as embedding-based cosine similarity, are straightforward but can sometimes miss the subtleties of language and, most importantly, the interaction between documents and a query’s intent.</p>
-<p>This is where using a <a href="https://zilliz.com/learn/optimize-rag-with-rerankers-the-role-and-tradeoffs">re-ranker</a> helps. A re-ranker is an advanced AI model that takes the initial set of results from a search—often provided by an embeddings/token-based search—and re-evaluates them to ensure they align more closely with the user’s intent. It looks beyond the surface-level matching of terms to consider the deeper interaction between the search query and the content of the documents.</p>
-<p>For this example, we’ll use the <a href="https://milvus.io/docs/integrate_with_jina.md">Jina AI Reranker</a>.</p>
+<h3 id="Example-3-Using-a-ReRanker" class="common-anchor-header">مثال 3: استخدام أداة إعادة التصنيف</h3><p>يهدف نظام البحث إلى العثور على النتائج الأكثر صلة بسرعة وكفاءة. تقليديًا، تم استخدام طرق مثل BM25 أو TF-IDF لترتيب نتائج البحث بناءً على مطابقة الكلمات الرئيسية. تعتبر الأساليب الحديثة، مثل تشابه جيب التمام القائم على التضمين، مباشرة ولكنها قد تغفل في بعض الأحيان عن التفاصيل الدقيقة للغة، والأهم من ذلك، التفاعل بين المستندات ومقصد الاستعلام.</p>
+<p>هذا هو المكان الذي يساعد فيه استخدام أداة <a href="https://zilliz.com/learn/optimize-rag-with-rerankers-the-role-and-tradeoffs">إعادة التصنيف</a>. أداة إعادة التصنيف هي نموذج متقدم للذكاء الاصطناعي يأخذ مجموعة النتائج الأولية من البحث - غالبًا ما يتم توفيرها من خلال بحث قائم على التضمينات/الرموز - ويعيد تقييمها للتأكد من أنها تتوافق بشكل أوثق مع قصد المستخدم. فهو ينظر إلى ما هو أبعد من المطابقة السطحية للمصطلحات للنظر في التفاعل الأعمق بين استعلام البحث ومحتوى المستندات.</p>
+<p>في هذا المثال، سوف نستخدم <a href="https://milvus.io/docs/integrate_with_jina.md">أداة إعادة التصنيف بالذكاء الاصطناعي "جينا"</a>.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus.model.reranker <span class="hljs-keyword">import</span> JinaRerankFunction
 
 jina_api_key = <span class="hljs-string">&quot;&lt;YOUR_JINA_API_KEY&gt;&quot;</span>
@@ -139,7 +139,7 @@ results = rf(query, documents)
    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Score: <span class="hljs-subst">{result.score:<span class="hljs-number">.6</span>f}</span>&quot;</span>)
    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Text: <span class="hljs-subst">{result.text}</span>\n&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>The expected output is similar to the following:</p>
+<p>الناتج المتوقع مشابه لما يلي:</p>
 <pre><code translate="no">Index: <span class="hljs-number">1</span>
 Score: <span class="hljs-number">0.937096</span>
 Text: The Dartmouth Conference <span class="hljs-keyword">in</span> <span class="hljs-number">1956</span> <span class="hljs-keyword">is</span> considered the birthplace of artificial intelligence <span class="hljs-keyword">as</span> a field; here, John McCarthy <span class="hljs-keyword">and</span> others coined the term <span class="hljs-string">&#x27;artificial intelligence&#x27;</span> <span class="hljs-keyword">and</span> laid <span class="hljs-keyword">out</span> its basic goals.
@@ -156,7 +156,7 @@ Index: <span class="hljs-number">2</span>
 Score: <span class="hljs-number">0.272896</span>
 Text: In <span class="hljs-number">1951</span>, British mathematician <span class="hljs-keyword">and</span> computer scientist Alan Turing also developed the first program designed to play chess, demonstrating an early example of AI <span class="hljs-keyword">in</span> game strategy.
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Star-Us-On-GitHub-and-Join-Our-Discord" class="common-anchor-header">Star Us On GitHub and Join Our Discord!<button data-href="#Star-Us-On-GitHub-and-Join-Our-Discord" class="anchor-icon" translate="no">
+<h2 id="Star-Us-On-GitHub-and-Join-Our-Discord" class="common-anchor-header">ضع نجمة لنا على GitHub وانضم إلى خلافنا!<button data-href="#Star-Us-On-GitHub-and-Join-Our-Discord" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -171,4 +171,4 @@ Text: In <span class="hljs-number">1951</span>, British mathematician <span clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>If you liked this blog post, consider starring Milvus on <a href="https://github.com/milvus-io/milvus">GitHub</a>, and feel free to join our <a href="https://discord.gg/FG6hMJStWu">Discord</a>! 💙</p>
+    </button></h2><p>إذا أعجبك هذا المنشور في المدونة، ففكر في وضع نجمة ميلفوس على <a href="https://github.com/milvus-io/milvus">GitHub،</a> ولا تتردد في الانضمام إلى <a href="https://discord.gg/FG6hMJStWu">خلافنا</a>! 💙</p>

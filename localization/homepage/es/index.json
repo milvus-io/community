@@ -3,19 +3,12 @@
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
-      "tag": "SKILL",
-      "label": "Milvus Skill — Operate Milvus from Any AI Coding Agent via Natural Language",
-      "link": "https://github.com/zilliztech/milvus-skill"
+      "label": "Introducing Milvus Skills: Operate Milvus from AI Agents with Natural Language",
+      "link": "https://milvus.io/docs/milvus_for_agents.md"
     },
     {
-      "tag": "Blog",
-      "label": "Our Journey to 35K+ Stars: The Story of Building Milvus from Scratch",
-      "link": "/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md"
-    },
-    {
-      "tag": "Product",
-      "label": "VDBBench 1.0: Open-Source VectorDB Benchmarking with Production Workloads",
-      "link": "/blog/vdbbench-1-0-benchmarking-with-your-real-world-production-workloads.md"
+      "label": "Webinar | Make Your AI Search Always-On with Zilliz Global Cluster",
+      "link": "https://zilliz.com/event/going-global-scaling-zilliz-for-high-availability-and-low-latency"
     }
   ]
 }

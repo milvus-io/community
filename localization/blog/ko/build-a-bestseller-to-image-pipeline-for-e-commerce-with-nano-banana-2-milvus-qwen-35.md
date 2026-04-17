@@ -1,9 +1,7 @@
 ---
 id: >-
   build-a-bestseller-to-image-pipeline-for-e-commerce-with-nano-banana-2-milvus-qwen-35.md
-title: >
-  Build a Bestseller-to-Image Pipeline for E-Commerce with Nano Banana 2 +
-  Milvus + Qwen 3.5
+title: 나노 바나나 2 + 밀버스 + 퀀 3.5로 이커머스용 베스트셀러-이미지 파이프라인 구축하기
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
@@ -18,17 +16,17 @@ meta_keywords: >-
   vector search
 meta_title: |
   Nano Banana 2 + Milvus: E-Commerce AI Image Generation Tutorial
-desc: >
-  Step-by-step tutorial: use Nano Banana 2, Milvus hybrid search, and Qwen 3.5
-  to generate e-commerce product photos from flat-lays at 1/3 the cost.
+desc: >-
+  단계별 튜토리얼: 나노 바나나 2, Milvus 하이브리드 검색, Qwen 3.5를 사용하여 1/3의 비용으로 플랫 레이아웃에서 전자상거래
+  제품 사진을 생성할 수 있습니다.
 origin: >-
   https://milvus.io/blog/build-a-bestseller-to-image-pipeline-for-e-commerce-with-nano-banana-2-milvus-qwen-35.md
 ---
-<p>If you build AI tooling for e-commerce sellers, you’ve probably heard this request a thousand times: “I have a new product. Give me a promotional image that looks like it belongs in a bestseller listing. No photographer, no studio, and make it cheap.”</p>
-<p>That’s the problem in a sentence. Sellers have flat-lay photos and a catalog of bestsellers that already convert. They want to bridge the two with AI, both fast and at scale.</p>
-<p>When Google released Nano Banana 2 (Gemini 3.1 Flash Image) on February 26, 2026, we tested it the same day and integrated it into our existing Milvus-based retrieval pipeline. The result: total image generation cost dropped to roughly one-third of what was spent before, and throughput doubled. The per-image price cut (about 50% cheaper than Nano Banana Pro) accounts for part of that, but the larger savings come from eliminating rework cycles entirely.</p>
-<p>This article covers what Nano Banana 2 gets right for e-commerce, where it still falls short, and then walks through a hands-on tutorial for the full pipeline: <strong>Milvus</strong> hybrid search to find visually similar bestsellers, <strong>Qwen</strong> 3.5 for style analysis, and <strong>Nano Banana 2</strong> for final generation.</p>
-<h2 id="What’s-New-with-Nano-Banana-2" class="common-anchor-header">What’s New with Nano Banana 2?<button data-href="#What’s-New-with-Nano-Banana-2" class="anchor-icon" translate="no">
+<p>이커머스 판매자를 위한 AI 툴을 개발하는 사람이라면 이런 요청을 수천 번은 들어보셨을 것입니다: "새로운 제품이 있습니다. 베스트셀러 목록에 올릴 만한 홍보용 이미지를 만들어 주세요. 사진작가나 스튜디오 없이 저렴하게 만들어주세요."</p>
+<p>이것이 바로 이 문장의 문제입니다. 판매자는 평면적인 사진과 이미 전환된 베스트셀러 카탈로그를 가지고 있습니다. 판매자는 이 두 가지를 AI를 통해 빠르고 대규모로 연결하고자 합니다.</p>
+<p>Google은 2026년 2월 26일에 나노 바나나 2(Gemini 3.1 플래시 이미지)를 출시했을 때, 같은 날 테스트하여 기존 Milvus 기반 검색 파이프라인에 통합했습니다. 그 결과, 총 이미지 생성 비용은 이전의 약 3분의 1 수준으로 떨어졌고 처리량은 두 배로 증가했습니다. 이미지당 가격 인하(나노 바나나 프로보다 약 50% 저렴)가 그 중 일부를 차지하지만, 더 큰 절감 효과는 재작업 주기를 완전히 없앤 데서 비롯됩니다.</p>
+<p>이 글에서는 이커머스에 적합한 나노 바나나 2의 장점과 아직 부족한 부분을 살펴보고, 전체 파이프라인에 대한 실습 튜토리얼을 안내합니다: 시각적으로 유사한 베스트셀러를 찾기 위한 <strong>Milvus</strong> 하이브리드 검색, 스타일 분석을 위한 <strong>Qwen</strong> 3.5, 최종 세대를 위한 <strong>Nano Banana 2에</strong> 대해 알아봅니다.</p>
+<h2 id="What’s-New-with-Nano-Banana-2" class="common-anchor-header">나노 바나나 2의 새로운 기능은 무엇인가요?<button data-href="#What’s-New-with-Nano-Banana-2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,18 +41,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nano Banana 2 (Gemini 3.1 Flash Image) launched on February 26, 2026. It brings most of Nano Banana Pro’s capabilities to the Flash architecture, meaning faster generation at a lower price point. Here are the key upgrades:</p>
+    </button></h2><p>나노 바나나 2(제미니 3.1 플래시 이미지)는 2026년 2월 26일에 출시되었습니다. 나노 바나나 프로의 대부분의 기능을 플래시 아키텍처에 적용하여 더 낮은 가격대로 더 빠르게 생성할 수 있습니다. 주요 업그레이드 사항은 다음과 같습니다:</p>
 <ul>
-<li><strong>Pro-level quality at Flash speed.</strong> Nano Banana 2 delivers world-class knowledge, reasoning, and visual fidelity previously exclusive to Pro, but with the latency and throughput of Flash.</li>
-<li><strong>512px to 4K output.</strong> Four resolution tiers (512px, 1K, 2K, 4K) with native support. The 512px tier is new and unique to Nano Banana 2.</li>
-<li><strong>14 aspect ratios.</strong> Adds 4:1, 1:4, 8:1, and 1:8 to the existing set (1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9).</li>
-<li><strong>Up to 14 reference images.</strong> Maintains character resemblance for up to 5 characters and object fidelity for up to 14 objects in a single workflow.</li>
-<li><strong>Improved text rendering.</strong> Generates legible, accurate in-image text across multiple languages, with support for translation and localization within a single generation.</li>
-<li><strong>Image Search grounding.</strong> Pulls from real-time web data and images from Google Search to generate more accurate depictions of real-world subjects.</li>
-<li><strong>~50% cheaper per image.</strong> At 1K resolution: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.067</mn><mi>v</mi><mi>e</mi><mi>r</mi><mi>s</mi><mi>u</mi><mi>s</mi><mi>P</mi><mi>r</mi><msup><mi>o</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mi>s</mi></mrow><annotation encoding="application/x-tex">0.067 versus Pro&#x27;s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7519em;"></span><span class="mord">0.067</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">ers</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mord mathnormal">s</span></span></span></span>0.134.</li>
+<li><strong>플래시 속도의 프로급 품질.</strong> 나노 바나나 2는 이전에는 프로에서만 가능했던 세계 최고 수준의 지식, 추론, 시각적 충실도를 플래시의 지연 시간 및 처리량으로 제공합니다.</li>
+<li><strong>512픽셀에서 4K 출력.</strong> 네 가지 해상도 티어(512px, 1K, 2K, 4K)가 기본적으로 지원됩니다. 512px 티어는 Nano Banana 2에 새롭게 추가된 기능입니다.</li>
+<li><strong>14가지 화면비.</strong> 기존 세트(1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9)에 4:1, 1:4, 8:1, 1:8이 추가되었습니다.</li>
+<li><strong>최대 14개의 참조 이미지.</strong> 단일 워크플로우에서 최대 5개의 문자에 대해 문자 유사성을 유지하고 최대 14개의 개체에 대해 개체 충실도를 유지합니다.</li>
+<li><strong>향상된 텍스트 렌더링.</strong> 단일 세대 내에서 번역 및 로컬라이제이션을 지원하여 여러 언어에 걸쳐 읽기 쉽고 정확한 이미지 내 텍스트를 생성합니다.</li>
+<li><strong>이미지 검색 근거.</strong> Google 검색에서 실시간 웹 데이터와 이미지를 가져와 실제 피사체를 더욱 정확하게 묘사합니다.</li>
+<li><strong>~이미지당 최대 50% 저렴.</strong> 1K 해상도 기준: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.067</mn></mrow><annotation encoding="application/x-tex">대 Pro의</annotation><mrow><mi>0</mi><mn>.</mn></mrow><annotation encoding="application/x-tex">067</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7519em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.</span><span class="mord"><span class="mord mathnormal">067</span></span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">대</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">Pro</span></span></span></span><span class="pstrut" style="height:2.7em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">′s0</span></span></span></span>.134.</li>
 </ul>
-<p><strong>A Fun Use Case of Nano Banano 2: Generate a Location-Aware Panorama Based On a Simple Google Map Screenshot</strong></p>
-<p>Given a Google Maps screenshot and a style prompt, the model recognizes the geographic context and generates a panorama that preserves the correct spatial relationships. Useful for producing region-targeted ad creatives (a Parisian café backdrop, a Tokyo streetscape) without sourcing stock photography.</p>
+<p><strong>나노 바나노 2의 재미있는 사용 사례: 간단한 Google 지도 스크린샷을 기반으로 위치 인식 파노라마 생성하기</strong></p>
+<p>Google 지도 스크린샷과 스타일 프롬프트가 주어지면 모델은 지리적 컨텍스트를 인식하고 올바른 공간 관계를 유지하는 파노라마를 생성합니다. 스톡 사진을 사용하지 않고 지역 타겟 광고 크리에이티브(파리의 카페 배경, 도쿄 거리 풍경)를 제작하는 데 유용합니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image5.png" alt="" class="doc-image" id="" />
@@ -67,8 +65,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>For the full feature set, see <a href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/">Google’s announcement blog</a> and the <a href="https://ai.google.dev/gemini-api/docs/image-generation">developer documentation</a>.</p>
-<h2 id="What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="common-anchor-header">What Does This Nano Banana Update Mean For E-Commerce?<button data-href="#What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="anchor-icon" translate="no">
+<p>전체 기능에 대한 자세한 내용은 <a href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/">Google의 발표 블로그와</a> <a href="https://ai.google.dev/gemini-api/docs/image-generation">개발자 문서를</a> 참조하세요.</p>
+<h2 id="What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="common-anchor-header">이 나노 바나나 업데이트는 전자상거래에 어떤 의미가 있나요?<button data-href="#What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,73 +81,73 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>E-commerce is one of the most image-intensive industries. Product listings, marketplace ads, social creatives, banner campaigns, localized storefronts: every channel demands a constant stream of visual assets, each with its own specs.</p>
-<p>The core requirements for AI image generation in e-commerce boil down to:</p>
+    </button></h2><p>전자상거래는 가장 이미지 집약적인 산업 중 하나입니다. 제품 목록, 마켓플레이스 광고, 소셜 크리에이티브, 배너 캠페인, 현지화된 상점 첫 화면 등 모든 채널에는 각각 고유한 사양을 갖춘 시각적 자산이 지속적으로 필요합니다.</p>
+<p>이커머스에서 AI 이미지 생성을 위한 핵심 요구 사항은 다음과 같이 요약됩니다:</p>
 <ul>
-<li><strong>Keep costs low</strong> – per-image cost has to work at catalog scale.</li>
-<li><strong>Match the look of proven bestsellers</strong> – new images should align with the visual style of listings that already convert.</li>
-<li><strong>Avoid infringement</strong> – no copying competitors’ creatives or reusing protected assets.</li>
+<li><strong>낮은 비용 유지</strong> - 이미지당 비용은 카탈로그 규모에서 작동해야 합니다.</li>
+<li><strong>검증된 베스트셀러의 이미지와 일치</strong> - 새로운 이미지는 이미 전환된 목록의 시각적 스타일과 일치해야 합니다.</li>
+<li>저작권<strong>침해 방지</strong> - 경쟁사의 크리에이티브를 복사하거나 보호 대상 자산을 재사용하지 않습니다.</li>
 </ul>
-<p>On top of that, cross-border sellers need:</p>
+<p>또한 해외 판매자에게는 다음이 필요합니다:</p>
 <ul>
-<li><strong>Multi-platform format support</strong> – different aspect ratios and specs for marketplaces, ads, and storefronts.</li>
-<li><strong>Multilingual text rendering</strong> – clean, accurate in-image text across multiple languages.</li>
+<li><strong>멀티플랫폼 형식 지원</strong> - 마켓플레이스, 광고, 상점의 다양한 화면 비율과 사양을 지원합니다.</li>
+<li><strong>다국어 텍스트 렌더링</strong> - 여러 언어에 걸쳐 깔끔하고 정확한 이미지 내 텍스트를 제공합니다.</li>
 </ul>
-<p>Nano Banana 2 comes close to checking every box. The sections below break down what each upgrade means in practice: where it directly solves an e-commerce pain point, where it falls short, and what the actual cost impact looks like.</p>
-<h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">Cut Output Generation Costs by Up to 60%</h3><p>At 1K resolution, Nano Banana 2 costs <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.067</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>i</mi><mi>m</mi><mi>a</mi><mi>g</mi><mi>e</mi><mi>v</mi><mi>e</mi><mi>r</mi><mi>s</mi><mi>u</mi><mi>s</mi><mi>P</mi><mi>r</mi><msup><mi>o</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mi>s</mi></mrow><annotation encoding="application/x-tex">0.067 per image versus Pro&#x27;s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span><span class="mord">0.067</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">ima</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">ers</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mord mathnormal">s</span></span></span></span>0.134, which is a straight 50% cut. But the per-image price is only half the story. What used to kill user budgets was rework. Every marketplace enforces its own image spec (1:1 for Amazon, 3:4 for Shopify storefronts, ultrawide for banner ads), and producing each variant meant a separate generation pass with its own failure modes.</p>
-<p>Nano Banana 2 collapses those extra passes into one.</p>
+<p>나노 바나나 2는 모든 상자를 거의 모두 충족합니다. 아래 섹션에서는 각 업그레이드가 실제로 어떤 의미를 갖는지, 즉 이커머스의 문제점을 직접적으로 해결하는 부분과 부족한 부분, 실제 비용에 미치는 영향에 대해 자세히 설명합니다.</p>
+<h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">출력 생성 비용 최대 60% 절감</h3><p>1K 해상도에서 나노 바나나 2의 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">이미지당</annotation></semantics></math></span></span>비용은 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.</mn><mi>067달러로</mi></mrow><annotation encoding="application/x-tex">프로의</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">.</span><span class="mord"><span class="mord mathnormal">067달러</span></span><span class="mord">, 프로</span></span></span></span><span class="pstrut" style="height:2.7em;"></span> 0. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">134달러에</span></span></span></span>비해 약 50% 절감됩니다. 하지만 이미지당 가격은 절반에 불과합니다. 사용자 예산을 죽이던 것은 재작업이었습니다. 모든 마켓플레이스는 자체적인 이미지 사양(아마존의 경우 1:1, Shopify 스토어 프론트의 경우 3:4, 배너 광고의 경우 울트라와이드)을 적용하고 있으며, 각 변형을 제작하려면 실패 모드가 있는 별도의 세대별 패스를 사용해야 했습니다.</p>
+<p>나노 바나나 2는 이러한 추가 패스를 하나로 통합합니다.</p>
 <ul>
-<li><p><strong>Four native resolution tiers.</strong></p></li>
-<li><p>512px ($0.045)</p></li>
+<li><p><strong>네 가지 기본 해상도 계층.</strong></p></li>
+<li><p>512픽셀 ($0.045)</p></li>
 <li><p>1K ($0.067)</p></li>
 <li><p>2K ($0.101)</p></li>
 <li><p>4K ($0.151).</p></li>
 </ul>
-<p>The 512px tier is new and unique to Nano Banana 2. Users can now generate low-cost 512px drafts for iteration and output the final asset at 2K or 4K without a separate upscaling step.</p>
+<p>512px 티어는 나노 바나나 2에 새롭게 추가된 기능입니다. 이제 사용자는 반복 작업을 위해 저비용 512px 초안을 생성하고 별도의 업스케일링 단계 없이 최종 에셋을 2K 또는 4K로 출력할 수 있습니다.</p>
 <ul>
-<li><p><strong>14 supported aspect ratios</strong> in total. Here are some examples:</p></li>
+<li><p><strong>지원되는 화면비는</strong> 총<strong>14가지입니다</strong>. 다음은 몇 가지 예시입니다:</p></li>
 <li><p>4:1</p></li>
 <li><p>1:4</p></li>
 <li><p>8:1</p></li>
 <li><p>1:8</p></li>
 </ul>
-<p>These new ultra-wide and ultra-tall ratios join the existing set. One generation session can produce various formats like: <strong>Amazon main image</strong> (1:1), <strong>Storefront hero</strong> (3:4) and <strong>Banner ad</strong> (ultra-wide or other ratios.)</p>
-<p>No cropping, no padding, no re-prompting required for these 4 ratios. The remaining 10 aspect ratios are included in the full set, making the process more flexible across different platforms.</p>
-<p>The ~50% per-image savings alone would only halve the bill. Eliminating rework across resolutions and aspect ratios is what brought the total cost down to roughly one-third of what was spent before.</p>
-<h3 id="Support-Up-to-14-Reference-Images-with-Bestseller-Style" class="common-anchor-header">Support Up to 14 Reference Images with Bestseller Style</h3><p>Of all the Nano Banana 2 updates, multi-reference blending has the biggest impact on our Milvus pipeline. Nano Banana 2 accepts up to 14 reference images in a single request, maintaining:</p>
+<p>이 새로운 울트라 와이드 및 울트라 톨 비율은 기존 세트에 추가됩니다. 한 세대의 세션으로 다음과 같은 다양한 형식을 제작할 수 있습니다: <strong>아마존 메인 이미지</strong> (1:1), <strong>스토어 첫 화면 히어로</strong> (3:4), <strong>배너 광고</strong> (울트라 와이드 또는 기타 비율).</p>
+<p>이 4가지 비율에는 자르기, 패딩, 재 프롬프트가 필요하지 않습니다. 나머지 10가지 종횡비는 전체 세트에 포함되어 있어 다양한 플랫폼에서 더욱 유연하게 사용할 수 있습니다.</p>
+<p>이미지당 최대 50%의 비용 절감 효과만으로도 비용은 절반으로 줄어듭니다. 해상도와 종횡비에 따른 재작업이 없어지면서 총 비용이 기존 대비 약 1/3 수준으로 낮아졌습니다.</p>
+<h3 id="Support-Up-to-14-Reference-Images-with-Bestseller-Style" class="common-anchor-header">베스트셀러 스타일로 최대 14개의 참조 이미지 지원</h3><p>나노 바나나 2의 모든 업데이트 중 멀티 레퍼런스 블렌딩은 Milvus 파이프라인에 가장 큰 영향을 미쳤습니다. 나노 바나나 2는 한 번의 요청으로 최대 14개의 레퍼런스 이미지를 사용할 수 있습니다:</p>
 <ul>
-<li>Character resemblance for up to <strong>5 characters</strong></li>
-<li>Object fidelity for up to <strong>14 objects</strong></li>
+<li>최대 <strong>5개의 문자에</strong> 대한 문자 유사성</li>
+<li>최대 <strong>14개의 오브</strong>젝트에 대한 오브젝트 충실도</li>
 </ul>
-<p>In practice, we retrieved multiple bestseller images from Milvus, passed them in as references, and the generated image inherited their scene composition, lighting, posing, and prop placement. There was no prompt engineering required to reconstruct those patterns by hand.</p>
-<p>Previous models supported only one or two references, which forced users to pick a single bestseller to mimic. With 14 reference slots, we could blend characteristics from multiple top-performing listings and let the model synthesize a composite style. This is the capability that makes the retrieval-based pipeline in the tutorial below possible.</p>
+<p>실제로 Milvus에서 여러 베스트셀러 이미지를 검색하여 레퍼런스로 전달하면 생성된 이미지가 해당 이미지의 장면 구성, 조명, 포즈, 소품 배치를 그대로 계승했습니다. 이러한 패턴을 수작업으로 재구성하는 데 즉각적인 엔지니어링이 필요하지 않았습니다.</p>
+<p>이전 모델은 한두 개의 레퍼런스만 지원했기 때문에 사용자는 모방할 베스트셀러를 하나만 선택해야 했습니다. 14개의 레퍼런스 슬롯을 통해 여러 베스트셀러 목록의 특성을 혼합하여 모델이 복합적인 스타일을 합성할 수 있게 되었습니다. 이것이 바로 아래 튜토리얼의 검색 기반 파이프라인을 가능하게 하는 기능입니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image15.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Produce-Premium-Commercial-Ready-Visuals-Without-Traditional-Production-Cost-or-Logistics" class="common-anchor-header">Produce Premium, Commercial-Ready Visuals Without Traditional Production Cost or Logistics</h3><p>For consistent, reliable image generation, avoid dumping all your requirements into a single prompt. A more dependable approach is to work in stages: generate the background first, then the model separately, and finally composite them together.</p>
-<p>We tested background generation across all three Nano Banana models with the same prompt: a 4:1 ultrawide rainy-day Shanghai skyline viewed through a window, with the Oriental Pearl Tower visible. This prompt stress-tests composition, architectural detail, and photorealism in a single pass.</p>
+<h3 id="Produce-Premium-Commercial-Ready-Visuals-Without-Traditional-Production-Cost-or-Logistics" class="common-anchor-header">기존 제작 비용이나 물류 비용 없이 상업적으로 적합한 프리미엄 비주얼 제작하기</h3><p>일관되고 안정적인 이미지 생성을 위해서는 모든 요구 사항을 하나의 프롬프트에 몰아넣지 마세요. 배경을 먼저 생성한 다음 모델을 개별적으로 생성하고 마지막으로 합성하는 등 단계적으로 작업하는 것이 더 신뢰할 수 있는 접근 방식입니다.</p>
+<p>세 가지 나노 바나나 모델 모두에서 동일한 프롬프트를 사용하여 배경 생성을 테스트했습니다. 창문을 통해 보이는 4:1 비율의 비오는 날 상하이 스카이라인과 동양의 진주탑이 보입니다. 이 프롬프트는 한 번의 패스로 구도, 건축 디테일, 사실감을 테스트합니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h4 id="Original-Nano-Banana-vs-Nano-Banana-Pro-vs-Nano-Banana-2" class="common-anchor-header">Original Nano Banana vs. Nano Banana Pro vs. Nano Banana 2</h4><ul>
-<li><strong>Original Nano Banana.</strong> Natural rain texture with believable droplet distribution, but over-smoothed building details. The Oriental Pearl Tower was barely recognizable, and resolution fell short of production requirements.</li>
-<li><strong>Nano Banana Pro.</strong> Cinematic atmosphere: warm interior lighting played against cold rain convincingly. However, it omitted the window frame entirely, flattening the image’s sense of depth. Usable as a supporting image, not a hero.</li>
-<li><strong>Nano Banana 2.</strong> Rendered the full scene. The window frame in the foreground created depth. The Oriental Pearl Tower was clearly detailed. Ships appeared on the Huangpu River. Layered lighting distinguished interior warmth from exterior overcast. Rain and water-stain textures were near-photographic, and the 4:1 ultrawide ratio held the correct perspective with only minor distortion at the left window edge.</li>
+<h4 id="Original-Nano-Banana-vs-Nano-Banana-Pro-vs-Nano-Banana-2" class="common-anchor-header">오리지널 나노 바나나 대 나노 바나나 프로 대 나노 바나나 2</h4><ul>
+<li><strong>오리지널 나노 바나나.</strong> 사실적인 빗방울 분포로 자연스러운 빗방울 텍스처를 구현했지만 건물 디테일은 지나치게 부드럽게 처리했습니다. 오리엔탈 펄 타워는 거의 알아볼 수 없었고 해상도가 제작 요구 사항에 미치지 못했습니다.</li>
+<li><strong>나노 바나나 프로.</strong> 영화 같은 분위기: 차가운 비와 대비되는 따뜻한 실내 조명이 설득력 있게 표현되었습니다. 하지만 창틀이 완전히 생략되어 이미지의 깊이감이 밋밋해졌습니다. 주인공이 아닌 보조 이미지로 사용할 수 있습니다.</li>
+<li><strong>나노 바나나 2.</strong> 전체 장면을 렌더링했습니다. 전경의 창틀이 깊이감을 만들어냈습니다. 동양의 진주탑이 선명하게 표현되었습니다. 황푸강에 배가 나타났습니다. 레이어드 라이팅으로 내부의 따뜻한 느낌과 흐린 외부를 구분했습니다. 비와 물 얼룩 텍스처는 사진에 가깝게 표현되었고, 4:1 울트라 와이드 비율은 왼쪽 창 가장자리에서 약간의 왜곡만 있을 뿐 정확한 원근감을 유지했습니다.</li>
 </ul>
-<p>For most background generation tasks in product photography, we found the Nano Banana 2 output usable without post-processing.</p>
-<h3 id="Render-In-Image-Text-Cleanly-Across-Languages" class="common-anchor-header">Render In-Image Text Cleanly Across Languages</h3><p>Price tags, promotional banners, and multilingual copy are unavoidable in e-commerce images, and they’ve historically been a breaking point for AI generation. Nano Banana 2 handles them significantly better, supporting in-image text rendering across multiple languages with translation and localization in a single generation.</p>
-<p><strong>Standard text rendering.</strong> In our testing, text output was error-free across every e-commerce format we tried: price labels, short marketing taglines, and bilingual product descriptions.</p>
-<p><strong>Handwriting continuation.</strong> Since e-commerce often requires handwritten elements like price tags and personalized cards, we tested whether the models could match an existing handwritten style and extend it — specifically, matching a handwritten to-do list and adding 5 new items in the same style. Results across three models:</p>
+<p>제품 사진에서 대부분의 배경 생성 작업에서 Nano Banana 2의 출력물은 후처리 없이도 사용할 수 있었습니다.</p>
+<h3 id="Render-In-Image-Text-Cleanly-Across-Languages" class="common-anchor-header">여러 언어에 걸쳐 이미지 내 텍스트를 깔끔하게 렌더링</h3><p>가격표, 홍보 배너, 다국어 카피는 이커머스 이미지에서 피할 수 없는 요소이며, 그동안 AI 생성의 한계점이었습니다. 나노 바나나 2는 한 세대 만에 번역 및 로컬라이제이션을 통해 여러 언어에 걸친 이미지 내 텍스트 렌더링을 지원하여 이러한 문제를 훨씬 더 잘 처리합니다.</p>
+<p><strong>표준 텍스트 렌더링.</strong> 테스트 결과, 가격 라벨, 짧은 마케팅 태그 라인, 이중 언어 제품 설명 등 모든 이커머스 형식에서 오류 없이 텍스트가 출력되었습니다.</p>
+<p><strong>손글씨 연속.</strong> 전자상거래에는 가격표나 개인화된 카드와 같은 필기 요소가 필요한 경우가 많기 때문에 모델이 기존 필기 스타일과 일치하고 이를 확장할 수 있는지 테스트했습니다(특히 필기 할 일 목록과 일치하고 동일한 스타일로 5개의 새 항목을 추가하는 등). 세 가지 모델에 대한 결과입니다:</p>
 <ul>
-<li><strong>Original Nano Banana.</strong> Repeated sequence numbers, misunderstood structure.</li>
-<li><strong>Nano Banana Pro.</strong> Correct layout, but poor font style reproduction.</li>
-<li><strong>Nano Banana 2.</strong> Zero errors. Matched stroke weight and letterform style closely enough to be indistinguishable from the source.</li>
+<li><strong>오리지널 나노 바나나.</strong> 반복되는 시퀀스 번호, 잘못된 구조.</li>
+<li><strong>나노 바나나 프로.</strong> 레이아웃은 올바르지만 글꼴 스타일이 제대로 재현되지 않음.</li>
+<li><strong>나노 바나나 2.</strong> 오류 없음. 원본과 구별할 수 없을 정도로 획 굵기와 글자꼴 스타일이 일치함.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -157,8 +155,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>However,</strong> Google’s own documentation notes that Nano Banana 2 “can still struggle with accurate spelling and fine details in images.” Our results were clean across the formats we tested, but any production workflow should include a text verification step before publishing.</p>
-<h2 id="Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="common-anchor-header">Step-by-Step Tutorial: Build a Bestseller-to-Image Pipeline with Milvus, Qwen 3.5, and Nano Banana 2<button data-href="#Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="anchor-icon" translate="no">
+<p><strong>하지만</strong> 구글의 자체 문서에 따르면 나노 바나나 2는 "정확한 철자와 이미지의 미세한 디테일에 대해서는 여전히 어려움을 겪을 수 있다"고 언급하고 있습니다. 테스트한 모든 형식에서 결과가 깨끗했지만 모든 프로덕션 워크플로에는 게시하기 전에 텍스트 확인 단계가 포함되어야 합니다.</p>
+<h2 id="Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="common-anchor-header">단계별 튜토리얼: Milvus, Qwen 3.5 및 Nano Banana 2를 사용하여 베스트셀러-이미지 파이프라인 구축하기<button data-href="#Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -173,15 +171,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Before-we-begin-Architecture-and-Model-Setup" class="common-anchor-header">Before we begin: Architecture and Model Setup</h3><p>To avoid the randomness of single-prompt generation, we split the process into three controllable stages: retrieve what already works with <strong>Milvus</strong> hybrid search, analyze why it works with <strong>Qwen 3.5</strong>, then generate the final image with those constraints baked in with <strong>Nano Banana 2</strong>.</p>
-<p>Quick primer on each tool if you haven’t worked with them before:</p>
+    </button></h2><h3 id="Before-we-begin-Architecture-and-Model-Setup" class="common-anchor-header">시작하기 전에 아키텍처 및 모델 설정</h3><p>단일 프롬프트 생성의 무작위성을 피하기 위해 <strong>Milvus</strong> 하이브리드 검색으로 이미 작동하는 것을 검색하고, <strong>Qwen 3.5로</strong> 작동하는 이유를 분석한 다음, <strong>Nano Banana 2로</strong> 이러한 제약 조건을 구운 최종 이미지를 생성하는 제어 가능한 세 단계로 프로세스를 분할했습니다.</p>
+<p>각 도구를 사용해 본 적이 없다면 각 도구에 대한 간단한 입문서를 참고하세요:</p>
 <ul>
-<li><strong><a href="https://milvus.io/">Milvus</a></strong><a href="https://milvus.io/">:</a> the most widely adopted open-source vector database. Stores your product catalog as vectors and runs hybrid search (dense + sparse + scalar filters) to find bestseller images most similar to a new product.</li>
-<li><strong>Qwen 3.5</strong>: a popular multimodal LLM. Takes retrieved bestseller images and extracts the visual patterns behind them (scene layout, lighting, pose, mood) into a structured style prompt.</li>
-<li><strong>Nano Banana 2</strong>: image generation model from Google (Gemini 3.1 Flash Image). Takes three inputs: the new product flat-lay, a bestseller reference, and Qwen 3.5’s style prompt. Outputs the final promotional photo.</li>
+<li><strong><a href="https://milvus.io/">Milvus</a></strong><a href="https://milvus.io/">:</a> 가장 널리 채택된 오픈 소스 벡터 데이터베이스입니다. 제품 카탈로그를 벡터로 저장하고 하이브리드 검색(밀도 + 스파스 + 스칼라 필터)을 실행하여 신제품과 가장 유사한 베스트셀러 이미지를 찾습니다.</li>
+<li><strong>Qwen 3.5</strong>: 널리 사용되는 멀티모달 LLM. 검색된 베스트셀러 이미지를 가져와 그 뒤에 있는 시각적 패턴(장면 레이아웃, 조명, 포즈, 분위기)을 구조화된 스타일 프롬프트로 추출합니다.</li>
+<li><strong>나노 바나나 2</strong>: Google의 이미지 생성 모델(Gemini 3.1 플래시 이미지). 신제품 평면 레이아웃, 베스트셀러 참조, Qwen 3.5의 스타일 프롬프트 등 세 가지 입력을 받습니다. 최종 홍보용 사진을 출력합니다.</li>
 </ul>
-<p>The logic behind this architecture starts with one observation: the most valuable visual asset in any e-commerce catalog is the library of bestseller images that have already been converted. The poses, compositions, and lighting in those photos were refined through real ad spend. Retrieving those patterns directly is an order of magnitude faster than reverse-engineering them through prompt writing, and that retrieval step is exactly what a vector database handles.</p>
-<p>Here is the full flow. We call every model through the OpenRouter API, so there is no local GPU requirement and no model weights to download.</p>
+<p>이 아키텍처의 논리는 한 가지 관찰에서 시작됩니다. 모든 전자상거래 카탈로그에서 가장 가치 있는 시각적 자산은 이미 변환된 베스트셀러 이미지 라이브러리입니다. 이러한 사진의 포즈, 구도, 조명은 실제 광고 지출을 통해 개선되었습니다. 이러한 패턴을 직접 검색하는 것은 프롬프트 작성을 통해 리버스 엔지니어링하는 것보다 훨씬 빠르며, 이러한 검색 단계는 벡터 데이터베이스가 처리하는 것과 정확히 일치합니다.</p>
+<p>전체 흐름은 다음과 같습니다. 우리는 OpenRouter API를 통해 모든 모델을 호출하므로 로컬 GPU가 필요하지 않고 다운로드할 모델 가중치도 없습니다.</p>
 <pre><code translate="no">New product flat-lay
 │
 │── Embed → Llama Nemotron Embed VL 1B v2
@@ -198,14 +196,14 @@ origin: >-
     ├── Inputs: <span class="hljs-keyword">new</span> <span class="hljs-title class_">product</span> + bestseller reference + style prompt
     └── Output: promotional photo
 <button class="copy-code-btn"></button></code></pre>
-<p>We lean on three Milvus capabilities to make the retrieval stage work:</p>
+<p>검색 단계를 수행하기 위해 세 가지 Milvus 기능을 활용합니다:</p>
 <ol>
-<li><strong>Dense + sparse hybrid search.</strong> We run image embeddings and text TF-IDF vectors as parallel queries, then merge the two result sets with RRF (Reciprocal Rank Fusion) reranking.</li>
-<li><strong>Scalar field filtering.</strong> We filter by metadata fields like category and sales_count before vector comparison, so results only include relevant, high-performing products.</li>
-<li><strong>Multi-field schema.</strong> We store dense vectors, sparse vectors, and scalar metadata in a single Milvus collection, which keeps the entire retrieval logic in one query instead of scattered across multiple systems.</li>
+<li><strong>밀도 + 스파스 하이브리드 검색.</strong> 이미지 임베딩과 텍스트 TF-IDF 벡터를 병렬 쿼리로 실행한 다음, 두 결과 집합을 RRF(상호 순위 융합) 재순위를 통해 병합합니다.</li>
+<li><strong>스칼라 필드 필터링.</strong> 벡터 비교 전에 카테고리 및 sales_count와 같은 메타데이터 필드를 기준으로 필터링하므로 관련성이 높고 실적이 우수한 제품만 결과에 포함됩니다.</li>
+<li><strong>다중 필드 스키마.</strong> 밀집 벡터, 스파스 벡터, 스칼라 메타데이터를 단일 Milvus 컬렉션에 저장하여 전체 검색 로직을 여러 시스템에 흩어져 있지 않고 하나의 쿼리에 유지합니다.</li>
 </ol>
-<h3 id="Data-Preparation" class="common-anchor-header">Data Preparation</h3><p><strong>Historical product catalog</strong></p>
-<p>We start with two assets: an images/ folder of existing product photos and a products.csv file containing their metadata.</p>
+<h3 id="Data-Preparation" class="common-anchor-header">데이터 준비</h3><p><strong>과거 제품 카탈로그</strong></p>
+<p>기존 제품 사진의 이미지/폴더와 해당 메타데이터가 포함된 products.csv 파일이라는 두 가지 자산으로 시작합니다.</p>
 <pre><code translate="no">images/
 ├── SKU001.jpg
 ├── SKU002.jpg
@@ -227,8 +225,8 @@ product_id, image_path, category, color, style, season, sales_count, description
     <span></span>
   </span>
 </p>
-<p><strong>New product data</strong></p>
-<p>For the products we want to generate promotional images for, we prepare a parallel structure: a new_products/ folder and new_products.csv.</p>
+<p><strong>새 제품 데이터</strong></p>
+<p>프로모션 이미지를 생성하려는 제품의 경우, new_products/ 폴더와 new_products.csv라는 병렬 구조를 준비합니다.</p>
 <pre><code translate="no">new_products/
 ├── NEW001.jpg    <span class="hljs-comment"># Blue knit cardigan + grey tulle skirt set</span>
 ├── NEW002.jpg    <span class="hljs-comment"># Light green floral ruffle maxi dress</span>
@@ -250,9 +248,9 @@ new_id, image_path, category, style, season, prompt_hint
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Step 1: Install Dependencies</h3><pre><code translate="no">!pip install pymilvus openai requests pillow scikit-learn tqdm
+<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">1단계: 종속성 설치</h3><pre><code translate="no">!pip install pymilvus openai requests pillow scikit-learn tqdm
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Import-Modules-and-Configurations" class="common-anchor-header">Step 2: Import Modules and Configurations</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os, io, base64, csv, time
+<h3 id="Step-2-Import-Modules-and-Configurations" class="common-anchor-header">2단계: 모듈 및 구성 가져오기</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os, io, base64, csv, time
 <span class="hljs-keyword">import</span> requests <span class="hljs-keyword">as</span> req
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">from</span> <span class="hljs-variable constant_">PIL</span> <span class="hljs-keyword">import</span> <span class="hljs-title class_">Image</span>
@@ -263,7 +261,7 @@ new_id, image_path, category, style, season, prompt_hint
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>, <span class="hljs-title class_">DataType</span>, <span class="hljs-title class_">AnnSearchRequest</span>, <span class="hljs-title class_">RRFRanker</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Configure all models and paths:</strong></p>
+<p><strong>모든 모델과 경로를 구성합니다:</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># -- Config --</span>
 OPENROUTER_API_KEY = os.environ.get(
     <span class="hljs-string">&quot;OPENROUTER_API_KEY&quot;</span>,
@@ -292,14 +290,14 @@ llm = OpenAI(api_key=OPENROUTER_API_KEY, base_url=<span class="hljs-string">&quo
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Config loaded. All models via OpenRouter API.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Utility functions</strong></p>
-<p>These helper functions handle image encoding, API calls, and response parsing:</p>
+<p><strong>유틸리티 함수</strong></p>
+<p>이러한 헬퍼 함수는 이미지 인코딩, API 호출 및 응답 구문 분석을 처리합니다:</p>
 <ul>
-<li>image_to_uri(): Converts a PIL image to a base64 data URI for API transport.</li>
-<li>get_image_embeddings(): Batch-encodes images into 2048-dimensional vectors via the OpenRouter Embedding API.</li>
-<li>get_text_embedding(): Encodes text into the same 2048-dimensional vector space.</li>
-<li>sparse_to_dict(): Converts a scipy sparse matrix row into the {index: value} format Milvus expects for sparse vectors.</li>
-<li>extract_images(): Extracts generated images from the Nano Banana 2 API response.</li>
+<li>image_to_uri(): API 전송을 위해 PIL 이미지를 base64 데이터 URI로 변환합니다.</li>
+<li>get_image_embeddings(): OpenRouter 임베딩 API를 통해 이미지를 2048차원 벡터로 일괄 인코딩합니다.</li>
+<li>GET_TEXT_EMBEDDING(): 텍스트를 동일한 2048차원 벡터 공간으로 인코딩합니다.</li>
+<li>sparse_to_dict(): 스키피 스파스 행렬 행을 밀버스가 스파스 벡터에 기대하는 {index: value} 형식으로 변환합니다.</li>
+<li>extract_images(): 나노 바나나 2 API 응답에서 생성된 이미지를 추출합니다.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># -- Utility functions --</span>
 
@@ -376,7 +374,7 @@ llm = OpenAI(api_key=OPENROUTER_API_KEY, base_url=<span class="hljs-string">&quo
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Utility functions ready.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Load-the-Product-Catalog" class="common-anchor-header">Step 3: Load the Product Catalog</h3><p>Read products.csv and load the corresponding product images:</p>
+<h3 id="Step-3-Load-the-Product-Catalog" class="common-anchor-header">3단계: 제품 카탈로그 로드</h3><p>products.csv를 읽고 해당 제품 이미지를 로드합니다:</p>
 <pre><code translate="no"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(PRODUCT_CSV, newline=<span class="hljs-string">&quot;&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:
     products = <span class="hljs-built_in">list</span>(csv.DictReader(f))
 
@@ -391,25 +389,25 @@ product_images = []
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{p[<span class="hljs-string">&#x27;product_id&#x27;</span>]}</span> | <span class="hljs-subst">{p[<span class="hljs-string">&#x27;category&#x27;</span>]}</span> | <span class="hljs-subst">{p[<span class="hljs-string">&#x27;color&#x27;</span>]}</span> | <span class="hljs-subst">{p[<span class="hljs-string">&#x27;style&#x27;</span>]}</span> | sales: <span class="hljs-subst">{p[<span class="hljs-string">&#x27;sales_count&#x27;</span>]}</span>&quot;</span>)
     display(product_images[i].resize((<span class="hljs-number">180</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">180</span> * product_images[i].height / product_images[i].width))))
 <button class="copy-code-btn"></button></code></pre>
-<p>Sample output:<br>
+<p>샘플 출력:<br>
 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image13.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Generate-Embeddings" class="common-anchor-header">Step 4: Generate Embeddings</h3><p>Hybrid search requires two types of vectors for each product.</p>
-<p><strong>4.1 Dense vectors: image embeddings</strong></p>
-<p>The nvidia/llama-nemotron-embed-vl-1b-v2 model encodes each product image into a 2048-dimensional dense vector. Because this model supports both image and text inputs in a shared vector space, the same embeddings work for image-to-image and text-to-image retrieval.</p>
+<h3 id="Step-4-Generate-Embeddings" class="common-anchor-header">4단계: 임베딩 생성</h3><p>하이브리드 검색에는 각 제품에 대해 두 가지 유형의 벡터가 필요합니다.</p>
+<p><strong>4.1 고밀도 벡터: 이미지 임베딩</strong></p>
+<p>nvidia/llama-nemotron-embed-vl-1b-v2 모델은 각 제품 이미지를 2048차원의 고밀도 벡터로 인코딩합니다. 이 모델은 공유 벡터 공간에서 이미지와 텍스트 입력을 모두 지원하므로 이미지 대 이미지 및 텍스트 대 이미지 검색에 동일한 임베딩이 작동합니다.</p>
 <pre><code translate="no"><span class="hljs-comment"># Dense embeddings: image → 2048-dim vector via OpenRouter API</span>
 dense_vectors = get_image_embeddings(product_images, batch_size=<span class="hljs-number">5</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Dense vectors: <span class="hljs-subst">{dense_vectors.shape}</span>  (products x <span class="hljs-subst">{EMBED_DIM}</span>d)&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Output:</p>
+<p>출력:</p>
 <pre><code translate="no">Dense vectors: (40, 2048)  (products x 2048d)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>4.2 Sparse vectors: TF-IDF text embeddings</strong></p>
-<p>Product text descriptions are encoded into sparse vectors using scikit-learn’s TF-IDF vectorizer. These capture keyword-level matching that dense vectors can miss.</p>
+<p><strong>4.2 스파스 벡터: TF-IDF 텍스트 임베딩</strong></p>
+<p>제품 텍스트 설명은 scikit-learn의 TF-IDF 벡터라이저를 사용해 스파스 벡터로 인코딩됩니다. 이는 밀도가 높은 벡터가 놓칠 수 있는 키워드 수준의 매칭을 포착합니다.</p>
 <pre><code translate="no"><span class="hljs-comment"># Sparse embeddings: TF-IDF on product descriptions</span>
 descriptions = [p[<span class="hljs-string">&quot;description&quot;</span>] <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> products]
 tfidf = TfidfVectorizer(stop_words=<span class="hljs-string">&quot;english&quot;</span>, max_features=<span class="hljs-number">500</span>)
@@ -419,23 +417,23 @@ sparse_vectors = [sparse_to_dict(tfidf_matrix[i]) <span class="hljs-keyword">for
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sparse vectors: <span class="hljs-subst">{<span class="hljs-built_in">len</span>(sparse_vectors)}</span> products, vocab size: <span class="hljs-subst">{<span class="hljs-built_in">len</span>(tfidf.vocabulary_)}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sample sparse vector (SKU001): <span class="hljs-subst">{<span class="hljs-built_in">len</span>(sparse_vectors[<span class="hljs-number">0</span>])}</span> non-zero terms&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Output:</p>
+<p>출력:</p>
 <pre><code translate="no">Sparse vectors: <span class="hljs-number">40</span> products, vocab size: <span class="hljs-number">179</span>
 Sample sparse <span class="hljs-title function_">vector</span> <span class="hljs-params">(SKU001)</span>: <span class="hljs-number">11</span> non-zero terms
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Why both vector types?</strong> Dense and sparse vectors complement each other. Dense vectors capture visual similarity: color palette, garment silhouette, overall style. Sparse vectors capture keyword semantics: terms like “floral,” “midi,” or “chiffon” that signal product attributes. Combining both produces significantly better retrieval quality than either approach alone.</p>
-<h3 id="Step-5-Create-a-Milvus-Collection-with-Hybrid-Schema" class="common-anchor-header">Step 5: Create a Milvus Collection with Hybrid Schema</h3><p>This step creates a single Milvus collection that stores dense vectors, sparse vectors, and scalar metadata fields together. This unified schema is what enables hybrid search in a single query.</p>
+<p><strong>왜 두 가지 벡터 유형일까요?</strong> 고밀도 벡터와 희소 벡터는 서로를 보완합니다. 고밀도 벡터는 색상 팔레트, 의상 실루엣, 전체적인 스타일 등 시각적 유사성을 포착합니다. 스파스 벡터는 '꽃무늬', '미디', '쉬폰'과 같이 제품 속성을 나타내는 키워드의 의미를 포착합니다. 두 가지 방법을 결합하면 어느 한 방법만 사용하는 것보다 훨씬 더 나은 검색 품질을 얻을 수 있습니다.</p>
+<h3 id="Step-5-Create-a-Milvus-Collection-with-Hybrid-Schema" class="common-anchor-header">5단계: 하이브리드 스키마를 사용하여 Milvus 컬렉션 만들기</h3><p>이 단계에서는 밀도 벡터, 스파스 벡터, 스칼라 메타데이터 필드를 함께 저장하는 단일 Milvus 컬렉션을 만듭니다. 이 통합 스키마는 단일 쿼리에서 하이브리드 검색을 가능하게 합니다.</p>
 <table>
 <thead>
-<tr><th><strong>Field</strong></th><th><strong>Type</strong></th><th><strong>Purpose</strong></th></tr>
+<tr><th><strong>필드</strong></th><th><strong>유형</strong></th><th><strong>목적</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>dense_vector</td><td>FLOAT_VECTOR (2048d)</td><td>Image embedding, COSINE similarity</td></tr>
-<tr><td>sparse_vector</td><td>SPARSE_FLOAT_VECTOR</td><td>TF-IDF sparse vector, inner product</td></tr>
-<tr><td>category</td><td>VARCHAR</td><td>Category label for filtering</td></tr>
-<tr><td>sales_count</td><td>INT64</td><td>Historical sales volume for filtering</td></tr>
-<tr><td>color, style, season</td><td>VARCHAR</td><td>Additional metadata labels</td></tr>
-<tr><td>price</td><td>FLOAT</td><td>Product price</td></tr>
+<tr><td>dense_vector</td><td>플로트_벡터(2048d)</td><td>이미지 임베딩, 코사인 유사도</td></tr>
+<tr><td>스파스_벡터</td><td>SPARSE_FLOAT_VECTOR</td><td>TF-IDF 스파스 벡터, 내적 곱</td></tr>
+<tr><td>카테고리</td><td>VARCHAR</td><td>필터링용 카테고리 레이블</td></tr>
+<tr><td>sales_count</td><td>INT64</td><td>필터링할 과거 판매량</td></tr>
+<tr><td>색상, 스타일, 시즌</td><td>VARCHAR</td><td>추가 메타데이터 레이블</td></tr>
+<tr><td>가격</td><td>FLOAT</td><td>제품 가격</td></tr>
 </tbody>
 </table>
 <pre><code translate="no">milvus_client = MilvusClient(uri=MILVUS_URI)
@@ -463,7 +461,7 @@ index_params.add_index(field_name=<span class="hljs-string">&quot;sparse_vector&
 milvus_client.create_collection(COLLECTION, schema=schema, index_params=index_params)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Milvus collection &#x27;<span class="hljs-subst">{COLLECTION}</span>&#x27; created with hybrid schema.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Insert the product data:</p>
+<p>제품 데이터를 입력합니다:</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert all products</span>
 rows = []
 <span class="hljs-keyword">for</span> i, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(products):
@@ -484,17 +482,17 @@ milvus_client.insert(COLLECTION, rows)
 stats = milvus_client.get_collection_stats(COLLECTION)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Inserted <span class="hljs-subst">{stats[<span class="hljs-string">&#x27;row_count&#x27;</span>]}</span> products into Milvus.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Output:</p>
+<p>출력:</p>
 <pre><code translate="no">Inserted <span class="hljs-number">40</span> products <span class="hljs-keyword">into</span> Milvus.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Hybrid-Search-to-Find-Similar-Bestsellers" class="common-anchor-header">Step 6: Hybrid Search to Find Similar Bestsellers</h3><p>This is the core retrieval step. For each new product, the pipeline runs three operations simultaneously:</p>
+<h3 id="Step-6-Hybrid-Search-to-Find-Similar-Bestsellers" class="common-anchor-header">6단계: 하이브리드 검색으로 유사 베스트셀러 찾기</h3><p>이 단계가 핵심 검색 단계입니다. 각 새 제품에 대해 파이프라인은 세 가지 작업을 동시에 실행합니다:</p>
 <ol>
-<li><strong>Dense search</strong>: finds products with visually similar image embeddings.</li>
-<li><strong>Sparse search</strong>: finds products with matching text keywords via TF-IDF.</li>
-<li><strong>Scalar filtering</strong>: restricts results to the same category and products with sales_count &gt; 1500.</li>
-<li><strong>RRF reranking</strong>: merges the dense and sparse result lists using Reciprocal Rank Fusion.</li>
+<li><strong>밀도 검색</strong>: 시각적으로 유사한 이미지가 포함된 제품을 찾습니다.</li>
+<li><strong>희소 검색</strong>: TF-IDF를 통해 일치하는 텍스트 키워드를 가진 제품을 찾습니다.</li>
+<li><strong>스칼라 필터링</strong>: 동일한 카테고리와 판매 수가 1500을 초과하는 제품으로 결과를 제한합니다.</li>
+<li><strong>RRF 재랭크</strong>: 상호 순위 융합을 사용하여 밀집 및 희소 결과 목록을 병합합니다.</li>
 </ol>
-<p>Load the new product:</p>
+<p>새 제품을 로드합니다:</p>
 <pre><code translate="no"><span class="hljs-comment"># Load new products</span>
 <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(NEW_PRODUCT_CSV, newline=<span class="hljs-string">&quot;&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:
     new_products = <span class="hljs-built_in">list</span>(csv.DictReader(f))
@@ -508,14 +506,12 @@ new_img = Image.<span class="hljs-built_in">open</span>(os.path.join(NEW_PRODUCT
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Prompt hint: <span class="hljs-subst">{new_prod[<span class="hljs-string">&#x27;prompt_hint&#x27;</span>]}</span>&quot;</span>)
 display(new_img.resize((<span class="hljs-number">300</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">300</span> * new_img.height / new_img.width))))
 <button class="copy-code-btn"></button></code></pre>
-<p>Output:
-
-  <span class="img-wrapper">
+<p>출력:  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Encode the new product:</p>
+<p>새 제품을 인코딩합니다:</p>
 <pre><code translate="no"><span class="hljs-comment"># Encode new product</span>
 <span class="hljs-comment"># Dense: image embedding via API</span>
 query_dense = get_image_embeddings([new_img], batch_size=<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]
@@ -532,18 +528,18 @@ filter_expr = <span class="hljs-string">f&#x27;category == &quot;<span class="hl
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Filter: <span class="hljs-subst">{filter_expr}</span>&quot;</span>)
 
 <button class="copy-code-btn"></button></code></pre>
-<p>Output:</p>
+<p>출력:</p>
 <pre><code translate="no"><span class="hljs-title class_">Dense</span> <span class="hljs-attr">query</span>: (<span class="hljs-number">2048</span>,)
 <span class="hljs-title class_">Sparse</span> <span class="hljs-attr">query</span>: <span class="hljs-number">6</span> non-zero terms
 <span class="hljs-title class_">Filter</span>: category == <span class="hljs-string">&quot;midi_dress&quot;</span> and sales_count &gt; <span class="hljs-number">1500</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Execute hybrid search</strong></p>
-<p>The key API calls here:</p>
+<p><strong>하이브리드 검색 실행</strong></p>
+<p>핵심 API 호출은 다음과 같습니다:</p>
 <ul>
-<li>AnnSearchRequest creates separate search requests for the dense and sparse vector fields.</li>
-<li>expr=filter_expr applies scalar filtering within each search request.</li>
-<li>RRFRanker(k=60) fuses the two ranked result lists using the Reciprocal Rank Fusion algorithm.</li>
-<li>hybrid_search executes both requests and returns merged, reranked results.</li>
+<li>AnnSearchRequest는 고밀도 및 희소 벡터 필드에 대한 별도의 검색 요청을 생성합니다.</li>
+<li>expr=filter_expr은 각 검색 요청 내에서 스칼라 필터링을 적용합니다.</li>
+<li>RRFRanker(k=60)는 상호 순위 융합 알고리즘을 사용하여 두 개의 순위가 매겨진 결과 목록을 융합합니다.</li>
+<li>hybrid_search는 두 요청을 모두 실행하여 병합되고 순위가 재조정된 결과를 반환합니다.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Hybrid search: dense + sparse + scalar filter + RRF reranking</span>
 dense_req = AnnSearchRequest(
@@ -586,14 +582,12 @@ retrieved_images = []
     display(img.resize((<span class="hljs-number">250</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">250</span> * img.height / img.width))))
     <span class="hljs-built_in">print</span>()
 <button class="copy-code-btn"></button></code></pre>
-<p>Output: the top 3 most similar bestsellers, ranked by fused score.
-
-  <span class="img-wrapper">
+<p>결과: 가장 유사한 베스트셀러 상위 3개가 융합된 점수에 따라 순위가 매겨집니다.  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-7-Analyze-Bestseller-Style-with-Qwen-35" class="common-anchor-header">Step 7: Analyze Bestseller Style with Qwen 3.5</h3><p>We feed the retrieved bestseller images into Qwen 3.5 and ask it to extract their shared visual DNA: scene composition, lighting setup, model pose, and overall mood. From that analysis, we get back a single generation prompt ready to hand off to Nano Banana 2.</p>
+<h3 id="Step-7-Analyze-Bestseller-Style-with-Qwen-35" class="common-anchor-header">7단계: Qwen 3.5로 베스트셀러 스타일 분석하기</h3><p>검색된 베스트셀러 이미지를 Qwen 3.5에 입력하고 장면 구성, 조명 설정, 모델 포즈, 전반적인 분위기 등 공유된 시각적 DNA를 추출하도록 요청합니다. 이 분석을 통해 Nano Banana 2에 전달할 준비가 된 단일 세대 프롬프트를 다시 얻습니다.</p>
 <pre><code translate="no">content = [
     {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;image_url&quot;</span>, <span class="hljs-string">&quot;image_url&quot;</span>: {<span class="hljs-string">&quot;url&quot;</span>: image_to_uri(img)}}
     <span class="hljs-keyword">for</span> img in retrieved_images
@@ -624,7 +618,7 @@ style_prompt = response.choices[<span class="hljs-number">0</span>].message.cont
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Style prompt from Qwen3.5:\n&quot;</span>)
 <span class="hljs-built_in">print</span>(style_prompt)
 <button class="copy-code-btn"></button></code></pre>
-<p>Sample output:</p>
+<p>샘플 출력:</p>
 <pre><code translate="no">Style prompt from Qwen3.5:
 
 Professional full-body fashion photograph of a model wearing a stylish new dress.
@@ -633,7 +627,7 @@ uncluttered background, either stark white or a softly blurred bright outdoor
 setting. The model stands in a relaxed, natural pose to showcase the garment&#x27;s
 silhouette and drape. Sharp focus, vibrant colors, fresh and elegant commercial aesthetic.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-8-Generate-the-Promotional-Image-with-Nano-Banana-2" class="common-anchor-header">Step 8: Generate the Promotional Image with Nano Banana 2</h3><p>We pass three inputs into Nano Banana 2: the new product’s flat-lay photo, the top-ranked bestseller image, and the style prompt we extracted in the previous step. The model composites these into a promotional photo that pairs the new garment with a proven visual style.</p>
+<h3 id="Step-8-Generate-the-Promotional-Image-with-Nano-Banana-2" class="common-anchor-header">8단계: 나노 바나나 2로 프로모션 이미지 생성하기</h3><p>신제품의 평면 사진, 베스트셀러 상위권 이미지, 이전 단계에서 추출한 스타일 프롬프트의 세 가지 입력을 Nano Banana 2에 전달합니다. 모델은 이를 합성하여 새로운 의류와 검증된 시각적 스타일을 결합한 홍보용 사진을 만듭니다.</p>
 <pre><code translate="no">gen_prompt = (
     <span class="hljs-string">f&quot;I have a new clothing product (Image 1: flat-lay photo) and a reference &quot;</span>
     <span class="hljs-string">f&quot;promotional photo from our bestselling catalog (Image 2).\n\n&quot;</span>
@@ -664,13 +658,13 @@ gen_response = llm.chat.completions.create(
 )
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Done!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Key parameters for the Nano Banana 2 API call:</p>
+<p>나노 바나나 2 API 호출의 주요 매개변수입니다:</p>
 <ul>
-<li>modalities: [&quot;text&quot;, “image”]: declares that the response should include an image.</li>
-<li>image_config.aspect_ratio: controls the output aspect ratio (3:4 works well for portrait/fashion shots).</li>
-<li>image_config.image_size: sets the resolution. Nano Banana 2 supports 512px through 4K.</li>
+<li>모달리티 [&quot;text&quot;, &quot;image&quot;]: 응답에 이미지가 포함되어야 함을 선언합니다.</li>
+<li>image_config.aspect_ratio: 출력 종횡비를 제어합니다(인물/패션 사진에는 3:4가 적합).</li>
+<li>image_config.image_size: 해상도를 설정합니다. 나노 바나나 2는 512픽셀부터 4K까지 지원합니다.</li>
 </ul>
-<p>Extract the generated image:</p>
+<p>생성된 이미지를 추출합니다:</p>
 <pre><code translate="no">generated_images = extract_images(gen_response)
 
 text_content = gen_response.choices[<span class="hljs-number">0</span>].message.content
@@ -687,30 +681,28 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;No image generated. Raw response:&quot;</span>)
     <span class="hljs-built_in">print</span>(gen_response.model_dump())
 <button class="copy-code-btn"></button></code></pre>
-<p>Output:
-
-  <span class="img-wrapper">
+<p>출력:  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-9-Side-by-Side-Comparison" class="common-anchor-header">Step 9: Side-by-Side Comparison</h3><p>The output nails the broad strokes: lighting is soft and even, the model’s pose looks natural, and the mood matches the bestseller reference.</p>
-<p>Where we see it fall short is garment blending. The cardigan looks pasted onto the model rather than worn, and a white neckline label bleeds through. Single-pass generation struggles with this kind of fine-grained clothing-to-body integration, so we address workarounds in the summary.</p>
+<h3 id="Step-9-Side-by-Side-Comparison" class="common-anchor-header">9단계: 나란히 비교</h3><p>조명이 부드럽고 균일하며 모델의 포즈가 자연스러워 보이고 분위기가 베스트셀러 레퍼런스와 일치하는 등 전반적으로 만족스러운 결과물을 얻을 수 있습니다.</p>
+<p>부족한 부분은 의상 블렌딩입니다. 카디건은 모델이 입은 것이 아니라 붙인 것처럼 보이고, 흰색 네크라인 라벨이 번져 보입니다. 싱글 패스 세대는 이런 종류의 세밀한 의류와 신체 통합에 어려움을 겪기 때문에 요약에서 해결 방법을 다룹니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image10.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-10-Batch-Generation-for-All-New-Products" class="common-anchor-header">Step 10: Batch Generation for All New Products</h3><p>We wrap the full pipeline into a single function and run it across the remaining new products. The batch code is omitted here for brevity; reach out if you need the complete implementation.</p>
-<p>Two things stand out across the batch results. The style prompts we get from <strong>Qwen 3.5</strong> adjust meaningfully per product: a summer dress and a winter knit receive genuinely different scene descriptions tailored to season, use case, and accessories. The images we get from <strong>Nano Banana 2</strong>, in turn, hold up against real studio photography in lighting, texture, and composition.</p>
+<h3 id="Step-10-Batch-Generation-for-All-New-Products" class="common-anchor-header">10단계: 모든 신제품에 대한 배치 생성</h3><p>전체 파이프라인을 단일 함수로 묶어 나머지 신제품에 대해 실행합니다. 여기서는 간결성을 위해 배치 코드를 생략하므로 전체 구현이 필요한 경우 문의하세요.</p>
+<p>배치 결과에서 두 가지가 눈에 띕니다. 여름용 원피스와 겨울용 니트는 계절, 사용 사례, 액세서리에 따라 각기 다른 장면 설명을 받는 등 <strong>Qwen 3.5의</strong> 스타일 프롬프트가 제품별로 의미 있게 조정된다는 점입니다. <strong>나노 바나나 2에서</strong> 얻은 이미지는 조명, 질감, 구도 면에서 실제 스튜디오 사진에 뒤지지 않습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -725,21 +717,21 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In this article, we covered what Nano Banana 2 brings to e-commerce image generation, compared it against the original Nano Banana and Pro across real production tasks, and walked through how to build a bestseller-to-image pipeline with Milvus, Qwen 3.5, and Nano Banana 2.</p>
-<p>This pipeline has four practical advantages:</p>
+    </button></h2><p>이 글에서는 나노 바나나 2가 이커머스 이미지 생성에 제공하는 기능을 살펴보고, 실제 제작 작업에서 기존 나노 바나나 및 프로와 비교했으며, Milvus, Qwen 3.5 및 나노 바나나 2로 베스트셀러 이미지 파이프라인을 구축하는 방법을 살펴봤습니다.</p>
+<p>이 파이프라인에는 네 가지 실질적인 이점이 있습니다:</p>
 <ul>
-<li><strong>Controlled cost, predictable budgets.</strong> The embedding model (Llama Nemotron Embed VL 1B v2) is free on OpenRouter. Nano Banana 2 runs at roughly half the per-image cost of Pro, and native multi-format output eliminates the rework cycles that used to double or triple the effective bill. For e-commerce teams managing thousands of SKUs per season, that predictability means image production scales with the catalog instead of blowing past budget.</li>
-<li><strong>End-to-end automation, faster time to listing.</strong> The flow from flat-lay product photo to finished promotional image runs without manual intervention. A new product can go from warehouse photo to marketplace-ready listing image in minutes rather than days, which matters most during peak seasons when catalog turnover is highest.</li>
-<li><strong>No local GPU required, lower barrier to entry.</strong> Every model runs through the OpenRouter API. A team with no ML infrastructure and no dedicated engineering headcount can run this pipeline from a laptop. There is nothing to provision, nothing to maintain, and no upfront hardware investment.</li>
-<li><strong>Higher retrieval precision, stronger brand consistency.</strong> Milvus combines dense, sparse, and scalar filtering in a single query, consistently outperforming single-vector approaches for product matching. In practice, this means generated images more reliably inherit your brand’s established visual language: the lighting, composition, and styling that your existing bestsellers already proved converts. The output looks like it belongs in your store, not like generic AI stock art.</li>
+<li><strong>통제된 비용, 예측 가능한 예산.</strong> 임베딩 모델(Llama Nemotron Embed VL 1B v2)은 OpenRouter에서 무료로 제공됩니다. 나노 바나나 2는 이미지당 비용이 프로의 약 절반 수준이며, 기본 멀티포맷 출력을 통해 유효 비용을 두 배 또는 세 배로 늘리던 재작업 주기를 없앴습니다. 시즌당 수천 개의 SKU를 관리하는 이커머스 팀의 경우, 이러한 예측 가능성은 예산 초과 없이 카탈로그에 맞춰 이미지 제작을 확장할 수 있다는 것을 의미합니다.</li>
+<li><strong>엔드투엔드 자동화, 더 빠른 리스팅 시간.</strong> 평면적인 제품 사진에서 완성된 홍보 이미지로 이어지는 흐름은 수동 개입 없이 실행됩니다. 카탈로그 회전율이 가장 높은 성수기에 가장 중요한 신제품을 창고 사진에서 마켓플레이스에 등록할 수 있는 이미지로 만드는 데 며칠이 걸리지 않고 몇 분 만에 완료할 수 있습니다.</li>
+<li><strong>로컬 GPU가 필요하지 않아 진입 장벽이 낮습니다.</strong> 모든 모델은 OpenRouter API를 통해 실행됩니다. ML 인프라나 전담 엔지니어링 인력이 없는 팀도 노트북으로 이 파이프라인을 실행할 수 있습니다. 프로비저닝할 것도, 유지 관리할 것도, 하드웨어에 대한 초기 투자도 없습니다.</li>
+<li><strong>더 높은 검색 정확도, 더 강력한 브랜드 일관성.</strong> Milvus는 단일 쿼리에서 밀도, 스파스 및 스칼라 필터링을 결합하여 제품 매칭에 대한 단일 벡터 접근 방식보다 일관되게 뛰어난 성능을 발휘합니다. 이는 실제로 생성된 이미지가 기존 베스트셀러에서 이미 전환율이 입증된 조명, 구도, 스타일링 등 브랜드의 확립된 시각적 언어를 보다 안정적으로 계승한다는 것을 의미합니다. 결과물은 일반적인 AI 스톡 아트와 달리 스토어에 어울리는 것처럼 보입니다.</li>
 </ul>
-<p>There are also limitations worth being upfront about:</p>
+<p>미리 알아두어야 할 제한 사항도 있습니다:</p>
 <ul>
-<li><strong>Garment-to-body blending.</strong> Single-pass generation can make clothing look composited rather than worn. Fine details like small accessories sometimes blur. Workaround: generate in stages (background first, then model pose, then composite). This multi-pass approach gives each step a narrower scope and significantly improves blending quality.</li>
-<li><strong>Detail fidelity on edge cases.</strong> Accessories, patterns, and text-heavy layouts can lose sharpness. Workaround: add explicit constraints to the generation prompt (“clothing fits naturally on the body, no exposed labels, no extra elements, product details are sharp”). If quality still falls short on a specific product, switch to Nano Banana Pro for the final</li>
+<li><strong>의복과 바디 블렌딩.</strong> 단일 패스 생성은 의상을 착용한 것이 아니라 합성한 것처럼 보이게 만들 수 있습니다. 작은 액세서리와 같은 미세한 디테일이 흐릿하게 표현되기도 합니다. 해결 방법: 단계별로 생성(배경 먼저, 모델 포즈, 합성)합니다. 이 멀티패스 방식은 각 단계의 범위를 좁히고 블렌딩 품질을 크게 향상시킵니다.</li>
+<li><strong>가장자리 케이스의 디테일 충실도.</strong> 액세서리, 패턴 및 텍스트가 많은 레이아웃은 선명도가 떨어질 수 있습니다. 해결 방법: 생성 프롬프트에 명시적인 제약 조건을 추가합니다("옷이 몸에 자연스럽게 맞음, 라벨이 노출되지 않음, 추가 요소 없음, 제품 디테일이 선명함"). 특정 제품의 품질이 여전히 부족하다면 최종적으로 나노 바나나 프로로 전환하세요.</li>
 </ul>
-<p><a href="https://milvus.io/">Milvus</a> is the open-source vector database powering the hybrid search step, and if you want to poke around or try swapping in your own product photos, the <a href="https://milvus.io/docs"></a><a href="https://milvus.io/docs">quickstart</a> takes about ten minutes. We’ve got a pretty active community on <a href="https://discord.gg/milvus"></a><a href="https://discord.gg/milvus">Discord</a> and Slack, and we’d love to see what people build with this. And if you end up running Nano Banana 2 against a different product vertical or a bigger catalog, please share the results! We’d love to hear about them.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus는</a> 하이브리드 검색 단계를 지원하는 오픈 소스 벡터 데이터베이스로, 직접 제품 사진을 찾아보거나 교체해보고 싶다면 <a href="https://milvus.io/docs"></a><a href="https://milvus.io/docs">퀵스타트에서</a> 10분 정도 소요됩니다. <a href="https://discord.gg/milvus"></a><a href="https://discord.gg/milvus"> Discord와</a> Slack에 꽤 활발한 커뮤니티가 있으며, 이를 통해 사람들이 무엇을 만들어내는지 보고 싶습니다. 그리고 다른 제품군이나 더 큰 카탈로그에 대해 나노 바나나 2를 실행하게 되면 그 결과를 공유해 주세요! 여러분의 의견을 듣고 싶습니다.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">계속 읽기<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -755,9 +747,9 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/blog/nano-banana-milvus-turning-hype-into-enterprise-ready-multimodal-rag.md">Nano Banana + Milvus: Turning Hype into Enterprise-Ready Multimodal RAG</a></li>
-<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a></li>
-<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></li>
-<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)</a></li>
-<li><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Persistent Memory for Claude Code: memsearch ccplugin</a></li>
+<li><a href="https://milvus.io/blog/nano-banana-milvus-turning-hype-into-enterprise-ready-multimodal-rag.md">나노 바나나 + 밀버스: 과대광고를 엔터프라이즈급 멀티모달 RAG로 전환하기</a></li>
+<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw란 무엇인가요? 오픈 소스 AI 에이전트에 대한 전체 가이드</a></li>
+<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw 튜토리얼: 로컬 AI 어시스턴트를 위해 Slack에 연결하기</a></li>
+<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">OpenClaw의 메모리 시스템을 추출하여 오픈 소스화(memsearch)</a></li>
+<li><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">클로드 코드를 위한 퍼시스턴트 메모리: memsearch ccplugin</a></li>
 </ul>

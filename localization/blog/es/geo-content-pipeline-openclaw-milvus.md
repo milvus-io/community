@@ -102,7 +102,7 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
       </svg>
     </button></h2><p>Lo que separa a este proceso de "sólo preguntar a ChatGPT" es la capa de conocimiento. Sin ella, la salida de LLM parece pulida pero no dice nada verificable, y los motores de búsqueda de IA son cada vez más buenos detectando eso. <a href="https://zilliz.com/what-is-milvus">Milvus</a>, la base de datos vectorial que alimenta este proceso, aporta varias capacidades que son importantes aquí:</p>
 <p><strong>La deduplicación semántica capta lo que las palabras clave pasan por alto.</strong> La concordancia de palabras clave considera que "los puntos de referencia del rendimiento de Milvus" y "¿cómo se compara Milvus con otras bases de datos vectoriales?" son consultas no relacionadas. <a href="https://zilliz.com/learn/vector-similarity-search">La similitud vectorial</a> reconoce que se trata de la misma pregunta, por lo que el proceso omite el duplicado en lugar de malgastar una llamada de generación.</p>
-<p><strong>La RAG de doble colección mantiene separadas las fuentes y las salidas.</strong> <code translate="no">geo_knowledge</code> almacena los documentos de marca ingeridos. <code translate="no">geo_articles</code> almacena el contenido generado. La base de conocimientos mantiene la exactitud de los datos y el archivo de artículos mantiene la coherencia del tono en todo el lote. Las dos colecciones se mantienen de forma independiente, por lo que la actualización de los materiales de origen nunca afecta a los artículos existentes.</p>
+<p><strong>La RAG de doble colección mantiene separadas las fuentes y las salidas.</strong> <code translate="no">geo_knowledge</code> almacena los documentos de marca ingeridos. <code translate="no">geo_articles</code> almacena el contenido generado. Cada consulta de generación afecta a ambas: la base de conocimientos mantiene la exactitud de los datos y el archivo de artículos mantiene la coherencia del tono en todo el lote. Las dos colecciones se mantienen de forma independiente, por lo que la actualización de los materiales de origen nunca afecta a los artículos existentes.</p>
 <p><strong>Un bucle de retroalimentación que mejora con la escala.</strong> Cada artículo generado se devuelve inmediatamente a Milvus. El siguiente lote dispone de un fondo de deduplicación mayor y un contexto RAG más rico. La calidad aumenta con el tiempo.</p>
 <p><strong>Múltiples opciones de despliegue para diferentes necesidades.</strong></p>
 <ul>
@@ -248,7 +248,7 @@ For each article, <span class="hljs-keyword">return</span>:
   ], config);
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Ingest-Source-Material" class="common-anchor-header">Paso 3: Ingesta de material fuente</h3><p>Antes de generar nada, se necesita una base de conocimientos. <code translate="no">ingest.py</code> obtiene páginas web o lee documentos locales, trocea el texto, lo incrusta y lo escribe en la colección <code translate="no">geo_knowledge</code> de Milvus. Esto es lo que mantiene el contenido generado basado en información real en lugar de alucinaciones LLM.</p>
+<h3 id="Step-3-Ingest-Source-Material" class="common-anchor-header">Paso 3: Ingesta de material fuente</h3><p>Antes de generar nada, se necesita una base de conocimientos. <code translate="no">ingest.py</code> obtiene páginas web o lee documentos locales, trocea el texto, lo incrusta y lo escribe en la colección <code translate="no">geo_knowledge</code> de Milvus. Esto es lo que mantiene el contenido generado basado en información real y no en alucinaciones LLM.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">ingest_sources</span>(<span class="hljs-params">files=<span class="hljs-literal">None</span>, urls=<span class="hljs-literal">None</span></span>):
     llm = get_llm_client()
     milvus = get_milvus_client()
@@ -265,7 +265,7 @@ For each article, <span class="hljs-keyword">return</span>:
         ]
         insert_knowledge(milvus, records)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Expand-Long-Tail-Queries" class="common-anchor-header">Paso 4: Ampliar las consultas de cola larga</h3><p>Dado un tema como "base de datos vectorial Milvus", el LLM genera un conjunto de consultas de búsqueda específicas y realistas, el tipo de preguntas que los usuarios reales escriben en los motores de búsqueda de IA. Las consultas abarcan distintos tipos de intenciones: informativas, de comparación, de instrucciones, de resolución de problemas y de preguntas frecuentes.</p>
+<h3 id="Step-4-Expand-Long-Tail-Queries" class="common-anchor-header">Paso 4: Ampliar las consultas de cola larga</h3><p>Dado un tema como "base de datos vectorial Milvus", el LLM genera un conjunto de consultas de búsqueda específicas y realistas, el tipo de preguntas que los usuarios reales escriben en los motores de búsqueda de IA. Las consultas abarcan diferentes tipos de intenciones: informativas, de comparación, de instrucciones, de resolución de problemas y de preguntas frecuentes.</p>
 <pre><code translate="no" class="language-python">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;\
 You are an SEO/GEO keyword research expert. Generate long-tail search queries.
 Requirements:

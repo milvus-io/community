@@ -1,12 +1,13 @@
 ---
 id: how-milvus-26-upgrades-multilingual-full-text-search-at-scale.md
-title: |
-  How Milvus 2.6 Upgrades Multilingual Full-Text Search at Scale
+title: >-
+  كيف يقوم برنامج Milvus 2.6 بترقية البحث متعدد اللغات عن النص الكامل على نطاق
+  واسع
 author: Zayne Yue
 date: 2025-07-30T00:00:00.000Z
 desc: >-
-  Milvus 2.6 introduces a completely overhauled text analysis pipeline with
-  comprehensive multi-language support for full text search.
+  يقدّم الإصدار Milvus 2.6 خط أنابيب لتحليل النصوص تم إصلاحه بالكامل مع دعم شامل
+  متعدد اللغات للبحث في النص الكامل.
 cover: >-
   assets.zilliz.com/How_Milvus_2_6_Upgrades_Multilingual_Full_Text_Search_at_Scale_final_cover_7656abfbd6.png
 tag: Engineering
@@ -19,7 +20,7 @@ meta_title: |
 origin: >-
   https://milvus.io/blog/how-milvus-26-upgrades-multilingual-full-text-search-at-scale.md
 ---
-<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">مقدمة<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,10 +35,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Modern AI applications are becoming increasingly complex. You can’t just throw one search method at a problem and call it done.</p>
-<p>Take recommendation systems, for example—they require <strong>vector search</strong> to understand the meaning of text and images, <strong>metadata filtering</strong> to narrow results by price, category, or location, and <strong>keyword search</strong> for direct queries like “Nike Air Max.” Each method solves a different part of the problem, and real-world systems need all of them working together.</p>
-<p>The future of search isn’t about choosing between vector and keyword. It’s about combining vector AND keyword AND filtering, along with other search types—all in one place. That’s why we started building <a href="https://milvus.io/docs/hybrid_search_with_milvus.md">hybrid search</a> into Milvus a year ago, with the release of Milvus 2.5.</p>
-<h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">But Full-Text Search Works Differently<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
+    </button></h2><p>أصبحت تطبيقات الذكاء الاصطناعي الحديثة معقدة بشكل متزايد. لا يمكنك فقط إلقاء طريقة بحث واحدة على مشكلة ما واعتبارها منتهية.</p>
+<p>خذ أنظمة التوصيات، على سبيل المثال - فهي تتطلب <strong>بحثًا متجهًا</strong> لفهم معنى النص والصور، <strong>وتصفية البيانات الوصفية</strong> لتضييق نطاق النتائج حسب السعر أو الفئة أو الموقع، <strong>والبحث بالكلمات الرئيسية</strong> للاستعلامات المباشرة مثل "Nike Air Max". تحل كل طريقة جزءًا مختلفًا من المشكلة، وتحتاج أنظمة العالم الحقيقي إلى أن تعمل جميعها معًا.</p>
+<p>لا يتعلق مستقبل البحث بالاختيار بين المتجه والكلمة المفتاحية. إنه يتعلق بالجمع بين المتجه والكلمة المفتاحية والتصفية، إلى جانب أنواع البحث الأخرى - كل ذلك في مكان واحد. لهذا السبب بدأنا في بناء <a href="https://milvus.io/docs/hybrid_search_with_milvus.md">بحث هجين</a> في Milvus منذ عام، مع إصدار Milvus 2.5.</p>
+<h2 id="But-Full-Text-Search-Works-Differently" class="common-anchor-header">لكن البحث عن النص الكامل يعمل بشكل مختلف<button data-href="#But-Full-Text-Search-Works-Differently" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,13 +53,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bringing full-text search into a vector-native system isn’t easy. Full-text search has its own set of challenges.</p>
-<p>While vector search captures the <em>semantic</em> meaning of text—turning it into high-dimensional vectors—full-text search depends on understanding <strong>the structure of language</strong>: how words are formed, where they begin and end, and how they relate to one another. For instance, when a user searches for “running shoes” in English, the text goes through several processing steps:</p>
-<p><em>Split on whitespace → lowercase → remove stopwords → stem “running” to &quot;run&quot;.</em></p>
-<p>To handle this correctly, we need a robust <strong>language analyzer</strong>—one that handles splitting, stemming, filtering, and more.</p>
-<p>When we introduced <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">BM25 full-text search</a> in Milvus 2.5, we included a customizable analyzer, and it worked well for what it was designed to do. You could define a pipeline using tokenizers, token filters, and character filters to prepare text for indexing and search.</p>
-<p>For English, this setup was relatively straightforward. But things become more complex when you deal with multiple languages.</p>
-<h2 id="The-Challenge-of-Multilingual-Full-Text-Search" class="common-anchor-header">The Challenge of Multilingual Full-Text Search<button data-href="#The-Challenge-of-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
+    </button></h2><p>ليس من السهل إدخال البحث عن النص الكامل في نظام متجه أصلي. البحث في النص الكامل له مجموعة التحديات الخاصة به.</p>
+<p>فبينما يلتقط البحث المتجه المعنى <em>الدلالي</em> للنص - أي تحويله إلى متجهات عالية الأبعاد - يعتمد البحث عن النص الكامل على فهم <strong>بنية اللغة</strong>: كيف تتشكل الكلمات، وأين تبدأ وتنتهي، وكيف ترتبط ببعضها البعض. على سبيل المثال، عندما يبحث المستخدم عن "حذاء الجري" باللغة الإنجليزية، يمر النص بعدة خطوات معالجة:</p>
+<p><em>التقسيم على المسافات البيضاء ← إزالة الكلمات الصغيرة ← إزالة الكلمات المتوقفة ← تحويل كلمة &quot;الركض&quot; إلى &quot;الركض&quot;.</em></p>
+<p>للتعامل مع ذلك بشكل صحيح، نحتاج إلى <strong>محلل لغوي</strong>قوي <strong>- محلل لغوي</strong>يتعامل مع التقسيم والوقف والتصفية وغير ذلك.</p>
+<p>عندما قدمنا <a href="https://milvus.io/docs/full-text-search.md#Full-Text-Search">بحث النص الكامل BM25</a> في ميلفوس 2.5، قمنا بتضمين محلل قابل للتخصيص، وقد عمل بشكل جيد لما صُمم للقيام به. كان بإمكانك تحديد خط أنابيب باستخدام أدوات ترميز، ومرشحات الرموز الرمزية، ومرشحات الأحرف لإعداد النص للفهرسة والبحث.</p>
+<p>بالنسبة للغة الإنجليزية، كان هذا الإعداد بسيطًا نسبيًا. لكن الأمور تصبح أكثر تعقيدًا عندما تتعامل مع لغات متعددة.</p>
+<h2 id="The-Challenge-of-Multilingual-Full-Text-Search" class="common-anchor-header">تحدي البحث متعدد اللغات في النص الكامل<button data-href="#The-Challenge-of-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -73,18 +74,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Multilingual full-text search introduces a range of challenges:</p>
+    </button></h2><p>يقدم البحث في النص الكامل متعدد اللغات مجموعة من التحديات:</p>
 <ul>
-<li><p><strong>Complex languages need special treatment</strong>: Languages like Chinese, Japanese, and Korean don’t use spaces between words. They need advanced tokenizers to segment characters into meaningful words. These tools may work well for a single language but rarely support multiple complex languages simultaneously.</p></li>
-<li><p><strong>Even similar languages can conflict</strong>: English and French might both use whitespace to separate words, but once you apply language-specific processing like stemming or lemmatization, one language’s rules can interfere with the other’s. What improves accuracy for English might distort French queries—and vice versa.</p></li>
+<li><p><strong>تحتاج اللغات المعقدة إلى معاملة خاصة</strong>: لغات مثل الصينية واليابانية والكورية لا تستخدم مسافات بين الكلمات. فهي تحتاج إلى أدوات ترميز متقدمة لتجزئة الأحرف إلى كلمات ذات معنى. قد تعمل هذه الأدوات بشكل جيد مع لغة واحدة ولكنها نادراً ما تدعم لغات معقدة متعددة في وقت واحد.</p></li>
+<li><p><strong>حتى اللغات المتشابهة يمكن أن تتعارض</strong>: قد تستخدم كل من اللغتين الإنجليزية والفرنسية مسافات بيضاء لفصل الكلمات، ولكن بمجرد تطبيق المعالجة الخاصة بكل لغة مثل الجذع أو الليماتنة، يمكن أن تتداخل قواعد إحدى اللغتين مع قواعد اللغة الأخرى. ما يحسن دقة اللغة الإنجليزية قد يشوه الاستعلامات الفرنسية - والعكس صحيح.</p></li>
 </ul>
-<p>In short, <strong>different languages require different analyzers</strong>. Trying to process Chinese text with an English analyzer leads to failure—there are no spaces to split on, and English stemming rules can corrupt Chinese characters.</p>
-<p>The bottom line? Relying on a single tokenizer and analyzer for multilingual datasets makes it nearly impossible to ensure consistent, high-quality tokenization across all languages. And that leads directly to degraded search performance.</p>
-<p>As teams began adopting full-text search in Milvus 2.5, we started hearing the same feedback:</p>
-<p><em>“This is perfect for our searches in English, but what about our multilingual customer support tickets?” “We love having both vector and BM25 search, but our dataset includes Chinese, Japanese, and English content.” “Can we get the same search precision across all our languages?”</em></p>
-<p>These questions confirmed what we had already seen in practice: full-text search fundamentally differs from vector search. Semantic similarity works well across languages, but accurate text search requires a deep understanding of each language’s structure.</p>
-<p>That’s why <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6</a> introduces a completely overhauled text analysis pipeline with comprehensive multi-language support. This new system automatically applies the correct analyzer for each language, enabling accurate and scalable full-text search across multilingual datasets, without manual configuration or compromise in quality.</p>
-<h2 id="How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="common-anchor-header">How Milvus 2.6 Enables Robust Multilingual Full-Text Search<button data-href="#How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
+<p>باختصار، <strong>تتطلب اللغات المختلفة محللات مختلفة</strong>. تؤدي محاولة معالجة النص الصيني باستخدام محلل إنجليزي إلى الفشل - لا توجد مسافات للتقسيم عليها، ويمكن أن تؤدي قواعد الجذعية الإنجليزية إلى إفساد الأحرف الصينية.</p>
+<p>الخلاصة؟ الاعتماد على أداة ترميز واحدة ومحلل واحد لمجموعات البيانات متعددة اللغات يجعل من المستحيل تقريبًا ضمان ترميز متسق وعالي الجودة عبر جميع اللغات. وهذا يؤدي مباشرةً إلى تدهور أداء البحث.</p>
+<p>عندما بدأت الفرق في اعتماد البحث بالنص الكامل في Milvus 2.5، بدأنا نسمع نفس التعليقات:</p>
+<p><em>"هذا مثالي لعمليات البحث لدينا باللغة الإنجليزية، ولكن ماذا عن تذاكر دعم العملاء متعددة اللغات؟ "نحن نحب أن يكون لدينا بحث متجه وبحث BM25، ولكن مجموعة بياناتنا تتضمن محتوى صيني وياباني وإنجليزي." "هل يمكننا الحصول على دقة البحث نفسها عبر جميع لغاتنا؟</em></p>
+<p>أكدت هذه الأسئلة ما رأيناه بالفعل في الممارسة العملية: يختلف البحث في النص الكامل اختلافًا جوهريًا عن البحث المتجه. يعمل التشابه الدلالي بشكل جيد عبر اللغات، ولكن البحث الدقيق في النص يتطلب فهماً عميقاً لبنية كل لغة.</p>
+<p>لهذا السبب يقدم <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">الإصدار Milvus 2.6</a> نظام تحليل نصي تم إصلاحه بالكامل مع دعم شامل متعدد اللغات. يطبّق هذا النظام الجديد تلقائيًا المحلل الصحيح لكل لغة، مما يتيح بحثًا دقيقًا وقابلًا للتطوير في النص الكامل عبر مجموعات بيانات متعددة اللغات، دون تكوين يدوي أو مساومة في الجودة.</p>
+<h2 id="How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="common-anchor-header">كيف يتيح نظام Milvus 2.6 بحثًا قويًا متعدد اللغات بالنصوص الكاملة<button data-href="#How-Milvus-26-Enables-Robust-Multilingual-Full-Text-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,21 +100,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>After extensive research and development, we’ve built a suite of features that address different multilingual scenarios. Each approach solves the language-dependency problem in its own way.</p>
-<h3 id="1-Multi-Language-Analyzer-Precision-Through-Control" class="common-anchor-header">1. Multi-Language Analyzer: Precision Through Control</h3><p>The <a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers"><strong>Multi-Language Analyzer</strong></a> allows you to define different text processing rules for different languages within the same collection, instead of forcing all languages through the same analysis pipeline.</p>
-<p><strong>Here’s how it works:</strong> you configure language-specific analyzers and tag each document with its language during insertion. When performing a BM25 search, you specify which language analyzer to use for query processing. This ensures that both your indexed content and search queries are processed with the optimal rules for their respective languages.</p>
-<p><strong>Perfect for:</strong> Applications where you know the language of your content and want maximum search precision. Think multinational knowledge bases, localized product catalogs, or region-specific content management systems.</p>
-<p><strong>The requirement:</strong> You need to provide language metadata for each document. Currently only available for BM25 search operations.</p>
-<h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2. Language Identifier Tokenizer: Automatic Language Detection</h3><p>We know that manually tagging every piece of content isn’t always practical. The <a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>Language Identifier Tokenizer</strong></a> brings automatic language detection directly into the text analysis pipeline.</p>
-<p><strong>Here’s how it works:</strong> This intelligent tokenizer analyzes incoming text, detects its language using sophisticated detection algorithms, and automatically applies the appropriate language-specific processing rules. You configure it with multiple analyzer definitions - one for each language you want to support, plus a default fallback analyzer.</p>
-<p>We support two detection engines: <code translate="no">whatlang</code> for faster processing and <code translate="no">lingua</code> for higher accuracy. The system supports 71-75 languages, depending on your chosen detector. During both indexing and search, the tokenizer automatically selects the right analyzer based on detected language, falling back to your default configuration when detection is uncertain.</p>
-<p><strong>Perfect for:</strong> Dynamic environments with unpredictable language mixing, user-generated content platforms, or applications where manual language tagging isn’t feasible.</p>
-<p><strong>The trade-off:</strong> Automatic detection adds processing latency and may struggle with very short text or mixed-language content. But for most real-world applications, the convenience significantly outweighs these limitations.</p>
-<h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3. ICU Tokenizer: Universal Foundation</h3><p>If the first two options feel like overkill, we’ve got something simpler for you. We’ve newly integrated the<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> ICU (International Components for Unicode) tokenizer</a> into Milvus 2.6. ICU has been around forever - it’s a mature, widely-used set of libraries that handles text processing for tons of languages and scripts. The cool thing is that it can handle various complex and simple languages all at once.</p>
-<p>The ICU tokenizer is honestly a great default choice. It uses Unicode-standard rules for breaking up words, which makes it reliable for dozens of languages that don’t have their own specialized tokenizers. If you just need something powerful and general-purpose that works well across multiple languages, ICU does the job.</p>
-<p><strong>Limitation:</strong> ICU still works within a single analyzer, so all your languages end up sharing the same filters. Want to do language-specific stuff like stemming or lemmatization? You’ll run into the same conflicts we talked about earlier.</p>
-<p><strong>Where it really shines:</strong> We built ICU to work as the default analyzer within the multi-language or language identifier setups. It’s basically your intelligent safety net for handling languages you haven’t explicitly configured.</p>
-<h2 id="See-It-in-Action-Hands-On-Demo" class="common-anchor-header">See It in Action: Hands-On Demo<button data-href="#See-It-in-Action-Hands-On-Demo" class="anchor-icon" translate="no">
+    </button></h2><p>بعد البحث والتطوير المكثف، قمنا ببناء مجموعة من الميزات التي تعالج سيناريوهات مختلفة متعددة اللغات. كل نهج يحل مشكلة التبعية اللغوية بطريقته الخاصة.</p>
+<h3 id="1-Multi-Language-Analyzer-Precision-Through-Control" class="common-anchor-header">1. محلل متعدد اللغات: الدقة من خلال التحكم</h3><p>يتيح لك المُحلل <a href="https://milvus.io/docs/multi-language-analyzers.md#Multi-language-Analyzers"><strong>متعدد اللغات</strong></a> تحديد قواعد مختلفة لمعالجة النصوص للغات مختلفة داخل نفس المجموعة، بدلاً من إجبار جميع اللغات على نفس خط أنابيب التحليل.</p>
+<p><strong>إليك كيفية عمله:</strong> يمكنك تكوين محلل خاص بكل لغة وتمييز كل مستند بلغته أثناء الإدراج. عند إجراء بحث BM25، تقوم بتحديد محلل اللغة الذي ستستخدمه لمعالجة الاستعلام. يضمن ذلك معالجة كل من المحتوى المفهرس واستعلامات البحث الخاصة بك بالقواعد المثلى للغات الخاصة بكل منهما.</p>
+<p><strong>مثالي لـ</strong> التطبيقات التي تعرف فيها لغة المحتوى الخاص بك وتريد أقصى قدر من دقة البحث. فكّر في قواعد المعرفة متعددة الجنسيات أو كتالوجات المنتجات المترجمة أو أنظمة إدارة المحتوى الخاصة بكل منطقة.</p>
+<p><strong>المتطلبات:</strong> تحتاج إلى توفير البيانات الوصفية اللغوية لكل مستند. متوفر حاليًا فقط لعمليات البحث BM25.</p>
+<h3 id="2-Language-Identifier-Tokenizer-Automatic-Language-Detection" class="common-anchor-header">2. أداة ترميز معرّف اللغة: الكشف التلقائي عن اللغة</h3><p>نحن نعلم أن وضع علامات يدويًا على كل جزء من المحتوى ليس عمليًا دائمًا. يقوم مُعرّف <a href="https://milvus.io/docs/multi-language-analyzers.md#Overview"><strong>اللغة Tokenizer</strong></a> بالكشف التلقائي عن اللغة مباشرةً في خط أنابيب تحليل النصوص.</p>
+<p><strong>إليك كيفية عمله:</strong> يقوم هذا المُعَرِّف الذكي بتحليل النص الوارد، ويكتشف لغته باستخدام خوارزميات كشف متطورة، ويطبق تلقائيًا قواعد المعالجة المناسبة الخاصة باللغة. يمكنك تكوينه باستخدام تعريفات متعددة للمحلل - واحد لكل لغة تريد دعمها، بالإضافة إلى محلل احتياطي افتراضي.</p>
+<p>نحن ندعم محركين للكشف: <code translate="no">whatlang</code> لمعالجة أسرع و <code translate="no">lingua</code> لدقة أعلى. يدعم النظام 71-75 لغة، اعتمادًا على الكاشف الذي اخترته. أثناء كل من الفهرسة والبحث، يقوم مُحلل الرموز تلقائيًا بتحديد المحلل المناسب بناءً على اللغة المكتشفة، ويعود إلى التكوين الافتراضي الخاص بك عندما يكون الاكتشاف غير مؤكد.</p>
+<p><strong>مثالي لـ</strong> البيئات الديناميكية ذات الخلط اللغوي غير المتوقع، أو منصات المحتوى التي ينشئها المستخدم، أو التطبيقات التي لا يمكن فيها وضع علامات اللغة يدويًا.</p>
+<p><strong>المفاضلة:</strong> يضيف الاكتشاف التلقائي وقتًا إضافيًا للمعالجة وقد يواجه صعوبات في النصوص القصيرة جدًا أو المحتوى المختلط اللغات. لكن بالنسبة لمعظم التطبيقات الواقعية، فإن الملاءمة تفوق هذه القيود بشكل كبير.</p>
+<h3 id="3-ICU-Tokenizer-Universal-Foundation" class="common-anchor-header">3. رمز ICU Tokenizer: الأساس العالمي</h3><p>إذا كنت تشعر أن الخيارين الأولين مبالغ فيهما، فلدينا شيء أبسط لك. لقد قمنا حديثًا بدمج<a href="https://milvus.io/docs/icu-tokenizer.md#ICU"> أداة ترميز ICU (المكونات الدولية لليونيكود)</a> في Milvus 2.6. لقد كانت ICU موجودة منذ زمن طويل - إنها مجموعة ناضجة ومستخدمة على نطاق واسع من المكتبات التي تتعامل مع معالجة النصوص للعديد من اللغات والنصوص. الشيء الرائع هو أنه يمكنه التعامل مع مختلف اللغات المعقدة والبسيطة في آن واحد.</p>
+<p>إن أداة الترميز ICU هي بصراحة خيار افتراضي رائع. فهو يستخدم قواعد يونيكود القياسية لتقسيم الكلمات، مما يجعله موثوقًا لعشرات اللغات التي لا تمتلك أدوات ترميز متخصصة خاصة بها. إذا كنت تحتاج فقط إلى شيء قوي وعام الأغراض يعمل بشكل جيد عبر لغات متعددة، فإن ICU يقوم بالمهمة.</p>
+<p><strong>القيود:</strong> لا تزال وحدة ICU تعمل ضمن محلل واحد، لذا فإن جميع لغاتك في نهاية المطاف تشترك في نفس المرشحات. هل تريد القيام بأشياء خاصة بلغة معينة مثل الجذعية أو اللمط؟ ستواجه نفس التعارضات التي تحدثنا عنها سابقًا.</p>
+<p><strong>حيث تتألق حقًا:</strong> لقد صممنا وحدة ICU لتعمل كمحلل افتراضي ضمن إعدادات معرفات اللغات المتعددة أو معرفات اللغات. إنه في الأساس شبكة أمان ذكية للتعامل مع اللغات التي لم تقم بتكوينها بشكل صريح.</p>
+<h2 id="See-It-in-Action-Hands-On-Demo" class="common-anchor-header">شاهده أثناء العمل: عرض توضيحي عملي<button data-href="#See-It-in-Action-Hands-On-Demo" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -128,14 +129,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Enough theory—let’s dive into some code! Here’s how to use the new multilingual features in <strong>pymilvus</strong> to build a multilingual search collection.</p>
-<p>We’ll start by defining some reusable analyzer configurations, then walk through <strong>two complete examples</strong>:</p>
+    </button></h2><p>كفى نظرية - دعنا نتعمق في بعض الشيفرات البرمجية! فيما يلي كيفية استخدام الميزات الجديدة متعددة اللغات في <strong>pymilvus</strong> لإنشاء مجموعة بحث متعددة اللغات.</p>
+<p>سنبدأ بتحديد بعض تكوينات المحلِّل القابلة لإعادة الاستخدام، ثم سنستعرض <strong>مثالين كاملين</strong>:</p>
 <ul>
-<li><p>Using the <strong>Multi-Language Analyzer</strong></p></li>
-<li><p>Using the <strong>Language Identifier Tokenizer</strong></p></li>
+<li><p>استخدام <strong>المحلل متعدد اللغات</strong></p></li>
+<li><p>استخدام <strong>أداة ترميز معرّف اللغة</strong></p></li>
 </ul>
-<p>👉 For the complete demo code, check out <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">this GitHub page</a>.</p>
-<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">Step 1: Set up the Milvus Client</h3><p><em>First, we connect to Milvus, set a collection name, and clean up any existing collections to start fresh.</em></p>
+<p>👉 للحصول على الشيفرة التوضيحية الكاملة، راجع <a href="https://github.com/milvus-io/pymilvus/tree/master/examples/full_text_search">صفحة GitHub هذه</a>.</p>
+<h3 id="Step-1-Set-up-the-Milvus-Client" class="common-anchor-header">الخطوة 1: إعداد عميل ميلفوس</h3><p><em>أولاً، نتصل بـ Milvus، ونقوم بتعيين اسم مجموعة، وننظف أي مجموعات موجودة لنبدأ من جديد.</em></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 
 <span class="hljs-comment"># 1. Setup Milvus Client</span>
@@ -144,7 +145,7 @@ COLLECTION_NAME = <span class="hljs-string">&quot;multilingual_test&quot;</span>
 <span class="hljs-keyword">if</span> client.has_collection(collection_name=COLLECTION_NAME):
     client.drop_collection(collection_name=COLLECTION_NAME)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">Step 2: Define Analyzers for Multiple Languages</h3><p>Next, we define an <code translate="no">analyzers</code> dictionary with language-specific configurations. These will be used in both multilingual search methods shown later.</p>
+<h3 id="Step-2-Define-Analyzers-for-Multiple-Languages" class="common-anchor-header">الخطوة 2: تعريف المحللين للغات المتعددة</h3><p>بعد ذلك، نقوم بتعريف قاموس <code translate="no">analyzers</code> مع تكوينات خاصة بكل لغة. سيتم استخدام هذه في كلتا طريقتي البحث متعدد اللغات الموضحة لاحقًا.</p>
 <pre><code translate="no"><span class="hljs-comment"># 2. Define analyzers for multiple languages</span>
 <span class="hljs-comment"># These individual analyzer definitions will be reused by both methods.</span>
 analyzers = {
@@ -167,8 +168,8 @@ analyzers = {
     }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Option-A-Using-The-Multi-Language-Analyzer" class="common-anchor-header">Option A: Using The Multi-Language Analyzer</h3><p>This approach is best when you <strong>know the language of each document ahead of time</strong>. You’ll pass that information through a dedicated <code translate="no">language</code> field during data insertion.</p>
-<h4 id="Create-a-Collection-with-Multi-Language-Analyzer" class="common-anchor-header">Create a Collection with Multi-Language Analyzer</h4><p>We’ll create a collection where the <code translate="no">&quot;text&quot;</code> field uses different analyzers depending on the <code translate="no">language</code> field value.</p>
+<h3 id="Option-A-Using-The-Multi-Language-Analyzer" class="common-anchor-header">الخيار أ: استخدام محلل متعدد اللغات</h3><p>هذه الطريقة هي الأفضل عندما <strong>تعرف لغة كل مستند مسبقاً</strong>. ستقوم بتمرير تلك المعلومات من خلال حقل مخصص <code translate="no">language</code> أثناء إدراج البيانات.</p>
+<h4 id="Create-a-Collection-with-Multi-Language-Analyzer" class="common-anchor-header">إنشاء مجموعة باستخدام محلل متعدد اللغات</h4><p>سننشئ مجموعة حيث يستخدم الحقل <code translate="no">&quot;text&quot;</code> محللون مختلفون بناءً على قيمة الحقل <code translate="no">language</code>.</p>
 <pre><code translate="no"><span class="hljs-comment"># --- Option A: Using Multi-Language Analyzer ---</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n--- Demonstrating Multi-Language Analyzer ---&quot;</span>)
 
@@ -211,7 +212,7 @@ client.create_collection(
 )
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection &#x27;<span class="hljs-subst">{COLLECTION_NAME}</span>&#x27; created successfully.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Insert-Multilingual-Data-and-Load-Collection" class="common-anchor-header">Insert Multilingual Data and Load Collection</h4><p>Now insert documents in English and Japanese. The <code translate="no">language</code> field tells Milvus which analyzer to use.</p>
+<h4 id="Insert-Multilingual-Data-and-Load-Collection" class="common-anchor-header">إدراج بيانات متعددة اللغات وتحميل المجموعة</h4><p>الآن أدخل المستندات باللغتين الإنجليزية واليابانية. يقوم الحقل <code translate="no">language</code> بإخبار ميلفوس بالمحلل الذي سيستخدمه.</p>
 <pre><code translate="no"><span class="hljs-comment"># 4A. Insert data for Multi-Language Analyzer and load collection# Insert English and Japanese movie titles, explicitly setting the &#x27;language&#x27; field</span>
 client.insert(
     collection_name=COLLECTION_NAME,
@@ -227,7 +228,7 @@ client.insert(
 <span class="hljs-comment"># Load the collection into memory before searching</span>
 client.load_collection(collection_name=COLLECTION_NAME)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Run-Full-Text-Search" class="common-anchor-header">Run Full-Text Search</h4><p>To search, specify which analyzer to use for the query based on its language.</p>
+<h4 id="Run-Full-Text-Search" class="common-anchor-header">تشغيل البحث بالنص الكامل</h4><p>للبحث، حدد أي محلل لاستخدامه في الاستعلام بناءً على لغته.</p>
 <pre><code translate="no"><span class="hljs-comment"># 5A. Perform a full-text search with Multi-Language Analyzer# When searching, explicitly specify the analyzer to use for the query string.</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n--- Search results for Multi-Language Analyzer ---&quot;</span>)
 results_multi_jp = client.search(
@@ -257,14 +258,14 @@ results_multi_en = client.search(
 client.drop_collection(collection_name=COLLECTION_NAME)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection &#x27;<span class="hljs-subst">{COLLECTION_NAME}</span>&#x27; dropped.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Results" class="common-anchor-header">Results:</h4><p>
+<h4 id="Results" class="common-anchor-header">النتائج:</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_results_561f628de3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Option-B-Using-the-Language-Identifier-Tokenizer" class="common-anchor-header">Option B: Using the Language Identifier Tokenizer</h3><p>This approach takes the manual language handling out of your hands. The <strong>Language Identifier Tokenizer</strong> automatically detects the language of each document and applies the correct analyzer—no need to specify a <code translate="no">language</code> field.</p>
-<h4 id="Create-a-Collection-with-Language-Identifier-Tokenizer" class="common-anchor-header">Create a Collection with Language Identifier Tokenizer</h4><p>Here, we create a collection where the <code translate="no">&quot;text&quot;</code> field uses automatic language detection to choose the right analyzer.</p>
+<h3 id="Option-B-Using-the-Language-Identifier-Tokenizer" class="common-anchor-header">الخيار ب: استخدام أداة ترميز معرّف اللغة</h3><p>يُخرج هذا الأسلوب التعامل اليدوي مع اللغة من بين يديك. يكتشف <strong>أداة ترميز معرّف اللغة</strong> تلقائيًا لغة كل مستند ويطبق المحلل الصحيح - لا حاجة لتحديد حقل <code translate="no">language</code>.</p>
+<h4 id="Create-a-Collection-with-Language-Identifier-Tokenizer" class="common-anchor-header">إنشاء مجموعة باستخدام أداة ترميز معرّف اللغة</h4><p>هنا، ننشئ مجموعة حيث يستخدم الحقل <code translate="no">&quot;text&quot;</code> الكشف التلقائي للغة لاختيار المحلل الصحيح.</p>
 <pre><code translate="no"><span class="hljs-comment"># --- Option B: Using Language Identifier Tokenizer ---</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n--- Demonstrating Language Identifier Tokenizer ---&quot;</span>)
 
@@ -306,7 +307,7 @@ client.create_collection(
 )
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection &#x27;<span class="hljs-subst">{COLLECTION_NAME}</span>&#x27; created successfully with Language Identifier Tokenizer.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Insert-Data-and-Load-Collection" class="common-anchor-header">Insert Data and Load Collection</h4><p>Insert text in different languages—no need to label them. Milvus detects and applies the correct analyzer automatically.</p>
+<h4 id="Insert-Data-and-Load-Collection" class="common-anchor-header">إدراج البيانات وتحميل المجموعة</h4><p>إدراج نص بلغات مختلفة - لا حاجة لتسميتها. يقوم ميلفوس باكتشاف المحلل الصحيح وتطبيقه تلقائيًا.</p>
 <pre><code translate="no"><span class="hljs-comment"># 4B. Insert Data for Language Identifier Tokenizer and Load Collection</span>
 <span class="hljs-comment"># Insert English and Japanese movie titles. The language_identifier will detect the language.</span>
 client.insert(
@@ -323,7 +324,7 @@ client.insert(
 <span class="hljs-comment"># Load the collection into memory before searching</span>
 client.load_collection(collection_name=COLLECTION_NAME)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Run-Full-Text-Search" class="common-anchor-header">Run Full-Text Search</h4><p>Here’s the best part: <strong>no need to specify an analyzer</strong> when searching. The tokenizer automatically detects the query language and applies the right logic.</p>
+<h4 id="Run-Full-Text-Search" class="common-anchor-header">تشغيل بحث بالنص الكامل</h4><p>إليك أفضل جزء: <strong>لا حاجة لتحديد محلل</strong> عند البحث. يكتشف أداة الترميز لغة الاستعلام تلقائيًا ويطبق المنطق الصحيح.</p>
 <pre><code translate="no"><span class="hljs-comment"># 5B. Perform a full-text search with Language Identifier Tokenizer# No need to specify analyzer_name in search_params; it&#x27;s detected automatically for the query.</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n--- Search results for Language Identifier Tokenizer ---&quot;</span>)
 results_langid_jp = client.search(
@@ -353,13 +354,13 @@ results_langid_en = client.search(
 client.drop_collection(collection_name=COLLECTION_NAME)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Collection &#x27;<span class="hljs-subst">{COLLECTION_NAME}</span>&#x27; dropped.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Results" class="common-anchor-header">Results</h4><p>
+<h4 id="Results" class="common-anchor-header">النتائج</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_results_486712c3f6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -374,13 +375,13 @@ client.drop_collection(collection_name=COLLECTION_NAME)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 2.6 takes a big step forward in making <strong>hybrid search</strong> more powerful and accessible, combining vector search with keyword search, now across multiple languages. With the enhanced multilingual support, you can build apps that understand <em>what users mean</em> and <em>what they say</em>, no matter what language they’re using.</p>
-<p>But that’s just one part of the update. Milvus 2.6 also brings several other features that make search faster, smarter, and easier to work with:</p>
+    </button></h2><p>يخطو Milvus 2.6 خطوة كبيرة إلى الأمام في جعل <strong>البحث الهجين</strong> أكثر قوة وسهولة في الوصول إليه، حيث يجمع بين البحث المتجه والبحث بالكلمات الرئيسية، والآن عبر لغات متعددة. مع الدعم المحسّن متعدد اللغات، يمكنك إنشاء تطبيقات تفهم <em>ما يعنيه المستخدمون</em> <em>وما يقولونه</em> بغض النظر عن اللغة التي يستخدمونها.</p>
+<p>ولكن هذا جزء واحد فقط من التحديث. يجلب Milvus 2.6 أيضًا العديد من الميزات الأخرى التي تجعل البحث أسرع وأكثر ذكاءً وأسهل في العمل:</p>
 <ul>
-<li><p><strong>Better Query Matching</strong> – Use <code translate="no">phrase_match</code> and <code translate="no">multi_match</code> for more accurate searches</p></li>
-<li><p><strong>Faster JSON Filtering</strong> – Thanks to a new, dedicated index for JSON fields</p></li>
-<li><p><strong>Scalar-Based Sorting</strong> – Sort results by any numeric field</p></li>
-<li><p><strong>Advanced Reranking</strong> – Reorder results using models or custom scoring logic</p></li>
+<li><p><strong>مطابقة أفضل للاستعلام</strong> - استخدم <code translate="no">phrase_match</code> و <code translate="no">multi_match</code> لعمليات بحث أكثر دقة</p></li>
+<li><p><strong>تصفية أسرع</strong> لحقول<strong>JSON</strong> - بفضل فهرس جديد مخصص لحقول JSON</p></li>
+<li><p><strong>الفرز القائم على العددية</strong> - فرز النتائج حسب أي حقل رقمي</p></li>
+<li><p><strong>إعادة الترتيب المتقدم</strong> - إعادة ترتيب النتائج باستخدام النماذج أو منطق التسجيل المخصص</p></li>
 </ul>
-<p>Want the complete breakdown of Milvus 2.6? Check out our latest post: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</strong></a><strong>.</strong></p>
-<p>Have questions or want a deep dive on any feature? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>.</p>
+<p>هل تريد التفاصيل الكاملة لميلفوس 2.6؟ اطلع على أحدث منشوراتنا: <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md"><strong>تقديم ميلفوس 2.6: بحث متجه ميسور التكلفة على نطاق المليار</strong></a><strong>.</strong></p>
+<p>هل لديك أسئلة أو تريد التعمق في أي ميزة؟ انضم إلى<a href="https://discord.com/invite/8uyFbECzPX"> قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>.</p>

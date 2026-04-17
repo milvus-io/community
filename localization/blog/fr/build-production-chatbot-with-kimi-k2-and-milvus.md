@@ -1,7 +1,6 @@
 ---
 id: build-production-chatbot-with-kimi-k2-and-milvus.md
-title: |
-  Build a Production-Grade Chatbot with Kimi K2 and Milvus
+title: Construire un Chatbot de niveau production avec Kimi K2 et Milvus
 author: Lumina Wang
 date: 2025-07-25T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
@@ -13,32 +12,33 @@ meta_keywords: 'Kimi K2, Milvus, AI agents, semantic search, tool calling'
 meta_title: |
   Build a Production-Grade Chatbot with Kimi K2 and Milvus
 desc: >-
-  Explore how Kimi K2 and Milvus create a production AI agent for automatic file
-  processing, semantic search, and intelligent Q&A in real-world tasks.
+  Découvrez comment Kimi K2 et Milvus créent un agent d'IA de production pour le
+  traitement automatique de fichiers, la recherche sémantique et les
+  questions-réponses intelligentes dans des tâches réelles.
 origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus.md'
 ---
-<p><a href="https://moonshotai.github.io/Kimi-K2/">Kimi K2</a> has been making waves lately—and for good reason. Hugging Face co-founders and other industry leaders have praised it as an open-source model that performs on par with top closed models, such as GPT-4 and Claude, in many areas.</p>
+<p>Le<a href="https://moonshotai.github.io/Kimi-K2/">Kimi K2</a> a fait parler de lui ces derniers temps, et ce pour de bonnes raisons. Les cofondateurs de Hugging Face et d'autres leaders de l'industrie en ont fait l'éloge en tant que modèle à source ouverte dont les performances sont comparables à celles des meilleurs modèles fermés, tels que GPT-4 et Claude, dans de nombreux domaines.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/huggingface_leader_twitter_b96c9d3f21.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Two breakthrough advantages set Kimi K2 apart:</strong></p>
+<p><strong>Deux avantages révolutionnaires distinguent Kimi K2 :</strong></p>
 <ul>
-<li><p><strong>State-of-the-art performance</strong>: K2 achieves top results on key benchmarks, such as AIME2025, and consistently outperforms models like Grok-4 across most dimensions.</p></li>
-<li><p><strong>Robust agent capabilities</strong>: K2 doesn’t just call tools—it knows when to use them, how to switch between them mid-task, and when to stop using them. That opens up serious real-world use cases.</p></li>
+<li><p><strong>Une performance de pointe</strong>: K2 obtient les meilleurs résultats sur des benchmarks clés, tels que AIME2025, et surpasse régulièrement des modèles tels que Grok-4 dans la plupart des dimensions.</p></li>
+<li><p><strong>Des capacités d'agent robustes</strong>: K2 ne se contente pas d'appeler des outils, il sait quand les utiliser, comment passer de l'un à l'autre en cours de tâche et quand cesser de les utiliser. Cela ouvre la voie à de sérieux cas d'utilisation dans le monde réel.</p></li>
 </ul>
-<p>User testing shows that Kimi K2’s coding abilities are already comparable to Claude 4—at about 20% of the cost. More importantly, it supports <strong>autonomous task planning and tool usage</strong>. You define available tools, and K2 handles when and how to use them—no fine-tuning or orchestration layer required.</p>
+<p>Les tests effectués par les utilisateurs montrent que les capacités de codage de Kimi K2 sont déjà comparables à celles de Claude 4, à environ 20 % du coût. Plus important encore, il prend en charge la <strong>planification autonome des tâches et l'utilisation des outils</strong>. Vous définissez les outils disponibles, et K2 se charge de savoir quand et comment les utiliser - aucun réglage fin ou couche d'orchestration n'est nécessaire.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Kimi_k2_performance_550ffd5c61.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>It also supports OpenAI and Anthropic-compatible APIs, allowing anything built for those ecosystems—such as Claude Code—to be integrated with Kimi K2 directly. It’s clear that Moonshot AI is targeting agent workloads.</p>
-<p>In this tutorial, I’ll show how to build a <strong>production-grade chatbot using Kimi K2 and Milvus.</strong> The chatbot will be able to upload files, run intelligent Q&amp;A, and manage data through vector search, eliminating the need for manual chunking, embedding scripts, or fine-tuning.</p>
-<h2 id="What-We’ll-Build" class="common-anchor-header">What We’ll Build<button data-href="#What-We’ll-Build" class="anchor-icon" translate="no">
+<p>Il prend également en charge les API compatibles avec OpenAI et Anthropic, ce qui permet d'intégrer directement à Kimi K2 tout ce qui a été conçu pour ces écosystèmes, comme Claude Code. Il est clair que Moonshot AI cible les charges de travail des agents.</p>
+<p>Dans ce tutoriel, je montrerai comment construire un <strong>chatbot de niveau production en utilisant Kimi K2 et Milvus.</strong> Le chatbot sera capable de télécharger des fichiers, d'exécuter des questions-réponses intelligentes et de gérer des données par le biais d'une recherche vectorielle, éliminant ainsi le besoin d'un découpage manuel, de l'intégration de scripts ou d'un réglage fin.</p>
+<h2 id="What-We’ll-Build" class="common-anchor-header">Ce que nous allons construire<button data-href="#What-We’ll-Build" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -53,25 +53,25 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>We’re building an intelligent chatbot by combining Kimi K2’s reasoning capabilities with Milvus’s vector database performance. The system handles three core workflows that engineers actually need:</p>
+    </button></h2><p>Nous construisons un chatbot intelligent en combinant les capacités de raisonnement de Kimi K2 avec les performances de la base de données vectorielle de Milvus. Le système gère trois flux de travail essentiels dont les ingénieurs ont réellement besoin :</p>
 <ol>
-<li><p><strong>Automatic file processing and chunking</strong> - Upload documents in various formats and let the system intelligently break them into searchable chunks</p></li>
-<li><p><strong>Semantic search</strong> - Find relevant information using natural language queries, not keyword matching</p></li>
-<li><p><strong>Intelligent decision-making</strong> - The assistant understands context and automatically chooses the right tools for each task</p></li>
+<li><p><strong>Traitement automatique des fichiers et découpage</strong> - Téléchargez des documents dans différents formats et laissez le système les découper intelligemment en morceaux pouvant faire l'objet de recherches.</p></li>
+<li><p><strong>Recherche sémantique</strong> - Trouver des informations pertinentes à l'aide de requêtes en langage naturel, et non de mots-clés.</p></li>
+<li><p><strong>Prise de décision intelligente</strong> - L'assistant comprend le contexte et choisit automatiquement les bons outils pour chaque tâche.</p></li>
 </ol>
-<p>The entire system is built around just two main classes, making it easy to understand, modify, and extend:</p>
+<p>L'ensemble du système s'articule autour de deux classes principales, ce qui le rend facile à comprendre, à modifier et à étendre :</p>
 <ul>
-<li><p><strong>VectorDatabase class</strong>: This is your data processing workhorse. It handles everything related to the Milvus vector database—from connecting and creating collections to chunking files and running similarity searches.</p></li>
-<li><p><strong>SmartAssistant class</strong>: Think of this as the system’s brain. It understands what users want and determines which tools to use to get the job done.</p></li>
+<li><p><strong>La classe VectorDatabase</strong>: Il s'agit de votre cheval de bataille en matière de traitement des données. Elle gère tout ce qui a trait à la base de données vectorielles Milvus, depuis la connexion et la création de collections jusqu'au regroupement de fichiers et à l'exécution de recherches de similarités.</p></li>
+<li><p><strong>Classe SmartAssistant</strong>: Il s'agit du cerveau du système. Elle comprend ce que veulent les utilisateurs et détermine les outils à utiliser pour accomplir le travail.</p></li>
 </ul>
-<p>Here’s how it works in practice: users chat with the SmartAssistant using natural language. The assistant leverages Kimi K2’s reasoning capabilities to break down requests, then orchestrates 7 specialized tool functions to interact with the Milvus vector database. It’s like having a smart coordinator that knows exactly which database operations to run based on what you’re asking for.</p>
+<p>Voici comment cela fonctionne en pratique : les utilisateurs discutent avec le SmartAssistant en utilisant le langage naturel. L'assistant exploite les capacités de raisonnement de Kimi K2 pour décomposer les demandes, puis orchestre 7 fonctions d'outils spécialisés pour interagir avec la base de données vectorielles Milvus. C'est comme avoir un coordinateur intelligent qui sait exactement quelles opérations de base de données exécuter en fonction de ce que vous demandez.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/chatbot_architecture_ea73cac6ca.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Prerequisites-and-Setup" class="common-anchor-header">Prerequisites and Setup<button data-href="#Prerequisites-and-Setup" class="anchor-icon" translate="no">
+<h2 id="Prerequisites-and-Setup" class="common-anchor-header">Conditions préalables et configuration<button data-href="#Prerequisites-and-Setup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,28 +86,28 @@ origin: 'https://milvus.io/blog/build-production-chatbot-with-kimi-k2-and-milvus
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Before diving into the code, ensure you have the following ready:</p>
-<p><strong>System Requirements:</strong></p>
+    </button></h2><p>Avant de plonger dans le code, assurez-vous que vous disposez des éléments suivants :</p>
+<p><strong>Configuration requise :</strong></p>
 <ul>
-<li><p>Python 3.8 or higher</p></li>
-<li><p>Milvus server (we’ll use the local instance on port 19530)</p></li>
-<li><p>At least 4GB RAM for processing documents</p></li>
+<li><p>Python 3.8 ou supérieur</p></li>
+<li><p>Serveur Milvus (nous utiliserons l'instance locale sur le port 19530)</p></li>
+<li><p>Au moins 4 Go de RAM pour le traitement des documents</p></li>
 </ul>
-<p><strong>API Keys Required:</strong></p>
+<p><strong>Clés API requises :</strong></p>
 <ul>
-<li><p>Kimi API key from <a href="https://platform.moonshot.cn/">Moonshot AI</a></p></li>
-<li><p>OpenAI API key for text embeddings (we’ll use the text-embedding-3-small model)</p></li>
+<li><p>Clé API Kimi de <a href="https://platform.moonshot.cn/">Moonshot AI</a></p></li>
+<li><p>Clé API OpenAI pour l'intégration de texte (nous utiliserons le modèle text-embedding-3-small)</p></li>
 </ul>
-<p><strong>Quick Installation:</strong></p>
+<p><strong>Installation rapide :</strong></p>
 <pre><code translate="no">pip install pymilvus openai numpy
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Start Milvus locally:</strong></p>
+<p><strong>Démarrez Milvus localement :</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Using Docker (recommended)</span>
 docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span class="hljs-number">19530</span> milvusdb/milvus:latest
 
 <span class="hljs-comment"># Or download and run the standalone version from milvus.io</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Import-Libraries-and-Basic-Configuration" class="common-anchor-header">Import Libraries and Basic Configuration<button data-href="#Import-Libraries-and-Basic-Configuration" class="anchor-icon" translate="no">
+<h2 id="Import-Libraries-and-Basic-Configuration" class="common-anchor-header">Importation des bibliothèques et configuration de base<button data-href="#Import-Libraries-and-Basic-Configuration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -122,7 +122,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Here, pymilvus is the library for Milvus vector database operations, and openai is used to call Kimi and OpenAI APIs (the benefit of Kimi K2’s API compatibility with OpenAI and Anthropic is evident here).</p>
+    </button></h2><p>Ici, pymilvus est la bibliothèque pour les opérations de la base de données vectorielle Milvus, et openai est utilisé pour appeler les API Kimi et OpenAI (l'avantage de la compatibilité de l'API Kimi K2 avec OpenAI et Anthropic est évident ici).</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">List</span>, <span class="hljs-type">Dict</span>
@@ -132,7 +132,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
 <span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">import</span> re
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Data-Processing-VectorDatabase-Class" class="common-anchor-header">Data Processing: VectorDatabase Class<button data-href="#Data-Processing-VectorDatabase-Class" class="anchor-icon" translate="no">
+<h2 id="Data-Processing-VectorDatabase-Class" class="common-anchor-header">Traitement des données : Classe VectorDatabase<button data-href="#Data-Processing-VectorDatabase-Class" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,10 +147,10 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>This is the data processing core of the entire system, responsible for all interactions with the vector database. It can be divided into two major modules: <strong>Milvus vector database operations and file processing system.</strong></p>
-<p>The design philosophy here is the separation of concerns—this class focuses purely on data operations while leaving the intelligence to the SmartAssistant class. This makes the code more maintainable and testable.</p>
-<h3 id="Milvus-Vector-Database-Operations" class="common-anchor-header">Milvus Vector Database Operations</h3><h4 id="Initialization-Method" class="common-anchor-header"><strong>Initialization Method</strong></h4><p>Creates an OpenAI client for text vectorization, using the text-embedding-3-small model with vector dimension set to 1536.</p>
-<p>Also initializes the Milvus client as None, creating the connection when needed.</p>
+    </button></h2><p>Il s'agit du noyau de traitement des données de l'ensemble du système, responsable de toutes les interactions avec la base de données vectorielles. Elle peut être divisée en deux modules principaux : <strong>les opérations de la base de données vectorielles Milvus et le système de traitement des fichiers.</strong></p>
+<p>La philosophie de conception ici est la séparation des préoccupations : cette classe se concentre uniquement sur les opérations de données et laisse l'intelligence à la classe SmartAssistant. Le code est ainsi plus facile à maintenir et à tester.</p>
+<h3 id="Milvus-Vector-Database-Operations" class="common-anchor-header">Opérations de la base de données vectorielle Milvus</h3><h4 id="Initialization-Method" class="common-anchor-header"><strong>Méthode d'initialisation</strong></h4><p>Crée un client OpenAI pour la vectorisation de texte, en utilisant le modèle text-embedding-3-small avec une dimension de vecteur fixée à 1536.</p>
+<p>Initialise également le client Milvus en tant que None, en créant la connexion si nécessaire.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, openai_api_key: <span class="hljs-built_in">str</span></span>):
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;🔧 Initializing vector database components...&quot;</span>)
     
@@ -163,7 +163,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ Vector database component initialization complete&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Text-Vectorization" class="common-anchor-header"><strong>Text Vectorization</strong></h4><p>Calls OpenAI’s embedding API to vectorize text, returning a 1536-dimensional vector array.</p>
+<h4 id="Text-Vectorization" class="common-anchor-header"><strong>Vectorisation du texte</strong></h4><p>Appelle l'API d'intégration d'OpenAI pour vectoriser le texte, en renvoyant un tableau de vecteurs à 1536 dimensions.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_vector</span>(<span class="hljs-params">self, text: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">float</span>]:
     <span class="hljs-string">&quot;&quot;&quot;Convert text to vector&quot;&quot;&quot;</span>
     response = <span class="hljs-variable language_">self</span>.openai_client.embeddings.create(
@@ -172,7 +172,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     )
     <span class="hljs-keyword">return</span> response.data[<span class="hljs-number">0</span>].embedding
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Database-Connection" class="common-anchor-header"><strong>Database Connection</strong></h4><p>Creates a MilvusClient connection to the local database on port 19530 and returns a unified result dictionary format.</p>
+<h4 id="Database-Connection" class="common-anchor-header"><strong>Connexion à la base de données</strong></h4><p>Crée une connexion MilvusClient à la base de données locale sur le port 19530 et renvoie un format de dictionnaire de résultats unifié.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">connect_database</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Connect to Milvus vector database&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -183,11 +183,11 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Connection failed: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Create-Collection" class="common-anchor-header"><strong>Create Collection</strong></h4><ul>
-<li><p><strong>Duplicate Check</strong>: Avoids creating collections with the same name</p></li>
-<li><p><strong>Define Structure</strong>: Three fields: id (primary key), text (text), vector (vector)</p></li>
-<li><p><strong>Create Index</strong>: Uses <code translate="no">IVF_FLAT</code> algorithm and cosine similarity to improve search efficiency</p></li>
-<li><p><strong>Auto ID</strong>: System automatically generates unique identifiers</p></li>
+<h4 id="Create-Collection" class="common-anchor-header"><strong>Créer une collection</strong></h4><ul>
+<li><p><strong>Contrôle des doublons</strong>: Évite de créer des collections portant le même nom</p></li>
+<li><p><strong>Définir la structure</strong>: Trois champs : id (clé primaire), text (texte), vector (vecteur)</p></li>
+<li><p><strong>Création d'un index</strong>: Utilise l'algorithme <code translate="no">IVF_FLAT</code> et la similarité cosinusoïdale pour améliorer l'efficacité de la recherche.</p></li>
+<li><p><strong>Auto ID</strong>: Le système génère automatiquement des identifiants uniques.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">create_collection</span>(<span class="hljs-params">self, collection_name: <span class="hljs-built_in">str</span>, description: <span class="hljs-built_in">str</span> = <span class="hljs-string">&quot;&quot;</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Create document collection&quot;&quot;&quot;</span>
@@ -232,7 +232,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to create collection: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Add-Documents-to-Collection" class="common-anchor-header"><strong>Add Documents to Collection</strong></h4><p>Generates vector representations for all documents, assembles them into the dictionary format required by Milvus, then performs batch data insertion, finally returning insertion count and status information.</p>
+<h4 id="Add-Documents-to-Collection" class="common-anchor-header"><strong>Ajout de documents à la collection</strong></h4><p>Génère des représentations vectorielles pour tous les documents, les assemble dans le format de dictionnaire requis par Milvus, puis procède à l'insertion de données par lots, renvoyant finalement le nombre d'insertions et les informations d'état.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_documents</span>(<span class="hljs-params">self, collection_name: <span class="hljs-built_in">str</span>, documents: <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Add documents to collection&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -269,7 +269,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to add documents: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Search-Similar-Documents" class="common-anchor-header"><strong>Search Similar Documents</strong></h4><p>Converts user questions to 1536-dimensional vectors, uses Cosine to calculate semantic similarity, and returns the most relevant documents in descending order of similarity.</p>
+<h4 id="Search-Similar-Documents" class="common-anchor-header"><strong>Recherche de documents similaires</strong></h4><p>Convertit les questions des utilisateurs en vecteurs à 1536 dimensions, utilise le Cosinus pour calculer la similarité sémantique et renvoie les documents les plus pertinents par ordre décroissant de similarité.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">search_documents</span>(<span class="hljs-params">self, collection_name: <span class="hljs-built_in">str</span>, query: <span class="hljs-built_in">str</span>, limit: <span class="hljs-built_in">int</span> = <span class="hljs-number">5</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Search similar documents&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -313,7 +313,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Search failed: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Query-Collections" class="common-anchor-header"><strong>Query Collections</strong></h4><p>Gets collection name, document count, and description information.</p>
+<h4 id="Query-Collections" class="common-anchor-header"><strong>Interroger les collections</strong></h4><p>Permet d'obtenir le nom de la collection, le nombre de documents et des informations sur la description.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">list_all_collections</span>(<span class="hljs-params">self</span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Query all collections in database&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -364,12 +364,12 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to query collections: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="32-File-Processing-System" class="common-anchor-header"><strong>3.2 File Processing System</strong></h3><h4 id="Intelligent-Text-Chunking" class="common-anchor-header"><strong>Intelligent Text Chunking</strong></h4><p><strong>Chunking Strategy:</strong></p>
+<h3 id="32-File-Processing-System" class="common-anchor-header"><strong>3.2 Système de traitement des fichiers</strong></h3><h4 id="Intelligent-Text-Chunking" class="common-anchor-header"><strong>Regroupement intelligent de textes</strong></h4><p><strong>Stratégie de regroupement :</strong></p>
 <ul>
-<li><p><strong>Paragraph Priority</strong>: First split by double line breaks to maintain paragraph integrity</p></li>
-<li><p><strong>Long Paragraph Processing</strong>: Split overly long paragraphs by periods, question marks, exclamation marks</p></li>
-<li><p><strong>Size Control</strong>: Ensure each chunk doesn’t exceed limits, with maximum chunk size of 500 characters and overlap of 50 characters to avoid losing important information at split boundaries</p></li>
-<li><p><strong>Semantic Preservation</strong>: Avoid breaking sentences in the middle</p></li>
+<li><p><strong>Priorité aux paragraphes</strong>: Premier découpage par double saut de ligne pour maintenir l'intégrité du paragraphe.</p></li>
+<li><p><strong>Traitement des paragraphes longs</strong>: Séparation des paragraphes trop longs par des points, des points d'interrogation et des points d'exclamation.</p></li>
+<li><p><strong>Contrôle de la taille</strong>: Veiller à ce que chaque morceau ne dépasse pas les limites, avec une taille maximale de 500 caractères et un chevauchement de 50 caractères pour éviter de perdre des informations importantes aux limites de la division.</p></li>
+<li><p><strong>Préservation sémantique</strong>: Éviter de briser les phrases au milieu</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">split_text_into_chunks</span>(<span class="hljs-params">self, text: <span class="hljs-built_in">str</span>, chunk_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">500</span>, overlap: <span class="hljs-built_in">int</span> = <span class="hljs-number">50</span></span>) -&gt; <span class="hljs-type">List</span>[<span class="hljs-built_in">str</span>]:
     <span class="hljs-string">&quot;&quot;&quot;Split long text into chunks&quot;&quot;&quot;</span>
@@ -439,8 +439,8 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     
     <span class="hljs-keyword">return</span> chunks
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="File-Reading-and-Chunking" class="common-anchor-header"><strong>File Reading and Chunking</strong></h4><p>Supports user file uploads (txt, md, py and other formats), automatically tries different encoding formats, and provides detailed error feedback.</p>
-<p><strong>Metadata Enhancement</strong>: source_file records document source, chunk_index records chunk sequence index, total_chunks records total number of chunks, facilitating integrity tracking.</p>
+<h4 id="File-Reading-and-Chunking" class="common-anchor-header"><strong>Lecture de fichiers et découpage</strong></h4><p>Prend en charge les téléchargements de fichiers par les utilisateurs (formats txt, md, py et autres), essaie automatiquement différents formats d'encodage et fournit un retour d'information détaillé sur les erreurs.</p>
+<p><strong>Amélioration des métadonnées</strong>: source_file enregistre la source du document, chunk_index enregistre l'index de séquence des morceaux, total_chunks enregistre le nombre total de morceaux, ce qui facilite le suivi de l'intégrité.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">read_and_chunk_file</span>(<span class="hljs-params">self, file_path: <span class="hljs-built_in">str</span>, chunk_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">500</span>, overlap: <span class="hljs-built_in">int</span> = <span class="hljs-number">50</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Read local file and chunk into pieces&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -496,7 +496,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to read file: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Upload-File-to-Collection" class="common-anchor-header"><strong>Upload File to Collection</strong></h4><p>Calls <code translate="no">read_and_chunk_file</code> to chunk user uploaded files and generates vectors to store in specified collection.</p>
+<h4 id="Upload-File-to-Collection" class="common-anchor-header"><strong>Téléchargement d'un fichier dans une collection</strong></h4><p>Appelle <code translate="no">read_and_chunk_file</code> pour regrouper les fichiers téléchargés par l'utilisateur et génère des vecteurs à stocker dans la collection spécifiée.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">upload_file_to_collection</span>(<span class="hljs-params">self, file_path: <span class="hljs-built_in">str</span>, collection_name: <span class="hljs-built_in">str</span>, chunk_size: <span class="hljs-built_in">int</span> = <span class="hljs-number">500</span>, overlap: <span class="hljs-built_in">int</span> = <span class="hljs-number">50</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Upload file to specified collection&quot;&quot;&quot;</span>
     <span class="hljs-keyword">try</span>:
@@ -551,7 +551,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Failed to upload file: <span class="hljs-subst">{<span class="hljs-built_in">str</span>(e)}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Intelligent-Decision-Making-SmartAssistant-Class" class="common-anchor-header">Intelligent Decision-Making: SmartAssistant Class<button data-href="#Intelligent-Decision-Making-SmartAssistant-Class" class="anchor-icon" translate="no">
+<h2 id="Intelligent-Decision-Making-SmartAssistant-Class" class="common-anchor-header">Prise de décision intelligente : Classe SmartAssistant<button data-href="#Intelligent-Decision-Making-SmartAssistant-Class" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -566,19 +566,15 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>This is the brain of the system, also called the intelligent decision center. This is where Kimi K2’s autonomous reasoning capabilities really shine—it doesn’t just execute predefined workflows, but actually understands user intent and makes intelligent decisions about which tools to use and when.</p>
-<p>The design philosophy here is to create a natural language interface that feels like talking to a knowledgeable assistant, not operating a database through voice commands.</p>
-<h3 id="Initialization-and-Tool-Definition" class="common-anchor-header"><strong>Initialization and Tool Definition</strong></h3><p>The tool definition structure follows OpenAI’s function calling format, which Kimi K2 supports natively. This makes the integration seamless and allows for complex tool orchestration without custom parsing logic.</p>
-<p>Basic Tools (4):</p>
-<p><code translate="no">connect_database</code> - Database connection management
-<code translate="no">create_collection</code> - Collection creation
-<code translate="no">add_documents</code> - Batch document addition
-<code translate="no">list_all_collections</code> - Collection management</p>
-<p>Search Tools (1):</p>
-<p><code translate="no">search_documents</code> - Search in specified collection</p>
-<p>File Tools (2):</p>
-<p><code translate="no">read_and_chunk_file</code> - File preview and chunking
-<code translate="no">upload_file_to_collection</code> - File upload processing</p>
+    </button></h2><p>Il s'agit du cerveau du système, également appelé centre de décision intelligent. C'est ici que les capacités de raisonnement autonome de Kimi K2 brillent vraiment - il ne se contente pas d'exécuter des flux de travail prédéfinis, mais comprend réellement l'intention de l'utilisateur et prend des décisions intelligentes sur les outils à utiliser et le moment de le faire.</p>
+<p>La philosophie de conception ici est de créer une interface en langage naturel qui donne l'impression de parler à un assistant compétent, et non d'exploiter une base de données par le biais de commandes vocales.</p>
+<h3 id="Initialization-and-Tool-Definition" class="common-anchor-header"><strong>Initialisation et définition des outils</strong></h3><p>La structure de définition des outils suit le format d'appel de fonction d'OpenAI, que Kimi K2 supporte nativement. Cela rend l'intégration transparente et permet l'orchestration d'outils complexes sans logique d'analyse personnalisée.</p>
+<p>Outils de base (4) :</p>
+<p><code translate="no">connect_database</code> - Gestion des connexions aux bases de données<code translate="no">create_collection</code> - Création de collections<code translate="no">add_documents</code> - Ajout de documents par lots<code translate="no">list_all_collections</code> - Gestion des collections</p>
+<p>Outils de recherche (1) :</p>
+<p><code translate="no">search_documents</code> - Recherche dans la collection spécifiée</p>
+<p>Outils de fichier (2) :</p>
+<p><code translate="no">read_and_chunk_file</code> - Prévisualisation et regroupement de fichiers<code translate="no">upload_file_to_collection</code> - Traitement des téléchargements de fichiers</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, kimi_api_key: <span class="hljs-built_in">str</span>, openai_api_key: <span class="hljs-built_in">str</span></span>):
     <span class="hljs-string">&quot;&quot;&quot;Initialize intelligent assistant&quot;&quot;&quot;</span>
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;🚀 Starting intelligent assistant...&quot;</span>)
@@ -693,7 +689,7 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;✅ Intelligent assistant startup complete&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="42-Tool-Mapping-and-Execution" class="common-anchor-header"><strong>4.2 Tool Mapping and Execution</strong></h3><p>All tools are executed uniformly through _execute_tool.</p>
+<h3 id="42-Tool-Mapping-and-Execution" class="common-anchor-header"><strong>4.2 Mappage et exécution des outils</strong></h3><p>Tous les outils sont exécutés uniformément par l'intermédiaire de _execute_tool.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_execute_tool</span>(<span class="hljs-params">self, tool_name: <span class="hljs-built_in">str</span>, args: <span class="hljs-built_in">dict</span></span>) -&gt; <span class="hljs-built_in">dict</span>:
     <span class="hljs-string">&quot;&quot;&quot;Execute specific tool&quot;&quot;&quot;</span>
     <span class="hljs-keyword">if</span> tool_name == <span class="hljs-string">&quot;connect_database&quot;</span>:
@@ -713,12 +709,12 @@ docker run -d --name milvus -p <span class="hljs-number">19530</span>:<span clas
     <span class="hljs-keyword">else</span>:
         <span class="hljs-keyword">return</span> {<span class="hljs-string">&quot;success&quot;</span>: <span class="hljs-literal">False</span>, <span class="hljs-string">&quot;message&quot;</span>: <span class="hljs-string">f&quot;Unknown tool: <span class="hljs-subst">{tool_name}</span>&quot;</span>}
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="43-Core-Conversation-Engine" class="common-anchor-header"><strong>4.3 Core Conversation Engine</strong></h3><p>This is where the magic happens. The method calls Kimi’s latest model:<a href="https://moonshotai.github.io/Kimi-K2/"> kimi-k2-0711-preview</a> to analyze user intent, automatically select needed tools and execute them, then return results to Kimi, finally generating final answers based on tool results.</p>
-<p>What makes this particularly powerful is the conversational loop—Kimi K2 can chain multiple tool calls together, learn from intermediate results, and adapt its strategy based on what it discovers. This enables complex workflows that would require multiple manual steps in traditional systems.</p>
-<p><strong>Parameter Configuration:</strong></p>
+<h3 id="43-Core-Conversation-Engine" class="common-anchor-header"><strong>4.3 Moteur de conversation principal</strong></h3><p>C'est ici que la magie opère. La méthode fait appel au dernier modèle de Kimi :<a href="https://moonshotai.github.io/Kimi-K2/"> kimi-k2-0711-preview</a> pour analyser l'intention de l'utilisateur, sélectionner automatiquement les outils nécessaires et les exécuter, puis renvoyer les résultats à Kimi, et enfin générer les réponses finales sur la base des résultats des outils.</p>
+<p>Ce qui rend cette solution particulièrement puissante, c'est la boucle conversationnelle - Kimi K2 peut enchaîner plusieurs appels d'outils, apprendre des résultats intermédiaires et adapter sa stratégie en fonction de ce qu'il découvre. Cela permet des flux de travail complexes qui nécessiteraient de nombreuses étapes manuelles dans les systèmes traditionnels.</p>
+<p><strong>Configuration des paramètres :</strong></p>
 <ul>
-<li><p><code translate="no">temperature=0.3</code>: Lower temperature ensures stable tool calling</p></li>
-<li><p><code translate="no">tool_choice=&quot;auto&quot;</code>: Lets Kimi autonomously decide whether to use tools</p></li>
+<li><p><code translate="no">temperature=0.3</code>: Une température plus basse assure un appel d'outil stable</p></li>
+<li><p><code translate="no">tool_choice=&quot;auto&quot;</code>: Permet à Kimi de décider de manière autonome d'utiliser ou non des outils.</p></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">execute_command</span>(<span class="hljs-params">self, user_command: <span class="hljs-built_in">str</span></span>) -&gt; <span class="hljs-built_in">str</span>:
     <span class="hljs-string">&quot;&quot;&quot;Execute user command&quot;&quot;&quot;</span>
@@ -819,7 +815,7 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
             <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;❌ <span class="hljs-subst">{error_msg}</span>&quot;</span>)
             <span class="hljs-keyword">return</span> error_msg
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Main-Program-and-Usage-Demonstration" class="common-anchor-header">Main Program and Usage Demonstration<button data-href="#Main-Program-and-Usage-Demonstration" class="anchor-icon" translate="no">
+<h2 id="Main-Program-and-Usage-Demonstration" class="common-anchor-header">Programme principal et démonstration d'utilisation<button data-href="#Main-Program-and-Usage-Demonstration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -834,8 +830,8 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>This main program sets up the interactive environment. For production use, you’d want to replace the hardcoded API keys with environment variables and add proper logging and monitoring.</p>
-<p>Get <code translate="no">KIMI_API_KEY</code> and <code translate="no">OPENAI_API_KEY</code> from the official website to start using.</p>
+    </button></h2><p>Ce programme principal met en place l'environnement interactif. Pour une utilisation en production, vous voudrez remplacer les clés API codées en dur par des variables d'environnement et ajouter une journalisation et une surveillance appropriées.</p>
+<p>Procurez-vous <code translate="no">KIMI_API_KEY</code> et <code translate="no">OPENAI_API_KEY</code> sur le site officiel pour commencer à les utiliser.</p>
 <pre><code translate="no">python
 <span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():
     <span class="hljs-string">&quot;&quot;&quot;Main program&quot;&quot;&quot;</span>
@@ -869,7 +865,7 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
 <span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:
     main()
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Usage-Examples" class="common-anchor-header">Usage Examples<button data-href="#Usage-Examples" class="anchor-icon" translate="no">
+<h2 id="Usage-Examples" class="common-anchor-header">Exemples d'utilisation<button data-href="#Usage-Examples" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -884,31 +880,31 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>These examples demonstrate the system’s capabilities in realistic scenarios that engineers would encounter in production environments.</p>
-<h3 id="Upload-file-example" class="common-anchor-header">Upload file example</h3><p>This example shows how the system handles a complex workflow autonomously. Notice how Kimi K2 breaks down the user’s request and executes the necessary steps in the correct order.</p>
+    </button></h2><p>Ces exemples démontrent les capacités du système dans des scénarios réalistes que les ingénieurs rencontreraient dans des environnements de production.</p>
+<h3 id="Upload-file-example" class="common-anchor-header">Exemple de téléchargement de fichier</h3><p>Cet exemple montre comment le système gère un flux de travail complexe de manière autonome. Remarquez comment Kimi K2 décompose la demande de l'utilisateur et exécute les étapes nécessaires dans le bon ordre.</p>
 <pre><code translate="no">User Input: Upload ./The Adventures of Sherlock Holmes.txt to the database
 <button class="copy-code-btn"></button></code></pre>
-<p>What’s remarkable here is that from the tool call chain, you can see that Kimi K2 parses the command and knows to connect to the database (connect_database function) first, and then upload the file to the collection (upload_file_to_collection function).</p>
-<p>When encountering an error, Kimi K2 also knows to promptly correct it based on the error message, knowing that it should first create the collection (create_collection) and then upload the file to the collection (upload_file_to_collection). This autonomous error recovery is a key advantage over traditional scripted approaches.</p>
+<p>Ce qui est remarquable ici, c'est qu'à partir de la chaîne d'appels de l'outil, vous pouvez voir que Kimi K2 analyse la commande et sait qu'il faut d'abord se connecter à la base de données (fonction connect_database), puis télécharger le fichier dans la collection (fonction upload_file_to_collection).</p>
+<p>Lorsqu'il rencontre une erreur, Kimi K2 sait également la corriger rapidement sur la base du message d'erreur, sachant qu'il doit d'abord créer la collection (create_collection), puis télécharger le fichier dans la collection (upload_file_to_collection). Cette récupération autonome des erreurs est un avantage clé par rapport aux approches traditionnelles basées sur des scripts.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/usage_example_1_a4c0b2a006.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>The system automatically handles:</p>
+<p>Le système gère automatiquement les erreurs suivantes</p>
 <ol>
-<li><p>Database connection</p></li>
-<li><p>Collection creation (if needed)</p></li>
-<li><p>File reading and chunking</p></li>
-<li><p>Vector generation</p></li>
-<li><p>Data insertion</p></li>
-<li><p>Status reporting</p></li>
+<li><p>la connexion à la base de données</p></li>
+<li><p>la création de la collection (si nécessaire)</p></li>
+<li><p>la lecture et le découpage des fichiers</p></li>
+<li><p>la génération de vecteurs</p></li>
+<li><p>l'insertion des données</p></li>
+<li><p>Rapport d'état</p></li>
 </ol>
-<h3 id="Question-answer-example" class="common-anchor-header">Question-answer example</h3><p>This section demonstrates the system’s intelligence in deciding when to use tools versus when to rely on existing knowledge.</p>
+<h3 id="Question-answer-example" class="common-anchor-header">Exemple de question-réponse</h3><p>Cette section démontre l'intelligence du système lorsqu'il s'agit de décider quand utiliser des outils et quand s'appuyer sur les connaissances existantes.</p>
 <pre><code translate="no">User Input: List five advantages of the Milvus vector database
 <button class="copy-code-btn"></button></code></pre>
-<p>From the image, we can see that Kimi K2 answered the user’s question directly without calling any functions. This demonstrates the system’s efficiency—it doesn’t perform unnecessary database operations for questions it can answer from its training data.</p>
+<p>L'image montre que Kimi K2 a répondu directement à la question de l'utilisateur sans appeler de fonctions. Cela démontre l'efficacité du système, qui n'effectue pas d'opérations inutiles dans la base de données pour des questions auxquelles il peut répondre à partir de ses données d'apprentissage.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/usage_example_2_c912f3273b.png" alt="" class="doc-image" id="" />
@@ -917,12 +913,12 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
 </p>
 <pre><code translate="no"><span class="hljs-title class_">How</span> many stories are included <span class="hljs-keyword">in</span> the book <span class="hljs-string">&quot;Sherlock Holmes&quot;</span> that I uploaded? <span class="hljs-title class_">Summarize</span> each story <span class="hljs-keyword">in</span> one sentence.
 <button class="copy-code-btn"></button></code></pre>
-<p>For this query, Kimi correctly identifies that it needs to search the uploaded document content. The system:</p>
+<p>Pour cette requête, Kimi identifie correctement qu'il doit rechercher le contenu du document téléchargé. Le système :</p>
 <ol>
-<li><p>Recognizes this requires document-specific information</p></li>
-<li><p>Calls the search_documents function</p></li>
-<li><p>Analyzes the retrieved content</p></li>
-<li><p>Provides a comprehensive answer based on the actual uploaded content</p></li>
+<li><p>reconnaît qu'il a besoin d'informations spécifiques au document</p></li>
+<li><p>appelle la fonction search_documents</p></li>
+<li><p>analyse le contenu récupéré</p></li>
+<li><p>fournit une réponse complète basée sur le contenu réel téléchargé.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -936,24 +932,24 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
     <span></span>
   </span>
 </p>
-<h3 id="Database-Management-Example" class="common-anchor-header">Database Management Example</h3><p>Administrative tasks are handled just as smoothly as content queries.</p>
+<h3 id="Database-Management-Example" class="common-anchor-header">Exemple de gestion de base de données</h3><p>Les tâches administratives sont gérées aussi facilement que les requêtes de contenu.</p>
 <pre><code translate="no"><span class="hljs-built_in">list</span> <span class="hljs-built_in">all</span> the collections
 <button class="copy-code-btn"></button></code></pre>
-<p>Kimi K2 utilizes the appropriate tools to answer this question correctly, demonstrating that it understands both administrative and content operations.</p>
+<p>Kimi K2 utilise les outils appropriés pour répondre correctement à cette question, démontrant ainsi qu'il comprend à la fois les opérations d'administration et de contenu.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/usage_example_5_457a4d5db0.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>The system provides comprehensive information including:</p>
+<p>Le système fournit des informations complètes, notamment</p>
 <ul>
-<li><p>Collection names</p></li>
-<li><p>Document counts</p></li>
-<li><p>Descriptions</p></li>
-<li><p>Overall database statistics</p></li>
+<li><p>les noms des collections</p></li>
+<li><p>Nombre de documents</p></li>
+<li><p>les descriptions</p></li>
+<li><p>les statistiques générales de la base de données.</p></li>
 </ul>
-<h2 id="The-Dawn-of-Production-AI-Agents" class="common-anchor-header">The Dawn of Production AI Agents<button data-href="#The-Dawn-of-Production-AI-Agents" class="anchor-icon" translate="no">
+<h2 id="The-Dawn-of-Production-AI-Agents" class="common-anchor-header">L'aube des agents d'IA de production<button data-href="#The-Dawn-of-Production-AI-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -968,8 +964,8 @@ Remember: Don&#x27;t use tools just to use tools, but solve user problems in the
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>By connecting <strong>Kimi K2</strong> with <strong>Milvus</strong>, we’ve moved beyond traditional chatbots or basic semantic search. What we’ve built is a real production agent—one that can interpret complex instructions, break them down into tool-based workflows, and execute end-to-end tasks like file handling, semantic search, and intelligent Q&amp;A with minimal overhead.</p>
-<p>This architecture reflects a broader shift in AI development, moving from isolated models to composable systems, where reasoning, memory, and action work in tandem. LLMs like Kimi K2 provide flexible reasoning, while vector databases like Milvus offer long-term, structured memory; and tool calling enables real-world execution.</p>
-<p>For developers, the question is no longer <em>if</em> these components can work together, but <em>how well</em> they can generalize across domains, scale with data, and respond to increasingly complex user needs.</p>
-<p><strong><em>Looking ahead, one pattern is becoming clear:LLM (reasoning) + Vector DB (knowledge) + Tools (action) = Real AI agents.</em></strong></p>
-<p>This system we built is just one example, but the principles apply broadly. As LLMs continue improving and tool ecosystems mature, Milvus is positioned to remain a core part of the production AI stack—powering intelligent systems that can reason over data, not just retrieve it.</p>
+    </button></h2><p>En connectant <strong>Kimi K2</strong> à <strong>Milvus</strong>, nous sommes allés au-delà des chatbots traditionnels ou de la recherche sémantique de base. Nous avons construit un véritable agent de production, capable d'interpréter des instructions complexes, de les décomposer en flux de travail basés sur des outils et d'exécuter des tâches de bout en bout telles que le traitement de fichiers, la recherche sémantique et les questions-réponses intelligentes avec un minimum de frais généraux.</p>
+<p>Cette architecture reflète un changement plus large dans le développement de l'IA, passant de modèles isolés à des systèmes composables, où le raisonnement, la mémoire et l'action fonctionnent en tandem. Les LLM comme Kimi K2 fournissent un raisonnement flexible, tandis que les bases de données vectorielles comme Milvus offrent une mémoire structurée à long terme et que l'appel d'outils permet une exécution dans le monde réel.</p>
+<p>Pour les développeurs, la question n'est plus de savoir <em>si</em> ces composants peuvent fonctionner ensemble, mais <em>à quel point</em> ils peuvent se généraliser à travers les domaines, s'adapter aux données et répondre aux besoins de plus en plus complexes des utilisateurs.</p>
+<p><strong><em>En regardant vers l'avenir, un modèle devient clair : LLM (raisonnement) + Vector DB (connaissance) + Tools (action) = De vrais agents d'intelligence artificielle.</em></strong></p>
+<p>Le système que nous avons construit n'est qu'un exemple, mais les principes s'appliquent largement. Alors que les LLM continuent de s'améliorer et que les écosystèmes d'outils arrivent à maturité, Milvus est positionné pour rester un élément central de la pile d'IA de production, en alimentant des systèmes intelligents capables de raisonner sur les données, et pas seulement de les récupérer.</p>

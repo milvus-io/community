@@ -386,7 +386,7 @@ schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataTyp
       </svg>
     </button></h2><p>Semua yang ada di tutorial ini berjalan di Milvus Lite, yang berarti berjalan di laptop Anda dan berhenti ketika laptop Anda mati. Untuk pipeline GEO yang sebenarnya, itu tidak cukup. Anda ingin artikel yang dihasilkan ketika Anda sedang rapat. Anda ingin basis pengetahuan tersedia saat seorang kolega menjalankan batch pada hari Selasa depan.</p>
 <p>Pada titik ini, ada dua solusi.</p>
-<p><strong>Menginstal Milvus secara mandiri menggunakan mode Mandiri atau Terdistribusi.</strong> Tim teknisi Anda menginstal versi lengkap di server - sebuah komputer khusus, baik secara fisik maupun yang disewa dari penyedia cloud seperti AWS. Ini sangat mumpuni dan memberi Anda kendali penuh atas penerapan Anda, tetapi memang membutuhkan tim teknisi khusus untuk menyiapkan, memelihara, dan menskalakan.</p>
+<p><strong>Menginstal Milvus secara mandiri menggunakan mode Mandiri atau Terdistribusi.</strong> Tim teknisi Anda menginstal versi lengkap di server - sebuah komputer khusus, baik secara fisik maupun yang disewa dari penyedia cloud seperti AWS. Ini sangat mumpuni dan memberi Anda kontrol penuh atas penerapan Anda, tetapi memang membutuhkan tim teknik khusus untuk menyiapkan, memelihara, dan menskalakan.</p>
 <p><strong>Gunakan</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a><strong>.</strong> Zilliz Cloud adalah Milvus yang dikelola sepenuhnya dengan fitur-fitur tingkat perusahaan yang lebih canggih di atasnya, dibangun oleh tim yang sama.</p>
 <ul>
 <li><p><strong>Tidak ada kerumitan dalam pengoperasian dan pemeliharaan.</strong></p></li>
@@ -435,12 +435,12 @@ client = MilvusClient(uri=MILVUS_URI)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GEO adalah tempat SEO sepuluh tahun yang lalu - cukup awal sehingga infrastruktur yang tepat memberi Anda keunggulan yang nyata. Tutorial ini membangun pipeline yang menghasilkan artikel yang benar-benar dikutip oleh mesin pencari AI, yang didasarkan pada materi sumber merek Anda sendiri, bukan halusinasi LLM. Tumpukannya adalah <a href="https://github.com/nicepkg/openclaw">OpenClaw</a> untuk orkestrasi, <a href="https://milvus.io/intro">Milvus</a> untuk penyimpanan pengetahuan dan pengambilan <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>, dan LLM untuk pembuatan dan penilaian.</p>
+    </button></h2><p>GEO adalah tempat SEO berada sepuluh tahun yang lalu - cukup awal sehingga infrastruktur yang tepat memberi Anda keunggulan yang nyata. Tutorial ini membangun pipeline yang menghasilkan artikel yang benar-benar dikutip oleh mesin pencari AI, yang didasarkan pada materi sumber merek Anda sendiri, bukan halusinasi LLM. Tumpukannya adalah <a href="https://github.com/nicepkg/openclaw">OpenClaw</a> untuk orkestrasi, <a href="https://milvus.io/intro">Milvus</a> untuk penyimpanan pengetahuan dan pengambilan <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>, dan LLM untuk pembuatan dan penilaian.</p>
 <p>Kode sumber lengkap tersedia di <a href="https://github.com/nicepkg/openclaw">github.com/nicepkg/openclaw</a>.</p>
 <p>Jika Anda sedang membangun strategi GEO dan membutuhkan infrastruktur untuk mendukungnya:</p>
 <ul>
 <li>Bergabunglah dengan <a href="https://slack.milvus.io/">komunitas Milvus Slack</a> untuk melihat bagaimana tim lain menggunakan pencarian vektor untuk konten, dedup, dan RAG.</li>
-<li><a href="https://milvus.io/office-hours">Pesan sesi Milvus Office Hours gratis selama 20 menit</a> untuk membahas kasus penggunaan Anda dengan tim.</li>
+<li><a href="https://milvus.io/office-hours">Pesan sesi Jam Kantor Milvus gratis selama 20 menit</a> untuk membahas kasus penggunaan Anda dengan tim.</li>
 <li>Jika Anda lebih suka melewatkan penyiapan infrastruktur, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (Milvus yang dikelola) memiliki tingkat gratis - satu perubahan URI dan Anda sudah bisa berproduksi.</li>
 </ul>
 <hr>

@@ -1,7 +1,8 @@
 ---
 id: talk-to-your-vector-database-managing-milvus-via-natural-language.md
-title: |
-  Talk to Your Vector Database: Managing Milvus via Natural Language
+title: >-
+  Поговорите с вашей базой данных векторов: Управление Milvus с помощью
+  естественного языка
 author: Lawrence Luo
 date: 2025-08-01T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Aug_2_2025_01_17_45_PM_9c50d607bb.png
@@ -13,20 +14,21 @@ meta_keywords: 'Cursor, Claude Code, Gemini CLI, Code search, MCP'
 meta_title: |
   Talk to Your Vector Database: Managing Milvus via Natural Language
 desc: >-
-  Milvus MCP Server connects Milvus directly to AI coding assistants like Claude
-  Code and Cursor through MCP. You can manage Milvus via natural language.
+  Milvus MCP Server соединяет Milvus напрямую с помощниками по кодированию с
+  искусственным интеллектом, такими как Claude Code и Cursor, через MCP. Вы
+  можете управлять Milvus с помощью естественного языка.
 origin: >-
   https://milvus.io/blog/talk-to-your-vector-database-managing-milvus-via-natural-language.md
 ---
-<p>Ever wished you could just tell your AI assistant, <em>“Show me all collections in my vector database”</em> or <em>“Find documents similar to this text”</em> and have it actually work?</p>
-<p>The <a href="http://github.com/zilliztech/mcp-server-milvus"><strong>Milvus MCP Server</strong></a> makes this possible by connecting your Milvus vector database directly to AI coding assistants like Claude Desktop and Cursor IDE through Model Context Protocol (MCP). Instead of writing <code translate="no">pymilvus</code> code, you can manage your entire Milvus through natural language conversations.</p>
+<p>Вы когда-нибудь хотели, чтобы ваш помощник по искусственному интеллекту мог просто сказать: <em>"Покажите мне все коллекции в моей векторной базе данных"</em> или <em>"Найдите документы, похожие на этот текст"</em>, и чтобы он действительно работал?</p>
+<p><a href="http://github.com/zilliztech/mcp-server-milvus"><strong>Milvus MCP Server</strong></a> делает это возможным, подключая вашу векторную базу данных Milvus непосредственно к помощникам по кодированию ИИ, таким как Claude Desktop и Cursor IDE, через протокол Model Context Protocol (MCP). Вместо того чтобы писать код <code translate="no">pymilvus</code>, вы можете управлять всем Milvus с помощью разговоров на естественном языке.</p>
 <ul>
-<li><p>Without Milvus MCP Server: Writing Python scripts with pymilvus SDK to search vectors</p></li>
-<li><p>With Milvus MCP Server: “Find documents similar to this text in my collection.”</p></li>
+<li><p>Без Milvus MCP Server: Написание скриптов Python с помощью pymilvus SDK для поиска векторов</p></li>
+<li><p>С Milvus MCP Server: "Найти документы, похожие на этот текст, в моей коллекции".</p></li>
 </ul>
-<p>👉 <strong>GitHub Repository:</strong><a href="https://github.com/zilliztech/mcp-server-milvus"> github.com/zilliztech/mcp-server-milvus</a></p>
-<p>And if you’re using <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (managed Milvus), we’ve got you covered too. At the end of this blog, we’ll also introduce the <strong>Zilliz MCP Server</strong>, a managed option that works seamlessly with Zilliz Cloud. Let’s dive in.</p>
-<h2 id="What-Youll-Get-with-Milvus-MCP-Server" class="common-anchor-header">What You’ll Get with Milvus MCP Server<button data-href="#What-Youll-Get-with-Milvus-MCP-Server" class="anchor-icon" translate="no">
+<p>👉 <strong>Репозиторий GitHub:</strong><a href="https://github.com/zilliztech/mcp-server-milvus"> github.com/zilliztech/mcp-server-milvus</a></p>
+<p>Если вы используете <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (управляемый Milvus), мы тоже позаботимся о вас. В конце этого блога мы также представим <strong>Zilliz MCP Server</strong>, управляемый вариант, который работает без проблем с Zilliz Cloud. Давайте погрузимся в процесс.</p>
+<h2 id="What-Youll-Get-with-Milvus-MCP-Server" class="common-anchor-header">Что вы получите с Milvus MCP Server<button data-href="#What-Youll-Get-with-Milvus-MCP-Server" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,23 +43,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The Milvus MCP Server gives your AI assistant the following capabilities:</p>
+    </button></h2><p>Milvus MCP Server предоставляет вашему ИИ-ассистенту следующие возможности:</p>
 <ul>
-<li><p><strong>List and explore</strong> vector collections</p></li>
-<li><p><strong>Search vectors</strong> using semantic similarity</p></li>
-<li><p><strong>Create new collections</strong> with custom schemas</p></li>
-<li><p><strong>Insert and manage</strong> vector data</p></li>
-<li><p><strong>Run complex queries</strong> without writing code</p></li>
-<li><p>And more</p></li>
+<li><p><strong>Составление списка и изучение</strong> коллекций векторов</p></li>
+<li><p><strong>Поиск векторов</strong> с использованием семантического сходства</p></li>
+<li><p><strong>Создание новых коллекций</strong> с помощью пользовательских схем</p></li>
+<li><p><strong>Вставка и управление</strong> векторными данными</p></li>
+<li><p><strong>Выполнение сложных запросов</strong> без написания кода</p></li>
+<li><p>И многое другое</p></li>
 </ul>
-<p>All through natural conversation, as if you’re talking to a database expert. Check out <a href="https://github.com/zilliztech/mcp-server-milvus?tab=readme-ov-file#available-tools">this repo</a> for the complete list of capabilities.</p>
+<p>И все это с помощью естественного общения, как будто вы разговариваете с экспертом по базам данных. Полный список возможностей смотрите в <a href="https://github.com/zilliztech/mcp-server-milvus?tab=readme-ov-file#available-tools">этом репозитории</a>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/demo_adedb25430.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Quick-Start-Guide" class="common-anchor-header">Quick Start Guide<button data-href="#Quick-Start-Guide" class="anchor-icon" translate="no">
+<h2 id="Quick-Start-Guide" class="common-anchor-header">Руководство по быстрому запуску<button data-href="#Quick-Start-Guide" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,34 +74,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p><strong>Required:</strong></p>
+    </button></h2><h3 id="Prerequisites" class="common-anchor-header">Необходимые условия</h3><p><strong>Требуется:</strong></p>
 <ul>
-<li><p>Python 3.10 or higher</p></li>
-<li><p>A running Milvus instance (local or remote)</p></li>
-<li><p><a href="https://github.com/astral-sh/uv">uv package manager</a> (recommended)</p></li>
+<li><p>Python 3.10 или выше</p></li>
+<li><p>Работающий экземпляр Milvus (локальный или удаленный)</p></li>
+<li><p><a href="https://github.com/astral-sh/uv">менеджер пакетов uv</a> (рекомендуется)</p></li>
 </ul>
-<p><strong>Supported AI Applications:</strong></p>
+<p><strong>Поддерживаемые приложения ИИ:</strong></p>
 <ul>
 <li><p>Claude Desktop</p></li>
 <li><p>Cursor IDE</p></li>
-<li><p>Any MCP-compatible application</p></li>
+<li><p>Любое MCP-совместимое приложение</p></li>
 </ul>
-<h3 id="Tech-Stack-We’ll-Use" class="common-anchor-header">Tech Stack We’ll Use</h3><p>In this tutorial, we’ll use the following tech stack:</p>
+<h3 id="Tech-Stack-We’ll-Use" class="common-anchor-header">Технологический стек, который мы будем использовать</h3><p>В этом уроке мы будем использовать следующий технологический стек:</p>
 <ul>
-<li><p><strong>Language Runtime:</strong> <a href="https://www.python.org/">Python 3.11</a></p></li>
-<li><p><strong>Package Manager:</strong> UV</p></li>
+<li><p><strong>Язык выполнения:</strong> <a href="https://www.python.org/">Python 3.11</a></p></li>
+<li><p><strong>Менеджер пакетов:</strong> UV</p></li>
 <li><p><strong>IDE:</strong> Cursor</p></li>
-<li><p><strong>MCP Server:</strong> mcp-server-milvus</p></li>
+<li><p><strong>MCP-сервер:</strong> mcp-server-milvus</p></li>
 <li><p><strong>LLM:</strong> Claude 3.7</p></li>
-<li><p><strong>Vector Database:</strong> Milvus</p></li>
+<li><p><strong>База данных векторов:</strong> Milvus</p></li>
 </ul>
-<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Step 1: Install Dependencies</h3><p>First, install the uv package manager:</p>
+<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Шаг 1: Установка зависимостей</h3><p>Сначала установите менеджер пакетов uv:</p>
 <pre><code translate="no">curl -<span class="hljs-title class_">LsSf</span> <span class="hljs-attr">https</span>:<span class="hljs-comment">//astral.sh/uv/install.sh | sh</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Or:</p>
+<p>Или:</p>
 <pre><code translate="no">pip3 install uv -i <span class="hljs-attr">https</span>:<span class="hljs-comment">//mirrors.aliyun.com/pypi/simple</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Verify installation:</p>
+<p>Проверьте установку:</p>
 <pre><code translate="no">uv --version
 uvx --version
 <button class="copy-code-btn"></button></code></pre>
@@ -109,18 +111,18 @@ uvx --version
     <span></span>
   </span>
 </p>
-<h3 id="Step-2-Set-Up-Milvus" class="common-anchor-header">Step 2: Set Up Milvus</h3><p><a href="https://milvus.io/">Milvus</a> is an open-source vector database native for AI workloads, created by <a href="https://zilliz.com/">Zilliz</a>. Designed to handle millions to billions of vector records, it has gained over 36,000 stars on GitHub. Building on this foundation, Zilliz also offers <a href="https://zilliz.com/cloud">Zilliz Cloud</a>—a fully managed service of Milvus engineered for usability, cost-efficiency, and security with a cloud-native architecture.</p>
-<p>For Milvus deployment requirements, visit <a href="https://milvus.io/docs/prerequisite-docker.md">this guide on the doc site</a>.</p>
-<p><strong>Minimum requirements:</strong></p>
+<h3 id="Step-2-Set-Up-Milvus" class="common-anchor-header">Шаг 2: Установка Milvus</h3><p><a href="https://milvus.io/">Milvus</a> - это векторная база данных с открытым исходным кодом, созданная компанией <a href="https://zilliz.com/">Zilliz</a> для рабочих нагрузок искусственного интеллекта. Разработанная для работы с миллионами и миллиардами векторных записей, она набрала более 36 000 звезд на GitHub. Опираясь на эту основу, Zilliz также предлагает <a href="https://zilliz.com/cloud">Zilliz Cloud -</a>полностью управляемый сервис Milvus, разработанный для удобства использования, экономичности и безопасности с облачной нативной архитектурой.</p>
+<p>Требования к развертыванию Milvus можно найти в <a href="https://milvus.io/docs/prerequisite-docker.md">этом руководстве на сайте doc</a>.</p>
+<p><strong>Минимальные требования:</strong></p>
 <ul>
-<li><p><strong>Software:</strong> Docker, Docker Compose</p></li>
-<li><p><strong>RAM:</strong> 16GB+</p></li>
-<li><p><strong>Disk:</strong> 100GB+</p></li>
+<li><p><strong>Программное обеспечение:</strong> Docker, Docker Compose</p></li>
+<li><p><strong>ОПЕРАТИВНАЯ ПАМЯТЬ:</strong> 16 ГБ+</p></li>
+<li><p><strong>Диск:</strong> 100 ГБ+</p></li>
 </ul>
-<p>Download the deployment YAML file:</p>
+<p>Загрузите YAML-файл развертывания:</p>
 <pre><code translate="no">[root@Milvus ~]# wget https://github.com/milvus-io/milvus/releases/download/v2.5.4/milvus-standalone-docker-compose.yml -O docker-compose.yml
 <button class="copy-code-btn"></button></code></pre>
-<p>Start Milvus:</p>
+<p>Запустите Milvus:</p>
 <pre><code translate="no">[<span class="hljs-meta">root@Milvus ~</span>]<span class="hljs-meta"># docker-compose up -d</span>
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">[<span class="hljs-meta">root@Milvus ~</span>]<span class="hljs-meta"># docker ps -a</span>
@@ -131,34 +133,34 @@ uvx --version
     <span></span>
   </span>
 </p>
-<p>Your Milvus instance will be available at <code translate="no">http://localhost:19530</code>.</p>
-<h3 id="Step-3-Install-the-MCP-Server" class="common-anchor-header">Step 3: Install the MCP Server</h3><p>Clone and test the MCP server:</p>
+<p>Ваш экземпляр Milvus будет доступен по адресу <code translate="no">http://localhost:19530</code>.</p>
+<h3 id="Step-3-Install-the-MCP-Server" class="common-anchor-header">Шаг 3: Установка сервера MCP</h3><p>Клонируйте и протестируйте MCP-сервер:</p>
 <pre><code translate="no">git <span class="hljs-built_in">clone</span> https://github.com/zilliztech/mcp-server-milvus.git
 <span class="hljs-built_in">cd</span> mcp-server-milvus
 
 <span class="hljs-comment"># Test the server locally</span>
 uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 <button class="copy-code-btn"></button></code></pre>
-<p>We recommend installing dependencies and verifying locally before registering the server in Cursor:</p>
+<p>Мы рекомендуем установить зависимости и проверить локально, прежде чем регистрировать сервер в Cursor:</p>
 <pre><code translate="no">uv run src/mcp_server_milvus/server.<span class="hljs-property">py</span> --milvus-uri <span class="hljs-attr">http</span>:<span class="hljs-comment">//192.168.4.48:19530</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>If you see the server start successfully, you’re ready to configure your AI tool.</p>
+<p>Если вы видите, что сервер успешно запустился, значит, вы готовы к настройке инструмента искусственного интеллекта.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Step_3_Install_the_MCP_Server_9ce01351e6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Configure-Your-AI-Assistant" class="common-anchor-header">Step 4: Configure Your AI Assistant</h3><p><strong>Option A: Claude Desktop</strong></p>
+<h3 id="Step-4-Configure-Your-AI-Assistant" class="common-anchor-header">Шаг 4: Настройка помощника искусственного интеллекта</h3><p><strong>Вариант A: Claude Desktop</strong></p>
 <ol>
-<li><h4 id="Install-Claude-Desktop-from-claudeaidownloadhttpclaudeaidownload" class="common-anchor-header">Install Claude Desktop from <code translate="no">[claude.ai/download](http://claude.ai/download)</code>.</h4></li>
-<li><p>Open the configuration file:</p></li>
+<li><h4 id="Install-Claude-Desktop-from-claudeaidownloadhttpclaudeaidownload" class="common-anchor-header">Установите Claude Desktop с сайта <code translate="no">[claude.ai/download](http://claude.ai/download)</code>.</h4></li>
+<li><p>Откройте файл конфигурации:</p></li>
 </ol>
 <ul>
 <li>macOS: <code translate="no">~/Library/Application Support/Claude/claude_desktop_config.json</code></li>
 <li>Windows: <code translate="no">%APPDATA%\Claude\claude_desktop_config.json</code></li>
 </ul>
-<p>Add this configuration:</p>
+<p>Добавьте эту конфигурацию:</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;milvus&quot;</span>: {
@@ -176,15 +178,15 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
 }
 <button class="copy-code-btn"></button></code></pre>
 <ol start="4">
-<li>Restart Claude Desktop</li>
+<li>Перезапустить Claude Desktop</li>
 </ol>
-<p><strong>Option B: Cursor IDE</strong></p>
+<p><strong>Вариант B: Cursor IDE</strong></p>
 <ol>
-<li><p>Open Cursor Settings → Features → MCP</p></li>
-<li><p>Add new global MCP server (this creates <code translate="no">.cursor/mcp.json</code>)</p></li>
-<li><p>Add this configuration:</p></li>
+<li><p>Откройте Настройки Курсора → Функции → MCP</p></li>
+<li><p>Добавьте новый глобальный MCP-сервер (при этом создается <code translate="no">.cursor/mcp.json</code>).</p></li>
+<li><p>Добавьте эту конфигурацию:</p></li>
 </ol>
-<p>Note: Adjust paths to your actual file structure.</p>
+<p>Примечание: Отрегулируйте пути в соответствии с вашей фактической структурой файлов.</p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;mcpServers&quot;</span>: {
     <span class="hljs-string">&quot;milvus&quot;</span>: {
@@ -207,26 +209,26 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
     <span></span>
   </span>
 </p>
-<p><strong>Parameters:</strong></p>
+<p><strong>Параметры:</strong></p>
 <ul>
-<li><code translate="no">/PATH/TO/uv</code> is the path to the uv executable</li>
-<li><code translate="no">--directory</code> is the path to the cloned project</li>
-<li><code translate="no">--milvus-uri</code> is your Milvus server endpoint</li>
+<li><code translate="no">/PATH/TO/uv</code> путь к исполняемому файлу uv</li>
+<li><code translate="no">--directory</code> путь к клонированному проекту</li>
+<li><code translate="no">--milvus-uri</code> конечная точка вашего сервера Milvus</li>
 </ul>
 <ol start="4">
-<li>Restart the Cursor or reload the window</li>
+<li>Перезапустите курсор или перезагрузите окно</li>
 </ol>
-<p><strong>Pro tip:</strong> Find your <code translate="no">uv</code> path with <code translate="no">which uv</code> on macOS/Linux or <code translate="no">where uv</code>  on Windows.</p>
-<h3 id="Step-5-See-It-in-Action" class="common-anchor-header">Step 5: See It in Action</h3><p>Once configured, try these natural language commands:</p>
+<p><strong>Совет:</strong> найдите путь к <code translate="no">uv</code> с помощью <code translate="no">which uv</code> на macOS/Linux или <code translate="no">where uv</code> на Windows.</p>
+<h3 id="Step-5-See-It-in-Action" class="common-anchor-header">Шаг 5: Увидеть в действии</h3><p>После настройки попробуйте выполнить эти команды на естественном языке:</p>
 <ul>
-<li><p><strong>Explore your database:</strong> “What collections do I have in my Milvus database?”</p></li>
-<li><p><strong>Create a new collection:</strong> “Create a collection called ‘articles’ with fields for title (string), content (string), and a 768-dimension vector field for embeddings.”</p></li>
-<li><p><strong>Search for similar content:</strong> “Find the five most similar articles to ‘machine learning applications’ in my articles collection.”</p></li>
-<li><p><strong>Insert data:</strong> “Add a new article with title ‘AI Trends 2024’ and content ‘Artificial intelligence continues to evolve…’ to the articles collection”</p></li>
+<li><p><strong>Изучите свою базу данных:</strong> "Какие коллекции есть в моей базе данных Milvus?".</p></li>
+<li><p><strong>Создайте новую коллекцию:</strong> "Создайте коллекцию "Статьи" с полями для заголовка (строка), содержимого (строка) и векторным полем 768 измерений для вкраплений".</p></li>
+<li><p><strong>Поиск похожего контента:</strong> "Найти пять наиболее похожих статей на "Приложения машинного обучения" в моей коллекции статей".</p></li>
+<li><p><strong>Вставить данные:</strong> "Добавить новую статью с заголовком "AI Trends 2024" и содержанием "Искусственный интеллект продолжает развиваться..." в коллекцию статей".</p></li>
 </ul>
-<p><strong>What used to require 30+ minutes of coding now takes seconds of conversation.</strong></p>
-<p>You get real-time control and natural language access to Milvus—without writing boilerplate or learning the API.</p>
-<h2 id="Troubleshooting" class="common-anchor-header">Troubleshooting<button data-href="#Troubleshooting" class="anchor-icon" translate="no">
+<p><strong>То, что раньше требовало 30 с лишним минут кодирования, теперь занимает считанные секунды.</strong></p>
+<p>Вы получаете контроль в реальном времени и доступ к Milvus на естественном языке без написания шаблонов или изучения API.</p>
+<h2 id="Troubleshooting" class="common-anchor-header">Устранение неполадок<button data-href="#Troubleshooting" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -241,10 +243,10 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>If MCP tools don’t appear, restart your AI application completely, verify the UV path with <code translate="no">which uv</code>, and test the server manually with <code translate="no">uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530</code>.</p>
-<p>For connection errors, check that Milvus is running with <code translate="no">docker ps | grep milvus</code>, try using <code translate="no">127.0.0.1</code> instead of <code translate="no">localhost</code>, and verify port 19530 is accessible.</p>
-<p>If you encounter authentication issues, set the <code translate="no">MILVUS_TOKEN</code> environment variable if your Milvus requires authentication, and verify your permissions for the operations you’re attempting.</p>
-<h2 id="Managed-Alternative-Zilliz-MCP-Server" class="common-anchor-header">Managed Alternative: Zilliz MCP Server<button data-href="#Managed-Alternative-Zilliz-MCP-Server" class="anchor-icon" translate="no">
+    </button></h2><p>Если инструменты MCP не появляются, полностью перезапустите приложение искусственного интеллекта, проверьте путь UV с помощью <code translate="no">which uv</code>, а также протестируйте сервер вручную с помощью <code translate="no">uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530</code>.</p>
+<p>При ошибках подключения проверьте, запущен ли Milvus с помощью <code translate="no">docker ps | grep milvus</code>, попробуйте использовать <code translate="no">127.0.0.1</code> вместо <code translate="no">localhost</code> и убедитесь, что порт 19530 доступен.</p>
+<p>Если вы столкнулись с проблемами аутентификации, установите переменную окружения <code translate="no">MILVUS_TOKEN</code>, если ваш Milvus требует аутентификации, и проверьте права доступа для операций, которые вы пытаетесь выполнить.</p>
+<h2 id="Managed-Alternative-Zilliz-MCP-Server" class="common-anchor-header">Управляемая альтернатива: Zilliz MCP Server<button data-href="#Managed-Alternative-Zilliz-MCP-Server" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -259,23 +261,23 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The open-source <strong>Milvus MCP Server</strong> is a great solution for local or self-hosted deployments of Milvus. But if you’re using <a href="https://zilliz.com/cloud">Zilliz Cloud</a>—the fully managed, enterprise-grade service built by the creators of Milvus—there’s a purpose-built alternative: the <a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Zilliz MCP Server</strong></a>.</p>
-<p><a href="https://zilliz.com/cloud">Zilliz Cloud</a> eliminates the overhead of managing your own Milvus instance by offering a scalable, performant, and secure cloud-native vector database. The <strong>Zilliz MCP Server</strong> integrates directly with Zilliz Cloud and exposes its capabilities as MCP-compatible tools. This means your AI assistant—whether in Claude, Cursor, or another MCP-aware environment—can now query, manage, and orchestrate your Zilliz Cloud workspace using natural language.</p>
+    </button></h2><p><strong>Сервер Milvus MCP Server</strong> с открытым исходным кодом - отличное решение для локального или самостоятельного развертывания Milvus. Но если вы используете <a href="https://zilliz.com/cloud">Zilliz Cloud -</a>полностью управляемый сервис корпоративного уровня, созданный создателями Milvus, - существует специально разработанная альтернатива: <a href="https://zilliz.com/blog/introducing-zilliz-mcp-server"><strong>Zilliz MCP Server</strong></a>.</p>
+<p><a href="https://zilliz.com/cloud">Zilliz Cloud</a> избавляет вас от необходимости управлять собственным экземпляром Milvus, предлагая масштабируемую, производительную и безопасную облачную векторную базу данных. <strong>Zilliz MCP Server</strong> интегрируется непосредственно с Zilliz Cloud и предоставляет свои возможности в виде MCP-совместимых инструментов. Это означает, что ваш помощник по искусственному интеллекту - будь то Claude, Cursor или другая среда с поддержкой MCP - теперь может запрашивать, управлять и организовывать рабочее пространство Zilliz Cloud, используя естественный язык.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/zilliz_mcp_abe1ca1271.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>No boilerplate code. No switching tabs. No manually writing REST or SDK calls. Just say your request and let your assistant handle the rest.</p>
-<h3 id="🚀-Getting-Started-with-Zilliz-MCP-Server" class="common-anchor-header">🚀 Getting Started with Zilliz MCP Server</h3><p>If you’re ready for production-ready vector infrastructure with the ease of natural language, getting started takes just a few steps:</p>
+<p>Никакого шаблонного кода. Никаких переключений между вкладками. Не нужно вручную писать вызовы REST или SDK. Просто скажите свой запрос, а остальное пусть сделает ваш помощник.</p>
+<h3 id="🚀-Getting-Started-with-Zilliz-MCP-Server" class="common-anchor-header">🚀 Начало работы с Zilliz MCP Server</h3><p>Если вы готовы к созданию готовой к производству векторной инфраструктуры с помощью естественного языка, начать работу можно всего за несколько шагов:</p>
 <ol>
-<li><p><a href="https://cloud.zilliz.com/signup"><strong>Sign up for Zilliz Cloud</strong></a> – free tier available.</p></li>
-<li><p><a href="http://github.com/zilliztech/zilliz-mcp-server"><strong>Install the Zilliz MCP Server</strong> </a>from the GitHub repository.</p></li>
-<li><p><strong>Configure your MCP-compatible assistant</strong> (Claude, Cursor, etc.) to connect to your Zilliz Cloud instance.</p></li>
+<li><p><a href="https://cloud.zilliz.com/signup"><strong>Зарегистрируйтесь в Zilliz Cloud</strong></a> - доступен бесплатный уровень.</p></li>
+<li><p><a href="http://github.com/zilliztech/zilliz-mcp-server"><strong>Установите Zilliz MCP Server</strong> из </a>репозитория GitHub.</p></li>
+<li><p><strong>Настройте ваш MCP-совместимый помощник</strong> (Claude, Cursor и т. д.) на подключение к экземпляру Zilliz Cloud.</p></li>
 </ol>
-<p>This gives you the best of both worlds: powerful vector search with production-grade infrastructure, now accessible through plain English.</p>
-<h2 id="Wrapping-Up" class="common-anchor-header">Wrapping Up<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
+<p>Таким образом, вы получаете лучшее из двух миров: мощный векторный поиск с инфраструктурой производственного уровня, теперь доступный на простом английском языке.</p>
+<h2 id="Wrapping-Up" class="common-anchor-header">Подведение итогов<button data-href="#Wrapping-Up" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -290,11 +292,11 @@ uv run src/mcp_server_milvus/server.py --milvus-uri http://localhost:19530
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>And that’s it—you’ve just learned how to turn Milvus into a natural language-friendly vector database you can literally <em>talk to</em>. No more digging through SDK docs or writing boilerplate just to spin up a collection or run a search.</p>
-<p>Whether you’re running Milvus locally or using Zilliz Cloud, the MCP Server gives your AI assistant a toolbox to manage your vector data like a pro. Just type what you want to do, and let Claude or Cursor handle the rest.</p>
-<p>So go ahead—fire up your AI dev tool, ask “what collections do I have?” and see it in action. You’ll never want to go back to writing vector queries by hand.</p>
+    </button></h2><p>Вот и все - вы только что узнали, как превратить Milvus в векторную базу данных на естественном языке, с которой можно буквально <em>разговаривать</em>. Больше не нужно копаться в SDK-документации или писать шаблоны, чтобы создать коллекцию или запустить поиск.</p>
+<p>Независимо от того, работаете ли вы с Milvus локально или используете Zilliz Cloud, MCP Server дает вашему помощнику ИИ набор инструментов для управления векторными данными как профессионалу. Просто введите нужные действия, а Claude или Cursor сделают все остальное.</p>
+<p>Так что вперед - запустите свой инструмент разработки ИИ, спросите "Какие коллекции у меня есть?" и посмотрите на него в действии. Вы никогда не захотите возвращаться к написанию векторных запросов вручную.</p>
 <ul>
-<li><p>Local setup? Use the open-source<a href="https://github.com/zilliztech/mcp-server-milvus"> Milvus MCP Server</a></p></li>
-<li><p>Prefer a managed service? Sign up for Zilliz Cloud and use the<a href="https://github.com/zilliztech/zilliz-mcp-server"> Zilliz MCP Server</a></p></li>
+<li><p>Локальная установка? Используйте<a href="https://github.com/zilliztech/mcp-server-milvus"> сервер Milvus MCP Server</a> с открытым исходным кодом.</p></li>
+<li><p>Предпочитаете управляемый сервис? Подпишитесь на Zilliz Cloud и используйте<a href="https://github.com/zilliztech/zilliz-mcp-server"> Zilliz MCP Server</a>.</p></li>
 </ul>
-<p>You’ve got the tools. Now let your AI do the typing.</p>
+<p>У вас есть инструменты. Теперь пусть ваш искусственный интеллект набирает текст.</p>

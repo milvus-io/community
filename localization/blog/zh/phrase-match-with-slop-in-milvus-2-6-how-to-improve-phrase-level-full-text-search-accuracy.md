@@ -1,9 +1,7 @@
 ---
 id: >-
   phrase-match-with-slop-in-milvus-2-6-how-to-improve-phrase-level-full-text-search-accuracy.md
-title: >
-  Phrase Match with Slop in Milvus 2.6: How to Improve Phrase-Level Full-Text
-  Search Accuracy 
+title: Milvus 2.6 中的词组匹配与泔水：如何提高词组级全文搜索的准确性
 author: Alex Zhang
 date: 2025-12-29T00:00:00.000Z
 cover: assets.zilliz.com/Phrase_Match_Cover_93a84b0587.png
@@ -14,17 +12,15 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 2.6, Phrase Match, full-text search, keyword matching, vector search'
 meta_title: |
   Phrase Match with Slop: Better Full-Text Search Accuracy in Milvus
-desc: >-
-  Learn how Phrase Match in Milvus 2.6 supports phrase-level full-text search
-  with slop, enabling more tolerant keyword filtering for real-world production.
+desc: 了解 Milvus 2.6 中的短语匹配功能如何支持带斜率的短语级全文搜索，从而为实际生产实现更宽容的关键字过滤。
 origin: >-
   https://milvus.io/blog/phrase-match-with-slop-in-milvus-2-6-how-to-improve-phrase-level-full-text-search-accuracy.md
 ---
-<p>As unstructured data continues to explode and AI models keep getting smarter, vector search has become the default retrieval layer for many AI systems—RAG pipelines, AI search, agents, recommendation engines, and more. It works because it captures meaning: not just the words users type, but the intent behind them.</p>
-<p>Once these applications move into production, however, teams often discover that semantic understanding is only one side of the retrieval problem. Many workloads also depend on strict textual rules—such as matching exact terminology, preserving word order, or identifying phrases that carry technical, legal, or operational significance.</p>
-<p><a href="https://milvus.io/docs/release_notes.md#v267">Milvus 2.6</a> removes that split by introducing native full-text search directly into the vector database. With token and positional indexes built into the core engine, Milvus can interpret a query’s semantic intent while enforcing precise keyword and phrase-level constraints. The result is a unified retrieval pipeline in which meaning and structure reinforce each other rather than living in separate systems.</p>
-<p><a href="https://milvus.io/docs/phrase-match.md">Phrase Match</a> is a key part of this full-text capability. It identifies sequences of terms that appear together and in order—crucial for detecting log patterns, error signatures, product names, and any text in which word order defines meaning. In this post, we’ll explain how <a href="https://milvus.io/docs/phrase-match.md">Phrase Match</a> works in <a href="https://milvus.io/">Milvus</a>, how <code translate="no">slop</code> adds flexibility needed for real-world text, and why these features make hybrid vector–full-text search not just possible but practical within a single database.</p>
-<h2 id="What-is-Phrase-Match" class="common-anchor-header">What is Phrase Match?<button data-href="#What-is-Phrase-Match" class="anchor-icon" translate="no">
+<p>随着非结构化数据的持续爆炸式增长和人工智能模型的不断智能化，向量搜索已成为许多人工智能系统--RAG 管道、人工智能搜索、Agent、推荐引擎等的默认检索层。它之所以有效，是因为它能捕捉到意义：不仅仅是用户输入的字词，还有它们背后的意图。</p>
+<p>然而，一旦这些应用投入生产，团队往往会发现语义理解只是检索问题的一个方面。许多工作负载还依赖于严格的文本规则，例如匹配准确的术语、保留词序或识别具有技术、法律或操作符意义的短语。</p>
+<p><a href="https://milvus.io/docs/release_notes.md#v267">Milvus 2.6</a>通过直接在向量数据库中引入本机全文搜索，消除了这种分裂。通过在核心引擎中内置标记和位置索引，Milvus 可以解释查询的语义意图，同时执行精确的关键字和短语级约束。这样就形成了一个统一的检索管道，在这个管道中，意义和结构相互促进，而不是各自为政。</p>
+<p><a href="https://milvus.io/docs/phrase-match.md">短语匹配</a>是这种全文功能的关键部分。它可以识别按顺序一起出现的术语序列--这对于检测日志模式、错误签名、产品名称以及任何词序定义意义的文本至关重要。在这篇文章中，我们将解释<a href="https://milvus.io/docs/phrase-match.md">短语匹配</a>在<a href="https://milvus.io/">Milvus</a> 中的工作原理，<code translate="no">slop</code> 如何增加现实世界文本所需的灵活性，以及为什么这些功能使向量-全文混合搜索不仅成为可能，而且在单个数据库中非常实用。</p>
+<h2 id="What-is-Phrase-Match" class="common-anchor-header">什么是短语匹配？<button data-href="#What-is-Phrase-Match" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,28 +35,28 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Phrase Match is a full-text query type in Milvus that focuses on <em>structure</em>—specifically, whether a sequence of words appears in the same order inside a document. When no flexibility is allowed, the query behaves strictly: the terms must appear next to each other and in sequence. A query like <strong>“robotics machine learning”</strong> therefore matches only when those three words occur as a continuous phrase.</p>
-<p>The challenge is that real text rarely behaves this neatly. Natural language introduces noise: extra adjectives slip in, logs reorder fields, product names gain modifiers, and human authors don’t write with query engines in mind. A strict phrase match breaks easily—one inserted word, one rephrasing, or one swapped term can cause a miss. And in many AI systems, especially production-facing ones, missing a relevant log line or rule-triggering phrase isn’t acceptable.</p>
-<p>Milvus 2.6 addresses this friction with a simple mechanism: <strong>slop</strong>. Slop defines <em>the amount of wiggle room allowed between query</em> terms. Instead of treating a phrase as brittle and inflexible, slop lets you decide whether one extra word is tolerable, or two, or even whether slight reordering should still count as a match. This moves phrase search from a binary pass–fail test to a controlled, tunable retrieval tool.</p>
-<p>To see why this matters, imagine searching logs for all variants of the familiar networking error <strong>“connection reset by peer.”</strong> In practice, your logs might look like:</p>
+    </button></h2><p>短语匹配是 Milvus 中的一种全文查询类型，侧重于<em>结构--具体来说</em>，是指文档中的一连串单词是否以相同的顺序出现。如果不允许有任何灵活性，查询就会严格执行：词语必须按顺序相邻出现。因此，像<strong>"机器人机器学习 "</strong>这样的查询只有在这三个词作为连续短语出现时才会匹配。</p>
+<p>问题在于，真实文本很少有如此严谨的表现。自然语言会带来噪音：额外的形容词会溜进来，日志会对字段重新排序，产品名称会增加修饰词，而且人类作者在写作时并没有考虑到查询引擎。严格的短语匹配很容易被破坏--插入的一个词、一个重新措辞或一个交换的术语都可能导致匹配失败。而在许多人工智能系统中，尤其是面向生产的系统，遗漏相关的日志行或规则触发短语是不可接受的。</p>
+<p>Milvus 2.6 通过一个简单的机制解决了这一摩擦："<strong>回旋</strong>"（<strong>slop</strong>）。<em>回旋余地</em>定义了<em>查询</em>词<em>之间允许的回旋余地</em>。您可以决定是否允许多出一个词或两个词，甚至是否允许轻微的重新排序也算作匹配，而不是将短语视为脆弱而不灵活的。这就将短语搜索从二进制的 "通过-失败 "测试转变为一种可控、可调整的检索工具。</p>
+<p>要理解这一点的重要性，可以想象一下搜索日志，查找我们熟悉的网络错误<strong>"连接被对等重置 "的</strong>所有变体<strong>。</strong>实际上，你的日志可能是这样的</p>
 <pre><code translate="no">connection reset <span class="hljs-keyword">by</span> peer
 connection fast reset <span class="hljs-keyword">by</span> peer
 connection was suddenly reset <span class="hljs-keyword">by</span> the peer
 peer reset connection <span class="hljs-keyword">by</span> ...
 peer unexpected connection reset happened
 <button class="copy-code-btn"></button></code></pre>
-<p>At a glance, all of these represent the same underlying event. But common retrieval methods struggle:</p>
-<h3 id="BM25-struggles-with-structure" class="common-anchor-header">BM25 struggles with structure.</h3><p>It views the query as a bag of keywords, ignoring the order in which they appear. As long as “connection” and “peer” show up somewhere, BM25 may rank the document highly—even if the phrase is reversed or unrelated to the concept you’re actually searching for.</p>
-<h3 id="Vector-search-struggles-with-constraints" class="common-anchor-header">Vector search struggles with constraints.</h3><p>Embeddings excel at capturing meaning and semantic relationships, but they cannot enforce a rule like “these words must appear in this sequence.” You might retrieve semantically related messages, but still miss the exact structural pattern required for debugging or compliance.</p>
-<p>Phrase Match fills the gap between these two approaches. By using <strong>slop</strong>, you can specify exactly how much variation is acceptable:</p>
+<p>一目了然，所有这些都代表着同一个基本事件。但常见的检索方法却很难做到这一点：</p>
+<h3 id="BM25-struggles-with-structure" class="common-anchor-header">BM25 在结构上有困难。</h3><p>它将查询视为一袋关键字，忽略了关键字出现的顺序。只要 "连接 "和 "对等 "出现在某个地方，BM25 就会把文档排在前面--即使这个短语是颠倒的，或者与你实际搜索的概念无关。</p>
+<h3 id="Vector-search-struggles-with-constraints" class="common-anchor-header">向量搜索难以应对各种限制。</h3><p>Embeddings 擅长捕捉意义和语义关系，但它们无法强制执行 "这些词必须以这种顺序出现 "这样的规则。您可能会检索到语义相关的信息，但仍会错过调试或合规所需的确切结构模式。</p>
+<p>短语匹配法填补了这两种方法之间的空白。通过使用<strong>"斜率"</strong>，你可以精确地指定可接受的变化程度：</p>
 <ul>
-<li><p><code translate="no">slop = 0</code> — Exact match (All terms must appear contiguously and in order.)</p></li>
-<li><p><code translate="no">slop = 1</code> — Allow one extra word (Covers common natural-language variations with a single inserted term.)</p></li>
-<li><p><code translate="no">slop = 2</code> — Allow multiple inserted words (Handles more descriptive or verbose phrasing.)</p></li>
-<li><p><code translate="no">slop = 3</code> — Allow reordering (Supports reversed or loosely ordered phrases, often the hardest case in real-world text.)</p></li>
+<li><p><code translate="no">slop = 0</code> - 完全匹配（所有术语必须按顺序连续出现。）</p></li>
+<li><p><code translate="no">slop = 1</code> - 允许多一个词（用一个插入词涵盖常见的自然语言变化。）</p></li>
+<li><p><code translate="no">slop = 2</code> - 允许插入多个词（处理更多描述性或冗长的措辞。）</p></li>
+<li><p><code translate="no">slop = 3</code> - 允许重新排序（支持顺序颠倒或松散的短语，这通常是现实世界文本中最难处理的情况。）</p></li>
 </ul>
-<p>Instead of hoping the scoring algorithm “gets it right,” you explicitly declare the structural tolerance your application requires.</p>
-<h2 id="How-Phrase-Match-Works-in-Milvus" class="common-anchor-header">How Phrase Match Works in Milvus<button data-href="#How-Phrase-Match-Works-in-Milvus" class="anchor-icon" translate="no">
+<p>与希望评分算法 "正确 "相比，您可以明确声明您的应用程序所需的结构容差。</p>
+<h2 id="How-Phrase-Match-Works-in-Milvus" class="common-anchor-header">短语匹配在 Milvus 中的工作原理<button data-href="#How-Phrase-Match-Works-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -75,28 +71,28 @@ peer unexpected connection reset happened
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Powered by the <a href="https://github.com/quickwit-oss/tantivy">Tantivy</a> search engine library, Phrase Match in Milvus is implemented on top of an inverted index with positional information. Instead of only checking whether terms appear in a document, it verifies that they appear in the right order and within a controllable distance.</p>
-<p>The diagram below illustrates the process:</p>
+    </button></h2><p>Milvus 中的短语匹配由<a href="https://github.com/quickwit-oss/tantivy">Tantivy</a>搜索引擎库提供支持，是在带有位置信息的倒排索引基础上实现的。它不只是检查术语是否出现在文档中，而是验证它们是否以正确的顺序出现，并且距离在可控范围内。</p>
+<p>下图说明了这一过程：</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/phrase_match_workflow_a4f3badb66.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>1. Document Tokenization (with Positions)</strong></p>
-<p>When documents are inserted into Milvus, text fields are processed by an <a href="https://milvus.io/docs/analyzer-overview.md">analyzer</a>, which splits the text into tokens (words or terms) and records each token’s position within the document. For example, <code translate="no">doc_1</code> is tokenized as: <code translate="no">machine (pos=0), learning (pos=1), boosts (pos=2), efficiency (pos=3)</code>.</p>
-<p><strong>2. Inverted Index Creation</strong></p>
-<p>Next, Milvus builds an inverted index. Instead of mapping documents to their contents, the inverted index maps each token to the documents in which it appears, along with all recorded positions of that token within each document.</p>
-<p><strong>3. Phrase Matching</strong></p>
-<p>When a phrase query is executed, Milvus first uses the inverted index to identify documents that contain all query tokens. It then validates each candidate by comparing token positions to ensure the terms appear in the correct order and within the allowed <code translate="no">slop</code> distance. Only documents that satisfy both conditions are returned as matches.</p>
-<p>The diagram below summarizes how Phrase Match works end-to-end.</p>
+<p><strong>1.文档标记化（带位置）</strong></p>
+<p>当文档插入 Milvus 时，文本字段由<a href="https://milvus.io/docs/analyzer-overview.md">分析器</a>处理，<a href="https://milvus.io/docs/analyzer-overview.md">分析器</a>将文本分割成标记（单词或术语），并记录每个标记在文档中的位置。例如，<code translate="no">doc_1</code> 被标记为：<code translate="no">machine (pos=0), learning (pos=1), boosts (pos=2), efficiency (pos=3)</code>.</p>
+<p><strong>2.创建倒排索引</strong></p>
+<p>接下来，Milvus 会建立一个倒排索引。倒排索引不是将文档映射到文档内容，而是将每个标记映射到出现该标记的文档，以及该标记在每个文档中的所有记录位置。</p>
+<p><strong>3.短语匹配</strong></p>
+<p>当执行短语查询时，Milvus 首先使用倒排索引来识别包含所有查询标记的文档。然后，它通过比较标记位置来验证每个候选词，以确保术语出现的顺序正确，且距离在允许的<code translate="no">slop</code> 范围内。只有满足这两个条件的文档才会作为匹配文档返回。</p>
+<p>下图总结了短语匹配的端到端工作方式。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/workflow2_63c168b107.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="How-to-Enable-Phrase-Match-in-Milvus" class="common-anchor-header">How to Enable Phrase Match in Milvus<button data-href="#How-to-Enable-Phrase-Match-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="How-to-Enable-Phrase-Match-in-Milvus" class="common-anchor-header">如何在 Milvus 启用词组匹配功能<button data-href="#How-to-Enable-Phrase-Match-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -111,14 +107,14 @@ peer unexpected connection reset happened
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Phrase Match works on fields of type <strong><code translate="no">VARCHAR</code></strong>, the string type in Milvus. To use it, you must configure your collection schema so that Milvus performs text analysis and stores positional information for the field. This is done by enabling two parameters: <code translate="no">enable_analyzer</code> and <code translate="no">enable_match</code>.</p>
-<h3 id="Set-enableanalyzer-and-enablematch" class="common-anchor-header">Set enable_analyzer and enable_match</h3><p>To turn on Phrase Match for a specific VARCHAR field, set both parameters to <code translate="no">True</code> when defining the field schema. Together, they tell Milvus to:</p>
+    </button></h2><p>短语匹配适用于以下类型的字段 <strong><code translate="no">VARCHAR</code></strong>，即 Milvus 中的字符串类型。要使用它，必须配置 Collections Schema，以便 Milvus 执行文本分析并存储字段的位置信息。这需要启用两个参数：<code translate="no">enable_analyzer</code> 和<code translate="no">enable_match</code> 。</p>
+<h3 id="Set-enableanalyzer-and-enablematch" class="common-anchor-header">设置 enable_analyzer 和 enable_match</h3><p>要打开特定 VARCHAR 字段的短语匹配，请在定义字段 Schema 时将这两个参数设置为<code translate="no">True</code> 。这两个参数会告诉 Milvus</p>
 <ul>
-<li><p><strong>tokenize</strong> the text (via <code translate="no">enable_analyzer</code>), and</p></li>
-<li><p><strong>build an inverted index with positional offsets</strong> (via <code translate="no">enable_match</code>).</p></li>
+<li><p><strong>标记</strong>文本（通过<code translate="no">enable_analyzer</code> ），并</p></li>
+<li><p><strong>使用位置偏移建立反向索引</strong>（通过<code translate="no">enable_match</code> ）。</p></li>
 </ul>
-<p>Phrase Match relies on both steps: the analyzer breaks text into tokens, and the match index stores where those tokens appear, enabling efficient phrase and slop-based queries.</p>
-<p>Below is an example schema configuration that enables Phrase Match on a <code translate="no">text</code> field:</p>
+<p>短语匹配依赖于这两个步骤：分析器将文本分解为标记，匹配索引存储这些标记出现的位置，从而实现高效的短语和基于斜线的查询。</p>
+<p>以下是在<code translate="no">text</code> 字段上启用短语匹配的 Schema 配置示例：</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType
 
 schema = MilvusClient.create_schema(enable_dynamic_field=<span class="hljs-literal">False</span>)
@@ -141,7 +137,7 @@ schema.add_field(
     dim=<span class="hljs-number">5</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Search-with-Phrase-Match-How-Slop-Affects-the-Candidate-Set" class="common-anchor-header">Search with Phrase Match: How Slop Affects the Candidate Set<button data-href="#Search-with-Phrase-Match-How-Slop-Affects-the-Candidate-Set" class="anchor-icon" translate="no">
+<h2 id="Search-with-Phrase-Match-How-Slop-Affects-the-Candidate-Set" class="common-anchor-header">使用短语匹配搜索：泔水如何影响候选集<button data-href="#Search-with-Phrase-Match-How-Slop-Affects-the-Candidate-Set" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -156,25 +152,25 @@ schema.add_field(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Once you’ve enabled match for a VARCHAR field in your collection schema, you can perform phrase matches using the <code translate="no">PHRASE_MATCH</code> expression.</p>
-<p>Note: The <code translate="no">PHRASE_MATCH</code> expression is case-insensitive. You can use either <code translate="no">PHRASE_MATCH</code> or <code translate="no">phrase_match</code>.</p>
-<p>In search operations, Phrase Match is commonly applied before vector similarity ranking. It first filters documents based on explicit textual constraints, narrowing the candidate set. The remaining documents are then re-ranked using vector embeddings.</p>
-<p>The example below shows how different <code translate="no">slop</code> values affect this process. By adjusting the <code translate="no">slop</code> parameter, you directly control which documents pass the phrase filter and proceed to the vector ranking stage.</p>
-<p>Suppose you have a collection named <code translate="no">tech_articles</code> containing the following five entities:</p>
+    </button></h2><p>为 Collections 模式中的 VARCHAR 字段启用匹配后，就可以使用<code translate="no">PHRASE_MATCH</code> 表达式执行短语匹配。</p>
+<p>注意：<code translate="no">PHRASE_MATCH</code> 表达式不区分大小写。可以使用<code translate="no">PHRASE_MATCH</code> 或<code translate="no">phrase_match</code> 。</p>
+<p>在搜索操作中，短语匹配通常在向量相似性排序之前应用。它首先根据明确的文本限制过滤文档，缩小候选集的范围。然后使用向量嵌入重新对剩余的文档进行排序。</p>
+<p>下面的示例展示了不同的<code translate="no">slop</code> 值对这一过程的影响。通过调整<code translate="no">slop</code> 参数，您可以直接控制哪些文档通过了短语过滤器并进入向量排序阶段。</p>
+<p>假设你有一个名为<code translate="no">tech_articles</code> 的 Collections，其中包含以下五个实体：</p>
 <table>
 <thead>
-<tr><th><strong>doc_id</strong></th><th><strong>text</strong></th></tr>
+<tr><th><strong>doc_id</strong></th><th><strong>文本</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>1</td><td>Machine learning boosts efficiency in large-scale data analysis</td></tr>
-<tr><td>2</td><td>Learning a machine-based approach is vital for modern AI progress</td></tr>
-<tr><td>3</td><td>Deep learning machine architectures optimize computational loads</td></tr>
-<tr><td>4</td><td>Machine swiftly improves model performance for ongoing learning</td></tr>
-<tr><td>5</td><td>Learning advanced machine algorithms expands AI capabilities</td></tr>
+<tr><td>1</td><td>机器学习提高了大规模数据分析的效率</td></tr>
+<tr><td>2</td><td>学习基于机器的方法对现代人工智能的进步至关重要</td></tr>
+<tr><td>3</td><td>深度学习机器架构优化计算负荷</td></tr>
+<tr><td>4</td><td>机器迅速提高持续学习的模型性能</td></tr>
+<tr><td>5</td><td>学习先进的机器算法，扩展人工智能能力</td></tr>
 </tbody>
 </table>
 <p><strong><code translate="no">slop=1</code></strong></p>
-<p>Here, we allow a slop of 1. The filter is applied to documents that contain the phrase “learning machine” with slight flexibility.</p>
+<p>在此，我们允许 1 的斜率。该过滤器适用于包含 "学习机器 "短语的文档，并略有灵活性。</p>
 <pre><code translate="no"><span class="hljs-comment"># Example: Filter documents containing &quot;learning machine&quot; with slop=1</span>
 filter_slop1 = <span class="hljs-string">&quot;PHRASE_MATCH(text, &#x27;learning machine&#x27;, 1)&quot;</span>
 
@@ -188,19 +184,19 @@ result_slop1 = client.search(
     output_fields=[<span class="hljs-string">&quot;id&quot;</span>, <span class="hljs-string">&quot;text&quot;</span>]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Match results:</p>
+<p>匹配结果：</p>
 <table>
 <thead>
-<tr><th>doc_id</th><th>text</th></tr>
+<tr><th>doc_id</th><th>文本</th></tr>
 </thead>
 <tbody>
-<tr><td>2</td><td>Learning a machine-based approach is vital for modern AI progress</td></tr>
-<tr><td>3</td><td>Deep learning machine architectures optimize computational loads</td></tr>
-<tr><td>5</td><td>Learning advanced machine algorithms expands AI capabilities</td></tr>
+<tr><td>2</td><td>学习基于机器的方法对现代人工智能的进步至关重要</td></tr>
+<tr><td>3</td><td>深度学习机器架构优化计算负荷</td></tr>
+<tr><td>5</td><td>学习先进的机器算法可扩展人工智能能力</td></tr>
 </tbody>
 </table>
 <p><strong><code translate="no">slop=2</code></strong></p>
-<p>This example allows a slop of 2, meaning that up to two extra tokens (or reversed terms) are allowed between the words “machine” and “learning”.</p>
+<p>本示例允许 2 的斜率，即在 "机器 "和 "学习 "之间允许最多两个额外的词块（或反义词）。</p>
 <pre><code translate="no"><span class="hljs-comment"># Example: Filter documents containing &quot;machine learning&quot; with slop=2</span>
 filter_slop2 = <span class="hljs-string">&quot;PHRASE_MATCH(text, &#x27;machine learning&#x27;, 2)&quot;</span>
 
@@ -214,18 +210,18 @@ result_slop2 = client.search(
     output_fields=[<span class="hljs-string">&quot;id&quot;</span>, <span class="hljs-string">&quot;text&quot;</span>]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Match results:</p>
+<p>匹配结果：</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>doc_id</strong></th><th style="text-align:center"><strong>text</strong></th></tr>
+<tr><th style="text-align:center"><strong>doc_id</strong></th><th style="text-align:center"><strong>文本</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">1</td><td style="text-align:center">Machine learning boosts efficiency in large-scale data analysis</td></tr>
-<tr><td style="text-align:center">3</td><td style="text-align:center">Deep learning machine architectures optimize computational loads</td></tr>
+<tr><td style="text-align:center">1</td><td style="text-align:center">机器学习提高了大规模数据分析的效率</td></tr>
+<tr><td style="text-align:center">3</td><td style="text-align:center">深度学习机器架构优化计算负载</td></tr>
 </tbody>
 </table>
 <p><strong><code translate="no">slop=3</code></strong></p>
-<p>In this example, a slop of 3 provides even more flexibility. The filter searches for “machine learning” with up to three token positions allowed between the words.</p>
+<p>在本例中，3 的斜率提供了更大的灵活性。过滤器搜索 "机器学习"，单词之间最多允许有三个标记位置。</p>
 <pre><code translate="no"><span class="hljs-comment"># Example: Filter documents containing &quot;machine learning&quot; with slop=3</span>
 filter_slop3 = <span class="hljs-string">&quot;PHRASE_MATCH(text, &#x27;machine learning&#x27;, 3)&quot;</span>
 
@@ -239,19 +235,19 @@ result_slop2 = client.search(
     output_fields=[<span class="hljs-string">&quot;id&quot;</span>, <span class="hljs-string">&quot;text&quot;</span>]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Match results:</p>
+<p>匹配结果：</p>
 <table>
 <thead>
-<tr><th style="text-align:center"><strong>doc_id</strong></th><th style="text-align:center"><strong>text</strong></th></tr>
+<tr><th style="text-align:center"><strong>doc_id</strong></th><th style="text-align:center"><strong>文本</strong></th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:center">1</td><td style="text-align:center">Machine learning boosts efficiency in large-scale data analysis</td></tr>
-<tr><td style="text-align:center">2</td><td style="text-align:center">Learning a machine-based approach is vital for modern AI progress</td></tr>
-<tr><td style="text-align:center">3</td><td style="text-align:center">Deep learning machine architectures optimize computational loads</td></tr>
-<tr><td style="text-align:center">5</td><td style="text-align:center">Learning advanced machine algorithms expands AI capabilities</td></tr>
+<tr><td style="text-align:center">1</td><td style="text-align:center">机器学习提高了大规模数据分析的效率</td></tr>
+<tr><td style="text-align:center">2</td><td style="text-align:center">学习基于机器的方法对现代人工智能的进步至关重要</td></tr>
+<tr><td style="text-align:center">3</td><td style="text-align:center">深度学习机器架构优化计算负荷</td></tr>
+<tr><td style="text-align:center">5</td><td style="text-align:center">学习先进的机器算法可扩展人工智能能力</td></tr>
 </tbody>
 </table>
-<h2 id="Quick-Tips-What-You-Need-to-Know-Before-Enabling-Phrase-Match-in-Milvus" class="common-anchor-header">Quick Tips: What You Need to Know Before Enabling Phrase Match in Milvus<button data-href="#Quick-Tips-What-You-Need-to-Know-Before-Enabling-Phrase-Match-in-Milvus" class="anchor-icon" translate="no">
+<h2 id="Quick-Tips-What-You-Need-to-Know-Before-Enabling-Phrase-Match-in-Milvus" class="common-anchor-header">快速提示：在 Milvus 中启用短语匹配前需要了解的信息<button data-href="#Quick-Tips-What-You-Need-to-Know-Before-Enabling-Phrase-Match-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -266,13 +262,13 @@ result_slop2 = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Phrase Match provides support for phrase-level filtering, but enabling it involves more than query-time configuration. It is helpful to be aware of the associated considerations before applying it in a production setting.</p>
+    </button></h2><p>短语匹配支持短语级过滤，但启用短语匹配涉及的不仅仅是查询时的配置。在生产环境中应用前，了解相关注意事项很有帮助。</p>
 <ul>
-<li><p>Enabling Phrase Match on a field creates an inverted index, which increases storage usage. The exact cost depends on factors such as text length, the number of unique tokens, and the analyzer configuration. When working with large text fields or high-cardinality data, this overhead should be considered upfront.</p></li>
-<li><p>Analyzer configuration is another critical design choice. Once an analyzer is defined in the collection schema, it cannot be changed. Switching to a different analyzer later requires dropping the existing collection and recreating it with a new schema. For this reason, analyzer selection should be treated as a long-term decision rather than an experiment.</p></li>
-<li><p>Phrase Match behavior is tightly coupled to how text is tokenized. Before applying an analyzer to an entire collection, it is recommended to use the <code translate="no">run_analyzer</code> method to inspect the tokenization output and confirm that it matches your expectations. This step can help avoid subtle mismatches and unexpected query results later. For more information, refer to <a href="https://milvus.io/docs/analyzer-overview.md#share-DYZvdQ2vUowWEwx1MEHcdjNNnqT">Analyzer Overview</a>.</p></li>
+<li><p>在字段上启用短语匹配会创建一个反向索引，从而增加存储空间的使用。具体成本取决于文本长度、唯一标记数和分析器配置等因素。在处理大型文本字段或高 Cardinal 性数据时，应预先考虑这一开销。</p></li>
+<li><p>分析器配置是另一个关键的设计选择。一旦在 Collections Schema 中定义了分析器，就不能更改。以后要切换到不同的分析器，就必须放弃现有的 Collections，然后用新的 Schema 重新创建。因此，分析器的选择应被视为一项长期决策，而不是实验。</p></li>
+<li><p>短语匹配行为与文本的标记化方式密切相关。在将分析器应用于整个 Collections 之前，建议使用<code translate="no">run_analyzer</code> 方法检查标记化输出，并确认其是否符合您的预期。这一步骤有助于避免细微的不匹配和意外的查询结果。有关详细信息，请参阅<a href="https://milvus.io/docs/analyzer-overview.md#share-DYZvdQ2vUowWEwx1MEHcdjNNnqT">分析器概述</a>。</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">结论<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -287,8 +283,8 @@ result_slop2 = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Phrase Match is a core full-text search type that enables phrase-level and positional constraints beyond simple keyword matching. By operating on token order and proximity, it provides a predictable and precise way to filter documents based on how terms actually appear in text.</p>
-<p>In modern retrieval systems, Phrase Match is commonly applied before vector-based ranking. It first restricts the candidate set to documents that explicitly satisfy required phrases or structures. Vector search is then used to rank these results by semantic relevance. This pattern is especially effective in scenarios such as log analysis, technical documentation search, and RAG pipelines, where textual constraints must be enforced before semantic similarity is considered.</p>
-<p>With the introduction of the <code translate="no">slop</code> parameter in Milvus 2.6, Phrase Match becomes more tolerant of natural language variation while retaining its role as a full-text filtering mechanism. This makes phrase-level constraints easier to apply in production retrieval workflows.</p>
-<p>👉 Try it out with the <a href="https://github.com/openvino-book/Milvus-Phrase-Match-Demo">demo</a> scripts, and explore <a href="https://milvus.io/docs/release_notes.md#v267">Milvus 2.6</a> to see how phrase-aware retrieval fits into your stack.</p>
-<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+    </button></h2><p>短语匹配是一种核心全文搜索类型，可实现短语级和位置限制，而不是简单的关键字匹配。通过对标记顺序和邻近性进行操作，它提供了一种可预测的精确方法，可根据术语在文本中的实际出现方式过滤文档。</p>
+<p>在现代检索系统中，短语匹配通常应用于基于向量的排序之前。它首先将候选集限制为明确满足所需短语或结构的文档。然后再使用向量搜索按语义相关性对这些结果进行排序。这种模式在日志分析、技术文档搜索和 RAG 管道等应用场景中尤为有效，因为在这些应用场景中，在考虑语义相似性之前必须先执行文本约束。</p>
+<p>Milvus 2.6 引入<code translate="no">slop</code> 参数后，短语匹配对自然语言变化的容忍度提高了，同时保留了其作为全文过滤机制的作用。这使得短语级约束更容易应用于生产检索工作流中。</p>
+<p>请使用<a href="https://github.com/openvino-book/Milvus-Phrase-Match-Demo">演示</a>脚本进行尝试，并探索<a href="https://milvus.io/docs/release_notes.md#v267">Milvus 2.6</a>，了解短语感知检索如何与您的堆栈相匹配。</p>
+<p>对最新版 Milvus 的任何功能有疑问或想深入了解？加入我们的<a href="https://discord.com/invite/8uyFbECzPX"> Discord 频道</a>或在<a href="https://github.com/milvus-io/milvus"> GitHub</a> 上提交问题。您还可以通过<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a> 预订 20 分钟的一对一课程，以获得见解、指导和问题解答。</p>

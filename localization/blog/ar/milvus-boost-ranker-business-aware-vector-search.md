@@ -1,7 +1,6 @@
 ---
 id: milvus-boost-ranker-business-aware-vector-search.md
-title: |
-  How to Use Milvus Boost Ranker for Business-Aware Vector Search
+title: كيفية استخدام مصنف Milvus Boost Ranker للبحث عن المتجهات الواعية للأعمال
 author: Wei Zang
 date: 2026-3-24
 cover: >-
@@ -13,15 +12,16 @@ tags: 'Milvus, vector database, vector search'
 meta_keywords: 'Milvus Boost Ranker, vector search ranking, metadata reranking, Milvus 2.6'
 meta_title: |
   Milvus Boost Ranker: Add Business Rules to Vector Search
-desc: >
-  Learn how Milvus Boost Ranker lets you layer business rules on top of vector
-  similarity — boost official docs, demote stale content, add diversity.
+desc: >-
+  تعلّم كيف يتيح لك برنامج Milvus Boost Ranker وضع قواعد العمل فوق قواعد العمل
+  على رأس التشابه المتجه - تعزيز المستندات الرسمية، وإزالة المحتوى القديم،
+  وإضافة التنوع.
 origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search.md'
 ---
-<p>Vector search ranks results by embedding similarity — the closer the vectors, the higher the result. Some systems add a model-based reranker (BGE, Voyage, Cohere) to improve ordering. But neither approach handles a fundamental requirement in production: <strong>business context matters as much as semantic relevance, sometimes more.</strong></p>
-<p>An e-commerce site needs to surface in-stock products from official stores first. A content platform wants to pin recent announcements. An enterprise knowledge base needs authoritative documents at the top. When ranking relies solely on vector distance, these rules get ignored. The results may be relevant, but they’re not appropriate.</p>
-<p><strong><a href="https://milvus.io/docs/reranking.md">Boost Ranker</a></strong>, introduced in <a href="https://milvus.io/intro">Milvus</a> 2.6, solves this. It lets you adjust search result rankings using metadata rules — no index rebuild, no model change. This article covers how it works, when to use it, and how to implement it with code.</p>
-<h2 id="What-Is-Boost-Ranker" class="common-anchor-header">What Is Boost Ranker?<button data-href="#What-Is-Boost-Ranker" class="anchor-icon" translate="no">
+<p>يصنّف البحث في المتجهات النتائج من خلال تضمين التشابه - كلما اقتربت المتجهات من بعضها البعض، كلما كانت النتيجة أعلى. تضيف بعض الأنظمة أداة إعادة ترتيب قائمة على النموذج (BGE، Voyage، Cohere) لتحسين الترتيب. لكن لا يعالج أي من النهجين متطلبًا أساسيًا في الإنتاج: <strong>سياق العمل مهم بقدر أهمية الصلة الدلالية، وأحيانًا أكثر.</strong></p>
+<p>يحتاج موقع التجارة الإلكترونية إلى عرض المنتجات الموجودة في المخزون من المتاجر الرسمية أولاً. تريد منصة المحتوى تثبيت الإعلانات الأخيرة. تحتاج قاعدة معارف المؤسسة إلى مستندات موثوقة في الأعلى. عندما يعتمد الترتيب على المسافة المتجهة فقط، يتم تجاهل هذه القواعد. قد تكون النتائج ذات صلة، ولكنها ليست مناسبة.</p>
+<p>تعمل<strong><a href="https://milvus.io/docs/reranking.md">ميزة Boost Ranker،</a></strong> التي تم تقديمها في الإصدار 2.6 <a href="https://milvus.io/intro">من Milvus،</a> على حل هذه المشكلة. فهو يتيح لك تعديل تصنيفات نتائج البحث باستخدام قواعد البيانات الوصفية - دون إعادة بناء الفهرس أو تغيير النموذج. يغطي هذا المقال كيفية عمله، ومتى يتم استخدامه، وكيفية تطبيقه مع التعليمات البرمجية.</p>
+<h2 id="What-Is-Boost-Ranker" class="common-anchor-header">ما هو بووست رانكر المعزز؟<button data-href="#What-Is-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,21 +36,21 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Boost Ranker is a lightweight, rule-based reranking feature in Milvus 2.6.2</strong> that adjusts <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> results using scalar metadata fields. Unlike model-based rerankers that call external LLMs or embedding services, Boost Ranker operates entirely within Milvus using simple filter-and-weight rules. No external dependencies, minimal latency overhead — suitable for real-time use.</p>
-<p>You configure it through the <a href="https://milvus.io/docs/manage-functions.md">Function API</a>. After vector search returns a set of candidates, Boost Ranker applies three operations:</p>
+    </button></h2><p><strong>بووست رانكر Boost Ranker هي ميزة إعادة ترتيب خفيفة الوزن وقائمة على القواعد في Milvus 2.6.2</strong> والتي تعدل نتائج <a href="https://zilliz.com/learn/vector-similarity-search">البحث المتجه</a> باستخدام حقول البيانات الوصفية القياسية. على عكس برامج إعادة الترتيب المستندة إلى النماذج التي تستدعي خدمات LLMs الخارجية أو خدمات التضمين، يعمل Boost Ranker بالكامل داخل Milvus باستخدام قواعد تصفية وترجيح بسيطة. لا توجد تبعيات خارجية، والحد الأدنى من الكمون الزائد - مناسب للاستخدام في الوقت الحقيقي.</p>
+<p>يمكنك تكوينه من خلال <a href="https://milvus.io/docs/manage-functions.md">واجهة برمجة التطبيقات الوظيفية</a>. بعد أن يقوم البحث المتجه بإرجاع مجموعة من المرشحين، يطبق Boost Ranker ثلاث عمليات:</p>
 <ol>
-<li><strong>Filter:</strong> identify results matching specific conditions (e.g., <code translate="no">is_official == true</code>)</li>
-<li><strong>Boost:</strong> multiply their scores by a configured weight</li>
-<li><strong>Shuffle:</strong> optionally add a small random factor (0–1) to introduce diversity</li>
+<li><strong>تصفية:</strong> تحديد النتائج المطابقة لشروط محددة (على سبيل المثال، <code translate="no">is_official == true</code>)</li>
+<li><strong>التعزيز:</strong> ضرب درجاتهم في وزن تم تكوينه</li>
+<li><strong>خلط ورق اللعب:</strong> إضافة عامل عشوائي صغير (0-1) اختياريًا لإدخال التنوع</li>
 </ol>
-<h3 id="How-It-Works-Under-the-Hood" class="common-anchor-header">How It Works Under the Hood</h3><p>Boost Ranker runs inside Milvus as a post-processing step:</p>
+<h3 id="How-It-Works-Under-the-Hood" class="common-anchor-header">كيف يعمل تحت الغطاء</h3><p>يعمل Boost Ranker داخل Milvus كخطوة ما بعد المعالجة:</p>
 <ol>
-<li><strong>Vector search</strong> — each segment returns candidates with IDs, similarity scores, and metadata.</li>
-<li><strong>Apply rules</strong> — the system filters matching records and adjusts their scores using the configured weight and optional <code translate="no">random_score</code>.</li>
-<li><strong>Merge and sort</strong> — all candidates are combined and re-sorted by updated scores to produce the final Top-K results.</li>
+<li><strong>البحث في المتجهات</strong> - يقوم كل مقطع بإرجاع المرشحين مع المعرفات ودرجات التشابه والبيانات الوصفية.</li>
+<li><strong>تطبيق القواعد</strong> - يقوم النظام بتصفية السجلات المطابقة وتعديل درجاتها باستخدام الوزن المكوّن واختياري <code translate="no">random_score</code>.</li>
+<li><strong>الدمج والفرز</strong> - يتم دمج جميع المرشحين وإعادة فرزهم حسب الدرجات المحدّثة للحصول على النتائج النهائية لأعلى K.</li>
 </ol>
-<p>Because Boost Ranker only operates on already-retrieved candidates — not the full dataset — the additional computational cost is negligible.</p>
-<h2 id="When-Should-You-Use-Boost-Ranker" class="common-anchor-header">When Should You Use Boost Ranker?<button data-href="#When-Should-You-Use-Boost-Ranker" class="anchor-icon" translate="no">
+<p>نظرًا لأن برنامج Boost Ranker يعمل فقط على المرشحين الذين تم استرجاعهم بالفعل - وليس على مجموعة البيانات الكاملة - فإن التكلفة الحسابية الإضافية لا تُذكر.</p>
+<h2 id="When-Should-You-Use-Boost-Ranker" class="common-anchor-header">متى يجب عليك استخدام بووست رانكر المعزز؟<button data-href="#When-Should-You-Use-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,41 +65,40 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Boosting-Important-Results" class="common-anchor-header">Boosting Important Results</h3><p>The most common use case: layer simple business rules on top of semantic search.</p>
+    </button></h2><h3 id="Boosting-Important-Results" class="common-anchor-header">تعزيز النتائج المهمة</h3><p>حالة الاستخدام الأكثر شيوعًا: وضع قواعد عمل بسيطة فوق البحث الدلالي.</p>
 <ul>
-<li><strong>E-commerce:</strong> boost products from flagship stores, official sellers, or paid promotions. Push items with high recent sales or click-through rates higher.</li>
-<li><strong>Content platforms:</strong> prioritize recently published content via a <code translate="no">publish_time</code> field, or boost posts from verified accounts.</li>
-<li><strong>Enterprise search:</strong> give higher priority to documents where <code translate="no">doctype == &quot;policy&quot;</code> or <code translate="no">is_canonical == true</code>.</li>
+<li><strong>التجارة الإلكترونية:</strong> تعزيز المنتجات من المتاجر الرئيسية أو البائعين الرسميين أو العروض الترويجية المدفوعة. ادفع العناصر ذات المبيعات الحديثة العالية أو معدلات النقر إلى أعلى.</li>
+<li><strong>منصات المحتوى:</strong> إعطاء الأولوية للمحتوى المنشور حديثًا عبر حقل <code translate="no">publish_time</code> ، أو تعزيز المنشورات من الحسابات التي تم التحقق منها.</li>
+<li><strong>بحث المؤسسة:</strong> إعطاء أولوية أعلى للمستندات حيث <code translate="no">doctype == &quot;policy&quot;</code> أو <code translate="no">is_canonical == true</code>.</li>
 </ul>
-<p>All configurable with a filter + weight. No embedding model changes, no index rebuilds.</p>
-<h3 id="Demoting-Without-Removing" class="common-anchor-header">Demoting Without Removing</h3><p>Boost Ranker can also lower ranking for certain results — a softer alternative to hard filtering.</p>
+<p>كل ذلك قابل للتكوين باستخدام مرشح + وزن. لا تغييرات في نموذج التضمين ولا إعادة بناء الفهرس.</p>
+<h3 id="Demoting-Without-Removing" class="common-anchor-header">التخفيض دون إزالة</h3><p>يمكن لـ Boost Ranker أيضًا خفض الترتيب لنتائج معينة - وهو بديل أكثر ليونة للتصفية الصعبة.</p>
 <ul>
-<li><strong>Low-stock products:</strong> if <code translate="no">stock &lt; 10</code>, reduce their weight slightly. Still findable, but won’t dominate top positions.</li>
-<li><strong>Sensitive content:</strong> lower the weight of flagged content instead of removing it entirely. Limits exposure without hard censorship.</li>
-<li><strong>Stale documents:</strong> documents where <code translate="no">year &lt; 2020</code> get ranked lower so newer content surfaces first.</li>
+<li><strong>المنتجات منخفضة المخزون:</strong> إذا كان <code translate="no">stock &lt; 10</code> ، خفض وزنها قليلاً. لا يزال من الممكن العثور عليها، ولكن لن تهيمن على المراكز العليا.</li>
+<li><strong>المحتوى الحساس:</strong> خفض وزن المحتوى الذي تم الإبلاغ عنه بدلاً من إزالته بالكامل. يحد من التعرض دون رقابة صارمة.</li>
+<li><strong>المستندات القديمة:</strong> يتم تصنيف المستندات التي تم الإبلاغ عنها <code translate="no">year &lt; 2020</code> في مرتبة أقل بحيث يظهر المحتوى الأحدث أولاً.</li>
 </ul>
-<p>Users can still find demoted results by scrolling or searching more precisely, but they won’t crowd out more relevant content.</p>
-<h3 id="Adding-Diversity-with-Controlled-Randomness" class="common-anchor-header">Adding Diversity with Controlled Randomness</h3><p>When many results have similar scores, the Top-K can look identical across queries. Boost Ranker’s <code translate="no">random_score</code> parameter introduces slight variation:</p>
+<p>لا يزال بإمكان المستخدمين العثور على النتائج التي تم تخفيض رتبتها عن طريق التمرير أو البحث بشكل أكثر دقة، ولكن لن يزاحموا المحتوى الأكثر صلة.</p>
+<h3 id="Adding-Diversity-with-Controlled-Randomness" class="common-anchor-header">إضافة التنوع مع العشوائية المتحكم بها</h3><p>عندما يكون للعديد من النتائج نتائج متشابهة، يمكن أن تبدو أعلى K متطابقة عبر الاستعلامات. تُدخل معلمة <code translate="no">random_score</code> الخاصة بـ Boost Ranker تباينًا طفيفًا:</p>
 <pre><code translate="no" class="language-json"><span class="hljs-string">&quot;random_score&quot;</span>: {
   <span class="hljs-string">&quot;seed&quot;</span>: <span class="hljs-number">126</span>,
   <span class="hljs-string">&quot;field&quot;</span>: <span class="hljs-string">&quot;id&quot;</span>
 }
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">seed</code>: controls overall randomness for reproducibility</li>
-<li><code translate="no">field</code>: usually the primary key <code translate="no">id</code>, ensures the same record gets the same random value each time</li>
+<li><code translate="no">seed</code>: يتحكم في العشوائية الشاملة من أجل التكرار</li>
+<li><code translate="no">field</code>: عادة ما يكون المفتاح الأساسي <code translate="no">id</code> ، يضمن حصول نفس السجل على نفس القيمة العشوائية في كل مرة</li>
 </ul>
-<p>This is useful for <strong>diversifying recommendations</strong> (preventing the same items from always appearing first) and <strong>exploration</strong> (combining fixed business weights with small random perturbations).</p>
-<h3 id="Combining-Boost-Ranker-with-Other-Rankers" class="common-anchor-header">Combining Boost Ranker with Other Rankers</h3><p>Boost Ranker is set via the Function API with <code translate="no">params.reranker = &quot;boost&quot;</code>. Two things to know about combining it:</p>
+<p>هذا مفيد <strong>لتنويع التوصيات</strong> (منع نفس العناصر من الظهور أولًا دائمًا) <strong>والاستكشاف</strong> (الجمع بين أوزان الأعمال الثابتة مع الاضطرابات العشوائية الصغيرة).</p>
+<h3 id="Combining-Boost-Ranker-with-Other-Rankers" class="common-anchor-header">الجمع بين مصنف التعزيز مع مصنفات أخرى</h3><p>يتم تعيين Boost Ranker عبر واجهة برمجة التطبيقات الوظيفية مع <code translate="no">params.reranker = &quot;boost&quot;</code>. هناك أمران يجب معرفتهما بشأن الجمع بينه</p>
 <ul>
-<li><strong>Limitation:</strong> in hybrid (multi-vector) search, Boost Ranker cannot be the top-level ranker. But it can be used inside each individual <code translate="no">AnnSearchRequest</code> to adjust results before they’re merged.</li>
-<li><strong>Common combinations:</strong>
-<ul>
-<li><strong>RRF + Boost:</strong> use RRF to merge multi-modal results, then apply Boost for metadata-based fine-tuning.</li>
-<li><strong>Model ranker + Boost:</strong> use a model-based ranker for semantic quality, then Boost for business rules.</li>
+<li><strong>التقييد:</strong> في البحث الهجين (متعدد النواقل)، لا يمكن أن يكون Boost Ranker هو المصنف الأعلى مستوى. ولكن يمكن استخدامه داخل كل <code translate="no">AnnSearchRequest</code> فردي لضبط النتائج قبل دمجها.</li>
+<li><strong>التوليفات الشائعة:</strong><ul>
+<li><strong>RRRF + Boo</strong> st<strong>:</strong> استخدام RRF لدمج النتائج متعددة النماذج، ثم تطبيق Boost للضبط الدقيق القائم على البيانات الوصفية.</li>
+<li>مصنف<strong>النموذج + Boost:</strong> استخدم مصنف قائم على النموذج للجودة الدلالية، ثم استخدم Boost لقواعد العمل.</li>
 </ul></li>
 </ul>
-<h2 id="How-to-Configure-Boost-Ranker" class="common-anchor-header">How to Configure Boost Ranker<button data-href="#How-to-Configure-Boost-Ranker" class="anchor-icon" translate="no">
+<h2 id="How-to-Configure-Boost-Ranker" class="common-anchor-header">كيفية تكوين مصنف Boost Ranker<button data-href="#How-to-Configure-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,42 +113,42 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Boost Ranker is configured through the Function API. For more complex logic, combine it with <code translate="no">FunctionScore</code> to apply multiple rules together.</p>
-<h3 id="Required-Fields" class="common-anchor-header">Required Fields</h3><p>When creating a <code translate="no">Function</code> object:</p>
+    </button></h2><p>يتم تكوين مصنف Boost Ranker من خلال واجهة برمجة التطبيقات الوظيفية. للحصول على منطق أكثر تعقيدًا، ادمجه مع <code translate="no">FunctionScore</code> لتطبيق قواعد متعددة معًا.</p>
+<h3 id="Required-Fields" class="common-anchor-header">الحقول المطلوبة</h3><p>عند إنشاء كائن <code translate="no">Function</code> </p>
 <ul>
-<li><code translate="no">name</code>: any custom name</li>
-<li><code translate="no">input_field_names</code>: must be an empty list <code translate="no">[]</code></li>
-<li><code translate="no">function_type</code>: set to <code translate="no">FunctionType.RERANK</code></li>
-<li><code translate="no">params.reranker</code>: must be <code translate="no">&quot;boost&quot;</code></li>
+<li><code translate="no">name</code>: أي اسم مخصص</li>
+<li><code translate="no">input_field_names</code>: يجب أن يكون قائمة فارغة <code translate="no">[]</code></li>
+<li><code translate="no">function_type</code>: يجب أن يكون <code translate="no">FunctionType.RERANK</code></li>
+<li><code translate="no">params.reranker</code>: يجب أن يكون <code translate="no">&quot;boost&quot;</code></li>
 </ul>
-<h3 id="Key-Parameters" class="common-anchor-header">Key Parameters</h3><p><strong><code translate="no">params.weight</code> (required)</strong></p>
-<p>The multiplier applied to matching records’ scores. How you set it depends on the metric:</p>
+<h3 id="Key-Parameters" class="common-anchor-header">معلمات المفتاح</h3><p><strong><code translate="no">params.weight</code> (مطلوب)</strong></p>
+<p>المضاعف المطبق على درجات السجلات المطابقة. تعتمد كيفية تعيينه على المقياس:</p>
 <table>
 <thead>
-<tr><th>Metric Type</th><th>To Boost Results</th><th>To Demote Results</th></tr>
+<tr><th>نوع المقياس</th><th>لتعزيز النتائج</th><th>لتخفيض النتائج</th></tr>
 </thead>
 <tbody>
-<tr><td>Higher-is-better (COSINE, IP)</td><td><code translate="no">weight &gt; 1</code></td><td><code translate="no">weight &lt; 1</code></td></tr>
-<tr><td>Lower-is-better (L2/Euclidean)</td><td><code translate="no">weight &lt; 1</code></td><td><code translate="no">weight &gt; 1</code></td></tr>
+<tr><td>الأعلى هو الأفضل (COSINE، IP)</td><td><code translate="no">weight &gt; 1</code></td><td><code translate="no">weight &lt; 1</code></td></tr>
+<tr><td>الأدنى هو الأفضل (L2/إقليديوس)</td><td><code translate="no">weight &lt; 1</code></td><td><code translate="no">weight &gt; 1</code></td></tr>
 </tbody>
 </table>
-<p><strong><code translate="no">params.filter</code> (optional)</strong></p>
-<p>A condition that selects which records get their scores adjusted:</p>
+<p><strong><code translate="no">params.filter</code> (اختياري)</strong></p>
+<p>شرط يحدد السجلات التي يتم تعديل درجاتها:</p>
 <ul>
 <li><code translate="no">&quot;doctype == 'abstract'&quot;</code></li>
 <li><code translate="no">&quot;is_premium == true&quot;</code></li>
 <li><code translate="no">&quot;views &gt; 1000 and category == 'tech'&quot;</code></li>
 </ul>
-<p>Only matching records are affected. Everything else keeps its original score.</p>
-<p><strong><code translate="no">params.random_score</code> (optional)</strong></p>
-<p>Adds a random value between 0 and 1 for diversity. See the randomness section above for details.</p>
-<h3 id="Single-vs-Multiple-Rules" class="common-anchor-header">Single vs. Multiple Rules</h3><p><strong>Single rule</strong> — when you have one business constraint (e.g., boost official docs), pass the ranker directly to <code translate="no">search(..., ranker=ranker)</code>.</p>
-<p><strong>Multiple rules</strong> — when you need several constraints (prioritize in-stock items + demote low-rated products + add randomness), create multiple <code translate="no">Function</code> objects and combine them with <code translate="no">FunctionScore</code>. You configure:</p>
+<p>تتأثر السجلات المطابقة فقط. كل شيء آخر يحتفظ بدرجاته الأصلية.</p>
+<p><strong><code translate="no">params.random_score</code> (اختياري)</strong></p>
+<p>يضيف قيمة عشوائية بين 0 و1 للتنوع. راجع قسم العشوائية أعلاه للحصول على التفاصيل.</p>
+<h3 id="Single-vs-Multiple-Rules" class="common-anchor-header">قاعدة واحدة مقابل قواعد متعددة</h3><p><strong>قاعدة واحدة</strong> - عندما يكون لديك قيد عمل واحد (على سبيل المثال، تعزيز المستندات الرسمية)، قم بتمرير المصنف مباشرةً إلى <code translate="no">search(..., ranker=ranker)</code>.</p>
+<p><strong>قواعد متعددة</strong> - عندما تحتاج إلى عدة قيود (إعطاء الأولوية للعناصر الموجودة في المخزون + تخفيض رتبة المنتجات ذات التصنيف المنخفض + إضافة العشوائية)، قم بإنشاء عدة <code translate="no">Function</code> كائنات ودمجها مع <code translate="no">FunctionScore</code>. يمكنك تكوين:</p>
 <ul>
-<li><code translate="no">boost_mode</code>: how each rule combines with the original score (<code translate="no">multiply</code> or <code translate="no">add</code>)</li>
-<li><code translate="no">function_mode</code>: how multiple rules combine with each other (<code translate="no">multiply</code> or <code translate="no">add</code>)</li>
+<li><code translate="no">boost_mode</code>: كيف تتحد كل قاعدة مع النتيجة الأصلية (<code translate="no">multiply</code> أو <code translate="no">add</code>)</li>
+<li><code translate="no">function_mode</code>: كيفية دمج قواعد متعددة مع بعضها البعض (<code translate="no">multiply</code> أو <code translate="no">add</code>)</li>
 </ul>
-<h2 id="Hands-On-Prioritizing-Official-Documents" class="common-anchor-header">Hands-On: Prioritizing Official Documents<button data-href="#Hands-On-Prioritizing-Official-Documents" class="anchor-icon" translate="no">
+<h2 id="Hands-On-Prioritizing-Official-Documents" class="common-anchor-header">التدريب العملي: تحديد أولويات الوثائق الرسمية<button data-href="#Hands-On-Prioritizing-Official-Documents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,22 +163,22 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Let’s walk through a concrete example: making official documents rank higher in a document search system.</p>
-<h3 id="Schema" class="common-anchor-header">Schema</h3><p>A collection called <code translate="no">milvus_collection</code> with these fields:</p>
+    </button></h2><p>دعنا نتناول مثالاً ملموسًا: جعل المستندات الرسمية تحتل مرتبة أعلى في نظام البحث عن المستندات.</p>
+<h3 id="Schema" class="common-anchor-header">المخطط</h3><p>مجموعة تسمى <code translate="no">milvus_collection</code> مع هذه الحقول:</p>
 <table>
 <thead>
-<tr><th>Field</th><th>Type</th><th>Purpose</th></tr>
+<tr><th>الحقل</th><th>النوع</th><th>الغرض</th></tr>
 </thead>
 <tbody>
-<tr><td><code translate="no">id</code></td><td>INT64</td><td>Primary key</td></tr>
-<tr><td><code translate="no">content</code></td><td>VARCHAR</td><td>Document text</td></tr>
-<tr><td><code translate="no">embedding</code></td><td>FLOAT_VECTOR (3072)</td><td>Semantic vector</td></tr>
-<tr><td><code translate="no">source</code></td><td>VARCHAR</td><td>Origin: &quot;official&quot;, &quot;community&quot;, or “ticket”</td></tr>
-<tr><td><code translate="no">is_official</code></td><td>BOOL</td><td><code translate="no">True</code> if <code translate="no">source == &quot;official&quot;</code></td></tr>
+<tr><td><code translate="no">id</code></td><td>INT64</td><td>المفتاح الأساسي</td></tr>
+<tr><td><code translate="no">content</code></td><td>VARCHAR</td><td>نص المستند</td></tr>
+<tr><td><code translate="no">embedding</code></td><td>متجه_عائم (3072)</td><td>متجه دلالي</td></tr>
+<tr><td><code translate="no">source</code></td><td>VARCHAR</td><td>الأصل: &quot;رسمي&quot; أو &quot;مجتمع&quot; أو &quot;تذكرة&quot;</td></tr>
+<tr><td><code translate="no">is_official</code></td><td>بوول</td><td><code translate="no">True</code> إذا <code translate="no">source == &quot;official&quot;</code></td></tr>
 </tbody>
 </table>
-<p>The <code translate="no">source</code> and <code translate="no">is_official</code> fields are the metadata Boost Ranker will use to adjust rankings.</p>
-<h3 id="Setup-Code" class="common-anchor-header">Setup Code</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> (
+<p>الحقلان <code translate="no">source</code> و <code translate="no">is_official</code> هما حقلا البيانات الوصفية التي سيستخدمها Boost Ranker لضبط التصنيفات.</p>
+<h3 id="Setup-Code" class="common-anchor-header">رمز الإعداد</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> (
     MilvusClient,
     DataType,
     Function,
@@ -294,7 +293,7 @@ client.insert(
     data=docs,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Comparing-Results-With-and-Without-Boost-Ranker" class="common-anchor-header">Comparing Results: With and Without Boost Ranker</h3><p>First, run a baseline search without Boost Ranker. Then add Boost Ranker with <code translate="no">filter: is_official == true</code> and <code translate="no">weight: 1.2</code>, and compare.</p>
+<h3 id="Comparing-Results-With-and-Without-Boost-Ranker" class="common-anchor-header">مقارنة النتائج: مع وبدون تعزيز التصنيف</h3><p>أولاً، قم بإجراء بحث أساسي بدون Boost Ranker. ثم قم بإضافة Boost Ranker مع <code translate="no">filter: is_official == true</code> و <code translate="no">weight: 1.2</code> ، وقارن.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># 6. Baseline search (without Boost Ranker)</span>
 query_vector = <span class="hljs-string">&quot;how to deploy milvus&quot;</span>
 
@@ -355,7 +354,7 @@ boosted_results = client.search(
         <span class="hljs-string">f&quot;is_official=<span class="hljs-subst">{entity[<span class="hljs-string">&#x27;is_official&#x27;</span>]}</span>&quot;</span>
     )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Results" class="common-anchor-header">Results</h3><pre><code translate="no">=== Baseline search (no Boost Ranker) ===
+<h3 id="Results" class="common-anchor-header">النتائج</h3><pre><code translate="no">=== Baseline search (no Boost Ranker) ===
 <span class="hljs-built_in">id</span>=<span class="hljs-number">1</span>, score=<span class="hljs-number">0.7351</span>, source=official, is_official=<span class="hljs-literal">True</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">4</span>, score=<span class="hljs-number">0.7017</span>, source=ticket, is_official=<span class="hljs-literal">False</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">3</span>, score=<span class="hljs-number">0.6706</span>, source=community, is_official=<span class="hljs-literal">False</span>
@@ -367,8 +366,8 @@ boosted_results = client.search(
 <span class="hljs-built_in">id</span>=<span class="hljs-number">4</span>, score=<span class="hljs-number">0.7017</span>, source=ticket, is_official=<span class="hljs-literal">False</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">3</span>, score=<span class="hljs-number">0.6706</span>, source=community, is_official=<span class="hljs-literal">False</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>The key change: document <code translate="no">id=2</code> (official) jumped from 4th to 2nd place because its score was multiplied by 1.2. Community posts and ticket records aren’t removed — they just rank lower. That’s the point of Boost Ranker: keep semantic search as the foundation, then layer business rules on top.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>التغيير الرئيسي: قفز المستند <code translate="no">id=2</code> (الرسمي) من المركز الرابع إلى المركز الثاني لأنه تم ضرب نتيجته في 1.2. لم تتم إزالة منشورات المجتمع وسجلات التذاكر - بل تم حذفها فقط في مرتبة أقل. هذا هو الهدف من Boost Ranker: الحفاظ على البحث الدلالي كأساس، ثم وضع قواعد العمل في الأعلى.</p>
+<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -383,21 +382,17 @@ boosted_results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/reranking.md">Boost Ranker</a> gives you a way to inject business logic into vector search results without touching your embeddings or rebuilding indexes. Boost official content, demote stale results, add controlled diversity — all through simple filter + weight configuration in the <a href="https://milvus.io/docs/manage-functions.md">Milvus Function API</a>.</p>
-<p>Whether you’re building RAG pipelines, recommendation systems, or enterprise search, Boost Ranker helps bridge the gap between what’s semantically similar and what’s actually useful to your users.</p>
-<p>If you’re working on search ranking and want to discuss your use case:</p>
+    </button></h2><p>يمنحك<a href="https://milvus.io/docs/reranking.md">Boost Ranker</a> طريقة لإدخال منطق العمل في نتائج البحث المتجه دون المساس بالتضمينات أو إعادة بناء الفهارس. قم بتعزيز المحتوى الرسمي، وخفض رتبة النتائج التي لا معنى لها، وإضافة تنوع محكوم - كل ذلك من خلال تكوين بسيط للمرشح + الوزن في <a href="https://milvus.io/docs/manage-functions.md">واجهة برمجة تطبيقات Milvus Function</a>.</p>
+<p>سواء كنت تنشئ خطوط أنابيب RAG أو أنظمة توصية أو بحث مؤسسي، يساعدك Boost Ranker في سد الفجوة بين ما هو متشابه دلاليًا وما هو مفيد بالفعل لمستخدميك.</p>
+<p>إذا كنت تعمل على تصنيف البحث وتريد مناقشة حالة الاستخدام الخاصة بك:</p>
 <ul>
-<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to connect with other developers building search and retrieval systems.</li>
-<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your ranking logic with the team.</li>
-<li>If you’d rather skip infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) has a free tier to get started.</li>
+<li>انضم إلى <a href="https://slack.milvus.io/">مجتمع Milvus Slack</a> للتواصل مع مطورين آخرين يعملون على بناء أنظمة البحث والاسترجاع.</li>
+<li><a href="https://milvus.io/office-hours">احجز جلسة مجانية مدتها 20 دقيقة في ساعات عمل Milvus المكتبية</a> للتعرف على منطق الترتيب الخاص بك مع الفريق.</li>
+<li>إذا كنت تفضل تخطي إعداد البنية التحتية، فإن <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (Milvus المدارة من Milvus) لديها مستوى مجاني للبدء.</li>
 </ul>
 <hr>
-<p>A few questions that come up when teams start using Boost Ranker:</p>
-<p><strong>Can Boost Ranker replace a model-based reranker like Cohere or BGE?</strong>
-They solve different problems. Model-based rerankers re-score results by semantic quality — they’re good at deciding “which document actually answers the question.” Boost Ranker adjusts scores by business rules — it decides “which relevant document should appear first.” In practice, you often want both: a model ranker for semantic relevance, then Boost Ranker for business logic on top.</p>
-<p><strong>Does Boost Ranker add significant latency?</strong>
-No. It operates on the already-retrieved candidate set (typically the Top-K from vector search), not the full dataset. The operations are simple filter-and-multiply, so the overhead is negligible compared to the vector search itself.</p>
-<p><strong>How do I set the weight value?</strong>
-Start with small adjustments. For COSINE similarity (higher is better), a weight of 1.1–1.3 is usually enough to noticeably shift rankings without overriding semantic relevance entirely. Test with your actual data — if boosted results with low similarity start dominating, lower the weight.</p>
-<p><strong>Can I combine multiple Boost Ranker rules?</strong>
-Yes. Create multiple <code translate="no">Function</code> objects and combine them using <code translate="no">FunctionScore</code>. You control how rules interact through <code translate="no">boost_mode</code> (how each rule combines with the original score) and <code translate="no">function_mode</code> (how rules combine with each other) — both support <code translate="no">multiply</code> and <code translate="no">add</code>.</p>
+<p>بعض الأسئلة التي تظهر عندما تبدأ الفرق في استخدام Boost Ranker:</p>
+<p><strong>هل يمكن لـ Boost Ranker أن يحل محل أداة إعادة التصنيف القائمة على النموذج مثل Cohere أو BGE؟</strong>تقوم أدوات إعادة التصنيف القائمة على النموذج بإعادة تصنيف النتائج حسب الجودة الدلالية - فهي جيدة في تحديد "أي مستند يجيب بالفعل على السؤال". بينما يقوم بووست رانكر Boost Ranker بضبط الدرجات حسب قواعد العمل - فهو يقرر "أي مستند ذي صلة يجب أن يظهر أولاً." من الناحية العملية، غالبًا ما تحتاج إلى كليهما معًا: مصنف نموذجي للأهمية الدلالية، ثم مصنف معزز لمنطق الأعمال في الأعلى.</p>
+<p><strong>هل يضيف برنامج Boost Ranker وقت استجابة كبير؟</strong>لا، فهو يعمل على مجموعة المرشحين التي تم استرجاعها بالفعل (عادةً ما تكون أعلى K من البحث المتجه)، وليس مجموعة البيانات الكاملة. العمليات عبارة عن عمليات تصفية ومضاعفة بسيطة، لذا فإن النفقات العامة لا تُذكر مقارنةً بالبحث المتجه نفسه.</p>
+<p><strong>كيف أضبط قيمة الوزن؟</strong>ابدأ بتعديلات صغيرة. بالنسبة لتشابه COSINE (الأعلى هو الأفضل)، عادةً ما يكون الوزن من 1.1 إلى 1.3 كافيًا لتحويل التصنيفات بشكل ملحوظ دون تجاوز الصلة الدلالية تمامًا. اختبر ذلك باستخدام بياناتك الفعلية - إذا بدأت النتائج المعززة ذات التشابه المنخفض في الهيمنة، فاخفض الوزن.</p>
+<p><strong>هل يمكنني الجمع بين عدة قواعد لتعزيز التصنيف؟</strong>نعم. قم بإنشاء عدة كائنات <code translate="no">Function</code> ودمجها باستخدام <code translate="no">FunctionScore</code>. يمكنك التحكم في كيفية تفاعل القواعد من خلال <code translate="no">boost_mode</code> (كيف تتحد كل قاعدة مع النتيجة الأصلية) و <code translate="no">function_mode</code> (كيف تتحد القواعد مع بعضها البعض) - كلاهما يدعم <code translate="no">multiply</code> و <code translate="no">add</code>.</p>

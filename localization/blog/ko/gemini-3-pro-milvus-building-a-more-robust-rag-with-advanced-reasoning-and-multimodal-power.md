@@ -33,7 +33,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>심층적인 추론, 강력한 도구 사용, 멀티모달 유창함의 조합으로 Gemini 3 Pro는 검색 증강 세대(RAG)에 매우 적합합니다. 수십억 개의 의미론적 검색을 위해 구축된 고성능 오픈 소스 벡터 데이터베이스인 <a href="https://milvus.io/"><strong>Milvus와</strong></a> 함께 사용하면 응답을 기반으로 하고, 깔끔하게 확장되며, 워크로드가 많은 상황에서도 안정적으로 운영되는 검색 레이어를 확보할 수 있습니다.</p>
+<p>심층적인 추론, 강력한 도구 사용, 멀티모달의 유창함이 결합된 Gemini 3 Pro는 검색 증강 세대(RAG)에 매우 적합합니다. 수십억 개의 의미론적 검색을 위해 구축된 고성능 오픈 소스 벡터 데이터베이스인 <a href="https://milvus.io/"><strong>Milvus와</strong></a> 함께 사용하면 응답을 기반으로 하고, 깔끔하게 확장되며, 워크로드가 많은 상황에서도 안정적으로 운영되는 검색 레이어를 확보할 수 있습니다.</p>
 <p>이 포스팅에서는 Gemini 3 Pro의 새로운 기능, RAG 워크플로우를 향상시키는 이유, Milvus를 검색 백본으로 사용해 깔끔하고 효율적인 RAG 파이프라인을 구축하는 방법에 대해 자세히 설명합니다.</p>
 <h2 id="Major-Upgrades-in-Gemini-3-Pro" class="common-anchor-header">Gemini 3 Pro의 주요 업그레이드<button data-href="#Major-Upgrades-in-Gemini-3-Pro" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -84,7 +84,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Google의 내부 평가에서도 비슷한 결과가 나타났습니다: Gemini 3 Pro는 여러 언어로 작성된 수기 레시피를 처리하고, 각 레시피를 전사 및 번역하여 공유 가능한 가족 레시피 북으로 편집했습니다.</p>
+<p>Google의 내부 평가에서도 비슷한 결과가 나타났습니다: Gemini 3 Pro는 여러 언어로 된 필기 레시피를 처리하고, 각 레시피를 전사 및 번역한 후 공유 가능한 가족 레시피 북으로 편집했습니다.</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">제로 샷 작업</h3><p>Gemini 3 Pro는 사전 예제나 스캐폴딩 없이도 완전한 인터랙티브 웹 UI를 생성할 수 있습니다. 세련되고 복고풍의 미래형 <strong>3D 우주선 웹 게임을</strong> 만들라는 메시지가 표시되자 이 모델은 네온 보라색 그리드, 사이버펑크 스타일의 우주선, 빛나는 파티클 효과, 부드러운 카메라 컨트롤 등 완벽한 인터랙티브 장면을 단 한 번의 제로 샷으로 만들어냈습니다.</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
@@ -330,8 +330,8 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gemini 3 Pro와 함께 Google은 편집기, 단말기 및 브라우저와 자율적으로 상호 작용하는 동영상 코딩 플랫폼인 <a href="https://antigravity.google/"><strong>Google 안티그래비티를</strong></a> 도입했습니다. 일회성 지침을 처리하던 이전의 AI 지원 도구와 달리, Antigravity는 작업 지향적 수준에서 작동하므로 개발자는 <em>무엇을</em> 만들지 지정하면 시스템이 <em>방법을</em> 관리하여 전체 워크플로를 엔드투엔드로 조율할 수 있습니다.</p>
-<p>기존의 AI 코딩 워크플로에서는 일반적으로 개발자가 수동으로 검토, 통합, 디버그 및 실행해야 하는 고립된 스니펫을 생성했습니다. 반중력은 이러한 방식을 바꿉니다. 예를 들어 <em>"간단한 애완동물 상호작용 게임 만들기</em> "와 같은 간단한 작업만 설명하면 시스템이 요청을 분해하고 코드를 생성하며 터미널 명령을 실행하고 브라우저를 열어 결과를 테스트한 후 작동할 때까지 반복합니다. 이는 AI를 수동적인 자동 완성 엔진에서 사용자의 선호도를 학습하고 시간이 지남에 따라 개인 개발 스타일에 적응하는 능동적인 엔지니어링 파트너로 격상시킵니다.</p>
+    </button></h2><p>Gemini 3 Pro와 함께 Google은 편집기, 단말기 및 브라우저와 자율적으로 상호 작용하는 동영상 코딩 플랫폼인 <a href="https://antigravity.google/"><strong>Google 안티그래비티를</strong></a> 도입했습니다. 일회성 지침을 처리하던 이전의 AI 지원 도구와 달리, Antigravity는 작업 지향적 수준에서 작동하므로 개발자는 <em>무엇을</em> 만들지 지정하면 시스템이 <em>방법을</em> 관리하여 전체 워크플로를 엔드투엔드로 조율합니다.</p>
+<p>기존의 AI 코딩 워크플로에서는 일반적으로 개발자가 수동으로 검토, 통합, 디버그 및 실행해야 하는 고립된 스니펫을 생성했습니다. 반중력은 이러한 방식을 바꿉니다. 예를 들어 <em>"간단한 애완동물 상호작용 게임 만들기</em> "와 같은 간단한 작업만 설명하면 시스템이 요청을 분해하고 코드를 생성하며 터미널 명령을 실행하고 브라우저를 열어 결과를 테스트한 후 작동할 때까지 반복합니다. 이는 AI를 수동적인 자동 완성 엔진에서 사용자의 선호도를 학습하고 시간이 지남에 따라 개인 개발 스타일에 적응하는 능동적인 엔지니어링 파트너로 끌어올립니다.</p>
 <p>앞으로 에이전트가 데이터베이스와 직접 협력하는 것은 그리 어려운 일이 아닙니다. MCP를 통한 도구 호출을 통해 AI는 결국 Milvus 데이터베이스를 읽고, 지식 기반을 구성하고, 자체 검색 파이프라인을 자율적으로 유지 관리할 수 있게 될 것입니다. 여러 면에서 이러한 변화는 모델 업그레이드 자체보다 훨씬 더 중요한데, AI가 제품 수준의 설명을 받아 일련의 실행 가능한 작업으로 변환할 수 있게 되면 인간의 노력은 자연스럽게 목표, 제약 조건, '정확성'의 정의, 즉 진정한 제품 개발을 주도하는 고차원적인 사고로 옮겨갈 수 있기 때문입니다.</p>
 <h2 id="Ready-to-Build" class="common-anchor-header">빌드할 준비가 되셨나요?<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">
       <svg translate="no"

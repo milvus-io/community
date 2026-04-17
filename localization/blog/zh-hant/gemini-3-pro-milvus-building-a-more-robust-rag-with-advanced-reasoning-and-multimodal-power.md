@@ -12,11 +12,11 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Gemini 3 Pro, vibe coding, Milvus, RAG'
 meta_title: |
   Gemini 3 Pro + Milvus: Robust RAG With Advanced Reasoning and Multimodal Power
-desc: 了解 Gemini 3 Pro 中的核心更新，查看其在主要基準上的表現，並按照指南使用 Milvus 建立高效能 RAG 流水線。
+desc: 了解 Gemini 3 Pro 中的核心更新，查看其在關鍵基準上的表現，並按照指南使用 Milvus 建立高效能 RAG 流水線。
 origin: >-
   https://milvus.io/blog/gemini-3-pro-milvus-building-a-more-robust-rag-with-advanced-reasoning-and-multimodal-power.md
 ---
-<p>Google 的 Gemini 3 Pro 發表了罕見的版本，真正改變了開發人員的期望 - 不只是炒作，而是實質擴展了自然語言介面的功能。它將「描述您想要的應用程式」轉化為可執行的工作流程：動態工具路由、多步驟規劃、API 協調，以及互動式 UX 產生，全都無縫地拼接在一起。這是最接近讓 vibe coding 感覺生產可行的模式。</p>
+<p>Google 的 Gemini 3 Pro 發表了罕見的版本，真正改變了開發人員的期望 - 不只是炒作，而是實質擴展自然語言介面的功能。它將「描述您想要的應用程式」轉化為可執行的工作流程：動態工具路由、多步驟規劃、API 協調，以及互動式 UX 產生，全都無縫地拼接在一起。這是最接近讓 vibe coding 感覺生產可行的模式。</p>
 <p>而數字也證明了這一說法。Gemini 3 Pro 在幾乎所有主要基準上都有傑出的表現：</p>
 <ul>
 <li><p><strong>人類最後一次考試：</strong>37.5% 不使用工具，45.8% 使用工具 - 最接近的競爭對手為 26.5%。</p></li>
@@ -48,7 +48,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Gemini 3 Pro 引入了一系列重大升級，重塑了模型推理、創建、執行任務以及與用戶互動的方式。這些改進分為四大能力領域：</p>
+    </button></h2><p>Gemini 3 Pro 引入了一系列重大升級，重塑了模型推理、創建、執行任務以及與用戶互動的方式。這些改進可歸納為四個主要功能領域：</p>
 <h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">多模式理解與推理</h3><p>Gemini 3 Pro 在重要的多模態基準上創下新記錄，包括視覺推理的 ARC-AGI-2、跨模態理解的 MMMU-Pro，以及視訊理解和知識獲取的 Video-MMMU。該模型還引入了深度思考 (Deep Think)，這是一種擴展推理模式，能夠進行結構化、多步驟邏輯處理。這可大幅提高處理複雜問題的準確度，而傳統的思考鏈模型往往會在這些問題上失敗。</p>
 <h3 id="Code-Generation" class="common-anchor-header">代碼產生</h3><p>該模型將代碼生成提升到了一個新的層次。Gemini 3 Pro 可以生成互動 SVG、完整的 Web 應用程式、3D 場景，甚至是功能性遊戲 - 包括類似 Minecraft 的環境和基於瀏覽器的桌球 - 所有這些都只需要單一的自然語言提示。前端開發的優勢尤其顯著：模型可以高保真地重新建立現有的 UI 設計，或直接將螢幕截圖轉換為可供生產的程式碼，讓 UI 的迭代工作大幅提昇速度。</p>
 <h3 id="AI-Agents-and-Tool-Use" class="common-anchor-header">AI 代理與工具使用</h3><p>在使用者允許的情況下，Gemini 3 Pro 可從使用者的 Google 裝置存取資料，以執行長距離、多步驟的工作，例如規劃行程或預約租車。這種代理能力反映在其在<strong>Vending-Bench 2</strong> 上的強勁表現，<strong>Vending-Bench 2</strong> 是專為長距離工具使用壓力測試而設計的基準。此模型也支援專業級的代理工作流程，包括執行終端指令，以及透過定義良好的 API 與外部工具互動。</p>
@@ -68,7 +68,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>除了基準測試結果之外，我們還進行了一系列實作測試，以瞭解 Gemini 3 Pro 在實際工作流程中的表現。測試結果突顯了其多模式推理、產生能力和長遠規劃如何為開發人員轉化為實際價值。</p>
+    </button></h2><p>除了基準測試結果之外，我們還進行了一系列實作測試，以瞭解 Gemini 3 Pro 在實際工作流程中的表現。測試結果突顯了其多模態推理、產生能力和長遠規劃如何為開發人員轉化為實際價值。</p>
 <h3 id="Multimodal-understanding" class="common-anchor-header">多模式理解</h3><p>Gemini 3 Pro 在文字、圖像、視訊和程式碼方面的多樣性令人印象深刻。在測試中，我們直接從 YouTube 上傳了一段 Zilliz 視訊。模型處理整個片段 - 包括旁白、轉場和螢幕文字 - 大約只花了<strong>40 秒</strong>，對於長格式的多模式內容來說，這是異乎尋常的快速。</p>
 <p>
   <span class="img-wrapper">
@@ -86,7 +86,7 @@ origin: >-
 <iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">零拍攝任務</h3><p>Gemini 3 Pro 可以生成完全互動的 Web UI，而無需事先提供範例或支架。當被要求製作一個精緻、復古、前衛的<strong>3D 太空船網頁遊戲</strong>時，模型產生了一個完整的互動式場景：霓虹紫色的網格、賽博朋克風格的船艦、發光的粒子效果，以及流暢的攝影機控制 - 所有這些都在單次零拍攝的回應中完成。</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
-<h3 id="Complex-Task-Planning" class="common-anchor-header">複雜的任務規劃</h3><p>與許多同級產品相比，該模型還展現了更強大的長遠任務規劃能力。在我們的收件匣整理測試中，Gemini 3 Pro 的表現很像 AI 行政助理：將雜亂的電子郵件歸類為專案桶、草擬可執行的建議 (回覆、跟進、歸檔)，並提出乾淨、有條理的摘要。有了模型的計畫，只要按一下確認，就能清除整個收件匣。</p>
+<h3 id="Complex-Task-Planning" class="common-anchor-header">複雜的任務規劃</h3><p>與許多同級產品相比，該模型還展現了更強大的長遠任務規劃能力。在我們的收件匣整理測試中，Gemini 3 Pro 的表現很像 AI 行政助理：將雜亂的電子郵件歸類為專案桶、草擬可執行的建議 (回覆、跟進、歸檔)，並提出乾淨、有條理的摘要。有了模型的規劃，只要按一下確認，就能清除整個收件匣。</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">如何使用 Gemini 3 Pro 和 Milvus 建立 RAG 系統<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -123,7 +123,7 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;GE
 <pre><code translate="no">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>從路徑<code translate="no">milvus_docs/en/faq</code> 載入所有 Markdown 檔案。對於每個文件，我們根據<code translate="no">#</code> 標題進行簡單的分割，以粗略分隔每個 Markdown 檔案內的主要部分。</p>
+<p>從路徑<code translate="no">milvus_docs/en/faq</code> 載入所有 Markdown 檔案。對於每個文件，我們根據<code translate="no">#</code> 標題進行簡單的分割，以粗略區分每個 Markdown 檔案內的主要部分。</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 text_lines = []
 <span class="hljs-keyword">for</span> file_path <span class="hljs-keyword">in</span> glob(<span class="hljs-string">&quot;milvus_docs/en/faq/*.md&quot;</span>, recursive=<span class="hljs-literal">True</span>):
@@ -328,7 +328,7 @@ response_message = response2.choices[<span class="hljs-number">0</span>].message
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>除了 Gemini 3 Pro 之外，Google 還推出了<a href="https://antigravity.google/"><strong>Google Antigravity</strong></a>，這是一個可自主與編輯器、終端和瀏覽器互動的視頻編碼平台。與早期處理一次性指令的 AI 輔助工具不同，Antigravity 是在以任務為導向的層級上運作 - 開發人員可以指定他們想要建立<em>什麼</em>，而系統可以管理<em>如何</em>建立，並協調端對端的完整工作流程。</p>
+    </button></h2><p>除了 Gemini 3 Pro 之外，Google 還推出了<a href="https://antigravity.google/"><strong>Google Antigravity</strong></a>，這是一個可自主與編輯器、終端和瀏覽器互動的視頻編碼平台。與早期處理一次性指令的 AI 輔助工具不同，Antigravity 是在以任務為導向的層級上運作 - 開發人員可以指定他們想要建立<em>什麼</em>，而系統可以管理<em>如何</em>建立，並協調完整的端對端工作流程。</p>
 <p>傳統的 AI 編碼工作流程通常會產生孤立的片段，開發人員仍需檢閱、整合、除錯並手動執行。Antigravity 改變了這種動態。您只需描述任務，例如<em>「建立一個簡單的寵物互動遊戲</em>」，系統就會分解請求、產生程式碼、執行終端指令、開啟瀏覽器測試結果，並反覆執行，直到成功為止。它將人工智能從一個被動的自動完成引擎提升為一個主動的工程夥伴 - 它可以學習您的喜好，並隨著時間的推移適應您的個人開發風格。</p>
 <p>展望未來，代理程式直接與資料庫協調的想法並不遙遠。透過 MCP 的工具呼叫，人工智能最終可以從 Milvus 資料庫讀取資料、組合知識庫，甚至自主維護自己的檢索管道。從許多方面來看，這種轉變甚至比模型升級本身更為重要：一旦人工智慧能夠接受產品層級的描述，並將其轉換成一連串的可執行任務，人類的努力自然會轉移到定義目標、限制條件，以及「正確性」的樣子 - 真正驅動產品開發的更高層級思維。</p>
 <h2 id="Ready-to-Build" class="common-anchor-header">準備好建立了嗎？<button data-href="#Ready-to-Build" class="anchor-icon" translate="no">

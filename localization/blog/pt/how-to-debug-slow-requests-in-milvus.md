@@ -1,7 +1,6 @@
 ---
 id: how-to-debug-slow-requests-in-milvus.md
-title: |
-  How to Debug Slow Search Requests in Milvus
+title: Como depurar pedidos de pesquisa lentos no Milvus
 author: Jael Gu
 date: 2025-10-02T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_2_2025_10_52_33_AM_min_fdb227d8c6.png
@@ -13,15 +12,15 @@ meta_keywords: 'Milvus, vector database, slow requests, debug Milvus'
 meta_title: |
   How to Debug Slow Search Requests in Milvus
 desc: >-
-  In this post, we’ll share how to triage slow requests in Milvus and share
-  practical steps you can take to keep latency predictable, stable, and
-  consistently low.
+  Neste post, vamos compartilhar como fazer a triagem de solicitações lentas no
+  Milvus e compartilhar etapas práticas que você pode tomar para manter a
+  latência previsível, estável e consistentemente baixa.
 origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
 ---
-<p>Performance is at the heart of Milvus. Under normal conditions, a search request within Milvus completes in just milliseconds. But what happens when your cluster slows down—when search latency stretches into whole seconds instead?</p>
-<p>Slow searches don’t happen often, but they can surface at scale or under complex workloads. And when they do, they matter: they disrupt user experience, skew application performance, and often expose hidden inefficiencies in your setup.</p>
-<p>In this post, we’ll walk through how to triage slow requests in Milvus and share practical steps you can take to keep latency predictable, stable, and consistently low.</p>
-<h2 id="Identifying-Slow-Searches" class="common-anchor-header">Identifying Slow Searches<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
+<p>O desempenho está no centro de Milvus. Em condições normais, um pedido de pesquisa no Milvus é concluído em apenas milissegundos. Mas o que acontece quando o cluster fica mais lento - quando a latência da pesquisa chega a segundos inteiros?</p>
+<p>Pesquisas lentas não acontecem com frequência, mas podem surgir em escala ou sob cargas de trabalho complexas. E quando acontecem, são importantes: perturbam a experiência do utilizador, distorcem o desempenho da aplicação e expõem frequentemente ineficiências ocultas na sua configuração.</p>
+<p>Neste post, mostraremos como fazer a triagem de solicitações lentas no Milvus e compartilharemos etapas práticas que podem ser tomadas para manter a latência previsível, estável e consistentemente baixa.</p>
+<h2 id="Identifying-Slow-Searches" class="common-anchor-header">Identificando pesquisas lentas<button data-href="#Identifying-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,8 +35,8 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Diagnosing a slow request starts with two questions: <strong>how often does it happen, and where is the time going?</strong> Milvus gives you both answers through metrics and logs.</p>
-<h3 id="Milvus-Metrics" class="common-anchor-header">Milvus Metrics</h3><p>Milvus exports detailed metrics you can monitor in Grafana dashboards.</p>
+    </button></h2><p>O diagnóstico de uma solicitação lenta começa com duas perguntas: <strong>com que frequência isso acontece e para onde está indo o tempo?</strong> O Milvus dá-lhe ambas as respostas através de métricas e registos.</p>
+<h3 id="Milvus-Metrics" class="common-anchor-header">Métricas do Milvus</h3><p>O Milvus exporta métricas detalhadas que você pode monitorar nos painéis do Grafana.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_2_64a5881bf2.png" alt="" class="doc-image" id="" />
@@ -50,23 +49,23 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
     <span></span>
   </span>
 </p>
-<p>Key panels include:</p>
+<p>Os painéis principais incluem:</p>
 <ul>
-<li><p><strong>Service Quality → Slow Query</strong>: Flags any request exceeding proxy.slowQuerySpanInSeconds (default: 5s). These are also marked in Prometheus.</p></li>
-<li><p><strong>Service Quality → Search Latency</strong>: Shows overall latency distribution. If this looks normal, but end users still see delays, the problem is likely outside Milvus—in the network or application layer.</p></li>
-<li><p><strong>Query Node → Search Latency by Phase</strong>: Breaks latency into queue, query, and reduce stages. For deeper attribution, panels such as <em>Scalar</em> <em>Filter Latency</em>, <em>Vector Search Latency</em>, and <em>Wait tSafe Latency</em> reveal which stage dominates.</p></li>
+<li><p><strong>Qualidade do serviço → Consulta lenta</strong>: Sinaliza qualquer solicitação que exceda proxy.slowQuerySpanInSeconds (padrão: 5s). Elas também são marcadas no Prometheus.</p></li>
+<li><p><strong>Qualidade do serviço → Latência de pesquisa</strong>: Mostra a distribuição geral da latência. Se isto parece normal, mas os utilizadores finais ainda vêem atrasos, o problema é provavelmente fora do Milvus - na camada de rede ou de aplicação.</p></li>
+<li><p><strong>Query Node → Search Latency by Phase</strong>: Divide a latência em estágios de fila, consulta e redução. Para uma atribuição mais profunda, painéis como <em>Scalar</em> <em>Filter Latency</em>, <em>Vetor Search Latency</em> e <em>Wait tSafe Latency</em> revelam qual estágio domina.</p></li>
 </ul>
-<h3 id="Milvus-Logs" class="common-anchor-header">Milvus Logs</h3><p>Milvus also logs any request lasting more than one second, tagged with markers like [Search slow]. These logs show <em>which</em> queries are slow, complementing the <em>where</em> insights from metrics. As a rule of thumb:</p>
+<h3 id="Milvus-Logs" class="common-anchor-header">Registos do Milvus</h3><p>O Milvus também regista qualquer pedido que dure mais de um segundo, etiquetado com marcadores como [Search slow]. Esses logs mostram <em>quais</em> consultas são lentas, complementando os <em>insights</em> das métricas. Como regra geral:</p>
 <ul>
-<li><p><strong>&lt; 30 ms</strong> → healthy search latency in most scenarios</p></li>
-<li><p><strong>&gt; 100 ms</strong> → worth investigating</p></li>
-<li><p><strong>&gt; 1 s</strong> → definitely slow and requires attention</p></li>
+<li><p><strong>&lt; 30 ms</strong> → latência de pesquisa saudável na maioria dos cenários</p></li>
+<li><p><strong>&gt; 100 ms</strong> → vale a pena investigar</p></li>
+<li><p><strong>&gt; 1 s</strong> → definitivamente lento e requer atenção</p></li>
 </ul>
-<p>Example log:</p>
+<p>Exemplo de registo:</p>
 <pre><code translate="no">[<span class="hljs-number">2025</span>/<span class="hljs-number">08</span>/<span class="hljs-number">23</span> <span class="hljs-number">19</span>:<span class="hljs-number">22</span>:<span class="hljs-number">19.900</span> +<span class="hljs-number">00</span>:<span class="hljs-number">00</span>] [INFO] [proxy/impl.<span class="hljs-keyword">go</span>:<span class="hljs-number">3141</span>] [<span class="hljs-string">&quot;Search slow&quot;</span>] [traceID=<span class="hljs-number">9100</span>b3092108604716f1472e4c7d54e4] [role=proxy] [db=<span class="hljs-keyword">default</span>] [collection=my_repos] [partitions=<span class="hljs-string">&quot;[]&quot;</span>] [dsl=<span class="hljs-string">&quot;user == \&quot;milvus-io\&quot; &amp;&amp; repo == \&quot;proxy.slowQuerySpanInSeconds\&quot;&quot;</span>] [<span class="hljs-built_in">len</span>(PlaceholderGroup)=<span class="hljs-number">8204</span>] [OutputFields=<span class="hljs-string">&quot;[user,repo,path,descripion]&quot;</span>] [search_params=<span class="hljs-string">&quot;[{\&quot;key\&quot;:\&quot;topk\&quot;,\&quot;value\&quot;:\&quot;10\&quot;},{\&quot;key\&quot;:\&quot;metric_type\&quot;,\&quot;value\&quot;:\&quot;COSINE\&quot;},{\&quot;key\&quot;:\&quot;anns_field\&quot;,\&quot;value\&quot;:\&quot;vector\&quot;},{\&quot;key\&quot;:\&quot;params\&quot;,\&quot;value\&quot;:\&quot;{\\\&quot;nprobe\\\&quot;:256,\\\&quot;metric_type\\\&quot;:\\\&quot;COSINE\\\&quot;}\&quot;}]&quot;</span>] [ConsistencyLevel=Strong] [useDefaultConsistency=<span class="hljs-literal">true</span>] [guarantee_timestamp=<span class="hljs-number">460318735832711168</span>] [nq=<span class="hljs-number">1</span>] [duration=<span class="hljs-number">5</span>m12<span class="hljs-number">.002784545</span>s] [durationPerNq=<span class="hljs-number">5</span>m12<span class="hljs-number">.002784545</span>s]
 <button class="copy-code-btn"></button></code></pre>
-<p>In short, <strong>metrics tell you where the time is going; logs tell you which queries are hit.</strong></p>
-<h2 id="Analyzing-Root-Cause" class="common-anchor-header">Analyzing Root Cause<button data-href="#Analyzing-Root-Cause" class="anchor-icon" translate="no">
+<p>Em resumo, <strong>as métricas informam para onde o tempo está indo; os logs informam quais consultas são atingidas.</strong></p>
+<h2 id="Analyzing-Root-Cause" class="common-anchor-header">Analisando a causa raiz<button data-href="#Analyzing-Root-Cause" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,103 +80,103 @@ origin: 'https://milvus.io/blog/how-to-debug-slow-requests-in-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Heavy-Workload" class="common-anchor-header">Heavy Workload</h3><p>A common cause of slow requests is an excessive workload. When a request has a very large <strong>NQ</strong> (number of queries per request), it can run for an extended period and monopolize query node resources. Other requests stack up behind it, resulting in rising queue latency. Even if each request has a small NQ, a very high overall throughput (QPS) can still cause the same effect, as Milvus may merge concurrent search requests internally.</p>
+    </button></h2><h3 id="Heavy-Workload" class="common-anchor-header">Carga de trabalho pesada</h3><p>Uma causa comum de solicitações lentas é uma carga de trabalho excessiva. Quando uma solicitação tem um <strong>NQ</strong> (número de consultas por solicitação) muito grande, ela pode ser executada por um longo período e monopolizar os recursos do nó de consulta. Outras solicitações se acumulam atrás dela, resultando no aumento da latência da fila. Mesmo que cada solicitação tenha um NQ pequeno, uma taxa de transferência geral (QPS) muito alta ainda pode causar o mesmo efeito, pois o Milvus pode mesclar internamente as solicitações de pesquisa simultâneas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/high_workload_cf9c75e24c.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>Signals to watch for:</strong></p>
+<p><strong>Sinais a serem observados:</strong></p>
 <ul>
-<li><p>All queries show unexpectedly high latency.</p></li>
-<li><p>Query Node metrics report high <strong>in-queue latency</strong>.</p></li>
-<li><p>Logs show a request with a large NQ and a long total duration, but a relatively small durationPerNQ—indicating that one oversized request is dominating resources.</p></li>
+<li><p>Todas as consultas mostram uma latência inesperadamente alta.</p></li>
+<li><p>As métricas do nó de consulta relatam alta <strong>latência na fila</strong>.</p></li>
+<li><p>Os logs mostram uma solicitação com um NQ grande e uma duração total longa, mas uma duração relativamente pequenaPorNQ-indicando que uma solicitação superdimensionada está dominando os recursos.</p></li>
 </ul>
-<p><strong>How to fix it:</strong></p>
+<p><strong>Como corrigir isso:</strong></p>
 <ul>
-<li><p><strong>Batch queries</strong>: Keep NQ modest to avoid overloading a single request.</p></li>
-<li><p><strong>Scale out query nodes</strong>: If high concurrency is a regular part of your workload, add query nodes to spread the load and maintain low latency.</p></li>
+<li><p><strong>Consultas em lote</strong>: Mantenha o NQ modesto para evitar a sobrecarga de uma única solicitação.</p></li>
+<li><p><strong>Dimensione os nós de consulta</strong>: Se a alta simultaneidade for uma parte regular da sua carga de trabalho, adicione nós de consulta para distribuir a carga e manter a baixa latência.</p></li>
 </ul>
-<h3 id="Inefficient-Filtering" class="common-anchor-header">Inefficient Filtering</h3><p>Another common bottleneck comes from inefficient filters. If filter expressions are poorly conducted or fields lack scalar indexes, Milvus may fall back to a <strong>full scan</strong> instead of scanning a small, targeted subset. JSON filters and strict consistency settings can further increase overhead.</p>
+<h3 id="Inefficient-Filtering" class="common-anchor-header">Filtragem ineficiente</h3><p>Outro gargalo comum vem de filtros ineficientes. Se as expressões de filtro forem mal conduzidas ou os campos não tiverem índices escalares, o Milvus pode voltar a uma <strong>varredura completa</strong> em vez de varrer um subconjunto pequeno e direcionado. Filtros JSON e configurações de consistência rígidas podem aumentar ainda mais a sobrecarga.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/inefficient_filtering_e524615d63.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>Signals to watch for:</strong></p>
+<p><strong>Sinais a serem observados:</strong></p>
 <ul>
-<li><p>High <strong>Scalar Filter Latency</strong> in Query Node metrics.</p></li>
-<li><p>Noticeable latency spikes only when filters are applied.</p></li>
-<li><p>Long <strong>Wait tSafe Latency</strong> if strict consistency is enabled.</p></li>
+<li><p>Alta <strong>latência de filtro escalar</strong> nas métricas do nó de consulta.</p></li>
+<li><p>Picos de latência perceptíveis somente quando os filtros são aplicados.</p></li>
+<li><p>Long <strong>Wait tSafe Latency</strong> se a consistência estrita estiver ativada.</p></li>
 </ul>
-<p><strong>How to fix it:</strong></p>
+<p><strong>Como corrigir isso:</strong></p>
 <ul>
-<li><strong>Simplify filter expressions</strong>: Reduce query plan complexity by optimizing filters. For example, replace long OR chains with an IN expression:</li>
+<li><strong>Simplificar as expressões de filtro</strong>: Reduza a complexidade do plano de consulta otimizando os filtros. Por exemplo, substitua cadeias OR longas por uma expressão IN:</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Replace chains of OR conditions with IN</span>
 tag = {<span class="hljs-string">&quot;tag&quot;</span>: [<span class="hljs-string">&quot;A&quot;</span>, <span class="hljs-string">&quot;B&quot;</span>, <span class="hljs-string">&quot;C&quot;</span>, <span class="hljs-string">&quot;D&quot;</span>]}
 filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><p>Milvus also introduces a filter expression templating mechanism designed to improve efficiency by reducing the time spent parsing complex expressions. See <a href="https://milvus.io/docs/filtering-templating.md">this document</a> for more details.</p></li>
-<li><p><strong>Add proper indexes</strong>: Avoid full scans by creating scalar indexes on fields used in filters.</p></li>
-<li><p><strong>Handle JSON efficiently</strong>: Milvus 2.6 introduced path and flat indexes for JSON fields, enabling efficient handling of JSON data. JSON shredding is also on <a href="https://milvus.io/docs/roadmap.md">the roadmap</a> to further improve performance. Refer to <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">the JSON field document</a> for additional information.</p></li>
-<li><p><strong>Tune consistency level</strong>: Use <em>Bounded</em> or <em>Eventually</em> consistent reads when strict guarantees are not required, reducing <em>tSafe</em> wait time.</p></li>
+<li><p>O Milvus também introduz um mecanismo de modelagem de expressão de filtro projetado para melhorar a eficiência, reduzindo o tempo gasto na análise de expressões complexas. Consulte <a href="https://milvus.io/docs/filtering-templating.md">este documento</a> para obter mais detalhes.</p></li>
+<li><p><strong>Adicione índices adequados</strong>: Evite varreduras completas criando índices escalares nos campos usados nos filtros.</p></li>
+<li><p><strong>Lidar com JSON de forma eficiente</strong>: O Milvus 2.6 introduziu índices path e flat para campos JSON, permitindo o manuseio eficiente de dados JSON. A fragmentação de JSON também está no <a href="https://milvus.io/docs/roadmap.md">roteiro</a> para melhorar ainda mais o desempenho. Consulte <a href="https://milvus.io/docs/use-json-fields.md#JSON-Field">o documento do campo JSON</a> para obter informações adicionais.</p></li>
+<li><p><strong>Ajuste o nível de consistência</strong>: Use as leituras <em>Bounded</em> ou <em>Eventually</em> consistent quando não forem necessárias garantias estritas, reduzindo o tempo de espera <em>do tSafe</em>.</p></li>
 </ul>
-<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Improper Choice of Vector Index</h3><p><a href="https://milvus.io/docs/index-explained.md">Vector indexes</a> are not one-size-fits-all. Selecting the wrong index can significantly impact latency. In-memory indexes deliver the fastest performance but consume more memory, while on-disk indexes save memory at the cost of speed. Binary vectors also require specialized indexing strategies.</p>
+<h3 id="Improper-Choice-of-Vector-Index" class="common-anchor-header">Escolha inadequada do índice de vetor</h3><p><a href="https://milvus.io/docs/index-explained.md">Os índices vetoriais</a> não são únicos. A seleção do índice errado pode afetar significativamente a latência. Os índices na memória oferecem o desempenho mais rápido, mas consomem mais memória, enquanto os índices no disco economizam memória ao custo da velocidade. Os vetores binários também exigem estratégias de indexação especializadas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/image_4_25fa1b9c13.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>Signals to watch for:</strong></p>
+<p><strong>Sinais a serem observados:</strong></p>
 <ul>
-<li><p>High Vector Search Latency in Query Node metrics.</p></li>
-<li><p>Disk I/O saturation when using DiskANN or MMAP.</p></li>
-<li><p>Slower queries immediately after restart due to cache cold start.</p></li>
+<li><p>Alta latência de pesquisa de vetores nas métricas do nó de consulta.</p></li>
+<li><p>Saturação de E/S de disco ao usar DiskANN ou MMAP.</p></li>
+<li><p>Consultas mais lentas imediatamente após a reinicialização devido à inicialização a frio do cache.</p></li>
 </ul>
-<p><strong>How to fix it:</strong></p>
+<p><strong>Como corrigir isso:</strong></p>
 <ul>
-<li><p><strong>Match index to workload (float vectors):</strong></p>
+<li><p><strong>Corresponder o índice à carga de trabalho (vectores de flutuação):</strong></p>
 <ul>
-<li><p><strong>HNSW</strong> — best for in-memory use cases with high recall and low latency.</p></li>
-<li><p><strong>IVF family</strong> — flexible trade-offs between recall and speed.</p></li>
-<li><p><strong>DiskANN</strong> — supports billion-scale datasets, but requires strong disk bandwidth.</p></li>
+<li><p><strong>HNSW</strong> - melhor para casos de uso na memória com alta recuperação e baixa latência.</p></li>
+<li><p><strong>Família IVF</strong> - compromissos flexíveis entre recuperação e velocidade.</p></li>
+<li><p><strong>DiskANN</strong> - suporta conjuntos de dados à escala de mil milhões, mas requer uma grande largura de banda de disco.</p></li>
 </ul></li>
-<li><p><strong>For binary vectors:</strong> Use the <a href="https://milvus.io/docs/minhash-lsh.md">MINHASH_LSH index</a> (introduced in Milvus 2.6) with the MHJACCARD metric to efficiently approximate Jaccard similarity.</p></li>
-<li><p><strong>Enable</strong> <a href="https://milvus.io/docs/mmap.md"><strong>MMAP</strong></a>: Map index files into memory instead of keeping them fully resident to strike a balance between latency and memory usage.</p></li>
-<li><p><strong>Tune index/search parameters</strong>: Adjust settings to balance recall and latency for your workload.</p></li>
-<li><p><strong>Mitigate cold starts</strong>: Warm up frequently accessed segments after a restart to avoid initial query slowness.</p></li>
+<li><p><strong>Para vectores binários:</strong> Use o <a href="https://milvus.io/docs/minhash-lsh.md">índice MINHASH_LSH</a> (introduzido no Milvus 2.6) com a métrica MHJACCARD para aproximar eficientemente a similaridade Jaccard.</p></li>
+<li><p><strong>Habilitar</strong> <a href="https://milvus.io/docs/mmap.md"><strong>MMAP</strong></a>: Mapear os arquivos de índice na memória em vez de mantê-los totalmente residentes para obter um equilíbrio entre a latência e o uso da memória.</p></li>
+<li><p><strong>Ajuste os parâmetros de índice/pesquisa</strong>: Ajuste as configurações para equilibrar a recuperação e a latência para sua carga de trabalho.</p></li>
+<li><p><strong>Reduza as partidas a frio</strong>: Aqueça os segmentos frequentemente acedidos após um reinício para evitar a lentidão inicial da consulta.</p></li>
 </ul>
-<h3 id="Runtime--Environment-Conditions" class="common-anchor-header">Runtime &amp; Environment Conditions</h3><p>Not all slow queries are caused by the query itself. Query nodes often share resources with background jobs, such as compaction, data migration, or index building. Frequent upserts can generate many small, unindexed segments, forcing searches to scan raw data. In some cases, version-specific inefficiencies can also introduce latency until patched.</p>
+<h3 id="Runtime--Environment-Conditions" class="common-anchor-header">Condições de tempo de execução e ambiente</h3><p>Nem todas as consultas lentas são causadas pela própria consulta. Os nós de consulta geralmente compartilham recursos com trabalhos em segundo plano, como compactação, migração de dados ou criação de índices. Os upserts frequentes podem gerar muitos segmentos pequenos e não indexados, forçando as pesquisas a examinar dados brutos. Em alguns casos, as ineficiências específicas da versão também podem introduzir latência até que sejam corrigidas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/img_v3_02q5_4dd2e545_93dc_4c58_b609_d76d50c2013g_aad0a89208.png" alt=" " class="doc-image" id="-" />
     <span> </span>
   </span>
 </p>
-<p><strong>Signals to watch for:</strong></p>
+<p><strong>Sinais a serem observados:</strong></p>
 <ul>
-<li><p>CPU usage spikes during background jobs (compaction, migration, index builds).</p></li>
-<li><p>Disk I/O saturation affecting query performance.</p></li>
-<li><p>Very slow cache warm-up after a restart.</p></li>
-<li><p>Large numbers of small, unindexed segments (from frequent upserts).</p></li>
-<li><p>Latency regressions tied to specific Milvus versions.</p></li>
+<li><p>Picos de uso da CPU durante trabalhos em segundo plano (compactação, migração, criação de índices).</p></li>
+<li><p>Saturação de E/S do disco que afecta o desempenho da consulta.</p></li>
+<li><p>Aquecimento muito lento do cache após uma reinicialização.</p></li>
+<li><p>Grande número de segmentos pequenos não indexados (devido a upserts frequentes).</p></li>
+<li><p>Regressões de latência ligadas a versões específicas do Milvus.</p></li>
 </ul>
-<p><strong>How to fix it:</strong></p>
+<p><strong>Como resolver:</strong></p>
 <ul>
-<li><p><strong>Reschedule background tasks</strong> (e.g., compaction) to off-peak hours.</p></li>
-<li><p><strong>Release unused collections</strong> to free memory.</p></li>
-<li><p><strong>Account for warm-up time</strong> after restarts; pre-warm caches if needed.</p></li>
-<li><p><strong>Batch upserts</strong> to reduce the creation of tiny segments and let compaction keep up.</p></li>
-<li><p><strong>Stay current</strong>: upgrade to newer Milvus versions for bug fixes and optimizations.</p></li>
-<li><p><strong>Provision resources</strong>: dedicate extra CPU/memory to latency-sensitive workloads.</p></li>
+<li><p><strong>Reprogramar tarefas em segundo plano</strong> (por exemplo, compactação) para horários fora de pico.</p></li>
+<li><p><strong>Libertar colecções não utilizadas</strong> para libertar memória.</p></li>
+<li><p>Ter<strong>em conta o tempo de aquecimento</strong> após o reinício; pré-aquecer as caches, se necessário.</p></li>
+<li><p><strong>Faça upserts em lote</strong> para reduzir a criação de segmentos minúsculos e permitir que a compactação acompanhe o ritmo.</p></li>
+<li><p><strong>Mantenha-se atualizado</strong>: actualize para versões mais recentes do Milvus para correção de erros e optimizações.</p></li>
+<li><p>Prover<strong>recursos</strong>: dedicar CPU/memória extra para cargas de trabalho sensíveis à latência.</p></li>
 </ul>
-<p>By matching each signal with the right action, most slow queries can be resolved quickly and predictably.</p>
-<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">Best Practices to Prevent Slow Searches<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
+<p>Ao fazer corresponder cada sinal à ação correta, a maioria das consultas lentas pode ser resolvida de forma rápida e previsível.</p>
+<h2 id="Best-Practices-to-Prevent-Slow-Searches" class="common-anchor-header">Práticas recomendadas para evitar pesquisas lentas<button data-href="#Best-Practices-to-Prevent-Slow-Searches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -192,17 +191,17 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The best debugging session is the one you never need to run. In our experience, a few simple habits go a long way toward preventing slow queries in Milvus:</p>
+    </button></h2><p>A melhor sessão de depuração é aquela que nunca precisa de ser executada. Em nossa experiência, alguns hábitos simples ajudam muito a prevenir consultas lentas no Milvus:</p>
 <ul>
-<li><p><strong>Plan resource allocation</strong> to avoid CPU and disk contention.</p></li>
-<li><p><strong>Set proactive alerts</strong> for both failures and latency spikes.</p></li>
-<li><p><strong>Keep filter expressions</strong> short, simple, and efficient.</p></li>
-<li><p><strong>Batch upserts</strong> and keep NQ/QPS at sustainable levels.</p></li>
-<li><p><strong>Index all fields</strong> that are used in filters.</p></li>
+<li><p><strong>Planejar a alocação de recursos</strong> para evitar contenção de CPU e disco.</p></li>
+<li><p><strong>Definir alertas proativos</strong> para falhas e picos de latência.</p></li>
+<li><p><strong>Manter as expressões de filtro</strong> curtas, simples e eficientes.</p></li>
+<li><p><strong>Faça upserts em lote</strong> e mantenha o NQ/QPS em níveis sustentáveis.</p></li>
+<li><p><strong>Indexar todos os campos</strong> que são usados nos filtros.</p></li>
 </ul>
-<p>Slow queries in Milvus are rare, and when they do appear, they usually have clear, diagnosable causes. With metrics, logs, and a structured approach, you can quickly identify and resolve issues. This is the same playbook our support team uses every day — and now it’s yours too.</p>
-<p>We hope this guide provides not only a troubleshooting framework but also the confidence to keep your Milvus workloads running smoothly and efficiently.</p>
-<h2 id="💡-Want-to-dive-deeper" class="common-anchor-header">💡 Want to dive deeper?<button data-href="#💡-Want-to-dive-deeper" class="anchor-icon" translate="no">
+<p>Consultas lentas no Milvus são raras, e quando elas aparecem, elas geralmente têm causas claras e diagnosticáveis. Com métricas, registos e uma abordagem estruturada, é possível identificar e resolver rapidamente os problemas. Este é o mesmo manual que a nossa equipa de apoio utiliza todos os dias - e agora também é seu.</p>
+<p>Esperamos que este guia forneça não só uma estrutura de resolução de problemas, mas também a confiança para manter as suas cargas de trabalho Milvus a funcionar sem problemas e de forma eficiente.</p>
+<h2 id="💡-Want-to-dive-deeper" class="common-anchor-header">Quer mergulhar mais fundo?<button data-href="#💡-Want-to-dive-deeper" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -218,6 +217,6 @@ filter_expr = <span class="hljs-string">&quot;tag IN {tag}&quot;</span>
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Join the <a href="https://discord.com/invite/8uyFbECzPX"><strong>Milvus Discord</strong></a> to ask questions, share experiences, and learn from the community.</p></li>
-<li><p>Sign up for our <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> to speak directly with the team and receive hands-on assistance with your workloads.</p></li>
+<li><p>Junte-se ao <a href="https://discord.com/invite/8uyFbECzPX"><strong>Milvus Discord</strong></a> para fazer perguntas, partilhar experiências e aprender com a comunidade.</p></li>
+<li><p>Inscreva-se no nosso <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"><strong>Milvus Office Hours</strong></a> para falar diretamente com a equipa e receber assistência prática com as suas cargas de trabalho.</p></li>
 </ul>

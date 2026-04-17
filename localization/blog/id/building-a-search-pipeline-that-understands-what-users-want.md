@@ -1,7 +1,8 @@
 ---
 id: building-a-search-pipeline-that-understands-what-users-want.md
-title: |
-  Building AI Search Pipelines That Understand What Users Want with Milvus 
+title: >-
+  Membangun Pipeline Pencarian AI yang Memahami Apa yang Pengguna Inginkan
+  dengan Milvus
 author: Sudhanshu Prajapati
 date: 2025-12-22T00:00:00.000Z
 cover: assets.zilliz.com/semantic_search_325a0b5597.png
@@ -13,8 +14,9 @@ meta_keywords: 'Milvus, vector database, semantic search, filtered search, hybri
 meta_title: |
   How to Build AI Search Pipelines That Understand User Intent with Milvus
 desc: >-
-  Discover how Milvus enables a single search pipeline that combines semantic
-  search with structured constraints for consistent, high-quality retrieval.
+  Temukan bagaimana Milvus memungkinkan pipeline pencarian tunggal yang
+  menggabungkan pencarian semantik dengan batasan terstruktur untuk pengambilan
+  yang konsisten dan berkualitas tinggi.
 origin: >-
   https://github.com/sudhanshu456/milvus-rag-semantic-search/blob/main/search_pipeline_demo.ipynb
 ---

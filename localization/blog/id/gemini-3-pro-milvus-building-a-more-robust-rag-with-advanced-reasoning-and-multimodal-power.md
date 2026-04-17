@@ -15,9 +15,9 @@ meta_keywords: 'Gemini 3 Pro, vibe coding, Milvus, RAG'
 meta_title: |
   Gemini 3 Pro + Milvus: Robust RAG With Advanced Reasoning and Multimodal Power
 desc: >-
-  Pelajari pembaruan inti dalam Gemini 3 Pro, lihat bagaimana kinerjanya pada
-  tolok ukur utama, dan ikuti panduan untuk membangun pipeline RAG berkinerja
-  tinggi dengan Milvus.
+  Pelajari pembaruan inti di Gemini 3 Pro, lihat bagaimana kinerjanya pada tolok
+  ukur utama, dan ikuti panduan untuk membangun pipeline RAG berkinerja tinggi
+  dengan Milvus.
 origin: >-
   https://milvus.io/blog/gemini-3-pro-milvus-building-a-more-robust-rag-with-advanced-reasoning-and-multimodal-power.md
 ---

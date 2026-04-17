@@ -31,8 +31,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>深度推理、强大的工具使用能力和多模态流畅性的完美结合，使 Gemini 3 Pro 成为检索增强型生成（RAG）的不二之选。将它与专为十亿规模语义搜索而构建的高性能开源向量数据库<a href="https://milvus.io/"><strong>Milvus</strong></a> 搭配使用，您就能获得一个即使在繁重的工作负载下也能做出可靠响应、清晰扩展并保持生产可靠性的检索层。</p>
-<p>在这篇文章中，我们将介绍 Gemini 3 Pro 的新功能、它提升 RAG 工作流程的原因，以及如何使用 Milvus 作为检索骨干构建简洁高效的 RAG 管道。</p>
+<p>深度推理、强大的工具使用能力和多模态流畅性的完美结合，让 Gemini 3 Pro 成为检索增强型生成（RAG）的不二之选。将它与专为十亿规模语义搜索而构建的高性能开源向量数据库<a href="https://milvus.io/"><strong>Milvus</strong></a> 搭配使用，您就能获得一个响应可靠、扩展简洁、即使在繁重的工作负载下也能保持生产可靠性的检索层。</p>
+<p>在这篇文章中，我们将介绍 Gemini 3 Pro 的新功能、它提升 RAG 工作流程的原因，以及如何使用 Milvus 作为检索骨干构建简洁、高效的 RAG 管道。</p>
 <h2 id="Major-Upgrades-in-Gemini-3-Pro" class="common-anchor-header">双子座 3 Pro 的主要升级<button data-href="#Major-Upgrades-in-Gemini-3-Pro" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -49,10 +49,10 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>Gemini 3 Pro 引入了一系列重大升级，重塑了模型的推理、创建、任务执行以及与用户交互的方式。这些改进分为四大能力领域：</p>
-<h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">多模式理解和推理</h3><p>Gemini 3 Pro 在重要的多模态基准方面创造了新的记录，包括视觉推理的 ARC-AGI-2、跨模态理解的 MMMU-Pro 以及视频理解和知识获取的 Video-MMMU。该模型还引入了 "深度思考"（Deep Think）这一扩展推理模式，实现了结构化、多步骤逻辑处理。这使得传统的思维链模型往往无法解决的复杂问题的准确性大大提高。</p>
-<h3 id="Code-Generation" class="common-anchor-header">代码生成</h3><p>该模型将代码生成提高到了一个新的水平。Gemini 3 Pro 可以生成交互式 SVG、完整的网络应用程序、三维场景，甚至功能性游戏（包括类似 Minecraft 的环境和基于浏览器的台球），所有这些都只需一个自然语言提示。前端开发尤其受益匪浅：该模型可以高保真地重新创建现有的用户界面设计，或将截图直接转化为生产就绪的代码，使用户界面的迭代工作大大加快。</p>
+<h3 id="Multimodal-Understanding-and-Reasoning" class="common-anchor-header">多模式理解和推理</h3><p>Gemini 3 Pro 在重要的多模态基准方面创造了新纪录，包括视觉推理的 ARC-AGI-2、跨模态理解的 MMMU-Pro 以及视频理解和知识获取的 Video-MMMU。该模型还引入了 "深度思考"（Deep Think）这一扩展推理模式，实现了结构化、多步骤逻辑处理。这使得传统的思维链模型往往无法解决的复杂问题的准确性大大提高。</p>
+<h3 id="Code-Generation" class="common-anchor-header">代码生成</h3><p>该模型将代码生成提升到了一个新的水平。Gemini 3 Pro 可以生成交互式 SVG、完整的网络应用程序、三维场景，甚至功能性游戏（包括类似 Minecraft 的环境和基于浏览器的台球），所有这些都只需一个自然语言提示。前端开发尤其受益匪浅：该模型可以高保真地重新创建现有的用户界面设计，或将截图直接转化为生产就绪的代码，使用户界面的迭代工作大大加快。</p>
 <h3 id="AI-Agents-and-Tool-Use" class="common-anchor-header">人工智能代理和工具使用</h3><p>在用户许可的情况下，Gemini 3 Pro 可以从用户的谷歌设备中获取数据，执行远景、多步骤任务，如计划行程或预订租车。<strong>Gemini</strong> 3 Pro 在<strong>Vending-Bench 2</strong> 上的出色表现就体现了这种代理能力，<strong>Vending-Bench 2</strong> 是一项专门用于对远程工具使用进行压力测试的基准测试。该模型还支持专业级 Agents 工作流程，包括执行终端命令和通过定义明确的 API 与外部工具交互。</p>
-<h3 id="Generative-UI" class="common-anchor-header">生成式用户界面</h3><p>Gemini 3 Pro摒弃了传统的一问一答模型，引入了<strong>生成式用户界面</strong>，该模型可以动态构建整个交互体验。它不再返回静态文本，而是根据用户指令直接生成完全定制的界面，例如，一个丰富的、可调整的旅行计划器。这将 LLM 从被动的响应者转变为主动的界面生成者。</p>
+<h3 id="Generative-UI" class="common-anchor-header">生成式用户界面</h3><p>Gemini 3 Pro摒弃了传统的一问一答模型，引入了<strong>生成式用户界面（Generative UI</strong>），该模型可以动态构建整个交互体验。它不再返回静态文本，而是根据用户指令直接生成完全定制的界面，例如，一个丰富的、可调整的旅行计划器。这将 LLM 从被动的响应者转变为主动的界面生成者。</p>
 <h2 id="Putting-Gemini-3-Pro-to-the-Test" class="common-anchor-header">测试双子座 3 Pro<button data-href="#Putting-Gemini-3-Pro-to-the-Test" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -86,7 +86,7 @@ origin: >-
 <iframe class="video-player" src="https://www.youtube.com/embed/nfX__7p8J8E" title="Gemini 3 Pro: recipe" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h3 id="Zero-Shot-Tasks" class="common-anchor-header">零镜头任务</h3><p>Gemini 3 Pro 可以生成完全交互式的网络用户界面，而无需事先提供示例或脚手架。当被要求创建一个精致的、复古未来主义的<strong>3D 飞船网页游戏</strong>时，该模型生成了一个完整的交互式场景：霓虹紫色网格、赛博朋克风格的飞船、发光粒子效果和流畅的相机控制--所有这一切都在一次零镜头响应中完成。</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/JxX_TAyy0Kg" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
-<h3 id="Complex-Task-Planning" class="common-anchor-header">复杂的任务规划</h3><p>与许多同类产品相比，该模型还表现出更强的远距离任务规划能力。在我们的收件箱整理测试中，Gemini 3 Pro 的表现就像一位人工智能行政助理：将杂乱无章的电子邮件归类到项目桶中，起草可行的建议（回复、跟进、存档），并提交一份简洁、有条理的摘要。有了模型的计划布局，只需点击确认，整个收件箱就能被清理干净。</p>
+<h3 id="Complex-Task-Planning" class="common-anchor-header">复杂的任务规划</h3><p>与许多同类产品相比，该模型还表现出更强的远距离任务规划能力。在我们的收件箱整理测试中，Gemini 3 Pro 的表现就像一位人工智能行政助理：将杂乱无章的电子邮件归类到项目桶中，起草可执行的建议（回复、跟进、存档），并提交一份简洁、有条理的摘要。有了模型的计划布局，只需点击确认，整个收件箱就能被清理干净。</p>
 <iframe class="video-player" src="https://www.youtube.com/embed/O5CUkblZm0Y" title="Gemini 3 Pro: inbox-organization" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen width="100%" height="400"></iframe>
 <h2 id="How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="common-anchor-header">如何使用 Gemini 3 Pro 和 Milvus 建立 RAG 系统<button data-href="#How-to-Build-a-RAG-System-with-Gemini-3-Pro-and-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"

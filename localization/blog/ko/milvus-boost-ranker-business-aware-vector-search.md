@@ -1,7 +1,6 @@
 ---
 id: milvus-boost-ranker-business-aware-vector-search.md
-title: |
-  How to Use Milvus Boost Ranker for Business-Aware Vector Search
+title: 비즈니스 인식 벡터 검색을 위한 밀버스 부스트 랭커 사용 방법
 author: Wei Zang
 date: 2026-3-24
 cover: >-
@@ -13,15 +12,15 @@ tags: 'Milvus, vector database, vector search'
 meta_keywords: 'Milvus Boost Ranker, vector search ranking, metadata reranking, Milvus 2.6'
 meta_title: |
   Milvus Boost Ranker: Add Business Rules to Vector Search
-desc: >
-  Learn how Milvus Boost Ranker lets you layer business rules on top of vector
-  similarity — boost official docs, demote stale content, add diversity.
+desc: >-
+  밀버스 부스트 랭커를 통해 벡터 유사성 위에 비즈니스 규칙을 레이어링하여 공식 문서를 강화하고, 오래된 콘텐츠를 강등하고, 다양성을 추가하는
+  방법을 알아보세요.
 origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search.md'
 ---
-<p>Vector search ranks results by embedding similarity — the closer the vectors, the higher the result. Some systems add a model-based reranker (BGE, Voyage, Cohere) to improve ordering. But neither approach handles a fundamental requirement in production: <strong>business context matters as much as semantic relevance, sometimes more.</strong></p>
-<p>An e-commerce site needs to surface in-stock products from official stores first. A content platform wants to pin recent announcements. An enterprise knowledge base needs authoritative documents at the top. When ranking relies solely on vector distance, these rules get ignored. The results may be relevant, but they’re not appropriate.</p>
-<p><strong><a href="https://milvus.io/docs/reranking.md">Boost Ranker</a></strong>, introduced in <a href="https://milvus.io/intro">Milvus</a> 2.6, solves this. It lets you adjust search result rankings using metadata rules — no index rebuild, no model change. This article covers how it works, when to use it, and how to implement it with code.</p>
-<h2 id="What-Is-Boost-Ranker" class="common-anchor-header">What Is Boost Ranker?<button data-href="#What-Is-Boost-Ranker" class="anchor-icon" translate="no">
+<p>벡터 검색은 유사성을 포함시켜 결과의 순위를 매기는 방식으로, 벡터가 가까울수록 결과가 높아집니다. 일부 시스템에서는 모델 기반 재랭커(BGE, Voyage, Cohere)를 추가하여 순서를 개선하기도 합니다. 그러나 두 가지 접근 방식 모두 <strong>비즈니스 컨텍스트가 의미적 관련성만큼, 때로는 그 이상 중요하다는</strong> 근본적인 요구 사항을 처리하지 못합니다 <strong>.</strong></p>
+<p>이커머스 사이트는 공식 매장의 재고 상품을 먼저 노출해야 합니다. 콘텐츠 플랫폼은 최근 공지 사항을 고정하고 싶어합니다. 기업 지식창고에는 권위 있는 문서가 상단에 표시되어야 합니다. 벡터 거리에만 의존하여 순위를 매기면 이러한 규칙은 무시됩니다. 결과는 관련성이 있을 수 있지만 적절하지 않습니다.</p>
+<p><a href="https://milvus.io/intro">Milvus</a> 2.6에 도입된<strong><a href="https://milvus.io/docs/reranking.md">부스트 랭커는</a></strong> 이 문제를 해결합니다. 인덱스 재구축이나 모델 변경 없이 메타데이터 규칙을 사용해 검색 결과 순위를 조정할 수 있습니다. 이 문서에서는 작동 방식, 사용 시기, 코드로 구현하는 방법에 대해 설명합니다.</p>
+<h2 id="What-Is-Boost-Ranker" class="common-anchor-header">부스트 랭커란 무엇인가요?<button data-href="#What-Is-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,21 +35,21 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Boost Ranker is a lightweight, rule-based reranking feature in Milvus 2.6.2</strong> that adjusts <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> results using scalar metadata fields. Unlike model-based rerankers that call external LLMs or embedding services, Boost Ranker operates entirely within Milvus using simple filter-and-weight rules. No external dependencies, minimal latency overhead — suitable for real-time use.</p>
-<p>You configure it through the <a href="https://milvus.io/docs/manage-functions.md">Function API</a>. After vector search returns a set of candidates, Boost Ranker applies three operations:</p>
+    </button></h2><p><strong>부스트 랭커는</strong> 스칼라 메타데이터 필드를 사용하여 <a href="https://zilliz.com/learn/vector-similarity-search">벡터 검색</a> 결과를 조정하는<strong>Milvus 2.6.2의 경량 규칙 기반 재랭크 기능입니다</strong>. 외부 LLM이나 임베딩 서비스를 호출하는 모델 기반 재랭커와 달리, 부스트 랭커는 간단한 필터 및 가중치 규칙을 사용하여 Milvus 내에서만 작동합니다. 외부 종속성이 없고 지연 시간 오버헤드가 최소화되어 실시간 사용에 적합합니다.</p>
+<p><a href="https://milvus.io/docs/manage-functions.md">함수 API를</a> 통해 구성할 수 있습니다. 벡터 검색이 후보 세트를 반환한 후 Boost Ranker는 세 가지 작업을 적용합니다:</p>
 <ol>
-<li><strong>Filter:</strong> identify results matching specific conditions (e.g., <code translate="no">is_official == true</code>)</li>
-<li><strong>Boost:</strong> multiply their scores by a configured weight</li>
-<li><strong>Shuffle:</strong> optionally add a small random factor (0–1) to introduce diversity</li>
+<li><strong>필터:</strong> 특정 조건(예: <code translate="no">is_official == true</code>)과 일치하는 결과를 식별합니다.</li>
+<li><strong>부스트:</strong> 점수에 구성된 가중치를 곱합니다.</li>
+<li><strong>셔플:</strong> 선택적으로 작은 무작위 계수(0-1)를 추가하여 다양성을 도입합니다.</li>
 </ol>
-<h3 id="How-It-Works-Under-the-Hood" class="common-anchor-header">How It Works Under the Hood</h3><p>Boost Ranker runs inside Milvus as a post-processing step:</p>
+<h3 id="How-It-Works-Under-the-Hood" class="common-anchor-header">내부 작동 방식</h3><p>부스트 랭커는 Milvus 내부에서 후처리 단계로 실행됩니다:</p>
 <ol>
-<li><strong>Vector search</strong> — each segment returns candidates with IDs, similarity scores, and metadata.</li>
-<li><strong>Apply rules</strong> — the system filters matching records and adjusts their scores using the configured weight and optional <code translate="no">random_score</code>.</li>
-<li><strong>Merge and sort</strong> — all candidates are combined and re-sorted by updated scores to produce the final Top-K results.</li>
+<li><strong>벡터 검색</strong> - 각 세그먼트는 ID, 유사도 점수, 메타데이터가 포함된 후보를 반환합니다.</li>
+<li><strong>규칙 적용</strong> - 시스템이 일치하는 레코드를 필터링하고 구성된 가중치와 선택 사항인 <code translate="no">random_score</code> 을 사용하여 점수를 조정합니다.</li>
+<li><strong>병합 및 정렬</strong> - 모든 후보를 합치고 업데이트된 점수에 따라 다시 정렬하여 최종 Top-K 결과를 생성합니다.</li>
 </ol>
-<p>Because Boost Ranker only operates on already-retrieved candidates — not the full dataset — the additional computational cost is negligible.</p>
-<h2 id="When-Should-You-Use-Boost-Ranker" class="common-anchor-header">When Should You Use Boost Ranker?<button data-href="#When-Should-You-Use-Boost-Ranker" class="anchor-icon" translate="no">
+<p>부스트 랭커는 전체 데이터 세트가 아닌 이미 검색된 후보자에 대해서만 작동하므로 추가 계산 비용은 무시할 수 있을 정도로 적습니다.</p>
+<h2 id="When-Should-You-Use-Boost-Ranker" class="common-anchor-header">부스트 랭커는 언제 사용해야 하나요?<button data-href="#When-Should-You-Use-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,41 +64,40 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Boosting-Important-Results" class="common-anchor-header">Boosting Important Results</h3><p>The most common use case: layer simple business rules on top of semantic search.</p>
+    </button></h2><h3 id="Boosting-Important-Results" class="common-anchor-header">중요한 결과 부스팅</h3><p>가장 일반적인 사용 사례: 시맨틱 검색 위에 간단한 비즈니스 규칙을 계층화합니다.</p>
 <ul>
-<li><strong>E-commerce:</strong> boost products from flagship stores, official sellers, or paid promotions. Push items with high recent sales or click-through rates higher.</li>
-<li><strong>Content platforms:</strong> prioritize recently published content via a <code translate="no">publish_time</code> field, or boost posts from verified accounts.</li>
-<li><strong>Enterprise search:</strong> give higher priority to documents where <code translate="no">doctype == &quot;policy&quot;</code> or <code translate="no">is_canonical == true</code>.</li>
+<li><strong>전자상거래:</strong> 플래그십 스토어, 공식 판매자 또는 유료 프로모션의 제품을 부스트하세요. 최근 판매량이나 클릭률이 높은 항목을 더 높게 표시하세요.</li>
+<li><strong>콘텐츠 플랫폼:</strong> <code translate="no">publish_time</code> 필드를 통해 최근에 게시된 콘텐츠의 우선순위를 지정하거나 인증된 계정의 게시물을 부스트하세요.</li>
+<li><strong>엔터프라이즈 검색:</strong> <code translate="no">doctype == &quot;policy&quot;</code> 또는 <code translate="no">is_canonical == true</code> 이 있는 문서에 더 높은 우선 순위를 부여합니다.</li>
 </ul>
-<p>All configurable with a filter + weight. No embedding model changes, no index rebuilds.</p>
-<h3 id="Demoting-Without-Removing" class="common-anchor-header">Demoting Without Removing</h3><p>Boost Ranker can also lower ranking for certain results — a softer alternative to hard filtering.</p>
+<p>모두 필터 + 가중치로 구성할 수 있습니다. 임베딩 모델을 변경하거나 인덱스를 다시 빌드하지 않습니다.</p>
+<h3 id="Demoting-Without-Removing" class="common-anchor-header">제거하지 않고 강등</h3><p>부스트 랭커는 특정 결과의 순위를 낮출 수도 있습니다. 하드 필터링보다 더 부드러운 대안입니다.</p>
 <ul>
-<li><strong>Low-stock products:</strong> if <code translate="no">stock &lt; 10</code>, reduce their weight slightly. Still findable, but won’t dominate top positions.</li>
-<li><strong>Sensitive content:</strong> lower the weight of flagged content instead of removing it entirely. Limits exposure without hard censorship.</li>
-<li><strong>Stale documents:</strong> documents where <code translate="no">year &lt; 2020</code> get ranked lower so newer content surfaces first.</li>
+<li><strong>재고가 적은 제품:</strong> <code translate="no">stock &lt; 10</code>, 가중치를 약간 줄입니다. 여전히 검색 가능하지만 상위 순위를 차지하지는 않습니다.</li>
+<li><strong>민감한 콘텐츠:</strong> 플래그가 지정된 콘텐츠의 가중치를 완전히 제거하는 대신 낮춥니다. 엄격한 검열 없이 노출을 제한합니다.</li>
+<li><strong>오래된 문서:</strong> <code translate="no">year &lt; 2020</code> 의 문서 순위가 낮아져 최신 콘텐츠가 먼저 표시됩니다.</li>
 </ul>
-<p>Users can still find demoted results by scrolling or searching more precisely, but they won’t crowd out more relevant content.</p>
-<h3 id="Adding-Diversity-with-Controlled-Randomness" class="common-anchor-header">Adding Diversity with Controlled Randomness</h3><p>When many results have similar scores, the Top-K can look identical across queries. Boost Ranker’s <code translate="no">random_score</code> parameter introduces slight variation:</p>
+<p>사용자는 여전히 스크롤하거나 더 정밀하게 검색하여 강등된 결과를 찾을 수 있지만, 더 관련성 높은 콘텐츠가 밀려나지는 않습니다.</p>
+<h3 id="Adding-Diversity-with-Controlled-Randomness" class="common-anchor-header">무작위성을 제어하여 다양성 추가하기</h3><p>많은 결과의 점수가 비슷하면 상위-K가 여러 쿼리에서 동일하게 보일 수 있습니다. 부스트 랭커의 <code translate="no">random_score</code> 매개변수는 약간의 변형을 도입합니다:</p>
 <pre><code translate="no" class="language-json"><span class="hljs-string">&quot;random_score&quot;</span>: {
   <span class="hljs-string">&quot;seed&quot;</span>: <span class="hljs-number">126</span>,
   <span class="hljs-string">&quot;field&quot;</span>: <span class="hljs-string">&quot;id&quot;</span>
 }
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><code translate="no">seed</code>: controls overall randomness for reproducibility</li>
-<li><code translate="no">field</code>: usually the primary key <code translate="no">id</code>, ensures the same record gets the same random value each time</li>
+<li><code translate="no">seed</code>: 재현성을 위해 전반적인 무작위성을 제어합니다.</li>
+<li><code translate="no">field</code>일반적으로 기본 키 <code translate="no">id</code> 는 동일한 레코드가 매번 동일한 무작위 값을 갖도록 합니다.</li>
 </ul>
-<p>This is useful for <strong>diversifying recommendations</strong> (preventing the same items from always appearing first) and <strong>exploration</strong> (combining fixed business weights with small random perturbations).</p>
-<h3 id="Combining-Boost-Ranker-with-Other-Rankers" class="common-anchor-header">Combining Boost Ranker with Other Rankers</h3><p>Boost Ranker is set via the Function API with <code translate="no">params.reranker = &quot;boost&quot;</code>. Two things to know about combining it:</p>
+<p>이는 <strong>추천을 다양화</strong> (항상 같은 항목이 먼저 표시되는 것을 방지)하고 <strong>탐색</strong> (고정된 비즈니스 가중치와 작은 무작위 변동을 결합)하는 데 유용합니다.</p>
+<h3 id="Combining-Boost-Ranker-with-Other-Rankers" class="common-anchor-header">부스트 랭커와 다른 랭커 결합하기</h3><p>부스트 랭커는 함수 API를 통해 <code translate="no">params.reranker = &quot;boost&quot;</code> 로 설정합니다. 결합에 대해 알아야 할 두 가지 사항이 있습니다:</p>
 <ul>
-<li><strong>Limitation:</strong> in hybrid (multi-vector) search, Boost Ranker cannot be the top-level ranker. But it can be used inside each individual <code translate="no">AnnSearchRequest</code> to adjust results before they’re merged.</li>
-<li><strong>Common combinations:</strong>
-<ul>
-<li><strong>RRF + Boost:</strong> use RRF to merge multi-modal results, then apply Boost for metadata-based fine-tuning.</li>
-<li><strong>Model ranker + Boost:</strong> use a model-based ranker for semantic quality, then Boost for business rules.</li>
+<li><strong>제한 사항:</strong> 하이브리드(멀티벡터) 검색에서 부스트 랭커는 최상위 랭커가 될 수 없습니다. 하지만 각 개별 <code translate="no">AnnSearchRequest</code> 내에서 병합되기 전에 결과를 조정하는 데 사용할 수 있습니다.</li>
+<li><strong>일반적인 조합:</strong><ul>
+<li><strong>RRF + Boost:</strong> RRF를 사용하여 다중 모드 결과를 병합한 다음 메타데이터 기반 미세 조정을 위해 Boost를 적용합니다.</li>
+<li><strong>모델 랭커 + Boost:</strong> 시맨틱 품질에는 모델 기반 랭커를 사용한 다음 비즈니스 규칙에는 Boost를 사용합니다.</li>
 </ul></li>
 </ul>
-<h2 id="How-to-Configure-Boost-Ranker" class="common-anchor-header">How to Configure Boost Ranker<button data-href="#How-to-Configure-Boost-Ranker" class="anchor-icon" translate="no">
+<h2 id="How-to-Configure-Boost-Ranker" class="common-anchor-header">부스트 랭커를 구성하는 방법<button data-href="#How-to-Configure-Boost-Ranker" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,42 +112,42 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Boost Ranker is configured through the Function API. For more complex logic, combine it with <code translate="no">FunctionScore</code> to apply multiple rules together.</p>
-<h3 id="Required-Fields" class="common-anchor-header">Required Fields</h3><p>When creating a <code translate="no">Function</code> object:</p>
+    </button></h2><p>부스트 랭커는 함수 API를 통해 구성됩니다. 보다 복잡한 로직의 경우 <code translate="no">FunctionScore</code> 와 결합하여 여러 규칙을 함께 적용하세요.</p>
+<h3 id="Required-Fields" class="common-anchor-header">필수 필드</h3><p><code translate="no">Function</code> 객체를 생성할 때</p>
 <ul>
-<li><code translate="no">name</code>: any custom name</li>
-<li><code translate="no">input_field_names</code>: must be an empty list <code translate="no">[]</code></li>
-<li><code translate="no">function_type</code>: set to <code translate="no">FunctionType.RERANK</code></li>
-<li><code translate="no">params.reranker</code>: must be <code translate="no">&quot;boost&quot;</code></li>
+<li><code translate="no">name</code>: 임의의 사용자 지정 이름</li>
+<li><code translate="no">input_field_names</code>: 빈 목록이어야 함 <code translate="no">[]</code></li>
+<li><code translate="no">function_type</code>로 설정된 <code translate="no">FunctionType.RERANK</code></li>
+<li><code translate="no">params.reranker</code>여야합니다. <code translate="no">&quot;boost&quot;</code></li>
 </ul>
-<h3 id="Key-Parameters" class="common-anchor-header">Key Parameters</h3><p><strong><code translate="no">params.weight</code> (required)</strong></p>
-<p>The multiplier applied to matching records’ scores. How you set it depends on the metric:</p>
+<h3 id="Key-Parameters" class="common-anchor-header">주요 매개변수</h3><p><strong><code translate="no">params.weight</code> (필수)</strong></p>
+<p>일치하는 레코드의 점수에 적용되는 승수입니다. 설정 방법은 지표에 따라 다릅니다:</p>
 <table>
 <thead>
-<tr><th>Metric Type</th><th>To Boost Results</th><th>To Demote Results</th></tr>
+<tr><th>메트릭 유형</th><th>결과 부스트하려면</th><th>결과를 낮추려면</th></tr>
 </thead>
 <tbody>
-<tr><td>Higher-is-better (COSINE, IP)</td><td><code translate="no">weight &gt; 1</code></td><td><code translate="no">weight &lt; 1</code></td></tr>
-<tr><td>Lower-is-better (L2/Euclidean)</td><td><code translate="no">weight &lt; 1</code></td><td><code translate="no">weight &gt; 1</code></td></tr>
+<tr><td>높을수록 좋음(COSINE, IP)</td><td><code translate="no">weight &gt; 1</code></td><td><code translate="no">weight &lt; 1</code></td></tr>
+<tr><td>낮을수록 좋음(L2/유클리드)</td><td><code translate="no">weight &lt; 1</code></td><td><code translate="no">weight &gt; 1</code></td></tr>
 </tbody>
 </table>
-<p><strong><code translate="no">params.filter</code> (optional)</strong></p>
-<p>A condition that selects which records get their scores adjusted:</p>
+<p><strong><code translate="no">params.filter</code> (선택 사항)</strong></p>
+<p>점수를 조정할 레코드를 선택하는 조건입니다:</p>
 <ul>
 <li><code translate="no">&quot;doctype == 'abstract'&quot;</code></li>
 <li><code translate="no">&quot;is_premium == true&quot;</code></li>
 <li><code translate="no">&quot;views &gt; 1000 and category == 'tech'&quot;</code></li>
 </ul>
-<p>Only matching records are affected. Everything else keeps its original score.</p>
-<p><strong><code translate="no">params.random_score</code> (optional)</strong></p>
-<p>Adds a random value between 0 and 1 for diversity. See the randomness section above for details.</p>
-<h3 id="Single-vs-Multiple-Rules" class="common-anchor-header">Single vs. Multiple Rules</h3><p><strong>Single rule</strong> — when you have one business constraint (e.g., boost official docs), pass the ranker directly to <code translate="no">search(..., ranker=ranker)</code>.</p>
-<p><strong>Multiple rules</strong> — when you need several constraints (prioritize in-stock items + demote low-rated products + add randomness), create multiple <code translate="no">Function</code> objects and combine them with <code translate="no">FunctionScore</code>. You configure:</p>
+<p>일치하는 레코드만 영향을 받습니다. 다른 모든 레코드는 원래 점수를 유지합니다.</p>
+<p><strong><code translate="no">params.random_score</code> (선택 사항)</strong></p>
+<p>다양성을 위해 0과 1 사이의 임의 값을 추가합니다. 자세한 내용은 위의 무작위성 섹션을 참조하세요.</p>
+<h3 id="Single-vs-Multiple-Rules" class="common-anchor-header">단일 규칙과 다중 규칙 비교</h3><p><strong>단일 규칙</strong> - 하나의 비즈니스 제약 조건(예: 부스트 공식 문서)이 있는 경우 순위 결정자를 <code translate="no">search(..., ranker=ranker)</code> 으로 직접 전달합니다.</p>
+<p><strong>다중 규칙</strong> - 여러 제약 조건(재고 품목 우선 순위 지정 + 낮은 평점의 제품 강등 + 무작위성 추가)이 필요한 경우 여러 개의 <code translate="no">Function</code> 개체를 만들어 <code translate="no">FunctionScore</code> 과 결합하여 구성합니다:</p>
 <ul>
-<li><code translate="no">boost_mode</code>: how each rule combines with the original score (<code translate="no">multiply</code> or <code translate="no">add</code>)</li>
-<li><code translate="no">function_mode</code>: how multiple rules combine with each other (<code translate="no">multiply</code> or <code translate="no">add</code>)</li>
+<li><code translate="no">boost_mode</code>각 규칙이 원래 점수와 결합하는 방법 (<code translate="no">multiply</code> 또는 <code translate="no">add</code>)</li>
+<li><code translate="no">function_mode</code>여러 규칙이 서로 결합하는 방법 (<code translate="no">multiply</code> 또는 <code translate="no">add</code>)</li>
 </ul>
-<h2 id="Hands-On-Prioritizing-Official-Documents" class="common-anchor-header">Hands-On: Prioritizing Official Documents<button data-href="#Hands-On-Prioritizing-Official-Documents" class="anchor-icon" translate="no">
+<h2 id="Hands-On-Prioritizing-Official-Documents" class="common-anchor-header">실습: 공식 문서 우선순위 지정하기<button data-href="#Hands-On-Prioritizing-Official-Documents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -164,22 +162,22 @@ origin: 'https://milvus.io/blog/milvus-boost-ranker-business-aware-vector-search
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Let’s walk through a concrete example: making official documents rank higher in a document search system.</p>
-<h3 id="Schema" class="common-anchor-header">Schema</h3><p>A collection called <code translate="no">milvus_collection</code> with these fields:</p>
+    </button></h2><p>문서 검색 시스템에서 공식 문서의 순위를 높이는 구체적인 예를 살펴봅시다.</p>
+<h3 id="Schema" class="common-anchor-header">스키마</h3><p>다음 필드가 있는 <code translate="no">milvus_collection</code> 이라는 컬렉션입니다:</p>
 <table>
 <thead>
-<tr><th>Field</th><th>Type</th><th>Purpose</th></tr>
+<tr><th>필드</th><th>Type</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td><code translate="no">id</code></td><td>INT64</td><td>Primary key</td></tr>
-<tr><td><code translate="no">content</code></td><td>VARCHAR</td><td>Document text</td></tr>
-<tr><td><code translate="no">embedding</code></td><td>FLOAT_VECTOR (3072)</td><td>Semantic vector</td></tr>
-<tr><td><code translate="no">source</code></td><td>VARCHAR</td><td>Origin: &quot;official&quot;, &quot;community&quot;, or “ticket”</td></tr>
+<tr><td><code translate="no">id</code></td><td>INT64</td><td>기본 키</td></tr>
+<tr><td><code translate="no">content</code></td><td>VARCHAR</td><td>문서 텍스트</td></tr>
+<tr><td><code translate="no">embedding</code></td><td>float_vector (3072)</td><td>시맨틱 벡터</td></tr>
+<tr><td><code translate="no">source</code></td><td>VARCHAR</td><td>출처: &quot;공식&quot;, &quot;커뮤니티&quot; 또는 &quot;티켓&quot;</td></tr>
 <tr><td><code translate="no">is_official</code></td><td>BOOL</td><td><code translate="no">True</code> if <code translate="no">source == &quot;official&quot;</code></td></tr>
 </tbody>
 </table>
-<p>The <code translate="no">source</code> and <code translate="no">is_official</code> fields are the metadata Boost Ranker will use to adjust rankings.</p>
-<h3 id="Setup-Code" class="common-anchor-header">Setup Code</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> (
+<p><code translate="no">source</code> 및 <code translate="no">is_official</code> 필드는 부스트 랭커가 순위를 조정하는 데 사용할 메타데이터입니다.</p>
+<h3 id="Setup-Code" class="common-anchor-header">설정 코드</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> (
     MilvusClient,
     DataType,
     Function,
@@ -294,7 +292,7 @@ client.insert(
     data=docs,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Comparing-Results-With-and-Without-Boost-Ranker" class="common-anchor-header">Comparing Results: With and Without Boost Ranker</h3><p>First, run a baseline search without Boost Ranker. Then add Boost Ranker with <code translate="no">filter: is_official == true</code> and <code translate="no">weight: 1.2</code>, and compare.</p>
+<h3 id="Comparing-Results-With-and-Without-Boost-Ranker" class="common-anchor-header">결과 비교: 부스트 랭커를 사용했을 때와 사용하지 않았을 때</h3><p>먼저 부스트 랭커를 사용하지 않고 기준 검색을 실행합니다. 그런 다음 <code translate="no">filter: is_official == true</code> 및 <code translate="no">weight: 1.2</code> 에 부스트 랭커를 추가하고 비교합니다.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># 6. Baseline search (without Boost Ranker)</span>
 query_vector = <span class="hljs-string">&quot;how to deploy milvus&quot;</span>
 
@@ -355,7 +353,7 @@ boosted_results = client.search(
         <span class="hljs-string">f&quot;is_official=<span class="hljs-subst">{entity[<span class="hljs-string">&#x27;is_official&#x27;</span>]}</span>&quot;</span>
     )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Results" class="common-anchor-header">Results</h3><pre><code translate="no">=== Baseline search (no Boost Ranker) ===
+<h3 id="Results" class="common-anchor-header">결과</h3><pre><code translate="no">=== Baseline search (no Boost Ranker) ===
 <span class="hljs-built_in">id</span>=<span class="hljs-number">1</span>, score=<span class="hljs-number">0.7351</span>, source=official, is_official=<span class="hljs-literal">True</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">4</span>, score=<span class="hljs-number">0.7017</span>, source=ticket, is_official=<span class="hljs-literal">False</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">3</span>, score=<span class="hljs-number">0.6706</span>, source=community, is_official=<span class="hljs-literal">False</span>
@@ -367,8 +365,8 @@ boosted_results = client.search(
 <span class="hljs-built_in">id</span>=<span class="hljs-number">4</span>, score=<span class="hljs-number">0.7017</span>, source=ticket, is_official=<span class="hljs-literal">False</span>
 <span class="hljs-built_in">id</span>=<span class="hljs-number">3</span>, score=<span class="hljs-number">0.6706</span>, source=community, is_official=<span class="hljs-literal">False</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>The key change: document <code translate="no">id=2</code> (official) jumped from 4th to 2nd place because its score was multiplied by 1.2. Community posts and ticket records aren’t removed — they just rank lower. That’s the point of Boost Ranker: keep semantic search as the foundation, then layer business rules on top.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>주요 변경 사항: 문서 <code translate="no">id=2</code> (공식)의 점수가 1.2를 곱하여 4위에서 2위로 뛰어올랐습니다. 커뮤니티 게시물과 티켓 기록은 삭제되지 않고 순위만 낮아졌습니다. 시맨틱 검색을 기본으로 유지한 다음 그 위에 비즈니스 규칙을 계층화하는 것이 바로 Boost Ranker의 요점입니다.</p>
+<h2 id="Conclusion" class="common-anchor-header">결론<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -383,21 +381,17 @@ boosted_results = client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/reranking.md">Boost Ranker</a> gives you a way to inject business logic into vector search results without touching your embeddings or rebuilding indexes. Boost official content, demote stale results, add controlled diversity — all through simple filter + weight configuration in the <a href="https://milvus.io/docs/manage-functions.md">Milvus Function API</a>.</p>
-<p>Whether you’re building RAG pipelines, recommendation systems, or enterprise search, Boost Ranker helps bridge the gap between what’s semantically similar and what’s actually useful to your users.</p>
-<p>If you’re working on search ranking and want to discuss your use case:</p>
+    </button></h2><p><a href="https://milvus.io/docs/reranking.md">부스트 랭커는</a> 임베딩을 건드리거나 인덱스를 다시 구축하지 않고도 벡터 검색 결과에 비즈니스 로직을 주입할 수 있는 방법을 제공합니다. 공식 콘텐츠 부스트, 오래된 결과 강등, 제어된 다양성 추가 - 이 모든 것이 <a href="https://milvus.io/docs/manage-functions.md">Milvus 함수 API의</a> 간단한 필터 + 가중치 구성을 통해 이루어집니다.</p>
+<p>RAG 파이프라인, 추천 시스템 또는 엔터프라이즈 검색을 구축하든, Boost Ranker는 의미적으로 유사한 것과 사용자에게 실제로 유용한 것 사이의 간극을 메우는 데 도움을 줍니다.</p>
+<p>검색 랭킹 작업을 하고 있으며 사용 사례에 대해 논의하고 싶으신 경우:</p>
 <ul>
-<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to connect with other developers building search and retrieval systems.</li>
-<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your ranking logic with the team.</li>
-<li>If you’d rather skip infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) has a free tier to get started.</li>
+<li><a href="https://slack.milvus.io/">Milvus Slack 커뮤니티에</a> 가입하여 검색 및 검색 시스템을 구축하는 다른 개발자들과 소통하세요.</li>
+<li><a href="https://milvus.io/office-hours">20분 동안 진행되는 무료 Milvus 오피스 아워 세션을 예약하여</a> 팀과 함께 랭킹 로직을 살펴보세요.</li>
+<li>인프라 설정을 건너뛰고 싶다면 <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (관리형 Milvus)의 무료 티어에서 시작할 수 있습니다.</li>
 </ul>
 <hr>
-<p>A few questions that come up when teams start using Boost Ranker:</p>
-<p><strong>Can Boost Ranker replace a model-based reranker like Cohere or BGE?</strong>
-They solve different problems. Model-based rerankers re-score results by semantic quality — they’re good at deciding “which document actually answers the question.” Boost Ranker adjusts scores by business rules — it decides “which relevant document should appear first.” In practice, you often want both: a model ranker for semantic relevance, then Boost Ranker for business logic on top.</p>
-<p><strong>Does Boost Ranker add significant latency?</strong>
-No. It operates on the already-retrieved candidate set (typically the Top-K from vector search), not the full dataset. The operations are simple filter-and-multiply, so the overhead is negligible compared to the vector search itself.</p>
-<p><strong>How do I set the weight value?</strong>
-Start with small adjustments. For COSINE similarity (higher is better), a weight of 1.1–1.3 is usually enough to noticeably shift rankings without overriding semantic relevance entirely. Test with your actual data — if boosted results with low similarity start dominating, lower the weight.</p>
-<p><strong>Can I combine multiple Boost Ranker rules?</strong>
-Yes. Create multiple <code translate="no">Function</code> objects and combine them using <code translate="no">FunctionScore</code>. You control how rules interact through <code translate="no">boost_mode</code> (how each rule combines with the original score) and <code translate="no">function_mode</code> (how rules combine with each other) — both support <code translate="no">multiply</code> and <code translate="no">add</code>.</p>
+<p>팀이 부스트 랭커를 사용하기 시작할 때 자주 묻는 질문 몇 가지를 소개합니다:</p>
+<p><strong>부스트 랭커가 Cohere나 BGE와 같은 모델 기반 리랭커를 대체할 수 있나요?</strong>이 둘은 서로 다른 문제를 해결합니다. 모델 기반 재랭커는 시맨틱 품질에 따라 결과의 점수를 다시 매기며, "어떤 문서가 실제로 질문에 대한 답을 주는지"를 결정하는 데 능숙합니다. 부스트 랭커는 비즈니스 규칙에 따라 점수를 조정하여 "어떤 관련 문서를 먼저 표시할지"를 결정합니다. 실제로는 의미론적 관련성을 위한 모델 랭커와 그 위에 비즈니스 로직을 위한 Boost Ranker, 이 두 가지를 모두 원하는 경우가 많습니다.</p>
+<p><strong>부스트 랭커는 상당한 지연 시간을 추가하나요?</strong>아니요. 전체 데이터 세트가 아니라 이미 검색된 후보 세트(일반적으로 벡터 검색의 Top-K)를 대상으로 작동합니다. 작업은 단순한 필터링과 곱하기이므로 벡터 검색 자체에 비해 오버헤드는 무시할 수 있는 수준입니다.</p>
+<p><strong>가중치 값은 어떻게 설정하나요?</strong>작은 조정부터 시작하세요. COSINE 유사도(높을수록 좋음)의 경우, 일반적으로 1.1~1.3의 가중치는 의미적 관련성을 완전히 무시하지 않고도 순위를 눈에 띄게 바꿀 수 있는 정도입니다. 실제 데이터로 테스트하여 유사도가 낮은 부스트 결과가 우세해지기 시작하면 가중치를 낮추세요.</p>
+<p><strong>여러 개의 부스트 랭커 규칙을 결합할 수 있나요?</strong>네. 예. 여러 개의 <code translate="no">Function</code> 개체를 생성하고 <code translate="no">FunctionScore</code> 을 사용하여 결합하세요. <code translate="no">boost_mode</code> (각 규칙이 원래 점수와 결합하는 방식) 및 <code translate="no">function_mode</code> (규칙이 서로 결합하는 방식)을 통해 규칙 상호 작용 방식을 제어할 수 있으며, 둘 다 <code translate="no">multiply</code> 및 <code translate="no">add</code> 을 지원합니다.</p>
