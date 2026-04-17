@@ -7,7 +7,7 @@ cover: assets.zilliz.com/Milvus_hit_20_000_stars_284ed694d2.png
 tag: News
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management
 recommend: true
-canonicalUrl: https://milvus.io/blog/milvus-surpasses-20000-github-stars.md
+canonicalUrl: https://milvus.io/blog/milvus-surpasses-20000-GitHub-stars.md
 ---
 
 ![](https://assets.zilliz.com/Milvus_hit_20_000_stars_284ed694d2.png)

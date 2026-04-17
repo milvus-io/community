@@ -10,7 +10,7 @@ tags: >-
   Milvus, Vector Database, Open Source, Data science, Artificial Intelligence,
   Vector Management, Kubernetes
 recommend: true
-canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-and-k8s.md'
+canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8s.md'
 ---
 <h2 id="Introduction" class="common-anchor-header">소개<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"

@@ -9,7 +9,7 @@ desc: >-
 cover: assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
-canonicalUrl: 'https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md'
+canonicalUrl: 'https://milvus.io/blog/2022-08-16-Benchmark-Quick-Setup.md'
 ---
 <p>
   

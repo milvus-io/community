@@ -15,7 +15,7 @@ tags: >-
   Use Web Navigation, Intelligent Agent Development
 recommend: true
 canonicalUrl: >-
-  https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
+  https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pirxtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>밀버스의 개발자 옹호자로서 저는 소셜에서 많은 시간을 보내며 사람들이 밀버스에 대해 어떤 이야기를 하는지, 그리고 제가 도울 수 있는 부분이 있는지 경청합니다. 하지만 &quot;Milvus&quot;를 검색하면 약간 상반된 세계가 존재합니다. 밀버스는 벡터 DB이자 새의 한 속이기 때문에 한 순간에는 벡터 유사성 알고리즘에 대해 깊이 생각하다가도 다음 순간에는 하늘을 나는 검은 새의 멋진 사진에 감탄하게 되죠.</p>

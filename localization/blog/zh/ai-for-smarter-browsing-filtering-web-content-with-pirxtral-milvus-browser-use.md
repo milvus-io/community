@@ -15,7 +15,7 @@ tags: >-
   Use Web Navigation, Intelligent Agent Development
 recommend: true
 canonicalUrl: >-
-  https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
+  https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pirxtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>作为 Milvus 的开发者代言人，我花了很多时间在社交网站上，倾听人们对我们的评价，以及我是否也能提供帮助。不过，当您查找 &quot;Milvus &quot;时，会有一点世界冲突。它既是向量 DB，又是鸟属，这意味着前一刻我还沉浸在关于向量相似性算法的主题中，下一刻我就欣赏到了黑鸟在天空中飞翔的绝美照片。</p>

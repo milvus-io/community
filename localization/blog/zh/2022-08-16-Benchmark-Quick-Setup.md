@@ -7,7 +7,7 @@ desc: 请按照我们的分步指南，自行执行 Milvus 2.1 基准测试。
 cover: assets.zilliz.com/Benchmark_Quick_Setup_58cc8eed5b.png
 tag: Engineering
 tags: 'Vector Database for AI, Artificial Intelligence, Machine Learning'
-canonicalUrl: 'https://milvus.io/blog/2022-08-16-A-Quick-Guide-to-Benchmarking-Milvus-2-1.md'
+canonicalUrl: 'https://milvus.io/blog/2022-08-16-Benchmark-Quick-Setup.md'
 ---
 <p>
   

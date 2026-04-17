@@ -18,7 +18,7 @@ tags: >-
   Use Web Navigation, Intelligent Agent Development
 recommend: true
 canonicalUrl: >-
-  https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pixtral-milvus-browser-use.md
+  https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pirxtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>In qualità di Developer Advocate di Milvus, trascorro molto tempo sui social, ascoltando ciò che le persone hanno da dire su di noi e se posso essere d'aiuto. Quando si cerca &quot;Milvus&quot; c'è un leggero scontro tra mondi. Si tratta sia di un DB vettoriale che di un genere di uccelli, il che significa che un momento sono immerso in un thread sugli algoritmi di similarità vettoriale e l'attimo dopo sto ammirando splendide fotografie di uccelli neri che volano nel cielo.</p>

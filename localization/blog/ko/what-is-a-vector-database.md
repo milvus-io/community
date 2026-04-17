@@ -7,7 +7,7 @@ desc: '벡터 데이터베이스는 빠른 정보 검색과 유사도 검색을 
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
 canonicalUrl: >-
-  https://milvus.io/blog/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md
+  https://milvus.io/blog/what-is-a-vector-database.md
 ---
 <p>벡터 데이터베이스는 빠른 검색과 유사도 검색을 위해 벡터 임베딩을 색인하고 저장하며, AI 애플리케이션을 위해 특별히 설계된 CRUD 작업, 메타데이터 필터링, 수평적 확장 등의 기능을 갖추고 있습니다.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

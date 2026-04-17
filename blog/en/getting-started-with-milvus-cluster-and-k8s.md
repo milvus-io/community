@@ -8,7 +8,7 @@ cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c8180
 tag: Engineering
 tags: Milvus, Vector Database, Open Source, Data science, Artificial Intelligence, Vector Management, Kubernetes
 recommend: true
-canonicalUrl: https://milvus.io/blog/getting-started-with-milvus-and-k8s.md
+canonicalUrl: https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8s.md
 ---
 
 

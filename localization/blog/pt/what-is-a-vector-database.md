@@ -10,7 +10,7 @@ desc: >-
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
 canonicalUrl: >-
-  https://milvus.io/blog/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md
+  https://milvus.io/blog/what-is-a-vector-database.md
 ---
 <p>Uma base de dados de vectores indexa e armazena embeddings de vectores para uma recuperação rápida e pesquisa de semelhanças, com capacidades como operações CRUD, filtragem de metadados e escalonamento horizontal concebidos especificamente para aplicações de IA.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
