@@ -111,7 +111,7 @@ my-milvus-zookeeper<span class="hljs-number">-0</span>                   <span c
 my-milvus-zookeeper<span class="hljs-number">-1</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 <button class="copy-code-btn"></button></code></pre>
-<p>Deverá ver uma lista de pods semelhante à saída acima, todos no estado Running. Isto indica que o seu cluster Milvus está operacional. Especificamente, procure o 1/1 na coluna <code translate="no">READY</code>, o que significa que cada pod está totalmente pronto e em execução. Se algum pod não estiver no estado Em execução, talvez seja necessário investigar mais para garantir uma implantação bem-sucedida.</p>
+<p>Deverá ver uma lista de pods semelhante à saída acima, todos no estado Running. Isso indica que seu cluster Milvus está operacional. Especificamente, procure o 1/1 na coluna <code translate="no">READY</code>, o que significa que cada pod está totalmente pronto e em execução. Se algum pod não estiver no estado Em execução, talvez seja necessário investigar mais para garantir uma implantação bem-sucedida.</p>
 <p>Com o cluster do Milvus implantado e todos os componentes confirmados em execução, você está pronto para prosseguir com a ingestão e indexação de dados. Isso envolverá a conexão com a instância do Milvus, a criação de coleções e a inserção de vetores para pesquisa e recuperação.</p>
 <h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">Ingestão e indexação de dados<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -133,7 +133,7 @@ my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span c
 <li><p>SDK básico: <code translate="no">pip install pymilvus</code></p></li>
 <li><p>Para embeddings de rich text e modelos avançados: <code translate="no">pip install pymilvus[model]</code></p></li>
 </ul>
-<p>Para inserir dados no nosso cluster, vamos utilizar <code translate="no">pymilvus</code>, pode instalar o SDK apenas com <code translate="no">pip install pymilvus</code> ou se quiser extrair rich text embeddings, pode também utilizar <code translate="no">PyMilvus Models</code> instalando <code translate="no">pip install pymilvus[model]</code>.</p>
+<p>Para inserir dados no nosso cluster, vamos utilizar <code translate="no">pymilvus</code>, pode instalar o SDK apenas com <code translate="no">pip install pymilvus</code> ou, se quiser extrair rich text embeddings, pode também utilizar <code translate="no">PyMilvus Models</code> instalando <code translate="no">pip install pymilvus[model]</code>.</p>
 <h3 id="Connecting-and-Creating-a-Collection" class="common-anchor-header">Ligação e criação de uma coleção:</h3><p>Primeiro, ligue-se à sua instância Milvus utilizando a porta que encaminhou anteriormente. Certifique-se de que o URI corresponde à porta local atribuída pelo K8s:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
@@ -144,7 +144,7 @@ client = <span class="hljs-title class_">MilvusClient</span>(
 client.<span class="hljs-title function_">create_collection</span>(collection_name=<span class="hljs-string">&quot;quick_setup&quot;</span>, dimension=<span class="hljs-number">5</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>O parâmetro <code translate="no">dimension=5</code> define o tamanho do vetor para esta coleção, essencial para as capacidades de pesquisa vetorial.</p>
-<h3 id="Insert-Data" class="common-anchor-header">Inserir dados</h3><p>Eis como inserir um conjunto inicial de dados, em que cada vetor representa um item e o campo de cor adiciona um atributo descritivo:</p>
+<h3 id="Insert-Data" class="common-anchor-header">Inserir dados</h3><p>Eis como inserir um conjunto inicial de dados, em que cada vetor representa um item, e o campo de cor adiciona um atributo descritivo:</p>
 <pre><code translate="no">data=[
     {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">0</span>, <span class="hljs-string">&quot;vector&quot;</span>: [<span class="hljs-number">0.3580376395471989</span>, -<span class="hljs-number">0.6023495712049978</span>, <span class="hljs-number">0.18414012509913835</span>, -<span class="hljs-number">0.26286205330961354</span>, <span class="hljs-number">0.9029438446296592</span>], <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;pink_8682&quot;</span>},
     {<span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-number">1</span>, <span class="hljs-string">&quot;vector&quot;</span>: [<span class="hljs-number">0.19886812562848388</span>, <span class="hljs-number">0.06023560599112088</span>, <span class="hljs-number">0.6976963061752597</span>, <span class="hljs-number">0.2614474506242501</span>, <span class="hljs-number">0.838729485096104</span>], <span class="hljs-string">&quot;color&quot;</span>: <span class="hljs-string">&quot;red_7025&quot;</span>},
@@ -246,6 +246,6 @@ res = client.search(
       </svg>
     </button></h2><ul>
 <li><p>A implantação do Milvus em um cluster do Kubernetes mostra a escalabilidade e a flexibilidade dos bancos de dados vetoriais no tratamento de cargas de trabalho de IA e aprendizado de máquina. Por meio deste tutorial, você aprendeu os conceitos básicos de configuração do Milvus com o Helm, criando uma coleção e executando a ingestão de dados e pesquisas de similaridade.</p></li>
-<li><p>A instalação do Milvus em um cluster do Kubernetes com o Helm deve ser simples. Para se aprofundar no dimensionamento de clusters do Milvus para conjuntos de dados maiores ou cargas de trabalho mais intensas, nossa documentação oferece orientações detalhadas <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
+<li><p>A instalação do Milvus em um cluster do Kubernetes com o Helm deve ser simples. Para se aprofundar no dimensionamento de clusters do Milvus para conjuntos de dados maiores ou cargas de trabalho mais intensivas, nossa documentação oferece orientações detalhadas <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
 </ul>
 <p>Sinta-se à vontade para conferir o código no <a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a>, conferir <a href="https://github.com/milvus-io/milvus">o Milvus</a>, experimentar diferentes configurações e casos de uso e compartilhar suas experiências com a comunidade juntando-se ao nosso <a href="https://discord.gg/FG6hMJStWu">Discord</a>.</p>

@@ -16,7 +16,7 @@ canonicalUrl: >-
   https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pirxtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>身為 Milvus 的開發者代言人，我花了許多時間在社交網站，聆聽人們對我們的評價，以及我是否也能提供協助。當您尋找「Milvus」時，會有一點世界衝突。它既是向量 DB，也是鳥類的一種，這意味著前一刻我還在深入討論向量相似性演算法的主題，下一刻我就在欣賞黑色鳥類在天空中飛翔的絕美照片。</p>
+<p>身為 Milvus 的開發者代言人，我花了很多時間在社交網站，聆聽人們對我們的評價，以及我是否也能提供協助。當您尋找「Milvus」時，會有一點世界衝突。它既是向量 DB，也是鳥類的一種，這意味著前一刻我還在深入討論向量相似性演算法的主題，下一刻我就在欣賞黑色鳥類在天空中飛翔的絕美照片。</p>
 <p>雖然這兩個主題都很有趣，但把它們混在一起對我來說並不是真的有幫助，如果有一個智慧的方法可以解決這個問題，而不需要我手動檢查呢？</p>
 <p>讓我們來打造更聰明的東西 - 透過結合視覺理解與情境感知，我們可以打造一個助理，它知道黑鳶的遷徙模式與我們的新文章之間的差異。</p>
 <h2 id="The-tech-stack" class="common-anchor-header">技術堆疊<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
@@ -155,7 +155,7 @@ data = {
     data=[data]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>這個簡單的設定意味著您不需要擔心每個欄位都事先定義好。只需設定模式，允許動態新增，並讓 Milvus 完成繁重的工作。</p>
+<p>這個簡單的設定意味著您不需要擔心每個欄位都事先定義好。只需設定模式以允許動態新增，並讓 Milvus 完成繁重的工作。</p>
 <h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -171,7 +171,7 @@ data = {
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>透過結合 Browser Use 的網頁導覽、Pixtral 的視覺理解，以及 Milvus 的有效儲存，我們建立了一個能真正理解上下文的智慧型助理。現在我用它來區分鳥類和向量 DB，但同樣的方法也可以幫助解決你可能面臨的另一個問題。</p>
+    </button></h2><p>透過結合 Browser Use 的網頁導覽、Pixtral 的視覺理解，以及 Milvus 的有效儲存，我們建立了一個能真正理解上下文的智慧型助理。現在我用它來分辨鳥類和向量 DB，但同樣的方法也可以幫助您解決可能面臨的其他問題。</p>
 <p>就我而言，我想要繼續研究能在日常工作中協助我的代理程式，以降低我的認知負荷 😌 。</p>
 <h2 id="Wed-Love-to-Hear-What-You-Think" class="common-anchor-header">我們很樂意聽聽您的想法！<button data-href="#Wed-Love-to-Hear-What-You-Think" class="anchor-icon" translate="no">
       <svg translate="no"

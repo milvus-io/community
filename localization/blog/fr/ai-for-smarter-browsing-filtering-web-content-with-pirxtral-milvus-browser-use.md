@@ -21,7 +21,7 @@ canonicalUrl: >-
   https://milvus.io/blog/ai-for-smarter-browsing-filtering-web-content-with-pirxtral-milvus-browser-use.md
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<p>En tant que Developer Advocate pour Milvus, je passe beaucoup de temps sur les réseaux sociaux, à écouter ce que les gens ont à dire sur nous et à voir si je peux les aider. Il y a un léger conflit entre les deux mondes lorsque vous cherchez &quot;Milvus&quot;. Il s'agit à la fois d'un DB vectoriel et d'un genre d'oiseau, ce qui signifie qu'à un moment donné, je suis plongé dans un fil de discussion sur les algorithmes de similarité vectorielle et qu'à l'instant suivant, j'admire de superbes photographies d'oiseaux noirs volant dans le ciel.</p>
+<p>En tant que Developer Advocate pour Milvus, je passe beaucoup de temps sur les réseaux sociaux, à écouter ce que les gens ont à dire sur nous et à savoir si je peux les aider. Il y a un léger conflit entre les deux mondes lorsque vous cherchez &quot;Milvus&quot;. Il s'agit à la fois d'un DB vectoriel et d'un genre d'oiseau, ce qui signifie qu'à un moment donné, je suis plongé dans un fil de discussion sur les algorithmes de similarité vectorielle et qu'à l'instant suivant, j'admire de superbes photographies d'oiseaux noirs volant dans le ciel.</p>
 <p>Bien que les deux sujets soient intéressants, les mélanger n'est pas vraiment utile dans mon cas. Et s'il existait un moyen intelligent de résoudre ce problème sans que je doive vérifier manuellement ?</p>
 <p>Construisons quelque chose de plus intelligent - en combinant la compréhension visuelle avec la connaissance du contexte, nous pouvons construire un assistant qui fait la différence entre les schémas de migration d'un milan noir et un nouvel article de notre part.</p>
 <h2 id="The-tech-stack" class="common-anchor-header">La pile technologique<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
@@ -42,7 +42,7 @@ canonicalUrl: >-
     </button></h2><p>Nous combinons trois technologies différentes :</p>
 <ul>
 <li><strong>Browser-Use :</strong> cet outil navigue sur différents sites web (par exemple, Twitter) pour récupérer du contenu.</li>
-<li><strong>Pixtral</strong>: Un modèle vision-langage qui analyse les images et le contexte. Dans cet exemple, il fait la distinction entre un diagramme technique sur notre base de données vectorielle et une superbe photo d'oiseau.</li>
+<li><strong>Pixtral</strong>: Un modèle vision-langage qui analyse les images et le contexte. Dans cet exemple, il fait la distinction entre un diagramme technique sur notre base de données vectorielle et une superbe photographie d'oiseau.</li>
 <li><strong>Milvus :</strong> une base de données vectorielle haute performance et open-source. C'est là que nous stockerons les messages pertinents pour une interrogation ultérieure.</li>
 </ul>
 <p>
@@ -109,7 +109,7 @@ INFO     [src.agent.custom_agent] 🛠️  Action <span class="hljs-number">1</s
 INFO     [src.agent.custom_agent] 🧠 All Memory:
 The post <span class="hljs-keyword">and</span> comments primarily discuss photography <span class="hljs-keyword">and</span> birds. No references to Milvus the Vector Database are found.
 <button class="copy-code-btn"></button></code></pre>
-<p>Maintenant que nous avons filtré les messages que nous ne voulons pas, nous pouvons sauvegarder les messages pertinents dans Milvus. Il sera ainsi possible de les interroger ultérieurement à l'aide de la recherche vectorielle ou de la recherche en texte intégral.</p>
+<p>Maintenant que nous avons filtré les messages dont nous ne voulons pas, nous pouvons sauvegarder les messages pertinents dans Milvus. Il sera ainsi possible de les interroger ultérieurement à l'aide de la recherche vectorielle ou de la recherche en texte intégral.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Browser_use_milvus_pixtral_39bf320a9f.gif" alt="" class="doc-image" id="" />

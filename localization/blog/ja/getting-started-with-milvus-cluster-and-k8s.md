@@ -3,7 +3,7 @@ id: getting-started-with-milvus-cluster-and-k8s.md
 title: MilvusクラスタとK8sを使い始める
 author: Stephen Batifol
 date: 2024-04-03T00:00:00.000Z
-desc: このチュートリアルでは、Helmを使ったMilvusのセットアップ、コレクションの作成、データの取り込みと類似検索の実行の基本を学びます。
+desc: このチュートリアルでは、HelmによるMilvusのセットアップ、コレクションの作成、データの取り込みと類似検索の実行の基本を学びます。
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
 tag: Engineering
 tags: >-

@@ -109,7 +109,7 @@ INFO     [src.agent.custom_agent] 🛠️  Action <span class="hljs-number">1</s
 INFO     [src.agent.custom_agent] 🧠 All Memory:
 The post <span class="hljs-keyword">and</span> comments primarily discuss photography <span class="hljs-keyword">and</span> birds. No references to Milvus the Vector Database are found.
 <button class="copy-code-btn"></button></code></pre>
-<p>Ora che abbiamo filtrato i post che non vogliamo, possiamo salvare quelli rilevanti in Milvus. In questo modo sarà possibile interrogarli in un secondo momento utilizzando la ricerca vettoriale o la ricerca a testo completo.</p>
+<p>Ora che abbiamo filtrato i post che non vogliamo, possiamo salvare quelli rilevanti in Milvus. In questo modo sarà possibile interrogarli in un secondo momento utilizzando la ricerca vettoriale o la ricerca a testo pieno.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Browser_use_milvus_pixtral_39bf320a9f.gif" alt="" class="doc-image" id="" />

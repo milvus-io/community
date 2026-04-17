@@ -1,6 +1,6 @@
 ---
 id: what-is-vector-database-and-how-it-works.md
-title: Che cos'è esattamente un database vettoriale e come funziona
+title: Cosa è esattamente un database vettoriale e come funziona
 author: Zilliz
 date: 2025-03-24T00:00:00.000Z
 desc: >-
@@ -9,8 +9,7 @@ desc: >-
   rapido delle informazioni e la ricerca di similarità.
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
-canonicalUrl: >-
-  https://milvus.io/blog/what-is-a-vector-database.md
+canonicalUrl: 'https://milvus.io/blog/what-is-a-vector-database.md'
 ---
 <p>Un database vettoriale indicizza e memorizza le incorporazioni vettoriali per un rapido recupero e una ricerca di similarità, con funzionalità come le operazioni CRUD, il filtraggio dei metadati e la scalabilità orizzontale progettata appositamente per le applicazioni di intelligenza artificiale.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -74,7 +73,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>I database vettoriali rappresentano un cambiamento di paradigma nel modo di memorizzare e interrogare i dati non strutturati. A differenza dei tradizionali sistemi di database relazionali, che eccellono nella gestione di dati strutturati con formati predefiniti, i database vettoriali sono specializzati nella gestione di dati non strutturati attraverso rappresentazioni numeriche vettoriali.</p>
+    </button></h2><p>I database vettoriali rappresentano un cambiamento di paradigma nel modo di memorizzare e interrogare i dati non strutturati. A differenza dei tradizionali sistemi di database relazionali che eccellono nella gestione di dati strutturati con formati predefiniti, i database vettoriali sono specializzati nella gestione di dati non strutturati attraverso rappresentazioni numeriche vettoriali.</p>
 <p>I database vettoriali sono progettati per risolvere un problema fondamentale: consentire ricerche efficienti di somiglianza tra enormi insiemi di dati non strutturati. Questo obiettivo viene raggiunto attraverso tre componenti chiave:</p>
 <p><strong>Embeddings vettoriali</strong>: Rappresentazioni numeriche ad alta dimensione che catturano il significato semantico dei dati non strutturati (testo, immagini, audio, ecc.).</p>
 <p><strong>Indicizzazione specializzata</strong>: Algoritmi ottimizzati per spazi vettoriali ad alta dimensione che consentono ricerche approssimative e veloci. Il database vettoriale indicizza i vettori per migliorare la velocità e l'efficienza delle ricerche di similarità, utilizzando vari algoritmi di ML per creare indici sulle incorporazioni vettoriali.</p>
@@ -105,7 +104,7 @@ canonicalUrl: >-
 <li><p>Richiedono un'infrastruttura personalizzata per la persistenza e la gestione dei dati.</p></li>
 </ul>
 <p>I database vettoriali sono nati per risolvere queste limitazioni, fornendo funzionalità complete di gestione dei dati progettate specificamente per le incorporazioni vettoriali. Combinano la potenza semantica della ricerca vettoriale con le capacità operative dei sistemi di database.</p>
-<p>A differenza dei database tradizionali che operano su corrispondenze esatte, i database vettoriali si concentrano sulla ricerca semantica, trovando i vettori "più simili" a un vettore di interrogazione in base a specifiche metriche di distanza. Questa differenza fondamentale determina l'architettura e gli algoritmi unici che alimentano questi sistemi specializzati.</p>
+<p>A differenza dei database tradizionali che operano su corrispondenze esatte, i database vettoriali si concentrano sulla ricerca semantica, trovando i vettori "più simili" a un vettore di interrogazione secondo specifiche metriche di distanza. Questa differenza fondamentale determina l'architettura e gli algoritmi unici che alimentano questi sistemi specializzati.</p>
 <h2 id="Vector-Database-Architecture-A-Technical-Framework" class="common-anchor-header">Architettura dei database vettoriali: Un quadro tecnico<button data-href="#Vector-Database-Architecture-A-Technical-Framework" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -121,7 +120,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>I moderni database vettoriali implementano una sofisticata architettura a più livelli che separa i problemi, consente la scalabilità e garantisce la manutenzione. Questa struttura tecnica va ben oltre i semplici indici di ricerca per creare sistemi in grado di gestire i carichi di lavoro dell'intelligenza artificiale in produzione. I database vettoriali funzionano elaborando e recuperando le informazioni per le applicazioni di intelligenza artificiale e ML, utilizzando algoritmi per la ricerca approssimativa dei vicini, convertendo vari tipi di dati grezzi in vettori e gestendo in modo efficiente diversi tipi di dati attraverso ricerche semantiche.</p>
+    </button></h2><p>I moderni database vettoriali implementano una sofisticata architettura a più livelli che separa i problemi, consente la scalabilità e garantisce la manutenzione. Questa struttura tecnica va ben oltre i semplici indici di ricerca per creare sistemi in grado di gestire i carichi di lavoro dell'intelligenza artificiale in produzione. I database vettoriali funzionano elaborando e recuperando informazioni per applicazioni di intelligenza artificiale e di ML, utilizzando algoritmi per la ricerca approssimativa dei vicini, convertendo vari tipi di dati grezzi in vettori e gestendo in modo efficiente diversi tipi di dati attraverso ricerche semantiche.</p>
 <h3 id="Four-Tier-Architecture" class="common-anchor-header">Architettura a quattro livelli</h3><p>Un database vettoriale di produzione è tipicamente composto da quattro livelli architettonici principali:</p>
 <ol>
 <li><p><strong>Livello di archiviazione</strong>: Gestisce l'archiviazione persistente dei dati vettoriali e dei metadati, implementa strategie di codifica e compressione specializzate e ottimizza i modelli di I/O per l'accesso specifico ai vettori.</p></li>
@@ -190,7 +189,7 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>I database vettoriali hanno un'ampia gamma di applicazioni in vari settori, a dimostrazione della loro versatilità e potenza. Ecco alcuni casi d'uso degni di nota:</p>
 <ol>
-<li><p><strong>Elaborazione del linguaggio naturale</strong>: Nell'ambito dell'elaborazione del linguaggio naturale (NLP), i database vettoriali svolgono un ruolo fondamentale. Vengono utilizzati per compiti quali la classificazione del testo, l'analisi del sentiment e la traduzione linguistica. Convertendo il testo in embedding vettoriali ad alta dimensionalità, i database vettoriali consentono di effettuare ricerche efficienti di similarità e di comprendere la semantica, migliorando le prestazioni dei <a href="https://zilliz.com/learn/7-nlp-models">modelli NLP</a>.</p></li>
+<li><p><strong>Elaborazione del linguaggio naturale</strong>: Nell'ambito dell'elaborazione del linguaggio naturale (NLP), i database vettoriali svolgono un ruolo fondamentale. Vengono utilizzati per compiti quali la classificazione del testo, l'analisi del sentiment e la traduzione linguistica. Convertendo il testo in embedding vettoriali ad alta dimensione, i database vettoriali consentono di effettuare ricerche efficienti di similarità e di comprendere la semantica, migliorando le prestazioni dei <a href="https://zilliz.com/learn/7-nlp-models">modelli NLP</a>.</p></li>
 <li><p><strong>Visione artificiale</strong>: I database vettoriali sono ampiamente utilizzati anche nelle applicazioni di computer vision. Attività come il riconoscimento delle immagini, il <a href="https://zilliz.com/learn/what-is-object-detection">rilevamento degli oggetti</a> e la segmentazione delle immagini traggono vantaggio dalla capacità dei database vettoriali di gestire le incorporazioni di immagini ad alta dimensione. Ciò consente un recupero rapido e accurato di immagini visivamente simili, rendendo i database vettoriali indispensabili in campi come la guida autonoma, l'imaging medico e la gestione delle risorse digitali.</p></li>
 <li><p><strong>Genomica</strong>: in genomica, i database vettoriali sono utilizzati per memorizzare e analizzare sequenze genetiche, strutture proteiche e altri dati molecolari. La natura altamente dimensionale di questi dati rende i database vettoriali la scelta ideale per gestire e interrogare grandi insiemi di dati genomici. I ricercatori possono eseguire ricerche vettoriali per trovare sequenze genetiche con pattern simili, favorendo la scoperta di marcatori genetici e la comprensione di processi biologici complessi.</p></li>
 <li><p><strong>Sistemi di raccomandazione</strong>: I database vettoriali sono la pietra miliare dei moderni sistemi di raccomandazione. Memorizzando le interazioni dell'utente e le caratteristiche degli articoli come embeddings vettoriali, questi database possono identificare rapidamente gli articoli simili a quelli con cui l'utente ha interagito in precedenza. Questa capacità aumenta l'accuratezza e la pertinenza delle raccomandazioni, migliorando la soddisfazione e il coinvolgimento degli utenti.</p></li>
@@ -214,7 +213,7 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>I database vettoriali richiedono <a href="https://zilliz.com/learn/vector-index">algoritmi di</a> indicizzazione specializzati per consentire un'efficiente ricerca di similarità in spazi ad alta dimensione. La scelta dell'algoritmo ha un impatto diretto sulla precisione, la velocità, l'utilizzo della memoria e la scalabilità.</p>
 <h3 id="Graph-Based-Approaches" class="common-anchor-header">Approcci basati sui grafi</h3><p><strong>HNSW (</strong><a href="https://zilliz.com/learn/hierarchical-navigable-small-worlds-HNSW"><strong>Hierarchical Navigable Small World</strong></a><strong>)</strong> crea strutture navigabili collegando vettori simili, consentendo una traversata efficiente durante la ricerca. HNSW limita le connessioni massime per nodo e l'ambito di ricerca per bilanciare prestazioni e accuratezza, rendendolo uno degli algoritmi più utilizzati per la ricerca di similarità vettoriale.</p>
-<p><strong>Cagra</strong> è un indice a grafo ottimizzato specificamente per l'accelerazione su GPU. Costruisce strutture a grafo navigabili che si allineano ai modelli di elaborazione delle GPU, consentendo confronti vettoriali in parallelo. Ciò che rende Cagra particolarmente efficace è la sua capacità di bilanciare richiamo e prestazioni attraverso parametri configurabili come il grado del grafo e l'ampiezza della ricerca. L'uso di GPU di livello inferenziale con Cagra può essere più conveniente rispetto al costoso hardware di livello training, pur garantendo un elevato throughput, soprattutto per le raccolte vettoriali su larga scala. Tuttavia, vale la pena notare che gli indici su GPU come Cagra non riducono necessariamente la latenza rispetto agli indici su CPU, a meno che non si operi con una pressione elevata sulle query.</p>
+<p><strong>Cagra</strong> è un indice a grafo ottimizzato specificamente per l'accelerazione su GPU. Costruisce strutture a grafo navigabili che si allineano ai modelli di elaborazione delle GPU, consentendo confronti vettoriali in parallelo. Ciò che rende Cagra particolarmente efficace è la sua capacità di bilanciare richiamo e prestazioni attraverso parametri configurabili come il grado del grafo e l'ampiezza della ricerca. L'uso di GPU di livello inferenziale con Cagra può essere più conveniente rispetto al costoso hardware di livello training, pur garantendo un throughput elevato, soprattutto per le raccolte vettoriali su larga scala. Tuttavia, vale la pena notare che gli indici su GPU come Cagra non riducono necessariamente la latenza rispetto agli indici su CPU, a meno che non si operi con una pressione elevata sulle query.</p>
 <h3 id="Quantization-Techniques" class="common-anchor-header">Tecniche di quantizzazione</h3><p><a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization"><strong>La quantizzazione del prodotto (PQ)</strong></a> decompone i vettori ad alta dimensione in sottovettori più piccoli, quantizzando ciascuno di essi separatamente. Questo riduce significativamente le esigenze di memorizzazione (spesso di oltre il 90%), ma introduce una certa perdita di precisione.</p>
 <p>La<strong>quantizzazione scalare (SQ)</strong> converte i float a 32 bit in interi a 8 bit, riducendo l'uso della memoria del 75% con un impatto minimo sulla precisione.</p>
 <h3 id="On-Disk-Indexing-Cost-Effective-Scaling" class="common-anchor-header">Indicizzazione su disco: Scalabilità a costi contenuti</h3><p>Per collezioni di vettori su larga scala (oltre 100 milioni di vettori), gli indici in memoria diventano proibitivi. Ad esempio, 100 milioni di vettori a 1024 dimensioni richiederebbero circa 400 GB di RAM. È qui che algoritmi di indicizzazione su disco come DiskANN offrono notevoli vantaggi in termini di costi.</p>
@@ -292,7 +291,7 @@ canonicalUrl: >-
 </ul>
 <h4 id="Full-Text-Search" class="common-anchor-header">Ricerca full-text</h4><p>Le funzionalità di ricerca full-text nei moderni database vettoriali colmano il divario tra la ricerca testuale tradizionale e la similarità vettoriale. Questi sistemi:</p>
 <ul>
-<li><p>convertono automaticamente le query di testo grezzo in incorporazioni rade</p></li>
+<li><p>Convertono automaticamente le query di testo grezzo in incorporazioni rade.</p></li>
 <li><p>Recuperano i documenti contenenti termini o frasi specifiche</p></li>
 <li><p>classificano i risultati in base alla rilevanza dei termini e alla somiglianza semantica</p></li>
 <li><p>Completano la ricerca vettoriale individuando le corrispondenze esatte che la ricerca semantica potrebbe tralasciare.</p></li>
@@ -315,14 +314,14 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>L'ottimizzazione delle prestazioni nei database vettoriali richiede la comprensione delle metriche chiave e dei loro compromessi.</p>
 <h3 id="The-Recall-Throughput-Tradeoff" class="common-anchor-header">Il compromesso tra richiamo e throughput</h3><p>Il richiamo misura la percentuale di veri vicini trovati tra i risultati restituiti. Un richiamo più elevato richiede una ricerca più approfondita, riducendo il throughput (query al secondo). I sistemi di produzione bilanciano queste metriche in base ai requisiti dell'applicazione, puntando in genere a un richiamo dell'80-99% a seconda del caso d'uso.</p>
-<p>Per valutare le prestazioni dei database vettoriali, gli ambienti di benchmarking standardizzati come ANN-Benchmarks forniscono dati comparativi preziosi. Questi strumenti misurano le metriche critiche, tra cui:</p>
+<p>Per valutare le prestazioni dei database vettoriali, gli ambienti di benchmarking standardizzati come ANN-Benchmarks forniscono dati comparativi preziosi. Questi strumenti misurano metriche critiche, tra cui:</p>
 <ul>
 <li><p>Richiamo della ricerca: La percentuale di query per le quali vengono trovati i veri vicini tra i risultati restituiti.</p></li>
 <li><p>Query al secondo (QPS): La velocità con cui il database elabora le query in condizioni standardizzate.</p></li>
 <li><p>Prestazioni su dataset di dimensioni e dimensioni diverse</p></li>
 </ul>
 <p>Un'alternativa è un sistema di benchmark open source chiamato <a href="https://zilliz.com/vector-database-benchmark-tool?database=ZillizCloud%2CMilvus%2CElasticCloud%2CPgVector%2CPinecone%2CQdrantCloud%2CWeaviateCloud&amp;dataset=medium&amp;filter=none%2Clow%2Chigh&amp;tab=1">VDB Bench</a>. VectorDBBench è uno <a href="https://github.com/zilliztech/VectorDBBench">strumento di benchmarking open source</a> progettato per valutare e confrontare le prestazioni dei principali database vettoriali, come Milvus e Zilliz Cloud, utilizzando i loro set di dati. Inoltre, aiuta gli sviluppatori a scegliere il database vettoriale più adatto ai loro casi d'uso.</p>
-<p>Questi benchmark consentono alle aziende di identificare l'implementazione del database vettoriale più adatta alle loro esigenze specifiche, considerando l'equilibrio tra precisione, velocità e scalabilità.</p>
+<p>Questi benchmark consentono alle organizzazioni di identificare l'implementazione del database vettoriale più adatta alle loro esigenze specifiche, considerando l'equilibrio tra precisione, velocità e scalabilità.</p>
 <h3 id="Memory-Management" class="common-anchor-header">Gestione della memoria</h3><p>Una gestione efficiente della memoria consente ai database vettoriali di scalare fino a miliardi di vettori mantenendo inalterate le prestazioni:</p>
 <ul>
 <li><p>L'<strong>allocazione dinamica</strong> regola l'uso della memoria in base alle caratteristiche del carico di lavoro.</p></li>
@@ -355,12 +354,12 @@ canonicalUrl: >-
     </button></h2><p>I database vettoriali richiedono strategie di distribuzione ponderate per garantire prestazioni ottimali a diverse scale:</p>
 <ul>
 <li><p><strong>Le distribuzioni su piccola scala</strong> (milioni di vettori) possono funzionare efficacemente su una singola macchina con memoria sufficiente.</p></li>
-<li><p><strong>Le distribuzioni su media scala</strong> (da decine a centinaia di milioni) traggono vantaggio dallo scaling verticale con istanze ad alta memoria e storage SSD.</p></li>
+<li><p><strong>Le implementazioni su media scala</strong> (da decine a centinaia di milioni) traggono vantaggio dallo scaling verticale con istanze ad alta memoria e storage SSD.</p></li>
 <li><p><strong>Le distribuzioni su scala miliardaria</strong> richiedono uno scaling orizzontale su più nodi con ruoli specializzati.</p></li>
 </ul>
 <p>Lo sharding e la replica sono alla base dell'architettura dei database vettoriali scalabili:</p>
 <ul>
-<li><p>Lo<strong>sharding orizzontale</strong> divide le raccolte su più nodi.</p></li>
+<li><p>Lo<strong>sharding orizzontale</strong> divide le collezioni su più nodi.</p></li>
 <li><p>La<strong>replica</strong> crea copie ridondanti dei dati, migliorando la tolleranza agli errori e il throughput delle query.</p></li>
 </ul>
 <p>I sistemi moderni regolano dinamicamente i fattori di replica in base ai modelli di query e ai requisiti di affidabilità.</p>

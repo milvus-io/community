@@ -89,7 +89,7 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
 <li><p>reqs : nombre de demandes de recherche entre le moment où la concurrence se produit et le moment présent (la période actuelle)</p></li>
 <li><p>fails : nombre de demandes ayant échoué, exprimé en pourcentage du nombre de demandes dans l'intervalle de temps en cours.</p></li>
 <li><p>Avg : temps de réponse moyen de la requête dans l'intervalle de temps actuel (unité : millisecondes)</p></li>
-<li><p>Min : temps de réponse minimal de la demande dans l'intervalle de temps actuel (unité : millisecondes)</p></li>
+<li><p>Min : temps de réponse minimum à une demande dans l'intervalle de temps actuel (unité : millisecondes)</p></li>
 <li><p>Max : temps de réponse maximal de la demande dans l'intervalle de temps actuel (unité : millisecondes)</p></li>
 <li><p>Median : temps médian de réponse à une demande dans l'intervalle de temps actuel (unité : millisecondes)</p></li>
 <li><p>req/s : nombre de demandes par seconde, c'est-à-dire QPS</p></li>
@@ -132,7 +132,7 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Avec la sortie officielle de Milvus 2.1, nous avons préparé une série de blogs présentant les nouvelles fonctionnalités. En savoir plus dans cette série de blogs :</p>
+    </button></h2><p>Avec la sortie officielle de Milvus 2.1, nous avons préparé une série de blogs présentant les nouvelles fonctionnalités. En savoir plus sur cette série de blogs :</p>
 <ul>
 <li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">Comment utiliser les données de chaînes de caractères pour renforcer vos applications de recherche de similarité</a></li>
 <li><a href="https://milvus.io/blog/embedded-milvus.md">Utilisation de Milvus embarqué pour installer et exécuter instantanément Milvus avec Python</a></li>

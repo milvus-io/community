@@ -83,7 +83,7 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-GitHub-stars.md'
         ></path>
       </svg>
     </button></h2><h3 id="LLM-augmentation" class="common-anchor-header">LLMの拡張</h3><p>LLMまたはLLMアプリケーションには、3つの主要な問題があります：ドメイン固有のデータがない、データが古い、コストが高い。Milvusは、外部データを注入し、頻繁に行われるクエリのキャッシュとして機能させることで、これら3つの問題を解決することができます。</p>
-<h3 id="Anomaly-detection" class="common-anchor-header">異常検知</h3><p>異常データとは、与えられた集合の中で他のデータと著しく異なるものです。Milvusのようなベクターデータベースは、類似検索を行うのに有益であり、そのような異常なデータの特定を容易にする。</p>
+<h3 id="Anomaly-detection" class="common-anchor-header">異常検知</h3><p>異常データとは、与えられた集合の中で他のデータと大きく異なるものです。Milvusのようなベクターデータベースは、類似検索を行うのに有益であり、そのような異常なデータの特定を容易にする。</p>
 <h3 id="Recommender-systems" class="common-anchor-header">推薦システム</h3><p>レコメンダーシステムは、人々が既に楽しんでいるものに似たアイテムを推薦する。Milvusが類似検索を行うことで、このプロセスを加速している典型的な例である。</p>
 <h3 id="Semantic-search" class="common-anchor-header">セマンティック検索</h3><p>類似した意味を持つものを見つけるためにテキストを検索する場合、キーワード検索では不十分です。そこでセマンティック検索の出番となり、Milvusがお役に立てるのです。Milvusは、単語そのものだけでなく、テキストの背後にある意図を比較することができます。</p>
 <h3 id="Automatic-data-labeling" class="common-anchor-header">自動データラベリング</h3><p>ラベル付けされたデータをさらにマークする必要がありますか？Milvusにベクトル表現を保存することで、新しいデータから最も類似したデータポイントを自動的に検出し、適切なラベルを適用することができます。</p>

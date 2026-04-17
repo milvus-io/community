@@ -47,7 +47,7 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8
         ></path>
       </svg>
     </button></h2><p>K8 dapat secara otomatis menskalakan cluster Milvus berdasarkan beban kerja. Seiring dengan pertumbuhan data Anda atau peningkatan jumlah kueri, K8 dapat menjalankan lebih banyak instance Milvus untuk menangani beban, sehingga aplikasi Anda tetap responsif.</p>
-<p>Salah satu fitur unggulan K8 adalah penskalaan horizontalnya, yang membuat perluasan cluster Milvus Anda menjadi mudah. Seiring dengan pertumbuhan dataset Anda, K8 dengan mudah mengakomodasi pertumbuhan ini, menjadikannya solusi yang mudah dan efisien.</p>
+<p>Salah satu fitur yang menonjol dari K8 adalah penskalaan horizontalnya, yang membuat perluasan cluster Milvus Anda sangat mudah. Seiring dengan pertumbuhan dataset Anda, K8 dengan mudah mengakomodasi pertumbuhan ini, menjadikannya solusi yang mudah dan efisien.</p>
 <p>Selain itu, kemampuan untuk menangani kueri juga meningkat secara horizontal dengan K8. Ketika beban kueri meningkat, K8 dapat menggunakan lebih banyak instance Milvus untuk menangani kueri pencarian kemiripan yang meningkat, memastikan respons latensi yang rendah bahkan di bawah beban yang berat.</p>
 <h2 id="Prerequisites--Setting-Up-K8s" class="common-anchor-header">Prasyarat &amp; Menyiapkan K8<button data-href="#Prerequisites--Setting-Up-K8s" class="anchor-icon" translate="no">
       <svg translate="no"

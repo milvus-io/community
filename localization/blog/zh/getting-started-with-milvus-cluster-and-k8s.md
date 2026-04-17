@@ -27,7 +27,7 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 是一个分布式向量数据库，旨在存储、索引和管理海量嵌入向量。它能够高效地索引和搜索数万亿向量，这使 Milvus 成为人工智能和机器学习工作负载的首选。</p>
+    </button></h2><p>Milvus 是一个分布式向量数据库，旨在存储、索引和管理海量嵌入向量。它能够高效地索引和搜索数万亿向量，这使得 Milvus 成为人工智能和机器学习工作负载的首选。</p>
 <p>Kubernetes（K8s）则擅长管理和扩展容器化应用。它提供自动扩展、自我修复和负载平衡等功能，这些功能对于在生产环境中保持高可用性和高性能至关重要。</p>
 <h2 id="Why-Use-Them-Together" class="common-anchor-header">为什么要同时使用它们？<button data-href="#Why-Use-Them-Together" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -242,7 +242,7 @@ res = client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>在 Kubernetes 集群上部署 Milvus 展示了向量数据库在处理人工智能和机器学习工作负载时的可扩展性和灵活性。通过本教程，您已经了解了使用 Helm 设置 Milvus、创建 Collections 以及执行数据摄取和相似性搜索的基础知识。</p></li>
+<li><p>在 Kubernetes 集群上部署 Milvus 展示了向量数据库在处理人工智能和机器学习工作负载方面的可扩展性和灵活性。通过本教程，您已经了解了使用 Helm 设置 Milvus、创建 Collections 以及执行数据摄取和相似性搜索的基础知识。</p></li>
 <li><p>使用 Helm 在 Kubernetes 集群上安装 Milvus 应该很简单。要深入了解如何为更大的数据集或更密集的工作负载扩展 Milvus 集群，我们的文档提供了详细的指导<a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
 </ul>
 <p>欢迎随时查看<a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a> 上的代码，查看<a href="https://github.com/milvus-io/milvus">Milvus</a>，尝试不同的配置和用例，并通过加入我们的<a href="https://discord.gg/FG6hMJStWu">Discord</a> 与社区分享您的经验。</p>

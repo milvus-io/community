@@ -6,8 +6,7 @@ date: 2025-03-24T00:00:00.000Z
 desc: '벡터 데이터베이스는 빠른 정보 검색과 유사도 검색을 위해 머신러닝 모델에 의해 생성된 벡터 임베딩을 저장, 색인, 검색합니다.'
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
-canonicalUrl: >-
-  https://milvus.io/blog/what-is-a-vector-database.md
+canonicalUrl: 'https://milvus.io/blog/what-is-a-vector-database.md'
 ---
 <p>벡터 데이터베이스는 빠른 검색과 유사도 검색을 위해 벡터 임베딩을 색인하고 저장하며, AI 애플리케이션을 위해 특별히 설계된 CRUD 작업, 메타데이터 필터링, 수평적 확장 등의 기능을 갖추고 있습니다.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -27,7 +26,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>ImageNet 초창기에는 데이터 세트에 수동으로 라벨을 붙이는 데 25,000명의 인간 큐레이터가 필요했습니다. 이 엄청난 숫자는 비정형 데이터를 수동으로 분류하는 것은 확장할 수 없다는 AI의 근본적인 문제를 잘 보여줍니다. 매일 수십억 개의 이미지, 동영상, 문서, 오디오 파일이 생성되면서 컴퓨터가 콘텐츠를 이해하고 상호 작용하는 방식에 대한 패러다임의 전환이 필요했습니다.</p>
-<p><a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">기존의 관계형 데이터베이스</a> 시스템은 사전 정의된 형식의 정형 데이터를 관리하고 정밀한 검색 작업을 실행하는 데 탁월합니다. 반면, 벡터 데이터베이스는 벡터 임베딩이라는 고차원적인 숫자 표현을 통해 이미지, 오디오, 비디오, 텍스트 콘텐츠와 같은 <a href="https://zilliz.com/learn/introduction-to-unstructured-data">비정형 데이터 </a>유형을 저장하고 검색하는 데 특화되어 있습니다. 벡터 데이터베이스는 효율적인 데이터 검색 및 관리를 제공하여 <a href="https://zilliz.com/glossary/large-language-models-(llms)">대규모 언어 모델을</a> 지원합니다. 최신 벡터 데이터베이스는 하드웨어 인식 최적화(AVX512, SIMD, GPU, NVMe SSD), 고도로 최적화된 검색 알고리즘(HNSW, IVF, DiskANN), 열 중심의 스토리지 설계를 통해 기존 시스템보다 2~10배 뛰어난 성능을 발휘합니다. 클라우드 네이티브의 분리형 아키텍처를 통해 검색, 데이터 삽입, 인덱싱 구성 요소를 독립적으로 확장할 수 있어 Salesforce, PayPal, eBay, NVIDIA와 같은 기업의 엔터프라이즈 AI 애플리케이션의 성능을 유지하면서 수십억 개의 벡터를 효율적으로 처리할 수 있는 시스템입니다.</p>
+<p><a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">기존의 관계형 데이터베이스</a> 시스템은 미리 정의된 형식의 정형 데이터를 관리하고 정밀한 검색 작업을 실행하는 데 탁월합니다. 반면, 벡터 데이터베이스는 벡터 임베딩이라는 고차원적인 숫자 표현을 통해 이미지, 오디오, 비디오, 텍스트 콘텐츠와 같은 <a href="https://zilliz.com/learn/introduction-to-unstructured-data">비정형 데이터 </a>유형을 저장하고 검색하는 데 특화되어 있습니다. 벡터 데이터베이스는 효율적인 데이터 검색 및 관리를 제공하여 <a href="https://zilliz.com/glossary/large-language-models-(llms)">대규모 언어 모델을</a> 지원합니다. 최신 벡터 데이터베이스는 하드웨어 인식 최적화(AVX512, SIMD, GPU, NVMe SSD), 고도로 최적화된 검색 알고리즘(HNSW, IVF, DiskANN), 열 중심의 스토리지 설계를 통해 기존 시스템보다 2~10배 뛰어난 성능을 발휘합니다. 클라우드 네이티브의 분리형 아키텍처를 통해 검색, 데이터 삽입, 인덱싱 구성 요소를 독립적으로 확장할 수 있어 Salesforce, PayPal, eBay, NVIDIA와 같은 기업의 엔터프라이즈 AI 애플리케이션의 성능을 유지하면서 수십억 개의 벡터를 효율적으로 처리할 수 있는 시스템입니다.</p>
 <p>기존 데이터베이스는 정확한 일치와 사전 정의된 관계를 기반으로 작동하는 반면, 콘텐츠에 대한 인간의 이해는 미묘하고 맥락적이며 다차원적이기 때문에 전문가들은 이를 '시맨틱 갭'이라고 부릅니다. 이러한 격차는 AI 애플리케이션의 수요에 따라 점점 더 문제가 되고 있습니다:</p>
 <ul>
 <li><p>정확한 일치보다는 개념적 유사성 찾기</p></li>

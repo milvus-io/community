@@ -63,7 +63,7 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-GitHub-stars.md'
         ></path>
       </svg>
     </button></h2><h3 id="LlamaIndex" class="common-anchor-header">LlamaIndex</h3><p><a href="https://github.com/jerryjliu/llama_index">LlamaIndex</a>是用于 LLM 应用程序的数据框架，它提供数据连接器，可将外部数据源与 LLM 连接起来。通过 LlamaIndex，您可以将私人数据或特定领域的知识直接注入 LLM 应用程序。</p>
-<h3 id="LangChainLangChainJS" class="common-anchor-header">LangChain/LangChainJS</h3><p><a href="https://github.com/hwchase17/langchain">LangChain</a>是一个专为加速 LLM 应用程序开发而设计的库，具有提示管理、链、数据增强生成、内存等功能。</p>
+<h3 id="LangChainLangChainJS" class="common-anchor-header">LangChain/LangChainJS</h3><p><a href="https://github.com/hwchase17/langchain">LangChain</a>是一个用于加速 LLM 应用程序开发的库，提供提示管理、链、数据增量生成、内存等功能。</p>
 <h3 id="ChatGPT-Retrieval-Plugin" class="common-anchor-header">ChatGPT 检索插件</h3><p>OpenAI 的<a href="https://github.com/openai/chatgpt-retrieval-plugin">ChatGPT 检索插件</a>可使用自然语言查询对个人或组织文档进行语义搜索和检索，允许开发人员部署自己的插件并将其注册到 ChatGPT 中。</p>
 <h3 id="Haystack" class="common-anchor-header">HayStack</h3><p><a href="https://github.com/deepset-ai/haystack">HayStack</a>是一个端到端 NLP 框架，用于构建由 LLMs、转换器模型、向量搜索和其他技术驱动的 NLP 应用程序，以完成问题解答、语义文档搜索和构建复杂决策等任务。</p>
 <h3 id="GPTCache" class="common-anchor-header">GPTCache</h3><p>LLM API 调用既昂贵又缓慢。<a href="https://github.com/zilliztech/gptcache">GPTCache</a>可为 LLM 查询提供语义缓存，从而解决这两个问题。</p>
@@ -106,7 +106,7 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-GitHub-stars.md'
 <h3 id="Delete-by-Expression" class="common-anchor-header">通过表达式删除</h3><p>您已经可以在 Milvus 中通过布尔表达式执行标量/元数据过滤。通过表达式删除功能也即将推出。</p>
 <h3 id="Change-Data-Capture-CDC" class="common-anchor-header">变更数据捕获 (CDC)</h3><p>CDC 是一种实时捕获和跟踪对 Milvus 实例所做更改的技术。</p>
 <h3 id="Range-Search" class="common-anchor-header">范围搜索</h3><p>范围搜索在某些领域也被称为ε搜索，它可以让你找到与你的查询向量相距一定距离内的所有向量。</p>
-<h3 id="Fast-Scan" class="common-anchor-header">快速扫描</h3><p>FAISS 最近添加了 4 位量化和快速扫描功能，Milvus 也将加入这两项功能。</p>
+<h3 id="Fast-Scan" class="common-anchor-header">快速扫描</h3><p>FAISS 最近增加了 4 位量化和快速扫描功能，Milvus 也将加入这两项功能。</p>
 <h2 id="Looking-forward-to-Milvus-reaching-even-greater-heights" class="common-anchor-header">期待 Milvus 达到更高的高度！<button data-href="#Looking-forward-to-Milvus-reaching-even-greater-heights" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

@@ -135,6 +135,6 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
 <li><a href="https://milvus.io/blog/2022-08-08-How-to-use-string-data-to-empower-your-similarity-search-applications.md">類似検索アプリケーションを強化する文字列データの使い方</a></li>
 <li><a href="https://milvus.io/blog/embedded-milvus.md">Embedded Milvusを使用したPythonによるMilvusのインストールと実行</a></li>
 <li><a href="https://milvus.io/blog/in-memory-replicas.md">インメモリレプリカによるベクターデータベースの読み取りスループットの向上</a></li>
-<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Milvus Vectorデータベースの一貫性レベルを理解する</a></li>
+<li><a href="https://milvus.io/blog/understanding-consistency-levels-in-the-milvus-vector-database.md">Milvus Vectorデータベースの一貫性レベルの理解</a></li>
 <li><a href="https://milvus.io/blog/data-security.md">Milvus Vector Databaseはどのようにデータのセキュリティを確保しているのか？</a></li>
 </ul>

@@ -9,8 +9,7 @@ desc: >-
   recuperación de la información y búsqueda de similitudes.
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
-canonicalUrl: >-
-  https://milvus.io/blog/what-is-a-vector-database.md
+canonicalUrl: 'https://milvus.io/blog/what-is-a-vector-database.md'
 ---
 <p>Una base de datos vectorial indexa y almacena incrustaciones vectoriales para una rápida recuperación y búsqueda de similitudes, con capacidades como operaciones CRUD, filtrado de metadatos y escalado horizontal diseñado específicamente para aplicaciones de IA.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

@@ -86,7 +86,7 @@ canonicalUrl: >-
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_D_Euclidean_Distance_6a52b7bc2f.png" alt="figure 4" class="doc-image" id="figure-4" />
    </span> <span class="img-wrapper"> <span>図4</span> </span></p>
-<p>ここで、各データ点がD次元を持つベクトルであるとすると、ユークリッド距離、あるいはハミング距離や余弦距離のような他の距離メトリックスを使用して、2つのデータ点が互いにどのくらい近いかを調べることができます。これは、近さまたは類似性の概念を構築するのに役立ちます。これは、それらのベクトルを使用して参照アイテムを与えられた類似アイテムを見つけるための定量化可能なメトリックとして使用することができます。</p>
+<p>ここで、各データ点がD次元を持つベクトルであるとすると、ユークリッド距離、あるいはハミング距離や余弦距離のような他の距離メトリックスを使用して、2つのデータ点が互いにどれだけ近いかを調べることができます。これは、近さまたは類似性の概念を構築するのに役立ちます。これは、それらのベクトルを使用して参照アイテムを与えられた類似アイテムを見つけるための定量化可能なメトリックとして使用することができます。</p>
 <h3 id="Understanding-Vector-Similarity-Search" class="common-anchor-header">ベクトル類似検索の理解</h3><p>ベクトル類似性検索は、しばしば最近傍（NN）検索として知られ、基本的には、参照アイテム（類似アイテムを見つけたい）と既存アイテムのコレクション（通常はデータベース内）の間のペアワイズ類似性（または距離）を計算し、トップ「k」最も類似したアイテムであるトップ「k」最近傍を返すプロセスです。この類似度を計算する重要な要素は、ユークリッド距離、内積、余弦距離、ハミング距離などの類似度メトリックである。距離が小さいほど、ベクトルはより類似しています。</p>
 <p>厳密最近傍（NN）探索の課題はスケーラビリティです。N個の距離（N個のアイテムが存在すると仮定）を毎回計算し、類似アイテムを取得する必要があります。これは、特にデータをどこかに保存してインデックスを作らないと（ベクトルデータベースのように！）、非常に時間がかかります。計算を高速化するために、私たちは通常、近似最近傍探索を利用します。これはしばしばANN探索と呼ばれ、最終的にベクトルをインデックスに格納します。このインデックスは、参照するクエリ項目に対して「近似的に」類似した近傍ベクトルを素早く検索できるように、これらのベクトルをインテリジェントな方法で格納するのに役立ちます。典型的なANNインデックス作成手法には以下のものがある：</p>
 <ul>
@@ -184,7 +184,7 @@ canonicalUrl: >-
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/knowhere_architecture_f1be3dbb1a.png" alt="figure 7" class="doc-image" id="figure-7" />
    </span> <span class="img-wrapper"> <span>図7</span> </span></p>
-<p>Milvusの計算には主にベクトル演算とスカラー演算が含まれる。KnowhereはMilvusのベクトル演算のみを扱います。上図はMilvusにおけるKnowhereアーキテクチャを示している。一番下の層はシステム・ハードウェアです。サードパーティのインデックス・ライブラリはハードウェアの上にあります。そして、KnowhereはCGOを介して最上部のインデックス・ノードやクエリ・ノードと相互作用します。KnowhereはFaissの機能をさらに拡張するだけでなく、性能を最適化し、BitsetViewのサポート、より多くの類似性メトリクスのサポート、AVX512命令セットのサポート、SIMD命令の自動選択、その他の性能最適化など、いくつかの利点があります。詳細は<a href="https://milvus.io/blog/deep-dive-8-knowhere.md">こちらを</a>ご覧ください。</p>
+<p>Milvusの計算には主にベクトル演算とスカラー演算が含まれる。KnowhereはMilvusのベクトル演算のみを扱います。上図はMilvusにおけるKnowhereアーキテクチャを示している。一番下の層はシステム・ハードウェアです。サードパーティのインデックス・ライブラリはハードウェアの上にあります。そして、KnowhereはCGOを介して最上部のインデックス・ノードやクエリ・ノードと相互作用します。KnowhereはFaissの機能をさらに拡張するだけでなく、パフォーマンスを最適化し、BitsetViewのサポート、より多くの類似性メトリクスのサポート、AVX512命令セットのサポート、SIMD命令の自動選択、その他のパフォーマンスの最適化など、いくつかの利点があります。詳細は<a href="https://milvus.io/blog/deep-dive-8-knowhere.md">こちらを</a>ご覧ください。</p>
 <h3 id="Milvus-Architecture" class="common-anchor-header">Milvusアーキテクチャ</h3><p>以下の図は、Milvusプラットフォームの全体的なアーキテクチャを示しています。Milvusはデータフローと制御フローを分離し、スケーラビリティとディザスタリカバリの点で独立した4つのレイヤーに分かれています。</p>
 <p>
   
@@ -197,7 +197,7 @@ canonicalUrl: >-
 <li><strong>ストレージ：</strong>Milvusの要であり、データの永続化を担う。ストレージレイヤーは、<strong>メタストア</strong>、<strong>ログブローカー</strong>、<strong>オブジェクトストレージで</strong>構成される。</li>
 </ul>
 <p>アーキテクチャの詳細は<a href="https://milvus.io/docs/v2.0.x/four_layers.md">こちらを</a>ご覧ください！</p>
-<h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">Milvusでビジュアル画像検索を行う - ユースケースの青写真<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
+<h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">Milvusによるビジュアル画像検索 - ユースケースの青写真<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

@@ -112,7 +112,7 @@ my-milvus-zookeeper<span class="hljs-number">-1</span>                   <span c
 my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 <button class="copy-code-btn"></button></code></pre>
 <p>Sie sollten eine Liste von Pods sehen, die der obigen Ausgabe ähnelt und sich alle im Status Running befinden. Dies zeigt an, dass Ihr Milvus-Cluster betriebsbereit ist. Achten Sie insbesondere auf die 1/1 in der Spalte <code translate="no">READY</code>, was bedeutet, dass jeder Pod voll einsatzbereit ist und läuft. Sollten sich einige Pods nicht im Status "Running" befinden, müssen Sie möglicherweise weitere Untersuchungen durchführen, um eine erfolgreiche Bereitstellung zu gewährleisten.</p>
-<p>Nachdem Ihr Milvus-Cluster bereitgestellt wurde und alle Komponenten als lauffähig bestätigt wurden, können Sie nun mit der Datenaufnahme und Indizierung fortfahren. Dies beinhaltet die Verbindung zu Ihrer Milvus-Instanz, die Erstellung von Sammlungen und das Einfügen von Vektoren für die Suche und den Abruf.</p>
+<p>Nachdem Ihr Milvus-Cluster bereitgestellt wurde und alle Komponenten als lauffähig bestätigt wurden, können Sie nun mit der Datenaufnahme und Indizierung fortfahren. Dies umfasst die Verbindung zu Ihrer Milvus-Instanz, die Erstellung von Sammlungen und das Einfügen von Vektoren für die Suche und den Abruf.</p>
 <h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">Datenerfassung und Indizierung<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -245,7 +245,7 @@ res = client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Der Einsatz von Milvus auf einem Kubernetes-Cluster zeigt die Skalierbarkeit und Flexibilität von Vektordatenbanken bei der Verarbeitung von KI- und Machine-Learning-Workloads. In diesem Lernprogramm haben Sie die Grundlagen für die Einrichtung von Milvus mit Helm, die Erstellung einer Sammlung und die Durchführung von Dateningestion und Ähnlichkeitssuchen kennengelernt.</p></li>
+<li><p>Der Einsatz von Milvus auf einem Kubernetes-Cluster zeigt die Skalierbarkeit und Flexibilität von Vektordatenbanken bei der Verarbeitung von KI- und Machine-Learning-Workloads. In diesem Lernprogramm haben Sie die Grundlagen für die Einrichtung von Milvus mit Helm, die Erstellung einer Sammlung und die Durchführung von Dateningestion und Ähnlichkeitssuchen gelernt.</p></li>
 <li><p>Die Installation von Milvus auf einem Kubernetes-Cluster mit Helm sollte einfach sein. Wenn Sie sich eingehender mit der Skalierung von Milvus-Clustern für größere Datensätze oder intensivere Arbeitslasten befassen möchten, bietet unsere Dokumentation eine ausführliche Anleitung <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a></p></li>
 </ul>
 <p>Schauen Sie sich den Code auf <a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a> an, testen Sie <a href="https://github.com/milvus-io/milvus">Milvus</a>, experimentieren Sie mit verschiedenen Konfigurationen und Anwendungsfällen, und teilen Sie Ihre Erfahrungen mit der Community, indem Sie unserem <a href="https://discord.gg/FG6hMJStWu">Discord</a> beitreten.</p>

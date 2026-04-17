@@ -23,7 +23,7 @@ canonicalUrl: >-
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>بصفتي داعية مطور لـ Milvus، أقضي الكثير من الوقت على مواقع التواصل الاجتماعي، وأستمع إلى ما يقوله الناس عنا وإذا كان بإمكاني المساعدة أيضًا. ولكن هناك تضارب طفيف في العوالم عندما تبحث عن &quot;ميلفوس&quot;. إنه متجه DB وجنس من الطيور على حد سواء، مما يعني أنني في لحظة ما أكون غارقاً في موضوع عن خوارزميات تشابه المتجهات، وفي اللحظة التالية أكون معجباً بصور مذهلة لطيور سوداء تحلق في السماء.</p>
 <p>على الرغم من أن كلا الموضوعين مثير للاهتمام، إلا أن الخلط بينهما ليس مفيدًا حقًا في حالتي، ماذا لو كانت هناك طريقة ذكية لحل هذه المشكلة دون الحاجة إلى التحقق يدويًا؟</p>
-<p>دعونا نبني شيئاً أكثر ذكاءً - من خلال الجمع بين الفهم البصري والوعي بالسياق، يمكننا بناء مساعد يعرف الفرق بين أنماط هجرة طائرة ورقية سوداء ومقال جديد منا.</p>
+<p>دعنا نبني شيئًا أكثر ذكاءً - من خلال الجمع بين الفهم البصري والوعي بالسياق، يمكننا بناء مساعد يعرف الفرق بين أنماط هجرة طائرة ورقية سوداء ومقال جديد منا.</p>
 <h2 id="The-tech-stack" class="common-anchor-header">المكدس التقني<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -196,6 +196,6 @@ data = {
     </button></h2><p>إذا أعجبك هذا المنشور في المدونة، يُرجى النظر في:</p>
 <ul>
 <li>⭐ منحنا نجمة على <a href="https://github.com/milvus-io/milvus">GitHub</a></li>
-<li>💬 الانضمام إلى <a href="https://discord.gg/FG6hMJStWu">مجتمع ميلفوس ديسكورد</a> الخاص بنا لمشاركة تجاربك أو إذا كنت بحاجة إلى مساعدة في بناء الوكلاء</li>
+<li>💬 الانضمام إلى <a href="https://discord.gg/FG6hMJStWu">مجتمع ميلفوس ديسكورد</a> لمشاركة خبراتك أو إذا كنت بحاجة إلى مساعدة في بناء الوكلاء</li>
 <li>🔍 استكشاف <a href="https://github.com/milvus-io/bootcamp">مستودع Bootcamp</a> الخاص بنا للحصول على أمثلة للتطبيقات التي تستخدم Milvus</li>
 </ul>

@@ -6,8 +6,7 @@ date: 2025-03-24T00:00:00.000Z
 desc: 向量数据库存储、索引和搜索由机器学习模型生成的向量 Embeddings，用于快速信息检索和相似性搜索。
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
-canonicalUrl: >-
-  https://milvus.io/blog/what-is-a-vector-database.md
+canonicalUrl: 'https://milvus.io/blog/what-is-a-vector-database.md'
 ---
 <p>向量数据库对向量 Embeddings 进行索引和存储，以实现快速检索和相似性搜索，并具有专为人工智能应用设计的 CRUD 操作、元数据过滤和水平扩展等功能。</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -28,7 +27,7 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>在 ImageNet 初期，需要 25,000 名人类管理员对数据集进行人工标注。这个惊人的数字凸显了人工智能的一个基本挑战：人工对非结构化数据进行分类根本无法扩展。每天都会产生数十亿张图片、视频、文档和音频文件，因此需要转变计算机理解内容并与之交互的模式。</p>
 <p><a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">传统的关系型数据库系统</a>擅长管理具有预定义格式的结构化数据，并执行精确的搜索操作。相比之下，向量数据库擅长通过被称为向量 Embeddings 的高维数字表示来存储和检索<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非结构化数据类型 </a>，如图像、音频、视频和文本内容。向量数据库通过提供高效的数据检索和管理来支持<a href="https://zilliz.com/glossary/large-language-models-(llms)">大型语言模型</a>。通过硬件感知优化（AVX512、SIMD、GPU、NVMe SSD）、高度优化的搜索算法（HNSW、IVF、DiskANN）和面向列的存储设计，现代向量数据库的性能比传统系统高出 2-10 倍。它们的云原生、解耦架构实现了搜索、数据插入和索引组件的独立扩展，使系统能够高效处理数十亿个向量，同时为 Salesforce、PayPal、eBay 和英伟达等公司的企业人工智能应用保持性能。</p>
-<p>这代表了专家们所说的 "语义鸿沟"--传统数据库的操作符是精确匹配和预定义关系，而人类对内容的理解是细微的、上下文的和多维的。随着人工智能应用的需要，这种差距变得越来越成问题：</p>
+<p>这就是专家们所说的 "语义鸿沟"--传统数据库的操作符是精确匹配和预定义关系，而人类对内容的理解是细微的、上下文的和多维的。随着人工智能应用的需要，这种差距变得越来越成问题：</p>
 <ul>
 <li><p>寻找概念上的相似性，而不是精确匹配</p></li>
 <li><p>理解不同内容之间的上下文关系</p></li>
@@ -261,7 +260,7 @@ canonicalUrl: >-
 <li><p>设定最大允许距离的外部边界（半径</p></li>
 <li><p>内部边界（range_filter），用于排除过于相似的向量</p></li>
 </ul>
-<p>当你想找到 "相似但不完全相同 "的项目时，这种方法特别有用，比如与用户已浏览过的内容相关但不完全重复的产品推荐。</p>
+<p>这种方法在查找 "相似但不完全相同 "的项目时特别有用，例如与用户已浏览过的内容相关但不完全重复的产品推荐。</p>
 <h4 id="Filtered-Search" class="common-anchor-header">过滤搜索</h4><p>过滤搜索将向量相似性与元数据约束相结合，将搜索结果缩小到符合特定条件的向量。例如，在产品目录中，您可以找到视觉上相似的商品，但将结果限制在特定品牌或价格范围内。</p>
 <p>高扩展向量数据库支持两种过滤方法：</p>
 <ul>

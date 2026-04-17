@@ -63,7 +63,7 @@ canonicalUrl: 'https://milvus.io/blog/milvus-surpasses-20000-GitHub-stars.md'
         ></path>
       </svg>
     </button></h2><h3 id="LlamaIndex" class="common-anchor-header">LlamaIndex</h3><p><a href="https://github.com/jerryjliu/llama_index">LlamaIndex</a>是適用於 LLM 應用程式的資料框架，提供資料連接器以連結外部資料來源與 LLM。LlamaIndex 可讓您直接將私人資料或特定領域的知識注入 LLM 應用程式。</p>
-<h3 id="LangChainLangChainJS" class="common-anchor-header">LangChain/LangChainJS</h3><p><a href="https://github.com/hwchase17/langchain">LangChain</a>是專為加速 LLM 應用程式開發而設計的函式庫，提供提示管理、鏈、資料增量生成、記憶體等功能。</p>
+<h3 id="LangChainLangChainJS" class="common-anchor-header">LangChain/LangChainJS</h3><p><a href="https://github.com/hwchase17/langchain">LangChain</a>是專為加速 LLM 應用程式開發的函式庫，提供提示管理、鏈、資料增量生成、記憶體等功能。</p>
 <h3 id="ChatGPT-Retrieval-Plugin" class="common-anchor-header">ChatGPT 擷取外掛程式</h3><p>OpenAI 的<a href="https://github.com/openai/chatgpt-retrieval-plugin">ChatGPT Retrieval Plugin</a>可使用自然語言查詢，對個人或組織文件進行語意搜尋與檢索，開發人員可部署其外掛程式，並在 ChatGPT 註冊。</p>
 <h3 id="Haystack" class="common-anchor-header">Haystack</h3><p><a href="https://github.com/deepset-ai/haystack">Haystack</a>是一個端對端的 NLP 架構，用來建立由 LLM、轉換器模型、向量搜尋及其他技術驅動的 NLP 應用程式，以執行問題回答、語義文件搜尋及建立複雜決策等任務。</p>
 <h3 id="GPTCache" class="common-anchor-header">GPTCache</h3><p>LLM API 調用既昂貴又緩慢。<a href="https://github.com/zilliztech/gptcache">GPTCache</a>可透過為 LLM 查詢提供語意快取，補救這兩個問題。</p>

@@ -4,8 +4,9 @@ title: Iniziare con il cluster Milvus e K8s
 author: Stephen Batifol
 date: 2024-04-03T00:00:00.000Z
 desc: >-
-  In questo tutorial imparerete le basi per configurare Milvus con Helm, creare
-  una raccolta ed eseguire l'ingestione dei dati e le ricerche di similarità.
+  In questo tutorial imparerete le basi della configurazione di Milvus con Helm,
+  la creazione di una raccolta e l'esecuzione dell'ingestione dei dati e delle
+  ricerche di similarità.
 cover: assets.zilliz.com/Getting_started_with_Milvus_cluster_and_K8s_1_34b2c81802.png
 tag: Engineering
 tags: >-
@@ -80,7 +81,7 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8
 <p><strong>1. Comando di installazione di Helm</strong></p>
 <pre><code translate="no">helm install my-milvus milvus/milvus --<span class="hljs-built_in">set</span> pulsar.enabled=<span class="hljs-literal">false</span> --<span class="hljs-built_in">set</span> kafka.enabled=<span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Questo comando installa Milvus sul cluster K8s con Kafka abilitato e Pulsar disabilitato. Kafka funge da sistema di messaggistica all'interno di Milvus, gestendo lo streaming dei dati tra i diversi componenti. La disabilitazione di Pulsar e l'abilitazione di Kafka adattano la distribuzione alle nostre preferenze e ai nostri requisiti specifici di messaggistica.</p>
+<p>Questo comando installa Milvus sul cluster K8s con Kafka abilitato e Pulsar disabilitato. Kafka funge da sistema di messaggistica all'interno di Milvus, gestendo lo streaming dei dati tra i diversi componenti. Disabilitando Pulsar e abilitando Kafka, la distribuzione si adatta alle nostre preferenze e ai nostri requisiti specifici di messaggistica.</p>
 <p><strong>2. Inoltro delle porte</strong></p>
 <p>Per accedere a Milvus dalla propria macchina locale, creare un port forward: <code translate="no">kubectl port-forward svc/my-milvus 27017:19530</code>.</p>
 <p>Questo comando mappa la porta <code translate="no">19530</code> dal servizio Milvus <code translate="no">svc/my-milvus</code> alla stessa porta sul computer locale, consentendo di connettersi a Milvus con gli strumenti locali. Se si lascia la porta locale non specificata (come in <code translate="no">:19530</code>), K8s assegnerà una porta disponibile, rendendola dinamica. Se si sceglie questo metodo, assicurarsi di annotare la porta locale assegnata.</p>
@@ -110,7 +111,7 @@ my-milvus-zookeeper<span class="hljs-number">-0</span>                   <span c
 my-milvus-zookeeper<span class="hljs-number">-1</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 <button class="copy-code-btn"></button></code></pre>
-<p>Si dovrebbe vedere un elenco di pod simile all'output precedente, tutti in stato di esecuzione. Questo indica che il cluster Milvus è operativo. In particolare, cercate il valore 1/1 nella colonna <code translate="no">READY</code>, che indica che ogni pod è completamente pronto e funzionante. Se qualche pod non è in esecuzione, potrebbe essere necessario indagare ulteriormente per garantire il successo della distribuzione.</p>
+<p>Dovreste vedere un elenco di pod simile all'output precedente, tutti in stato di esecuzione. Questo indica che il cluster Milvus è operativo. In particolare, cercate il valore 1/1 nella colonna <code translate="no">READY</code>, che indica che ogni pod è completamente pronto e funzionante. Se qualche pod non è in esecuzione, potrebbe essere necessario indagare ulteriormente per garantire il successo della distribuzione.</p>
 <p>Con il cluster Milvus distribuito e tutti i componenti confermati in esecuzione, si è ora pronti a procedere all'ingestione e all'indicizzazione dei dati. Questo comporta la connessione all'istanza Milvus, la creazione di collezioni e l'inserimento di vettori per la ricerca e il recupero.</p>
 <h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">Ingestione e indicizzazione dei dati<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -244,7 +245,7 @@ res = client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>La distribuzione di Milvus su un cluster Kubernetes dimostra la scalabilità e la flessibilità dei database vettoriali nella gestione dei carichi di lavoro di AI e apprendimento automatico. Con questo tutorial si sono apprese le basi della configurazione di Milvus con Helm, della creazione di una collezione e dell'esecuzione di ingestioni di dati e ricerche di similarità.</p></li>
+<li><p>La distribuzione di Milvus su un cluster Kubernetes dimostra la scalabilità e la flessibilità dei database vettoriali nella gestione dei carichi di lavoro di AI e apprendimento automatico. Con questo tutorial, avete appreso le basi della configurazione di Milvus con Helm, della creazione di una collezione e dell'esecuzione di ingestioni di dati e ricerche di similarità.</p></li>
 <li><p>L'installazione di Milvus su un cluster Kubernetes con Helm dovrebbe essere semplice. Per approfondire la scalabilità dei cluster Milvus per grandi insiemi di dati o carichi di lavoro più intensivi, la nostra documentazione offre una guida dettagliata <a href="https://milvus.io/docs/scaleout.md">https://milvus.io/docs/scaleout.md</a>.</p></li>
 </ul>
 <p>Sentitevi liberi di controllare il codice su <a href="https://github.com/stephen37/K8s-tutorial-milvus">Github</a>, di provare <a href="https://github.com/milvus-io/milvus">Milvus</a>, di sperimentare diverse configurazioni e casi d'uso e di condividere le vostre esperienze con la comunità unendovi al nostro <a href="https://discord.gg/FG6hMJStWu">Discord</a>.</p>

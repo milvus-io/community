@@ -99,7 +99,7 @@ INFO     [src.agent.custom_agent] 🧠 All Memory:
 <span class="hljs-number">3.</span> Specific mention of Milvus <span class="hljs-keyword">as</span> a key component <span class="hljs-keyword">in</span> innovative RAG systems.
 <span class="hljs-number">4.</span> No content related to birds <span class="hljs-keyword">or</span> photography was found.
 <button class="copy-code-btn"></button></code></pre>
-<p>A da direita, por outro lado, não é, podemos ver que esta imagem, por muito bonita que seja, não é sobre uma BD Vetorial. Podemos ver um pássaro a voar no céu, pelo que Pixtral considerará esta imagem irrelevante.</p>
+<p>A da direita, por outro lado, não é, podemos ver que esta imagem, por mais bonita que seja, não é sobre uma BD Vetorial. Podemos ver um pássaro a voar no céu, pelo que Pixtral considerará esta imagem irrelevante.</p>
 <pre><code translate="no" class="language-Shell">INFO     [src.agent.custom_agent] 🧠 New Memory: The post <span class="hljs-keyword">and</span> comments primarily discuss photography <span class="hljs-keyword">and</span> birds. No references to Milvus the Vector Database are found.
 INFO     [src.agent.custom_agent] ⏳ Task Progress:
 Navigated to the post. Analyzed the content <span class="hljs-keyword">for</span> relevance to Milvus, the Vector DB. No relevant information found.
@@ -131,7 +131,7 @@ The post <span class="hljs-keyword">and</span> comments primarily discuss photog
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://milvus.io/docs/enable-dynamic-field.md#Dynamic-Field">Os campos dinâmicos</a> são uma necessidade neste caso, porque nem sempre é possível respeitar o esquema que o Milvus espera. Com o Milvus, basta utilizar <code translate="no">enable_dynamic_field=True</code> ao criar o seu esquema, e já está. Aqui está um excerto de código para mostrar o processo:</p>
+    </button></h2><p><a href="https://milvus.io/docs/enable-dynamic-field.md#Dynamic-Field">Os campos dinâmicos</a> são uma necessidade neste caso, porque nem sempre é possível respeitar o esquema que o Milvus espera. Com o Milvus, basta utilizar <code translate="no">enable_dynamic_field=True</code> ao criar o seu esquema e já está. Aqui está um excerto de código para mostrar o processo:</p>
 <pre><code translate="no" class="language-Python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 <span class="hljs-comment"># Connect to Milvus</span>

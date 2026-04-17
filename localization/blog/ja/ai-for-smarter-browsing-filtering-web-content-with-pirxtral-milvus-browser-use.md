@@ -19,7 +19,7 @@ canonicalUrl: >-
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Milvusのデベロッパー・アドボケイトとして、私はソーシャルに多くの時間を費やしています。しかし、&quot;Milvus &quot;を検索するとき、ちょっとした衝突があります。ベクトルDBであり、鳥の属でもある。つまり、ベクトル類似性アルゴリズムについてのスレッドに深く入り込んだかと思うと、次の瞬間には空を飛ぶ黒い鳥の見事な写真に見とれている。</p>
-<p>どちらのトピックも興味深いが、それらを混在させることは私の場合あまり役に立たない。もし私が手動でチェックすることなく、この問題をスマートに解決する方法があるとしたらどうだろう？</p>
+<p>どちらのトピックも興味深いが、私の場合、それらを混在させることはあまり役に立たない。もし、私が手動でチェックすることなく、この問題をスマートに解決する方法があったらどうだろう？</p>
 <p>視覚的理解と文脈認識を組み合わせることで、黒いトビの移動パターンと私たちからの新しい記事の違いを知っているアシスタントを作ることができる。</p>
 <h2 id="The-tech-stack" class="common-anchor-header">技術スタック<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
       <svg translate="no"

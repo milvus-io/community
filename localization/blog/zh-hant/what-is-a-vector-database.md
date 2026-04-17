@@ -6,8 +6,7 @@ date: 2025-03-24T00:00:00.000Z
 desc: 向量資料庫可儲存、索引和搜尋由機器學習模型產生的向量嵌入，以進行快速資訊檢索和相似性搜尋。
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
-canonicalUrl: >-
-  https://milvus.io/blog/what-is-a-vector-database.md
+canonicalUrl: 'https://milvus.io/blog/what-is-a-vector-database.md'
 ---
 <p>向量資料庫可索引並儲存向量嵌入，以進行快速檢索和相似性搜尋，其功能包括 CRUD 操作、元資料過濾，以及專為 AI 應用程式設計的水平擴充。</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -26,8 +25,8 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>在 ImageNet 的早期，需要 25,000 名人力策展人來手動標籤資料集。這個驚人的數字突顯了人工智能的基本挑戰：手動將非結構性資料分類根本無法擴充。每天都會產生數十億張圖片、視訊、文件和音訊檔案，因此需要改變電腦理解內容和與內容互動的模式。</p>
-<p><a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">傳統的關聯式資料庫系統</a>擅長以預先定義的格式管理結構化資料，並執行精確的搜尋作業。相反，向量資料庫則專精於透過稱為向量嵌入的高維數值表示來儲存和檢索<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非結構化資料 </a>類型，例如影像、音訊、視訊和文字內容。向量資料庫透過提供高效率的資料擷取與管理，支援<a href="https://zilliz.com/glossary/large-language-models-(llms)">大型語言模型</a>。現代向量資料庫透過硬體感知最佳化 (AVX512、SIMD、GPU、NVMe SSD)、高度最佳化的搜尋演算法 (HNSW、IVF、DiskANN) 以及面向欄位的儲存設計，表現優於傳統系統 2-10 倍。其雲端原生、解耦式架構可獨立擴充搜尋、資料插入和索引元件，讓系統有效率地處理數十億個向量，同時為 Salesforce、PayPal、eBay 和 NVIDIA 等公司的企業級 AI 應用程式維持效能。</p>
+    </button></h2><p>在 ImageNet 的早期，需要 25,000 名人力策展人來手動標籤資料集。這個驚人的數字突顯了人工智能的基本挑戰：手動分類非結構性資料根本無法擴充。由於每天都會產生數十億張圖片、視訊、文件和音訊檔案，因此需要改變電腦理解內容和與內容互動的模式。</p>
+<p><a href="https://zilliz.com/blog/relational-databases-vs-vector-databases">傳統的關聯式資料庫系統</a>擅長以預先定義的格式管理結構化資料，並執行精確的搜尋作業。相反，向量資料庫則專精於透過稱為向量嵌入的高維數值表示來儲存和檢索<a href="https://zilliz.com/learn/introduction-to-unstructured-data">非結構化資料 </a>類型，例如影像、音訊、視訊和文字內容。向量資料庫透過提供高效率的資料擷取與管理，支援<a href="https://zilliz.com/glossary/large-language-models-(llms)">大型語言模型</a>。現代向量資料庫透過硬體感知最佳化 (AVX512、SIMD、GPU、NVMe SSD)、高度最佳化的搜尋演算法 (HNSW、IVF、DiskANN) 以及面向欄位的儲存設計，表現優於傳統系統 2-10 倍。其雲端原生、解耦式架構可獨立擴充搜尋、資料插入和索引元件，讓系統有效處理數十億個向量，同時維持 Salesforce、PayPal、eBay 和 NVIDIA 等公司的企業級 AI 應用程式效能。</p>
 <p>這代表了專家所謂的「語義差距」- 傳統資料庫的運作是基於精確匹配和預先定義的關係，而人類對內容的理解是細微的、情境性的和多維的。隨著 AI 應用程式的需求，這個差距變得越來越棘手：</p>
 <ul>
 <li><p>尋找概念上的相似性，而非完全匹配</p></li>
@@ -78,7 +77,7 @@ canonicalUrl: >-
 <p><a href="https://zilliz.com/blog/similarity-metrics-for-vector-search"><strong>距離度量</strong></a>：量化向量間相似性的數學函數</p>
 <p>向量資料庫的主要操作是<a href="https://zilliz.com/blog/k-nearest-neighbor-algorithm-for-machine-learning">k 最近鄰</a>(KNN) 查詢，它會找出與指定查詢向量最相似的 k 個向量。對於大規模的應用，這些資料庫通常會執行<a href="https://zilliz.com/glossary/anns">近似最近鄰</a>(ANN) 演算法，以少量的精確度來換取搜尋速度的顯著提升。</p>
 <h3 id="Mathematical-Foundations-of-Vector-Similarity" class="common-anchor-header">向量相似性的數學基礎</h3><p>理解向量資料庫需要掌握向量相似性背後的數學原理。以下是基本概念：</p>
-<h3 id="Vector-Spaces-and-Embeddings" class="common-anchor-header">向量空間與嵌入</h3><p><a href="https://zilliz.com/learn/everything-you-should-know-about-vector-embeddings">向量嵌入</a>是固定長度的浮點數陣列（可從 100 到 32,768 維不等！），以數值格式表示非結構化資料。這些內嵌在高維向量空間中將相似的項目定位在較近的位置。</p>
+<h3 id="Vector-Spaces-and-Embeddings" class="common-anchor-header">向量空間與嵌入</h3><p><a href="https://zilliz.com/learn/everything-you-should-know-about-vector-embeddings">向量嵌入</a>是固定長度的浮點數陣列（可從 100 到 32,768 維不等！），以數值格式表示非結構化資料。這些內嵌在高維向量空間中將相似的項目定位得更近。</p>
 <p>例如，在訓練有素的字詞嵌入空間中，「king」和「queen」這兩個字詞的向量表示會比較接近「automobile」。</p>
 <h3 id="Distance-Metrics" class="common-anchor-header">距離指標</h3><p>距離指標的選擇會從根本影響相似性的計算方式。常見的距離指標包括</p>
 <ol>
@@ -97,7 +96,7 @@ canonicalUrl: >-
 <p>僅在關係資料庫中加入向量索引是不夠的，使用獨立的<a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">向量索引函式庫</a>也是不夠的。雖然向量索引提供了有效尋找相似向量的關鍵能力，但它們缺乏生產應用程式所需的基礎架構：</p>
 <ul>
 <li><p>它們不提供管理向量資料的 CRUD 操作</p></li>
-<li><p>它們缺乏元資料儲存與篩選功能</p></li>
+<li><p>缺乏元資料儲存與篩選功能</p></li>
 <li><p>不提供內建擴充、複製或容錯功能</p></li>
 <li><p>它們需要自訂的基礎架構來進行資料持久化和管理</p></li>
 </ul>
@@ -136,7 +135,7 @@ canonicalUrl: >-
 <li><p>這些向量嵌入與相關的元資料一起儲存在資料庫中</p></li>
 <li><p>當使用者執行查詢時，會使用<em>相同的</em>模型將其轉換成向量嵌入。</p></li>
 <li><p>資料庫使用近似近鄰演算法比較查詢向量與儲存向量</p></li>
-<li><p>系統會根據向量的相似性，返回前 K 個最相關的結果</p></li>
+<li><p>系統會根據向量的相似度，返回前 K 個最相關的結果</p></li>
 <li><p>可選的後處理可應用額外的過濾器或重新排序</p></li>
 </ol>
 <p>此管道可在大量非結構化資料集合中進行有效率的語意搜尋，而傳統資料庫方法則無法做到這一點。</p>
@@ -165,7 +164,7 @@ canonicalUrl: >-
     </button></h2><p>與傳統資料庫相比，向量資料庫具有多項優點，是處理向量資料的理想選擇。以下是一些主要優點：</p>
 <ol>
 <li><p><strong>高效的相似性搜尋</strong>：矢量資料庫的突出特色之一是能夠執行有效率的語意搜尋。與依賴精確匹配的傳統資料庫不同，向量資料庫擅長尋找與指定查詢向量相似的資料點。這種能力對於推薦系統等應用程式來說非常重要，在這些應用程式中，找到與使用者過去互動類似的項目可以大幅提升使用者體驗。</p></li>
-<li><p><strong>處理高維資料</strong>：向量資料庫專為有效管理高維資料而設計。這使得矢量資料庫特別適合自然語言處理、<a href="https://zilliz.com/learn/what-is-computer-vision">電腦視覺</a>和基因組學的應用，因為這些領域的資料通常存在於高維空間中。利用先進的索引和搜尋演算法，向量資料庫能夠快速擷取相關的資料點，即使是複雜的向量嵌入資料集也不例外。</p></li>
+<li><p><strong>處理高維資料</strong>：向量資料庫專為有效管理高維資料而設計。這使得向量資料庫特別適合自然語言處理、<a href="https://zilliz.com/learn/what-is-computer-vision">電腦視覺</a>和基因組學的應用，因為這些領域的資料通常存在於高維空間中。透過利用先進的索引與搜尋演算法，向量資料庫能夠快速擷取相關的資料點，即使是複雜的向量嵌入資料集也不例外。</p></li>
 <li><p><strong>可擴充性</strong>：可擴充性是現代人工智慧應用程式的重要需求，而向量資料庫就是為了有效擴充而建立的。無論是處理數百萬或數十億向量，向量資料庫都能透過水平擴充，處理人工智慧應用程式不斷成長的需求。這可確保即使資料量增加，效能仍能保持一致。</p></li>
 <li><p><strong>彈性</strong>：向量資料庫在資料表示方面提供了極佳的靈活性。它們可以儲存和管理各種類型的資料，包括數值特徵、文字或影像的嵌入，甚至是分子結構等複雜資料。這種多樣性讓向量資料庫成為從文字分析到科學研究等廣泛應用的強大工具。</p></li>
 <li><p><strong>即時應用</strong>：許多向量資料庫已針對即時或接近即時的查詢進行最佳化。這對於需要快速回應的應用程式尤其重要，例如詐欺偵測、即時推薦和互動式 AI 系統。執行快速相似性搜尋的能力可確保這些應用程式能及時提供相關結果。</p></li>
@@ -214,7 +213,7 @@ canonicalUrl: >-
 <p><strong>Cagra</strong>是專為 GPU 加速而優化的圖形索引。它能建構出符合 GPU 處理模式的可瀏覽圖形結構，從而實現大規模的平行向量比較。Cagra 之所以特別有效，是因為它能夠透過可設定的參數（例如圖形程度和搜尋寬度）來平衡召回率和效能。與昂貴的訓練級硬體相比，使用 Cagra 的推理級 GPU 更具成本效益，同時仍能提供高吞吐量，特別是對於大規模向量集合而言。不過，值得注意的是，除非是在高查詢壓力下運作，否則 GPU 索引 (例如 Cagra) 不一定會比 CPU 索引降低延遲。</p>
 <h3 id="Quantization-Techniques" class="common-anchor-header">量化技術</h3><p><a href="https://zilliz.com/learn/scalar-quantization-and-product-quantization"><strong>乘積量化 (Product Quantization, PQ)</strong></a>可將高維向量分解成較小的子向量，並將每個子向量單獨量化。這可大幅降低儲存需求 (通常可降低 90% 以上)，但會造成一些精確度上的損失。</p>
 <p><strong>Scalar Quantization (SQ)</strong>將 32 位元浮點數轉換為 8 位元整數，可減少 75% 的記憶體使用量，但對精確度的影響極小。</p>
-<h3 id="On-Disk-Indexing-Cost-Effective-Scaling" class="common-anchor-header">磁碟索引：具成本效益的擴充</h3><p>對於大規模向量集合 (100M+ 向量)，記憶體內索引會變得非常昂貴。例如，1 億個 1024 維向量大約需要 400GB 記憶體。這就是 DiskANN 等磁碟索引演算法提供顯著成本效益的地方。</p>
+<h3 id="On-Disk-Indexing-Cost-Effective-Scaling" class="common-anchor-header">磁碟索引：具成本效益的擴充</h3><p>對於大規模向量集合 (100M+ 向量)，記憶體內索引會變得非常昂貴。舉例來說，1 億個 1024 維向量大約需要 400GB 記憶體。這就是 DiskANN 等磁碟索引演算法提供顯著成本效益的地方。</p>
 <p><a href="https://zilliz.com/learn/DiskANN-and-the-Vamana-Algorithm">DiskANN</a> 以 Vamana 圖演算法為基礎，可在 NVMe SSD 而非 RAM 上儲存大部分索引的同時，進行有效率的向量搜尋。這種方法具有多項成本優勢：</p>
 <ul>
 <li><p><strong>降低硬體成本</strong>：組織可使用具有適度 RAM 配置的商品硬體，進行規模化的向量搜尋部署</p></li>
@@ -262,7 +261,7 @@ canonicalUrl: >-
 <li><p>內側邊界 (range_filter) 可以排除太相似的向量</p></li>
 </ul>
 <p>當您想要尋找「類似但不完全相同」的項目時，這個方法特別有用，例如與使用者已瀏覽過的項目相關但不完全重複的產品推薦。</p>
-<h4 id="Filtered-Search" class="common-anchor-header">篩選搜尋</h4><p>篩選搜尋結合向量相似性與元資料限制，將搜尋結果縮小到符合特定條件的向量。例如，在產品目錄中，您可以找到視覺上相似的項目，但將結果限制在特定品牌或價格範圍內。</p>
+<h4 id="Filtered-Search" class="common-anchor-header">篩選搜尋</h4><p>篩選搜尋結合向量相似性與元資料限制，將搜尋結果縮小到符合特定條件的向量。例如，在產品目錄中，您可以找到視覺上相似的項目，但將結果限制為特定品牌或價格範圍。</p>
 <p>Highly Scalable 向量資料庫支援兩種篩選方法：</p>
 <ul>
 <li><p><strong>標準篩選</strong>：在向量搜尋之前套用元資料篩選器，大幅減少候選資料池</p></li>
@@ -318,7 +317,7 @@ canonicalUrl: >-
 <li><p>每秒查詢次數 (QPS)：資料庫在標準條件下處理查詢的速度</p></li>
 <li><p>跨不同資料集大小和維度的效能</p></li>
 </ul>
-<p>另一種選擇是開放原始碼基準系統<a href="https://zilliz.com/vector-database-benchmark-tool?database=ZillizCloud%2CMilvus%2CElasticCloud%2CPgVector%2CPinecone%2CQdrantCloud%2CWeaviateCloud&amp;dataset=medium&amp;filter=none%2Clow%2Chigh&amp;tab=1">VDB Bench</a>。VectorDBBench 是一個<a href="https://github.com/zilliztech/VectorDBBench">開放原始碼的基準測試工具</a>，設計用來評估和比較主流向量資料庫的效能，例如 Milvus 和 Zilliz Cloud 使用自己的資料集。它還能幫助開發人員選擇最適合其使用個案的向量資料庫。</p>
+<p>另一個選擇是開放原始碼基準系統<a href="https://zilliz.com/vector-database-benchmark-tool?database=ZillizCloud%2CMilvus%2CElasticCloud%2CPgVector%2CPinecone%2CQdrantCloud%2CWeaviateCloud&amp;dataset=medium&amp;filter=none%2Clow%2Chigh&amp;tab=1">VDB Bench</a>。VectorDBBench 是一個<a href="https://github.com/zilliztech/VectorDBBench">開放原始碼的基準測試工具</a>，設計用來評估和比較主流向量資料庫的效能，例如 Milvus 和 Zilliz Cloud 使用自己的資料集。它還能幫助開發人員選擇最適合其使用個案的向量資料庫。</p>
 <p>這些基準可讓組織找出最適合其特定需求的向量資料庫實作，並考慮精確度、速度和可擴充性之間的平衡。</p>
 <h3 id="Memory-Management" class="common-anchor-header">記憶體管理</h3><p>高效的記憶體管理可讓向量資料庫在維持效能的同時，擴充至數十億向量：</p>
 <ul>
@@ -403,4 +402,4 @@ canonicalUrl: >-
 <li><p>效能：與傳統資料庫相比，向量相似性搜尋的速度顯著加快</p></li>
 <li><p>自訂索引：支援針對特定使用個案與資料類型最佳化的自訂索引方案</p></li>
 </ul>
-<p>隨著人工智慧 (AI) 應用程式日趨複雜，對向量資料庫的需求也持續演進。現代系統必須平衡效能、準確性、擴充性與成本效益，同時與更廣泛的 AI 生態系統無縫整合。對於希望大規模實施 AI 的組織而言，瞭解向量資料庫技術不僅是技術上的考量，更是策略上的必要。</p>
+<p>隨著人工智慧 (AI) 應用越來越複雜，對向量資料庫的需求也持續演進。現代系統必須平衡效能、準確性、擴充性與成本效益，同時與更廣泛的 AI 生態系統無縫整合。對於希望大規模實施 AI 的組織而言，瞭解向量資料庫技術不僅是技術上的考量，更是策略上的必要。</p>

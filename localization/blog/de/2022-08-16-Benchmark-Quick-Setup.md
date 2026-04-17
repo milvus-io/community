@@ -86,7 +86,7 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
 <button class="copy-code-btn"></button></code></pre>
 <ol start="7">
 <li>Öffnen Sie die Datei <code translate="no">go_log_file.log</code> im aktuellen Verzeichnis, um das detaillierte Suchprotokoll zu prüfen. Im Folgenden finden Sie die Suchinformationen, die Sie im Suchprotokoll finden können.<ul>
-<li><p>reqs: Anzahl der Suchanfragen von dem Zeitpunkt, an dem die Gleichzeitigkeit eintritt, bis zum aktuellen Zeitpunkt (die aktuelle Zeitspanne)</p></li>
+<li><p>reqs: Anzahl der Suchanfragen von dem Moment, in dem die Gleichzeitigkeit eintritt, bis zum aktuellen Moment (die aktuelle Zeitspanne)</p></li>
 <li><p>Fails: Anzahl der fehlgeschlagenen Suchanfragen als Prozentsatz der Suchanfragen in der aktuellen Zeitspanne</p></li>
 <li><p>Avg: durchschnittliche Antwortzeit der Anfrage in der aktuellen Zeitspanne (Einheit: Millisekunden)</p></li>
 <li><p>Min: minimale Antwortzeit der Anfrage in der aktuellen Zeitspanne (Einheit: Millisekunden)</p></li>

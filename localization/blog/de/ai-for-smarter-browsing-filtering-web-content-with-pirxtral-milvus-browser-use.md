@@ -22,7 +22,7 @@ canonicalUrl: >-
 ---
 <iframe width="100%" height="480" src="https://www.youtube.com/embed/4Xf4_Wfjk_Y" title="How to Build a Smart Social Media Agent with Milvus, Pixtral &amp; Browser Use" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <p>Als Developer Advocate für Milvus verbringe ich viel Zeit in sozialen Netzwerken und höre mir an, was die Leute über uns zu sagen haben und ob ich auch helfen kann. Wenn man nach &quot;Milvus&quot; sucht, prallen allerdings Welten aufeinander. Es ist sowohl eine Vektor-DB als auch eine Vogelgattung, was bedeutet, dass ich in einem Moment tief in einem Thread über Vektorähnlichkeitsalgorithmen stecke und im nächsten atemberaubende Fotos von schwarzen Vögeln bewundere, die durch den Himmel fliegen.</p>
-<p>Obwohl beide Themen interessant sind, ist es in meinem Fall nicht wirklich hilfreich, sie zu vermischen. Was wäre, wenn es einen intelligenten Weg gäbe, dieses Problem zu lösen, ohne dass ich manuell nachschauen muss?</p>
+<p>Obwohl beide Themen interessant sind, ist es in meinem Fall nicht wirklich hilfreich, sie zu vermischen. Was wäre, wenn es einen intelligenten Weg gäbe, dieses Problem zu lösen, ohne dass ich manuell nachsehen muss?</p>
 <p>Durch die Kombination von visuellem Verständnis und Kontextbewusstsein können wir einen Assistenten entwickeln, der den Unterschied zwischen den Zugmustern eines Schwarzmilans und einem neuen Artikel von uns kennt.</p>
 <h2 id="The-tech-stack" class="common-anchor-header">Der Technologie-Stack<button data-href="#The-tech-stack" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -160,7 +160,7 @@ data = {
     data=[data]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Diese einfache Einrichtung bedeutet, dass Sie sich nicht darum kümmern müssen, dass jedes Feld im Voraus perfekt definiert ist. Richten Sie einfach das Schema so ein, dass dynamische Ergänzungen möglich sind, und lassen Sie Milvus die Arbeit machen.</p>
+<p>Diese einfache Einrichtung bedeutet, dass Sie sich nicht darum kümmern müssen, dass jedes Feld im Voraus perfekt definiert ist. Richten Sie einfach das Schema so ein, dass dynamische Ergänzungen möglich sind, und überlassen Sie Milvus die schwere Arbeit.</p>
 <h2 id="Conclusion" class="common-anchor-header">Fazit<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

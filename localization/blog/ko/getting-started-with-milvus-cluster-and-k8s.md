@@ -108,7 +108,7 @@ my-milvus-zookeeper<span class="hljs-number">-0</span>                   <span c
 my-milvus-zookeeper<span class="hljs-number">-1</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 my-milvus-zookeeper<span class="hljs-number">-2</span>                   <span class="hljs-number">1</span>/<span class="hljs-number">1</span>     Running   <span class="hljs-number">0</span>          <span class="hljs-number">85</span>m
 <button class="copy-code-btn"></button></code></pre>
-<p>위의 출력과 유사한 파드 목록이 모두 실행 중 상태로 표시되어야 합니다. 이는 Milvus 클러스터가 작동 중임을 나타냅니다. 특히 <code translate="no">READY</code> 열 아래에서 1/1을 찾아보세요. 이는 각 파드가 완전히 준비되어 실행 중임을 의미합니다. 실행 중 상태가 아닌 파드가 있는 경우, 성공적인 배포를 위해 추가 조사가 필요할 수 있습니다.</p>
+<p>위의 출력과 유사한 파드 목록이 표시되어야 하며 모두 실행 중 상태여야 합니다. 이는 Milvus 클러스터가 작동 중임을 나타냅니다. 특히 <code translate="no">READY</code> 열 아래에서 1/1을 찾아보세요. 이는 각 파드가 완전히 준비되어 실행 중임을 의미합니다. 실행 중 상태가 아닌 파드가 있는 경우, 성공적인 배포를 위해 추가 조사가 필요할 수 있습니다.</p>
 <p>Milvus 클러스터가 배포되고 모든 구성 요소가 실행 중임을 확인했으면 이제 데이터 수집 및 색인 작업을 진행할 준비가 되었습니다. 여기에는 Milvus 인스턴스에 연결하고, 컬렉션을 만들고, 검색 및 검색을 위한 벡터를 삽입하는 작업이 포함됩니다.</p>
 <h2 id="Data-Ingestion-and-Indexing" class="common-anchor-header">데이터 수집 및 인덱싱<button data-href="#Data-Ingestion-and-Indexing" class="anchor-icon" translate="no">
       <svg translate="no"

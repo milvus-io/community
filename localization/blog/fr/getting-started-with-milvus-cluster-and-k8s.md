@@ -49,7 +49,7 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8
       </svg>
     </button></h2><p>K8s peut automatiquement mettre à l'échelle les clusters Milvus en fonction de la charge de travail. Lorsque vos données augmentent ou que le nombre de requêtes s'accroît, K8s peut activer davantage d'instances Milvus pour gérer la charge, garantissant ainsi la réactivité de vos applications.</p>
 <p>L'une des caractéristiques les plus remarquables de K8s est sa mise à l'échelle horizontale, qui facilite l'extension de votre cluster Milvus. K8s s'adapte sans effort à la croissance de votre ensemble de données, ce qui en fait une solution simple et efficace.</p>
-<p>En outre, la capacité à traiter les requêtes s'étend également horizontalement avec K8s. Lorsque la charge de requêtes augmente, K8s peut déployer davantage d'instances Milvus pour traiter les requêtes de recherche par similarité accrues, ce qui garantit des réponses à faible latence même en cas de charges élevées.</p>
+<p>En outre, la capacité à traiter les requêtes s'étend également horizontalement avec K8s. Lorsque la charge de requêtes augmente, K8s peut déployer davantage d'instances Milvus pour traiter les requêtes de recherche de similarité accrues, ce qui garantit des réponses à faible latence même en cas de charges élevées.</p>
 <h2 id="Prerequisites--Setting-Up-K8s" class="common-anchor-header">Conditions préalables et configuration de K8s<button data-href="#Prerequisites--Setting-Up-K8s" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

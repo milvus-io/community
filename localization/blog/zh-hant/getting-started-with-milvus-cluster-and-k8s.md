@@ -74,14 +74,14 @@ canonicalUrl: 'https://milvus.io/blog/getting-started-with-milvus-cluster-and-k8
 <p>檢查 K8s 集群的狀態：</p>
 <pre><code translate="no">kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Deploying-Milvus-on-K8s" class="common-anchor-header">在 K8s 上部署 Milvus</h3><p>對於這個部署，我們選擇在集群模式下使用Milvus，以充分利用其完整的分散式功能。我們將使用 Helm 來簡化安裝流程。</p>
+<h3 id="Deploying-Milvus-on-K8s" class="common-anchor-header">在 K8s 上部署 Milvus</h3><p>在這個部署中，我們選擇在集群模式下使用Milvus，以充分利用其完整的分散式功能。我們將使用 Helm 來簡化安裝流程。</p>
 <p><strong>1.Helm 安裝指令</strong></p>
 <pre><code translate="no">helm install my-milvus milvus/milvus --<span class="hljs-built_in">set</span> pulsar.enabled=<span class="hljs-literal">false</span> --<span class="hljs-built_in">set</span> kafka.enabled=<span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>這個指令會在 K8s 集群上安裝 Milvus，並啟用 Kafka 和停用 Pulsar。Kafka 作為 Milvus 的訊息系統，處理不同元件間的資料串流。停用 Pulsar 並啟用 Kafka 可根據我們特定的訊息傳送偏好和需求量身打造部署。</p>
 <p><strong>2.連接埠轉址</strong></p>
 <p>若要從本機存取 Milvus，請建立連接埠轉址：<code translate="no">kubectl port-forward svc/my-milvus 27017:19530</code> 。</p>
-<p>此指令會將埠<code translate="no">19530</code> 從 Milvus 服務<code translate="no">svc/my-milvus</code> 映射到您本機的相同埠，讓您可以使用本機工具連線到 Milvus。如果您沒有指定本機連接埠 (如<code translate="no">:19530</code>)，K8s 會分配一個可用的連接埠，使其成為動態。如果您選擇這種方法，請確保您記下分配的本機連接埠。</p>
+<p>此指令會將 Milvus 服務<code translate="no">svc/my-milvus</code> 的連接埠<code translate="no">19530</code> 對應至您本機上的相同連接埠，讓您可以使用本機工具連線至 Milvus。如果您沒有指定本機連接埠 (如<code translate="no">:19530</code>)，K8s 會分配一個可用的連接埠，使其成為動態。如果您選擇這種方法，請確保您記下分配的本機連接埠。</p>
 <p><strong>3.驗證部署：</strong></p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods 
 

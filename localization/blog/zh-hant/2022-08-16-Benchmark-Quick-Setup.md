@@ -86,7 +86,7 @@ Result of go_benchmark: {<span class="hljs-string">&#x27;response&#x27;</span>: 
 <li>開啟目前目錄下的<code translate="no">go_log_file.log</code> 檔案，檢查詳細的搜尋記錄。以下是您可以在搜尋日誌中找到的搜尋資訊。<ul>
 <li><p>reqs：從並發發生到目前（目前的時間範圍）的搜尋請求數量</p></li>
 <li><p>fails：在目前的時間範圍內，失敗的要求數目佔 reqs 的百分比</p></li>
-<li><p>Avg：當前時間跨度內的平均要求回應時間（單位：毫秒）</p></li>
+<li><p>Avg：目前時間範圍內的平均要求回應時間（單位：毫秒）</p></li>
 <li><p>Min：當前時間跨度內的最小請求回應時間（單位：毫秒）</p></li>
 <li><p>Max：目前時間範圍內的最大請求回應時間（單位：毫秒）</p></li>
 <li><p>Median：目前時間範圍內的中位要求回應時間（單位：毫秒）</p></li>

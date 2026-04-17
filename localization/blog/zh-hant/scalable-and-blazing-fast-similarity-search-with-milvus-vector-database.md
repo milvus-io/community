@@ -33,13 +33,13 @@ canonicalUrl: >-
 <blockquote>
 <p>「由於世界上大多數的資料都是非結構化的，因此分析這些資料並對其採取行動的能力帶來了巨大的商機」。- Mikey Shulman，Kensho ML 主管</p>
 </blockquote>
-<p>非結構化資料，顧名思義，沒有隱含的結構，就像由行和列組成的表格（因此稱為表格或結構化資料）。與結構化資料不同的是，沒有簡單的方法將非結構化資料的內容儲存在關聯性資料庫中。利用非結構化資料進行洞察有三大挑戰：</p>
+<p>非結構化資料，顧名思義，沒有隱含的結構，就像由行和列組成的表格（因此稱為表格或結構化資料）。非結構化資料與結構化資料不同，沒有簡單的方法將非結構化資料的內容儲存在關聯性資料庫中。利用非結構化資料進行洞察有三大挑戰：</p>
 <ul>
 <li><strong>儲存：</strong>一般的關聯式資料庫適合儲存結構化資料。雖然您可以使用 NoSQL 資料庫來儲存這些資料，但若要處理這些資料以擷取正確的表達方式，從而為大規模的 AI 應用程式提供動力，則會增加額外的開銷。</li>
-<li><strong>表達方式：</strong>電腦無法像我們一樣理解文字或影像。它們只能理解數字，因此我們需要將未建構的資料轉換成一些有用的數字表示，通常是向量或嵌入。</li>
+<li><strong>代表性：</strong>電腦無法像我們一樣理解文字或影像。它們只能理解數字，因此我們需要將未建構的資料轉換成一些有用的數字表示，通常是向量或嵌入。</li>
 <li><strong>查詢：</strong>您無法像結構化資料的 SQL 一樣，直接根據確定的條件語句來查詢非結構化資料。試想一個簡單的例子：您嘗試在一張您最喜歡的鞋子照片中搜尋相似的鞋子！您無法使用原始像素值進行搜尋，也無法表示鞋子的形狀、尺寸、款式、顏色等結構性特徵。現在試想一下，要對數百萬雙鞋子進行搜尋！</li>
 </ul>
-<p>因此，為了讓電腦能夠理解、處理和表達非結構性資料，我們通常會將它們轉換成密集向量，也就是常說的 embeddings。</p>
+<p>因此，為了讓電腦能夠理解、處理和表示非結構化資料，我們通常會將它們轉換成密集向量，也就是常說的嵌入。</p>
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Representing_Images_as_Dense_Embedding_Vectors_0b6a5f516c.png" alt="figure 1" class="doc-image" id="figure-1" />
@@ -70,7 +70,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>之前，我們已經確認將圖像和文字等非結構化資料表示為向量的必要性，因為電腦只能理解數字。我們通常會利用人工智能模型，更明確地說是深度學習模型，將非結構化資料轉換為機器可以讀取的數值向量。一般而言，這些向量基本上是浮點數的清單，合起來代表底層項目 (影像、文字等)。</p>
-<h3 id="Understanding-Vectors" class="common-anchor-header">瞭解向量</h3><p>考慮到自然語言處理 (NLP) 的領域，我們有許多單字嵌入模型，例如<a href="https://towardsdatascience.com/understanding-feature-engineering-part-4-deep-learning-methods-for-text-data-96c44370bbfa">Word2Vec、GloVe 和 FastText</a>，這些模型可以幫助我們將單字表示成數字向量。隨著時間的<a href="https://arxiv.org/abs/1706.03762">推移</a>，我們看到了<a href="https://arxiv.org/abs/1706.03762">Transformer</a>模型的崛起，例如<a href="https://jalammar.github.io/illustrated-bert/">BERT</a>，它可以用來學習上下文嵌入向量以及整個句子和段落的更好表示。</p>
+<h3 id="Understanding-Vectors" class="common-anchor-header">瞭解向量</h3><p>考慮到自然語言處理 (NLP) 領域，我們有許多單字嵌入模型，例如<a href="https://towardsdatascience.com/understanding-feature-engineering-part-4-deep-learning-methods-for-text-data-96c44370bbfa">Word2Vec、GloVe 和 FastText</a>，這些模型可以幫助將單字表示成數字向量。隨著時間的<a href="https://arxiv.org/abs/1706.03762">推移</a>，我們看到了<a href="https://arxiv.org/abs/1706.03762">Transformer</a>模型的崛起，例如<a href="https://jalammar.github.io/illustrated-bert/">BERT</a>，它可以用來學習上下文嵌入向量以及整個句子和段落的更好表示。</p>
 <p>同樣地，在電腦視覺領域中，我們也有<a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">卷積神經網路 (CNN)</a>等模型，可以協助從影像和視訊等視覺資料中學習表達。隨著 Transformers 的興起，我們也有了<a href="https://arxiv.org/abs/2010.11929">視覺 Transformers</a>，它可以比一般的 CNN 有更好的表現。</p>
 <p>
   
@@ -91,7 +91,7 @@ canonicalUrl: >-
 <p>精確近鄰 (NN) 搜尋的挑戰在於可擴展性。您需要每次計算 N 個距離 (假設有 N 個現有項目)，才能得到相似的項目。這可能會變得超慢，尤其是如果您沒有在某處儲存資料並編入索引 (例如向量資料庫！)。為了加快計算速度，我們通常會利用近似近鄰搜尋 (approximate nearest neighbor search)，也就是常說的 ANN 搜尋，最後將向量儲存到索引中。索引有助於以智慧的方式儲存這些向量，以便快速檢索參考查詢項目的「近似」近鄰。典型的 ANN 索引方法包括</p>
 <ul>
 <li><strong>向量變換：</strong>這包括對向量增加額外的變換，例如降維（例如 PCA \ t-SNE）、旋轉等。</li>
-<li><strong>向量編碼：</strong>這包括應用基於資料結構的技術，如位置敏感切分 (LSH)、量化、樹狀等，這有助於更快地檢索類似項目。</li>
+<li><strong>向量編碼：</strong>這包括應用基於資料結構的技術，例如區域敏感切分 (LSH)、量化、樹狀等，有助於更快速地檢索相似項目。</li>
 <li><strong>非窮盡搜尋方法：</strong>這主要是用來防止窮盡搜尋，包括鄰近圖表、倒轉索引等方法。</li>
 </ul>
 <p>要建立任何向量類似性搜尋應用程式，您需要一個資料庫，以協助您進行有效率的儲存、索引和大規模查詢（搜尋）。進入向量資料庫！</p>
@@ -112,12 +112,12 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>既然我們現在瞭解向量如何用來表示非結構化資料，以及向量搜尋如何運作，我們就可以將這兩個概念結合起來，建立向量資料庫。</p>
 <p>向量資料庫是可擴充的資料平台，用來儲存、索引和查詢使用深度學習模型從非結構化資料（影像、文字等）產生的嵌入向量。</p>
-<p>處理大量向量進行相似性搜尋 (即使有索引) 的成本可能超高。儘管如此，最好、最先進的向量資料庫應該可以讓您在數百萬或數十億個目標向量中進行插入、索引和搜尋，此外還可以指定您所選擇的索引演算法和相似度指標。</p>
+<p>處理大量向量進行相似性搜尋 (即使有索引) 的成本可能超高。儘管如此，除了指定您所選擇的索引演算法和相似度指標之外，最好、最先進的向量資料庫應該可以讓您在數百萬或數十億個目標向量中進行插入、索引和搜尋。</p>
 <p>矢量資料庫主要應滿足以下關鍵需求，以考量在企業中使用的強大資料庫管理系統：</p>
 <ol>
 <li><strong>可擴充：</strong>向量資料庫應該能夠為數十億個嵌入向量建立索引並執行近似近鄰搜尋。</li>
 <li><strong>可靠：</strong>矢量資料庫應該能夠處理內部故障，而不會造成資料丟失，並將操作影響降至最低，即具有容錯性。</li>
-<li><strong>快速：</strong>查詢和寫入速度對向量資料庫非常重要。對於 Snapchat 和 Instagram 等平台而言，每秒可上傳數百或數千張新圖片，因此速度成為極為重要的因素。</li>
+<li><strong>快速：</strong>查詢和寫入速度對向量資料庫非常重要。對於 Snapchat 和 Instagram 等平台而言，每秒可上傳數百張或上千張新圖片，因此速度成為極為重要的因素。</li>
 </ol>
 <p>向量資料庫不只是儲存資料向量。它們還要負責使用有效率的資料結構來索引這些向量，以便快速擷取，並支援 CRUD (建立、讀取、更新及刪除) 作業。向量資料庫最好也能支援屬性篩選，也就是基於元資料欄位（通常是標量欄位）進行篩選。一個簡單的例子是根據特定品牌的影像向量來擷取相似的鞋子。在此，品牌就是篩選所依據的屬性。</p>
 <p>
@@ -155,20 +155,20 @@ canonicalUrl: >-
 <li><strong>混合搜尋：</strong>除了向量之外，Milvus 還支援 Boolean、String、整數、浮點數等資料類型。Milvus 將標量篩選與強大的向量相似性搜尋結合在一起 (如前面的鞋子相似性範例所示)。</li>
 <li><strong>統一的 Lambda 架構：</strong>Milvus 結合了資料儲存的串流處理與批次處理，以平衡及時性與效率。</li>
 <li><strong><a href="https://milvus.io/docs/v2.0.x/timetravel_ref.md">時間旅行</a>：</strong>Milvus 會為所有資料插入和刪除作業維持時間線。它允許使用者在搜尋中指定時間戳記，以擷取指定時間點的資料檢視。</li>
-<li><strong>社群支援及業界認可：</strong>Milvus 擁有超過 1,000 家企業用戶，在<a href="https://github.com/milvus-io/milvus">GitHub</a> 上有 10.5K+ 顆星星，並且是一個活躍的開放原始碼社群，因此當您使用 Milvus 時，您並不孤單。身為<a href="https://lfaidata.foundation/">LF AI &amp; Data 基金會下</a>的畢業專案，Milvus 獲得機構支持。</li>
+<li><strong>社群支援及業界認可：</strong>Milvus 擁有超過 1,000 名企業用戶，在<a href="https://github.com/milvus-io/milvus">GitHub</a> 上擁有 10.5K+ stars，以及活躍的開放原始碼社群，因此當您使用 Milvus 時，您並不孤單。作為<a href="https://lfaidata.foundation/">LF AI &amp; Data 基金會下</a>的畢業專案，Milvus 獲得了機構的支持。</li>
 </ul>
 <h3 id="Existing-Approaches-to-Vector-Data-Management-and-Search" class="common-anchor-header">向量資料管理與搜尋的現有方法</h3><p>以向量相似性搜尋為動力建立 AI 系統的常見方法，是將近似近鄰搜尋 (Approximate Nearest Neighbor Search, ANNS) 等演算法與開放原始碼程式庫搭配使用，例如</p>
 <ul>
 <li><strong><a href="https://ai.facebook.com/tools/faiss/">Facebook AI 類似性搜尋 (FAISS)：</a></strong>此架構可對密集向量進行有效率的相似性搜尋與聚類。它所包含的演算法可在任何大小的向量集中進行搜尋，甚至可搜尋到可能無法放入 RAM 的向量。它支援倒轉多重索引和乘積量化等索引功能。</li>
-<li><strong><a href="https://github.com/spotify/annoy">Spotify 的 Annoy (Approximate Nearest Neighbors Oh Yeah)：</a></strong>此架構使用<a href="http://en.wikipedia.org/wiki/Locality-sensitive_hashing#Random_projection">隨機投影</a>並建立一棵樹，以針對密集向量實現大規模的 ANNS。</li>
+<li><strong><a href="https://github.com/spotify/annoy">Spotify 的 Annoy (Approximate Nearest Neighbors Oh Yeah)：</a></strong>此架構使用<a href="http://en.wikipedia.org/wiki/Locality-sensitive_hashing#Random_projection">隨機投影</a>並建立一棵樹，以針對密集向量的規模啟用 ANNS。</li>
 <li><strong><a href="https://github.com/google-research/google-research/tree/master/scann">Google 的 ScaNN (Scalable Nearest Neighbors)：</a></strong>此架構可在規模上執行有效率的向量相似性搜尋。包含實作，其中包括最大內積搜尋 (MIPS) 的搜尋空間剪枝與量化。</li>
 </ul>
 <p>雖然這些函式庫各有其用處，但由於一些限制，這些演算法與函式庫的組合並不等同於完整的向量資料管理系統，例如 Milvus。現在我們將討論其中一些限制。</p>
 <h3 id="Limitations-of-Existing-Approaches" class="common-anchor-header">現有方法的限制</h3><p>上一節所討論的現有向量資料管理方法有以下的限制：</p>
 <ol>
 <li><strong>彈性：</strong>現有系統通常會將所有資料儲存在主記憶體中，因此無法輕鬆地在多台機器上以分散式模式執行，也不適合處理大量資料集。</li>
-<li><strong>動態資料處理：</strong>資料一旦輸入現有系統，通常會被假設為靜態資料，使得動態資料的處理變得複雜，無法進行近乎即時的搜尋。</li>
-<li><strong>進階查詢處理：</strong>大多數工具都不支援進階查詢處理 (例如屬性過濾、混合搜尋和多向量查詢)，而這對於建立支援進階過濾的真實世界相似性搜尋引擎是非常重要的。</li>
+<li><strong>動態資料處理：</strong>一旦將資料輸入現有系統，通常會假設資料是靜態的，這使得動態資料的處理變得複雜，也使得近乎即時的搜尋變得不可能。</li>
+<li><strong>進階查詢處理：</strong>大多數工具都不支援進階查詢處理 (例如：屬性過濾、混合搜尋和多向量查詢)，而這對於建立支援進階過濾的真實世界相似性搜尋引擎是非常重要的。</li>
 <li><strong>異質運算最佳化：</strong>很少有平台能同時在 CPU 和 GPU（FAISS 除外）上為異質系統架構提供最佳化，導致效率上的損失。</li>
 </ol>
 <p><a href="https://milvus.io/">Milvus 嘗試</a>克服所有這些限制，我們將在下一節詳細討論。</p>
@@ -194,7 +194,7 @@ canonicalUrl: >-
 <li><strong>存取層：</strong>存取層由一組無狀態代理伺服器組成，是系統的前端層，也是使用者的終端。</li>
 <li><strong>協調器服務：</strong>協調器服務負責叢集拓樸節點管理、負載平衡、時戳生成、資料宣告和資料管理。</li>
 <li><strong>工作節點：</strong>工作節點（或稱執行節點）執行由協調器服務發出的指令，以及由代理啟動的資料處理語言 (DML) 指令。Milvus 中的工作節點類似於<a href="https://hadoop.apache.org/">Hadoop</a> 中的資料節點或 HBase 中的區域伺服器。</li>
-<li><strong>儲存：</strong>這是 Milvus 的基石，負責資料的持久性。存儲層<strong>由元存儲</strong>、<strong>日誌中介</strong>和<strong>物件存儲</strong>組成。</li>
+<li><strong>儲存：</strong>這是 Milvus 的基石，負責資料的持久性。存儲層<strong>由元存儲</strong>、<strong>日誌代理</strong>和<strong>物件存儲</strong>組成。</li>
 </ul>
 <p>請<a href="https://milvus.io/docs/v2.0.x/four_layers.md">在這裡</a>查看更多關於架構的詳細資訊！</p>
 <h2 id="Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="common-anchor-header">使用 Milvus 執行視覺影像搜尋 - 使用案例藍圖<button data-href="#Performing-visual-image-search-with-Milvus--A-use-case-blueprint" class="anchor-icon" translate="no">
@@ -212,7 +212,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus 等開放原始碼向量資料庫可讓任何企業以最少的步驟建立自己的視覺影像搜尋系統。開發人員可以使用預先訓練好的 AI 模型將自己的圖像資料集轉換成向量，然後再利用 Milvus 來透過圖像搜尋類似產品。讓我們看看以下如何設計和建立這樣一個系統的藍圖。</p>
+    </button></h2><p>Milvus 等開放原始碼向量資料庫可讓任何企業以最少的步驟建立自己的視覺影像搜尋系統。開發人員可以使用預先訓練好的 AI 模型，將自己的圖像資料集轉換成向量，然後再利用 Milvus 來透過圖像搜尋類似產品。讓我們看看以下如何設計和建立這樣一個系統的藍圖。</p>
 <p>
   
    <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/Workflow_for_Visual_Image_Search_c490906a58.jpeg" alt="figure 9" class="doc-image" id="figure-9" />
@@ -238,7 +238,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我們在這篇文章中涵蓋了相當多的內容。我們從表示未經建構的資料的挑戰開始，利用向量和向量相似性搜尋與 Milvus（一個開放源碼的向量資料庫）進行大規模搜尋。我們討論了 Milvus 結構的細節、驅動它的關鍵元件，以及如何使用 Milvus 解決真實世界問題的藍圖，也就是視覺影像搜尋。請嘗試使用<a href="https://milvus.io/">Milvus</a> 解決您自己的實際問題！</p>
+    </button></h2><p>我們在這篇文章中涵蓋了相當多的內容。我們從表示未經建構的資料的挑戰開始，利用向量和向量相似性搜尋與 Milvus（一個開放源碼的向量資料庫）進行大規模搜尋。我們討論了 Milvus 結構的細節、驅動它的關鍵元件，以及如何使用 Milvus 解決真實世界問題的藍圖，也就是視覺影像搜尋。請嘗試使用<a href="https://milvus.io/">Milvus</a> 來解決您自己的實際問題！</p>
 <p>喜歡這篇文章嗎？歡迎<a href="https://www.linkedin.com/in/dipanzan/">與我聯繫</a>，討論更多內容或提供意見！</p>
 <h2 id="About-the-author" class="common-anchor-header">關於作者<button data-href="#About-the-author" class="anchor-icon" translate="no">
       <svg translate="no"

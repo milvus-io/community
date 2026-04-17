@@ -9,8 +9,7 @@ desc: >-
   und die Ähnlichkeitssuche erzeugt wurden.
 cover: assets.zilliz.com/What_s_a_Vector_Database_and_How_Does_It_Work_cac0875415.png
 tag: Engineering
-canonicalUrl: >-
-  https://milvus.io/blog/what-is-a-vector-database.md
+canonicalUrl: 'https://milvus.io/blog/what-is-a-vector-database.md'
 ---
 <p>Eine Vektordatenbank indiziert und speichert Vektoreinbettungen für den schnellen Abruf und die Ähnlichkeitssuche und bietet Funktionen wie CRUD-Operationen, Metadatenfilterung und horizontale Skalierung, die speziell für KI-Anwendungen entwickelt wurden.</p>
 <iframe width="100%" height="315" src="https://www.youtube.com/embed/4yQjsY5iD9Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -83,7 +82,7 @@ canonicalUrl: >-
 <h3 id="Mathematical-Foundations-of-Vector-Similarity" class="common-anchor-header">Mathematische Grundlagen der Vektorähnlichkeit</h3><p>Um Vektordatenbanken zu verstehen, muss man die mathematischen Grundlagen der Vektorähnlichkeit begreifen. Hier sind die grundlegenden Konzepte:</p>
 <h3 id="Vector-Spaces-and-Embeddings" class="common-anchor-header">Vektorräume und Einbettungen</h3><p>Eine <a href="https://zilliz.com/learn/everything-you-should-know-about-vector-embeddings">Vektoreinbettung</a> ist ein Array von Gleitkommazahlen fester Länge (mit 100-32.768 Dimensionen!), das unstrukturierte Daten in einem numerischen Format darstellt. Diese Einbettungen positionieren ähnliche Elemente näher beieinander in einem hochdimensionalen Vektorraum.</p>
 <p>Zum Beispiel würden die Wörter "König" und "Königin" Vektorrepräsentationen haben, die näher beieinander liegen als eines der beiden zu "Auto" in einem gut trainierten Wort-Einbettungsraum.</p>
-<h3 id="Distance-Metrics" class="common-anchor-header">Abstandsmetriken</h3><p>Die Wahl der Abstandsmetrik wirkt sich grundlegend darauf aus, wie die Ähnlichkeit berechnet wird. Gängige Abstandsmetriken sind:</p>
+<h3 id="Distance-Metrics" class="common-anchor-header">Abstandsmetriken</h3><p>Die Wahl der Abstandsmetrik wirkt sich grundlegend darauf aus, wie die Ähnlichkeit berechnet wird. Zu den gängigen Abstandsmetriken gehören:</p>
 <ol>
 <li><p><strong>Euklidischer Abstand</strong>: Der geradlinige Abstand zwischen zwei Punkten im euklidischen Raum.</p></li>
 <li><p><strong>Kosinus-Ähnlichkeit</strong>: Misst den Kosinus des Winkels zwischen zwei Vektoren, wobei der Schwerpunkt auf der Orientierung und nicht auf dem Betrag liegt.</p></li>
@@ -126,7 +125,7 @@ canonicalUrl: >-
 <ol>
 <li><p><strong>Speicherschicht</strong>: Verwaltet die dauerhafte Speicherung von Vektordaten und Metadaten, implementiert spezielle Kodierungs- und Komprimierungsstrategien und optimiert die E/A-Muster für den vektorspezifischen Zugriff.</p></li>
 <li><p><strong>Index-Schicht</strong>: Verwaltet mehrere Indexierungsalgorithmen, verwaltet deren Erstellung und Aktualisierung und implementiert hardwarespezifische Optimierungen für die Leistung.</p></li>
-<li><p><strong>Abfrageschicht</strong>: Verarbeitet eingehende Abfragen, legt Ausführungsstrategien fest, verarbeitet die Ergebnisse und implementiert Caching für wiederholte Abfragen.</p></li>
+<li><p><strong>Abfrageschicht</strong>: Verarbeitet eingehende Abfragen, legt Ausführungsstrategien fest, handhabt die Ergebnisverarbeitung und implementiert das Caching für wiederholte Abfragen.</p></li>
 <li><p><strong>Diensteschicht</strong>: Verwaltet Client-Verbindungen, übernimmt die Weiterleitung von Anfragen, bietet Überwachung und Protokollierung und implementiert Sicherheit und Mandantenfähigkeit.</p></li>
 </ol>
 <h3 id="Vector-Search-Workflow" class="common-anchor-header">Arbeitsablauf der Vektorsuche</h3><p>
@@ -197,7 +196,7 @@ canonicalUrl: >-
 <li><p><strong>Chatbots und virtuelle Assistenten</strong>: Vektordatenbanken werden in Chatbots und virtuellen Assistenten eingesetzt, um in Echtzeit kontextbezogene Antworten auf Benutzeranfragen zu geben. Durch die Umwandlung von Benutzereingaben in Vektoreinbettungen können diese Systeme Ähnlichkeitssuchen durchführen, um die relevantesten Antworten zu finden. Auf diese Weise können Chatbots und virtuelle Assistenten genauere und kontextbezogene Antworten geben, was das Nutzererlebnis insgesamt verbessert.</p></li>
 </ol>
 <p>Durch die Nutzung der einzigartigen Fähigkeiten von Vektordatenbanken können Unternehmen in verschiedenen Branchen intelligentere, reaktionsschnellere und skalierbare KI-Anwendungen entwickeln.</p>
-<h2 id="Vector-Search-Algorithms-From-Theory-to-Practice" class="common-anchor-header">Vektorsuchalgorithmen: Von der Theorie zur Praxis<button data-href="#Vector-Search-Algorithms-From-Theory-to-Practice" class="anchor-icon" translate="no">
+<h2 id="Vector-Search-Algorithms-From-Theory-to-Practice" class="common-anchor-header">Vektorielle Suchalgorithmen: Von der Theorie zur Praxis<button data-href="#Vector-Search-Algorithms-From-Theory-to-Practice" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -226,7 +225,7 @@ canonicalUrl: >-
 <li><p><strong>Optimierte I/O-Muster</strong>: Das spezialisierte Design von DiskANN minimiert die Festplattenlesevorgänge durch sorgfältige Graph-Traversal-Strategien</p></li>
 </ul>
 <p>Der Kompromiss besteht typischerweise in einer bescheidenen Erhöhung der Abfragelatenz (oft nur 2-3 ms) im Vergleich zu reinen In-Memory-Ansätzen, was für viele Anwendungsfälle in der Produktion akzeptabel ist.</p>
-<h3 id="Specialized-Index-Types" class="common-anchor-header">Spezialisierte Index-Typen</h3><p><strong>Binäre Einbettungsindizes</strong> sind spezialisiert auf Computer Vision, Image Fingerprinting und Empfehlungssysteme, bei denen Daten als binäre Merkmale dargestellt werden können. Diese Indizes dienen unterschiedlichen Anwendungsanforderungen. Für die Deduplizierung von Bildern, digitale Wasserzeichen und die Erkennung von Urheberrechten, bei denen ein exakter Abgleich entscheidend ist, bieten optimierte binäre Indizes eine präzise Ähnlichkeitserkennung. Für Empfehlungssysteme mit hohem Durchsatz, inhaltsbasierte Bildabfragen und groß angelegte Merkmalsabgleiche, bei denen die Geschwindigkeit Vorrang vor einer perfekten Wiedererkennung hat, bieten binäre Indizes außergewöhnliche Leistungsvorteile.</p>
+<h3 id="Specialized-Index-Types" class="common-anchor-header">Spezialisierte Index-Typen</h3><p><strong>Binäre Einbettungsindizes</strong> sind spezialisiert auf Computer Vision, Image Fingerprinting und Empfehlungssysteme, bei denen Daten als binäre Merkmale dargestellt werden können. Diese Indizes erfüllen unterschiedliche Anwendungsanforderungen. Für die Deduplizierung von Bildern, digitale Wasserzeichen und die Erkennung von Urheberrechten, bei denen ein exakter Abgleich entscheidend ist, bieten optimierte binäre Indizes eine präzise Ähnlichkeitserkennung. Für Empfehlungssysteme mit hohem Durchsatz, inhaltsbasierte Bildabfragen und groß angelegte Merkmalsabgleiche, bei denen die Geschwindigkeit Vorrang vor einer perfekten Wiedererkennung hat, bieten binäre Indizes außergewöhnliche Leistungsvorteile.</p>
 <p><strong>Sparse Vector Indexes</strong> sind für Vektoren optimiert, bei denen die meisten Elemente Null sind und es nur wenige Werte gibt, die nicht Null sind. Im Gegensatz zu dichten Vektoren (bei denen die meisten oder alle Dimensionen aussagekräftige Werte enthalten) stellen spärliche Vektoren Daten mit vielen Dimensionen, aber wenigen aktiven Merkmalen effizient dar. Diese Darstellung ist besonders bei der Textverarbeitung üblich, wo ein Dokument möglicherweise nur eine kleine Teilmenge aller möglichen Wörter eines Vokabulars verwendet. Sparse-Vector-Indizes eignen sich hervorragend für Aufgaben der natürlichen Sprachverarbeitung wie semantische Dokumentensuche, Volltextabfragen und Themenmodellierung. Diese Indizes sind besonders wertvoll für die Unternehmenssuche in großen Dokumentensammlungen, für die juristische Dokumentensuche, bei der bestimmte Begriffe und Konzepte effizient gefunden werden müssen, und für akademische Forschungsplattformen, die Millionen von Dokumenten mit spezieller Terminologie indizieren.</p>
 <h2 id="Advanced-Query-Capabilities" class="common-anchor-header">Erweiterte Abfragefunktionen<button data-href="#Advanced-Query-Capabilities" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -298,7 +297,7 @@ canonicalUrl: >-
 <li><p>Ergänzen die Vektorsuche, indem sie exakte Übereinstimmungen finden, die bei der semantischen Suche möglicherweise übersehen werden</p></li>
 </ul>
 <p>Dieser hybride Ansatz ist besonders wertvoll für umfassende <a href="https://zilliz.com/learn/what-is-information-retrieval">Informationsabfragesysteme</a>, die sowohl eine präzise Begriffsabstimmung als auch ein semantisches Verständnis benötigen.</p>
-<h2 id="Performance-Engineering-Metrics-That-Matter" class="common-anchor-header">Leistungstechnik: Maßgebliche Metriken<button data-href="#Performance-Engineering-Metrics-That-Matter" class="anchor-icon" translate="no">
+<h2 id="Performance-Engineering-Metrics-That-Matter" class="common-anchor-header">Leistungstechnik: Entscheidende Metriken<button data-href="#Performance-Engineering-Metrics-That-Matter" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -354,8 +353,8 @@ canonicalUrl: >-
       </svg>
     </button></h2><p>Vektordatenbanken erfordern durchdachte Einsatzstrategien, um eine optimale Leistung in verschiedenen Größenordnungen zu gewährleisten:</p>
 <ul>
-<li><p><strong>Einsätze in kleinem Maßstab</strong> (Millionen von Vektoren) können auf einem einzigen Rechner mit ausreichendem Speicherplatz effektiv betrieben werden.</p></li>
-<li><p><strong>Mittelgroße Bereitstellungen</strong> (zehn bis hunderte von Millionen) profitieren von vertikaler Skalierung mit Instanzen mit hohem Arbeitsspeicher und SSD-Speicher</p></li>
+<li><p><strong>Einsätze in kleinem Maßstab</strong> (Millionen von Vektoren) können auf einem einzigen Rechner mit ausreichendem Speicher effektiv betrieben werden.</p></li>
+<li><p><strong>Mittelgroße Bereitstellungen</strong> (zehn bis hundert Millionen) profitieren von vertikaler Skalierung mit Instanzen mit hohem Arbeitsspeicher und SSD-Speicher</p></li>
 <li><p><strong>Bereitstellungen im Milliardenbereich</strong> erfordern eine horizontale Skalierung über mehrere Knoten mit spezialisierten Rollen</p></li>
 </ul>
 <p>Sharding und Replikation bilden die Grundlage einer skalierbaren Vektordatenbankarchitektur:</p>
