@@ -17,13 +17,13 @@ desc: >
 origin: https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.md
 ---
 
-[**Hermes Agent**](https://github.com/NousResearch/hermes-agent) **has been everywhere lately.** Built by Nous Research, Hermes is a self-hosted personal AI agent that runs on your own hardware (a $5 VPS works) and talks to you through existing chat channels like Telegram.
+[**Hermes Agent**](https://github.com/NousResearch/hermes-agent) **has been everywhere lately.** Built by Nous Research, Hermes is a self-hosted personal AI agent that runs on your own hardware (a \$5 VPS works) and talks to you through existing chat channels like Telegram.
 
 **Its biggest highlight is a built-in learning loop:** the loop creates Skills from experience, improves them during use, and searches past conversations to find reusable patterns. Other agent frameworks hand-code Skills before deployment. Hermes's Skills grow from use, and repeated workflows become reusable with zero code change.
 
 **The catch is that Hermes's retrieval is keyword-only.** It matches exact words, but not the meaning users are after. When users use different wording across different sessions, the loop can't connect them, and no new Skill gets written. When there are only a few hundred documents, the gap is tolerable. **Past that, the loop stops learning because it can't find its own history.**
 
-**The fix is Milvus 2.6.** Its [hybrid search](https://milvus.io/docs/multi-vector-search.md) covers both meaning and exact keywords in a single query, so the loop can finally connect rephrased information across sessions. It's light enough to fit on a small cloud server (a $5/month VPS runs it). Swapping it in doesn't require changing Hermes — Milvus slots behind the retrieval layer, so the Learning Loop stays intact. Hermes still picks which Skill to run, and Milvus handles what to retrieve.
+**The fix is Milvus 2.6.** Its [hybrid search](https://milvus.io/docs/multi-vector-search.md) covers both meaning and exact keywords in a single query, so the loop can finally connect rephrased information across sessions. It's light enough to fit on a small cloud server (a \$5/month VPS runs it). Swapping it in doesn't require changing Hermes — Milvus slots behind the retrieval layer, so the Learning Loop stays intact. Hermes still picks which Skill to run, and Milvus handles what to retrieve.
 
 But the deeper payoff goes beyond better recall: once retrieval works, the Learning Loop can store the retrieval strategy itself as a Skill -- not just the content it retrieves. That's how the agent's knowledge work compounds across sessions.
 
@@ -50,7 +50,7 @@ Under a couple hundred documents, the gap is tolerable. Past that, documentation
 
 ## How Milvus 2.6 Fixes the Retrieval Gap with Hybrid Search and Tiered Storage
 
-**Milvus 2.6 brings two upgrades that fit Hermes's failure points.** **Hybrid search** unblocks the Learning Loop by covering both semantic and keyword retrieval in one call. **Tiered storage** keeps the whole retrieval backend small enough to run on the same $5/month VPS Hermes was built for.
+**Milvus 2.6 brings two upgrades that fit Hermes's failure points.** **Hybrid search** unblocks the Learning Loop by covering both semantic and keyword retrieval in one call. **Tiered storage** keeps the whole retrieval backend small enough to run on the same \$5/month VPS Hermes was built for.
 
 ### What Hybrid Search Solves: Finding Relevant Information
 
@@ -68,7 +68,7 @@ A naive vector database would want the full embedding index in RAM, which pushes
 -   **Warm** — on SSD
 -   **Cold** — on object storage
 
-Only hot data stays resident. A 500-document knowledge base fits under 2 GB of RAM. The whole retrieval stack runs on the same $5/month VPS Hermes targets, with no infrastructure upgrade needed.
+Only hot data stays resident. A 500-document knowledge base fits under 2 GB of RAM. The whole retrieval stack runs on the same \$5/month VPS Hermes targets, with no infrastructure upgrade needed.
 
 ## Hermes + Milvus: System Architecture
 
@@ -283,7 +283,7 @@ For the OpenClaw side of the split, see [What Is OpenClaw? Complete Guide to the
 
 ## Conclusion
 
-Hermes's Learning Loop turns repeated workflows into reusable Skills, but only if retrieval can connect them across sessions. FTS5 keyword search can't. [**Milvus 2.6 hybrid search**](https://milvus.io/docs/multi-vector-search.md) can: dense vectors handle meaning, BM25 handles exact keywords, RRF merges both, and [tiered storage](https://milvus.io/docs/tiered-storage-overview.md) keeps the whole stack on a $5/month VPS.
+Hermes's Learning Loop turns repeated workflows into reusable Skills, but only if retrieval can connect them across sessions. FTS5 keyword search can't. [**Milvus 2.6 hybrid search**](https://milvus.io/docs/multi-vector-search.md) can: dense vectors handle meaning, BM25 handles exact keywords, RRF merges both, and [tiered storage](https://milvus.io/docs/tiered-storage-overview.md) keeps the whole stack on a \$5/month VPS.
 
 The bigger point: once retrieval works, the agent doesn't just store better answers: it stores better retrieval strategies as Skills. The fetch path becomes a versionable document that improves with use. That's what separates an agent that accumulates domain expertise from one that starts fresh every session. For a comparison of how other agents handle (or fail to handle) this problem, see [Claude Code's Memory System Explained.](https://milvus.io/blog/claude-code-memory-memsearch.md)
 
@@ -302,7 +302,7 @@ The bigger point: once retrieval works, the agent doesn't just store better answ
 
 **Want to skip the self-host?**
 
--   [Sign up](https://cloud.zilliz.com/signup) or [sign in](https://cloud.zilliz.com/login) to Zilliz Cloud — managed Milvus with hybrid search and tiered storage out of the box. New work-email accounts get **$100 in free credits**.
+-   [Sign up](https://cloud.zilliz.com/signup) or [sign in](https://cloud.zilliz.com/login) to Zilliz Cloud — managed Milvus with hybrid search and tiered storage out of the box. New work-email accounts get **\$100 in free credits**.
 
 ## Further Reading
 
@@ -327,4 +327,4 @@ Yes. The integration pattern is generic: the agent calls a retrieval script, the
 
 ### How much does a self-hosted Milvus + Hermes setup cost per month?
 
-A single-node Milvus 2.6 Standalone on a 2-core / 4 GB VPS with tiered storage runs about $5/month. OpenAI text-embedding-3-small costs $0.02 per 1M tokens -- a few cents per month for a personal knowledge base. LLM inference dominates total cost and scales with usage, not with the retrieval stack.
+A single-node Milvus 2.6 Standalone on a 2-core / 4 GB VPS with tiered storage runs about \$5/month. OpenAI text-embedding-3-small costs \$0.02 per 1M tokens -- a few cents per month for a personal knowledge base. LLM inference dominates total cost and scales with usage, not with the retrieval stack.
