@@ -1,14 +1,13 @@
 ---
 id: milvus-supports-apache-parquet-file-supports.md
 title: >-
-  Milvus admite la importación de archivos Apache Parquet para mejorar la
-  eficacia del procesamiento de datos
+  Milvus Supports Imports of Apache Parquet Files for Enhanced Data Processing
+  Efficiency
 author: 'Cai Zhang, Fendy Feng'
 date: 2024-3-8
 desc: >-
-  Al adoptar Apache Parquet, los usuarios pueden agilizar sus procesos de
-  importación de datos y disfrutar de importantes ahorros en costes de
-  almacenamiento y computación.
+  By embracing Apache Parquet, users can streamline their data import processes
+  and enjoy substantial storage and computation cost savings.
 metaTitle: Milvus Supports Imports of Apache Parquet Files
 cover: assets.zilliz.com/Milvus_Supports_the_Imports_of_Parquet_Files_3288e755b8.png
 tag: Engineering
@@ -18,9 +17,9 @@ tags: >-
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/milvus-supports-apache-parquet-file-supports.md'
 ---
-<p><a href="https://zilliz.com/what-is-milvus">Milvus</a>, la base de datos vectorial altamente escalable y famosa por su capacidad para manejar grandes conjuntos de datos, da un importante paso adelante al introducir la compatibilidad con archivos Parquet en <a href="https://zilliz.com/blog/what-is-new-in-milvus-2-3-4">la versión 2.3.4</a>. Al adoptar Apache Parquet, los usuarios pueden agilizar sus procesos de importación de datos y disfrutar de un ahorro sustancial en costes de almacenamiento y computación.</p>
-<p>En nuestro último post, exploramos las ventajas de Parquet y los beneficios que aporta a los usuarios de Milvus. Discutimos la motivación que hay detrás de la integración de esta función y proporcionamos una guía paso a paso para importar sin problemas archivos Parquet en Milvus, desbloqueando nuevas posibilidades para una gestión y análisis eficientes de los datos.</p>
-<h2 id="What-Is-Apache-Parquet" class="common-anchor-header">¿Qué es Apache Parquet?<button data-href="#What-Is-Apache-Parquet" class="anchor-icon" translate="no">
+<p><a href="https://zilliz.com/what-is-milvus">Milvus</a>, the highly scalable vector database renowned for its ability to handle vast datasets, takes a significant step forward by introducing Parquet file support in <a href="https://zilliz.com/blog/what-is-new-in-milvus-2-3-4">version 2.3.4</a>. By embracing Apache Parquet, users can streamline their data import processes and enjoy substantial savings in storage and computation costs.</p>
+<p>In our latest post, we explore Parquet’s advantages and the benefits it brings to Milvus users. We discuss the motivation behind integrating this feature and provide a step-by-step guide on seamlessly importing Parquet files into Milvus, unlocking new possibilities for efficient data management and analysis.</p>
+<h2 id="What-Is-Apache-Parquet" class="common-anchor-header">What Is Apache Parquet?<button data-href="#What-Is-Apache-Parquet" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,8 +34,8 @@ canonicalUrl: 'https://milvus.io/blog/milvus-supports-apache-parquet-file-suppor
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://parquet.apache.org/">Apache Parquet</a> es un popular formato de archivo de datos orientado a columnas de código abierto diseñado para mejorar la eficiencia del almacenamiento y procesamiento de conjuntos de datos a gran escala. A diferencia de los formatos de datos tradicionales orientados a filas, como CSV o JSON, Parquet almacena los datos por columnas, ofreciendo esquemas de compresión y codificación de datos más eficientes. Este enfoque se traduce en un mejor rendimiento, menores requisitos de almacenamiento y una mayor capacidad de procesamiento, lo que lo hace ideal para manejar datos complejos en masa.</p>
-<h2 id="How-Milvus-Users-Benefit-from-the-Support-for-Parquet-File-Imports" class="common-anchor-header">Cómo se benefician los usuarios de Milvus de la compatibilidad con la importación de archivos Parquet<button data-href="#How-Milvus-Users-Benefit-from-the-Support-for-Parquet-File-Imports" class="anchor-icon" translate="no">
+    </button></h2><p><a href="https://parquet.apache.org/">Apache Parquet</a> is a popular open-source column-oriented data file format designed to enhance the efficiency of storing and processing large-scale datasets. In contrast to traditional row-oriented data formats like CSV or JSON, Parquet stores data by column, offering more efficient data compression and encoding schemes. This approach translates to improved performance, reduced storage requirements, and enhanced processing power, making it ideal for handling complex data in bulk.</p>
+<h2 id="How-Milvus-Users-Benefit-from-the-Support-for-Parquet-File-Imports" class="common-anchor-header">How Milvus Users Benefit from the Support for Parquet File Imports<button data-href="#How-Milvus-Users-Benefit-from-the-Support-for-Parquet-File-Imports" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -51,11 +50,11 @@ canonicalUrl: 'https://milvus.io/blog/milvus-supports-apache-parquet-file-suppor
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus amplía la compatibilidad con las importaciones de archivos Parquet, proporcionando a los usuarios experiencias optimizadas y diversas ventajas, entre las que se incluyen la reducción de los gastos de almacenamiento y computación, la racionalización de la gestión de datos y la simplificación del proceso de importación.</p>
-<h3 id="Optimized-Storage-Efficiency-and-Streamlined-Data-Management" class="common-anchor-header">Eficiencia de almacenamiento optimizada y gestión de datos racionalizada</h3><p>Parquet ofrece opciones de compresión flexibles y esquemas de codificación eficientes que se adaptan a diferentes tipos de datos, garantizando una eficiencia de almacenamiento óptima. Esta flexibilidad es especialmente valiosa en entornos de nube, donde cada gramo de ahorro de almacenamiento se correlaciona directamente con una reducción tangible de los costes. Con esta nueva función de Milvus, los usuarios pueden consolidar sin esfuerzo todos sus datos diversos en un único archivo, agilizando la gestión de datos y mejorando la experiencia general del usuario. Esta función es especialmente beneficiosa para los usuarios que trabajan con tipos de datos Array de longitud variable, que ahora pueden disfrutar de un proceso de importación de datos simplificado.</p>
-<h3 id="Improved-Query-Performance" class="common-anchor-header">Mejora del rendimiento de las consultas</h3><p>El diseño de almacenamiento en columnas de Parquet y los métodos de compresión avanzados mejoran significativamente el rendimiento de las consultas. A la hora de realizar consultas, los usuarios pueden centrarse únicamente en los datos pertinentes sin tener que escanear los datos irrelevantes. Esta lectura selectiva de columnas minimiza el uso de la CPU, lo que se traduce en tiempos de consulta más rápidos.</p>
-<h3 id="Broad-Language-Compatibility" class="common-anchor-header">Amplia compatibilidad lingüística</h3><p>Parquet está disponible en varios lenguajes, como Java, C++ y Python, y es compatible con un gran número de herramientas de procesamiento de datos. Con el soporte de archivos Parquet, los usuarios de Milvus que utilizan diferentes SDKs pueden generar sin problemas archivos Parquet para analizarlos dentro de la base de datos.</p>
-<h2 id="How-to-Import-Parquet-Files-into-Milvus" class="common-anchor-header">Cómo importar archivos Parquet a Milvus<button data-href="#How-to-Import-Parquet-Files-into-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p>Milvus extends support for Parquet file imports, providing users with optimized experiences and various advantages, including lowered storage and computation expenses, streamlined data management, and a simplified importing process.</p>
+<h3 id="Optimized-Storage-Efficiency-and-Streamlined-Data-Management" class="common-anchor-header">Optimized Storage Efficiency and Streamlined Data Management</h3><p>Parquet provides flexible compression options and efficient encoding schemes catering to different data types, ensuring optimal storage efficiency. This flexibility is particularly valuable in cloud environments where every ounce of storage savings directly correlates to tangible cost reductions. With this new feature in Milvus, users can effortlessly consolidate all their diverse data into a single file, streamlining data management and enhancing the overall user experience. This feature is particularly beneficial for users working with variable-length Array data types, who can now enjoy a simplified data import process.</p>
+<h3 id="Improved-Query-Performance" class="common-anchor-header">Improved Query Performance</h3><p>Parquet’s columnar storage design and advanced compression methods significantly enhance query performance. When conducting queries, users can focus solely on the pertinent data without scanning through the irrelevant data. This selective column reading minimizes CPU usage, resulting in faster query times.</p>
+<h3 id="Broad-Language-Compatibility" class="common-anchor-header">Broad Language Compatibility</h3><p>Parquet is available in multiple languages such as Java, C++, and Python and is compatible with a large number of data processing tools. With the support of Parquet files, Milvus users using different SDKs can seamlessly generate Parquet files for parsing within the database.</p>
+<h2 id="How-to-Import-Parquet-Files-into-Milvus" class="common-anchor-header">How to Import Parquet Files into Milvus<button data-href="#How-to-Import-Parquet-Files-into-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,8 +69,8 @@ canonicalUrl: 'https://milvus.io/blog/milvus-supports-apache-parquet-file-suppor
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Si sus datos ya están en formato de archivo Parquet, la importación es fácil. Suba el archivo Parquet a un sistema de almacenamiento de objetos como MinIO, y ya está listo para importar.</p>
-<p>El siguiente fragmento de código es un ejemplo de importación de ficheros Parquet a Milvus.</p>
+    </button></h2><p>If your data is already in Parquet file format, importing is easy. Upload the Parquet file to an object storage system such as MinIO, and you’re ready to import.</p>
+<p>The code snippet below is an example of importing Parquet files into Milvus.</p>
 <pre><code translate="no">remote_files = []
 <span class="hljs-keyword">try</span>:
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Prepare upload files&quot;</span>)
@@ -102,8 +101,8 @@ canonicalUrl: 'https://milvus.io/blog/milvus-supports-apache-parquet-file-suppor
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Successfully upload files: {}&quot;</span>.<span class="hljs-built_in">format</span>(remote_files))
 <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>, remote_files
 <button class="copy-code-btn"></button></code></pre>
-<p>Si sus datos no son archivos Parquet o tienen campos dinámicos, puede aprovechar BulkWriter, nuestra herramienta de conversión de formatos de datos, para ayudarle a generar archivos Parquet. BulkWriter ha adoptado ahora Parquet como su formato de datos de salida por defecto, asegurando una experiencia más intuitiva para los desarrolladores.</p>
-<p>El siguiente fragmento de código es un ejemplo del uso de BulkWriter para generar archivos Parquet.</p>
+<p>If your data is not Parquet files or has dynamic fields, you can leverage BulkWriter, our data format conversion tool, to help you generate Parquet files. BulkWriter has now embraced Parquet as its default output data format, ensuring a more intuitive experience for developers.</p>
+<p>The code snippet below is an example of using BulkWriter to generate Parquet files.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> json
 
@@ -167,7 +166,7 @@ remote_writer.commit()
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Data files have been uploaded: <span class="hljs-subst">{remote_writer.batch_files}</span>&quot;</span>)
 remote_files = remote_writer.batch_files
 <button class="copy-code-btn"></button></code></pre>
-<p>A continuación, puede empezar a importar sus archivos Parquet en Milvus.</p>
+<p>Then, you can start to import your Parquet files into Milvus.</p>
 <pre><code translate="no">remote_files = [remote_file_path]
 task_id = utility.do_bulk_insert(collection_name=collection_name,
                                  files=remote_files)
@@ -179,8 +178,8 @@ for state in states:
     if state.state == BulkInsertState.ImportCompleted:
         complete_count = complete_count + 1
 <button class="copy-code-btn"></button></code></pre>
-<p>Ahora, sus datos están perfectamente integrados en Milvus.</p>
-<h2 id="Whats-Next" class="common-anchor-header">¿Y ahora qué?<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<p>Now, your data is seamlessly integrated into Milvus.</p>
+<h2 id="Whats-Next" class="common-anchor-header">What’s Next?<button data-href="#Whats-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -195,4 +194,4 @@ for state in states:
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A medida que Milvus continúa soportando volúmenes de datos cada vez mayores, surge el reto de gestionar importaciones de gran tamaño, especialmente cuando los archivos Parquet superan los 10 GB. Para hacer frente a este reto, tenemos previsto segregar los datos de importación en columnas escalares y vectoriales, creando dos archivos Parquet por importación para aliviar la presión de E/S. Para conjuntos de datos que superen varios cientos de gigabytes, recomendamos importar los datos varias veces.</p>
+    </button></h2><p>As Milvus continues to support ever-growing data volumes, the challenge arises in managing sizable imports, particularly when Parquet files surpass 10GB. To tackle this challenge, we plan to segregate the import data into scalar and vector columns, creating two Parquet files per import to alleviate the I/O pressure. For datasets exceeding several hundred gigabytes, we recommend importing the data multiple times.</p>

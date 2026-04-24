@@ -1,6 +1,7 @@
 ---
 id: how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md
-title: Cómo crear sistemas multiagente listos para la producción con Agno y Milvus
+title: |
+  How to Build Production-Ready Multi-Agent Systems with Agno and Milvus
 author: Min Yin
 date: 2026-02-10T00:00:00.000Z
 cover: assets.zilliz.com/cover_b5fc8a3c48.png
@@ -13,19 +14,18 @@ meta_keywords: >-
   AgentOS deployment, LLM agent architecture
 meta_title: |
   How to Build Production-Ready Multi-Agent Systems with Agno and Milvus
-desc: >-
-  Aprenda a construir, desplegar y escalar sistemas multiagente listos para
-  producción utilizando Agno, AgentOS y Milvus para cargas de trabajo del mundo
-  real.
+desc: >
+  Learn how to build, deploy, and scale production-ready multi-agent systems
+  using Agno, AgentOS, and Milvus for real-world workloads.
 origin: >-
   https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md
 ---
-<p>Si has estado construyendo agentes de IA, probablemente te hayas topado con este muro: tu demo funciona muy bien, pero llevarla a producción es una historia completamente diferente.</p>
-<p>Ya hemos hablado de la gestión de la memoria del agente y de la reordenación en entradas anteriores. Ahora vamos a abordar el mayor desafío: crear agentes que realmente se mantengan en producción.</p>
-<p>Esta es la realidad: los entornos de producción son desordenados. Un único agente rara vez es suficiente, por eso los sistemas multiagente están por todas partes. Pero los marcos disponibles hoy en día tienden a caer en dos campos: los ligeros que demo bien, pero romper bajo carga real, o los poderosos que toman una eternidad para aprender y construir con.</p>
-<p>Recientemente he estado experimentando con <a href="https://github.com/agno-agi/agno">Agno</a>, y parece encontrar un término medio razonable, centrado en la preparación para la producción sin excesiva complejidad. El proyecto ha ganado más de 37.000 estrellas de GitHub en pocos meses, lo que sugiere que otros desarrolladores también lo encuentran útil.</p>
-<p>En este post, compartiré lo que aprendí mientras construía un sistema multi-agente usando Agno con <a href="https://milvus.io/">Milvus</a> como capa de memoria. Veremos cómo se compara Agno con alternativas como LangGraph y recorreremos una implementación completa que puedes probar tú mismo.</p>
-<h2 id="What-Is-Agno" class="common-anchor-header">¿Qué es Agno?<button data-href="#What-Is-Agno" class="anchor-icon" translate="no">
+<p>If you’ve been building AI agents, you’ve probably hit this wall: your demo works great, but getting it into production is a whole different story.</p>
+<p>We’ve covered agent memory management and reranking in earlier posts. Now let’s tackle the bigger challenge—building agents that actually hold up in production.</p>
+<p>Here’s the reality: production environments are messy. A single agent rarely cuts it, which is why multi-agent systems are everywhere. But the frameworks available today tend to fall into two camps: lightweight ones that demo well but break under real load, or powerful ones that take forever to learn and build with.</p>
+<p>I’ve been experimenting with <a href="https://github.com/agno-agi/agno">Agno</a> recently, and it seems to strike a reasonable middle ground—focused on production readiness without excessive complexity. The project has gained over 37,000 GitHub stars in a few months, suggesting other developers find it useful as well.</p>
+<p>In this post, I’ll share what I learned while building a multi-agent system using Agno with <a href="https://milvus.io/">Milvus</a> as the memory layer. We’ll look at how Agno compares to alternatives such as LangGraph and walk through a complete implementation you can try yourself.</p>
+<h2 id="What-Is-Agno" class="common-anchor-header">What Is Agno?<button data-href="#What-Is-Agno" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,29 +40,29 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/agno-agi/agno">Agno</a> es un framework multi-agente construido específicamente para su uso en producción. Tiene dos capas distintas:</p>
+    </button></h2><p><a href="https://github.com/agno-agi/agno">Agno</a> is a multi-agent framework built specifically for production use. It has two distinct layers:</p>
 <ul>
-<li><p><strong>Agno framework layer</strong>: Donde se define la lógica del agente</p></li>
-<li><p><strong>Capa de ejecución AgentOS</strong>: Convierte esa lógica en servicios HTTP que puedes desplegar.</p></li>
+<li><p><strong>Agno framework layer</strong>: Where you define your agent logic</p></li>
+<li><p><strong>AgentOS runtime layer</strong>: Turns that logic into HTTP services you can actually deploy</p></li>
 </ul>
-<p>Piénselo de esta manera: la capa de marco define <em>lo que</em> sus agentes deben hacer, mientras que AgentOS se encarga de <em>cómo</em> se ejecuta y se sirve ese trabajo.</p>
-<h3 id="The-Framework-Layer" class="common-anchor-header">La capa Framework</h3><p>Esto es con lo que se trabaja directamente. Introduce tres conceptos básicos:</p>
+<p>Think of it this way: the framework layer defines <em>what</em> your agents should do, while AgentOS handles <em>how</em> that work gets executed and served.</p>
+<h3 id="The-Framework-Layer" class="common-anchor-header">The Framework Layer</h3><p>This is what you work with directly. It introduces three core concepts:</p>
 <ul>
-<li><p><strong>Agente</strong>: Maneja un tipo específico de tarea</p></li>
-<li><p><strong>Equipo</strong>: Coordina múltiples agentes para resolver problemas complejos</p></li>
-<li><p><strong>Flujo de trabajo</strong>: Define el orden y la estructura de ejecución</p></li>
+<li><p><strong>Agent</strong>: Handles a specific type of task</p></li>
+<li><p><strong>Team</strong>: Coordinates multiple agents to solve complex problems</p></li>
+<li><p><strong>Workflow</strong>: Defines execution order and structure</p></li>
 </ul>
-<p>Una cosa que aprecié: no necesitas aprender un nuevo DSL o dibujar diagramas de flujo. El comportamiento de los agentes se define mediante llamadas a funciones estándar de Python. El framework maneja la invocación LLM, la ejecución de herramientas y la gestión de memoria.</p>
-<h3 id="The-AgentOS-Runtime-Layer" class="common-anchor-header">Capa de ejecución de AgentOS</h3><p>AgentOS está diseñado para grandes volúmenes de peticiones a través de la ejecución asíncrona, y su arquitectura sin estado hace que el escalado sea sencillo.</p>
-<p>Entre sus principales características se incluyen:</p>
+<p>One thing I appreciated: you don’t need to learn a new DSL or draw flowcharts. Agent behavior is defined using standard Python function calls. The framework handles LLM invocation, tool execution, and memory management.</p>
+<h3 id="The-AgentOS-Runtime-Layer" class="common-anchor-header">The AgentOS Runtime Layer</h3><p>AgentOS is designed for high request volumes through async execution, and its stateless architecture makes scaling straightforward.</p>
+<p>Key features include:</p>
 <ul>
-<li><p>Integración FastAPI incorporada para exponer agentes como puntos finales HTTP</p></li>
-<li><p>Gestión de sesiones y streaming de respuestas</p></li>
-<li><p>Puntos finales de supervisión</p></li>
-<li><p>Soporte de escalado horizontal</p></li>
+<li><p>Built-in FastAPI integration for exposing agents as HTTP endpoints</p></li>
+<li><p>Session management and streaming responses</p></li>
+<li><p>Monitoring endpoints</p></li>
+<li><p>Horizontal scaling support</p></li>
 </ul>
-<p>En la práctica, AgentOS se encarga de la mayor parte del trabajo de infraestructura, lo que le permite centrarse en la propia lógica del agente.</p>
-<p>A continuación se muestra una vista de alto nivel de la arquitectura de Agno.</p>
+<p>In practice, AgentOS handles most of the infrastructure work, which lets you focus on the agent logic itself.</p>
+<p>A high-level view of Agno’s architecture is shown below.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_dfbf444ee6.png" alt="" class="doc-image" id="" />
@@ -84,24 +84,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para entender dónde encaja Agno, comparémoslo con LangGraph, uno de los frameworks multiagente más utilizados.</p>
-<p><a href="https://www.langchain.com/langgraph"><strong>LangGraph</strong></a> utiliza una máquina de estados basada en grafos. Modelas todo el flujo de trabajo de tu agente como un grafo: los pasos son nodos, las rutas de ejecución son aristas. Esto funciona bien cuando el proceso es fijo y está estrictamente ordenado. Pero para escenarios abiertos o conversacionales, puede resultar restrictivo. A medida que las interacciones se vuelven más dinámicas, resulta más difícil mantener un gráfico limpio.</p>
-<p><strong>Agno</strong> adopta un enfoque diferente. En lugar de ser una capa de orquestación pura, es un sistema integral. Defina el comportamiento de su agente y AgentOS lo expondrá automáticamente como un servicio HTTP listo para la producción, con monitorización, escalabilidad y soporte para conversaciones de varios turnos. Sin pasarela API separada, sin gestión de sesión personalizada, sin herramientas operativas adicionales.</p>
-<p>He aquí una rápida comparación:</p>
+    </button></h2><p>To understand where Agno fits, let’s compare it with LangGraph—one of the most widely used multi-agent frameworks.</p>
+<p><a href="https://www.langchain.com/langgraph"><strong>LangGraph</strong></a> uses a graph-based state machine. You model your entire agent workflow as a graph: steps are nodes, execution paths are edges. This works well when your process is fixed and strictly ordered. But for open-ended or conversational scenarios, it can feel restrictive. As interactions get more dynamic, maintaining a clean graph gets harder.</p>
+<p><strong>Agno</strong> takes a different approach. Instead of being a pure orchestration layer, it’s an end-to-end system. Define your agent behavior, and AgentOS automatically exposes it as a production-ready HTTP service—with monitoring, scalability, and multi-turn conversation support built in. No separate API gateway, no custom session management, no extra operational tooling.</p>
+<p>Here’s a quick comparison:</p>
 <table>
 <thead>
 <tr><th>Dimension</th><th>LangGraph</th><th>Agno</th></tr>
 </thead>
 <tbody>
-<tr><td>Modelo de organización</td><td>Definición explícita del grafo mediante nodos y aristas</td><td>Flujos de trabajo declarativos definidos en Python</td></tr>
-<tr><td>Gestión de estados</td><td>Clases de estado personalizadas definidas y gestionadas por los desarrolladores</td><td>Sistema de memoria integrado</td></tr>
-<tr><td>Depuración y observabilidad</td><td>LangSmith (de pago)</td><td>AgentOS UI (código abierto)</td></tr>
-<tr><td>Modelo de tiempo de ejecución</td><td>Integrado en un tiempo de ejecución existente</td><td>Servicio independiente basado en FastAPI</td></tr>
-<tr><td>Complejidad del despliegue</td><td>Requiere configuración adicional a través de LangServe</td><td>Funciona listo para usar</td></tr>
+<tr><td>Orchestration model</td><td>Explicit graph definition using nodes and edges</td><td>Declarative workflows defined in Python</td></tr>
+<tr><td>State management</td><td>Custom state classes defined and managed by developers</td><td>Built-in memory system</td></tr>
+<tr><td>Debugging &amp; observability</td><td>LangSmith (paid)</td><td>AgentOS UI (open source)</td></tr>
+<tr><td>Runtime model</td><td>Integrated into an existing runtime</td><td>Standalone FastAPI-based service</td></tr>
+<tr><td>Deployment complexity</td><td>Requires additional setup via LangServe</td><td>Works out of the box</td></tr>
 </tbody>
 </table>
-<p>LangGraph le ofrece más flexibilidad y un control más preciso. Agno optimiza el tiempo de producción. La elección correcta depende de la fase en que se encuentre su proyecto, de la infraestructura existente y del nivel de personalización que necesite. Si no está seguro, realizar una pequeña prueba de concepto con ambos es probablemente la forma más fiable de decidir.</p>
-<h2 id="Choosing-Milvus-for-the-Agent-Memory-Layer" class="common-anchor-header">Elegir Milvus para la capa de memoria del agente<button data-href="#Choosing-Milvus-for-the-Agent-Memory-Layer" class="anchor-icon" translate="no">
+<p>LangGraph gives you more flexibility and fine-grained control. Agno optimizes for faster time-to-production. The right choice depends on your project stage, existing infrastructure, and the level of customization you need. If you’re unsure, running a small proof of concept with both is probably the most reliable way to decide.</p>
+<h2 id="Choosing-Milvus-for-the-Agent-Memory-Layer" class="common-anchor-header">Choosing Milvus for the Agent Memory Layer<button data-href="#Choosing-Milvus-for-the-Agent-Memory-Layer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -116,22 +116,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Una vez que haya elegido un marco, la siguiente decisión es cómo almacenar la memoria y el conocimiento. Para ello utilizamos Milvus. <a href="https://milvus.io/">Milvus</a> es la base de datos vectorial de código abierto más popular construida para cargas de trabajo de IA con <a href="https://github.com/milvus-io/milvus">más de 42.000+</a> estrellas de <a href="https://github.com/milvus-io/milvus">GitHub</a>.</p>
-<p><strong>Agno tiene soporte nativo para Milvus.</strong> El módulo <code translate="no">agno.vectordb.milvus</code> incluye funciones de producción como gestión de conexiones, reintentos automáticos, escritura por lotes y generación de incrustaciones. No necesita crear grupos de conexiones ni gestionar los fallos de red usted mismo: unas pocas líneas de Python le proporcionan una capa de memoria vectorial de trabajo.</p>
-<p><strong>Milvus se adapta a sus necesidades.</strong> Admite tres <a href="https://milvus.io/docs/install-overview.md">modos de despliegue:</a></p>
+    </button></h2><p>Once you’ve chosen a framework, the next decision is how to store memory and knowledge. We use Milvus for this. <a href="https://milvus.io/">Milvus</a> is the most popular open-source vector database built for AI workloads with more than <a href="https://github.com/milvus-io/milvus">42,000+ GitHub</a> stars.</p>
+<p><strong>Agno has native Milvus support.</strong> The <code translate="no">agno.vectordb.milvus</code> module wraps production features like connection management, automatic retries, batch writes, and embedding generation. You don’t need to build connection pools or handle network failures yourself—a few lines of Python give you a working vector memory layer.</p>
+<p><strong>Milvus scales with your needs.</strong> It supports three <a href="https://milvus.io/docs/install-overview.md">deployment modes:</a></p>
 <ul>
-<li><p><strong>Milvus Lite</strong>: Ligero, basado en archivos, ideal para desarrollo y pruebas locales.</p></li>
-<li><p><strong>Independiente</strong>: Despliegue en un único servidor para cargas de trabajo de producción</p></li>
-<li><p><strong>Distribuido</strong>: Clúster completo para escenarios a gran escala</p></li>
+<li><p><strong>Milvus Lite</strong>: Lightweight, file-based—great for local development and testing</p></li>
+<li><p><strong>Standalone</strong>: Single-server deployment for production workloads</p></li>
+<li><p><strong>Distributed</strong>: Full cluster for high-scale scenarios</p></li>
 </ul>
-<p>Puede empezar con Milvus Lite para validar la memoria de su agente localmente, y luego pasar a independiente o distribuido a medida que crece el tráfico, sin cambiar el código de su aplicación. Esta flexibilidad es especialmente útil cuando está iterando rápidamente en las primeras etapas, pero necesita un camino claro para escalar más adelante.</p>
+<p>You can start with Milvus Lite to validate your agent memory locally, then move to standalone or distributed as traffic grows—without changing your application code. This flexibility is especially useful when you’re iterating quickly in early stages but need a clear path to scale later.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_1_1en_e0294d0ffa.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="common-anchor-header">Paso a paso: Creación de un agente Agno listo para producción con Milvus<button data-href="#Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="anchor-icon" translate="no">
+<h2 id="Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="common-anchor-header">Step-by-Step: Building a Production-Ready Agno Agent with Milvus<button data-href="#Step-by-Step-Building-a-Production-Ready-Agno-Agent-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -146,13 +146,13 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Construyamos un agente listo para producción desde cero.</p>
-<p>Empezaremos con un ejemplo sencillo de agente único para mostrar el flujo de trabajo completo. Después lo ampliaremos a un sistema multi-agente. AgentOS empaquetará automáticamente todo como un servicio HTTP invocable.</p>
-<h3 id="1-Deploying-Milvus-Standalone-with-Docker" class="common-anchor-header">1. Despliegue de Milvus Standalone con Docker</h3><p><strong>(1) Descargue los archivos de despliegue</strong></p>
+    </button></h2><p>Let’s build a production-ready agent from scratch.</p>
+<p>We’ll start with a simple single-agent example to show the full workflow. Then we’ll expand it into a multi-agent system. AgentOS will automatically package everything as a callable HTTP service.</p>
+<h3 id="1-Deploying-Milvus-Standalone-with-Docker" class="common-anchor-header">1. Deploying Milvus Standalone with Docker</h3><p><strong>(1) Download the Deployment Files</strong></p>
 <pre><code translate="no">**wget** **
 &lt;https://github.com/Milvus-io/Milvus/releases/download/v2.****5****.****12****/Milvus-standalone-docker-compose.yml&gt; -O docker-compose.yml**
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(2) Inicie el servicio Milvus</strong></p>
+<p><strong>(2) Start the Milvus Service</strong></p>
 <pre><code translate="no">docker-compose up -d
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no">docker-compose ps -a
@@ -163,7 +163,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="2-Core-Implementation" class="common-anchor-header">2. Implementación del núcleo</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
+<h3 id="2-Core-Implementation" class="common-anchor-header">2. Core Implementation</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os
 <span class="hljs-keyword">from</span> pathlib <span class="hljs-keyword">import</span> Path
 <span class="hljs-keyword">from</span> agno.os <span class="hljs-keyword">import</span> AgentOS
 <span class="hljs-keyword">from</span> agno.agent <span class="hljs-keyword">import</span> Agent
@@ -213,7 +213,7 @@ app = agent_os.get_app()
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;💡 Please upload documents to the knowledge base in the UI\n&quot;</span>)
     agent_os.serve(app=<span class="hljs-string">&quot;knowledge_agent:app&quot;</span>, port=<span class="hljs-number">7777</span>, reload=<span class="hljs-literal">False</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>(1) Ejecutar el agente</strong></p>
+<p><strong>(1) Running the Agent</strong></p>
 <pre><code translate="no">**python** **knowledge_agent.py**
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -222,29 +222,29 @@ app = agent_os.get_app()
     <span></span>
   </span>
 </p>
-<h3 id="3-Connecting-to-the-AgentOS-Console" class="common-anchor-header">3. Conexión a la consola del AgentOS</h3><p>https://os.agno.com/</p>
-<p><strong>(1) Crear una Cuenta e Iniciar Sesión</strong></p>
+<h3 id="3-Connecting-to-the-AgentOS-Console" class="common-anchor-header">3. Connecting to the AgentOS Console</h3><p>https://os.agno.com/</p>
+<p><strong>(1) Create an Account and Sign In</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/2_db0af51e58.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(2) Conecte su Agente a AgentOS</strong></p>
+<p><strong>(2) Connect Your Agent to AgentOS</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_0a8c6f9436.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(3) Configure el Puerto Expuesto y el Nombre del Agente</strong></p>
+<p><strong>(3) Configure the Exposed Port and Agent Name</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/4_3844011799.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>(4) Añadir documentos e indexarlos en Milvus</strong></p>
+<p><strong>(4) Add Documents and Index Them in Milvus</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/5_776ea7ca11.png" alt="" class="doc-image" id="" />
@@ -269,17 +269,17 @@ app = agent_os.get_app()
     <span></span>
   </span>
 </p>
-<p><strong>(5) Pruebe el Agente de extremo a extremo</strong></p>
+<p><strong>(5) Test the Agent End to End</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/_6e61038ba5.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>En esta configuración, Milvus se encarga de la recuperación semántica de alto rendimiento. Cuando el asistente de la base de conocimientos recibe una pregunta técnica, invoca la herramienta <code translate="no">search_knowledge</code> para incrustar la consulta, recupera los trozos de documentos más relevantes de Milvus y utiliza esos resultados como base para su respuesta.</p>
-<p>Milvus ofrece tres opciones de despliegue, lo que le permite elegir una arquitectura que se adapte a sus necesidades operativas, manteniendo al mismo tiempo la coherencia de las API a nivel de aplicación en todos los modos de despliegue.</p>
-<p>La demostración anterior muestra el flujo central de recuperación y generación. Sin embargo, para trasladar este diseño a un entorno de producción, es necesario analizar con más detalle varios aspectos de la arquitectura.</p>
-<h2 id="How-Retrieval-Results-Are-Shared-Across-Agents" class="common-anchor-header">Cómo se comparten los resultados de recuperación entre los agentes<button data-href="#How-Retrieval-Results-Are-Shared-Across-Agents" class="anchor-icon" translate="no">
+<p>In this setup, Milvus handles high-performance semantic retrieval. When the knowledge-base assistant receives a technical question, it invokes the <code translate="no">search_knowledge</code> tool to embed the query, retrieves the most relevant document chunks from Milvus, and uses those results as the basis for its response.</p>
+<p>Milvus offers three deployment options, allowing you to choose an architecture that fits your operational requirements while keeping the application-level APIs consistent across all deployment modes.</p>
+<p>The demo above shows the core retrieval and generation flow. To move this design into a production environment, however, several architectural aspects need to be discussed in more detail.</p>
+<h2 id="How-Retrieval-Results-Are-Shared-Across-Agents" class="common-anchor-header">How Retrieval Results Are Shared Across Agents<button data-href="#How-Retrieval-Results-Are-Shared-Across-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -294,13 +294,13 @@ app = agent_os.get_app()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El modo Equipo de Agno tiene una opción <code translate="no">share_member_interactions=True</code> que permite a los agentes posteriores heredar el historial completo de interacciones de los agentes anteriores. En la práctica, esto significa que cuando el primer agente recupera información de Milvus, los agentes posteriores pueden reutilizar esos resultados en lugar de volver a ejecutar la misma búsqueda.</p>
+    </button></h2><p>Agno’s Team mode has a <code translate="no">share_member_interactions=True</code> option that allows later agents to inherit the full interaction history of earlier agents. In practice, this means that when the first agent retrieves information from Milvus, subsequent agents can reuse those results instead of running the same search again.</p>
 <ul>
-<li><p><strong>La ventaja:</strong> Los costes de recuperación se amortizan en todo el equipo. Una búsqueda vectorial admite varios agentes, lo que reduce las consultas redundantes.</p></li>
-<li><p><strong>Desventaja:</strong> La calidad de la recuperación se amplifica. Si la búsqueda inicial devuelve resultados incompletos o inexactos, ese error se propaga a todos los agentes que dependen de ella.</p></li>
+<li><p><strong>The upside:</strong> Retrieval costs are amortized across the team. One vector search supports multiple agents, reducing redundant queries.</p></li>
+<li><p><strong>The downside:</strong> Retrieval quality gets amplified. If the initial search returns incomplete or inaccurate results, that error propagates to every agent that depends on it.</p></li>
 </ul>
-<p>Por eso, la precisión de la recuperación es aún más importante en los sistemas multiagente. Una mala recuperación no sólo degrada la respuesta de un agente, sino que afecta a todo el equipo.</p>
-<p>He aquí un ejemplo de configuración de equipo:</p>
+<p>This is why retrieval accuracy matters even more in multi-agent systems. A bad retrieval doesn’t just degrade one agent’s response—it affects the entire team.</p>
+<p>Here’s an example Team setup:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> agno.team <span class="hljs-keyword">import</span> Team
 analyst = Agent(
     name=<span class="hljs-string">&quot;Data Analyst&quot;</span>,
@@ -321,7 +321,7 @@ team = Team(
     share_member_interactions=<span class="hljs-literal">True</span>,  *<span class="hljs-comment"># Share knowledge retrieval results*</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Why-Agno-and-Milvus-Are-Layered-Separately" class="common-anchor-header">Por qué Agno y Milvus están en capas separadas<button data-href="#Why-Agno-and-Milvus-Are-Layered-Separately" class="anchor-icon" translate="no">
+<h2 id="Why-Agno-and-Milvus-Are-Layered-Separately" class="common-anchor-header">Why Agno and Milvus Are Layered Separately<button data-href="#Why-Agno-and-Milvus-Are-Layered-Separately" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -336,15 +336,15 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En esta arquitectura, <strong>Agno</strong> se sitúa en la capa de conversación y orquestación. Es responsable de gestionar el flujo de diálogo, coordinar a los agentes y mantener el estado de la conversación, con el historial de sesiones guardado en una base de datos relacional. El conocimiento real del dominio del sistema, como la documentación del producto y los informes técnicos, se gestiona por separado y se almacena como incrustaciones vectoriales en <strong>Milvus</strong>. Esta clara división mantiene la lógica conversacional y el almacenamiento de conocimientos totalmente desacoplados.</p>
-<p>Por qué es importante desde el punto de vista operativo:</p>
+    </button></h2><p>In this architecture, <strong>Agno</strong> sits at the conversation and orchestration layer. It is responsible for managing dialogue flow, coordinating agents, and maintaining conversational state, with session history persisted in a relational database. The system’s actual domain knowledge—such as product documentation and technical reports—is handled separately and stored as vector embeddings in <strong>Milvus</strong>. This clear division keeps conversational logic and knowledge storage fully decoupled.</p>
+<p>Why this matters operationally:</p>
 <ul>
-<li><p><strong>Escalado independiente</strong>: A medida que crece la demanda de Agno, se añaden más instancias de Agno. A medida que crece el volumen de consultas, se amplía Milvus añadiendo nodos de consulta. Cada capa escala de forma aislada.</p></li>
-<li><p><strong>Diferentes necesidades de hardware</strong>: Agno se basa en la CPU y la memoria (inferencia LLM, ejecución del flujo de trabajo). Milvus está optimizado para la recuperación vectorial de alto rendimiento (E/S de disco, a veces aceleración GPU). Separarlos evita la contención de recursos.</p></li>
-<li><p><strong>Optimización de costes</strong>: Puede ajustar y asignar recursos a cada capa de forma independiente.</p></li>
+<li><p><strong>Independent scaling</strong>: As Agno demand grows, add more Agno instances. As query volume grows, expand Milvus by adding query nodes. Each layer scales in isolation.</p></li>
+<li><p><strong>Different hardware needs</strong>: Agno is CPU- and memory-bound (LLM inference, workflow execution). Milvus is optimized for high-throughput vector retrieval (disk I/O, sometimes GPU acceleration). Separating them prevents resource contention.</p></li>
+<li><p><strong>Cost optimization</strong>: You can tune and allocate resources for each layer independently.</p></li>
 </ul>
-<p>Este enfoque por capas le proporciona una arquitectura más eficiente, resistente y lista para la producción.</p>
-<h2 id="What-to-Monitor-When-Using-Agno-with-Milvus" class="common-anchor-header">Qué supervisar cuando se utiliza Agno con Milvus<button data-href="#What-to-Monitor-When-Using-Agno-with-Milvus" class="anchor-icon" translate="no">
+<p>This layered approach gives you a more efficient, resilient, and production-ready architecture.</p>
+<h2 id="What-to-Monitor-When-Using-Agno-with-Milvus" class="common-anchor-header">What to Monitor When Using Agno with Milvus<button data-href="#What-to-Monitor-When-Using-Agno-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -359,14 +359,14 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Agno tiene capacidades de evaluación incorporadas, pero al añadir Milvus se amplía lo que debe vigilar. Basándonos en nuestra experiencia, céntrese en tres áreas:</p>
+    </button></h2><p>Agno has built-in evaluation capabilities, but adding Milvus expands what you should watch. Based on our experience, focus on three areas:</p>
 <ul>
-<li><p><strong>Calidad de la recuperación</strong>: ¿Los documentos que Milvus devuelve son realmente relevantes para la consulta, o sólo superficialmente similares a nivel vectorial?</p></li>
-<li><p><strong>Fidelidad de la respuesta</strong>: ¿La respuesta final se basa en el contenido recuperado o el LLM genera afirmaciones sin fundamento?</p></li>
-<li><p><strong>Desglose de la latencia de extremo a extremo</strong>: No se limite a registrar el tiempo de respuesta total. Desglóselo por etapas -generación de inclusiones, búsqueda de vectores, ensamblaje de contextos, inferencia LLM- para poder identificar dónde se producen las ralentizaciones.</p></li>
+<li><p><strong>Retrieval quality</strong>: Are the documents Milvus returns actually relevant to the query, or just superficially similar at the vector level?</p></li>
+<li><p><strong>Answer faithfulness</strong>: Is the final response grounded in the retrieved content, or is the LLM generating unsupported claims?</p></li>
+<li><p><strong>End-to-end latency breakdown</strong>: Don’t just track total response time. Break it down by stage—embedding generation, vector search, context assembly, LLM inference—so you can identify where slowdowns occur.</p></li>
 </ul>
-<p><strong>Un ejemplo práctico:</strong> Cuando su colección Milvus crece de 1 millón a 10 millones de vectores, puede notar que la latencia de recuperación aumenta. Esto suele ser una señal para ajustar los parámetros del índice (como <code translate="no">nlist</code> y <code translate="no">nprobe</code>) o para considerar el cambio de una implementación independiente a una distribuida.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p><strong>A practical example:</strong> When your Milvus collection grows from 1 million to 10 million vectors, you might notice retrieval latency creeping up. That’s usually a signal to tune index parameters (like <code translate="no">nlist</code> and <code translate="no">nprobe</code>) or consider moving from standalone to a distributed deployment.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -381,7 +381,7 @@ team = Team(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Construir sistemas de agentes listos para la producción requiere algo más que cablear llamadas LLM y demostraciones de recuperación. Se necesitan límites arquitectónicos claros, una infraestructura que escale de forma independiente y capacidad de observación para detectar los problemas en una fase temprana.</p>
-<p>En este post, he explicado cómo Agno y Milvus pueden trabajar juntos: Agno para la orquestación multiagente, Milvus para la memoria escalable y la recuperación semántica. Al mantener estas capas separadas, puede pasar del prototipo a la producción sin reescribir la lógica central y escalar cada componente según sea necesario.</p>
-<p>Si está experimentando con configuraciones similares, me gustaría saber qué le funciona.</p>
-<p><strong>¿Preguntas sobre Milvus?</strong> Únase a nuestro <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal de Slack</a> o reserve una sesión de 20 minutos <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">de Milvus Office Hours</a>.</p>
+    </button></h2><p>Building production-ready agent systems takes more than wiring together LLM calls and retrieval demos. You need clear architectural boundaries, infrastructure that scales independently, and observability to catch issues early.</p>
+<p>In this post, I walked through how Agno and Milvus can work together: Agno for multi-agent orchestration, Milvus for scalable memory and semantic retrieval. By keeping these layers separate, you can move from prototype to production without rewriting core logic—and scale each component as needed.</p>
+<p>If you’re experimenting with similar setups, I’d be curious to hear what’s working for you.</p>
+<p><strong>Questions about Milvus?</strong> Join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack channel</a> or book a 20-minute <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session.</p>

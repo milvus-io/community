@@ -1,12 +1,12 @@
 ---
 id: the-developers-guide-to-milvus-configuration.md
-title: Руководство разработчика по конфигурированию Milvus
+title: The Developer’s Guide to Milvus Configuration
 author: Jack Li
 date: 2025-04-23T00:00:00.000Z
 desc: >-
-  Упростите конфигурацию Milvus с помощью нашего руководства. Узнайте о ключевых
-  параметрах, которые необходимо настроить для повышения производительности
-  приложений векторных баз данных.
+  Simplify your Milvus configuration with our focused guide. Discover key
+  parameters to adjust for enhanced performance in your vector database
+  applications.
 cover: assets.zilliz.com/The_Developer_s_Guide_to_Milvus_Configuration_1519241756.png
 tag: Tutorials
 recommend: false
@@ -16,7 +16,7 @@ meta_keywords: 'Milvus, configurations, performance, scalability, stability'
 meta_title: The Developer’s Guide to Milvus Configuration
 origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
 ---
-<h2 id="Introduction" class="common-anchor-header">Введение<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -31,10 +31,10 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Как разработчик, работающий с Milvus, вы, вероятно, сталкивались с пугающим конфигурационным файлом <code translate="no">milvus.yaml</code> с его 500+ параметрами. Справиться с этой сложностью может быть непросто, когда все, что вы хотите, - это оптимизировать производительность векторной базы данных.</p>
-<p>Хорошая новость: вам не нужно разбираться в каждом параметре. В этом руководстве мы рассмотрим шум и сосредоточимся на критически важных параметрах, которые действительно влияют на производительность, и укажем, какие именно значения следует изменить для вашего конкретного случая использования.</p>
-<p>Создаете ли вы рекомендательную систему, которой нужны молниеносные запросы, или оптимизируете приложение векторного поиска с ограничениями по стоимости, я покажу вам, какие именно параметры нужно изменить, используя практические, проверенные значения. К концу этого руководства вы будете знать, как настраивать конфигурации Milvus для достижения максимальной производительности, основываясь на реальных сценариях развертывания.</p>
-<h2 id="Configuration-Categories" class="common-anchor-header">Категории конфигураций<button data-href="#Configuration-Categories" class="anchor-icon" translate="no">
+    </button></h2><p>As a developer working with Milvus, you’ve likely encountered the daunting <code translate="no">milvus.yaml</code> configuration file with its 500+ parameters. Handling this complexity can be challenging when all you want is to optimize your vector database performance.</p>
+<p>Good news: you don’t need to understand every parameter. This guide cuts through the noise and focuses on the critical settings that actually impact performance, highlighting exactly which values to tweak for your specific use case.</p>
+<p>Whether you’re building a recommendation system that needs lightning-fast queries or optimizing a vector search application with cost constraints, I’ll show you exactly which parameters to modify with practical, tested values. By the end of this guide, you’ll know how to tune Milvus configurations for peak performance based on real-world deployment scenarios.</p>
+<h2 id="Configuration-Categories" class="common-anchor-header">Configuration Categories<button data-href="#Configuration-Categories" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -49,11 +49,11 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем перейти к конкретным параметрам, давайте разберем структуру конфигурационного файла. При работе с <code translate="no">milvus.yaml</code> вы будете иметь дело с тремя категориями параметров:</p>
+    </button></h2><p>Before diving into specific parameters, let’s break down the structure of the configuration file. When working with <code translate="no">milvus.yaml</code>, you’ll be dealing with three parameter categories:</p>
 <ul>
-<li><p><strong>Конфигурации компонентов зависимостей</strong>: Внешние сервисы, к которым подключается Milvus (<code translate="no">etcd</code>, <code translate="no">minio</code>, <code translate="no">mq</code>) - критичны для настройки кластера и сохранения данных.</p></li>
-<li><p><strong>Конфигурации внутренних компонентов</strong>: Внутренняя архитектура Milvus (<code translate="no">proxy</code>, <code translate="no">queryNode</code>, и т.д.) - ключ к настройке производительности</p></li>
-<li><p><strong>Функциональные конфигурации</strong>: Безопасность, ведение журналов и ограничения ресурсов - важны для производственных развертываний</p></li>
+<li><p><strong>Dependency Component Configurations</strong>: External services Milvus connects to (<code translate="no">etcd</code>, <code translate="no">minio</code>, <code translate="no">mq</code>) - critical for cluster setup and data persistence</p></li>
+<li><p><strong>Internal Component Configurations</strong>: Milvus’s internal architecture (<code translate="no">proxy</code>, <code translate="no">queryNode</code>, etc.) - key for performance tuning</p></li>
+<li><p><strong>Functional Configurations</strong>: Security, logging, and resource limits - important for production deployments</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -61,7 +61,7 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h2 id="Milvus-Dependency-Component-Configurations" class="common-anchor-header">Конфигурации компонентов зависимостей Milvus<button data-href="#Milvus-Dependency-Component-Configurations" class="anchor-icon" translate="no">
+<h2 id="Milvus-Dependency-Component-Configurations" class="common-anchor-header">Milvus Dependency Component Configurations<button data-href="#Milvus-Dependency-Component-Configurations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,12 +76,12 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Начнем с внешних сервисов, от которых зависит Milvus. Эти конфигурации особенно важны при переходе от разработки к производству.</p>
-<h3 id="etcd-Metadata-Store" class="common-anchor-header"><code translate="no">etcd</code>: Хранилище метаданных</h3><p>Milvus полагается на <code translate="no">etcd</code> для хранения метаданных и координации сервисов. Следующие параметры имеют решающее значение:</p>
+    </button></h2><p>Let’s start with the external services Milvus depends on. These configurations are particularly important when moving from development to production.</p>
+<h3 id="etcd-Metadata-Store" class="common-anchor-header"><code translate="no">etcd</code>: Metadata Store</h3><p>Milvus relies on <code translate="no">etcd</code> for metadata persistence and service coordination. The following parameters are crucial:</p>
 <ul>
-<li><p><code translate="no">Etcd.endpoints</code>: Указывает адрес кластера etcd. По умолчанию Milvus запускает связанный экземпляр, но в корпоративных средах лучше всего подключаться к управляемому сервису <code translate="no">etcd</code> для повышения доступности и оперативного контроля.</p></li>
-<li><p><code translate="no">etcd.rootPath</code>: Определяет ключевой префикс для хранения данных, связанных с Milvus, в etcd. Если вы работаете с несколькими кластерами Milvus на одном бэкенде etcd, использование разных корневых путей обеспечивает чистую изоляцию метаданных.</p></li>
-<li><p><code translate="no">etcd.auth</code>: Управляет учетными данными аутентификации. По умолчанию Milvus не включает etcd auth, но если ваш управляемый экземпляр etcd требует учетных данных, вы должны указать их здесь.</p></li>
+<li><p><code translate="no">Etcd.endpoints</code>: Specifies the address of the etcd cluster. By default, Milvus launches a bundled instance, but in enterprise environments, it’s best practice to connect to a managed <code translate="no">etcd</code> service for better availability and operational control.</p></li>
+<li><p><code translate="no">etcd.rootPath</code>: Defines the key prefix for storing Milvus-related data in etcd. If you’re operating multiple Milvus clusters on the same etcd backend, using different root paths allows clean metadata isolation.</p></li>
+<li><p><code translate="no">etcd.auth</code>: Controls authentication credentials. Milvus doesn’t enable etcd auth by default, but if your managed etcd instance requires credentials, you must specify them here.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -89,13 +89,13 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="minio-Object-Storage" class="common-anchor-header"><code translate="no">minio</code>: Хранилище объектов</h3><p>Несмотря на название, этот раздел регулирует работу всех S3-совместимых клиентов службы хранения объектов. Он поддерживает таких провайдеров, как AWS S3, GCS и Aliyun OSS через настройку <code translate="no">cloudProvider</code>.</p>
-<p>Обратите внимание на эти четыре ключевые конфигурации:</p>
+<h3 id="minio-Object-Storage" class="common-anchor-header"><code translate="no">minio</code>: Object Storage</h3><p>Despite the name, this section governs all S3-compatible object storage service clients. It supports providers such as AWS S3, GCS, and Aliyun OSS via the <code translate="no">cloudProvider</code> setting.</p>
+<p>Pay attention to these four key configurations:</p>
 <ul>
-<li><p><code translate="no">minio.address / minio.port</code>: Используйте их для указания конечной точки вашей службы хранения объектов.</p></li>
-<li><p><code translate="no">minio.bucketName</code>: : Назначьте отдельные ведра (или логические префиксы), чтобы избежать столкновений данных при работе нескольких кластеров Milvus.</p></li>
-<li><p><code translate="no">minio.rootPath</code>: : Включает внутриведерное пространство имен для изоляции данных.</p></li>
-<li><p><code translate="no">minio.cloudProvider</code>: Идентифицирует бэкэнд OSS. Полный список совместимости см. в <a href="https://milvus.io/docs/product_faq.md#Where-does-Milvus-store-data">документации Milvus</a>.</p></li>
+<li><p><code translate="no">minio.address / minio.port</code>: Use these to specify the endpoint of your object storage service.</p></li>
+<li><p><code translate="no">minio.bucketName</code>: Assign separate buckets (or logical prefixes) to avoid data collisions when running multiple Milvus clusters.</p></li>
+<li><p><code translate="no">minio.rootPath</code>: Enables intra-bucket namespacing for data isolation.</p></li>
+<li><p><code translate="no">minio.cloudProvider</code>: Identifies the OSS backend. For a full compatibility list, refer to the <a href="https://milvus.io/docs/product_faq.md#Where-does-Milvus-store-data">Milvus documentation</a>.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -103,11 +103,11 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="mq-Message-Queue" class="common-anchor-header"><code translate="no">mq</code>: Очередь сообщений</h3><p>Milvus использует очередь сообщений для распространения внутренних событий - либо Pulsar (по умолчанию), либо Kafka. Обратите внимание на следующие три параметра.</p>
+<h3 id="mq-Message-Queue" class="common-anchor-header"><code translate="no">mq</code>: Message Queue</h3><p>Milvus uses a message queue for internal event propagation—either Pulsar (default) or Kafka. Pay attention to the following three parameters.</p>
 <ol>
-<li><p><code translate="no">pulsar.address/pulsar.port</code>: Установите эти значения, чтобы использовать внешний кластер Pulsar.</p></li>
-<li><p><code translate="no">pulsar.tenant</code>: Определяет имя арендатора. Когда несколько кластеров Milvus совместно используют экземпляр Pulsar, это обеспечивает чистое разделение каналов.</p></li>
-<li><p><code translate="no">msgChannel.chanNamePrefix.cluster</code>: Если вы предпочитаете обходиться без модели арендаторов Pulsar, настройте префикс канала, чтобы избежать коллизий.</p></li>
+<li><p><code translate="no">pulsar.address/pulsar.port</code>: Set these values to use an external Pulsar cluster.</p></li>
+<li><p><code translate="no">pulsar.tenant</code>: Defines the tenant name. When multiple Milvus clusters share a Pulsar instance, this ensures clean channel separation.</p></li>
+<li><p><code translate="no">msgChannel.chanNamePrefix.cluster</code>: If you prefer to bypass Pulsar’s tenant model, adjust the channel prefix to prevent collisions.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -121,14 +121,14 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<p>Milvus также поддерживает Kafka в качестве очереди сообщений. Чтобы использовать Kafka вместо нее, закомментируйте настройки, специфичные для Pulsar, и отмените блок конфигурации Kafka.</p>
+<p>Milvus also supports Kafka as the message queue. To use Kafka instead, comment out the Pulsar-specific settings and uncomment the Kafka config block.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/mq_in_milvusyaml3_d41f44f77a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Milvus-Internal-Component-Configurations" class="common-anchor-header">Конфигурации внутренних компонентов Milvus<button data-href="#Milvus-Internal-Component-Configurations" class="anchor-icon" translate="no">
+<h2 id="Milvus-Internal-Component-Configurations" class="common-anchor-header">Milvus Internal Component Configurations<button data-href="#Milvus-Internal-Component-Configurations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,10 +143,10 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="rootCoord-Metadata-+-Timestamps" class="common-anchor-header"><code translate="no">rootCoord</code>: Метаданные + временные метки</h3><p>Узел <code translate="no">rootCoord</code> обрабатывает изменения метаданных (DDL/DCL) и управление временными метками.</p>
+    </button></h2><h3 id="rootCoord-Metadata-+-Timestamps" class="common-anchor-header"><code translate="no">rootCoord</code>: Metadata + Timestamps</h3><p>The <code translate="no">rootCoord</code> node handles metadata changes (DDL/DCL) and timestamp management.</p>
 <ol>
-<li><p><code translate="no">rootCoord.maxPartitionNum</code>：Устанавливает верхнюю границу на количество разделов в коллекции. Хотя жесткий предел составляет 1024, этот параметр служит главным образом для защиты. В многопользовательских системах следует избегать использования разделов в качестве границ изоляции, а вместо этого реализовать стратегию ключей арендаторов, рассчитанную на миллионы логических арендаторов.</p></li>
-<li><p><code translate="no">rootCoord.enableActiveStandby</code>：Включает высокую доступность путем активации резервного узла. Это очень важно, поскольку узлы координатора Milvus по умолчанию не масштабируются горизонтально.</p></li>
+<li><p><code translate="no">rootCoord.maxPartitionNum</code>： Sets the upper bound on the number of partitions per collection. While the hard limit is 1024, this parameter primarily serves as a safeguard. For multi-tenant systems, avoid using partitions as isolation boundaries—instead, implement a tenant key strategy that scales to millions of logical tenants.</p></li>
+<li><p><code translate="no">rootCoord.enableActiveStandby</code>：Enables high availability by activating a standby node. This is critical since Milvus coordinator nodes don’t scale horizontally by default.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -154,17 +154,17 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="proxy-API-Gateway-+-Request-Router" class="common-anchor-header"><code translate="no">proxy</code>: API-шлюз + маршрутизатор запросов</h3><p><code translate="no">proxy</code> обрабатывает запросы клиентов, проверяет запросы и агрегирует результаты.</p>
+<h3 id="proxy-API-Gateway-+-Request-Router" class="common-anchor-header"><code translate="no">proxy</code>: API Gateway + Request Router</h3><p>The <code translate="no">proxy</code> handles client-facing requests, request validation, and result aggregation.</p>
 <ul>
-<li><p><code translate="no">proxy.maxFieldNum</code>: Ограничивает количество полей (скалярных + векторных) в одной коллекции. Не превышайте 64, чтобы минимизировать сложность схемы и уменьшить накладные расходы на ввод-вывод.</p></li>
-<li><p><code translate="no">proxy.maxVectorFieldNum</code>: Контролирует количество векторных полей в коллекции. Milvus поддерживает мультимодальный поиск, но на практике 10 векторных полей - это безопасный верхний предел.</p></li>
-<li><p><code translate="no">proxy.maxShardNum</code>:Определяет количество осколков для всасывания. Как правило:</p>
+<li><p><code translate="no">proxy.maxFieldNum</code>: Limits the number of fields (scalar + vector) per collection. Keep this under 64 to minimize schema complexity and reduce I/O overhead.</p></li>
+<li><p><code translate="no">proxy.maxVectorFieldNum</code>: Controls the number of vector fields in a collection. Milvus supports multimodal search, but in practice, 10 vector fields is a safe upper bound.</p></li>
+<li><p><code translate="no">proxy.maxShardNum</code>:Defines the number of ingestion shards. As a rule of thumb:</p>
 <ul>
-<li><p>&lt; 200M записей → 1 шард</p></li>
-<li><p>200-400 М записей → 2 осколка</p></li>
-<li><p>Дальше масштабируйте линейно.</p></li>
+<li><p>&lt; 200M records → 1 shard</p></li>
+<li><p>200–400M records → 2 shards</p></li>
+<li><p>Scale linearly beyond that</p></li>
 </ul></li>
-<li><p><code translate="no">proxy.accesslog</code>: Если эта функция включена, в журнал записывается подробная информация о запросе (пользователь, IP, конечная точка, SDK). Полезно для аудита и отладки.</p></li>
+<li><p><code translate="no">proxy.accesslog</code>: When enabled, this logs detailed request info (user, IP, endpoint, SDK). Useful for auditing and debugging.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -172,9 +172,9 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="queryNode-Query-Execution" class="common-anchor-header"><code translate="no">queryNode</code>: Выполнение запросов</h3><p>Управляет выполнением векторного поиска и загрузкой сегментов. Обратите внимание на следующий параметр.</p>
+<h3 id="queryNode-Query-Execution" class="common-anchor-header"><code translate="no">queryNode</code>: Query Execution</h3><p>Handles vector search execution and segment loading. Pay attention to the following parameter.</p>
 <ul>
-<li><code translate="no">queryNode.mmap</code>: Включает отображение ввода-вывода в память для загрузки скалярных полей и сегментов. Включение <code translate="no">mmap</code> помогает уменьшить занимаемую память, но может ухудшить задержку, если дисковый ввод-вывод станет узким местом.</li>
+<li><code translate="no">queryNode.mmap</code>: Toggles memory-mapped I/O for loading scalar fields and segments. Enabling <code translate="no">mmap</code> helps reduce memory footprint, but may degrade latency if disk I/O becomes a bottleneck.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -182,19 +182,19 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h3 id="dataCoord-Segment-+-Index-Management" class="common-anchor-header"><code translate="no">dataCoord</code>: Управление сегментами и индексами</h3><p>Этот параметр управляет сегментацией данных, индексацией, уплотнением и сборкой мусора (GC). Основные параметры конфигурации включают:</p>
+<h3 id="dataCoord-Segment-+-Index-Management" class="common-anchor-header"><code translate="no">dataCoord</code>: Segment + Index Management</h3><p>This parameter controls data segmentation, indexing, compaction, and garbage collection (GC). Key configuration parameters include:</p>
 <ol>
-<li><p><code translate="no">dataCoord.segment.maxSize</code>: Указывает максимальный размер сегмента данных в памяти. Большие сегменты обычно означают меньшее общее количество сегментов в системе, что может повысить производительность запросов за счет снижения накладных расходов на индексирование и поиск. Например, некоторые пользователи, использующие экземпляры <code translate="no">queryNode</code> с 128 ГБ оперативной памяти, сообщили, что увеличение этого параметра с 1 ГБ до 8 ГБ привело к повышению производительности запросов примерно в 4 раза.</p></li>
-<li><p><code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Аналогично вышеуказанному, этот параметр управляет максимальным размером <a href="https://milvus.io/docs/disk_index.md#On-disk-Index">дисковых индексов</a> (индекс diskann).</p></li>
-<li><p><code translate="no">dataCoord.segment.sealProportion</code>: Определяет, когда растущий сегмент будет закрыт (т. е. завершен и проиндексирован). Сегмент закрывается, когда он достигает <code translate="no">maxSize * sealProportion</code>. По умолчанию, при использовании <code translate="no">maxSize = 1024MB</code> и <code translate="no">sealProportion = 0.12</code>, сегмент будет закрыт при размере около 123 МБ.</p></li>
+<li><p><code translate="no">dataCoord.segment.maxSize</code>: Specifies the maximum size of an in-memory data segment. Larger segments generally mean fewer total segments in the system, which can improve query performance by reducing indexing and search overhead. For example, some users running <code translate="no">queryNode</code> instances with 128GB of RAM reported that increasing this setting from 1GB to 8GB led to roughly 4× faster query performance.</p></li>
+<li><p><code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Similar to the above, this parameter controls the maximum size for <a href="https://milvus.io/docs/disk_index.md#On-disk-Index">disk indexes</a> (diskann index) specifically.</p></li>
+<li><p><code translate="no">dataCoord.segment.sealProportion</code>: Determines when a growing segment is sealed (i.e., finalized and indexed). The segment is sealed when it reaches <code translate="no">maxSize * sealProportion</code>. By default, with <code translate="no">maxSize = 1024MB</code> and <code translate="no">sealProportion = 0.12</code>, a segment will be sealed at around 123MB.</p></li>
 </ol>
 <ul>
-<li><p>При меньших значениях (например, 0,12) сегмент запечатывается раньше, что позволяет быстрее создавать индексы, что полезно для рабочих нагрузок с частыми обновлениями.</p></li>
-<li><p>Более высокие значения (например, 0,3-0,5) задерживают запечатывание, снижая накладные расходы на индексирование - больше подходит для сценариев автономного или пакетного ввода.</p></li>
+<li><p>Lower values (e.g., 0.12) trigger sealing sooner, which can help with faster index creation—useful in workloads with frequent updates.</p></li>
+<li><p>Higher values (e.g., 0.3 to 0.5) delay sealing, reducing indexing overhead—more suitable for offline or batch ingestion scenarios.</p></li>
 </ul>
 <ol start="4">
-<li><p><code translate="no">dataCoord.segment.expansionRate</code>:  Устанавливает допустимый коэффициент расширения при уплотнении. Milvus рассчитывает максимально допустимый размер сегмента при уплотнении как <code translate="no">maxSize * expansionRate</code>.</p></li>
-<li><p><code translate="no">dataCoord.gc.dropTolerance</code>: После уплотнения сегмента или удаления коллекции Milvus не удаляет базовые данные немедленно. Вместо этого он помечает сегменты для удаления и ждет завершения цикла сборки мусора (GC). Этот параметр управляет продолжительностью этой задержки.</p></li>
+<li><p><code translate="no">dataCoord.segment.expansionRate</code>:  Sets the allowed expansion factor during compaction. Milvus calculates the maximum allowable segment size during compaction as <code translate="no">maxSize * expansionRate</code>.</p></li>
+<li><p><code translate="no">dataCoord.gc.dropTolerance</code>: After a segment is compacted or a collection is dropped, Milvus does not immediately delete the underlying data. Instead, it marks the segments for deletion and waits for the garbage collection (GC) cycle to complete. This parameter controls the duration of that delay.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -208,7 +208,7 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h2 id="Other-Functional-Configurations" class="common-anchor-header">Другие функциональные конфигурации<button data-href="#Other-Functional-Configurations" class="anchor-icon" translate="no">
+<h2 id="Other-Functional-Configurations" class="common-anchor-header">Other Functional Configurations<button data-href="#Other-Functional-Configurations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -223,62 +223,62 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="log-Observability-and-Diagnostics" class="common-anchor-header"><code translate="no">log</code>: Наблюдаемость и диагностика</h3><p>Надежное протоколирование является краеугольным камнем любой распределенной системы, и Milvus не исключение. Хорошо настроенная система логирования не только помогает отлаживать проблемы по мере их возникновения, но и обеспечивает лучшую видимость состояния и поведения системы с течением времени.</p>
-<p>Для производственных развертываний мы рекомендуем интегрировать журналы Milvus с централизованными инструментами регистрации и мониторинга, такими как <a href="https://milvus.io/docs/configure_grafana_loki.md#Deploy-Loki">Loki</a>, чтобы упростить анализ и оповещение. Основные настройки включают:</p>
+    </button></h2><h3 id="log-Observability-and-Diagnostics" class="common-anchor-header"><code translate="no">log</code>: Observability and Diagnostics</h3><p>Robust logging is a cornerstone of any distributed system, and Milvus is no exception. A well-configured logging setup not only helps with debugging issues as they arise but also ensures better visibility into system health and behavior over time.</p>
+<p>For production deployments, we recommend integrating Milvus logs with centralized logging and monitoring tools—such as <a href="https://milvus.io/docs/configure_grafana_loki.md#Deploy-Loki">Loki</a> —to streamline analysis and alerting. Key settings include:</p>
 <ol>
-<li><p><code translate="no">log.level</code>: Управляет степенью подробности вывода журнала. Для производственных сред следует придерживаться уровня <code translate="no">info</code>, чтобы фиксировать важные детали во время выполнения, не перегружая систему. Во время разработки или устранения неполадок можно переключиться на уровень <code translate="no">debug</code>, чтобы получить более подробную информацию о внутренних операциях. ⚠️ Будьте осторожны с уровнем <code translate="no">debug</code> в производстве - он генерирует большой объем журналов, которые могут быстро занимать место на диске и снижать производительность ввода-вывода, если их не контролировать.</p></li>
-<li><p><code translate="no">log.file</code>: По умолчанию Milvus пишет журналы в стандартный вывод (stdout), что подходит для контейнерных сред, где журналы собираются через сайдкэры или агенты узлов. Чтобы включить ведение журналов на основе файлов, вы можете настроить:</p></li>
+<li><p><code translate="no">log.level</code>: Controls the verbosity of log output. For production environments, stick with <code translate="no">info</code> level to capture essential runtime details without overwhelming the system. During development or troubleshooting, you can switch to <code translate="no">debug</code> to get more granular insights into internal operations. ⚠️ Be cautious with <code translate="no">debug</code> level in production—it generates a high volume of logs, which can quickly consume disk space and degrade I/O performance if left unchecked.</p></li>
+<li><p><code translate="no">log.file</code>: By default, Milvus writes logs to standard output (stdout), which is suitable for containerized environments where logs are collected via sidecars or node agents. To enable file-based logging instead, you can configure:</p></li>
 </ol>
 <ul>
-<li><p>Максимальный размер файла перед ротацией</p></li>
-<li><p>Период хранения файлов</p></li>
-<li><p>Количество резервных файлов журнала для хранения.</p></li>
+<li><p>Maximum file size before rotation</p></li>
+<li><p>File retention period</p></li>
+<li><p>Number of backup log files to keep</p></li>
 </ul>
-<p>Это полезно в пустых или локальных средах, где доставка журналов через stdout недоступна.</p>
+<p>This is useful in bare-metal or on-prem environments where stdout log shipping is not available.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/log_in_milvusyaml_248ead1264.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="security-Authentication-and-Access-Control" class="common-anchor-header"><code translate="no">security</code>: Аутентификация и контроль доступа</h3><p>Milvus поддерживает <a href="https://milvus.io/docs/authenticate.md?tab=docker">аутентификацию пользователей</a> и <a href="https://milvus.io/docs/rbac.md">контроль доступа на основе ролей (RBAC)</a>, которые настраиваются в модуле <code translate="no">common</code>. Эти параметры необходимы для обеспечения безопасности многопользовательских сред или любых развертываний, открытых для внешних клиентов.</p>
-<p>Ключевые параметры включают:</p>
+<h3 id="security-Authentication-and-Access-Control" class="common-anchor-header"><code translate="no">security</code>: Authentication and Access Control</h3><p>Milvus supports <a href="https://milvus.io/docs/authenticate.md?tab=docker">user authentication</a> and <a href="https://milvus.io/docs/rbac.md">role-based access control (RBAC)</a>, both of which are configured under the <code translate="no">common</code> module. These settings are essential for securing multi-tenant environments or any deployment exposed to external clients.</p>
+<p>Key parameters include:</p>
 <ol>
-<li><p><code translate="no">common.security.authorizationEnabled</code>: Этот тумблер включает или отключает аутентификацию и RBAC. По умолчанию он выключен, то есть все операции разрешены без проверки личности. Чтобы обеспечить безопасный контроль доступа, установите этот параметр на <code translate="no">true</code>.</p></li>
-<li><p><code translate="no">common.security.defaultRootPassword</code>: Если аутентификация включена, этот параметр определяет начальный пароль для встроенного пользователя <code translate="no">root</code>.</p></li>
+<li><p><code translate="no">common.security.authorizationEnabled</code>: This toggle enables or disables authentication and RBAC. It’s turned off by default, meaning all operations are allowed without identity checks. To enforce secure access control, set this parameter to <code translate="no">true</code>.</p></li>
+<li><p><code translate="no">common.security.defaultRootPassword</code>: When authentication is enabled, this setting defines the initial password for the built-in <code translate="no">root</code> user.</p></li>
 </ol>
-<p>Обязательно измените пароль по умолчанию сразу после включения аутентификации, чтобы избежать уязвимостей безопасности в производственных средах.</p>
+<p>Be sure to change the default password immediately after enabling authentication to avoid security vulnerabilities in production environments.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/security_in_milvusyaml_a8d0187b5a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="quotaAndLimits-Rate-Limiting-and-Write-Control" class="common-anchor-header"><code translate="no">quotaAndLimits</code>: Ограничение скорости и контроль записи</h3><p>Раздел <code translate="no">quotaAndLimits</code> в <code translate="no">milvus.yaml</code> играет важную роль в управлении потоком данных в системе. Он регулирует ограничения скорости для таких операций, как вставка, удаление, сброс и запросы, обеспечивая стабильность кластера при больших нагрузках и предотвращая снижение производительности из-за усиления записи или чрезмерного уплотнения.</p>
-<p>Ключевые параметры включают:</p>
-<p><code translate="no">quotaAndLimits.flushRate.collection</code>: Управляет частотой удаления данных из коллекции в Milvus.</p>
+<h3 id="quotaAndLimits-Rate-Limiting-and-Write-Control" class="common-anchor-header"><code translate="no">quotaAndLimits</code>: Rate Limiting and Write Control</h3><p>The <code translate="no">quotaAndLimits</code> section in <code translate="no">milvus.yaml</code> plays a critical role in controlling how data flows through the system. It governs rate limits for operations like inserts, deletes, flushes, and queries—ensuring cluster stability under heavy workloads and preventing performance degradation due to write amplification or excessive compaction.</p>
+<p>Key parameters include:</p>
+<p><code translate="no">quotaAndLimits.flushRate.collection</code>: Controls how frequently Milvus flushes data from a collection.</p>
 <ul>
-<li><p><strong>Значение по умолчанию</strong>: <code translate="no">0.1</code>, что означает, что система разрешает одну операцию смыва каждые 10 секунд.</p></li>
-<li><p>Операция flush запечатывает растущий сегмент и переносит его из очереди сообщений в объектное хранилище.</p></li>
-<li><p>Слишком частая промывка может привести к появлению множества маленьких запечатанных сегментов, что увеличивает накладные расходы на уплотнение и снижает производительность запросов.</p></li>
+<li><p><strong>Default value</strong>: <code translate="no">0.1</code>, which means the system allows one flush every 10 seconds.</p></li>
+<li><p>The flush operation seals a growing segment and persists it from the message queue to object storage.</p></li>
+<li><p>Flushing too frequently can generate many small sealed segments, which increases compaction overhead and hurts query performance.</p></li>
 </ul>
-<p>💡 Лучшая практика: В большинстве случаев позвольте Milvus делать это автоматически. Растущий сегмент закрывается, как только он достигает <code translate="no">maxSize * sealProportion</code>, а закрытые сегменты промываются каждые 10 минут. Ручная очистка рекомендуется только после массовых вставок, когда вы знаете, что данные больше не поступят.</p>
-<p>Также следует помнить, что <strong>видимость данных</strong> определяется <em>уровнем согласованности</em> запроса, а не временем промывки, поэтому промывка не делает новые данные сразу доступными для запроса.</p>
+<p>💡 Best practice: In most cases, let Milvus handle this automatically. A growing segment is sealed once it reaches <code translate="no">maxSize * sealProportion</code>, and sealed segments are flushed every 10 minutes. Manual flushes are only recommended after bulk inserts when you know no more data is coming.</p>
+<p>Also keep in mind: <strong>data visibility</strong> is determined by the query’s <em>consistency level</em>, not the flush timing—so flushing does not make new data immediately queryable.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/quota_And_Limits1_be185e571f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><code translate="no">quotaAndLimits.upsertRate</code>/<code translate="no">quotaAndLimits.deleteRate</code>: Эти параметры определяют максимально допустимую скорость операций upsert и delete.</p>
+<p><code translate="no">quotaAndLimits.upsertRate</code>/<code translate="no">quotaAndLimits.deleteRate</code>: These parameters define the maximum allowed rate for upsert and delete operations.</p>
 <ul>
-<li><p>Milvus использует архитектуру хранения LSM-Tree, что означает, что частые обновления и удаления вызывают уплотнение. Это может быть ресурсоемким и снижать общую пропускную способность, если не управлять этим процессом тщательно.</p></li>
-<li><p>Рекомендуется ограничить скорости <code translate="no">upsertRate</code> и <code translate="no">deleteRate</code> на уровне <strong>0,5 МБ/с</strong>, чтобы не перегружать конвейер уплотнения.</p></li>
+<li><p>Milvus relies on an LSM-Tree storage architecture, which means frequent updates and deletions trigger compaction. This can be resource-intensive and reduce overall throughput if not managed carefully.</p></li>
+<li><p>It’s recommended to cap both <code translate="no">upsertRate</code> and <code translate="no">deleteRate</code> at <strong>0.5 MB/s</strong> to avoid overwhelming the compaction pipeline.</p></li>
 </ul>
-<p>🚀 Нужно быстро обновить большой набор данных? Используйте стратегию псевдонимов коллекций:</p>
+<p>🚀 Need to update a large dataset quickly? Use a collection alias strategy:</p>
 <ul>
-<li><p>Вставьте новые данные в новую коллекцию.</p></li>
-<li><p>После завершения обновления переназначьте псевдоним на новую коллекцию. Это позволяет избежать штрафа за уплотнение при обновлении на месте и обеспечивает мгновенное переключение.</p></li>
+<li><p>Insert new data into a fresh collection.</p></li>
+<li><p>Once the update is complete, repoint the alias to the new collection. This avoids the compaction penalty of in-place updates and allows instant switchover.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -286,7 +286,7 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<h2 id="Real-World-Configuration-Examples" class="common-anchor-header">Примеры конфигурации в реальном мире<button data-href="#Real-World-Configuration-Examples" class="anchor-icon" translate="no">
+<h2 id="Real-World-Configuration-Examples" class="common-anchor-header">Real-World Configuration Examples<button data-href="#Real-World-Configuration-Examples" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -301,19 +301,19 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Давайте рассмотрим два распространенных сценария развертывания, чтобы проиллюстрировать, как можно настроить параметры конфигурации Milvus в соответствии с различными операционными целями.</p>
-<h3 id="⚡-Example-1-High-Performance-Configuration" class="common-anchor-header">⚡ Пример 1: высокопроизводительная конфигурация</h3><p>Когда задержка запросов критически важна - подумайте о рекомендательных системах, платформах семантического поиска или оценке рисков в режиме реального времени - каждая миллисекунда на счету. В таких случаях вы обычно используете индексы на основе графов, такие как <strong>HNSW</strong> или <strong>DISKANN</strong>, и оптимизируете использование памяти и поведение жизненного цикла сегментов.</p>
-<p>Ключевые стратегии настройки:</p>
+    </button></h2><p>Let’s walk through two common deployment scenarios to illustrate how Milvus configuration settings can be tuned to match different operational goals.</p>
+<h3 id="⚡-Example-1-High-Performance-Configuration" class="common-anchor-header">⚡ Example 1: High-Performance Configuration</h3><p>When query latency is mission-critical—think recommendation engines, semantic search platforms, or real-time risk scoring—every millisecond counts. In these use cases, you’ll typically lean on graph-based indexes like <strong>HNSW</strong> or <strong>DISKANN</strong>, and optimize both memory usage and segment lifecycle behavior.</p>
+<p>Key tuning strategies:</p>
 <ul>
-<li><p>Увеличьте <code translate="no">dataCoord.segment.maxSize</code> и <code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Увеличьте эти значения до 4 или даже 8 ГБ, в зависимости от доступной оперативной памяти. Увеличение размера сегментов позволяет сократить количество построений индексов и повысить пропускную способность запросов за счет минимизации разлета сегментов. Однако большие сегменты потребляют больше памяти во время запросов, поэтому убедитесь, что у экземпляров <code translate="no">indexNode</code> и <code translate="no">queryNode</code> достаточно свободного места.</p></li>
-<li><p>Более низкий уровень <code translate="no">dataCoord.segment.sealProportion</code> и <code translate="no">dataCoord.segment.expansionRate</code>: установите размер растущего сегмента около 200 МБ перед уплотнением. Это позволяет сделать использование памяти сегмента предсказуемым и снизить нагрузку на делегатора (лидер узла запроса, координирующий распределенный поиск).</p></li>
+<li><p>Increase <code translate="no">dataCoord.segment.maxSize</code> and <code translate="no">dataCoord.segment.diskSegmentMaxSize</code>: Raise these values to 4GB or even 8GB, depending on available RAM. Larger segments reduce the number of index builds and improve query throughput by minimizing segment fanout. However, larger segments do consume more memory at query time—so make sure your <code translate="no">indexNode</code> and <code translate="no">queryNode</code> instances have enough headroom.</p></li>
+<li><p>Lower <code translate="no">dataCoord.segment.sealProportion</code> and <code translate="no">dataCoord.segment.expansionRate</code>: Target a growing segment size around 200MB before sealing. This keeps segment memory usage predictable and reduces the burden on the Delegator (the queryNode leader that coordinates distributed search).</p></li>
 </ul>
-<p>Правило большого пальца: Отдавайте предпочтение меньшим и большим сегментам, если памяти много, а задержка является приоритетом. Будьте консервативны с пороговыми значениями уплотнений, если важна свежесть индекса.</p>
-<h3 id="💰-Example-2-Cost-Optimized-Configuration" class="common-anchor-header">💰 Пример 2: Оптимизированная по стоимости конфигурация</h3><p>Если для вас приоритетом является экономическая эффективность, а не сырая производительность, что часто встречается в конвейерах обучения моделей, внутренних инструментах с низким QPS или поиске изображений с длинным хвостом, вы можете отказаться от запоминания или задержки, чтобы значительно снизить требования к инфраструктуре.</p>
-<p>Рекомендуемые стратегии:</p>
+<p>Rule of thumb: Favor fewer, larger segments when memory is abundant and latency is a priority. Be conservative with seal thresholds if index freshness matters.</p>
+<h3 id="💰-Example-2-Cost-Optimized-Configuration" class="common-anchor-header">💰 Example 2: Cost-Optimized Configuration</h3><p>If you’re prioritizing cost efficiency over raw performance—common in model training pipelines, low-QPS internal tools, or long-tail image search—you can trade off recall or latency to significantly reduce infrastructure demands.</p>
+<p>Recommended strategies:</p>
 <ul>
-<li><p><strong>Используйте квантование индексов:</strong> Такие типы индексов, как <code translate="no">SCANN</code>, <code translate="no">IVF_SQ8</code> или <code translate="no">HNSW_PQ/PRQ/SQ</code> (появились в Milvus 2.5), значительно уменьшают размер индекса и занимаемую память. Они идеально подходят для рабочих нагрузок, где точность не так важна, как масштаб или бюджет.</p></li>
-<li><p><strong>Примите стратегию индексирования с поддержкой диска:</strong> Установите для типа индекса значение <code translate="no">DISKANN</code>, чтобы обеспечить поиск с опорой на диск. <strong>Включите</strong> <code translate="no">mmap</code> для выборочной разгрузки памяти.</p></li>
+<li><p><strong>Use index quantization:</strong> Index types like <code translate="no">SCANN</code>, <code translate="no">IVF_SQ8</code>, or <code translate="no">HNSW_PQ/PRQ/SQ</code> (introduced in Milvus 2.5) dramatically reduce index size and memory footprint. These are ideal for workloads where precision is less critical than scale or budget.</p></li>
+<li><p><strong>Adopt a disk-backed indexing strategy:</strong> Set the index type to <code translate="no">DISKANN</code> to enable pure disk-based search. <strong>Enable</strong> <code translate="no">mmap</code> for selective memory offloading.</p></li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -321,14 +321,14 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
     <span></span>
   </span>
 </p>
-<p>Для экстремальной экономии памяти включите <code translate="no">mmap</code> для следующих вариантов: <code translate="no">vectorField</code>, <code translate="no">vectorIndex</code>, <code translate="no">scalarField</code> и <code translate="no">scalarIndex</code>. Это позволяет выгружать большие фрагменты данных в виртуальную память, значительно сокращая использование резидентной оперативной памяти.</p>
-<p>⚠️ Предупреждение: Если скалярная фильтрация является основной частью рабочей нагрузки запросов, подумайте об отключении <code translate="no">mmap</code> для <code translate="no">vectorIndex</code> и <code translate="no">scalarIndex</code>. Картирование памяти может снизить производительность скалярных запросов в средах с ограниченным вводом-выводом.</p>
-<h4 id="Disk-usage-tip" class="common-anchor-header">Совет по использованию диска</h4><ul>
-<li><p>Индексы HNSW, построенные с помощью <code translate="no">mmap</code>, могут увеличить общий размер данных до <strong>1,8×</strong>.</p></li>
-<li><p>Физический диск объемом 100 ГБ может реально вместить только ~50 ГБ эффективных данных, если учесть накладные расходы на индексы и кэширование.</p></li>
-<li><p>При работе с <code translate="no">mmap</code> всегда выделяйте дополнительное хранилище, особенно если вы также локально кэшируете исходные векторы.</p></li>
+<p>For extreme memory savings, enable <code translate="no">mmap</code> for the following: <code translate="no">vectorField</code>, <code translate="no">vectorIndex</code>, <code translate="no">scalarField</code>, and <code translate="no">scalarIndex</code>. This offloads large chunks of data to virtual memory, reducing resident RAM usage significantly.</p>
+<p>⚠️ Caveat: If scalar filtering is a major part of your query workload, consider disabling <code translate="no">mmap</code> for <code translate="no">vectorIndex</code> and <code translate="no">scalarIndex</code>. Memory mapping can degrade scalar query performance in I/O-constrained environments.</p>
+<h4 id="Disk-usage-tip" class="common-anchor-header">Disk usage tip</h4><ul>
+<li><p>HNSW indexes built with <code translate="no">mmap</code> can expand total data size by up to <strong>1.8×</strong>.</p></li>
+<li><p>A 100GB physical disk might realistically only accommodate ~50GB of effective data when you account for index overhead and caching.</p></li>
+<li><p>Always provision extra storage when working with <code translate="no">mmap</code>, especially if you also cache the original vectors locally.</p></li>
 </ul>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -343,6 +343,6 @@ origin: 'https://milvus.io/blog/the-developers-guide-to-milvus-configuration.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Настройка Milvus - это не погоня за идеальными цифрами, а формирование системы в соответствии с реальным поведением вашей рабочей нагрузки. Самые эффективные оптимизации часто приходят от понимания того, как Milvus обрабатывает ввод-вывод, жизненный цикл сегментов и индексирование под давлением. Это те пути, где неправильная конфигурация вредит больше всего - и где продуманная настройка приносит наибольшую отдачу.</p>
-<p>Если вы новичок в Milvus, рассмотренные нами параметры конфигурации покроют 80-90 % ваших потребностей в производительности и стабильности. Начните с этого. После того как вы наработаете интуицию, углубитесь в полную спецификацию <code translate="no">milvus.yaml</code> и официальную документацию - вы обнаружите тонкие элементы управления, которые могут превратить ваше развертывание из функционального в исключительное.</p>
-<p>При наличии правильных конфигураций вы будете готовы к созданию масштабируемых, высокопроизводительных систем векторного поиска, соответствующих вашим операционным приоритетам - будь то обслуживание с низкой задержкой, экономичное хранение или аналитические нагрузки с высокой точностью.</p>
+    </button></h2><p>Tuning Milvus isn’t about chasing perfect numbers—it’s about shaping the system around your workload’s real-world behavior. The most impactful optimizations often come from understanding how Milvus handles I/O, segment lifecycle, and indexing under pressure. These are the paths where misconfiguration hurts the most—and where thoughtful tuning yields the biggest returns.</p>
+<p>If you’re new to Milvus, the configuration parameters we’ve covered will cover 80–90% of your performance and stability needs. Start there. Once you’ve built some intuition, dig deeper into the full <code translate="no">milvus.yaml</code> spec and the official documentation—you’ll uncover fine-grained controls that can take your deployment from functional to exceptional.</p>
+<p>With the right configurations in place, you’ll be ready to build scalable, high-performance vector search systems that align with your operational priorities—whether that means low-latency serving, cost-efficient storage, or high-ingest analytical workloads.</p>

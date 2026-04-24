@@ -1,21 +1,23 @@
 ---
 id: 2021-12-03-why-to-choose-fastapi-over-flask.md
-title: Warum FastAPI statt Flask wählen?
+title: Why to Choose FastAPI over Flask?
 author: Yunmei
 date: 2021-12-03T00:00:00.000Z
-desc: das passende Framework für Ihr Anwendungsszenario auswählen
+desc: choose the appropriate framework according to your application scenario
 cover: assets.zilliz.com/1_d5de035def.png
 tag: Engineering
 isPublish: false
 ---
-<p>Um Ihnen den Einstieg in Milvus, die Open-Source-Vektordatenbank, zu erleichtern, haben wir ein weiteres Open-Source-Projekt, <a href="https://github.com/milvus-io/bootcamp">Milvus Bootcamp</a>, auf GitHub veröffentlicht. Das Milvus Bootcamp stellt nicht nur Skripte und Daten für Benchmark-Tests zur Verfügung, sondern enthält auch Projekte, die Milvus nutzen, um einige MVPs (Minimum Viable Products) zu bauen, wie z. B. ein System zur umgekehrten Bildsuche, ein Videoanalysesystem, einen QA-Chatbot oder ein Empfehlungssystem. Im Milvus Bootcamp können Sie lernen, wie man die Vektorähnlichkeitssuche in einer Welt voller unstrukturierter Daten anwendet und praktische Erfahrungen sammeln.</p>
+<p>To help you quickly get started with Milvus, the open-source vector database, we released another affiliated open-source project, <a href="https://github.com/milvus-io/bootcamp">Milvus Bootcamp</a> on GitHub. The Milvus Bootcamp not only provides scripts and data for benchmark tests, but also includes projects that use Milvus to build some MVPs (minimum viable products), such as a reverse image search system, a video analysis system, a QA chatbot, or a recommender system. You can learn how to apply vector similarity search in a world full of unstructured data and get some hands-on experience in Milvus Bootcamp.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/2_5b60157b4d.png" alt="2.png" class="doc-image" id="2.png" />
-   </span> <span class="img-wrapper"> <span>2.png</span> </span></p>
-<p>Wir bieten sowohl Front-End- als auch Back-End-Dienste für die Projekte in Milvus Bootcamp an. Allerdings haben wir vor kurzem die Entscheidung getroffen, das verwendete Web-Framework von Flask auf FastAPI umzustellen.</p>
-<p>In diesem Artikel möchten wir unsere Beweggründe für den Wechsel des Web-Frameworks für Milvus Bootcamp erläutern und erklären, warum wir uns für FastAPI statt Flask entschieden haben.</p>
-<h2 id="Web-frameworks-for-Python" class="common-anchor-header">Web-Frameworks für Python<button data-href="#Web-frameworks-for-Python" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/2_5b60157b4d.png" alt="2.png" class="doc-image" id="2.png" />
+    <span>2.png</span>
+  </span>
+</p>
+<p>We provide both front-end and back-end services for the projects in Milvus Bootcamp. However, we have recently made the decision to change the adopted web framework from Flask to FastAPI.</p>
+<p>This article aims to explain our motivation behind such a change in the adopted web framework for Milvus Bootcamp by clarifying why we chose FastAPI over Flask.</p>
+<h2 id="Web-frameworks-for-Python" class="common-anchor-header">Web frameworks for Python<button data-href="#Web-frameworks-for-Python" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -30,52 +32,58 @@ isPublish: false
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Ein Web-Framework bezieht sich auf eine Sammlung von Paketen oder Modulen. Es handelt sich dabei um eine Reihe von Softwarearchitekturen für die Webentwicklung, die es Ihnen ermöglichen, Webanwendungen oder -dienste zu schreiben, und Ihnen die Mühe ersparen, sich mit Details auf niedriger Ebene wie Protokollen, Sockets oder Prozess-/Thread-Management zu beschäftigen. Die Verwendung von Web-Frameworks kann die Arbeitsbelastung bei der Entwicklung von Webanwendungen erheblich reduzieren, da Sie Ihren Code einfach in das Framework "einfügen" können, ohne sich um Daten-Caching, Datenbankzugriff und Datensicherheitsüberprüfung kümmern zu müssen. Weitere Informationen darüber, was ein Web-Framework für Python ist, finden Sie unter <a href="https://wiki.python.org/moin/WebFrameworks">Web-Frameworks</a>.</p>
-<p>Es gibt verschiedene Arten von Python-Web-Frameworks. Zu den gängigsten gehören Django, Flask, Tornado und FastAPI.</p>
+    </button></h2><p>A web framework refers to a collection of packages or modules. It is a set of software architecture for web development that allows you to write web applications or services and saves you the trouble of handling low-level details such as protocols, sockets, or process/thread management. Using web framework can significantly reduce the workload of developing web applications as you can simply “plug in” your code into the framework, with no extra attention needed when dealing with data caching, database access, and data security verification. For more information about what a web framework for Python is, see <a href="https://wiki.python.org/moin/WebFrameworks">Web Frameworks</a>.</p>
+<p>There are various types of Python web frameworks. The mainstream ones include Django, Flask, Tornado, and FastAPI.</p>
 <h3 id="Flask" class="common-anchor-header">Flask</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/3_1abd170939.png" alt="3.png" class="doc-image" id="3.png" />
-   </span> <span class="img-wrapper"> <span>3.png</span> </span></p>
-<p><a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a> ist ein leichtgewichtiges Microframework für Python mit einem einfachen und leicht zu verwendenden Kern, mit dem Sie Ihre eigenen Webanwendungen entwickeln können. Darüber hinaus ist der Kern von Flask auch erweiterbar. Daher unterstützt Flask die On-Demand-Erweiterung verschiedener Funktionen, um Ihre persönlichen Bedürfnisse bei der Entwicklung von Webanwendungen zu erfüllen. Das heißt, dass Sie mit einer Bibliothek verschiedener Plug-ins in Flask leistungsstarke Websites entwickeln können.</p>
-<p>Flask hat die folgenden Eigenschaften:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/3_1abd170939.png" alt="3.png" class="doc-image" id="3.png" />
+    <span>3.png</span>
+  </span>
+</p>
+<p><a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a> is a lightweight microframework designed for Python, with a simple and easy-to-use core that allows you to develop your own web applications. In addition, the Flask core is also extensible. Therefore, Flask supports on-demand extension of different functions to meet your personalized needs during web application development. This is to say, with a library of various plug-ins in Flask, you can develop powerful websites.</p>
+<p>Flask has the following characteristics:</p>
 <ol>
-<li>Flask ist ein Microframework, das nicht auf andere spezifische Tools oder Komponenten von Drittanbieter-Bibliotheken angewiesen ist, um gemeinsame Funktionalitäten bereitzustellen. Flask verfügt nicht über eine Datenbankabstraktionsschicht und erfordert keine Formularvalidierung. Flask ist jedoch in hohem Maße erweiterbar und unterstützt das Hinzufügen von Anwendungsfunktionalität in einer Weise, die den Implementierungen in Flask selbst ähnelt. Zu den relevanten Erweiterungen gehören objektrelationale Mapper, Formularvalidierung, Upload-Verarbeitung, offene Authentifizierungstechnologien und einige gängige Tools, die für Web-Frameworks entwickelt wurden.</li>
-<li>Flask ist ein Webanwendungs-Framework, das auf <a href="https://wsgi.readthedocs.io/">WSGI</a> (Web Server Gateway Interface) basiert. WSGI ist eine einfache Schnittstelle, die einen Webserver mit einer Webanwendung oder einem für die Sprache Python definierten Framework verbindet.</li>
-<li>Flask enthält zwei zentrale Funktionsbibliotheken, <a href="https://www.palletsprojects.com/p/werkzeug">Werkzeug</a> und <a href="https://www.palletsprojects.com/p/jinja">Jinja2</a>. Werkzeug ist ein WSGI-Toolkit, das Request- und Response-Objekte sowie praktische Funktionen implementiert, mit denen Sie darauf aufbauend Web-Frameworks erstellen können. Jinja2 ist eine populäre Templating-Engine mit vollem Funktionsumfang für Python. Sie bietet volle Unterstützung für Unicode und eine optionale, aber weit verbreitete integrierte Sandbox-Ausführungsumgebung.</li>
+<li>Flask is a microframework that does not rely on other specific tools or components of third-party libraries to provide shared functionalities. Flask does not have a database abstraction layer, and does not require form validation. However, Flask is highly extensible and supports adding application functionality in a way similar to implementations within Flask itself. Relevant extensions include object-relational mappers, form validation, upload processing, open authentication technologies, and some common tools designed for web frameworks.</li>
+<li>Flask is a web application framework based on <a href="https://wsgi.readthedocs.io/">WSGI</a> (Web Server Gateway Interface). WSGI is a simple interface connecting a web server with a web application or framework defined for the Python language.</li>
+<li>Flask includes two core function libraries, <a href="https://www.palletsprojects.com/p/werkzeug">Werkzeug</a> and <a href="https://www.palletsprojects.com/p/jinja">Jinja2</a>. Werkzeug is a WSGI toolkit that implements request, response objects and practical functions, which allows you to build web frameworks on top of it. Jinja2 is a popular full-featured templating engine for Python. It has full support for Unicode, with an optional but widely-adopted integrated sandbox execution environment.</li>
 </ol>
 <h3 id="FastAPI" class="common-anchor-header">FastAPI</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/4_05cb0dac4e.png" alt="4.png" class="doc-image" id="4.png" />
-   </span> <span class="img-wrapper"> <span>4.png</span> </span></p>
-<p><a href="https://fastapi.tiangolo.com/">FastAPI</a> ist ein modernes Python-Framework für Webanwendungen, das die gleiche hohe Leistung wie Go und NodeJS bietet. Der Kern von FastAPI basiert auf <a href="https://www.starlette.io/">Starlette</a> und <a href="https://pydantic-docs.helpmanual.io/">Pydantic</a>. Starlette ist ein leichtgewichtiges <a href="https://asgi.readthedocs.io/">ASGI</a>(Asynchronous Server Gateway Interface)-Framework-Toolkit zur Erstellung hochleistungsfähiger <a href="https://docs.python.org/3/library/asyncio.html">Asyncio-Dienste</a>. Pydantic ist eine Bibliothek, die Datenvalidierung, Serialisierung und Dokumentation auf der Grundlage von Python-Typ-Hinweisen definiert.</p>
-<p>FastAPI hat die folgenden Eigenschaften:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/4_05cb0dac4e.png" alt="4.png" class="doc-image" id="4.png" />
+    <span>4.png</span>
+  </span>
+</p>
+<p><a href="https://fastapi.tiangolo.com/">FastAPI</a> is a modern Python web application framework that has the same level of high performance as Go and NodeJS. The core of FastAPI is based on <a href="https://www.starlette.io/">Starlette</a> and <a href="https://pydantic-docs.helpmanual.io/">Pydantic</a>. Starlette is a lightweight <a href="https://asgi.readthedocs.io/">ASGI</a>(Asynchronous Server Gateway Interface) framework toolkit for building high-performance <a href="https://docs.python.org/3/library/asyncio.html">Asyncio</a> services. Pydantic is a library that defines data validation, serialization, and documentation based on Python type hints.</p>
+<p>FastAPI has the following characteristics:</p>
 <ol>
-<li>FastAPI ist ein Webanwendungs-Framework, das auf ASGI basiert, einer asynchronen Gateway-Protokollschnittstelle, die Netzwerkprotokolldienste und Python-Anwendungen verbindet. FastAPI kann eine Vielzahl gängiger Protokolltypen verarbeiten, darunter HTTP, HTTP2 und WebSocket.</li>
-<li>FastAPI basiert auf Pydantic, das die Funktion der Überprüfung des Schnittstellendatentyps bietet. Sie brauchen Ihre Schnittstellenparameter nicht zusätzlich zu überprüfen oder zusätzlichen Code zu schreiben, um zu überprüfen, ob die Parameter leer sind oder ob der Datentyp korrekt ist. Durch die Verwendung von FastAPI können menschliche Fehler im Code vermieden und die Entwicklungseffizienz verbessert werden.</li>
-<li>FastAPI unterstützt Dokumente in zwei Formaten - <a href="https://swagger.io/specification/">OpenAPI</a> (früher Swagger) und <a href="https://www.redoc.com/">Redoc</a>. Daher müssen Sie als Benutzer keine zusätzliche Zeit mit dem Schreiben zusätzlicher Schnittstellendokumente verbringen. Das von FastAPI bereitgestellte OpenAPI-Dokument ist im folgenden Screenshot dargestellt.</li>
+<li>FastAPI is a web application framework based on ASGI, an asynchronous gateway protocol interface connecting network protocol services and Python applications. FastAPI can handle a variety of common protocol types, including HTTP, HTTP2, and WebSocket.</li>
+<li>FastAPI is based on Pydantic, which provides the function of checking the interface data type. You do not need to additionally verify your interface parameter, or write extra code to verify whether the parameters are empty or whether the data type is correct. Using FastAPI can effectively avoid human errors in code and improve development efficiency.</li>
+<li>FastAPI supports document in two formats - <a href="https://swagger.io/specification/">OpenAPI</a> (formerly Swagger) and <a href="https://www.redoc.com/">Redoc</a>. Therefore, as a user you do not need to spend extra time writing additional interface documents. The OpenAPI document provided by FastAPI is shown in the screenshot below.</li>
 </ol>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/5_d91d34cb0f.png" alt="5.png" class="doc-image" id="5.png" />
-   </span> <span class="img-wrapper"> <span>5.png</span> </span></p>
-<h3 id="Flask-Vs-FastAPI" class="common-anchor-header">Flask vs. FastAPI</h3><p>Die folgende Tabelle zeigt die Unterschiede zwischen Flask und FastAPI in verschiedenen Aspekten.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/5_d91d34cb0f.png" alt="5.png" class="doc-image" id="5.png" />
+    <span>5.png</span>
+  </span>
+</p>
+<h3 id="Flask-Vs-FastAPI" class="common-anchor-header">Flask Vs. FastAPI</h3><p>The table below demonstrates the differences between Flask and FastAPI in several aspects.</p>
 <table>
 <thead>
 <tr><th></th><th><strong>FastAPI</strong></th><th><strong>Flask</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Interface-Gateway</strong></td><td>ASGI</td><td>WSGI</td></tr>
-<tr><td><strong>Asynchroner Rahmen</strong></td><td>✅</td><td>❌</td></tr>
-<tr><td><strong>Leistung</strong></td><td>Schneller</td><td>Langsamer</td></tr>
-<tr><td><strong>Interaktives Dokument</strong></td><td>OpenAPI, Redoc</td><td>Keine</td></tr>
-<tr><td><strong>Überprüfung der Daten</strong></td><td>✅</td><td>❌</td></tr>
-<tr><td><strong>Entwicklungskosten</strong></td><td>Niedriger</td><td>Höher</td></tr>
-<tr><td><strong>Benutzerfreundlichkeit</strong></td><td>Niedriger</td><td>Höher</td></tr>
-<tr><td><strong>Flexibilität</strong></td><td>Weniger flexibel</td><td>Flexibler</td></tr>
-<tr><td><strong>Gemeinschaft</strong></td><td>Kleiner</td><td>Aktiver</td></tr>
+<tr><td><strong>Interface gateway</strong></td><td>ASGI</td><td>WSGI</td></tr>
+<tr><td><strong>Asynchronous framework</strong></td><td>✅</td><td>❌</td></tr>
+<tr><td><strong>Performance</strong></td><td>Faster</td><td>Slower</td></tr>
+<tr><td><strong>Interactive doc</strong></td><td>OpenAPI, Redoc</td><td>None</td></tr>
+<tr><td><strong>Data verification</strong></td><td>✅</td><td>❌</td></tr>
+<tr><td><strong>Development costs</strong></td><td>Lower</td><td>Higher</td></tr>
+<tr><td><strong>Ease of use</strong></td><td>Lower</td><td>Higher</td></tr>
+<tr><td><strong>Flexibility</strong></td><td>Less flexible</td><td>More flexible</td></tr>
+<tr><td><strong>Community</strong></td><td>Smaller</td><td>More active</td></tr>
 </tbody>
 </table>
-<h2 id="Why-FastAPI" class="common-anchor-header">Warum FastAPI?<button data-href="#Why-FastAPI" class="anchor-icon" translate="no">
+<h2 id="Why-FastAPI" class="common-anchor-header">Why FastAPI?<button data-href="#Why-FastAPI" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -90,14 +98,14 @@ isPublish: false
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Bevor wir uns für ein Python-Webanwendungs-Framework für die Projekte im Milvus Bootcamp entschieden haben, haben wir mehrere Mainstream-Frameworks wie Django, Flask, FastAPI, Tornado und andere untersucht. Da die Projekte im Milvus Bootcamp als Referenzen für Sie dienen, ist es unsere Priorität, ein externes Framework von größtmöglicher Leichtigkeit und Geschicklichkeit zu wählen. Nach dieser Regel haben wir unsere Wahl auf Flask und FastAPI eingegrenzt.</p>
-<p>Den Vergleich zwischen den beiden Web-Frameworks können Sie im vorherigen Abschnitt sehen. Im Folgenden wird unsere Motivation, FastAPI gegenüber Flask für die Projekte im Milvus Bootcamp zu bevorzugen, ausführlich erläutert. Dafür gibt es mehrere Gründe:</p>
-<h3 id="1-Performance" class="common-anchor-header">1. Leistung</h3><p>Die meisten der Projekte im Milvus Bootcamp sind um umgekehrte Bildsuchsysteme, QA-Chatbots und Textsuchmaschinen herum aufgebaut, die alle hohe Anforderungen an die Echtzeit-Datenverarbeitung stellen. Dementsprechend benötigen wir ein Framework mit hervorragender Leistung, was genau ein Highlight von FastAPI ist. Daher haben wir uns unter dem Gesichtspunkt der Systemleistung für FastAPI entschieden.</p>
-<h3 id="2-Efficiency" class="common-anchor-header">2. Effizienz</h3><p>Bei der Verwendung von Flask müssen Sie Code für die Datentypüberprüfung in jeder der Schnittstellen schreiben, damit das System feststellen kann, ob die Eingabedaten leer sind oder nicht. Durch die Unterstützung der automatischen Datentypüberprüfung trägt FastAPI jedoch dazu bei, menschliche Fehler bei der Programmierung während der Systementwicklung zu vermeiden, und kann die Entwicklungseffizienz erheblich steigern. Das Bootcamp ist als eine Art Schulungsressource positioniert. Das bedeutet, dass der Code und die Komponenten, die wir verwenden, intuitiv und hocheffizient sein müssen. In dieser Hinsicht haben wir uns für FastAPI entschieden, um die Systemeffizienz zu steigern und die Benutzererfahrung zu verbessern.</p>
-<h3 id="3-Asynchronous-framework" class="common-anchor-header">3. Asynchroner Rahmen</h3><p>FastAPI ist von Natur aus ein asynchrones Framework. Ursprünglich haben wir vier <a href="https://zilliz.com/milvus-demos?isZilliz=true">Demos</a> veröffentlicht: umgekehrte Bildsuche, Videoanalyse, QA Chatbot und molekulare Ähnlichkeitssuche. In diesen Demos können Sie Datensätze hochladen und erhalten sofort die Meldung &quot;Anfrage erhalten&quot;. Wenn die Daten in das Demosystem hochgeladen wurden, erhalten Sie eine weitere Meldung &quot;Datenupload erfolgreich&quot;. Dies ist ein asynchroner Prozess, der ein Framework erfordert, das diese Funktion unterstützt. FastAPI ist selbst ein asynchrones Framework. Um alle Milvus-Ressourcen aufeinander abzustimmen, haben wir beschlossen, einen einzigen Satz von Entwicklungswerkzeugen und Software sowohl für das Milvus Bootcamp als auch für die Milvus-Demos zu verwenden. Infolgedessen haben wir das Framework von Flask auf FastAPI umgestellt.</p>
-<h3 id="4-Automatic-interactive-documents" class="common-anchor-header">4. Automatische interaktive Dokumente</h3><p>Wenn Sie auf herkömmliche Weise den Code für die Serverseite fertig geschrieben haben, müssen Sie ein zusätzliches Dokument schreiben, um eine Schnittstelle zu erstellen, und dann Tools wie <a href="https://www.postman.com/">Postman</a> für API-Tests und Debugging verwenden. Was also, wenn Sie nur schnell mit dem Webserver-seitigen Entwicklungsteil der Projekte in Milvus Bootcamp beginnen wollen, ohne zusätzlichen Code zur Erstellung einer Schnittstelle zu schreiben? FastAPI ist die Lösung. Durch die Bereitstellung eines OpenAPI-Dokuments erspart Ihnen FastAPI das Testen oder Debuggen von APIs und die Zusammenarbeit mit Front-End-Teams zur Entwicklung einer Benutzeroberfläche. Mit FastAPI können Sie die erstellte Anwendung mit einer automatischen, aber intuitiven Schnittstelle ohne zusätzlichen Programmieraufwand schnell testen.</p>
-<h3 id="5-User-friendliness" class="common-anchor-header">5. Benutzerfreundlichkeit</h3><p>FastAPI ist einfacher zu bedienen und zu entwickeln, so dass Sie sich mehr auf die konkrete Umsetzung des Projekts konzentrieren können. Ohne zu viel Zeit auf die Entwicklung von Web-Frameworks zu verwenden, können Sie sich mehr auf das Verständnis der Projekte in Milvus Bootcamp konzentrieren.</p>
-<h2 id="Recap" class="common-anchor-header">Rekapitulation<button data-href="#Recap" class="anchor-icon" translate="no">
+    </button></h2><p>Before deciding which Python web application framework to choose for the projects in Milvus Bootcamp, we researched into several mainstream frameworks including Django, Flask, FastAPI, Tornado, and more. Since the projects in Milvus Bootcamp serve as references for you, our priority is to adopt an external framework of utmost lightweightness and dexterity. According to this rule, we narrowed down our choices to Flask and FastAPI.</p>
+<p>You can see the comparison between the two web frameworks in the previous section. The following is a detailed explanation of our motivation to choose FastAPI over Flask for the projects in Milvus Bootcamp. There are several reasons:</p>
+<h3 id="1-Performance" class="common-anchor-header">1. Performance</h3><p>Most of the projects in Milvus Bootcamp are built around reverse image search systems, QA chatbots, text search engines, which all have high demands for real-time data processing. Accordingly, we need a framework with outstanding performance, which is exactly a highlight of FastAPI. Therefore, from the perspective of system performance, we decided to choose FastAPI.</p>
+<h3 id="2-Efficiency" class="common-anchor-header">2. Efficiency</h3><p>When using Flask, you need to write code for data type verification in each of the interfaces so that the system can determine whether the input data is empty or not. However, by supporting automatic data type verification, FastAPI helps avoid human errors in coding during system development and can greatly boost development efficiency. Bootcamp is positioned as a type of training resource. This means that the code and components we use must be intuitive and highly efficient. In this regard, we chose FastAPI to improve system efficiency and enhance user experience.</p>
+<h3 id="3-Asynchronous-framework" class="common-anchor-header">3. Asynchronous framework</h3><p>FastAPI is inherently an asynchronous framework. Originally, we released four <a href="https://zilliz.com/milvus-demos?isZilliz=true">demos</a>, reverse image search, video analysis, QA chatbot, and molecular similarity search. In these demos, you can upload datasets and will be immediately prompted &quot;request received&quot;. And when the data is uploaded to the demo system, you will receive another prompt &quot;data upload successful&quot;. This is an asynchronous process which requires a framework that supports this feature. FastAPI is itself an asynchronous framework. To align all Milvus resources, we decided to adopt a single set of development tools and software for both Milvus Bootcamp and Milvus demos. As a result, we changed the framework from Flask to FastAPI.</p>
+<h3 id="4-Automatic-interactive-documents" class="common-anchor-header">4. Automatic interactive documents</h3><p>In a traditional way, when you finish writing the code for the server-side, you need to write an extra document to create an interface, and then use tools like <a href="https://www.postman.com/">Postman</a> for API testing and debugging. So what if you only want to quickly get started with the web server-side development part of the projects in Milvus Bootcamp without writing additional code to create an interface? FastAPI is the fix. By providing an OpenAPI document, FastAPI can save you the trouble of testing or debugging APIs and collaborating with front-end teams to develop a user interface. With FastAPI, you can still quickly try the built application with an automatic but intuitive interface without extra efforts for coding.</p>
+<h3 id="5-User-friendliness" class="common-anchor-header">5. User-friendliness</h3><p>FastAPI is easier to use and develop, therefore enabling you to pay more attention to the specific implementation of the project itself. Without spending too much time on developing web frameworks, you can focus more on understanding the projects in Milvus Bootcamp.</p>
+<h2 id="Recap" class="common-anchor-header">Recap<button data-href="#Recap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -112,9 +120,9 @@ isPublish: false
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Flask und FlastAPI haben ihre eigenen Vor- und Nachteile. FlastAPI ist ein aufstrebendes Webanwendungs-Framework, das im Kern auf ausgereiften Toolkits und Bibliotheken wie Starlette und Pydantic aufbaut. FastAPI ist ein asynchrones Framework mit hoher Leistung. Seine Geschicklichkeit, Erweiterbarkeit und Unterstützung für die automatische Datentypüberprüfung sowie viele andere leistungsstarke Funktionen haben uns veranlasst, FastAPI als Framework für Milvus-Bootcamp-Projekte einzusetzen.</p>
-<p>Bitte beachten Sie, dass Sie das passende Framework für Ihr Anwendungsszenario wählen sollten, wenn Sie ein Vektorähnlichkeitssuchsystem in der Produktion aufbauen wollen.</p>
-<h2 id="About-the-author" class="common-anchor-header">Über den Autor<button data-href="#About-the-author" class="anchor-icon" translate="no">
+    </button></h2><p>Flask and FlastAPI have their own pros and cons. As an emerging web application framework, FlastAPI, at its core, is built on mature toolkits and library, Starlette and Pydantic. FastAPI is an asynchronous framework with high performance. Its dexterity, extensibility, and support for automatic data type verification, together with many other powerful features, prompted us to adopt FastAPI as the framework for Milvus Bootcamp projects.</p>
+<p>Please note that you should choose the appropriate framework according to your application scenario if you want to build a vector similarity search system in production.</p>
+<h2 id="About-the-author" class="common-anchor-header">About the author<button data-href="#About-the-author" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -129,8 +137,8 @@ isPublish: false
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Yunmei Li, Zilliz Data Engineer, hat einen Abschluss in Informatik von der Huazhong University of Science and Technology. Seit sie bei Zilliz ist, arbeitet sie an der Erforschung von Lösungen für das Open-Source-Projekt Milvus und hilft Benutzern, Milvus in realen Szenarien anzuwenden. Ihr Hauptaugenmerk liegt auf NLP und Empfehlungssystemen, und sie möchte ihren Fokus auf diese beiden Bereiche weiter vertiefen. Sie verbringt gerne Zeit alleine und liest.</p>
-<h2 id="Looking-for-more-resources" class="common-anchor-header">Suchen Sie nach weiteren Ressourcen?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
+    </button></h2><p>Yunmei Li, Zilliz Data Engineer, graduated from Huazhong University of Science and Technology with a degree in computer science. Since joining Zilliz, she has been working on exploring solutions for the open source project Milvus and helping users to apply Milvus in real-world scenarios. Her main focus is on NLP and recommendation systems, and she would like to further deepen her focus in these two areas. She likes to spend time alone and read.</p>
+<h2 id="Looking-for-more-resources" class="common-anchor-header">Looking for more resources?<button data-href="#Looking-for-more-resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -146,20 +154,20 @@ isPublish: false
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Beginnen Sie mit der Erstellung von KI-Systemen mit Milvus und sammeln Sie mehr praktische Erfahrung, indem Sie unsere Tutorials lesen!</p>
+<li><p>Start to build AI system with Milvus and get more hands-on experience by reading our tutorials!</p>
 <ul>
-<li><a href="https://milvus.io/blog/2021-10-10-milvus-helps-analys-vedios.md">Was ist sie? Wer ist sie? Milvus hilft bei der intelligenten Analyse von Videos</a></li>
-<li><a href="https://milvus.io/blog/2021-09-26-onnx.md">Kombinieren Sie AI-Modelle für die Bildsuche mit ONNX und Milvus</a></li>
-<li><a href="https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md">DNA-Sequenz-Klassifizierung auf Basis von Milvus</a></li>
-<li><a href="https://milvus.io/blog/audio-retrieval-based-on-milvus.md">Audio-Retrieval auf Basis von Milvus</a></li>
-<li><a href="https://milvus.io/blog/building-video-search-system-with-milvus.md">4 Schritte zum Aufbau eines Video-Suchsystems</a></li>
-<li><a href="https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md">Aufbau eines intelligenten QA-Systems mit NLP und Milvus</a></li>
-<li><a href="https://milvus.io/blog/molecular-structure-similarity-with-milvus.md">Beschleunigung der Entdeckung von neuen Medikamenten</a></li>
+<li><a href="https://milvus.io/blog/2021-10-10-milvus-helps-analys-vedios.md">What Is It? Who Is She? Milvus Helps Analyze Videos Intelligently</a></li>
+<li><a href="https://milvus.io/blog/2021-09-26-onnx.md">Combine AI Models for Image Search using ONNX and Milvus</a></li>
+<li><a href="https://milvus.io/blog/dna-sequence-classification-based-on-milvus.md">DNA Sequence Classification based on Milvus</a></li>
+<li><a href="https://milvus.io/blog/audio-retrieval-based-on-milvus.md">Audio Retrieval Based on Milvus</a></li>
+<li><a href="https://milvus.io/blog/building-video-search-system-with-milvus.md">4 Steps to Building a Video Search System</a></li>
+<li><a href="https://milvus.io/blog/building-intelligent-chatbot-with-nlp-and-milvus.md">Building an Intelligent QA System with NLP and Milvus</a></li>
+<li><a href="https://milvus.io/blog/molecular-structure-similarity-with-milvus.md">Accelerating New Drug Discovery</a></li>
 </ul></li>
-<li><p>Beteiligen Sie sich an unserer Open-Source-Community:</p>
+<li><p>Engage with our open-source community:</p>
 <ul>
-<li>Finden Sie Milvus auf <a href="https://bit.ly/307b7jC">GitHub</a> oder tragen Sie dazu bei.</li>
-<li>Interagieren Sie mit der Community über das <a href="https://bit.ly/3qiyTEk">Forum</a>.</li>
-<li>Verbinden Sie sich mit uns auf <a href="https://bit.ly/3ob7kd8">Twitter</a>.</li>
+<li>Find or contribute to Milvus on <a href="https://bit.ly/307b7jC">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://bit.ly/3qiyTEk">Forum</a>.</li>
+<li>Connect with us on <a href="https://bit.ly/3ob7kd8">Twitter</a>.</li>
 </ul></li>
 </ul>

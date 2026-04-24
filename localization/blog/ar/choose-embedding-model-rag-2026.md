@@ -1,6 +1,7 @@
 ---
 id: choose-embedding-model-rag-2026.md
-title: 'كيف تختار أفضل نموذج تضمين لـ RAG في عام 2026: 10 نماذج تم قياسها'
+title: |
+  How to Choose the Best Embedding Model for RAG in 2026: 10 Models Benchmarked
 author: Cheney Zhang
 date: 2026-3-26
 cover: assets.zilliz.com/embedding_model_cover_ab72ccd651.jpg
@@ -13,13 +14,14 @@ meta_keywords: >-
   benchmark, MRL dimension compression, Gemini Embedding 2
 meta_title: |
   Best Embedding Model for RAG 2026: 10 Models Compared
-desc: >-
-  لقد قمنا بقياس 10 نماذج تضمين قياسية على مهام ضغط الوسائط المتعددة واللغات
-  والمستندات الطويلة والأبعاد. انظر أي منها يناسب خط أنابيب RAG الخاص بك.
+desc: >
+  We benchmarked 10 embedding models on cross-modal, cross-lingual,
+  long-document, and dimension compression tasks. See which one fits your RAG
+  pipeline.
 origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
 ---
-<p><strong>خلاصة القول:</strong> اختبرنا 10 <a href="https://zilliz.com/ai-models">نماذج تضمين</a> عبر أربعة سيناريوهات إنتاجية تفتقدها المعايير العامة: الاسترجاع عبر الوسائط، والاسترجاع عبر اللغات، واسترجاع المعلومات الرئيسية، وضغط الأبعاد. لا يوجد نموذج واحد يفوز بكل شيء. Gemini Embedding 2 هو الأفضل في كل شيء. تتفوق Qwen3-VL-2B مفتوحة المصدر على واجهات برمجة التطبيقات المغلقة المصدر في المهام متعددة النماذج. إذا كنت بحاجة إلى ضغط الأبعاد لحفظ التخزين، فاستخدم Voyage Multimodal 3.5 أو Jina Embedddings v4.</p>
-<h2 id="Why-MTEB-Isnt-Enough-for-Choosing-an-Embedding-Model" class="common-anchor-header">لماذا لا يكفي MTEB لاختيار نموذج التضمين<button data-href="#Why-MTEB-Isnt-Enough-for-Choosing-an-Embedding-Model" class="anchor-icon" translate="no">
+<p><strong>TL;DR:</strong> We tested 10 <a href="https://zilliz.com/ai-models">embedding models</a> across four production scenarios that public benchmarks miss: cross-modal retrieval, cross-lingual retrieval, key information retrieval, and dimension compression. No single model wins everything. Gemini Embedding 2 is the best all-rounder. Open-source Qwen3-VL-2B beats closed-source APIs on cross-modal tasks. If you need to compress dimensions to save storage, go with Voyage Multimodal 3.5 or Jina Embeddings v4.</p>
+<h2 id="Why-MTEB-Isnt-Enough-for-Choosing-an-Embedding-Model" class="common-anchor-header">Why MTEB Isn’t Enough for Choosing an Embedding Model<button data-href="#Why-MTEB-Isnt-Enough-for-Choosing-an-Embedding-Model" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,10 +36,10 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تبدأ معظم النماذج الأولية لـ <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> بنموذج التضمين النصي OpenAI- تضمين النص 3-صغير. إنه رخيص وسهل الدمج، ويعمل بشكل جيد بما فيه الكفاية لاسترجاع النصوص الإنجليزية. لكن إنتاج RAG يتجاوزه بسرعة. يلتقط خط الإنتاج الخاص بك صوراً، وملفات PDF، ومستندات متعددة اللغات - ويتوقف <a href="https://zilliz.com/ai-models">نموذج التضمين</a> النصي فقط عن كونه كافياً.</p>
-<p>تخبرك <a href="https://huggingface.co/spaces/mteb/leaderboard">لوحة المتصدرين في MTEB</a> بوجود خيارات أفضل. المشكلة؟ يختبر MTEB استرجاع النصوص بلغة واحدة فقط. فهو لا يغطي الاسترجاع متعدد الوسائط (الاستعلامات النصية مقابل مجموعات الصور)، أو البحث متعدد اللغات (استعلام صيني يعثر على مستند إنجليزي)، أو دقة المستندات الطويلة، أو مقدار الجودة التي تفقدها عند اقتطاع <a href="https://zilliz.com/glossary/dimension">أبعاد التضمين</a> لحفظ التخزين في <a href="https://zilliz.com/learn/what-is-a-vector-database">قاعدة بياناتك المتجهة</a>.</p>
-<p>إذن ما هو نموذج التضمين الذي يجب أن تستخدمه؟ يعتمد ذلك على أنواع بياناتك ولغاتك وأطوال مستنداتك وما إذا كنت بحاجة إلى ضغط الأبعاد. لقد أنشأنا معيارًا يسمى <strong>CCKM</strong> واختبرنا 10 نماذج تم إصدارها بين عامي 2025 و2026 عبر تلك الأبعاد بالضبط.</p>
-<h2 id="What-Is-the-CCKM-Benchmark" class="common-anchor-header">ما هو معيار CCKM؟<button data-href="#What-Is-the-CCKM-Benchmark" class="anchor-icon" translate="no">
+    </button></h2><p>Most <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> prototypes start with OpenAI’s text-embedding-3-small. It’s cheap, easy to integrate, and for English text retrieval it works well enough. But production RAG outgrows it fast. Your pipeline picks up images, PDFs, multilingual documents — and a text-only <a href="https://zilliz.com/ai-models">embedding model</a> stops being enough.</p>
+<p>The <a href="https://huggingface.co/spaces/mteb/leaderboard">MTEB leaderboard</a> tells you there are better options. The problem? MTEB only tests single-language text retrieval. It doesn’t cover cross-modal retrieval (text queries against image collections), cross-lingual search (a Chinese query finding an English document), long-document accuracy, or how much quality you lose when you truncate <a href="https://zilliz.com/glossary/dimension">embedding dimensions</a> to save storage in your <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a>.</p>
+<p>So which embedding model should you use? It depends on your data types, your languages, your document lengths, and whether you need dimension compression. We built a benchmark called <strong>CCKM</strong> and tested 10 models released between 2025 and 2026 across exactly those dimensions.</p>
+<h2 id="What-Is-the-CCKM-Benchmark" class="common-anchor-header">What Is the CCKM Benchmark?<button data-href="#What-Is-the-CCKM-Benchmark" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,20 +54,20 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يختبر معيار<strong>CCKM (CCKM</strong> ) أربعة إمكانيات تفتقدها المعايير القياسية:</p>
+    </button></h2><p><strong>CCKM</strong> (Cross-modal, Cross-lingual, Key information, MRL) tests four capabilities that standard benchmarks miss:</p>
 <table>
 <thead>
-<tr><th>البُعد</th><th>ماذا يختبر</th><th>لماذا هو مهم</th></tr>
+<tr><th>Dimension</th><th>What It Tests</th><th>Why It Matters</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>الاسترجاع متعدد الوسائط</strong></td><td>مطابقة أوصاف النص مع الصورة الصحيحة عند وجود مشتتات شبه متطابقة</td><td>تحتاج خطوط أنابيب<a href="https://zilliz.com/learn/multimodal-rag">الاسترجاع متعدد الوسائط</a> إلى تضمين النص والصورة في نفس المساحة المتجهة</td></tr>
-<tr><td><strong>الاسترجاع عبر اللغات</strong></td><td>العثور على المستند الإنجليزي الصحيح من استعلام صيني، والعكس بالعكس</td><td>غالبًا ما تكون قواعد معارف الإنتاج متعددة اللغات</td></tr>
-<tr><td><strong>استرجاع المعلومات الأساسية</strong></td><td>تحديد موقع حقيقة معينة مدفونة في مستند مكون من 4 آلاف إلى 32 ألف حرف (إبرة في كومة قش)</td><td>تعالج أنظمة RAG في كثير من الأحيان مستندات طويلة مثل العقود والأوراق البحثية</td></tr>
-<tr><td><strong>ضغط أبعاد MRL</strong></td><td>قياس مقدار الجودة التي يفقدها النموذج عند اقتطاع التضمينات إلى 256 بُعدًا</td><td>أبعاد أقل = تكلفة تخزين أقل في قاعدة بيانات المتجهات، ولكن بأي تكلفة للجودة؟</td></tr>
+<tr><td><strong>Cross-modal retrieval</strong></td><td>Match text descriptions to the correct image when near-identical distractors are present</td><td><a href="https://zilliz.com/learn/multimodal-rag">Multimodal RAG</a> pipelines need text and image embeddings in the same vector space</td></tr>
+<tr><td><strong>Cross-lingual retrieval</strong></td><td>Find the correct English document from a Chinese query, and vice versa</td><td>Production knowledge bases are often multilingual</td></tr>
+<tr><td><strong>Key information retrieval</strong></td><td>Locate a specific fact buried in a 4K–32K character document (needle-in-a-haystack)</td><td>RAG systems frequently process long documents like contracts and research papers</td></tr>
+<tr><td><strong>MRL dimension compression</strong></td><td>Measure how much quality the model loses when you truncate embeddings to 256 dimensions</td><td>Fewer dimensions = lower storage cost in your vector database, but at what quality cost?</td></tr>
 </tbody>
 </table>
-<p>لا يغطي MTEB أيًا من ذلك. تضيف MMEB التضمينات متعددة الوسائط ولكنها تتخطى التضمينات السالبة الصلبة، لذا تسجل النماذج درجات عالية دون إثبات أنها تتعامل مع الفروق الدقيقة. تم تصميم CCKM لتغطية ما يفوتهم.</p>
-<h2 id="Which-Embedding-Models-Did-We-Test-Gemini-Embedding-2-Jina-Embeddings-v4-and-More" class="common-anchor-header">ما هي نماذج التضمين التي اختبرناها؟ تضمين الجوزاء 2، تضمين الجوزاء 2، تضمين جينا v4، والمزيد<button data-href="#Which-Embedding-Models-Did-We-Test-Gemini-Embedding-2-Jina-Embeddings-v4-and-More" class="anchor-icon" translate="no">
+<p>MTEB covers none of these. MMEB adds multimodal but skips hard negatives, so models score high without proving they handle subtle distinctions. CCKM is designed to cover what they miss.</p>
+<h2 id="Which-Embedding-Models-Did-We-Test-Gemini-Embedding-2-Jina-Embeddings-v4-and-More" class="common-anchor-header">Which Embedding Models Did We Test? Gemini Embedding 2, Jina Embeddings v4, and More<button data-href="#Which-Embedding-Models-Did-We-Test-Gemini-Embedding-2-Jina-Embeddings-v4-and-More" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,26 +82,26 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لقد اختبرنا 10 نماذج تغطي كلاً من خدمات واجهة برمجة التطبيقات والخيارات مفتوحة المصدر، بالإضافة إلى CLIP ViT-L-14 كخط أساس لعام 2021.</p>
+    </button></h2><p>We tested 10 models covering both API services and open-source options, plus CLIP ViT-L-14 as a 2021 baseline.</p>
 <table>
 <thead>
-<tr><th>النموذج</th><th>المصدر</th><th>المعلمات</th><th>الأبعاد</th><th>الطريقة</th><th>السمة الرئيسية</th></tr>
+<tr><th>Model</th><th>Source</th><th>Parameters</th><th>Dimensions</th><th>Modality</th><th>Key Trait</th></tr>
 </thead>
 <tbody>
-<tr><td>تضمين الجوزاء 2</td><td>جوجل</td><td>غير معلن</td><td>3072</td><td>نص / صورة / فيديو / صوت / PDF</td><td>جميع الوسائط، أوسع تغطية</td></tr>
-<tr><td>Jina Embedddings v4</td><td>جينا للذكاء الاصطناعي</td><td>3.8B</td><td>2048</td><td>نص / صورة / PDF</td><td>محولات MRL + LoRA</td></tr>
-<tr><td>فوياج متعدد الوسائط 3.5</td><td>Voyage AI (MongoDB)</td><td>غير معلن</td><td>1024</td><td>نص / صورة / فيديو</td><td>متوازن عبر المهام</td></tr>
-<tr><td>Qwen3-VL-Embedding-2B</td><td>علي بابا كوين</td><td>2B</td><td>2048</td><td>نص / صورة / فيديو</td><td>مفتوح المصدر، خفيف الوزن متعدد الوسائط</td></tr>
-<tr><td>Jina CLIP v2</td><td>جينا للذكاء الاصطناعي</td><td>~1B</td><td>1024</td><td>نص / صورة</td><td>بنية CLIP المحدثة</td></tr>
-<tr><td>Cohere Embed v4</td><td>كوهير</td><td>غير معلن</td><td>ثابت</td><td>نص</td><td>استرجاع المؤسسة</td></tr>
-<tr><td>OpenAI تضمين النص-التضمين النصي 3-الكبير</td><td>OpenAI</td><td>غير معلن</td><td>3072</td><td>نص</td><td>الأكثر استخداماً</td></tr>
-<tr><td><a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3</a></td><td>BAAI</td><td>568M</td><td>1024</td><td>النص</td><td>مفتوح المصدر، أكثر من 100 لغة</td></tr>
-<tr><td>مكسباي-تضمين-كبير</td><td>Mixedbread AI</td><td>335M</td><td>1024</td><td>نص</td><td>خفيف الوزن، يركز على اللغة الإنجليزية</td></tr>
-<tr><td>نص-تضمين-نص-نومي</td><td>الذكاء الاصطناعي النومي</td><td>137M</td><td>768</td><td>نص</td><td>خفيف الوزن للغاية</td></tr>
-<tr><td>CLIP ViT-L-14</td><td>OpenAI (2021)</td><td>428M</td><td>768</td><td>نص/صورة</td><td>خط الأساس</td></tr>
+<tr><td>Gemini Embedding 2</td><td>Google</td><td>Undisclosed</td><td>3072</td><td>Text / image / video / audio / PDF</td><td>All-modality, widest coverage</td></tr>
+<tr><td>Jina Embeddings v4</td><td>Jina AI</td><td>3.8B</td><td>2048</td><td>Text / image / PDF</td><td>MRL + LoRA adapters</td></tr>
+<tr><td>Voyage Multimodal 3.5</td><td>Voyage AI (MongoDB)</td><td>Undisclosed</td><td>1024</td><td>Text / image / video</td><td>Balanced across tasks</td></tr>
+<tr><td>Qwen3-VL-Embedding-2B</td><td>Alibaba Qwen</td><td>2B</td><td>2048</td><td>Text / image / video</td><td>Open-source, lightweight multimodal</td></tr>
+<tr><td>Jina CLIP v2</td><td>Jina AI</td><td>~1B</td><td>1024</td><td>Text / image</td><td>Modernized CLIP architecture</td></tr>
+<tr><td>Cohere Embed v4</td><td>Cohere</td><td>Undisclosed</td><td>Fixed</td><td>Text</td><td>Enterprise retrieval</td></tr>
+<tr><td>OpenAI text-embedding-3-large</td><td>OpenAI</td><td>Undisclosed</td><td>3072</td><td>Text</td><td>Most widely used</td></tr>
+<tr><td><a href="https://zilliz.com/learn/bge-m3-and-splade-two-machine-learning-models-for-generating-sparse-embeddings">BGE-M3</a></td><td>BAAI</td><td>568M</td><td>1024</td><td>Text</td><td>Open-source, 100+ languages</td></tr>
+<tr><td>mxbai-embed-large</td><td>Mixedbread AI</td><td>335M</td><td>1024</td><td>Text</td><td>Lightweight, English-focused</td></tr>
+<tr><td>nomic-embed-text</td><td>Nomic AI</td><td>137M</td><td>768</td><td>Text</td><td>Ultra-lightweight</td></tr>
+<tr><td>CLIP ViT-L-14</td><td>OpenAI (2021)</td><td>428M</td><td>768</td><td>Text / image</td><td>Baseline</td></tr>
 </tbody>
 </table>
-<h2 id="Cross-Modal-Retrieval-Which-Models-Handle-Text-to-Image-Search" class="common-anchor-header">الاسترجاع عبر النماذج: ما هي النماذج التي تتعامل مع البحث من نص إلى صورة؟<button data-href="#Cross-Modal-Retrieval-Which-Models-Handle-Text-to-Image-Search" class="anchor-icon" translate="no">
+<h2 id="Cross-Modal-Retrieval-Which-Models-Handle-Text-to-Image-Search" class="common-anchor-header">Cross-Modal Retrieval: Which Models Handle Text-to-Image Search?<button data-href="#Cross-Modal-Retrieval-Which-Models-Handle-Text-to-Image-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,48 +116,54 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إذا كان خط معالجة RAG الخاص بك يتعامل مع الصور جنبًا إلى جنب مع النص، فإن نموذج التضمين يحتاج إلى وضع كلتا الطريقتين في نفس <a href="https://zilliz.com/glossary/vector-embeddings">المساحة المتجهة</a>. فكّر في البحث عن الصور في التجارة الإلكترونية، أو قواعد المعرفة المختلطة بين الصور والنصوص، أو أي نظام يحتاج فيه الاستعلام النصي إلى العثور على الصورة الصحيحة.</p>
-<h3 id="Method" class="common-anchor-header">الطريقة</h3><p>أخذنا 200 زوج من الصور والنصوص من COCO val2017. لكل صورة، أنشأ GPT-4o-mini وصفًا تفصيليًا. ثم قمنا بكتابة 3 أوصاف سلبية صعبة لكل صورة - أوصاف تختلف عن الوصف الصحيح بتفاصيل واحدة أو اثنتين فقط. يجب على النموذج أن يعثر على التطابق الصحيح في مجموعة من 200 صورة و600 مشتت.</p>
-<p>مثال من مجموعة البيانات:</p>
+    </button></h2><p>If your RAG pipeline handles images alongside text, the embedding model needs to place both modalities in the same <a href="https://zilliz.com/glossary/vector-embeddings">vector space</a>. Think e-commerce image search, mixed image-text knowledge bases, or any system where a text query needs to find the right image.</p>
+<h3 id="Method" class="common-anchor-header">Method</h3><p>We took 200 image-text pairs from COCO val2017. For each image, GPT-4o-mini generated a detailed description. Then we wrote 3 hard negatives per image — descriptions that differ from the correct one by just one or two details. The model has to find the right match in a pool of 200 images and 600 distractors.</p>
+<p>An example from the dataset:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_9_3965746e33.png" alt="Vintage brown leather suitcases with travel stickers including California and Cuba, placed on a metal luggage rack against a blue sky — used as a test image in the cross-modal retrieval benchmark" class="doc-image" id="vintage-brown-leather-suitcases-with-travel-stickers-including-california-and-cuba,-placed-on-a-metal-luggage-rack-against-a-blue-sky-—-used-as-a-test-image-in-the-cross-modal-retrieval-benchmark" />
-   </span> <span class="img-wrapper"> <span>حقائب جلدية بنية اللون عتيقة عليها ملصقات سفر بما في ذلك كاليفورنيا وكوبا، موضوعة على رف معدني للأمتعة مقابل سماء زرقاء - تُستخدم كصورة اختبار في معيار الاسترجاع متعدد الوسائط</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_9_3965746e33.png" alt="Vintage brown leather suitcases with travel stickers including California and Cuba, placed on a metal luggage rack against a blue sky — used as a test image in the cross-modal retrieval benchmark" class="doc-image" id="vintage-brown-leather-suitcases-with-travel-stickers-including-california-and-cuba,-placed-on-a-metal-luggage-rack-against-a-blue-sky-—-used-as-a-test-image-in-the-cross-modal-retrieval-benchmark" />
+    <span>Vintage brown leather suitcases with travel stickers including California and Cuba, placed on a metal luggage rack against a blue sky — used as a test image in the cross-modal retrieval benchmark</span>
+  </span>
+</p>
 <blockquote>
-<p><strong>الوصف الصحيح:</strong> "تُظهر الصورة حقائب جلدية بنية اللون عتيقة مع ملصقات سفر مختلفة بما في ذلك "كاليفورنيا" و"كوبا" و"نيويورك"، موضوعة على رف أمتعة معدني مقابل سماء زرقاء صافية."</p>
-<p><strong>سلبي للغاية:</strong> الجملة ذاتها، لكن "كاليفورنيا" تصبح "فلوريدا" و"السماء الزرقاء" تصبح "سماء ملبدة بالغيوم". يجب على العارض أن يفهم تفاصيل الصورة بالفعل لتمييزها.</p>
+<p><strong>Correct description:</strong> “The image features vintage brown leather suitcases with various travel stickers including 'California’, 'Cuba’, and 'New York’, placed on a metal luggage rack against a clear blue sky.”</p>
+<p><strong>Hard negative:</strong> Same sentence, but “California” becomes “Florida” and “blue sky” becomes “overcast sky.” The model has to actually understand the image details to tell these apart.</p>
 </blockquote>
-<p><strong>تسجيل النقاط:</strong></p>
+<p><strong>Scoring:</strong></p>
 <ul>
-<li>توليد <a href="https://zilliz.com/glossary/vector-embeddings">التضمينات</a> لجميع الصور وجميع النصوص (200 وصف صحيح + 600 وصف سلبي صعب).</li>
-<li><strong>نص إلى صورة (t2i):</strong> يبحث كل وصف في 200 صورة عن أقرب تطابق. سجل نقطة إذا كانت النتيجة الأولى صحيحة.</li>
-<li><strong>صورة إلى نص (i2t):</strong> تبحث كل صورة في كل 800 نص عن أقرب تطابق. يتم تسجيل نقطة فقط إذا كانت النتيجة العليا هي الوصف الصحيح، وليس النتيجة السلبية الصلبة.</li>
-<li><strong>الدرجة النهائية:</strong> hard_avg_R@1 = (دقة t2i + دقة i2t) / 2</li>
+<li>Generate <a href="https://zilliz.com/glossary/vector-embeddings">embeddings</a> for all images and all text (200 correct descriptions + 600 hard negatives).</li>
+<li><strong>Text-to-image (t2i):</strong> Each description searches 200 images for the closest match. Score a point if the top result is correct.</li>
+<li><strong>Image-to-text (i2t):</strong> Each image searches all 800 texts for the closest match. Score a point only if the top result is the correct description, not a hard negative.</li>
+<li><strong>Final score:</strong> hard_avg_R@1 = (t2i accuracy + i2t accuracy) / 2</li>
 </ul>
-<h3 id="Results" class="common-anchor-header">النتائج</h3><p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_1_6f1fddae56.png" alt="Horizontal bar chart showing Cross-Modal Retrieval Ranking: Qwen3-VL-2B leads at 0.945, followed by Gemini Embed 2 at 0.928, Voyage MM-3.5 at 0.900, Jina CLIP v2 at 0.873, and CLIP ViT-L-14 at 0.768" class="doc-image" id="horizontal-bar-chart-showing-cross-modal-retrieval-ranking:-qwen3-vl-2b-leads-at-0.945,-followed-by-gemini-embed-2-at-0.928,-voyage-mm-3.5-at-0.900,-jina-clip-v2-at-0.873,-and-clip-vit-l-14-at-0.768" />
-   <span>مخطط شريطي أفقي يوضح ترتيب الاسترجاع عبر النماذج: Qwen3-VL-2B في الصدارة بـ 0.945، يليه Gemini Embed 2 بـ 0.928، ثم Voyage MM-3.5 بـ 0.900، ثم Jina CLIP v2 بـ 0.873، وCLIP ViT-L-14 بـ 0.768</span> </span></p>
-<p>جاء نموذج Qwen3-VL-2B، وهو نموذج معلمة 2B مفتوح المصدر من فريق Qwen التابع لشركة علي بابا، في المرتبة الأولى - متقدمًا على كل واجهة برمجة تطبيقات مغلقة المصدر.</p>
-<p>تفسر<strong>فجوة الطرائق</strong> معظم الفرق. تقوم نماذج التضمين بتعيين النصوص والصور في نفس الفضاء المتجه، ولكن من الناحية العملية، تميل الطريقتان إلى التجميع في مناطق مختلفة. تقيس فجوة الطرائق المسافة L2 بين هاتين المجموعتين. فجوة أصغر = استرجاع أسهل عبر الطرائق.</p>
+<h3 id="Results" class="common-anchor-header">Results</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_1_6f1fddae56.png" alt="Horizontal bar chart showing Cross-Modal Retrieval Ranking: Qwen3-VL-2B leads at 0.945, followed by Gemini Embed 2 at 0.928, Voyage MM-3.5 at 0.900, Jina CLIP v2 at 0.873, and CLIP ViT-L-14 at 0.768" class="doc-image" id="horizontal-bar-chart-showing-cross-modal-retrieval-ranking:-qwen3-vl-2b-leads-at-0.945,-followed-by-gemini-embed-2-at-0.928,-voyage-mm-3.5-at-0.900,-jina-clip-v2-at-0.873,-and-clip-vit-l-14-at-0.768" />
+    <span>Horizontal bar chart showing Cross-Modal Retrieval Ranking: Qwen3-VL-2B leads at 0.945, followed by Gemini Embed 2 at 0.928, Voyage MM-3.5 at 0.900, Jina CLIP v2 at 0.873, and CLIP ViT-L-14 at 0.768</span>
+  </span>
+</p>
+<p>Qwen3-VL-2B, an open-source 2B parameter model from Alibaba’s Qwen team, came in first — ahead of every closed-source API.</p>
+<p><strong>Modality gap</strong> explains most of the difference. Embedding models map text and images into the same vector space, but in practice the two modalities tend to cluster in different regions. The modality gap measures the L2 distance between those two clusters. Smaller gap = easier cross-modal retrieval.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_8_c5067a3434.png" alt="Visualization comparing large modality gap (0.73, text and image embedding clusters far apart) versus small modality gap (0.25, clusters overlapping) — smaller gap makes cross-modal matching easier" class="doc-image" id="visualization-comparing-large-modality-gap-(0.73,-text-and-image-embedding-clusters-far-apart)-versus-small-modality-gap-(0.25,-clusters-overlapping)-—-smaller-gap-makes-cross-modal-matching-easier" />
-   </span> <span class="img-wrapper"> <span>التصور الذي يقارن بين فجوة الطرائق الكبيرة (0.73، مجموعات تضمين النص والصورة متباعدة عن بعضها البعض) مقابل فجوة الطرائق الصغيرة (0.25، المجموعات متداخلة) - الفجوة الأصغر تجعل المطابقة بين الطرائق أسهل</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_8_c5067a3434.png" alt="Visualization comparing large modality gap (0.73, text and image embedding clusters far apart) versus small modality gap (0.25, clusters overlapping) — smaller gap makes cross-modal matching easier" class="doc-image" id="visualization-comparing-large-modality-gap-(0.73,-text-and-image-embedding-clusters-far-apart)-versus-small-modality-gap-(0.25,-clusters-overlapping)-—-smaller-gap-makes-cross-modal-matching-easier" />
+    <span>Visualization comparing large modality gap (0.73, text and image embedding clusters far apart) versus small modality gap (0.25, clusters overlapping) — smaller gap makes cross-modal matching easier</span>
+  </span>
+</p>
 <table>
 <thead>
-<tr><th>النموذج</th><th>النتيجة (R@1)</th><th>فجوة الطرائق</th><th>البارامترات</th></tr>
+<tr><th>Model</th><th>Score (R@1)</th><th>Modality Gap</th><th>Params</th></tr>
 </thead>
 <tbody>
-<tr><td>Qwen3-VL-2B</td><td>0.945</td><td>0.25</td><td>2B (مفتوح المصدر)</td></tr>
-<tr><td>تضمين الجوزاء 2</td><td>0.928</td><td>0.73</td><td>غير معروف (مغلق)</td></tr>
-<tr><td>فوياج متعدد الوسائط 3.5</td><td>0.900</td><td>0.59</td><td>غير معروف (مغلق)</td></tr>
+<tr><td>Qwen3-VL-2B</td><td>0.945</td><td>0.25</td><td>2B (open-source)</td></tr>
+<tr><td>Gemini Embedding 2</td><td>0.928</td><td>0.73</td><td>Unknown (closed)</td></tr>
+<tr><td>Voyage Multimodal 3.5</td><td>0.900</td><td>0.59</td><td>Unknown (closed)</td></tr>
 <tr><td>Jina CLIP v2</td><td>0.873</td><td>0.87</td><td>~1B</td></tr>
 <tr><td>CLIP ViT-L-14</td><td>0.768</td><td>0.83</td><td>428M</td></tr>
 </tbody>
 </table>
-<p>تبلغ فجوة الطرائق في Qwen 0.25 - أي ما يقرب من ثلث فجوة الطرائق في Gemini 0.73. في <a href="https://zilliz.com/learn/what-is-a-vector-database">قاعدة بيانات متجهة</a> مثل <a href="https://milvus.io/">Milvus،</a> تعني فجوة الطرائق الصغيرة أنه يمكنك تخزين تضمينات النصوص والصور في نفس <a href="https://milvus.io/docs/manage-collections.md">المجموعة</a> <a href="https://milvus.io/docs/single-vector-search.md">والبحث</a> عبر كليهما مباشرةً. يمكن للفجوة الكبيرة أن تجعل <a href="https://zilliz.com/glossary/similarity-search">البحث في التشابه</a> عبر الوسائط أقل موثوقية، وقد تحتاج إلى خطوة إعادة ترتيب للتعويض.</p>
-<h2 id="Cross-Lingual-Retrieval-Which-Models-Align-Meaning-Across-Languages" class="common-anchor-header">الاسترجاع عبر اللغات: ما هي النماذج التي تحاذي المعنى عبر اللغات؟<button data-href="#Cross-Lingual-Retrieval-Which-Models-Align-Meaning-Across-Languages" class="anchor-icon" translate="no">
+<p>Qwen’s modality gap is 0.25 — roughly a third of Gemini’s 0.73. In a <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a> like <a href="https://milvus.io/">Milvus</a>, a small modality gap means you can store text and image embeddings in the same <a href="https://milvus.io/docs/manage-collections.md">collection</a> and <a href="https://milvus.io/docs/single-vector-search.md">search</a> across both directly. A large gap can make cross-modal <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> less reliable, and you may need a re-ranking step to compensate.</p>
+<h2 id="Cross-Lingual-Retrieval-Which-Models-Align-Meaning-Across-Languages" class="common-anchor-header">Cross-Lingual Retrieval: Which Models Align Meaning Across Languages?<button data-href="#Cross-Lingual-Retrieval-Which-Models-Align-Meaning-Across-Languages" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -170,43 +178,47 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قواعد المعرفة متعددة اللغات شائعة في الإنتاج. يطرح المستخدم سؤالاً باللغة الصينية، ولكن الإجابة موجودة في مستند باللغة الإنجليزية - أو العكس. يحتاج نموذج التضمين إلى مواءمة المعنى عبر اللغات، وليس فقط داخل لغة واحدة.</p>
-<h3 id="Method" class="common-anchor-header">الطريقة</h3><p>قمنا ببناء 166 زوجاً من الجمل المتوازية باللغتين الصينية والإنجليزية عبر ثلاثة مستويات صعوبة:</p>
+    </button></h2><p>Multilingual knowledge bases are common in production. A user asks a question in Chinese, but the answer lives in an English document — or the other way around. The embedding model needs to align meaning across languages, not just within one.</p>
+<h3 id="Method" class="common-anchor-header">Method</h3><p>We built 166 parallel sentence pairs in Chinese and English across three difficulty levels:</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_6_75caab66a7.png" alt="Cross-lingual difficulty tiers: Easy tier maps literal translations like 我爱你 to I love you; Medium tier maps paraphrased sentences like 这道菜太咸了 to This dish is too salty with hard negatives; Hard tier maps Chinese idioms like 画蛇添足 to gilding the lily with semantically different hard negatives" class="doc-image" id="cross-lingual-difficulty-tiers:-easy-tier-maps-literal-translations-like-我爱你-to-i-love-you;-medium-tier-maps-paraphrased-sentences-like-这道菜太咸了-to-this-dish-is-too-salty-with-hard-negatives;-hard-tier-maps-chinese-idioms-like-画蛇添足-to-gilding-the-lily-with-semantically-different-hard-negatives" />
-   <span>مستويات صعوبة عبر اللغات: المستوى السهل يعيّن الترجمات الحرفية مثل أنا أحبك؛ والمستوى المتوسط يعيّن الجمل المعاد صياغتها مثل هذا الطبق مالح جدًا مع السلبيات الصعبة؛ والمستوى الصعب يعيّن التعابير الصينية مثل: أنا أحبك مع السلبيات الصعبة المختلفة دلاليًا</span> </span></p>
-<p>تحصل كل لغة أيضًا على 152 مشتتًا سلبيًا صعبًا.</p>
-<p><strong>تسجيل النقاط:</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_6_75caab66a7.png" alt="Cross-lingual difficulty tiers: Easy tier maps literal translations like 我爱你 to I love you; Medium tier maps paraphrased sentences like 这道菜太咸了 to This dish is too salty with hard negatives; Hard tier maps Chinese idioms like 画蛇添足 to gilding the lily with semantically different hard negatives" class="doc-image" id="cross-lingual-difficulty-tiers:-easy-tier-maps-literal-translations-like-我爱你-to-i-love-you;-medium-tier-maps-paraphrased-sentences-like-这道菜太咸了-to-this-dish-is-too-salty-with-hard-negatives;-hard-tier-maps-chinese-idioms-like-画蛇添足-to-gilding-the-lily-with-semantically-different-hard-negatives" />
+    <span>Cross-lingual difficulty tiers: Easy tier maps literal translations like 我爱你 to I love you; Medium tier maps paraphrased sentences like 这道菜太咸了 to This dish is too salty with hard negatives; Hard tier maps Chinese idioms like 画蛇添足 to gilding the lily with semantically different hard negatives</span>
+  </span>
+</p>
+<p>Each language also gets 152 hard negative distractors.</p>
+<p><strong>Scoring:</strong></p>
 <ul>
-<li>توليد التضمينات لجميع النصوص الصينية (166 صحيحة + 152 مشتتًا) وجميع النصوص الإنجليزية (166 صحيحة + 152 مشتتًا).</li>
-<li><strong>الصينية → الإنجليزية:</strong> تبحث كل جملة صينية في 318 نصًا إنجليزيًا عن ترجمتها الصحيحة.</li>
-<li><strong>الإنجليزية → الصينية:</strong> نفس الشيء بالعكس.</li>
-<li><strong>النتيجة النهائية:</strong> hard_avg_R@1 = (دقة zh →en + دقة en →zh) / 2</li>
+<li>Generate embeddings for all Chinese text (166 correct + 152 distractors) and all English text (166 correct + 152 distractors).</li>
+<li><strong>Chinese → English:</strong> Each Chinese sentence searches 318 English texts for its correct translation.</li>
+<li><strong>English → Chinese:</strong> Same in reverse.</li>
+<li><strong>Final score:</strong> hard_avg_R@1 = (zh→en accuracy + en→zh accuracy) / 2</li>
 </ul>
-<h3 id="Results" class="common-anchor-header">النتائج</h3><p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_2_d1c3500423.png" alt="Horizontal bar chart showing Cross-Lingual Retrieval Ranking: Gemini Embed 2 leads at 0.997, followed by Qwen3-VL-2B at 0.988, Jina v4 at 0.985, Voyage MM-3.5 at 0.982, down to mxbai at 0.120" class="doc-image" id="horizontal-bar-chart-showing-cross-lingual-retrieval-ranking:-gemini-embed-2-leads-at-0.997,-followed-by-qwen3-vl-2b-at-0.988,-jina-v4-at-0.985,-voyage-mm-3.5-at-0.982,-down-to-mxbai-at-0.120" />
-   <span>مخطط شريطي أفقي يوضح ترتيب الاسترجاع عبر اللغات: يتصدر Gemini Embed 2 عند 0.997، يليه Qwen3-VL-2B عند 0.988، ثم Jina v4 عند 0.985، ثم Voyage MM-3.5 عند 0.982، وصولاً إلى mxbai عند 0.120</span> </span></p>
-<p>حصل Gemini Embedding 2 على 0.997 - وهو أعلى معدل من أي نموذج تم اختباره. لقد كان النموذج الوحيد الذي حصل على 1.000 درجة كاملة في المستوى الصعب، حيث تتطلب أزواج مثل "画蛇添" → "تذهيب الزنبق" فهمًا <a href="https://zilliz.com/glossary/semantic-search">دلاليًا</a> حقيقيًا عبر اللغات، وليس مطابقة الأنماط.</p>
+<h3 id="Results" class="common-anchor-header">Results</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_2_d1c3500423.png" alt="Horizontal bar chart showing Cross-Lingual Retrieval Ranking: Gemini Embed 2 leads at 0.997, followed by Qwen3-VL-2B at 0.988, Jina v4 at 0.985, Voyage MM-3.5 at 0.982, down to mxbai at 0.120" class="doc-image" id="horizontal-bar-chart-showing-cross-lingual-retrieval-ranking:-gemini-embed-2-leads-at-0.997,-followed-by-qwen3-vl-2b-at-0.988,-jina-v4-at-0.985,-voyage-mm-3.5-at-0.982,-down-to-mxbai-at-0.120" />
+    <span>Horizontal bar chart showing Cross-Lingual Retrieval Ranking: Gemini Embed 2 leads at 0.997, followed by Qwen3-VL-2B at 0.988, Jina v4 at 0.985, Voyage MM-3.5 at 0.982, down to mxbai at 0.120</span>
+  </span>
+</p>
+<p>Gemini Embedding 2 scored 0.997 — the highest of any model tested. It was the only model to score a perfect 1.000 on the Hard tier, where pairs like “画蛇添足” → “gilding the lily” require genuine <a href="https://zilliz.com/glossary/semantic-search">semantic</a> understanding across languages, not pattern matching.</p>
 <table>
 <thead>
-<tr><th>النموذج</th><th>النتيجة (R@1)</th><th>سهلة</th><th>متوسطة</th><th>صعب (تعابير اصطلاحية)</th></tr>
+<tr><th>Model</th><th>Score (R@1)</th><th>Easy</th><th>Medium</th><th>Hard (idioms)</th></tr>
 </thead>
 <tbody>
-<tr><td>تضمين الجوزاء 2</td><td>0.997</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+<tr><td>Gemini Embedding 2</td><td>0.997</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
 <tr><td>Qwen3-VL-2B</td><td>0.988</td><td>1.000</td><td>1.000</td><td>0.969</td></tr>
-<tr><td>تضمينات جينا V4</td><td>0.985</td><td>1.000</td><td>1.000</td><td>0.969</td></tr>
+<tr><td>Jina Embeddings v4</td><td>0.985</td><td>1.000</td><td>1.000</td><td>0.969</td></tr>
 <tr><td>Voyage Multimodal 3.5</td><td>0.982</td><td>1.000</td><td>1.000</td><td>0.938</td></tr>
-<tr><td>أوبن إيه آي 3-كبير</td><td>0.967</td><td>1.000</td><td>1.000</td><td>0.906</td></tr>
+<tr><td>OpenAI 3-large</td><td>0.967</td><td>1.000</td><td>1.000</td><td>0.906</td></tr>
 <tr><td>Cohere Embed v4</td><td>0.955</td><td>1.000</td><td>0.980</td><td>0.875</td></tr>
 <tr><td>BGE-M3 (568M)</td><td>0.940</td><td>1.000</td><td>0.960</td><td>0.844</td></tr>
-<tr><td>نص-تضمين-نص-رسمي (137M)</td><td>0.154</td><td>0.300</td><td>0.120</td><td>0.031</td></tr>
-<tr><td>مكسباي-تضمين-كبير (335M)</td><td>0.120</td><td>0.220</td><td>0.080</td><td>0.031</td></tr>
+<tr><td>nomic-embed-text (137M)</td><td>0.154</td><td>0.300</td><td>0.120</td><td>0.031</td></tr>
+<tr><td>mxbai-embed-large (335M)</td><td>0.120</td><td>0.220</td><td>0.080</td><td>0.031</td></tr>
 </tbody>
 </table>
-<p>أفضل 7 نماذج تحصل جميعها على 0.93 في النتيجة الإجمالية - يحدث التمايز الحقيقي في المستوى الصعب (المصطلحات الصينية). النماذج السبعة الأولى تحصل على 0.93 في المهام متعددة اللغات.</p>
-<h2 id="Key-Information-Retrieval-Can-Models-Find-a-Needle-in-a-32K-Token-Document" class="common-anchor-header">استرجاع المعلومات الأساسية: هل تستطيع النماذج العثور على إبرة في مستند مكون من 32 ألف كلمة؟<button data-href="#Key-Information-Retrieval-Can-Models-Find-a-Needle-in-a-32K-Token-Document" class="anchor-icon" translate="no">
+<p>The top 7 models all clear 0.93 on the overall score — the real differentiation happens on the Hard tier (Chinese idioms). nomic-embed-text and mxbai-embed-large, both English-focused lightweight models, score near zero on cross-lingual tasks.</p>
+<h2 id="Key-Information-Retrieval-Can-Models-Find-a-Needle-in-a-32K-Token-Document" class="common-anchor-header">Key Information Retrieval: Can Models Find a Needle in a 32K-Token Document?<button data-href="#Key-Information-Retrieval-Can-Models-Find-a-Needle-in-a-32K-Token-Document" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -221,46 +233,48 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>غالبًا ما تقوم أنظمة RAG بمعالجة المستندات الطويلة - العقود القانونية، والأوراق البحثية، والتقارير الداخلية التي تحتوي على <a href="https://zilliz.com/learn/introduction-to-unstructured-data">بيانات غير منظمة</a>. والسؤال هو ما إذا كان لا يزال بإمكان نموذج التضمين العثور على حقيقة واحدة محددة مدفونة في آلاف الأحرف من النص المحيط.</p>
-<h3 id="Method" class="common-anchor-header">الطريقة</h3><p>أخذنا مقالات ويكيبيديا بأطوال متفاوتة (من 4 آلاف إلى 32 ألف حرف) ككومة قش وأدخلنا حقيقة واحدة ملفقة - الإبرة - في مواضع مختلفة: البداية و25% و50% و50% و75% والنهاية. يجب على النموذج أن يحدد، بناءً على تضمين الاستعلام، أي نسخة من المستند تحتوي على الإبرة.</p>
-<p><strong>مثال:</strong></p>
+    </button></h2><p>RAG systems often process lengthy documents — legal contracts, research papers, internal reports containing <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a>. The question is whether an embedding model can still find one specific fact buried in thousands of characters of surrounding text.</p>
+<h3 id="Method" class="common-anchor-header">Method</h3><p>We took Wikipedia articles of varying lengths (4K to 32K characters) as the haystack and inserted a single fabricated fact — the needle — at different positions: start, 25%, 50%, 75%, and end. The model has to determine, based on a query embedding, which version of the document contains the needle.</p>
+<p><strong>Example:</strong></p>
 <ul>
-<li><strong>الإبرة:</strong> "أعلنت شركة ميريديان عن إيرادات ربع سنوية بقيمة 847.3 مليون دولار في الربع الثالث من عام 2025."</li>
-<li><strong>استعلام:</strong> "ماذا كانت الإيرادات الفصلية لشركة ميريديان كوربوريشن؟</li>
-<li><strong>كومة قش:</strong> مقالة من 32,000 حرف في ويكيبيديا عن التمثيل الضوئي، مع إخفاء الإبرة في مكان ما بالداخل.</li>
+<li><strong>Needle:</strong> “The Meridian Corporation reported quarterly revenue of $847.3 million in Q3 2025.”</li>
+<li><strong>Query:</strong> “What was Meridian Corporation’s quarterly revenue?”</li>
+<li><strong>Haystack:</strong> A 32,000-character Wikipedia article about photosynthesis, with the needle hidden somewhere inside.</li>
 </ul>
-<p><strong>التسجيل:</strong></p>
+<p><strong>Scoring:</strong></p>
 <ul>
-<li>توليد تضمينات للاستعلام، والمستند الذي يحتوي على الإبرة، والمستند الذي لا يحتوي على الإبرة.</li>
-<li>إذا كان الاستعلام أكثر تشابهًا مع المستند الذي يحتوي على الإبرة، فاحسبه كنتيجة.</li>
-<li>متوسط الدقة عبر جميع أطوال المستندات ومواضع الإبرة.</li>
-<li><strong>المقاييس النهائية:</strong> الدقة الإجمالية ومعدل التدهور (مقدار انخفاض الدقة من أقصر مستند إلى أطول مستند).</li>
+<li>Generate embeddings for the query, the document with the needle, and the document without.</li>
+<li>If the query is more similar to the document containing the needle, count it as a hit.</li>
+<li>Average accuracy across all document lengths and needle positions.</li>
+<li><strong>Final metrics:</strong> overall_accuracy and degradation_rate (how much accuracy drops from shortest to longest document).</li>
 </ul>
-<h3 id="Results" class="common-anchor-header">النتائج</h3><p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_5_2bdc89516a.png" alt="Heatmap showing Needle-in-a-Haystack accuracy by document length: Gemini Embed 2 scores 1.000 across all lengths up to 32K; top 7 models score perfectly within their context windows; mxbai and nomic degrade sharply at 4K+" class="doc-image" id="heatmap-showing-needle-in-a-haystack-accuracy-by-document-length:-gemini-embed-2-scores-1.000-across-all-lengths-up-to-32k;-top-7-models-score-perfectly-within-their-context-windows;-mxbai-and-nomic-degrade-sharply-at-4k+" />
-   <span>خريطة حرارية توضح دقة إبرة في كومة قش حسب طول المستند: يسجل Gemini Embedbed 2 درجة 1.000 عبر جميع الأطوال حتى 32 ألفًا؛ أفضل 7 نماذج تسجل نتائج مثالية ضمن نوافذ السياق الخاصة بها؛ يتدهور mxbai و nomic بشكل حاد عند 4K+</span> </span></p>
-<p>Gemini Embedding 2 هو النموذج الوحيد الذي تم اختباره عبر النطاق الكامل 4K-32K، وقد سجل نقاطًا مثالية في كل الأطوال. لا يوجد نموذج آخر في هذا الاختبار لديه نافذة سياق تصل إلى 32K.</p>
+<h3 id="Results" class="common-anchor-header">Results</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_5_2bdc89516a.png" alt="Heatmap showing Needle-in-a-Haystack accuracy by document length: Gemini Embed 2 scores 1.000 across all lengths up to 32K; top 7 models score perfectly within their context windows; mxbai and nomic degrade sharply at 4K+" class="doc-image" id="heatmap-showing-needle-in-a-haystack-accuracy-by-document-length:-gemini-embed-2-scores-1.000-across-all-lengths-up-to-32k;-top-7-models-score-perfectly-within-their-context-windows;-mxbai-and-nomic-degrade-sharply-at-4k+" />
+    <span>Heatmap showing Needle-in-a-Haystack accuracy by document length: Gemini Embed 2 scores 1.000 across all lengths up to 32K; top 7 models score perfectly within their context windows; mxbai and nomic degrade sharply at 4K+</span>
+  </span>
+</p>
+<p>Gemini Embedding 2 is the only model tested across the full 4K–32K range, and it scored perfectly at every length. No other model in this test has a context window that reaches 32K.</p>
 <table>
 <thead>
-<tr><th>النموذج</th><th>1K</th><th>4K</th><th>8K</th><th>16K</th><th>32K</th><th>الإجمالي</th><th>التدهور</th></tr>
+<tr><th>Model</th><th>1K</th><th>4K</th><th>8K</th><th>16K</th><th>32K</th><th>Overall</th><th>Degradation</th></tr>
 </thead>
 <tbody>
-<tr><td>تضمين الجوزاء 2</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0%</td></tr>
-<tr><td>OpenAI 3-كبير</td><td>1.000</td><td>1.000</td><td>1.000</td><td>-</td><td>-</td><td>1.000</td><td>0%</td></tr>
-<tr><td>تضمينات جينا إصدارات 4</td><td>1.000</td><td>1.000</td><td>1.000</td><td>-</td><td>-</td><td>1.000</td><td>0%</td></tr>
-<tr><td>Cohere Embed v4</td><td>1.000</td><td>1.000</td><td>1.000</td><td>-</td><td>-</td><td>1.000</td><td>0%</td></tr>
-<tr><td>Qwen3-VL-2B</td><td>1.000</td><td>1.000</td><td>-</td><td>-</td><td>-</td><td>1.000</td><td>0%</td></tr>
-<tr><td>رحلة متعددة الوسائط 3.5 - 3.5</td><td>1.000</td><td>1.000</td><td>-</td><td>-</td><td>-</td><td>1.000</td><td>0%</td></tr>
-<tr><td>جينا كليب v2</td><td>1.000</td><td>1.000</td><td>1.000</td><td>-</td><td>-</td><td>1.000</td><td>0%</td></tr>
-<tr><td>BGE-M3 (568M)</td><td>1.000</td><td>1.000</td><td>0.920</td><td>-</td><td>-</td><td>0.973</td><td>8%</td></tr>
-<tr><td>مكسباي-تضمين-كبير (335M)</td><td>0.980</td><td>0.600</td><td>0.400</td><td>-</td><td>-</td><td>0.660</td><td>58%</td></tr>
-<tr><td>نص-تضمين-نص-رسمي (137M)</td><td>1.000</td><td>0.460</td><td>0.440</td><td>-</td><td>-</td><td>0.633</td><td>56%</td></tr>
+<tr><td>Gemini Embedding 2</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0%</td></tr>
+<tr><td>OpenAI 3-large</td><td>1.000</td><td>1.000</td><td>1.000</td><td>—</td><td>—</td><td>1.000</td><td>0%</td></tr>
+<tr><td>Jina Embeddings v4</td><td>1.000</td><td>1.000</td><td>1.000</td><td>—</td><td>—</td><td>1.000</td><td>0%</td></tr>
+<tr><td>Cohere Embed v4</td><td>1.000</td><td>1.000</td><td>1.000</td><td>—</td><td>—</td><td>1.000</td><td>0%</td></tr>
+<tr><td>Qwen3-VL-2B</td><td>1.000</td><td>1.000</td><td>—</td><td>—</td><td>—</td><td>1.000</td><td>0%</td></tr>
+<tr><td>Voyage Multimodal 3.5</td><td>1.000</td><td>1.000</td><td>—</td><td>—</td><td>—</td><td>1.000</td><td>0%</td></tr>
+<tr><td>Jina CLIP v2</td><td>1.000</td><td>1.000</td><td>1.000</td><td>—</td><td>—</td><td>1.000</td><td>0%</td></tr>
+<tr><td>BGE-M3 (568M)</td><td>1.000</td><td>1.000</td><td>0.920</td><td>—</td><td>—</td><td>0.973</td><td>8%</td></tr>
+<tr><td>mxbai-embed-large (335M)</td><td>0.980</td><td>0.600</td><td>0.400</td><td>—</td><td>—</td><td>0.660</td><td>58%</td></tr>
+<tr><td>nomic-embed-text (137M)</td><td>1.000</td><td>0.460</td><td>0.440</td><td>—</td><td>—</td><td>0.633</td><td>56%</td></tr>
 </tbody>
 </table>
-<p>"-" تعني أن طول المستند يتجاوز نافذة سياق النموذج.</p>
-<p>تسجل النماذج السبعة الأوائل نتائج مثالية ضمن نوافذ سياقها. يبدأ BGE-M3 بالانخفاض عند 8K (0.920). تنخفض النماذج خفيفة الوزن (mxbai و nomic) إلى 0.4-0.6 عند 4 آلاف حرف فقط - أي حوالي 1000 رمز. بالنسبة لـ mxbai، يعكس هذا الانخفاض جزئيًا اقتطاع نافذة السياق المكونة من 512 رمزًا لمعظم المستند.</p>
-<h2 id="MRL-Dimension-Compression-How-Much-Quality-Do-You-Lose-at-256-Dimensions" class="common-anchor-header">ضغط أبعاد MRL: ما مقدار الجودة التي تفقدها عند 256 بُعدًا؟<button data-href="#MRL-Dimension-Compression-How-Much-Quality-Do-You-Lose-at-256-Dimensions" class="anchor-icon" translate="no">
+<p>“—” means the document length exceeds the model’s context window.</p>
+<p>The top 7 models score perfectly within their context windows. BGE-M3 starts to slip at 8K (0.920). The lightweight models (mxbai and nomic) drop to 0.4–0.6 at just 4K characters — roughly 1,000 tokens. For mxbai, this drop partly reflects its 512-token context window truncating most of the document.</p>
+<h2 id="MRL-Dimension-Compression-How-Much-Quality-Do-You-Lose-at-256-Dimensions" class="common-anchor-header">MRL Dimension Compression: How Much Quality Do You Lose at 256 Dimensions?<button data-href="#MRL-Dimension-Compression-How-Much-Quality-Do-You-Lose-at-256-Dimensions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -275,46 +289,52 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>تعلُّم تمثيل ماتريوشكا (MRL)</strong> هو تقنية تدريب تجعل الأبعاد N الأولى للمتجه ذات معنى بمفردها. خذ متجهًا مكونًا من 3072 بُعدًا، واقتطعه إلى 256 بُعدًا، وسيظل محتفظًا بمعظم جودته الدلالية. أبعاد أقل تعني تكاليف أقل للتخزين والذاكرة في <a href="https://zilliz.com/learn/what-is-a-vector-database">قاعدة بيانات المتجهات،</a> فالانتقال من 3072 إلى 256 بُعدًا يعني تخفيض التخزين 12 مرة.</p>
+    </button></h2><p><strong>Matryoshka Representation Learning (MRL)</strong> is a training technique that makes the first N dimensions of a vector meaningful on their own. Take a 3072-dimension vector, truncate it to 256, and it still holds most of its semantic quality. Fewer dimensions mean lower storage and memory costs in your <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a> — going from 3072 to 256 dimensions is a 12x storage reduction.</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_10_aef8755877.png" alt="Illustration showing MRL dimension truncation: 3072 dimensions at full quality, 1024 at 95%, 512 at 90%, 256 at 85% — with 12x storage savings at 256 dimensions" class="doc-image" id="illustration-showing-mrl-dimension-truncation:-3072-dimensions-at-full-quality,-1024-at-95%,-512-at-90%,-256-at-85%-—-with-12x-storage-savings-at-256-dimensions" />
-   <span>رسم توضيحي يوضح اقتطاع أبعاد MRL: 3072 بُعدًا بجودة كاملة، 1024 بجودة 95%، 512 بجودة 90%، 256 بجودة 85% - مع توفير 12 ضعفًا في التخزين عند 256 بُعدًا</span> </span></p>
-<h3 id="Method" class="common-anchor-header">الطريقة</h3><p>استخدمنا 150 زوجًا من الجُمل من معيار STS-B، لكل منها درجة تشابه مُعللة من قبل الإنسان (0-5). بالنسبة لكل نموذج، أنشأنا التضمينات بأبعاد كاملة، ثم اقتطعنا الأبعاد إلى 1024 و512 و256.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_10_aef8755877.png" alt="Illustration showing MRL dimension truncation: 3072 dimensions at full quality, 1024 at 95%, 512 at 90%, 256 at 85% — with 12x storage savings at 256 dimensions" class="doc-image" id="illustration-showing-mrl-dimension-truncation:-3072-dimensions-at-full-quality,-1024-at-95%,-512-at-90%,-256-at-85%-—-with-12x-storage-savings-at-256-dimensions" />
+    <span>Illustration showing MRL dimension truncation: 3072 dimensions at full quality, 1024 at 95%, 512 at 90%, 256 at 85% — with 12x storage savings at 256 dimensions</span>
+  </span>
+</p>
+<h3 id="Method" class="common-anchor-header">Method</h3><p>We used 150 sentence pairs from the STS-B benchmark, each with a human-annotated similarity score (0–5). For each model, we generated embeddings at full dimensions, then truncated to 1024, 512, and 256.</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_4_44266e5456.png" alt="STS-B data examples showing sentence pairs with human similarity scores: A girl is styling her hair vs A girl is brushing her hair scores 2.5; A group of men play soccer on the beach vs A group of boys are playing soccer on the beach scores 3.6" class="doc-image" id="sts-b-data-examples-showing-sentence-pairs-with-human-similarity-scores:-a-girl-is-styling-her-hair-vs-a-girl-is-brushing-her-hair-scores-2.5;-a-group-of-men-play-soccer-on-the-beach-vs-a-group-of-boys-are-playing-soccer-on-the-beach-scores-3.6" />
-   <span>أمثلة لبيانات STS-B تُظهر أزواج الجمل مع درجات التشابه البشري: فتاة تصفف شعرها مقابل فتاة تصفف شعرها بنتيجة 2.5؛ مجموعة من الرجال يلعبون كرة القدم على الشاطئ مقابل مجموعة من الأولاد يلعبون كرة القدم على الشاطئ بنتيجة 3.6</span> </span></p>
-<p><strong>تسجيل النقاط:</strong></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_4_44266e5456.png" alt="STS-B data examples showing sentence pairs with human similarity scores: A girl is styling her hair vs A girl is brushing her hair scores 2.5; A group of men play soccer on the beach vs A group of boys are playing soccer on the beach scores 3.6" class="doc-image" id="sts-b-data-examples-showing-sentence-pairs-with-human-similarity-scores:-a-girl-is-styling-her-hair-vs-a-girl-is-brushing-her-hair-scores-2.5;-a-group-of-men-play-soccer-on-the-beach-vs-a-group-of-boys-are-playing-soccer-on-the-beach-scores-3.6" />
+    <span>STS-B data examples showing sentence pairs with human similarity scores: A girl is styling her hair vs A girl is brushing her hair scores 2.5; A group of men play soccer on the beach vs A group of boys are playing soccer on the beach scores 3.6</span>
+  </span>
+</p>
+<p><strong>Scoring:</strong></p>
 <ul>
-<li>في كل مستوى بُعد، احسب <a href="https://zilliz.com/glossary/cosine-similarity">التشابه في جيب التمام</a> بين تضمينات كل زوج من الجمل.</li>
-<li>قارن ترتيب التشابه في النموذج بالترتيب البشري باستخدام مقياس <strong>سبيرمان ρ</strong> (ارتباط الرتب).</li>
+<li>At each dimension level, compute the <a href="https://zilliz.com/glossary/cosine-similarity">cosine similarity</a> between each sentence pair’s embeddings.</li>
+<li>Compare the model’s similarity ranking to the human ranking using <strong>Spearman’s ρ</strong> (rank correlation).</li>
 </ul>
 <blockquote>
-<p><strong>ما هو معيار سبيرمان ρ؟</strong> إنه يقيس مدى توافق الترتيبين. إذا صنف البشر الزوج (أ) على أنه الأكثر تشابهًا، و(ب) في المرتبة الثانية، و(ج) في المرتبة الثانية و(ج) في المرتبة الثالثة - وينتج عن تشابه جيب التمام في النموذج نفس الترتيب أ &gt; ب &gt; ج - فإن ρ يقترب من 1.0. يعني ρ يساوي 1.0 توافقًا تامًا. و ρ من 0 يعني عدم وجود ارتباط.</p>
+<p><strong>What is Spearman’s ρ?</strong> It measures how well two rankings agree. If humans rank pair A as most similar, B second, C least — and the model’s cosine similarities produce the same order A &gt; B &gt; C — then ρ approaches 1.0. A ρ of 1.0 means perfect agreement. A ρ of 0 means no correlation.</p>
 </blockquote>
-<p><strong>المقاييس النهائية:</strong> spearman_rho (الأعلى هو الأفضل) و min_viable_dim (أصغر بُعد تبقى فيه الجودة في حدود 5% من الأداء الكامل البعد).</p>
-<h3 id="Results" class="common-anchor-header">النتائج</h3><p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_3_7192725ed6.png" alt="Dot plot showing MRL Full Dimension vs 256 Dimension Quality: Voyage MM-3.5 leads with +0.6% change, Jina v4 +0.5%, while Gemini Embed 2 shows -0.6% at the bottom" class="doc-image" id="dot-plot-showing-mrl-full-dimension-vs-256-dimension-quality:-voyage-mm-3.5-leads-with-+0.6%-change,-jina-v4-+0.5%,-while-gemini-embed-2-shows--0.6%-at-the-bottom" />
-   <span>مخطط نقطي يُظهر البُعد الكامل لـ MRL مقابل جودة 256 بُعد: يتصدر Voyage MM-3.5 بتغير + 0.6%، وJina v4 + 0.5%، بينما يظهر Gemini Embed 2 -0.6% في الأسفل</span> </span></p>
-<p>إذا كنت تخطط لتقليل تكاليف التخزين في <a href="https://milvus.io/">Milvus</a> أو أي قاعدة بيانات متجهة أخرى عن طريق اقتطاع الأبعاد، فإن هذه النتيجة مهمة.</p>
+<p><strong>Final metrics:</strong> spearman_rho (higher is better) and min_viable_dim (the smallest dimension where quality stays within 5% of full-dimension performance).</p>
+<h3 id="Results" class="common-anchor-header">Results</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_3_7192725ed6.png" alt="Dot plot showing MRL Full Dimension vs 256 Dimension Quality: Voyage MM-3.5 leads with +0.6% change, Jina v4 +0.5%, while Gemini Embed 2 shows -0.6% at the bottom" class="doc-image" id="dot-plot-showing-mrl-full-dimension-vs-256-dimension-quality:-voyage-mm-3.5-leads-with-+0.6%-change,-jina-v4-+0.5%,-while-gemini-embed-2-shows--0.6%-at-the-bottom" />
+    <span>Dot plot showing MRL Full Dimension vs 256 Dimension Quality: Voyage MM-3.5 leads with +0.6% change, Jina v4 +0.5%, while Gemini Embed 2 shows -0.6% at the bottom</span>
+  </span>
+</p>
+<p>If you’re planning to reduce storage costs in <a href="https://milvus.io/">Milvus</a> or another vector database by truncating dimensions, this result matters.</p>
 <table>
 <thead>
-<tr><th>النموذج</th><th>ρ (خافت كامل)</th><th>ρ (256 خافت)</th><th>الاضمحلال</th></tr>
+<tr><th>Model</th><th>ρ (full dim)</th><th>ρ (256 dim)</th><th>Decay</th></tr>
 </thead>
 <tbody>
-<tr><td>رحلة متعددة الوسائط 3.5</td><td>0.880</td><td>0.874</td><td>0.7%</td></tr>
-<tr><td>تضمينات جينا إصدارات 4</td><td>0.833</td><td>0.828</td><td>0.6%</td></tr>
-<tr><td>مكسباي-تضمين-كبير (335M)</td><td>0.815</td><td>0.795</td><td>2.5%</td></tr>
-<tr><td>سميك-تضمين-نص (137 مليون)</td><td>0.781</td><td>0.774</td><td>0.8%</td></tr>
-<tr><td>OpenAI 3-الكبير</td><td>0.767</td><td>0.762</td><td>0.6%</td></tr>
-<tr><td>تضمين الجوزاء 2</td><td>0.683</td><td>0.689</td><td>-0.8%</td></tr>
+<tr><td>Voyage Multimodal 3.5</td><td>0.880</td><td>0.874</td><td>0.7%</td></tr>
+<tr><td>Jina Embeddings v4</td><td>0.833</td><td>0.828</td><td>0.6%</td></tr>
+<tr><td>mxbai-embed-large (335M)</td><td>0.815</td><td>0.795</td><td>2.5%</td></tr>
+<tr><td>nomic-embed-text (137M)</td><td>0.781</td><td>0.774</td><td>0.8%</td></tr>
+<tr><td>OpenAI 3-large</td><td>0.767</td><td>0.762</td><td>0.6%</td></tr>
+<tr><td>Gemini Embedding 2</td><td>0.683</td><td>0.689</td><td>-0.8%</td></tr>
 </tbody>
 </table>
-<p>تتصدر كل من Voyage وJina v4 لأن كلاهما تم تدريبهما صراحةً باستخدام MRL كهدف. ليس لضغط الأبعاد علاقة كبيرة بحجم النموذج - ما يهم هو ما إذا كان النموذج قد تم تدريبه على ذلك.</p>
-<p>ملاحظة حول درجة Gemini: يعكس تصنيف MRL مدى جودة النموذج في الحفاظ على الجودة بعد الاقتطاع، وليس مدى جودة استرجاعه للأبعاد الكاملة. إن استرجاع Gemini للأبعاد الكاملة قوي - وقد أثبتت نتائج المعلومات عبر اللغات والمعلومات الأساسية ذلك بالفعل. لم يتم تحسينه فقط للتقليص. إذا لم تكن بحاجة إلى ضغط الأبعاد، فهذا المقياس لا ينطبق عليك.</p>
-<h2 id="Which-Embedding-Model-Should-You-Use" class="common-anchor-header">أي نموذج تضمين يجب عليك استخدامه؟<button data-href="#Which-Embedding-Model-Should-You-Use" class="anchor-icon" translate="no">
+<p>Voyage and Jina v4 lead because both were explicitly trained with MRL as an objective. Dimension compression has little to do with model size — whether the model was trained for it is what matters.</p>
+<p>A note on Gemini’s score: the MRL ranking reflects how well a model preserves quality after truncation, not how good its full-dimension retrieval is. Gemini’s full-dimension retrieval is strong — the cross-lingual and key information results already proved that. It just wasn’t optimized for shrinking. If you don’t need dimension compression, this metric doesn’t apply to you.</p>
+<h2 id="Which-Embedding-Model-Should-You-Use" class="common-anchor-header">Which Embedding Model Should You Use?<button data-href="#Which-Embedding-Model-Should-You-Use" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -329,42 +349,44 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا يوجد نموذج واحد يفوز بكل شيء. إليك بطاقة النتائج الكاملة</p>
+    </button></h2><p>No single model wins everything. Here’s the full scorecard:</p>
 <table>
 <thead>
-<tr><th>النموذج</th><th>البارامترات</th><th>عبر الوسائط</th><th>متعدد اللغات</th><th>المعلومات الأساسية</th><th>MRL ρ</th></tr>
+<tr><th>Model</th><th>Params</th><th>Cross-Modal</th><th>Cross-Lingual</th><th>Key Info</th><th>MRL ρ</th></tr>
 </thead>
 <tbody>
-<tr><td>تضمين الجوزاء 2</td><td>غير معلن</td><td>0.928</td><td>0.997</td><td>1.000</td><td>0.668</td></tr>
-<tr><td>فوياج متعدد الوسائط 3.5</td><td>غير معلن</td><td>0.900</td><td>0.982</td><td>1.000</td><td>0.880</td></tr>
-<tr><td>تضمين جينا تضمينات v4</td><td>3.8B</td><td>-</td><td>0.985</td><td>1.000</td><td>0.833</td></tr>
+<tr><td>Gemini Embedding 2</td><td>Undisclosed</td><td>0.928</td><td>0.997</td><td>1.000</td><td>0.668</td></tr>
+<tr><td>Voyage Multimodal 3.5</td><td>Undisclosed</td><td>0.900</td><td>0.982</td><td>1.000</td><td>0.880</td></tr>
+<tr><td>Jina Embeddings v4</td><td>3.8B</td><td>—</td><td>0.985</td><td>1.000</td><td>0.833</td></tr>
 <tr><td>Qwen3-VL-2B</td><td>2B</td><td>0.945</td><td>0.988</td><td>1.000</td><td>0.774</td></tr>
-<tr><td>OpenAI 3-كبير</td><td>غير معلن</td><td>-</td><td>0.967</td><td>1.000</td><td>0.760</td></tr>
-<tr><td>Cohere Embed v4</td><td>لم يتم الكشف عنها</td><td>-</td><td>0.955</td><td>1.000</td><td>-</td></tr>
-<tr><td>جينا كليب v2</td><td>~1B</td><td>0.873</td><td>0.934</td><td>1.000</td><td>-</td></tr>
-<tr><td>BGE-M3</td><td>568M</td><td>-</td><td>0.940</td><td>0.973</td><td>0.744</td></tr>
-<tr><td>مكسباي-تضمين-كبير</td><td>335M</td><td>-</td><td>0.120</td><td>0.660</td><td>0.815</td></tr>
-<tr><td>نص-تضمين-نص-رسمي</td><td>137M</td><td>-</td><td>0.154</td><td>0.633</td><td>0.780</td></tr>
-<tr><td>CLIP ViT-L-14</td><td>428M</td><td>0.768</td><td>0.030</td><td>-</td><td>-</td></tr>
+<tr><td>OpenAI 3-large</td><td>Undisclosed</td><td>—</td><td>0.967</td><td>1.000</td><td>0.760</td></tr>
+<tr><td>Cohere Embed v4</td><td>Undisclosed</td><td>—</td><td>0.955</td><td>1.000</td><td>—</td></tr>
+<tr><td>Jina CLIP v2</td><td>~1B</td><td>0.873</td><td>0.934</td><td>1.000</td><td>—</td></tr>
+<tr><td>BGE-M3</td><td>568M</td><td>—</td><td>0.940</td><td>0.973</td><td>0.744</td></tr>
+<tr><td>mxbai-embed-large</td><td>335M</td><td>—</td><td>0.120</td><td>0.660</td><td>0.815</td></tr>
+<tr><td>nomic-embed-text</td><td>137M</td><td>—</td><td>0.154</td><td>0.633</td><td>0.780</td></tr>
+<tr><td>CLIP ViT-L-14</td><td>428M</td><td>0.768</td><td>0.030</td><td>—</td><td>—</td></tr>
 </tbody>
 </table>
-<p>"-" تعني أن النموذج لا يدعم تلك الطريقة أو القدرة. CLIP هو خط الأساس لعام 2021 كمرجع.</p>
-<p>إليك ما يبرز</p>
+<p>“—” means the model doesn’t support that modality or capability. CLIP is a 2021 baseline for reference.</p>
+<p>Here’s what stands out:</p>
 <ul>
-<li><strong>عبر الوسائط</strong> Qwen3-VL-2B (0.945) أولًا، ثم Gemini (0.928) ثانيًا، ثم Voyage (0.900) ثالثًا. تغلب نموذج 2B مفتوح المصدر 2B على كل واجهة برمجة تطبيقات مغلقة المصدر. كان العامل الحاسم هو فجوة الطرائق وليس عدد المعلمات.</li>
-<li><strong>متعدد اللغات:</strong> يتصدر Gemini (0.997) - النموذج الوحيد الذي حصل على درجة مثالية في المحاذاة على مستوى المصطلحات. أفضل 8 نماذج حصلت جميعها على 0.93. النماذج خفيفة الوزن للغة الإنجليزية فقط تسجل درجات قريبة من الصفر.</li>
-<li><strong>معلومات أساسية:</strong> تسجل نماذج API والنماذج مفتوحة المصدر الكبيرة والمفتوحة المصدر نقاطًا مثالية حتى 8 آلاف. تبدأ النماذج الأقل من 335M في التدهور عند 4K. Gemini هو النموذج الوحيد الذي يتعامل مع 32K بدرجة مثالية.</li>
-<li><strong>ضغط أبعاد MRL:</strong> تتقدم Voyage (0.880) وJina v4 (0.833) حيث تفقد أقل من 1% عند 256 بُعدًا. تأتي Gemini (0.668) في المرتبة الأخيرة - قوية في الأبعاد الكاملة، وغير محسّنة للاقتطاع.</li>
+<li><strong>Cross-modal:</strong> Qwen3-VL-2B (0.945) first, Gemini (0.928) second, Voyage (0.900) third. An open-source 2B model beat every closed-source API. The deciding factor was modality gap, not parameter count.</li>
+<li><strong>Cross-lingual:</strong> Gemini (0.997) leads — the only model to score perfectly on idiom-level alignment. The top 8 models all clear 0.93. English-only lightweight models score near zero.</li>
+<li><strong>Key information:</strong> API and large open-source models score perfectly up to 8K. Models below 335M start degrading at 4K. Gemini is the only model that handles 32K with a perfect score.</li>
+<li><strong>MRL dimension compression:</strong> Voyage (0.880) and Jina v4 (0.833) lead, losing less than 1% at 256 dimensions. Gemini (0.668) comes last — strong at full dimension, not optimized for truncation.</li>
 </ul>
-<h3 id="How-to-Pick-A-Decision-Flowchart" class="common-anchor-header">كيفية الاختيار: مخطط انسيابي للقرار</h3><p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_7_b2bd48bdcc.png" alt="Embedding model selection flowchart: Start → Need images or video? → Yes: Need to self-host? → Yes: Qwen3-VL-2B, No: Gemini Embedding 2. No images → Need to save storage? → Yes: Jina v4 or Voyage, No: Need multilingual? → Yes: Gemini Embedding 2, No: OpenAI 3-large" class="doc-image" id="embedding-model-selection-flowchart:-start-→-need-images-or-video?-→-yes:-need-to-self-host?-→-yes:-qwen3-vl-2b,-no:-gemini-embedding-2.-no-images-→-need-to-save-storage?-→-yes:-jina-v4-or-voyage,-no:-need-multilingual?-→-yes:-gemini-embedding-2,-no:-openai-3-large" />
-   <span>مخطط انسيابي لاختيار نموذج التضمين: ابدأ ← هل تحتاج إلى صور أو فيديو؟ → نعم: هل تحتاج إلى استضافة ذاتية؟ → نعم: Qwen3-VL-2B، لا: تضمين الجوزاء 2. لا توجد صور → هل تحتاج إلى حفظ التخزين؟ → نعم: نعم: جينا v4 أو Voyage، لا: هل تحتاج إلى تعدد اللغات؟</span> </span>→ <span class="img-wrapper"> <span>نعم: نعم: تضمين الجوزاء 2، لا: OpenAI 3-large</span> </span></p>
-<h3 id="The-Best-All-Rounder-Gemini-Embedding-2" class="common-anchor-header">الأفضل في كل شيء تضمين الجوزاء 2</h3><p>بشكل عام، Gemini Embedding 2 هو أقوى نموذج شامل في هذا المعيار.</p>
-<p><strong>نقاط القوة</strong> الأول في التضمين متعدد اللغات (0.997) واسترجاع المعلومات الأساسية (1.000 عبر جميع الأطوال حتى 32 ألف). الثاني في الوسائط المتعددة (0.928). أوسع تغطية للوسائط - خمس وسائط (نص، صورة، فيديو، صوت، ملف PDF) حيث تصل معظم النماذج إلى ثلاث وسائط.</p>
-<p><strong>نقاط الضعف:</strong> الأخير في ضغط MRL (ρ = 0.668). تفوّق عليه في الضغط متعدد الوسائط Qwen3-VL-2B مفتوح المصدر.</p>
-<p>إذا لم تكن بحاجة إلى ضغط الأبعاد، فإن Gemini ليس لديه منافس حقيقي في الجمع بين استرجاع متعدد اللغات + استرجاع المستندات الطويلة. ولكن من أجل الدقة عبر الوسائط أو تحسين التخزين، فإن النماذج المتخصصة تعمل بشكل أفضل.</p>
-<h2 id="Limitations" class="common-anchor-header">القيود<button data-href="#Limitations" class="anchor-icon" translate="no">
+<h3 id="How-to-Pick-A-Decision-Flowchart" class="common-anchor-header">How to Pick: A Decision Flowchart</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/choose_embedding_model_rag_2026_7_b2bd48bdcc.png" alt="Embedding model selection flowchart: Start → Need images or video? → Yes: Need to self-host? → Yes: Qwen3-VL-2B, No: Gemini Embedding 2. No images → Need to save storage? → Yes: Jina v4 or Voyage, No: Need multilingual? → Yes: Gemini Embedding 2, No: OpenAI 3-large" class="doc-image" id="embedding-model-selection-flowchart:-start-→-need-images-or-video?-→-yes:-need-to-self-host?-→-yes:-qwen3-vl-2b,-no:-gemini-embedding-2.-no-images-→-need-to-save-storage?-→-yes:-jina-v4-or-voyage,-no:-need-multilingual?-→-yes:-gemini-embedding-2,-no:-openai-3-large" />
+    <span>Embedding model selection flowchart: Start → Need images or video? → Yes: Need to self-host? → Yes: Qwen3-VL-2B, No: Gemini Embedding 2. No images → Need to save storage? → Yes: Jina v4 or Voyage, No: Need multilingual? → Yes: Gemini Embedding 2, No: OpenAI 3-large</span>
+  </span>
+</p>
+<h3 id="The-Best-All-Rounder-Gemini-Embedding-2" class="common-anchor-header">The Best All-Rounder: Gemini Embedding 2</h3><p>On balance, Gemini Embedding 2 is the strongest overall model in this benchmark.</p>
+<p><strong>Strengths:</strong> First in cross-lingual (0.997) and key information retrieval (1.000 across all lengths up to 32K). Second in cross-modal (0.928). Widest modality coverage — five modalities (text, image, video, audio, PDF) where most models top out at three.</p>
+<p><strong>Weaknesses:</strong> Last in MRL compression (ρ = 0.668). Beaten on cross-modal by the open-source Qwen3-VL-2B.</p>
+<p>If you don’t need dimension compression, Gemini has no real competitor on the combination of cross-lingual + long-document retrieval. But for cross-modal precision or storage optimization, specialized models do better.</p>
+<h2 id="Limitations" class="common-anchor-header">Limitations<button data-href="#Limitations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -380,28 +402,28 @@ origin: 'https://milvus.io/blog/choose-embedding-model-rag-2026.md'
         ></path>
       </svg>
     </button></h2><ul>
-<li>لم ندرج كل النماذج التي تستحق الدراسة - كان NV-Embed-v2 من NVIDIA و v5-text من جينا على القائمة ولكننا لم نصل إلى هذه الجولة.</li>
-<li>لقد ركزنا على طرائق النصوص والصور؛ لم تتم تغطية تضمين الفيديو والصوت وملفات PDF (على الرغم من ادعاء بعض النماذج دعمها).</li>
-<li>كان استرجاع الرموز والسيناريوهات الأخرى الخاصة بالمجال خارج النطاق.</li>
-<li>كانت أحجام العينات صغيرة نسبيًا، لذلك قد تندرج الاختلافات الضيقة في الترتيب بين النماذج ضمن الضوضاء الإحصائية.</li>
+<li>We didn’t include every model worth considering — NVIDIA’s NV-Embed-v2 and Jina’s v5-text were on the list but didn’t make this round.</li>
+<li>We focused on text and image modalities; video, audio, and PDF embedding (despite some models claiming support) weren’t covered.</li>
+<li>Code retrieval and other domain-specific scenarios were out of scope.</li>
+<li>Sample sizes were relatively small, so tight ranking differences between models may fall within statistical noise.</li>
 </ul>
-<p>ستكون نتائج هذه المقالة قديمة في غضون عام. يتم شحن النماذج الجديدة باستمرار، وتتغير لوحة المتصدرين مع كل إصدار. الاستثمار الأكثر ديمومة هو بناء خط أنابيب التقييم الخاص بك - تحديد أنواع البيانات الخاصة بك، وأنماط الاستعلام الخاصة بك، وأطوال المستندات، وتشغيل النماذج الجديدة من خلال اختباراتك الخاصة عند انخفاضها. تستحق المعايير العامة مثل MTEB و MMTEB و MMEB المراقبة، ولكن يجب أن تأتي المكالمة النهائية دائمًا من بياناتك الخاصة.</p>
-<p><a href="https://github.com/zc277584121/mm-embedding-bench">إن كود المعيار الخاص بنا مفتوح المصدر على GitHub</a> - قم بتضمينه وتكييفه مع حالة الاستخدام الخاصة بك.</p>
+<p>This article’s results will be outdated within a year. New models ship constantly, and the leaderboard reshuffles with every release. The more durable investment is building your own evaluation pipeline — define your data types, your query patterns, your document lengths, and run new models through your own tests when they drop. Public benchmarks like MTEB, MMTEB, and MMEB are worth monitoring, but the final call should always come from your own data.</p>
+<p><a href="https://github.com/zc277584121/mm-embedding-bench">Our benchmark code is open-source on GitHub</a> — fork it and adapt it to your use case.</p>
 <hr>
-<p>بمجرد أن تختار نموذج التضمين الخاص بك، فأنت بحاجة إلى مكان ما لتخزين تلك المتجهات والبحث فيها على نطاق واسع. <a href="https://milvus.io/">Milvus</a> هي قاعدة بيانات المتجهات مفتوحة المصدر الأكثر اعتمادًا في العالم مع <a href="https://github.com/milvus-io/milvus">أكثر من 43 ألف نجم</a> على <a href="https://github.com/milvus-io/milvus">GitHub</a> مصممة لهذا الغرض بالضبط - فهي تدعم الأبعاد المقطوعة من MRL، والمجموعات المختلطة متعددة الوسائط، والبحث الهجين الذي يجمع بين المتجهات الكثيفة والمتناثرة، وتتراوح <a href="https://milvus.io/docs/architecture_overview.md">من كمبيوتر محمول إلى مليارات المتجهات</a>.</p>
+<p>Once you’ve picked your embedding model, you need somewhere to store and search those vectors at scale. <a href="https://milvus.io/">Milvus</a> is the world’s most widely adopted open-source vector database with <a href="https://github.com/milvus-io/milvus">43K+ GitHub stars</a> built for exactly this — it supports MRL-truncated dimensions, mixed multimodal collections, hybrid search combining dense and sparse vectors, and <a href="https://milvus.io/docs/architecture_overview.md">scales from a laptop to billions of vectors</a>.</p>
 <ul>
-<li>ابدأ باستخدام <a href="https://milvus.io/docs/quickstart.md">دليل Milvus Quickstart،</a> أو قم بالتثبيت باستخدام <code translate="no">pip install pymilvus</code>.</li>
-<li>انضم إلى تطبيق <a href="https://milvusio.slack.com/">Milvus Slack</a> أو <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> لطرح أسئلة حول دمج تكامل النماذج أو استراتيجيات فهرسة المتجهات أو توسيع نطاق الإنتاج.</li>
-<li><a href="https://milvus.io/office-hours">احجز جلسة ساعات عمل مجانية في Milvus Office Hours</a> للتعرف على بنية RAG الخاصة بك - يمكننا مساعدتك في اختيار النموذج وتصميم مخطط المجموعة وضبط الأداء.</li>
-<li>إذا كنت تفضّل تخطي أعمال البنية التحتية، فإن <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (المدارة من قبل Milvus) تقدم لك مستوى مجاني للبدء.</li>
+<li>Get started with the <a href="https://milvus.io/docs/quickstart.md">Milvus Quickstart guide</a>, or install with <code translate="no">pip install pymilvus</code>.</li>
+<li>Join the <a href="https://milvusio.slack.com/">Milvus Slack</a> or <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> to ask questions about embedding model integration, vector indexing strategies, or production scaling.</li>
+<li><a href="https://milvus.io/office-hours">Book a free Milvus Office Hours session</a> to walk through your RAG architecture — we can help with model selection, collection schema design, and performance tuning.</li>
+<li>If you’d rather skip the infrastructure work, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers a free tier to get started.</li>
 </ul>
 <hr>
-<p>بعض الأسئلة التي تظهر عندما يختار المهندسون نموذج التضمين لإنتاج RAG:</p>
-<p><strong>س: هل يجب أن أستخدم نموذج التضمين متعدد الوسائط حتى لو لم يكن لديّ سوى بيانات نصية في الوقت الحالي؟</strong></p>
-<p>يعتمد ذلك على خارطة الطريق الخاصة بك. إذا كان من المحتمل أن يضيف خط الإنتاج الخاص بك صورًا أو ملفات PDF أو طرائق أخرى في غضون 6-12 شهرًا القادمة، فإن البدء بنموذج متعدد الوسائط مثل Gemini Embedding 2 أو Voyage Multimodal 3.5 يجنبك عملية ترحيل مؤلمة لاحقًا - لن تحتاج إلى إعادة تضمين مجموعة بياناتك بالكامل. إذا كنت واثقًا من أنها نصية فقط في المستقبل المنظور، فإن نموذجًا يركز على النصوص مثل OpenAI 3-large أو Cohere Embed v4 سيمنحك سعرًا/أداءً أفضل.</p>
-<p><strong>س: ما مقدار التخزين الذي يوفره ضغط أبعاد MRL فعليًا في قاعدة بيانات المتجهات؟</strong></p>
-<p>إن الانتقال من 3072 بُعدًا إلى 256 بُعدًا هو تخفيض 12 ضعفًا في التخزين لكل متجه. بالنسبة لمجموعة <a href="https://milvus.io/">Milvus</a> التي تحتوي على 100 مليون متجه بـ 100 مليون متجه في float32، هذا يساوي تقريبًا 1.14 تيرابايت → 95 جيجابايت. وتكمن المشكلة في أن جميع النماذج لا تتعامل مع الاقتطاع بشكل جيد - حيث تفقد Voyage Multimodal 3.5 وJina Embeddings v4 أقل من 1% من الجودة عند 256 بُعدًا، بينما تتدهور جودة النماذج الأخرى بشكل كبير.</p>
-<p><strong>س: هل Qwen3-VL-2B أفضل حقًا من Gemini Embedding 2 للبحث متعدد الوسائط؟</strong></p>
-<p>على معيارنا، نعم - سجل Qwen3-VL-2B 0.945 مقابل 0.928 من Gemini في الاسترجاع الصعب عبر الأنماط مع مشتتات شبه متطابقة. والسبب الرئيسي في ذلك هو فجوة الطرائق الأصغر بكثير في Qwen (0.25 مقابل 0.73)، مما يعني أن النص والصورة <a href="https://zilliz.com/glossary/vector-embeddings">المضمنة</a> يتجمعان معًا في الفضاء المتجه. ومع ذلك، فإن Gemini يغطي خمس طرائق بينما يغطي Qwen ثلاث طرائق، لذلك إذا كنت بحاجة إلى تضمين الصوت أو PDF، فإن Gemini هو الخيار الوحيد.</p>
-<p><strong>س: هل يمكنني استخدام نماذج التضمين هذه مع Milvus مباشرةً؟</strong></p>
-<p>ج: نعم. تُخرج جميع هذه النماذج متجهات عائمة قياسية، والتي يمكنك <a href="https://milvus.io/docs/insert-update-delete.md">إدراجها في Milvus</a> والبحث باستخدام <a href="https://zilliz.com/glossary/cosine-similarity">تشابه جيب التمام</a> أو مسافة L2 أو المنتج الداخلي. يعمل <a href="https://milvus.io/docs/install-pymilvus.md">PyMilvus</a> مع أي نموذج تضمين - قم بإنشاء متجهاتك باستخدام مجموعة تطوير البرمجيات الخاصة بالنموذج، ثم قم بتخزينها والبحث عنها في Milvus. بالنسبة للمتجهات المقطوعة من MRL، ما عليك سوى تعيين بُعد المجموعة إلى هدفك (على سبيل المثال، 256) عند <a href="https://milvus.io/docs/manage-collections.md">إنشاء المجموعة</a>.</p>
+<p>A few questions that come up when engineers are choosing an embedding model for production RAG:</p>
+<p><strong>Q: Should I use a multimodal embedding model even if I only have text data right now?</strong></p>
+<p>It depends on your roadmap. If your pipeline will likely add images, PDFs, or other modalities within the next 6–12 months, starting with a multimodal model like Gemini Embedding 2 or Voyage Multimodal 3.5 avoids a painful migration later — you won’t need to re-embed your entire dataset. If you’re confident it’s text-only for the foreseeable future, a text-focused model like OpenAI 3-large or Cohere Embed v4 will give you better price/performance.</p>
+<p><strong>Q: How much storage does MRL dimension compression actually save in a vector database?</strong></p>
+<p>Going from 3072 dimensions to 256 dimensions is a 12x reduction in storage per vector. For a <a href="https://milvus.io/">Milvus</a> collection with 100 million vectors at float32, that’s roughly 1.14 TB → 95 GB. The key is that not all models handle truncation well — Voyage Multimodal 3.5 and Jina Embeddings v4 lose less than 1% quality at 256 dimensions, while others degrade significantly.</p>
+<p><strong>Q: Is Qwen3-VL-2B really better than Gemini Embedding 2 for cross-modal search?</strong></p>
+<p>On our benchmark, yes — Qwen3-VL-2B scored 0.945 versus Gemini’s 0.928 on hard cross-modal retrieval with near-identical distractors. The main reason is Qwen’s much smaller modality gap (0.25 vs 0.73), which means text and image <a href="https://zilliz.com/glossary/vector-embeddings">embeddings</a> cluster closer together in vector space. That said, Gemini covers five modalities while Qwen covers three, so if you need audio or PDF embedding, Gemini is the only option.</p>
+<p><strong>Q: Can I use these embedding models with Milvus directly?</strong></p>
+<p>Yes. All of these models output standard float vectors, which you can <a href="https://milvus.io/docs/insert-update-delete.md">insert into Milvus</a> and search with <a href="https://zilliz.com/glossary/cosine-similarity">cosine similarity</a>, L2 distance, or inner product. <a href="https://milvus.io/docs/install-pymilvus.md">PyMilvus</a> works with any embedding model — generate your vectors with the model’s SDK, then store and search them in Milvus. For MRL-truncated vectors, just set the collection’s dimension to your target (e.g., 256) when <a href="https://milvus.io/docs/manage-collections.md">creating the collection</a>.</p>

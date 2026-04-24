@@ -1,7 +1,9 @@
 ---
 id: >-
   Ingesting-Chaos-MLOps-Behind-Handling-Unstructured-Data-Reliably-at-Scale-for-RAG.md
-title: カオスを取り込む：非構造化データをRAGのスケールで確実に扱うためのMLOPS
+title: >
+  Ingesting Chaos: The MLOps Behind Handling Unstructured Data Reliably at Scale
+  for RAG 
 author: David Garnitz
 date: 2023-10-16T00:00:00.000Z
 cover: assets.zilliz.com/Ingesting_Chaos_20231017_110103_54fe2009cb.png
@@ -11,7 +13,9 @@ tags: >-
   Retrieval Augmented Generation, RAG, Unstructured Data
 recommend: true
 desc: >-
-  VectorFlowやmilvusのような技術により、チームはプライバシーやセキュリティの要件を遵守しながら、さまざまな環境で効率的にテストを行うことができる。
+  With technologies like VectorFlow and Milvus, the team can efficiently test
+  across different environments while complying with privacy and security
+  requirements.
 canonicalUrl: >-
   https://milvus.io/blog/Ingesting-Chaos-MLOps-Behind-Handling-Unstructured-Data-Reliably-at-Scale-for-RAG.md
 ---

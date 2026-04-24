@@ -1,8 +1,8 @@
 ---
 id: data-addressing-storage-systems.md
-title: >-
-  Una inmersión profunda en el direccionamiento de datos en sistemas de
-  almacenamiento: De HashMap a HDFS, Kafka, Milvus e Iceberg
+title: >
+  A Deep Dive into Data Addressing in Storage Systems: From HashMap to HDFS,
+  Kafka, Milvus, and Iceberg
 author: Bill Chen
 date: 2026-3-25
 cover: >-
@@ -16,21 +16,20 @@ meta_keywords: >-
   vector database internals, Apache Iceberg
 meta_title: |
   Data Addressing Deep Dive: From HashMap to Milvus
-desc: >-
-  Descubra cómo funciona el direccionamiento de datos desde HashMap hasta HDFS,
-  Kafka, Milvus e Iceberg, y por qué las ubicaciones informáticas superan a las
-  búsquedas a cualquier escala.
+desc: >
+  Trace how data addressing works from HashMap to HDFS, Kafka, Milvus, and
+  Iceberg — and why computing locations beats searching at every scale.
 origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
 ---
-<p>Si trabajas en sistemas backend o de almacenamiento distribuido, probablemente hayas visto esto: la red no está saturada, las máquinas no están sobrecargadas, pero una simple búsqueda desencadena miles de E/S de disco o llamadas a la API de almacenamiento de objetos, y la consulta sigue tardando segundos.</p>
-<p>El cuello de botella rara vez es el ancho de banda o el cálculo. Es el <em>direccionamiento</em>: el trabajo que realiza un sistema para averiguar dónde se encuentran los datos antes de poder leerlos. El <strong>direccionamiento de datos</strong> es el proceso de traducir un identificador lógico (una clave, una ruta de archivo, un desplazamiento, un predicado de consulta) en la ubicación física de los datos en el almacenamiento. A escala, este proceso -no la transferencia de datos en sí- domina la latencia.</p>
-<p>El rendimiento del almacenamiento puede reducirse a un modelo sencillo:</p>
+<p>If you work on backend systems or distributed storage, you’ve probably seen this: the network isn’t saturated, machines aren’t overloaded, yet a simple lookup triggers thousands of disk I/Os or object storage API calls — and the query still takes seconds.</p>
+<p>The bottleneck is rarely bandwidth or compute. It’s <em>addressing</em> — the work a system does to figure out where data lives before it can read it. <strong>Data addressing</strong> is the process of translating a logical identifier (a key, a file path, an offset, a query predicate) into the physical location of the data on storage. At scale, this process — not the actual data transfer — dominates latency.</p>
+<p>Storage performance can be reduced to a simple model:</p>
 <blockquote>
-<p><strong>Coste total de direccionamiento = accesos a metadatos + accesos a datos</strong></p>
+<p><strong>Total addressing cost = metadata accesses + data accesses</strong></p>
 </blockquote>
-<p>Casi todas las optimizaciones de almacenamiento -desde las tablas hash hasta las capas de metadatos lakehouse- se centran en esta ecuación. Las técnicas varían, pero el objetivo es siempre el mismo: localizar los datos con el menor número posible de operaciones de alta latencia.</p>
-<p>Este artículo recorre esta idea a través de sistemas de escala creciente, desde estructuras de datos en memoria como HashMap, pasando por sistemas distribuidos como HDFS y Apache Kafka, hasta llegar a motores modernos como <a href="https://milvus.io/">Milvus</a> (una <a href="https://zilliz.com/learn/what-is-a-vector-database">base de datos vectorial</a>) y Apache Iceberg, que operan con almacenamiento de objetos. A pesar de sus diferencias, todos ellos optimizan la misma ecuación.</p>
-<h2 id="Three-Core-Addressing-Techniques" class="common-anchor-header">Tres técnicas básicas de direccionamiento<button data-href="#Three-Core-Addressing-Techniques" class="anchor-icon" translate="no">
+<p>Nearly every storage optimization — from hash tables to lakehouse metadata layers — targets this equation. The techniques vary, but the goal is always the same: locate data with as few high-latency operations as possible.</p>
+<p>This article traces that idea across systems of increasing scale — from in-memory data structures like HashMap, to distributed systems like HDFS and Apache Kafka, and finally to modern engines like <a href="https://milvus.io/">Milvus</a> (a <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a>) and Apache Iceberg that operate on object storage. Despite their differences, they all optimize the same equation.</p>
+<h2 id="Three-Core-Addressing-Techniques" class="common-anchor-header">Three Core Addressing Techniques<button data-href="#Three-Core-Addressing-Techniques" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,14 +44,14 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>En todos los sistemas de almacenamiento y motores distribuidos, la mayoría de las optimizaciones de direccionamiento se dividen en tres técnicas:</p>
+    </button></h2><p>Across storage systems and distributed engines, most addressing optimizations fall into three techniques:</p>
 <ul>
-<li><strong>Computación</strong> - Derivar la ubicación de los datos directamente de una fórmula, en lugar de escanear o atravesar estructuras para encontrarla.</li>
-<li><strong>Almacenamiento en caché</strong> - Mantener en memoria los metadatos o índices a los que se accede con frecuencia para evitar repetidas lecturas de alta latencia desde el disco o el almacenamiento remoto.</li>
-<li><strong>Poda</strong>: utilice información de rango o límites de partición para descartar archivos, fragmentos o nodos que no puedan contener el resultado.</li>
+<li><strong>Computation</strong> — Derive the data’s location directly from a formula, instead of scanning or traversing structures to find it.</li>
+<li><strong>Caching</strong> — Keep frequently accessed metadata or indexes in memory to avoid repeated high-latency reads from disk or remote storage.</li>
+<li><strong>Pruning</strong> — Use range information or partition boundaries to rule out files, shards, or nodes that cannot contain the result.</li>
 </ul>
-<p>A lo largo de este artículo, un <em>acceso</em> significa cualquier operación con un coste real a nivel de sistema: una lectura de disco, una llamada de red o una solicitud de API de almacenamiento de objetos. El cálculo de la CPU a nivel de nanosegundos no cuenta. Lo que importa es reducir el número de operaciones de E/S, o convertir las costosas E/S aleatorias en lecturas secuenciales más baratas.</p>
-<h2 id="How-Addressing-Works-The-Two-Sum-Problem" class="common-anchor-header">Cómo funciona el direccionamiento: El problema de las dos sumas<button data-href="#How-Addressing-Works-The-Two-Sum-Problem" class="anchor-icon" translate="no">
+<p>Throughout this article, an <em>access</em> means any operation with a real system-level cost: a disk read, a network call, or an object storage API request. Nanosecond-level CPU computation doesn’t count. What matters is reducing the number of I/O operations — or turning expensive random I/O into cheaper sequential reads.</p>
+<h2 id="How-Addressing-Works-The-Two-Sum-Problem" class="common-anchor-header">How Addressing Works: The Two Sum Problem<button data-href="#How-Addressing-Works-The-Two-Sum-Problem" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,10 +66,10 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para concretar el direccionamiento, consideremos un problema algorítmico clásico. Dada una matriz de enteros <code translate="no">nums</code> y un valor objetivo <code translate="no">target</code>, devuelva los índices de dos números que sumen <code translate="no">target</code>.</p>
-<p>Por ejemplo: <code translate="no">nums = [2, 7, 11, 15]</code>, <code translate="no">target = 9</code> → resultado <code translate="no">[0, 1]</code>.</p>
-<p>Este problema ilustra claramente la diferencia entre buscar datos y calcular dónde se encuentran.</p>
-<h3 id="Solution-1-Brute-Force-Search" class="common-anchor-header">Solución 1: Búsqueda por fuerza bruta</h3><p>El método de fuerza bruta comprueba cada par. Para cada elemento, explora el resto de la matriz en busca de una coincidencia. Simple, pero O(n²).</p>
+    </button></h2><p>To make addressing concrete, consider a classic algorithm problem. Given an array of integers <code translate="no">nums</code> and a target value <code translate="no">target</code>, return the indices of two numbers that sum to <code translate="no">target</code>.</p>
+<p>For example: <code translate="no">nums = [2, 7, 11, 15]</code>, <code translate="no">target = 9</code> → result <code translate="no">[0, 1]</code>.</p>
+<p>This problem cleanly illustrates the difference between searching for data and computing where it lives.</p>
+<h3 id="Solution-1-Brute-Force-Search" class="common-anchor-header">Solution 1: Brute-Force Search</h3><p>The brute-force approach checks every pair. For each element, it scans the rest of the array looking for a match. Simple, but O(n²).</p>
 <pre><code translate="no" class="language-java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">int</span>[] <span class="hljs-title">twoSum</span>(<span class="hljs-params"><span class="hljs-built_in">int</span>[] nums, <span class="hljs-built_in">int</span> target</span>)</span> {
     <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.length; i++) {
         <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> j = i + <span class="hljs-number">1</span>; j &lt; nums.length; j++) {
@@ -80,8 +79,8 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
     <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>No se sabe dónde puede estar la respuesta. Cada búsqueda empieza de cero y recorre la matriz a ciegas. El cuello de botella no es la aritmética, sino el escaneo repetido.</p>
-<h3 id="Solution-2-Direct-Addressing-via-Computation" class="common-anchor-header">Solución 2: Direccionamiento directo mediante cálculo</h3><p>La solución optimizada sustituye la exploración por un HashMap. En lugar de buscar un valor que coincida, calcula qué valor se necesita y lo busca directamente. La complejidad temporal se reduce a O(n).</p>
+<p>There’s no notion of where the answer might be. Each lookup starts from scratch and traverses the array blindly. The bottleneck isn’t the arithmetic — it’s the repeated scanning.</p>
+<h3 id="Solution-2-Direct-Addressing-via-Computation" class="common-anchor-header">Solution 2: Direct Addressing via Computation</h3><p>The optimized solution replaces scanning with a HashMap. Instead of searching for a matching value, it computes what value is needed and looks it up directly. Time complexity drops to O(n).</p>
 <pre><code translate="no" class="language-java">public <span class="hljs-type">int</span>[] twoSum(<span class="hljs-type">int</span>[] nums, <span class="hljs-type">int</span> target) {
     Map&lt;Integer, Integer&gt; <span class="hljs-keyword">map</span> = <span class="hljs-built_in">new</span> HashMap&lt;&gt;();
     <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.length; i++) {
@@ -94,9 +93,9 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
     <span class="hljs-keyword">return</span> null;
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>El cambio: en lugar de escanear la matriz para encontrar una coincidencia, se calcula lo que se necesita y se va directamente a su ubicación. Una vez obtenida la ubicación, desaparece el recorrido.</p>
-<p>Ésta es la misma idea que subyace en todos los sistemas de almacenamiento de alto rendimiento que examinaremos: sustituir el escaneo por el cálculo y las rutas de búsqueda indirectas por el direccionamiento directo.</p>
-<h2 id="HashMap-How-Computed-Addresses-Replace-Scans" class="common-anchor-header">HashMap: Cómo las direcciones computadas sustituyen a los escaneos<button data-href="#HashMap-How-Computed-Addresses-Replace-Scans" class="anchor-icon" translate="no">
+<p>The shift: instead of scanning the array to find a match, you compute what you need and go directly to its location. Once the location can be derived, traversal disappears.</p>
+<p>This is the same idea behind every high-performance storage system we’ll examine: replace scans with computation, and indirect search paths with direct addressing.</p>
+<h2 id="HashMap-How-Computed-Addresses-Replace-Scans" class="common-anchor-header">HashMap: How Computed Addresses Replace Scans<button data-href="#HashMap-How-Computed-Addresses-Replace-Scans" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -111,10 +110,10 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Un HashMap almacena pares clave-valor y localiza los valores calculando una dirección a partir de la clave, no buscando en las entradas. Dada una clave, aplica una función hash, calcula un índice de matriz y salta directamente a esa ubicación. No es necesario escanear.</p>
-<p>Ésta es la forma más simple del principio que rige todos los sistemas de este artículo: evitar los escaneos derivando ubicaciones mediante el cálculo. La misma idea -que sustenta todo, desde las búsquedas distribuidas de metadatos hasta los <a href="https://zilliz.com/learn/vector-index">índices vectoriales-</a> aparece a todas las escalas.</p>
-<h3 id="The-Core-Data-Structure" class="common-anchor-header">El núcleo de la estructura de datos</h3><p>En esencia, un HashMap se construye en torno a una única estructura: una matriz. Una función hash asigna claves a índices de matriz. Dado que el espacio de claves es mucho mayor que el de la matriz, las colisiones son inevitables: diferentes claves pueden coincidir con el mismo índice. Estas colisiones se gestionan localmente dentro de cada ranura mediante una lista enlazada o un árbol rojo-negro.</p>
-<p>Las matrices permiten un acceso por índice en tiempo constante. Esta propiedad - direccionamiento directo y predecible - es la base del rendimiento de HashMap, y el mismo principio que subyace en el acceso eficiente a los datos en los sistemas de almacenamiento a gran escala.</p>
+    </button></h2><p>A HashMap stores key-value pairs and locates values by computing an address from the key — not by searching through entries. Given a key, it applies a hash function, calculates an array index, and jumps directly to that location. No scanning required.</p>
+<p>This is the simplest form of the principle that drives all the systems in this article: avoid scans by deriving locations through computation. The same idea — which underpins everything from distributed metadata lookups to <a href="https://zilliz.com/learn/vector-index">vector indexes</a> — shows up at every scale.</p>
+<h3 id="The-Core-Data-Structure" class="common-anchor-header">The Core Data Structure</h3><p>At its core, a HashMap is built around a single structure: an array. A hash function maps keys to array indexes. Because the key space is much larger than the array, collisions are inevitable — different keys may hash to the same index. These are handled locally within each slot using a linked list or red-black tree.</p>
+<p>Arrays provide constant-time access by index. This property — direct, predictable addressing — is the foundation of HashMap’s performance, and the same principle that underlies efficient data access in large-scale storage systems.</p>
 <pre><code translate="no" class="language-java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HashMap</span>&lt;K,V&gt; {
 
     <span class="hljs-comment">// Core structure: an array that supports O(1) random access</span>
@@ -135,23 +134,25 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
     }
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-Does-a-HashMap-Locate-Data" class="common-anchor-header">¿Cómo localiza los datos un HashMap?</h3><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_2_4ada70fe33.png" alt="Step-by-step HashMap addressing: hash the key, compute the array index, jump directly to the bucket, and resolve locally — achieving O(1) lookup without traversal" class="doc-image" id="step-by-step-hashmap-addressing:-hash-the-key,-compute-the-array-index,-jump-directly-to-the-bucket,-and-resolve-locally-—-achieving-o(1)-lookup-without-traversal" />
-   </span> <span class="img-wrapper"> <span>Direccionamiento HashMap paso a paso: hash de la clave, calcular el índice de la matriz, saltar directamente a la cubeta, y resolver a nivel local - el logro de O (1) de búsqueda sin travesía</span> </span></p>
-<p>Tomemos como ejemplo <code translate="no">put(&quot;apple&quot;, 100)</code>. La búsqueda completa se realiza en cuatro pasos, sin escanear toda la tabla:</p>
+<h3 id="How-Does-a-HashMap-Locate-Data" class="common-anchor-header">How Does a HashMap Locate Data?</h3><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_2_4ada70fe33.png" alt="Step-by-step HashMap addressing: hash the key, compute the array index, jump directly to the bucket, and resolve locally — achieving O(1) lookup without traversal" class="doc-image" id="step-by-step-hashmap-addressing:-hash-the-key,-compute-the-array-index,-jump-directly-to-the-bucket,-and-resolve-locally-—-achieving-o(1)-lookup-without-traversal" />
+    <span>Step-by-step HashMap addressing: hash the key, compute the array index, jump directly to the bucket, and resolve locally — achieving O(1) lookup without traversal</span>
+  </span>
+</p>
+<p>Take <code translate="no">put(&quot;apple&quot;, 100)</code> as an example. The entire lookup takes four steps — no full-table scan:</p>
 <ol>
-<li><strong>Hash de la clave:</strong> Pasar la clave a través de una función hash →. <code translate="no">hash(&quot;apple&quot;) = 93029210</code></li>
-<li><strong>Asignar a un índice de matriz:</strong> <code translate="no">93029210 &amp; (arrayLength - 1)</code> → Ej, <code translate="no">93029210 &amp; 15 = 10</code></li>
-<li><strong>Saltar al cubo:</strong> Acceder directamente a <code translate="no">table[10]</code> - un único acceso a memoria, no un traversal.</li>
-<li><strong>Resolver localmente:</strong> Si no hay colisión, leer o escribir inmediatamente. Si hay una colisión, comprueba una pequeña lista enlazada o árbol rojo-negro dentro de ese cubo.</li>
+<li><strong>Hash the key:</strong> Pass the key through a hash function → <code translate="no">hash(&quot;apple&quot;) = 93029210</code></li>
+<li><strong>Map to an array index:</strong> <code translate="no">93029210 &amp; (arrayLength - 1)</code> → e.g., <code translate="no">93029210 &amp; 15 = 10</code></li>
+<li><strong>Jump to the bucket:</strong> Access <code translate="no">table[10]</code> directly — a single memory access, not a traversal</li>
+<li><strong>Resolve locally:</strong> If no collision, read or write immediately. If there’s a collision, check a small linked list or red-black tree within that bucket.</li>
 </ol>
-<h3 id="Why-Is-HashMap-Lookup-O1" class="common-anchor-header">¿Por qué la búsqueda en HashMap es O(1)?</h3><p>El acceso a matrices es O(1) debido a una sencilla fórmula de direccionamiento:</p>
+<h3 id="Why-Is-HashMap-Lookup-O1" class="common-anchor-header">Why Is HashMap Lookup O(1)?</h3><p>Array access is O(1) because of a simple addressing formula:</p>
 <pre><code translate="no">element_address = base_address + index × element_size
 <button class="copy-code-btn"></button></code></pre>
-<p>Dado un índice, la dirección de memoria se calcula con una multiplicación y una suma. El coste es fijo independientemente del tamaño de la matriz: un cálculo, una lectura de memoria. En cambio, una lista enlazada debe recorrerse nodo por nodo, siguiendo punteros a través de distintas posiciones de memoria: O(n) en el peor de los casos.</p>
-<p>Un HashMap transforma una clave en un índice de matriz, convirtiendo lo que sería un recorrido en una dirección calculada. En lugar de buscar los datos, calcula exactamente dónde se encuentran y salta allí.</p>
-<h2 id="How-Does-Addressing-Change-in-Distributed-Systems" class="common-anchor-header">¿Cómo cambia el direccionamiento en los sistemas distribuidos?<button data-href="#How-Does-Addressing-Change-in-Distributed-Systems" class="anchor-icon" translate="no">
+<p>Given an index, the memory address is computed with one multiplication and one addition. The cost is fixed regardless of array size — one computation, one memory read. A linked list, by contrast, must be traversed node by node, following pointers through separate memory locations: O(n) in the worst case.</p>
+<p>A HashMap hashes a key into an array index, turning what would be a traversal into a computed address. Instead of searching for data, it computes exactly where the data lives and jumps there.</p>
+<h2 id="How-Does-Addressing-Change-in-Distributed-Systems" class="common-anchor-header">How Does Addressing Change in Distributed Systems?<button data-href="#How-Does-Addressing-Change-in-Distributed-Systems" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -166,20 +167,20 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>HashMap resuelve el direccionamiento dentro de una sola máquina, donde los datos viven en la memoria y los costes de acceso son triviales. A mayor escala, las restricciones cambian drásticamente:</p>
+    </button></h2><p>HashMap solves addressing within a single machine, where data lives in memory and access costs are trivial. At larger scales, the constraints shift dramatically:</p>
 <table>
 <thead>
-<tr><th>Factor de escala</th><th>Impacto</th></tr>
+<tr><th>Scale Factor</th><th>Impact</th></tr>
 </thead>
 <tbody>
-<tr><td>Tamaño de los datos</td><td>Megabytes → terabytes o petabytes en clusters</td></tr>
-<tr><td>Medio de almacenamiento</td><td>Memoria → disco → red → almacenamiento de objetos</td></tr>
-<tr><td>Latencia de acceso</td><td>Memoria: ~100 ns / Disco: 10-20 ms / Red misma región: ~0,5 ms / Cross-region: ~150 ms</td></tr>
+<tr><td>Data size</td><td>Megabytes → terabytes or petabytes across clusters</td></tr>
+<tr><td>Storage medium</td><td>Memory → disk → network → object storage</td></tr>
+<tr><td>Access latency</td><td>Memory: ~100 ns / Disk: 10–20 ms / Same-DC network: ~0.5 ms / Cross-region: ~150 ms</td></tr>
 </tbody>
 </table>
-<p>El problema del direccionamiento no cambia, sólo se encarece. Cada búsqueda puede implicar saltos de red y E/S de disco, por lo que reducir el número de accesos es mucho más importante que en memoria.</p>
-<p>Para ver cómo manejan esto los sistemas reales, veremos dos ejemplos clásicos. HDFS aplica el direccionamiento basado en computación a archivos grandes basados en bloques. Kafka lo aplica a flujos de mensajes basados únicamente en anexos. Ambos siguen el mismo principio: calcular dónde están los datos en lugar de buscarlos.</p>
-<h2 id="HDFS-Addressing-Large-Files-with-In-Memory-Metadata" class="common-anchor-header">HDFS: direccionamiento de archivos grandes con metadatos en memoria<button data-href="#HDFS-Addressing-Large-Files-with-In-Memory-Metadata" class="anchor-icon" translate="no">
+<p>The addressing problem doesn’t change — it just gets more expensive. Every lookup may involve network hops and disk I/O, so reducing the number of accesses matters far more than in memory.</p>
+<p>To see how real systems handle this, we’ll look at two classic examples. HDFS applies computation-based addressing to large, block-based files. Kafka applies it to append-only message streams. Both follow the same principle: compute where the data is instead of searching for it.</p>
+<h2 id="HDFS-Addressing-Large-Files-with-In-Memory-Metadata" class="common-anchor-header">HDFS: Addressing Large Files with In-Memory Metadata<button data-href="#HDFS-Addressing-Large-Files-with-In-Memory-Metadata" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -194,14 +195,16 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>HDFS es un sistema <a href="https://milvus.io/docs/architecture_overview.md">de almacenamiento distribuido</a> diseñado para archivos muy grandes en clusters de máquinas. Dada una ruta de archivo y un desplazamiento de bytes, necesita encontrar el bloque de datos correcto y el DataNode que lo almacena.</p>
-<p>HDFS resuelve esto con una elección de diseño deliberada: mantener todos los metadatos del sistema de archivos en memoria.</p>
+    </button></h2><p>HDFS is a <a href="https://milvus.io/docs/architecture_overview.md">distributed storage</a> system designed for very large files across clusters of machines. Given a file path and byte offset, it needs to find the right data block and the DataNode that stores it.</p>
+<p>HDFS solves this with a deliberate design choice: keep all filesystem metadata in memory.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_1_26ff6257b1.png" alt="HDFS data organization showing logical view of a 300MB file mapped to physical storage as three blocks distributed across DataNodes with replication" class="doc-image" id="hdfs-data-organization-showing-logical-view-of-a-300mb-file-mapped-to-physical-storage-as-three-blocks-distributed-across-datanodes-with-replication" />
-   </span> <span class="img-wrapper"> <span>Organización de datos HDFS mostrando la vista lógica de un archivo de 300MB mapeado al almacenamiento físico como tres bloques distribuidos a través de DataNodes con replicación</span> </span></p>
-<p>En el centro está el NameNode. Carga todo el árbol del sistema de archivos (estructura de directorios, asignación de archivos a bloques y asignación de bloques a DataNodes) en la memoria. Debido a que los metadatos nunca tocan el disco durante las lecturas, HDFS resuelve todas las cuestiones de direccionamiento sólo a través de búsquedas en memoria.</p>
-<p>Conceptualmente, esto es HashMap a escala de clúster: utilizar estructuras de datos en memoria para convertir las búsquedas lentas en búsquedas rápidas y calculadas. La diferencia es que HDFS aplica el mismo principio a conjuntos de datos distribuidos en miles de máquinas.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_1_26ff6257b1.png" alt="HDFS data organization showing logical view of a 300MB file mapped to physical storage as three blocks distributed across DataNodes with replication" class="doc-image" id="hdfs-data-organization-showing-logical-view-of-a-300mb-file-mapped-to-physical-storage-as-three-blocks-distributed-across-datanodes-with-replication" />
+    <span>HDFS data organization showing logical view of a 300MB file mapped to physical storage as three blocks distributed across DataNodes with replication</span>
+  </span>
+</p>
+<p>At the center is the NameNode. It loads the entire filesystem tree — directory structure, file-to-block mappings, and block-to-DataNode mappings — into memory. Because metadata never touches disk during reads, HDFS resolves all addressing questions through in-memory lookups only.</p>
+<p>Conceptually, this is HashMap at cluster scale: use in-memory data structures to turn slow searches into fast, computed lookups. The difference is that HDFS applies the same principle to datasets spread across thousands of machines.</p>
 <pre><code translate="no" class="language-java"><span class="hljs-comment">// Data structures stored in the NameNode&#x27;s memory</span>
 
 <span class="hljs-comment">// 1. Filesystem directory tree</span>
@@ -232,15 +235,15 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
     DatanodeDescriptor[] storages;    <span class="hljs-comment">// list of DataNodes storing this block</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-Does-HDFS-Locate-Data" class="common-anchor-header">¿Cómo localiza HDFS los datos?</h3><p>Considere la lectura de datos en el desplazamiento de 200 MB de <code translate="no">/user/data/bigfile.txt</code>, con un tamaño de bloque por defecto de 128 MB:</p>
+<h3 id="How-Does-HDFS-Locate-Data" class="common-anchor-header">How Does HDFS Locate Data?</h3><p>Consider reading data at the 200 MB offset of <code translate="no">/user/data/bigfile.txt</code>, with a default block size of 128 MB:</p>
 <ol>
-<li>El cliente envía una única RPC al NameNode</li>
-<li>El NameNode resuelve la ruta del archivo y calcula que el offset 200 MB cae en el segundo bloque (rango 128-256 MB) - enteramente en memoria</li>
-<li>El NameNode devuelve los DataNodes que almacenan ese bloque (por ejemplo, DN2 y DN3)</li>
-<li>El cliente lee directamente del DataNode más cercano (DN2)</li>
+<li>The client sends a single RPC to the NameNode</li>
+<li>The NameNode resolves the file path and computes that offset 200 MB falls in the second block (128–256 MB range) — entirely in memory</li>
+<li>The NameNode returns the DataNodes storing that block (e.g., DN2 and DN3)</li>
+<li>The client reads directly from the nearest DataNode (DN2)</li>
 </ol>
-<p>Coste total: una RPC, unas cuantas búsquedas en memoria, una lectura de datos. Los metadatos nunca llegan al disco durante este proceso, y cada búsqueda es de tiempo constante. HDFS evita costosos escaneos de metadatos incluso cuando los datos se escalan a través de grandes clusters.</p>
-<h2 id="Apache-Kafka-How-Sparse-Indexing-Avoids-Random-IO" class="common-anchor-header">Apache Kafka: Cómo la indexación dispersa evita la E/S aleatoria<button data-href="#Apache-Kafka-How-Sparse-Indexing-Avoids-Random-IO" class="anchor-icon" translate="no">
+<p>Total cost: one RPC, a few in-memory lookups, one data read. Metadata never hits disk during this process, and each lookup is constant-time. HDFS avoids expensive metadata scans even as data scales across large clusters.</p>
+<h2 id="Apache-Kafka-How-Sparse-Indexing-Avoids-Random-IO" class="common-anchor-header">Apache Kafka: How Sparse Indexing Avoids Random I/O<button data-href="#Apache-Kafka-How-Sparse-Indexing-Avoids-Random-IO" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -255,22 +258,26 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Apache Kafka está diseñado para flujos de mensajes de alto rendimiento. Dado un desplazamiento de mensaje, necesita localizar la posición exacta del byte en el disco, sin convertir las lecturas en E/S aleatorias.</p>
-<p>Kafka combina el almacenamiento secuencial con un índice disperso en memoria. En lugar de buscar en los datos, calcula una ubicación aproximada y realiza una pequeña exploración limitada.</p>
+    </button></h2><p>Apache Kafka is designed for high-throughput message streams. Given a message offset, it needs to locate the exact byte position on disk — without turning reads into random I/O.</p>
+<p>Kafka combines sequential storage with a sparse, in-memory index. Instead of searching through data, it computes an approximate location and performs a small, bounded scan.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_4_6af2d2cf97.png" alt="Kafka data organization showing logical view with topics and partitions mapped to physical storage as partition directories containing .log, .index, and .timeindex segment files" class="doc-image" id="kafka-data-organization-showing-logical-view-with-topics-and-partitions-mapped-to-physical-storage-as-partition-directories-containing-.log,-.index,-and-.timeindex-segment-files" />
-   </span> <span class="img-wrapper"> <span>La organización de datos de Kafka muestra una vista lógica con temas y particiones asignados al almacenamiento físico como directorios de partición que contienen archivos de segmento .log, .index y .timeindex</span> </span>.</p>
-<p>Los mensajes se organizan como Tema → Partición → Segmento. Cada partición es un registro de sólo apéndice dividido en segmentos, cada uno consistente en:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_4_6af2d2cf97.png" alt="Kafka data organization showing logical view with topics and partitions mapped to physical storage as partition directories containing .log, .index, and .timeindex segment files" class="doc-image" id="kafka-data-organization-showing-logical-view-with-topics-and-partitions-mapped-to-physical-storage-as-partition-directories-containing-.log,-.index,-and-.timeindex-segment-files" />
+    <span>Kafka data organization showing logical view with topics and partitions mapped to physical storage as partition directories containing .log, .index, and .timeindex segment files</span>
+  </span>
+</p>
+<p>Messages are organized as Topic → Partition → Segment. Each partition is an append-only log split into segments, each consisting of:</p>
 <ul>
-<li>Un archivo <code translate="no">.log</code> que almacena los mensajes secuencialmente en el disco</li>
-<li>Un archivo <code translate="no">.index</code> que actúa como índice disperso del registro.</li>
+<li>A <code translate="no">.log</code> file storing messages sequentially on disk</li>
+<li>A <code translate="no">.index</code> file acting as a sparse index into the log</li>
 </ul>
-<p>El archivo <code translate="no">.index</code> está mapeado en memoria (mmap), por lo que las búsquedas de índices se realizan directamente desde la memoria sin E/S de disco.</p>
+<p>The <code translate="no">.index</code> file is memory-mapped (mmap), so index lookups are served directly from memory without disk I/O.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_3_0e4e99b226.png" alt="Kafka sparse index design showing one index entry per 4KB of data, with memory comparison: dense index at 800MB versus sparse index at just 2MB resident in memory" class="doc-image" id="kafka-sparse-index-design-showing-one-index-entry-per-4kb-of-data,-with-memory-comparison:-dense-index-at-800mb-versus-sparse-index-at-just-2mb-resident-in-memory" />
-   </span> <span class="img-wrapper"> <span>Diseño del índice disperso de Kafka mostrando una entrada de índice por cada 4 KB de datos, con comparación de memoria: índice denso de 800 MB frente a índice disperso de sólo 2 MB residente en memoria</span> </span>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_3_0e4e99b226.png" alt="Kafka sparse index design showing one index entry per 4KB of data, with memory comparison: dense index at 800MB versus sparse index at just 2MB resident in memory" class="doc-image" id="kafka-sparse-index-design-showing-one-index-entry-per-4kb-of-data,-with-memory-comparison:-dense-index-at-800mb-versus-sparse-index-at-just-2mb-resident-in-memory" />
+    <span>Kafka sparse index design showing one index entry per 4KB of data, with memory comparison: dense index at 800MB versus sparse index at just 2MB resident in memory</span>
+  </span>
+</p>
 <pre><code translate="no" class="language-java"><span class="hljs-comment">// A Partition manages all its Segments</span>
 <span class="hljs-keyword">class</span> <span class="hljs-title class_">LocalLog</span> {
     <span class="hljs-comment">// Core structure: TreeMap, ordered by baseOffset</span>
@@ -295,28 +302,28 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
     <span class="hljs-type">int</span> position;              <span class="hljs-comment">// physical position in the .log file (4 bytes)</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-Does-Kafka-Locate-Data" class="common-anchor-header">¿Cómo localiza Kafka los datos?</h3><p>Supongamos que un consumidor lee el mensaje en el offset 500.000. Kafka resuelve esto en tres pasos:</p>
-<p><strong>1.</strong> 1.<strong>Localizar el segmento</strong> (búsqueda TreeMap)</p>
+<h3 id="How-Does-Kafka-Locate-Data" class="common-anchor-header">How Does Kafka Locate Data?</h3><p>Suppose a consumer reads the message at offset 500,000. Kafka resolves this in three steps:</p>
+<p><strong>1. Locate the segment</strong> (TreeMap lookup)</p>
 <ul>
-<li>Desplazamientos base del segmento: <code translate="no">[0, 367834, 735668, 1103502]</code></li>
+<li>Segment base offsets: <code translate="no">[0, 367834, 735668, 1103502]</code></li>
 <li><code translate="no">floorEntry(500000)</code> → <code translate="no">baseOffset = 367834</code></li>
-<li>Archivo de destino: <code translate="no">00000000000000367834.log</code></li>
-<li>Complejidad temporal: O(log S), donde S es el número de segmentos (típicamente &lt; 100).</li>
+<li>Target file: <code translate="no">00000000000000367834.log</code></li>
+<li>Time complexity: O(log S), where S is the number of segments (typically &lt; 100)</li>
 </ul>
-<p><strong>2. Busca la posición en el índice disperso</strong> (.index)</p>
+<p><strong>2. Look up the position in the sparse index</strong> (.index)</p>
 <ul>
-<li>Desplazamiento relativo: <code translate="no">500000 − 367834 = 132166</code></li>
-<li>Búsqueda binaria en <code translate="no">.index</code>: encontrar la entrada más grande ≤ 132166 → <code translate="no">[132100 → position 20500000]</code></li>
-<li>Complejidad temporal: O(log N), donde N es el número de entradas del índice.</li>
+<li>Relative offset: <code translate="no">500000 − 367834 = 132166</code></li>
+<li>Binary search in <code translate="no">.index</code>: find the largest entry ≤ 132166 → <code translate="no">[132100 → position 20500000]</code></li>
+<li>Time complexity: O(log N), where N is the number of index entries</li>
 </ul>
-<p><strong>3. Lectura secuencial desde el registro</strong> (.log)</p>
+<p><strong>3. Sequential read from the log</strong> (.log)</p>
 <ul>
-<li>Comenzar la lectura desde la posición 20.500.000</li>
-<li>Continuar hasta alcanzar la posición 500.000</li>
-<li>Se escanea como máximo un intervalo de índice (~4 KB)</li>
+<li>Start reading from position 20,500,000</li>
+<li>Continue until offset 500,000 is reached</li>
+<li>At most one index interval (~4 KB) is scanned</li>
 </ul>
-<p>Total: una búsqueda de segmento en memoria, una búsqueda de índice, una lectura secuencial corta. Sin acceso aleatorio al disco.</p>
-<h2 id="HDFS-vs-Apache-Kafka" class="common-anchor-header">HDFS frente a Apache Kafka<button data-href="#HDFS-vs-Apache-Kafka" class="anchor-icon" translate="no">
+<p>Total: one in-memory segment lookup, one index lookup, one short sequential read. No random disk access.</p>
+<h2 id="HDFS-vs-Apache-Kafka" class="common-anchor-header">HDFS vs. Apache Kafka<button data-href="#HDFS-vs-Apache-Kafka" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -333,17 +340,17 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>Dimensión</th><th>HDFS</th><th>Kafka</th></tr>
+<tr><th>Dimension</th><th>HDFS</th><th>Kafka</th></tr>
 </thead>
 <tbody>
-<tr><td>Objetivo de diseño</td><td>Almacenamiento y lectura eficientes de archivos masivos</td><td>Lectura/escritura secuencial de alto rendimiento de flujos de mensajes</td></tr>
-<tr><td>Modelo de direccionamiento</td><td>Ruta → bloque → nodo de datos mediante HashMaps en memoria</td><td>Desplazamiento → segmento → posición mediante índice disperso + exploración secuencial</td></tr>
-<tr><td>Almacenamiento de metadatos</td><td>Centralizado en la memoria de NameNode</td><td>Archivos locales, mapeados en memoria mediante mmap</td></tr>
-<tr><td>Coste de acceso por búsqueda</td><td>1 RPC + N lecturas de bloque</td><td>1 búsqueda de índice + 1 lectura de datos</td></tr>
-<tr><td>Optimización clave</td><td>Todos los metadatos en memoria - sin disco en la ruta de búsqueda</td><td>La indexación dispersa + la disposición secuencial evitan la E/S aleatoria</td></tr>
+<tr><td>Design goal</td><td>Efficient storage and reading of massive files</td><td>High-throughput sequential read/write of message streams</td></tr>
+<tr><td>Addressing model</td><td>Path → block → DataNode via in-memory HashMaps</td><td>Offset → segment → position via sparse index + sequential scan</td></tr>
+<tr><td>Metadata storage</td><td>Centralized in NameNode memory</td><td>Local files, memory-mapped via mmap</td></tr>
+<tr><td>Access cost per lookup</td><td>1 RPC + N block reads</td><td>1 index lookup + 1 data read</td></tr>
+<tr><td>Key optimization</td><td>All metadata in memory — no disk in the lookup path</td><td>Sparse indexing + sequential layout avoids random I/O</td></tr>
 </tbody>
 </table>
-<h2 id="Why-Object-Storage-Changes-the-Addressing-Problem" class="common-anchor-header">Por qué el almacenamiento de objetos cambia el problema del direccionamiento<button data-href="#Why-Object-Storage-Changes-the-Addressing-Problem" class="anchor-icon" translate="no">
+<h2 id="Why-Object-Storage-Changes-the-Addressing-Problem" class="common-anchor-header">Why Object Storage Changes the Addressing Problem<button data-href="#Why-Object-Storage-Changes-the-Addressing-Problem" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -358,14 +365,14 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Desde HashMap hasta HDFS y Kafka, hemos visto el direccionamiento en memoria y en almacenamiento distribuido clásico. A medida que las cargas de trabajo evolucionan, los requisitos siguen aumentando:</p>
+    </button></h2><p>From HashMap to HDFS and Kafka, we’ve seen addressing in memory and in classic distributed storage. As workloads evolve, the requirements keep rising:</p>
 <ul>
-<li><strong>Consultas más ricas.</strong> Los sistemas modernos manejan filtros de campos múltiples, <a href="https://zilliz.com/glossary/similarity-search">búsquedas por similitud</a> y predicados complejos, no sólo simples claves y desplazamientos.</li>
-<li><strong>Almacenamiento de objetos por defecto.</strong> Los datos viven cada vez más en almacenes compatibles con S3. Los archivos se distribuyen en cubos y cada acceso es una llamada a la API con una latencia fija del orden de decenas de milisegundos, incluso para unos pocos kilobytes.</li>
+<li><strong>Richer queries.</strong> Modern systems handle multi-field filters, <a href="https://zilliz.com/glossary/similarity-search">similarity search</a>, and complex predicates — not just simple keys and offsets.</li>
+<li><strong>Object storage as the default.</strong> Data increasingly lives in S3-compatible stores. Files are spread across buckets, and each access is an API call with fixed latency on the order of tens of milliseconds — even for a few kilobytes.</li>
 </ul>
-<p>En este punto, la latencia -no el ancho de banda- es el cuello de botella. Una sola solicitud GET de S3 cuesta ~50 ms, independientemente de la cantidad de datos que devuelva. Si una consulta desencadena miles de solicitudes de este tipo, la latencia total se dispara. Minimizar el fan-out de la API se convierte en la principal restricción de diseño.</p>
-<p>Analizaremos dos sistemas modernos <a href="https://milvus.io/">-Milvus</a>, una <a href="https://zilliz.com/learn/what-is-a-vector-database">base de datos vectorial</a>, y Apache Iceberg, un formato de tabla lakehouse- para ver cómo abordan estos retos. A pesar de sus diferencias, ambos aplican las mismas ideas básicas: minimizar los accesos de alta latencia, reducir el "fan-out" y favorecer la computación sobre el "traversal".</p>
-<h2 id="Milvus-V1-When-Field-Level-Storage-Creates-Too-Many-Files" class="common-anchor-header">Milvus V1: Cuando el almacenamiento a nivel de campo crea demasiados archivos<button data-href="#Milvus-V1-When-Field-Level-Storage-Creates-Too-Many-Files" class="anchor-icon" translate="no">
+<p>At this point, latency — not bandwidth — is the bottleneck. A single S3 GET request costs ~50 ms regardless of how much data it returns. If a query triggers thousands of such requests, total latency balloons. Minimizing API fan-out becomes the central design constraint.</p>
+<p>We’ll look at two modern systems — <a href="https://milvus.io/">Milvus</a>, a <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a>, and Apache Iceberg, a lakehouse table format — to see how they address these challenges. Despite their differences, both apply the same core ideas: minimize high-latency accesses, reduce fan-out early, and favor computation over traversal.</p>
+<h2 id="Milvus-V1-When-Field-Level-Storage-Creates-Too-Many-Files" class="common-anchor-header">Milvus V1: When Field-Level Storage Creates Too Many Files<button data-href="#Milvus-V1-When-Field-Level-Storage-Creates-Too-Many-Files" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -380,26 +387,28 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus es una base de datos vectorial ampliamente utilizada, diseñada para la <a href="https://zilliz.com/glossary/similarity-search">búsqueda de similitudes</a> sobre <a href="https://zilliz.com/glossary/vector-embeddings">incrustaciones vectoriales</a>. Su primer diseño de almacenamiento refleja un primer enfoque común para construir sobre el almacenamiento de objetos: almacenar cada campo por separado.</p>
-<p>En V1, cada campo de una <a href="https://milvus.io/docs/manage-collections.md">colección</a> se almacena en archivos binlog separados a través de <a href="https://milvus.io/docs/glossary.md">segmentos</a>.</p>
+    </button></h2><p>Milvus is a widely used vector database designed for <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> over <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a>. Its early storage design reflects a common first approach to building on object storage: store each field separately.</p>
+<p>In V1, each field in a <a href="https://milvus.io/docs/manage-collections.md">collection</a> is stored in separate binlog files across <a href="https://milvus.io/docs/glossary.md">segments</a>.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_5_08cf1c8ec1.png" alt="Milvus V1 storage layout showing a collection split into segments, with each segment storing fields like id, vector, and scalar data in separate binlog files, plus separate stats_log files for file statistics" class="doc-image" id="milvus-v1-storage-layout-showing-a-collection-split-into-segments,-with-each-segment-storing-fields-like-id,-vector,-and-scalar-data-in-separate-binlog-files,-plus-separate-stats_log-files-for-file-statistics" />
-   </span> <span class="img-wrapper"> <span>Disposición de almacenamiento de Milvus V1 mostrando una colección dividida en segmentos, con cada segmento almacenando campos como id, vector y datos escalares en archivos binlog separados, además de archivos stats_log separados para estadísticas de archivos</span> </span>.</p>
-<h3 id="How-Does-Milvus-V1-Locate-Data" class="common-anchor-header">¿Cómo localiza Milvus V1 los datos?</h3><p>Considere una consulta simple: <code translate="no">SELECT id, vector FROM collection WHERE id = 123</code>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_5_08cf1c8ec1.png" alt="Milvus V1 storage layout showing a collection split into segments, with each segment storing fields like id, vector, and scalar data in separate binlog files, plus separate stats_log files for file statistics" class="doc-image" id="milvus-v1-storage-layout-showing-a-collection-split-into-segments,-with-each-segment-storing-fields-like-id,-vector,-and-scalar-data-in-separate-binlog-files,-plus-separate-stats_log-files-for-file-statistics" />
+    <span>Milvus V1 storage layout showing a collection split into segments, with each segment storing fields like id, vector, and scalar data in separate binlog files, plus separate stats_log files for file statistics</span>
+  </span>
+</p>
+<h3 id="How-Does-Milvus-V1-Locate-Data" class="common-anchor-header">How Does Milvus V1 Locate Data?</h3><p>Consider a simple query: <code translate="no">SELECT id, vector FROM collection WHERE id = 123</code>.</p>
 <ol>
-<li><strong>Búsqueda de metadatos</strong> - Consulta etcd/MySQL para obtener la lista de segmentos →. <code translate="no">[Segment 12345, 12346, 12347, …]</code></li>
-<li><strong>Leer el campo id en todos los segmentos</strong> - Para cada segmento, leer los archivos binlog id</li>
-<li><strong>Localizar la fila de destino</strong> - Escanear los datos id cargados para encontrar <code translate="no">id = 123</code></li>
-<li>Lectura del<strong>campo vectorial</strong> - Lectura de los archivos binlog vectoriales correspondientes al segmento coincidente</li>
+<li><strong>Metadata lookup</strong> — Query etcd/MySQL for the segment list → <code translate="no">[Segment 12345, 12346, 12347, …]</code></li>
+<li><strong>Read the id field across segments</strong> — For each segment, read the id binlog files</li>
+<li><strong>Locate the target row</strong> — Scan loaded id data to find <code translate="no">id = 123</code></li>
+<li><strong>Read the vector field</strong> — Read the corresponding vector binlog files for the matching segment</li>
 </ol>
-<p>Total de accesos a archivos: <strong>N × (F₁ + F₂ + ...)</strong> donde N = número de segmentos, F = archivos binlog por campo.</p>
-<p>Las matemáticas se ponen feas rápidamente. Para una colección con 100 campos, 1.000 segmentos y 5 archivos binlog por campo:</p>
+<p>Total file accesses: <strong>N × (F₁ + F₂ + …)</strong> where N = number of segments, F = binlog files per field.</p>
+<p>The math gets ugly fast. For a collection with 100 fields, 1,000 segments, and 5 binlog files per field:</p>
 <blockquote>
-<p><strong>1.000 × 100 × 5 = 500.000 archivos</strong></p>
+<p><strong>1,000 × 100 × 5 = 500,000 files</strong></p>
 </blockquote>
-<p>Incluso si una consulta toca sólo tres campos, son 15.000 llamadas a la API de almacenamiento de objetos. A 50 ms por solicitud S3, la latencia serializada alcanza los <strong>750 segundos</strong>, más de 12 minutos para una sola consulta.</p>
-<h2 id="Milvus-V2-How-Segment-Level-Parquet-Cuts-API-Calls-by-10x" class="common-anchor-header">Milvus V2: Cómo el parquet a nivel de segmento reduce 10 veces las llamadas a la API<button data-href="#Milvus-V2-How-Segment-Level-Parquet-Cuts-API-Calls-by-10x" class="anchor-icon" translate="no">
+<p>Even if a query touches only three fields, that’s 15,000 object storage API calls. At 50 ms per S3 request, serialized latency reaches <strong>750 seconds</strong> — over 12 minutes for a single query.</p>
+<h2 id="Milvus-V2-How-Segment-Level-Parquet-Cuts-API-Calls-by-10x" class="common-anchor-header">Milvus V2: How Segment-Level Parquet Cuts API Calls by 10x<button data-href="#Milvus-V2-How-Segment-Level-Parquet-Cuts-API-Calls-by-10x" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -414,35 +423,39 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Para solucionar los límites de escalabilidad de la V1, Milvus V2 realiza un cambio fundamental: organizar los datos por <a href="https://milvus.io/docs/glossary.md">segmentos</a> en lugar de por campos. En lugar de muchos archivos binlog pequeños, V2 consolida los datos en archivos Parquet basados en segmentos.</p>
-<p>El número de archivos se reduce de <code translate="no">N × fields × binlogs</code> a aproximadamente <code translate="no">N</code> (un grupo de archivos por segmento).</p>
+    </button></h2><p>To fix the scalability limits in V1, Milvus V2 makes a fundamental change: organize data by <a href="https://milvus.io/docs/glossary.md">segment</a> instead of by field. Rather than many small binlog files, V2 consolidates data into segment-based Parquet files.</p>
+<p>The file count drops from <code translate="no">N × fields × binlogs</code> to approximately <code translate="no">N</code> (one file group per segment).</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_7_95db65a6e0.png" alt="Milvus V2 storage layout showing a segment stored as Parquet files with row groups containing column chunks for id, vector, and timestamp, plus a footer with schema and column statistics" class="doc-image" id="milvus-v2-storage-layout-showing-a-segment-stored-as-parquet-files-with-row-groups-containing-column-chunks-for-id,-vector,-and-timestamp,-plus-a-footer-with-schema-and-column-statistics" />
-   </span> <span class="img-wrapper"> <span>Disposición de almacenamiento de Milvus V2 mostrando un segmento almacenado como archivos Parquet con grupos de filas que contienen trozos de columnas para id, vector y marca de tiempo, más un pie de página con estadísticas de esquema y columna</span> </span></p>
-<p>Pero V2 no almacena todos los campos en un único archivo. Agrupa los campos por tamaño:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_7_95db65a6e0.png" alt="Milvus V2 storage layout showing a segment stored as Parquet files with row groups containing column chunks for id, vector, and timestamp, plus a footer with schema and column statistics" class="doc-image" id="milvus-v2-storage-layout-showing-a-segment-stored-as-parquet-files-with-row-groups-containing-column-chunks-for-id,-vector,-and-timestamp,-plus-a-footer-with-schema-and-column-statistics" />
+    <span>Milvus V2 storage layout showing a segment stored as Parquet files with row groups containing column chunks for id, vector, and timestamp, plus a footer with schema and column statistics</span>
+  </span>
+</p>
+<p>But V2 doesn’t store all fields in a single file. It groups fields by size:</p>
 <ul>
-<li><strong>Los <a href="https://milvus.io/docs/scalar_index.md">campos escalares</a> pequeños</strong> (como id o timestamp) se almacenan juntos.</li>
-<li>Los<strong>campos grandes</strong> (como <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">los vectores densos</a>) se dividen en archivos específicos.</li>
+<li><strong>Small <a href="https://milvus.io/docs/scalar_index.md">scalar fields</a></strong> (like id, timestamp) are stored together</li>
+<li><strong>Large fields</strong> (like <a href="https://zilliz.com/learn/sparse-and-dense-embeddings">dense vectors</a>) are split into dedicated files</li>
 </ul>
-<p>Todos los archivos pertenecen al mismo segmento, y las filas se alinean por índices entre archivos.</p>
+<p>All files belong to the same segment, and rows are aligned by index across files.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_9_fe4f57a1e0.png" alt="Parquet file structure showing row groups with column chunks and compressed data pages, plus a footer containing file metadata, row group metadata, and column statistics like min/max values" class="doc-image" id="parquet-file-structure-showing-row-groups-with-column-chunks-and-compressed-data-pages,-plus-a-footer-containing-file-metadata,-row-group-metadata,-and-column-statistics-like-min/max-values" />
-   </span> <span class="img-wrapper"> <span>Estructura de archivos Parquet que muestra grupos de filas con trozos de columnas y páginas de datos comprimidas, además de un pie de página que contiene metadatos de archivos, metadatos de grupos de filas y estadísticas de columnas como valores mín./máx.</span> </span></p>
-<h3 id="How-Does-Milvus-V2-Locate-Data" class="common-anchor-header">¿Cómo localiza Milvus V2 los datos?</h3><p>Para la misma consulta - <code translate="no">SELECT id, vector FROM collection WHERE id = 123</code>:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_9_fe4f57a1e0.png" alt="Parquet file structure showing row groups with column chunks and compressed data pages, plus a footer containing file metadata, row group metadata, and column statistics like min/max values" class="doc-image" id="parquet-file-structure-showing-row-groups-with-column-chunks-and-compressed-data-pages,-plus-a-footer-containing-file-metadata,-row-group-metadata,-and-column-statistics-like-min/max-values" />
+    <span>Parquet file structure showing row groups with column chunks and compressed data pages, plus a footer containing file metadata, row group metadata, and column statistics like min/max values</span>
+  </span>
+</p>
+<h3 id="How-Does-Milvus-V2-Locate-Data" class="common-anchor-header">How Does Milvus V2 Locate Data?</h3><p>For the same query — <code translate="no">SELECT id, vector FROM collection WHERE id = 123</code>:</p>
 <ol>
-<li><strong>Búsqueda de metadatos</strong> - Obtención de la lista de segmentos → Lectura de los pies de página de Parquet <code translate="no">[12345, 12346, …]</code></li>
-<li><strong>Leer pies de página de Parquet</strong> - Extraer estadísticas de grupos de filas. Compruebe el mínimo/máximo de la columna id por grupo de filas. <code translate="no">id = 123</code> cae en el grupo de filas 0 (min=1, max=1000).</li>
-<li><strong>Leer sólo lo necesario</strong> - La poda de columnas de Parquet lee sólo la columna id del archivo de campo pequeño y sólo la columna <a href="https://milvus.io/docs/index-vector-fields.md">vector</a> del archivo de campo grande. Sólo se accede a los grupos de filas coincidentes.</li>
+<li><strong>Metadata lookup</strong> — Fetch the segment list → <code translate="no">[12345, 12346, …]</code></li>
+<li><strong>Read Parquet footers</strong> — Extract row group statistics. Check the min/max of the id column per row group. <code translate="no">id = 123</code> falls in Row Group 0 (min=1, max=1000).</li>
+<li><strong>Read only what’s needed</strong> — Parquet’s column pruning reads only the id column from the small-field file and only the <a href="https://milvus.io/docs/index-vector-fields.md">vector</a> column from the large-field file. Only matching row groups are accessed.</li>
 </ol>
-<p>Dividir los campos grandes ofrece dos ventajas clave:</p>
+<p>Splitting large fields out delivers two key benefits:</p>
 <ul>
-<li><strong>Lecturas más eficientes.</strong> <a href="https://zilliz.com/glossary/vector-embeddings">Las incrustaciones vectoriales</a> dominan el tamaño de almacenamiento. Mezclados con campos pequeños, limitan el número de filas que caben en un grupo de filas, lo que aumenta los accesos al archivo. Aislarlos permite que los grupos de filas de campos pequeños contengan muchas más filas, mientras que los campos grandes utilizan diseños optimizados para su tamaño.</li>
-<li><strong>Evolución flexible <a href="https://milvus.io/docs/schema.md">del esquema</a>.</strong> Añadir una columna significa crear un nuevo archivo. Eliminar una columna significa omitirla en el momento de la lectura. No es necesario reescribir los datos históricos.</li>
+<li><strong>More efficient reads.</strong> <a href="https://zilliz.com/glossary/vector-embeddings">Vector embeddings</a> dominate storage size. Mixed with small fields, they limit how many rows fit in a row group, increasing file accesses. Isolating them lets small-field row groups hold far more rows while large fields use layouts optimized for their size.</li>
+<li><strong>Flexible <a href="https://milvus.io/docs/schema.md">schema</a> evolution.</strong> Adding a column means creating a new file. Removing one means skipping it at read time. No historical data rewrite needed.</li>
 </ul>
-<p>El resultado: el número de archivos se reduce en más de 10 veces, las llamadas a la API en más de 10 veces y la latencia de las consultas pasa de minutos a segundos.</p>
-<h2 id="Milvus-V1-vs-V2" class="common-anchor-header">Milvus V1 frente a V2<button data-href="#Milvus-V1-vs-V2" class="anchor-icon" translate="no">
+<p>The result: file counts drop by more than 10x, API calls by over 10x, and query latency falls from minutes to seconds.</p>
+<h2 id="Milvus-V1-vs-V2" class="common-anchor-header">Milvus V1 vs. V2<button data-href="#Milvus-V1-vs-V2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -459,19 +472,19 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>Aspecto</th><th>V1</th><th>V2</th></tr>
+<tr><th>Aspect</th><th>V1</th><th>V2</th></tr>
 </thead>
 <tbody>
-<tr><td>Organización de archivos</td><td>Dividido por campo</td><td>Integrado por segmento</td></tr>
-<tr><td>Ficheros por colección</td><td>N × campos × binlogs</td><td>~N × grupos de columnas</td></tr>
-<tr><td>Formato de almacenamiento</td><td>Binlog personalizado</td><td>Parquet (también compatible con Lance y Vortex)</td></tr>
-<tr><td>Poda de columnas</td><td>Natural (archivos a nivel de campo)</td><td>Poda de columnas Parquet</td></tr>
-<tr><td>Estadísticas</td><td>Archivos stats_log independientes</td><td>Integrado en el pie de página de Parquet</td></tr>
-<tr><td>Llamadas a la API de S3 por consulta</td><td>10,000+</td><td>~1,000</td></tr>
-<tr><td>Latencia de la consulta</td><td>Minutos</td><td>Segundos</td></tr>
+<tr><td>File organization</td><td>Split by field</td><td>Integrated by segment</td></tr>
+<tr><td>Files per collection</td><td>N × fields × binlogs</td><td>~N × column groups</td></tr>
+<tr><td>Storage format</td><td>Custom binlog</td><td>Parquet (also supports Lance and Vortex)</td></tr>
+<tr><td>Column pruning</td><td>Natural (field-level files)</td><td>Parquet column pruning</td></tr>
+<tr><td>Statistics</td><td>Separate stats_log files</td><td>Embedded in Parquet footer</td></tr>
+<tr><td>S3 API calls per query</td><td>10,000+</td><td>~1,000</td></tr>
+<tr><td>Query latency</td><td>Minutes</td><td>Seconds</td></tr>
 </tbody>
 </table>
-<h2 id="Apache-Iceberg-Metadata-Driven-File-Pruning" class="common-anchor-header">Apache Iceberg: Poda de archivos basada en metadatos<button data-href="#Apache-Iceberg-Metadata-Driven-File-Pruning" class="anchor-icon" translate="no">
+<h2 id="Apache-Iceberg-Metadata-Driven-File-Pruning" class="common-anchor-header">Apache Iceberg: Metadata-Driven File Pruning<button data-href="#Apache-Iceberg-Metadata-Driven-File-Pruning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -486,26 +499,30 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Apache Iceberg gestiona tablas analíticas sobre conjuntos de datos masivos en sistemas lakehouse. Cuando una tabla abarca miles de archivos de datos, el reto consiste en limitar la consulta a los archivos relevantes, sin tener que escanearlo todo.</p>
-<p>La respuesta de Iceberg es decidir qué archivos leer <em>antes de</em> que se produzca cualquier E/S de datos, utilizando metadatos por capas. Es el mismo principio que subyace al <a href="https://zilliz.com/learn/metadata-filtering-with-milvus">filtrado de metadatos</a> en las bases de datos vectoriales: utilizar estadísticas precalculadas para omitir datos irrelevantes.</p>
+    </button></h2><p>Apache Iceberg manages analytical tables over massive datasets in lakehouse systems. When a table spans thousands of data files, the challenge is narrowing a query to just the relevant files — without scanning everything.</p>
+<p>Iceberg’s answer: decide which files to read <em>before</em> any data I/O happens, using layered metadata. This is the same principle behind <a href="https://zilliz.com/learn/metadata-filtering-with-milvus">metadata filtering</a> in vector databases — use precomputed statistics to skip irrelevant data.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_8_a9b063bdbe.png" alt="Iceberg data organization showing a metadata directory with metadata.json, manifest lists, and manifest files alongside a data directory with date-partitioned Parquet files" class="doc-image" id="iceberg-data-organization-showing-a-metadata-directory-with-metadata.json,-manifest-lists,-and-manifest-files-alongside-a-data-directory-with-date-partitioned-parquet-files" />
-   </span> <span class="img-wrapper"> <span>Organización de datos Iceberg mostrando un directorio de metadatos con metadata.json, listas de manifiesto y archivos de manifiesto junto a un directorio de datos con archivos Parquet particionados por fecha</span> </span>.</p>
-<p>Iceberg utiliza una estructura de metadatos por capas. Cada capa filtra los datos irrelevantes antes de consultar la siguiente, de forma similar a como <a href="https://milvus.io/docs/architecture_overview.md">las bases de datos distribuidas</a> separan los metadatos de los datos para un acceso eficiente.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_8_a9b063bdbe.png" alt="Iceberg data organization showing a metadata directory with metadata.json, manifest lists, and manifest files alongside a data directory with date-partitioned Parquet files" class="doc-image" id="iceberg-data-organization-showing-a-metadata-directory-with-metadata.json,-manifest-lists,-and-manifest-files-alongside-a-data-directory-with-date-partitioned-parquet-files" />
+    <span>Iceberg data organization showing a metadata directory with metadata.json, manifest lists, and manifest files alongside a data directory with date-partitioned Parquet files</span>
+  </span>
+</p>
+<p>Iceberg uses a layered metadata structure. Each layer filters out irrelevant data before the next is consulted — similar in spirit to how <a href="https://milvus.io/docs/architecture_overview.md">distributed databases</a> separate metadata from data for efficient access.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_6_afc159ea22.png" alt="Iceberg four-layer architecture: metadata.json points to manifest lists, which reference manifest files containing file-level statistics, which point to actual Parquet data files" class="doc-image" id="iceberg-four-layer-architecture:-metadata.json-points-to-manifest-lists,-which-reference-manifest-files-containing-file-level-statistics,-which-point-to-actual-parquet-data-files" />
-   </span> <span class="img-wrapper"> <span>Arquitectura de cuatro capas de Iceberg: metadata.json apunta a listas de manifiesto, que hacen referencia a archivos de manifiesto que contienen estadísticas a nivel de archivo, que apuntan a archivos de datos Parquet reales</span> </span>.</p>
-<h3 id="How-Does-Iceberg-Locate-Data" class="common-anchor-header">¿Cómo localiza Iceberg los datos?</h3><p>Considérelo: <code translate="no">SELECT * FROM orders WHERE date='2024-01-15' AND amount&gt;1000</code>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/data_addressing_storage_systems_6_afc159ea22.png" alt="Iceberg four-layer architecture: metadata.json points to manifest lists, which reference manifest files containing file-level statistics, which point to actual Parquet data files" class="doc-image" id="iceberg-four-layer-architecture:-metadata.json-points-to-manifest-lists,-which-reference-manifest-files-containing-file-level-statistics,-which-point-to-actual-parquet-data-files" />
+    <span>Iceberg four-layer architecture: metadata.json points to manifest lists, which reference manifest files containing file-level statistics, which point to actual Parquet data files</span>
+  </span>
+</p>
+<h3 id="How-Does-Iceberg-Locate-Data" class="common-anchor-header">How Does Iceberg Locate Data?</h3><p>Consider: <code translate="no">SELECT * FROM orders WHERE date='2024-01-15' AND amount&gt;1000</code>.</p>
 <ol>
-<li>Leer<strong>metadata.json</strong> (1 E/S) - Cargar la instantánea actual y sus listas de manifiesto</li>
-<li><strong>Leer la lista de manifiestos</strong> (1 E/S) - Aplicar filtros <a href="https://milvus.io/docs/use-partition-key.md">a nivel de partición</a> para omitir particiones enteras (por ejemplo, se eliminan todos los datos de 2023)</li>
-<li><strong>Lectura de</strong> archivos de<strong>manifiesto</strong> (2 E/S) - Uso de estadísticas a nivel de archivo (fecha mín./máx., cantidad mín./máx.) para eliminar archivos que no coincidan con la consulta</li>
-<li>Lectura<strong>de ficheros de datos</strong> (3 E/S) - Sólo quedan tres ficheros que se leen realmente</li>
+<li><strong>Read metadata.json</strong> (1 I/O) — Load the current snapshot and its manifest lists</li>
+<li><strong>Read the manifest list</strong> (1 I/O) — Apply <a href="https://milvus.io/docs/use-partition-key.md">partition</a>-level filters to skip entire partitions (e.g., all 2023 data is eliminated)</li>
+<li><strong>Read manifest files</strong> (2 I/O) — Use file-level statistics (min/max date, min/max amount) to eliminate files that can’t match the query</li>
+<li><strong>Read data files</strong> (3 I/O) — Only three files remain and are actually read</li>
 </ol>
-<p>En lugar de escanear los 1.000 archivos de datos, Iceberg completa la búsqueda en <strong>7 operaciones de E/S</strong> - evitando más del 94% de las lecturas innecesarias.</p>
-<h2 id="How-Different-Systems-Address-Data" class="common-anchor-header">Cómo tratan los datos los distintos sistemas<button data-href="#How-Different-Systems-Address-Data" class="anchor-icon" translate="no">
+<p>Instead of scanning all 1,000 data files, Iceberg completes the lookup in <strong>7 I/O operations</strong> — avoiding over 94% of unnecessary reads.</p>
+<h2 id="How-Different-Systems-Address-Data" class="common-anchor-header">How Different Systems Address Data<button data-href="#How-Different-Systems-Address-Data" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -522,17 +539,17 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>Sistema</th><th>Organización de datos</th><th>Mecanismo de direccionamiento del núcleo</th><th>Coste de acceso</th></tr>
+<tr><th>System</th><th>Data Organization</th><th>Core Addressing Mechanism</th><th>Access Cost</th></tr>
 </thead>
 <tbody>
-<tr><td>HashMap</td><td>Clave → ranura del array</td><td>Función hash → índice directo</td><td>Acceso a memoria O(1)</td></tr>
-<tr><td>HDFS</td><td>Ruta → bloque → DataNode</td><td>HashMaps en memoria + cálculo de bloques</td><td>1 RPC + N lecturas de bloque</td></tr>
-<tr><td>Kafka</td><td>Tema → Partición → Segmento</td><td>TreeMap + índice disperso + escaneo secuencial</td><td>1 búsqueda de índice + 1 lectura de datos</td></tr>
-<tr><td><a href="https://milvus.io/">Milvus</a> V2</td><td><a href="https://milvus.io/docs/manage-collections.md">Colección</a> → Segmento → Columnas de parquet</td><td>Búsqueda de metadatos + poda de columnas</td><td>N lecturas (N = segmentos)</td></tr>
-<tr><td>Iceberg</td><td>Tabla → Instantánea → Manifiesto → Archivos de datos</td><td>Metadatos en capas + poda estadística</td><td>3 lecturas de metadatos + M lecturas de datos</td></tr>
+<tr><td>HashMap</td><td>Key → array slot</td><td>Hash function → direct index</td><td>O(1) memory access</td></tr>
+<tr><td>HDFS</td><td>Path → block → DataNode</td><td>In-memory HashMaps + block calculation</td><td>1 RPC + N block reads</td></tr>
+<tr><td>Kafka</td><td>Topic → Partition → Segment</td><td>TreeMap + sparse index + sequential scan</td><td>1 index lookup + 1 data read</td></tr>
+<tr><td><a href="https://milvus.io/">Milvus</a> V2</td><td><a href="https://milvus.io/docs/manage-collections.md">Collection</a> → Segment → Parquet columns</td><td>Metadata lookup + column pruning</td><td>N reads (N = segments)</td></tr>
+<tr><td>Iceberg</td><td>Table → Snapshot → Manifest → Data files</td><td>Layered metadata + statistical pruning</td><td>3 metadata reads + M data reads</td></tr>
 </tbody>
 </table>
-<h2 id="Three-Principles-Behind-Efficient-Data-Addressing" class="common-anchor-header">Tres principios en los que se basa el direccionamiento eficiente de datos<button data-href="#Three-Principles-Behind-Efficient-Data-Addressing" class="anchor-icon" translate="no">
+<h2 id="Three-Principles-Behind-Efficient-Data-Addressing" class="common-anchor-header">Three Principles Behind Efficient Data Addressing<button data-href="#Three-Principles-Behind-Efficient-Data-Addressing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -547,29 +564,29 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="1-Computation-Always-Beats-Search" class="common-anchor-header">1. El cálculo siempre gana a la búsqueda</h3><p>En todos los sistemas que hemos examinado, la optimización más eficaz sigue la misma regla: calcular dónde están los datos en lugar de buscarlos.</p>
+    </button></h2><h3 id="1-Computation-Always-Beats-Search" class="common-anchor-header">1. Computation Always Beats Search</h3><p>Across every system we’ve examined, the most effective optimization follows the same rule: compute where the data is instead of searching for it.</p>
 <ul>
-<li>HashMap calcula un índice de matriz a partir de <code translate="no">hash(key)</code> en lugar de buscarlo.</li>
-<li>HDFS calcula el bloque de destino a partir del desplazamiento de un archivo en lugar de recorrer los metadatos del sistema de archivos.</li>
-<li>Kafka calcula el segmento relevante y la posición del índice en lugar de escanear el registro.</li>
-<li>Iceberg utiliza predicados y estadísticas a nivel de archivo para calcular qué archivos merece la pena leer.</li>
+<li>HashMap computes an array index from <code translate="no">hash(key)</code> instead of scanning</li>
+<li>HDFS computes the target block from a file offset instead of traversing filesystem metadata</li>
+<li>Kafka computes the relevant segment and index position instead of scanning the log</li>
+<li>Iceberg uses predicates and file-level statistics to compute which files are worth reading</li>
 </ul>
-<p>El cálculo es aritmético con un coste fijo. La búsqueda es un proceso transversal (comparaciones, búsqueda de punteros o E/S) cuyo coste aumenta con el tamaño de los datos. Cuando un sistema puede derivar una ubicación directamente, la búsqueda se vuelve innecesaria.</p>
-<h3 id="2-Minimize-High-Latency-Accesses" class="common-anchor-header">2. Minimizar los accesos de alta latencia</h3><p>Esto nos lleva de nuevo a la fórmula central: <strong>Coste total de direccionamiento = accesos a metadatos + accesos a datos.</strong> Toda optimización tiene como objetivo último reducir estas operaciones de alta latencia.</p>
+<p>Computation is arithmetic with a fixed cost. Search is traversal — comparisons, pointer chasing, or I/O — and its cost grows with data size. When a system can derive a location directly, scanning becomes unnecessary.</p>
+<h3 id="2-Minimize-High-Latency-Accesses" class="common-anchor-header">2. Minimize High-Latency Accesses</h3><p>This brings us back to the core formula: <strong>Total addressing cost = metadata accesses + data accesses.</strong> Every optimization ultimately aims at reducing these high-latency operations.</p>
 <table>
 <thead>
-<tr><th>Patrón</th><th>Ejemplo</th></tr>
+<tr><th>Pattern</th><th>Example</th></tr>
 </thead>
 <tbody>
-<tr><td>Reducir el número de archivos para limitar el desbordamiento de la API</td><td>Consolidación de segmentos Milvus V2</td></tr>
-<tr><td>Uso de estadísticas para descartar datos antes de tiempo</td><td>Poda del manifiesto Iceberg</td></tr>
-<tr><td>Caché de metadatos en memoria</td><td>HDFS NameNode, índices mmap de Kafka</td></tr>
-<tr><td>Intercambio de pequeñas exploraciones secuenciales por menos lecturas aleatorias</td><td>Índice disperso de Kafka</td></tr>
+<tr><td>Reduce file counts to limit API fan-out</td><td>Milvus V2 segment consolidation</td></tr>
+<tr><td>Use statistics to rule out data early</td><td>Iceberg manifest pruning</td></tr>
+<tr><td>Cache metadata in memory</td><td>HDFS NameNode, Kafka mmap indexes</td></tr>
+<tr><td>Trade small sequential scans for fewer random reads</td><td>Kafka sparse index</td></tr>
 </tbody>
 </table>
-<h3 id="3-Statistics-Enable-Early-Decisions" class="common-anchor-header">3. Las estadísticas permiten tomar decisiones tempranas</h3><p>El registro de información sencilla en el momento de la escritura -valores mínimos/máximos, límites de partición, recuento de filas- permite a los sistemas decidir en el momento de la lectura qué archivos merece la pena leer y cuáles pueden omitirse por completo.</p>
-<p>Se trata de una pequeña inversión muy rentable. Las estadísticas hacen que el acceso a un archivo pase de ser una lectura a ciegas a una elección deliberada. Ya se trate de la poda a nivel de manifiesto de Iceberg o de las estadísticas de pie de página de Parquet de Milvus V2, el principio es el mismo: unos pocos bytes de metadatos en tiempo de escritura pueden eliminar miles de operaciones de E/S en tiempo de lectura.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusión<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h3 id="3-Statistics-Enable-Early-Decisions" class="common-anchor-header">3. Statistics Enable Early Decisions</h3><p>Recording simple information at write time — min/max values, partition boundaries, row counts — lets systems decide at read time which files are worth reading and which can be skipped entirely.</p>
+<p>This is a small investment with a large payoff. Statistics turn file access from a blind read into a deliberate choice. Whether it’s Iceberg’s manifest-level pruning or Milvus V2’s Parquet footer statistics, the principle is the same: a few bytes of metadata at write time can eliminate thousands of I/O operations at read time.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -584,23 +601,23 @@ origin: 'https://milvus.io/blog/data-addressing-storage-systems.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>De Two Sum a HashMap, y de HDFS y Kafka a Milvus y Apache Iceberg, hay un patrón que se repite: el rendimiento depende de la eficiencia con la que un sistema localiza los datos.</p>
-<p>A medida que los datos crecen y el almacenamiento pasa de la memoria al disco y al almacenamiento de objetos, la mecánica cambia, pero las ideas centrales no. Los mejores sistemas calculan las ubicaciones en lugar de buscarlas, mantienen los metadatos cerca y utilizan estadísticas para evitar tocar datos que no importan. Todas las mejoras de rendimiento que hemos examinado proceden de la reducción de los accesos de alta latencia y de la reducción del espacio de búsqueda lo antes posible.</p>
-<p>Tanto si está diseñando un canal de <a href="https://zilliz.com/learn/what-is-vector-search">búsqueda vectorial</a> como si está construyendo sistemas sobre <a href="https://zilliz.com/learn/introduction-to-unstructured-data">datos no estructurados</a> u optimizando un motor de consulta de lago, se aplica la misma ecuación. Comprender cómo su sistema aborda los datos es el primer paso para hacerlo más rápido.</p>
+    </button></h2><p>From Two Sum to HashMap, and from HDFS and Kafka to Milvus and Apache Iceberg, one pattern keeps repeating: performance depends on how efficiently a system locates data.</p>
+<p>As data grows and storage moves from memory to disk to object storage, the mechanics change — but the core ideas don’t. The best systems compute locations instead of searching, keep metadata close, and use statistics to avoid touching data that doesn’t matter. Every performance win we’ve examined comes from reducing high-latency accesses and narrowing the search space as early as possible.</p>
+<p>Whether you’re designing a <a href="https://zilliz.com/learn/what-is-vector-search">vector search</a> pipeline, building systems over <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a>, or optimizing a lakehouse query engine, the same equation applies. Understanding how your system addresses data is the first step toward making it faster.</p>
 <hr>
-<p>Si trabaja con Milvus y desea optimizar su almacenamiento o el rendimiento de sus consultas, nos encantaría ayudarle:</p>
+<p>If you’re working with Milvus and want to optimize your storage or query performance, we’d love to help:</p>
 <ul>
-<li>Únase a la <a href="https://slack.milvus.io/">comunidad Milvus Slack</a> para hacer preguntas, compartir su arquitectura y aprender de otros ingenieros que trabajan en problemas similares.</li>
-<li><a href="https://milvus.io/office-hours">Reserve una sesión gratuita de 20 minutos de Milvus Office Hours</a> para analizar su caso de uso, ya sea la disposición del almacenamiento, el ajuste de consultas o el escalado a producción.</li>
-<li>Si prefiere saltarse la configuración de la infraestructura, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (Milvus gestionado) ofrece un nivel gratuito para empezar.</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to ask questions, share your architecture, and learn from other engineers working on similar problems.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your use case — whether it’s storage layout, query tuning, or scaling to production.</li>
+<li>If you’d rather skip the infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers a free tier to get started.</li>
 </ul>
 <hr>
-<p>Algunas preguntas que surgen cuando los ingenieros empiezan a pensar en el direccionamiento de datos y el diseño del almacenamiento:</p>
-<p><strong>P: ¿Por qué Milvus cambió del almacenamiento a nivel de campo al almacenamiento a nivel de segmento?</strong></p>
-<p>En Milvus V1, cada campo se almacenaba en archivos binlog separados a través de segmentos. Para una colección con 100 campos y 1.000 segmentos, esto creaba cientos de miles de archivos pequeños, cada uno de los cuales requería su propia llamada a la API de S3. V2 consolida los datos en archivos Parquet basados en segmentos, reduciendo el número de archivos en más de 10 veces y la latencia de las consultas de minutos a segundos. La idea central: en el almacenamiento de objetos, el número de llamadas a la API importa más que el volumen total de datos.</p>
-<p><strong>P: ¿Cómo gestiona Milvus eficientemente la búsqueda vectorial y el filtrado escalar?</strong></p>
-<p>Milvus V2 almacena los <a href="https://milvus.io/docs/scalar_index.md">campos escalares</a> y <a href="https://milvus.io/docs/index-vector-fields.md">los campos vectoriales</a> en grupos de archivos separados dentro del mismo segmento. Las consultas escalares utilizan la poda de columnas de Parquet y las estadísticas de grupos de filas para omitir datos irrelevantes. La <a href="https://zilliz.com/learn/what-is-vector-search">búsqueda vectorial</a> utiliza <a href="https://zilliz.com/learn/vector-index">índices vectoriales</a> específicos. Ambos comparten la misma estructura de segmento, por lo que las <a href="https://zilliz.com/learn/hybrid-search-a-practical-guide">consultas híbridas</a> -que combinan filtros escalares con similitud vectorial- pueden operar sobre los mismos datos sin duplicación.</p>
-<p><strong>P: ¿Se aplica el principio de "computación sobre búsqueda" a las bases de datos vectoriales?</strong></p>
-<p>Sí. <a href="https://zilliz.com/learn/vector-index">Los índices vectoriales</a> como HNSW e IVF se basan en la misma idea. En lugar de comparar un vector de consulta con todos los vectores almacenados (búsqueda por fuerza bruta), utilizan estructuras de grafos o centros de conglomerados para calcular vecindades aproximadas y saltar directamente a las regiones relevantes del espacio vectorial. La contrapartida -una pequeña pérdida de precisión a cambio de un número de órdenes de magnitud menor en el cálculo de distancias- es el mismo patrón de "cálculo en lugar de búsqueda" aplicado a los datos de <a href="https://zilliz.com/glossary/vector-embeddings">incrustación</a> de alta dimensión.</p>
-<p><strong>P: ¿Cuál es el mayor error de rendimiento que cometen los equipos con el almacenamiento de objetos?</strong></p>
-<p>Crear demasiados archivos pequeños. Cada solicitud GET de S3 tiene una latencia mínima fija (~50 ms), independientemente de la cantidad de datos que devuelva. Un sistema que lee 10.000 archivos pequeños serializa 500 segundos de latencia, aunque el volumen total de datos sea modesto. La solución es la consolidación: fusionar archivos pequeños en otros más grandes, utilizar formatos columnares como Parquet para lecturas selectivas y mantener metadatos que permitan omitir archivos por completo.</p>
+<p>A few questions that come up when engineers start thinking about data addressing and storage design:</p>
+<p><strong>Q: Why did Milvus switch from field-level to segment-level storage?</strong></p>
+<p>In Milvus V1, each field was stored in separate binlog files across segments. For a collection with 100 fields and 1,000 segments, this created hundreds of thousands of small files — each requiring its own S3 API call. V2 consolidates data into segment-based Parquet files, reducing file counts by more than 10x and cutting query latency from minutes to seconds. The core insight: on object storage, the number of API calls matters more than total data volume.</p>
+<p><strong>Q: How does Milvus handle both vector search and scalar filtering efficiently?</strong></p>
+<p>Milvus V2 stores <a href="https://milvus.io/docs/scalar_index.md">scalar fields</a> and <a href="https://milvus.io/docs/index-vector-fields.md">vector fields</a> in separate file groups within the same segment. Scalar queries use Parquet column pruning and row group statistics to skip irrelevant data. <a href="https://zilliz.com/learn/what-is-vector-search">Vector search</a> uses dedicated <a href="https://zilliz.com/learn/vector-index">vector indexes</a>. Both share the same segment structure, so <a href="https://zilliz.com/learn/hybrid-search-a-practical-guide">hybrid queries</a> — combining scalar filters with vector similarity — can operate on the same data without duplication.</p>
+<p><strong>Q: Does the “computation over search” principle apply to vector databases?</strong></p>
+<p>Yes. <a href="https://zilliz.com/learn/vector-index">Vector indexes</a> like HNSW and IVF are built on the same idea. Instead of comparing a query vector against every stored vector (brute-force search), they use graph structures or cluster centroids to compute approximate neighborhoods and jump directly to relevant regions of the vector space. The tradeoff — a small accuracy loss for orders-of-magnitude fewer distance computations — is the same “computation over search” pattern applied to high-dimensional <a href="https://zilliz.com/glossary/vector-embeddings">embedding</a> data.</p>
+<p><strong>Q: What’s the biggest performance mistake teams make with object storage?</strong></p>
+<p>Creating too many small files. Each S3 GET request has a fixed latency floor (~50 ms), regardless of how much data it returns. A system that reads 10,000 small files serializes 500 seconds of latency — even if total data volume is modest. The fix is consolidation: merge small files into larger ones, use columnar formats like Parquet for selective reads, and maintain metadata that lets you skip files entirely.</p>

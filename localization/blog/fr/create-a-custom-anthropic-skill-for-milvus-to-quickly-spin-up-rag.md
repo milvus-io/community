@@ -1,9 +1,8 @@
 ---
 id: create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md
-title: >-
-  Comment les compétences anthropiques modifient l'outillage des agents - et
-  comment créer une compétence personnalisée pour Milvus afin de lancer
-  rapidement RAG
+title: >
+  How Anthropic Skills Change Agent Tooling — and How to Build a Custom Skill
+  for Milvus to Quickly Spin Up RAG
 author: Min Yin
 date: 2026-01-23T00:00:00.000Z
 cover: assets.zilliz.com/skills_cover_new_8caa774cc5.png
@@ -14,19 +13,18 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Claude Code, Anthropic Skills, MCP, RAG, Milvus'
 meta_title: |
   Create a Custom Anthropic Skill for Milvus to Quickly Spin Up RAG
-desc: >-
-  Découvrez ce que sont les compétences et comment créer une compétence
-  personnalisée dans Claude Code qui construit des systèmes RAG soutenus par
-  Milvus à partir d'instructions en langage naturel à l'aide d'un flux de
-  travail réutilisable.
+desc: >
+  Learn what Skills are and how to create a custom Skill in Claude Code that
+  builds Milvus-backed RAG systems from natural-language instructions using a
+  reusable workflow.
 origin: >-
   https://milvus.io/blog/create-a-custom-anthropic-skill-for-milvus-to-quickly-spin-up-rag.md
 ---
-<p>L'utilisation des outils joue un rôle important dans le fonctionnement d'un agent. L'agent doit choisir le bon outil, décider quand l'appeler et formater les entrées correctement. Sur le papier, cela semble simple, mais une fois que l'on commence à construire des systèmes réels, on trouve beaucoup de cas limites et de modes de défaillance.</p>
-<p>De nombreuses équipes utilisent des définitions d'outils de type MCP pour organiser tout cela, mais le MCP a quelques défauts. Le modèle doit raisonner sur tous les outils à la fois, et il n'y a pas beaucoup de structure pour guider ses décisions. De plus, chaque définition d'outil doit se trouver dans la fenêtre de contexte. Certaines d'entre elles sont volumineuses - le MCP de GitHub représente environ 26k tokens - ce qui mange le contexte avant même que l'agent ne commence à faire du vrai travail.</p>
-<p>Anthropic a introduit les <a href="https://github.com/anthropics/skills?tab=readme-ov-file"><strong>compétences</strong></a> pour améliorer cette situation. Les compétences sont plus petites, plus ciblées et plus faciles à charger à la demande. Au lieu de tout déverser dans le contexte, vous empaquetez la logique du domaine, les workflows ou les scripts dans des unités compactes que l'agent peut extraire seulement quand il en a besoin.</p>
-<p>Dans ce billet, j'expliquerai comment fonctionnent les compétences anthropiques et je décrirai ensuite la construction d'une compétence simple dans Claude Code qui transforme le langage naturel en une base de connaissances <a href="https://milvus.io/">soutenue par Milvus</a>- une configuration rapide pour RAG sans câblage supplémentaire.</p>
-<h2 id="What-Are-Anthropic-Skills" class="common-anchor-header">Que sont les compétences anthropiques ?<button data-href="#What-Are-Anthropic-Skills" class="anchor-icon" translate="no">
+<p>Tool usage is a big part of making an agent work. The agent needs to choose the right tool, decide when to call it, and format the inputs correctly. On paper that sounds straightforward, but once you start building real systems, you find a lot of edge cases and failure modes.</p>
+<p>Many teams use MCP-style tool definitions to organize this, but MCP has some rough edges. The model has to reason over all tools at once, and there isn’t much structure to guide its decisions. On top of that, every tool definition has to live in the context window. Some of these are large — the GitHub MCP is around 26k tokens — which eats context before the agent even starts doing real work.</p>
+<p>Anthropic introduced <a href="https://github.com/anthropics/skills?tab=readme-ov-file"><strong>Skills</strong></a> to improve this situation. Skills are smaller, more focused, and easier to load on demand. Instead of dumping everything into context, you package domain logic, workflows, or scripts into compact units that the agent can pull in only when needed.</p>
+<p>In this post, I’ll go over how Anthropic Skills work and then walk through building a simple Skill in Claude Code that turns natural language into a <a href="https://milvus.io/">Milvus</a>-backed knowledge base — a quick setup for RAG without extra wiring.</p>
+<h2 id="What-Are-Anthropic-Skills" class="common-anchor-header">What Are Anthropic Skills?<button data-href="#What-Are-Anthropic-Skills" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -41,10 +39,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Les<a href="https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md">compétences anthropiques</a> (ou compétences d'agent) sont des dossiers qui regroupent les instructions, les scripts et les fichiers de référence dont un agent a besoin pour effectuer une tâche spécifique. Il s'agit de petits ensembles de capacités autonomes. Une compétence peut définir la manière de générer un rapport, d'effectuer une analyse ou de suivre un flux de travail particulier ou un ensemble de règles.</p>
-<p>L'idée clé est que les compétences sont modulaires et peuvent être chargées à la demande. Au lieu d'insérer d'énormes définitions d'outils dans la fenêtre contextuelle, l'agent n'y fait entrer que les compétences dont il a besoin. Cela permet de limiter l'utilisation du contexte tout en donnant au modèle des indications claires sur les outils existants, le moment où il faut les appeler et la manière d'exécuter chaque étape.</p>
-<p>Le format est intentionnellement simple, et pour cette raison, il est déjà supporté ou facilement adapté à travers un grand nombre d'outils de développement - Claude Code, Cursor, VS Code extensions, intégrations GitHub, configurations de style Codex, et ainsi de suite.</p>
-<p>Une compétence suit une structure de dossiers cohérente :</p>
+    </button></h2><p><a href="https://milvus.io/blog/is-mcp-already-outdated-the-real-reason-anthropic-shipped-skills-and-how-to-pair-them-with-milvus.md">Anthropic Skills</a> (or Agent Skills) are just folders that bundle the instructions, scripts, and reference files an agent needs to handle a specific task. Think of them as small, self-contained capability packs. A Skill might define how to generate a report, run an analysis, or follow a particular workflow or set of rules.</p>
+<p>The key idea is that Skills are modular and can be loaded on demand. Instead of stuffing huge tool definitions into the context window, the agent pulls in only the Skill it needs. This keeps context usage low while giving the model clear guidance on what tools exist, when to call them, and how to execute each step.</p>
+<p>The format is intentionally simple, and because of that, it’s already supported or easily adapted across a bunch of developer tools — Claude Code, Cursor, VS Code extensions, GitHub integrations, Codex-style setups, and so on.</p>
+<p>A Skill follows a consistent folder structure:</p>
 <pre><code translate="no">skill-name/
 
 ├── SKILL.md       <span class="hljs-comment"># Required: Skill instructions and metadata</span>
@@ -56,20 +54,20 @@ origin: >-
 └── resources/       <span class="hljs-comment"># Optional: reference materials</span>
 <button class="copy-code-btn"></button></code></pre>
 <p><strong>1.</strong> <code translate="no">SKILL.md</code> <strong>(Core File)</strong></p>
-<p>Il s'agit du guide d'exécution pour l'agent - le document qui indique à l'agent exactement comment la tâche doit être exécutée. Il définit les métadonnées de la compétence (telles que le nom, la description et les mots clés du déclencheur), le flux d'exécution et les paramètres par défaut. Dans ce fichier, vous devez décrire clairement</p>
+<p>This is the execution guide for the agent—the document that tells the agent exactly how the task should be carried out. It defines the Skill’s metadata (such as name, description, and trigger keywords), the execution flow, and default settings. In this file, you should clearly describe:</p>
 <ul>
-<li><p><strong>le moment où la compétence doit être exécutée :</strong> Par exemple, déclencher la compétence lorsque l'entrée de l'utilisateur comprend une phrase comme "traiter des fichiers CSV avec Python".</p></li>
-<li><p><strong>Comment la tâche doit être exécutée :</strong> Présentez les étapes d'exécution dans l'ordre, par exemple : interpréter la demande de l'utilisateur → appeler les scripts de prétraitement du répertoire <code translate="no">scripts/</code> → générer le code requis → formater la sortie à l'aide des modèles de <code translate="no">templates/</code>.</p></li>
-<li><p><strong>Règles et contraintes :</strong> Spécifier des détails tels que les conventions de codage, les formats de sortie et la manière dont les erreurs doivent être gérées.</p></li>
+<li><p><strong>When the Skill should run:</strong> For example, trigger the Skill when the user input includes a phrase like “process CSV files with Python.”</p></li>
+<li><p><strong>How the task should be performed:</strong> Lay out the execution steps in order, such as: interpret the user’s request → call preprocessing scripts from the <code translate="no">scripts/</code> directory → generate the required code → format the output using templates from <code translate="no">templates/</code>.</p></li>
+<li><p><strong>Rules and constraints:</strong> Specify details such as coding conventions, output formats, and how errors should be handled.</p></li>
 </ul>
-<p><strong>2.</strong> <code translate="no">scripts/</code> <strong>(Scripts d'exécution)</strong></p>
-<p>Ce répertoire contient des scripts pré-écrits dans des langages tels que Python, Shell ou Node.js. L'agent peut appeler ces scripts directement, au lieu de générer le même code à plusieurs reprises au moment de l'exécution. Les exemples typiques sont <code translate="no">create_collection.py</code> et <code translate="no">check_env.py</code>.</p>
-<p><strong>3.</strong> <code translate="no">templates/</code> <strong>(modèles de documents)</strong></p>
-<p>Fichiers modèles réutilisables que l'agent peut utiliser pour générer un contenu personnalisé. Les exemples les plus courants sont les modèles de rapport ou les modèles de configuration.</p>
-<p><strong>4.</strong> <code translate="no">resources/</code> <strong>(Documents de référence)</strong></p>
-<p>Documents de référence que l'agent peut consulter pendant l'exécution, tels que la documentation de l'API, les spécifications techniques ou les guides de bonnes pratiques.</p>
-<p>Dans l'ensemble, cette structure reflète la manière dont le travail est transmis à un nouveau membre de l'équipe : <code translate="no">SKILL.md</code> explique le travail, <code translate="no">scripts/</code> fournit des outils prêts à l'emploi, <code translate="no">templates/</code> définit les formats standard et <code translate="no">resources/</code> fournit des informations générales. Avec tout cela en place, l'agent peut exécuter la tâche de manière fiable et avec un minimum d'approximation.</p>
-<h2 id="Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">Tutoriel pratique : Création d'une compétence personnalisée pour un système RAG alimenté par Milvus<button data-href="#Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
+<p><strong>2.</strong> <code translate="no">scripts/</code> <strong>(Execution Scripts)</strong></p>
+<p>This directory contains prewritten scripts in languages such as Python, Shell, or Node.js. The agent can call these scripts directly, instead of generating the same code repeatedly at runtime. Typical examples include <code translate="no">create_collection.py</code> and <code translate="no">check_env.py</code>.</p>
+<p><strong>3.</strong> <code translate="no">templates/</code> <strong>(Document Templates)</strong></p>
+<p>Reusable template files that the agent can use to generate customized content. Common examples include report templates or configuration templates.</p>
+<p><strong>4.</strong> <code translate="no">resources/</code> <strong>(Reference Materials)</strong></p>
+<p>Reference documents the agent can consult during execution, such as API documentation, technical specifications, or best-practice guides.</p>
+<p>Overall, this structure mirrors how work is handed off to a new teammate: <code translate="no">SKILL.md</code> explains the job, <code translate="no">scripts/</code> provide ready-to-use tools, <code translate="no">templates/</code> define standard formats, and <code translate="no">resources/</code> supply background information. With all of this in place, the agent can execute the task reliably and with minimal guesswork.</p>
+<h2 id="Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="common-anchor-header">Hands-on Tutorial: Creating a Custom Skill for a Milvus-Powered RAG System<button data-href="#Hands-on-Tutorial-Creating-a-Custom-Skill-for-a-Milvus-Powered-RAG-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,34 +82,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans cette section, nous allons construire une compétence personnalisée capable de mettre en place une collection Milvus et d'assembler un pipeline RAG complet à partir d'instructions simples en langage naturel. L'objectif est d'éviter tout le travail de configuration habituel - pas de conception manuelle de schéma, pas de configuration d'index, pas de code passe-partout. Vous dites à l'agent ce que vous voulez, et Skill s'occupe des éléments Milvus pour vous.</p>
-<h3 id="Design-Overview" class="common-anchor-header">Présentation de la conception</h3><p>
+    </button></h2><p>In this section, we’ll walk through building a custom Skill that can set up a Milvus collection and assemble a full RAG pipeline from plain natural-language instructions. The goal is to skip all the usual setup work — no manual schema design, no index configuration, no boilerplate code. You tell the agent what you want, and the Skill handles the Milvus pieces for you.</p>
+<h3 id="Design-Overview" class="common-anchor-header">Design Overview</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/design_overview_d4c886291b.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Prerequisites" class="common-anchor-header">Conditions préalables</h3><table>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><table>
 <thead>
-<tr><th>Composant</th><th>Exigences</th></tr>
+<tr><th>Component</th><th>Requirement</th></tr>
 </thead>
 <tbody>
 <tr><td>CLI</td><td><code translate="no">claude-code</code></td></tr>
-<tr><td>Modèles</td><td>GLM 4.7, OpenAI</td></tr>
-<tr><td>Conteneur</td><td>Docker</td></tr>
+<tr><td>Models</td><td>GLM 4.7, OpenAI</td></tr>
+<tr><td>Container</td><td>Docker</td></tr>
 <tr><td>Milvus</td><td>2.6.8</td></tr>
-<tr><td>Plate-forme de configuration de modèles</td><td>CC-Switch</td></tr>
-<tr><td>Gestionnaire de paquets</td><td>npm</td></tr>
-<tr><td>Langage de développement</td><td>Python</td></tr>
+<tr><td>Model Configuration Platform</td><td>CC-Switch</td></tr>
+<tr><td>Package Manager</td><td>npm</td></tr>
+<tr><td>Development Language</td><td>Python</td></tr>
 </tbody>
 </table>
-<h3 id="Step-1-Environment-Setup" class="common-anchor-header">Étape 1 : Configuration de l'environnement</h3><p><strong>Installer CC-Switch</strong> <code translate="no">claude-code</code></p>
+<h3 id="Step-1-Environment-Setup" class="common-anchor-header">Step 1: Environment Setup</h3><p><strong>Install</strong> <code translate="no">claude-code</code></p>
 <pre><code translate="no">npm install -g <span class="hljs-meta">@anthropic</span>-ai/claude-code
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Installer CC-Switch</strong></p>
-<p><strong>Note :</strong> CC-Switch est un outil de changement de modèle qui permet de passer facilement d'une API de modèle à l'autre lors de l'exécution locale de modèles d'IA.</p>
-<p>Référentiel du projet <a href="https://github.com/farion1231/cc-switch">: https://github.com/farion1231/cc-switch</a></p>
-<p><strong>Sélectionnez Claude et ajoutez une clé API</strong></p>
+<p><strong>Install CC-Switch</strong></p>
+<p><strong>Note:</strong> CC-Switch is a model-switching tool that makes it easy to switch between different model APIs when running AI models locally.</p>
+<p>Project repository: <a href="https://github.com/farion1231/cc-switch">https://github.com/farion1231/cc-switch</a></p>
+<p><strong>Select Claude and Add an API Key</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/1_0cdfab2e54.PNG" alt="" class="doc-image" id="" />
@@ -124,14 +122,14 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>Vérifier l'état actuel</strong></p>
+<p><strong>Check the Current Status</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/3_f1c13da1fe.PNG" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Déployer et démarrer Milvus-Standalone</strong></p>
+<p><strong>Deploy and Start Milvus-Standalone</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Download docker-compose.yml</span>
 
 wget https://github.com/milvus-io/milvus/releases/download/v2<span class="hljs-number">.6</span><span class="hljs-number">.8</span>/milvus-standalone-docker-compose.yml -O docker-compose.yml
@@ -156,38 +154,38 @@ docker ps | grep milvus
     <span></span>
   </span>
 </p>
-<p><strong>Configurer la clé API OpenAI</strong></p>
+<p><strong>Configure the OpenAI API Key</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># Add this to ~/.bashrc or ~/.zshrc</span>
 
 OPENAI_API_KEY=your_openai_api_key_here
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Create-the-Custom-Skill-for-Milvus" class="common-anchor-header">Étape 2 : Créer la compétence personnalisée pour Milvus</h3><p><strong>Créer la structure du répertoire</strong></p>
+<h3 id="Step-2-Create-the-Custom-Skill-for-Milvus" class="common-anchor-header">Step 2: Create the Custom Skill for Milvus</h3><p><strong>Create the Directory Structure</strong></p>
 <pre><code translate="no"><span class="hljs-built_in">cd</span> ~/.claude/skills/
 
 <span class="hljs-built_in">mkdir</span> -p milvus-skills/example milvus-skills/scripts
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Initialiser</strong> <code translate="no">SKILL.md</code></p>
-<p><strong>Note :</strong> SKILL.md sert de guide d'exécution de l'agent. Il définit ce que la compétence fait et comment elle doit être déclenchée.</p>
+<p><strong>Initialize</strong> <code translate="no">SKILL.md</code></p>
+<p><strong>Note:</strong> SKILL.md serves as the agent’s execution guide. It defines what the Skill does and how it should be triggered.</p>
 <pre><code translate="no"><span class="hljs-attr">name</span>: milvus-collection-builder
 
 <span class="hljs-attr">description</span>: <span class="hljs-title class_">Create</span> <span class="hljs-title class_">Milvus</span> collections <span class="hljs-keyword">using</span> natural language, supporting both <span class="hljs-variable constant_">RAG</span> and text search scenarios
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Écrire les scripts de base</strong></p>
+<p><strong>Write the Core Scripts</strong></p>
 <table>
 <thead>
-<tr><th>Type de script</th><th>Nom du fichier</th><th>Objectif</th></tr>
+<tr><th>Script Type</th><th>File Name</th><th>Purpose</th></tr>
 </thead>
 <tbody>
-<tr><td>Vérification de l'environnement</td><td><code translate="no">check_env.py</code></td><td>Vérifie la version de Python, les dépendances nécessaires et la connexion à Milvus.</td></tr>
-<tr><td>Analyse de l'intention</td><td><code translate="no">intent_parser.py</code></td><td>Convertit des requêtes telles que "construire une base de données RAG" en une intention structurée telle que <code translate="no">scene=rag</code></td></tr>
-<tr><td>Création d'une collection</td><td><code translate="no">milvus_builder.py</code></td><td>Le constructeur de base qui génère le schéma de la collection et la configuration de l'index.</td></tr>
-<tr><td>Ingestion de données</td><td><code translate="no">insert_milvus_data.py</code></td><td>Charge les documents, les regroupe, génère des embeddings et écrit les données dans Milvus.</td></tr>
-<tr><td>Exemple 1</td><td><code translate="no">basic_text_search.py</code></td><td>Démontre comment créer un système de recherche de documents.</td></tr>
-<tr><td>Exemple 2</td><td><code translate="no">rag_knowledge_base.py</code></td><td>Démontre comment construire une base de connaissances RAG complète.</td></tr>
+<tr><td>Environment check</td><td><code translate="no">check_env.py</code></td><td>Checks the Python version, required dependencies, and the Milvus connection</td></tr>
+<tr><td>Intent parsing</td><td><code translate="no">intent_parser.py</code></td><td>Converts requests like “build a RAG database” into a structured intent such as <code translate="no">scene=rag</code></td></tr>
+<tr><td>Collection creation</td><td><code translate="no">milvus_builder.py</code></td><td>The core builder that generates the collection schema and index configuration</td></tr>
+<tr><td>Data ingestion</td><td><code translate="no">insert_milvus_data.py</code></td><td>Loads documents, chunks them, generates embeddings, and writes data into Milvus</td></tr>
+<tr><td>Example 1</td><td><code translate="no">basic_text_search.py</code></td><td>Demonstrates how to create a document search system</td></tr>
+<tr><td>Example 2</td><td><code translate="no">rag_knowledge_base.py</code></td><td>Demonstrates how to build a complete RAG knowledge base</td></tr>
 </tbody>
 </table>
-<p>Ces scripts montrent comment transformer une compétence centrée sur Milvus en quelque chose de pratique : un système de recherche de documents fonctionnel et une configuration de questions-réponses intelligentes (RAG).</p>
-<h3 id="Step-3-Enable-the-Skill-and-Run-a-Test" class="common-anchor-header">Étape 3 : Activer la compétence et effectuer un test</h3><p><strong>Décrire la demande en langage naturel</strong></p>
+<p>These scripts show how to turn a Milvus-focused Skill into something practical: a working document search system and an intelligent Q&amp;A (RAG) setup.</p>
+<h3 id="Step-3-Enable-the-Skill-and-Run-a-Test" class="common-anchor-header">Step 3: Enable the Skill and Run a Test</h3><p><strong>Describe the Request in Natural Language</strong></p>
 <pre><code translate="no"><span class="hljs-string">&quot;I want to build an RAG system.&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -196,21 +194,21 @@ OPENAI_API_KEY=your_openai_api_key_here
     <span></span>
   </span>
 </p>
-<p><strong>Création d'un système RAG</strong></p>
+<p><strong>RAG System Created</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/test2_80656d59b1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Insérer un échantillon de données</strong></p>
+<p><strong>Insert Sample Data</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/test3_392753eb73.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Exécuter une requête</strong></p>
+<p><strong>Run a Query</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/test4_75e23c6a3a.png" alt="" class="doc-image" id="" />
@@ -232,11 +230,11 @@ OPENAI_API_KEY=your_openai_api_key_here
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans ce tutoriel, nous avons construit un système RAG alimenté par Milvus à l'aide d'une compétence personnalisée. L'objectif n'était pas seulement de montrer une autre façon d'appeler Milvus, mais aussi de montrer comment les compétences peuvent transformer ce qui est normalement une configuration lourde en plusieurs étapes en quelque chose que vous pouvez réutiliser et sur lequel vous pouvez itérer. Au lieu de définir manuellement des schémas, d'ajuster des index ou d'assembler du code de flux de travail, la compétence prend en charge la plupart des tâches administratives afin que vous puissiez vous concentrer sur les parties de RAG qui comptent réellement.</p>
-<p>Ce n'est qu'un début. Un pipeline RAG complet comporte de nombreux éléments mobiles : prétraitement, regroupement, paramètres de recherche hybride, reclassement, évaluation, etc. Tous ces éléments peuvent être regroupés dans des compétences distinctes et composés en fonction de votre cas d'utilisation. Si votre équipe dispose de normes internes pour les dimensions des vecteurs, les paramètres d'index, les modèles d'invite ou la logique de recherche, les compétences sont un moyen propre d'encoder ces connaissances et de les rendre reproductibles.</p>
-<p>Pour les nouveaux développeurs, cela abaisse la barrière d'entrée - il n'est pas nécessaire d'apprendre tous les détails de Milvus avant de faire fonctionner quelque chose. Pour les équipes expérimentées, cela permet de réduire les configurations répétées et de maintenir la cohérence des projets entre les environnements. Les compétences ne remplaceront pas une conception réfléchie du système, mais elles éliminent de nombreuses frictions inutiles.</p>
-<p>L'implémentation complète est disponible dans le <a href="https://github.com/yinmin2020/open-milvus-skills">dépôt open-source</a>, et vous pouvez explorer d'autres exemples construits par la communauté sur la <a href="https://skillsmp.com/">place de marché des compétences</a>.</p>
-<h2 id="Stay-tuned" class="common-anchor-header">Restez à l'écoute !<button data-href="#Stay-tuned" class="anchor-icon" translate="no">
+    </button></h2><p>In this tutorial, we walked through building a Milvus-powered RAG system using a custom Skill. The goal wasn’t just to show another way to call Milvus—it was to show how Skills can turn what is normally a multi-step, configuration-heavy setup into something you can reuse and iterate on. Instead of manually defining schemas, tuning indexes, or stitching together workflow code, the Skill handles most of the boilerplate so you can focus on the parts of RAG that actually matter.</p>
+<p>This is only the start. A full RAG pipeline has plenty of moving pieces: preprocessing, chunking, hybrid search settings, reranking, evaluation, and more. All of these can be packaged as separate Skills and composed depending on your use case. If your team has internal standards for vector dimensions, index params, prompt templates, or retrieval logic, Skills are a clean way to encode that knowledge and make it repeatable.</p>
+<p>For new developers, this lowers the entry barrier—no need to learn every detail of Milvus before getting something running. For experienced teams, it cuts down on repeated setup and helps keep projects consistent across environments. Skills won’t replace thoughtful system design, but they remove a lot of unnecessary friction.</p>
+<p>👉 The full implementation is available in the <a href="https://github.com/yinmin2020/open-milvus-skills">open-source repository</a>, and you can explore more community-built examples in the <a href="https://skillsmp.com/">Skill marketplace</a>.</p>
+<h2 id="Stay-tuned" class="common-anchor-header">Stay tuned!<button data-href="#Stay-tuned" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -251,4 +249,4 @@ OPENAI_API_KEY=your_openai_api_key_here
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nous travaillons également à l'introduction de compétences officielles Milvus et Zilliz Cloud qui couvrent les modèles RAG courants et les meilleures pratiques de production. Si vous avez des idées ou des flux de travail spécifiques que vous souhaitez voir pris en charge, rejoignez notre <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">canal Slack</a> et discutez avec nos ingénieurs. Et si vous souhaitez obtenir des conseils pour votre propre installation, vous pouvez toujours réserver une session <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>
+    </button></h2><p>We’re also working on introducing official Milvus and Zilliz Cloud Skills that cover common RAG patterns and production best practices. If you have ideas or specific workflows you want supported, join our <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Slack Channel</a> and chat with our engineers. And if you want guidance for your own setup, you can always book a <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> session.</p>

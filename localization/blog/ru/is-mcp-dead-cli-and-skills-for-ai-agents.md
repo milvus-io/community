@@ -1,6 +1,7 @@
 ---
 id: is-mcp-dead-cli-and-skills-for-ai-agents.md
-title: 'MCP умер? Чему мы научились, создавая MCP, CLI и агентские навыки'
+title: |
+  Is MCP Dead? What We Learned Building with MCP, CLI, and Agent Skills
 author: Cheney Zhang
 date: 2026-4-1
 cover: assets.zilliz.com/mcp_dead_a23ff23c27.jpg
@@ -13,13 +14,12 @@ meta_keywords: >-
   tools
 meta_title: |
   Is MCP Dead? MCP vs CLI vs Agent Skills Compared
-desc: >-
-  MCP съедает контекст, ломается в производстве и не может повторно использовать
-  LLM вашего агента. Мы создали все три варианта - вот когда каждый из них
-  подходит.
+desc: >
+  MCP eats context, breaks in production, and can't reuse your agent's LLM. We
+  built with all three — here's when each fits.
 origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
 ---
-<p>Когда технический директор Perplexity Денис Ярац на ASK 2026 заявил, что компания деприоритизирует MCP внутри себя, это запустило обычный цикл. Генеральный директор YC Гэрри Тан (Garry Tan) набросился с критикой - MCP съедает слишком много контекстного окна, auth сломан, он создал замену CLI за 30 минут. Hacker News выступил с резкой критикой MCP.</p>
+<p>When Perplexity’s CTO Denis Yarats said at ASK 2026 that the company was deprioritizing MCP internally, it set off the usual cycle. YC CEO Garry Tan piled on — MCP eats too much context window, auth is broken, he built a CLI replacement in 30 minutes. Hacker News ran strongly anti-MCP.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_1_4e49d13991.png" alt="" class="doc-image" id="" />
@@ -32,12 +32,12 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
     <span></span>
   </span>
 </p>
-<p>Год назад такой уровень публичного скептицизма был бы необычным. Model Context Protocol (MCP) позиционировался как окончательный стандарт для интеграции инструментов <a href="https://zilliz.com/glossary/ai-agents">AI-агентов</a>. Количество серверов удваивалось еженедельно. С тех пор ситуация развивается по знакомой дуге: бурная шумиха, широкое внедрение, а затем разочарование в производстве.</p>
-<p>Индустрия быстро реагирует. Компания Bytedance's Lark/Feishu выложила в открытый доступ свой официальный CLI - 200+ команд для 11 бизнес-доменов с 19 встроенными навыками агентов. Google выпустила gws для Google Workspace. Модель CLI + навыки быстро становится стандартом для корпоративных агентских инструментов, а не нишевой альтернативой.</p>
-<p>В Zilliz мы выпустили <a href="https://docs.zilliz.com/reference/cli/overview">Zilliz CLI</a>, который позволяет вам работать и управлять <a href="https://milvus.io/intro">Milvus</a> и <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (полностью управляемый Milvus) прямо с терминала, не покидая среды кодирования. Кроме того, мы создали <a href="https://milvus.io/docs/milvus_for_agents.md">Milvus Skills</a> и <a href="https://docs.zilliz.com/docs/agents/zilliz-skill">Zilliz Skills</a>, чтобы агенты искусственного интеллекта, такие как Claude Code и Codex, могли управлять вашей <a href="https://zilliz.com/learn/what-is-vector-database">векторной базой данных</a> с помощью естественного языка.</p>
-<p>Год назад мы также создали MCP-сервер для Milvus и Zilliz Cloud. Этот опыт показал нам, где MCP не работает, а где все еще подходит. Три архитектурных ограничения подтолкнули нас к CLI и Skills: раздутость контекстного окна, пассивный дизайн инструментов и невозможность повторного использования собственного LLM агента.</p>
-<p>В этом посте мы рассмотрим каждую проблему, покажем, что мы создаем вместо них, и изложим практическую схему выбора между MCP, CLI и Agent Skills.</p>
-<h2 id="MCP-Eats-72-of-Your-Context-Window-at-Startup" class="common-anchor-header">MCP съедает 72% вашего контекстного окна при запуске<button data-href="#MCP-Eats-72-of-Your-Context-Window-at-Startup" class="anchor-icon" translate="no">
+<p>A year ago, this level of public skepticism would have been unusual. Model Context Protocol (MCP) was positioned as the definitive standard for <a href="https://zilliz.com/glossary/ai-agents">AI agent</a> tool integration. Server counts were doubling weekly. The pattern since then has followed a familiar arc: rapid hype, broad adoption, then production disillusionment.</p>
+<p>The industry is responding fast. Bytedance’s Lark/Feishu open-sourced their official CLI — 200+ commands across 11 business domains with 19 built-in Agent Skills. Google shipped gws for Google Workspace. The CLI + Skills pattern is quickly becoming the default for enterprise agent tooling, not a niche alternative.</p>
+<p>At Zilliz, we’ve released <a href="https://docs.zilliz.com/reference/cli/overview">Zilliz CLI</a>, which lets you operate and manage <a href="https://milvus.io/intro">Milvus</a> and <a href="https://zilliz.com/cloud">Zilliz Cloud</a> (fully managed Milvus) directly from your terminal without leaving your coding environment. On top of that, we built <a href="https://milvus.io/docs/milvus_for_agents.md">Milvus Skills</a> and <a href="https://docs.zilliz.com/docs/agents/zilliz-skill">Zilliz Skill</a>s so that AI coding agents like Claude Code and Codex can manage your <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> through natural language.</p>
+<p>We also built an MCP server for Milvus and Zilliz Cloud one year ago. That experience taught us exactly where MCP breaks down — and where it still fits. Three architectural limitations pushed us toward CLI and Skills: context window bloat, passive tool design, and the inability to reuse the agent’s own LLM.</p>
+<p>In this post, we’ll walk through each problem, show what we’re building instead, and lay out a practical framework for choosing between MCP, CLI, and Agent Skills.</p>
+<h2 id="MCP-Eats-72-of-Your-Context-Window-at-Startup" class="common-anchor-header">MCP Eats 72% of Your Context Window at Startup<button data-href="#MCP-Eats-72-of-Your-Context-Window-at-Startup" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -52,19 +52,19 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Стандартная настройка MCP может занимать около 72 % доступного контекстного окна, прежде чем агент совершит хоть одно действие. Подключите три сервера - GitHub, Playwright и интеграцию IDE - к модели с 200 тыс. токенов, и только определения инструментов займут примерно 143 тыс. токенов. Агент еще ничего не сделал. Он уже заполнен на три четверти.</p>
+    </button></h2><p>A standard MCP setup can consume around 72% of your available context window before the agent takes a single action. Connect three servers — GitHub, Playwright, and an IDE integration — on a 200K-token model, and tool definitions alone occupy roughly 143K tokens. The agent hasn’t done anything yet. It’s already three-quarters full.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_3_767d46c583.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Затраты заключаются не только в токенах. Чем больше несвязанного контента упаковано в контекст, тем слабее модель фокусируется на том, что действительно важно. Сотня схем инструментов в контексте означает, что агент пробирается через них при принятии каждого решения. Исследователи зафиксировали то, что они называют <em>контекстной гнилью</em> - ухудшение качества рассуждений из-за перегрузки контекстом. В ходе измерений точность выбора инструментов падала с 43 % до менее 14 % по мере увеличения их количества. Большее количество инструментов, как ни парадоксально, означает худшее их использование.</p>
-<p>Первопричина кроется в архитектуре. MCP загружает все описания инструментов в полном объеме в начале сеанса, независимо от того, будут ли они использоваться в текущем разговоре. Это выбор разработчиков на уровне протокола, а не ошибка, но стоимость увеличивается с каждым добавленным инструментом.</p>
-<p>В навыках агентов используется другой подход: <strong>прогрессивное раскрытие</strong>. В начале сеанса агент считывает только метаданные каждого навыка - название, однострочное описание, условие срабатывания. Всего несколько десятков токенов. Полное содержимое навыка загружается только тогда, когда агент определяет, что оно актуально. Подумайте об этом так: MCP выстраивает все инструменты перед дверью и заставляет вас выбирать; Skills дает вам сначала индекс, а полное содержимое - по требованию.</p>
-<p>Инструменты CLI дают аналогичное преимущество. Агент запускает git --help или docker --help, чтобы обнаружить возможности по требованию, без предварительной загрузки каждого определения параметров. Стоимость контекста оплачивается по мере использования, а не заранее.</p>
-<p>В небольших масштабах разница пренебрежимо мала. В масштабах производства это разница между работающим агентом и агентом, который утопает в собственных определениях инструментов.</p>
-<h2 id="MCPs-Passive-Architecture-Limits-Agent-Workflows" class="common-anchor-header">Пассивная архитектура MCP ограничивает рабочие процессы агентов<button data-href="#MCPs-Passive-Architecture-Limits-Agent-Workflows" class="anchor-icon" translate="no">
+<p>The cost isn’t just tokens. The more unrelated content packed into context, the weaker the model’s focus on what actually matters. A hundred tool schemas sitting in context means the agent wades through all of them on every decision. Researchers have documented what they call <em>context rot</em> — degraded reasoning quality from context overload. In measured tests, tool selection accuracy dropped from 43% to below 14% as tool count increased. More tools, paradoxically, means worse tool use.</p>
+<p>The root cause is architectural. MCP loads all tool descriptions in full at session start, regardless of whether the current conversation will ever use them. That’s a protocol-level design choice, not a bug — but the cost scales with every tool you add.</p>
+<p>Agent skills take a different approach: <strong>progressive disclosure</strong>. At session start, an agent reads only each Skill’s metadata — name, one-line description, trigger condition. A few dozen tokens total. The full Skill content loads only when the agent determines it’s relevant. Think of it this way: MCP lines up every tool at the door and makes you choose; Skills gives you an index first, full content on demand.</p>
+<p>CLI tools offer a similar advantage. An agent runs git --help or docker --help to discover capabilities on demand, without preloading every parameter definition. Context cost is pay-as-you-go, not upfront.</p>
+<p>At a small scale, the difference is negligible. At production scale, it’s the difference between an agent that works and one that drowns in its own tool definitions.</p>
+<h2 id="MCPs-Passive-Architecture-Limits-Agent-Workflows" class="common-anchor-header">MCP’s Passive Architecture Limits Agent Workflows<button data-href="#MCPs-Passive-Architecture-Limits-Agent-Workflows" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -79,36 +79,36 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MCP - это протокол вызова инструментов: как обнаружить инструменты, вызвать их и получить результаты. Чистый дизайн для простых сценариев использования. Но эта чистота также является ограничением.</p>
+    </button></h2><p>MCP is a tool-calling protocol: how to discover tools, call them, and receive results. Clean design for simple use cases. But that cleanness is also a constraint.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_4_f80de07814.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Flat-Tool-Space-with-No-Hierarchy" class="common-anchor-header">Плоское пространство инструментов без иерархии</h3><p>Инструмент MCP - это плоская сигнатура функции. Никаких подкоманд, никакого осознания жизненного цикла сеанса, никакого ощущения того, где находится агент в многоступенчатом рабочем процессе. Он ждет, когда его вызовут. Это все, что он делает.</p>
+<h3 id="Flat-Tool-Space-with-No-Hierarchy" class="common-anchor-header">Flat Tool Space with No Hierarchy</h3><p>An MCP tool is a flat function signature. No subcommands, no awareness of session lifecycle, no sense of where the agent is in a multi-step workflow. It waits to be called. That’s all it does.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_5_e7f3630e1f.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>CLI работает по-другому. git commit, git push и git log - это совершенно разные пути выполнения, имеющие один интерфейс. Агент выполняет команду --help, инкрементально исследует доступную поверхность и расширяет только то, что ему нужно - без предварительной загрузки всей документации по параметрам в контекст.</p>
-<h3 id="Skills-Encode-Workflow-Logic--MCP-Cant" class="common-anchor-header">Навыки кодируют логику рабочего процесса - MCP не может</h3><p>Навык агента - это файл в формате Markdown, содержащий стандартную операционную процедуру: что делать в первую очередь, что делать дальше, как обрабатывать неудачи и когда сообщать пользователю. Агент получает не просто инструмент, а целый рабочий процесс. Навыки активно формируют поведение агента во время разговора - что его запускает, что он готовит заранее и как восстанавливается после ошибок. Инструменты MCP могут только ждать.</p>
-<h3 id="MCP-Cant-Access-the-Agents-LLM" class="common-anchor-header">MCP не может получить доступ к LLM агента</h3><p>Это ограничение, которое на самом деле остановило нас.</p>
-<p>Когда мы создали <a href="https://github.com/zilliztech/claude-context">claude-context</a> - плагин для MCP, который добавляет <a href="https://zilliz.com/glossary/semantic-search">семантический поиск</a> в Claude Code и другие агенты кодирования с искусственным интеллектом, предоставляя им глубокий контекст всей кодовой базы, - мы хотели получить соответствующие исторические фрагменты разговоров из Milvus и вывести их на экран в качестве контекста. <a href="https://zilliz.com/learn/vector-similarity-search">Векторный поиск</a> сработал. Проблема заключалась в том, что делать с результатами.</p>
-<p>Извлеките 10 лучших результатов, и, возможно, три из них окажутся полезными. Остальные 7 - шум. Передайте все 10 внешнему агенту, и шум помешает получить ответ. В ходе тестирования мы увидели, что ответы отвлекаются на нерелевантные исторические записи. Нам нужно было отфильтровать результаты перед передачей.</p>
-<p>Мы попробовали несколько подходов. Добавление шага повторного ранжирования внутри сервера MCP с использованием небольшой модели: недостаточно точно, а порог релевантности требует настройки для каждого конкретного случая. Использование большой модели для повторного ранжирования: технически обоснованно, но MCP-сервер работает как отдельный процесс без доступа к LLM внешнего агента. Нам пришлось бы настраивать отдельный LLM-клиент, управлять отдельным API-ключом и обрабатывать отдельный путь вызова.</p>
-<p>Все, что мы хотели, было просто: пусть LLM внешнего агента принимает непосредственное участие в принятии решения о фильтрации. Получите 10 лучших, пусть агент сам решает, что стоит оставить, и возвращает только релевантные результаты. Никакой второй модели. Никаких дополнительных ключей API.</p>
+<p>A CLI works differently. git commit, git push, and git log are completely different execution paths sharing a single interface. An agent runs --help, explores the available surface incrementally, and expands only what it needs — without front-loading all the parameter documentation into context.</p>
+<h3 id="Skills-Encode-Workflow-Logic--MCP-Cant" class="common-anchor-header">Skills Encode Workflow Logic — MCP Can’t</h3><p>An Agent Skill is a Markdown file containing a standard operating procedure: what to do first, what to do next, how to handle failures, and when to surface something to the user. The agent receives not just a tool but an entire workflow. Skills actively shape how an agent behaves during a conversation — what triggers them, what they prepare in advance, and how they recover from errors. MCP tools can only wait.</p>
+<h3 id="MCP-Cant-Access-the-Agents-LLM" class="common-anchor-header">MCP Can’t Access the Agent’s LLM</h3><p>This is the limitation that actually stopped us.</p>
+<p>When we built <a href="https://github.com/zilliztech/claude-context">claude-context</a> — an MCP plugin that adds <a href="https://zilliz.com/glossary/semantic-search">semantic search</a> to Claude Code and other AI coding agents, giving them deep context from an entire codebase — we wanted to retrieve relevant historical conversation snippets from Milvus and surface them as context. The <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> retrieval worked. The problem was what to do with the results.</p>
+<p>Retrieve the top 10 results, and maybe 3 are useful. The other 7 are noise. Hand all 10 to the outer agent, and the noise interferes with the answer. In testing, we saw responses get distracted by irrelevant historical records. We needed to filter before passing results up.</p>
+<p>We tried several approaches. Adding a reranking step inside the MCP server using a small model: not accurate enough, and the relevance threshold needed per-use-case tuning. Using a large model for reranking: technically sound, but an MCP server runs as a separate process with no access to the outer agent’s LLM. We’d have to configure a separate LLM client, manage a separate API key, and handle a separate call path.</p>
+<p>What we wanted was simple: let the outer agent’s LLM participate directly in the filtering decision. Retrieve the top 10, let the agent itself judge what’s worth keeping, and return only the relevant results. No second model. No extra API keys.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_6_aca200f359.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>MCP не может этого сделать. Граница процессов между сервером и агентом - это еще и граница интеллекта. Сервер не может использовать LLM агента; агент не может управлять тем, что происходит внутри сервера. Это хорошо для простых CRUD-инструментов. В тот момент, когда инструмент должен принимать решения, эта изоляция становится реальным ограничением.</p>
-<p>Навык агента решает эту проблему напрямую. Навык поиска может вызвать векторный поиск для топ-10, заставить собственный LLM агента оценить релевантность и вернуть только то, что прошло. Никакой дополнительной модели. Агент сам выполняет фильтрацию.</p>
-<h2 id="What-We-Built-Instead-with-CLI-and-Skills" class="common-anchor-header">Что мы создали вместо этого с помощью CLI и навыков<button data-href="#What-We-Built-Instead-with-CLI-and-Skills" class="anchor-icon" translate="no">
+<p>MCP can’t do this. The process boundary between server and agent is also an intelligence boundary. The server can’t use the agent’s LLM; the agent can’t govern what happens inside the server. Fine for simple CRUD tools. The moment a tool needs to make a judgment call, that isolation becomes a real constraint.</p>
+<p>An Agent Skill solves this directly. A retrieval Skill can call vector search for the top 10, have the agent’s own LLM assess relevance, and return only what passes. No additional model. The agent does the filtering itself.</p>
+<h2 id="What-We-Built-Instead-with-CLI-and-Skills" class="common-anchor-header">What We Built Instead with CLI and Skills<button data-href="#What-We-Built-Instead-with-CLI-and-Skills" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -123,34 +123,34 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Мы видим CLI + Skills как направление взаимодействия агента и инструмента - не только для поиска в памяти, но и для всего стека. Это убеждение лежит в основе всего, что мы создаем.</p>
-<h3 id="memsearch-A-Skills-Based-Memory-Layer-for-AI-Agents" class="common-anchor-header">memsearch: Уровень памяти, основанный на навыках, для агентов ИИ</h3><p>Мы создали <a href="https://github.com/zilliztech/memsearch">memsearch</a>- слой памяти с открытым исходным кодом для Claude Code и других агентов ИИ. Навык работает внутри субагента, состоящего из трех этапов: Milvus обрабатывает начальный векторный поиск для широкого обнаружения, собственный LLM агента оценивает релевантность и расширяет контекст для многообещающих совпадений, а финальное углубление получает доступ к оригинальным разговорам только в случае необходимости. Шум отбрасывается на каждом этапе - промежуточный поисковый мусор никогда не попадает в первичное контекстное окно.</p>
+    </button></h2><p>We see CLI + Skills as the direction for agent-tool interaction — not just for memory retrieval, but across the stack. This conviction drives everything we’re building.</p>
+<h3 id="memsearch-A-Skills-Based-Memory-Layer-for-AI-Agents" class="common-anchor-header">memsearch: A Skills-Based Memory Layer for AI Agents</h3><p>We built <a href="https://github.com/zilliztech/memsearch">memsearch</a>, an open-source memory layer for Claude Code and other AI agents. The Skill runs inside a subagent with three stages: Milvus handles the initial vector search for broad discovery, the agent’s own LLM evaluates relevance and expands context for promising hits, and a final drill-down accesses original conversations only when needed. Noise gets discarded at each stage — intermediate retrieval junk never reaches the primary context window.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_7_7c85103513.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Ключевой момент: интеллект агента является частью исполнения инструмента. LLM, уже включенный в цикл, выполняет фильтрацию - нет второй модели, нет дополнительного ключа API, нет хрупкой настройки порога. Это конкретный случай использования - поиск контекста разговора для агентов по кодированию - но архитектура применима к любому сценарию, когда инструменту требуется не просто выполнение, а суждение.</p>
-<h3 id="Zilliz-CLI-Skills-and-Plugin-for-Vector-Database-Operations" class="common-anchor-header">Zilliz CLI, навыки и плагин для работы с векторными базами данных</h3><p>Milvus - самая распространенная в мире векторная база данных с открытым исходным кодом и <a href="https://github.com/milvus-io/milvus">43K+ звездами на GitHub</a>. <a href="https://zilliz.com/cloud">Zilliz Cloud</a> - это полностью управляемый сервис Milvus с расширенными корпоративными функциями, который работает гораздо быстрее Milvus.</p>
-<p>В основе наших инструментов для разработчиков лежит та же многоуровневая архитектура, о которой говорилось выше:</p>
+<p>The key insight: the agent’s intelligence is part of the tool’s execution. The LLM already in the loop does the filtering — no second model, no extra API key, no brittle threshold tuning. This is a specific use case — conversation-context retrieval for coding agents — but the architecture generalizes to any scenario where a tool needs judgment, not just execution.</p>
+<h3 id="Zilliz-CLI-Skills-and-Plugin-for-Vector-Database-Operations" class="common-anchor-header">Zilliz CLI, Skills, and Plugin for Vector Database Operations</h3><p>Milvus is the world’s most widely adopted open-source vector database with <a href="https://github.com/milvus-io/milvus">43K+ stars on GitHub</a>. <a href="https://zilliz.com/cloud">Zilliz Cloud</a> is the fully managed service of Milvus with advanced enterprise features and is much faster than Milvus.</p>
+<p>The same layered architecture mentioned above drives our developer tools:</p>
 <ul>
-<li><a href="https://docs.zilliz.com/reference/cli/overview">Zilliz CLI</a> - это инфраструктурный уровень. Управление кластером, <a href="https://milvus.io/docs/manage-collections.md">операции с коллекциями</a>, векторный поиск, <a href="https://milvus.io/docs/rbac.md">RBAC</a>, резервное копирование, биллинг - все, что вы делаете в консоли Zilliz Cloud, доступно из терминала. Люди и агенты используют одни и те же команды. Zilliz CLI также служит основой для Milvus Skills и Zilliz Skills.</li>
-<li><a href="https://milvus.io/docs/milvus_for_agents.md">Milvus Skill</a> - это слой знаний для Milvus с открытым исходным кодом. Он обучает агентов кодирования AI (Claude Code, Cursor, Codex, GitHub Copilot) управлять любым развертыванием Milvus - <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>, Standalone или Distributed - с помощью Python-кода <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a>: соединения, <a href="https://milvus.io/docs/schema-hands-on.md">проектирование схем</a>, CRUD, <a href="https://zilliz.com/learn/hybrid-search-with-milvus">гибридный поиск</a>, <a href="https://milvus.io/docs/full-text-search.md">полнотекстовый поиск</a>, <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">конвейеры RAG</a>.</li>
-<li><a href="https://docs.zilliz.com/docs/agents/zilliz-skill">Zilliz Skill</a> делает то же самое для Zilliz Cloud, обучая агентов управлению облачной инфраструктурой через Zilliz CLI.</li>
-<li><a href="https://github.com/zilliztech/zilliz-plugin">Zilliz Plugin</a> - это уровень опыта разработчика для Claude Code - превращает CLI + Skill в управляемый опыт с помощью слэш-команд, таких как /zilliz:quickstart и /zilliz:status.</li>
+<li><a href="https://docs.zilliz.com/reference/cli/overview">Zilliz CLI</a> is the infrastructure layer. Cluster management, <a href="https://milvus.io/docs/manage-collections.md">collection operations</a>, vector search, <a href="https://milvus.io/docs/rbac.md">RBAC</a>, backups, billing — everything you’d do in the Zilliz Cloud console, available from the terminal. Humans and agents use the same commands. Zilliz CLI also serves as the foundation for Milvus Skills and Zilliz Skills.</li>
+<li><a href="https://milvus.io/docs/milvus_for_agents.md">Milvus Skill</a> is the knowledge layer for open-source Milvus. It teaches AI coding agents (Claude Code, Cursor, Codex, GitHub Copilot) to operate any Milvus deployment — <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>, Standalone, or Distributed — through <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a> Python code: connections, <a href="https://milvus.io/docs/schema-hands-on.md">schema design</a>, CRUD, <a href="https://zilliz.com/learn/hybrid-search-with-milvus">hybrid search</a>, <a href="https://milvus.io/docs/full-text-search.md">full-text search</a>, <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG pipelines</a>.</li>
+<li><a href="https://docs.zilliz.com/docs/agents/zilliz-skill">Zilliz Skill</a> does the same for Zilliz Cloud, teaching agents to manage cloud infrastructure through Zilliz CLI.</li>
+<li><a href="https://github.com/zilliztech/zilliz-plugin">Zilliz Plugin</a> is the developer experience layer for Claude Code — wraps CLI + Skill into a guided experience with slash commands like /zilliz:quickstart and /zilliz:status.</li>
 </ul>
-<p>CLI управляет выполнением, Skills кодирует знания и логику рабочего процесса, Plugin обеспечивает UX. Сервер MCP не требуется.</p>
-<p>Для получения более подробной информации ознакомьтесь с этими ресурсами:</p>
+<p>CLI handles execution, Skills encode knowledge and workflow logic, Plugin delivers the UX. No MCP server in the loop.</p>
+<p>For more details, check out these resources:</p>
 <ul>
-<li><a href="https://zilliz.com/blog/introducing-zilliz-cli-and-agent-skills-for-zilliz-cloud">Представление Zilliz CLI и навыков агента для Zilliz Cloud</a></li>
-<li><a href="https://zilliz.com/blog/zilliz-cloud-just-landed-in-claude-code">Zilliz Cloud только что приземлился в Код Клода</a></li>
-<li><a href="https://docs.zilliz.com/docs/agents/zilliz-ai-prompts">Подсказки искусственного интеллекта - Zilliz Cloud Developer Hub</a></li>
-<li><a href="https://docs.zilliz.com/reference/cli/overview">Справочник по Zilliz CLI - Zilliz Cloud Developer Hub</a></li>
-<li><a href="https://docs.zilliz.com/docs/agents/zilliz-skill">Навыки Zilliz - Zilliz Cloud Developer Hub</a></li>
-<li><a href="https://milvus.io/docs/milvus_for_agents.md">Milvus для агентов искусственного интеллекта - Документация Milvus</a></li>
+<li><a href="https://zilliz.com/blog/introducing-zilliz-cli-and-agent-skills-for-zilliz-cloud">Introducing Zilliz CLI and Agent Skills for Zilliz Cloud</a></li>
+<li><a href="https://zilliz.com/blog/zilliz-cloud-just-landed-in-claude-code">Zilliz Cloud Just Landed in Claude Code</a></li>
+<li><a href="https://docs.zilliz.com/docs/agents/zilliz-ai-prompts">AI Prompts — Zilliz Cloud Developer Hub</a></li>
+<li><a href="https://docs.zilliz.com/reference/cli/overview">Zilliz CLI Reference — Zilliz Cloud Developer Hub</a></li>
+<li><a href="https://docs.zilliz.com/docs/agents/zilliz-skill">Zilliz Skill — Zilliz Cloud Developer Hub</a></li>
+<li><a href="https://milvus.io/docs/milvus_for_agents.md">Milvus for AI Agents — Milvus Documentation</a></li>
 </ul>
-<h2 id="Is-MCP-Actually-Dying" class="common-anchor-header">Действительно ли MCP умирает?<button data-href="#Is-MCP-Actually-Dying" class="anchor-icon" translate="no">
+<h2 id="Is-MCP-Actually-Dying" class="common-anchor-header">Is MCP Actually Dying?<button data-href="#Is-MCP-Actually-Dying" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -165,29 +165,29 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Многие разработчики и компании, включая нас в Zilliz, переходят на CLI и Skills. Но действительно ли MCP умирает?</p>
-<p>Короткий ответ: нет - но сфера его применения сужается до тех пределов, где он действительно уместен.</p>
-<p>MCP был передан в фонд Linux Foundation. Количество активных серверов превышает 10 000. Количество ежемесячных загрузок SDK составляет 97 миллионов. Экосистема такого размера не исчезнет из-за комментария на конференции.</p>
+    </button></h2><p>A lot of developers and companies including us here at Zilliz are turning to CLI and Skills. But is MCP really dying?</p>
+<p>The short answer: no — but its scope is narrowing to where it actually fits.</p>
+<p>MCP has been donated to the Linux Foundation. Active servers number over 10,000. SDK monthly downloads sit at 97 million. An ecosystem that size doesn’t disappear because of a conference comment.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_8_b2246e6825.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>В ветке Hacker News - <em>"Когда MCP имеет смысл сравнивать с CLI?"</em> - вызвала отклики, которые в основном были в пользу CLI: "Инструменты CLI похожи на точные инструменты", "CLI также кажется более быстрым, чем MCP". Некоторые разработчики придерживаются более сбалансированной точки зрения: Навыки - это подробный рецепт, который помогает лучше решить проблему; MCP - это инструмент, который помогает решить проблему. И то, и другое имеет свое место.</p>
-<p>Это справедливо - но возникает практический вопрос. Если рецепт сам по себе может подсказать агенту, какие инструменты и как использовать, нужен ли еще отдельный протокол распределения инструментов?</p>
-<p>Это зависит от сценария использования.</p>
+<p>A Hacker News thread — <em>“When does MCP make sense vs CLI?”</em> — drew responses that mostly favored CLI: “CLI tools are like precision instruments,” “CLIs also feel snappier than MCPs.” Some developers hold a more balanced view: Skills are a detailed recipe that helps you solve a problem better; MCP is the tool that helps you solve the problem. Both have their place.</p>
+<p>That’s fair — but it raises a practical question. If the recipe itself can direct the agent on which tools to use and how, is a separate tool-distribution protocol still necessary?</p>
+<p>It depends on the use case.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/is_mcp_dead_cli_and_skills_for_ai_agents_md_9_e2cb28812b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>MCP через stdio</strong> - версия, которую большинство разработчиков используют локально, - является тем местом, где накапливаются проблемы: нестабильное межпроцессное взаимодействие, нечеткая изоляция среды, высокие накладные расходы на токены. В этом контексте почти для каждого случая использования существуют лучшие альтернативы.</p>
-<p><strong>MCP по HTTP</strong> - это совсем другая история. Внутренние инструментальные платформы предприятий нуждаются в централизованном управлении разрешениями, унифицированном OAuth, стандартизированной телеметрии и логировании. Фрагментированные инструменты CLI действительно не в состоянии обеспечить их. Централизованная архитектура MCP имеет реальную ценность в этом контексте.</p>
-<p>То, что Perplexity на самом деле отбросила, было в основном вариантом использования stdio. Денис Ярац уточнил "внутренне" и не призывал к общеиндустриальному принятию этого выбора. Этот нюанс потерялся в передаче - "Perplexity отказывается от MCP" распространяется значительно быстрее, чем "Perplexity деприоритизирует MCP над stdio для внутренней интеграции инструментов".</p>
-<p>MCP появился потому, что решил реальную проблему: до него каждое приложение ИИ писало свою собственную логику вызова инструментов, без общего стандарта. MCP предоставил единый интерфейс в нужный момент, и экосистема быстро сформировалась. Затем производственный опыт выявил ограничения. Это нормальная дуга для инфраструктурных инструментов, а не смертный приговор.</p>
-<h2 id="When-to-Use-MCP-CLI-or-Skills" class="common-anchor-header">Когда использовать MCP, CLI или навыки<button data-href="#When-to-Use-MCP-CLI-or-Skills" class="anchor-icon" translate="no">
+<p><strong>MCP over stdio</strong> — the version most developers run locally — is where the problems accumulate: unstable inter-process communication, messy environment isolation, high token overhead. In that context, better alternatives exist for almost every use case.</p>
+<p><strong>MCP over HTTP</strong> is a different story. Enterprise internal tooling platforms need centralized permission management, unified OAuth, standardized telemetry and logging. Fragmented CLI tools genuinely struggle to provide these. MCP’s centralized architecture has real value in that context.</p>
+<p>What Perplexity actually dropped was primarily the stdio use case. Denis Yarats specified “internally” and didn’t call for industry-wide adoption of that choice. That nuance got lost in transmission — “Perplexity abandons MCP” spreads considerably faster than “Perplexity deprioritizes MCP over stdio for internal tool integration.”</p>
+<p>MCP emerged because it solved a real problem: before it, every AI application wrote its own tool-calling logic, with no shared standard. MCP provided a unified interface at the right moment, and the ecosystem built quickly. Production experience then surfaced the limitations. That’s a normal arc for infrastructure tooling — not a death sentence.</p>
+<h2 id="When-to-Use-MCP-CLI-or-Skills" class="common-anchor-header">When to Use MCP, CLI, or Skills<button data-href="#When-to-Use-MCP-CLI-or-Skills" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -204,29 +204,29 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
       </svg>
     </button></h2><table>
 <thead>
-<tr><th></th><th>MCP через stdio (локальный)</th><th>MCP через HTTP (Enterprise)</th></tr>
+<tr><th></th><th>MCP over stdio (Local)</th><th>MCP over HTTP (Enterprise)</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Аутентификация</strong></td><td>Нет</td><td>OAuth, централизованная</td></tr>
-<tr><td><strong>Стабильность соединения</strong></td><td>Проблемы изоляции процессов</td><td>Стабильный HTTPS</td></tr>
-<tr><td><strong>Ведение журнала</strong></td><td>Нет стандартного механизма</td><td>Централизованная телеметрия</td></tr>
-<tr><td><strong>Контроль доступа</strong></td><td>Нет</td><td>Ролевые разрешения</td></tr>
-<tr><td><strong>Наше мнение</strong></td><td>Заменить на CLI + навыки</td><td>Сохранить для корпоративного инструментария</td></tr>
+<tr><td><strong>Authentication</strong></td><td>None</td><td>OAuth, centralized</td></tr>
+<tr><td><strong>Connection stability</strong></td><td>Process isolation issues</td><td>Stable HTTPS</td></tr>
+<tr><td><strong>Logging</strong></td><td>No standard mechanism</td><td>Centralized telemetry</td></tr>
+<tr><td><strong>Access control</strong></td><td>None</td><td>Role-based permissions</td></tr>
+<tr><td><strong>Our take</strong></td><td>Replace with CLI + Skills</td><td>Keep for enterprise tooling</td></tr>
 </tbody>
 </table>
-<p>Для команд, выбирающих свой стек инструментов <a href="https://zilliz.com/glossary/ai-agents">агентского ИИ</a>, вот как соотносятся эти уровни:</p>
+<p>For teams choosing their <a href="https://zilliz.com/glossary/ai-agents">agentic AI</a> tooling stack, here’s how the layers fit:</p>
 <table>
 <thead>
-<tr><th>Слой</th><th>Что он делает</th><th>Лучше всего подходит</th><th>Примеры</th></tr>
+<tr><th>Layer</th><th>What It Does</th><th>Best For</th><th>Examples</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>CLI</strong></td><td>Оперативные задачи, управление инфраструктурой</td><td>Команды, которые выполняют и агенты, и люди</td><td>git, docker, zilliz-cli</td></tr>
-<tr><td><strong>Навыки</strong></td><td>Логика рабочего процесса агента, закодированные знания</td><td>Задачи, требующие суждения LLM, многоэтапные SOP</td><td>milvus-skill, zilliz-skill, memsearch</td></tr>
-<tr><td><strong>REST API</strong></td><td>Внешние интеграции</td><td>Подключение к сторонним сервисам</td><td>API GitHub, API Slack</td></tr>
-<tr><td><strong>MCP HTTP</strong></td><td>Платформы корпоративных инструментов</td><td>Централизованная авторизация, ведение журнала аудита</td><td>Внутренние шлюзы инструментов</td></tr>
+<tr><td><strong>CLI</strong></td><td>Operational tasks, infra management</td><td>Commands that agents and humans both run</td><td>git, docker, zilliz-cli</td></tr>
+<tr><td><strong>Skills</strong></td><td>Agent workflow logic, encoded knowledge</td><td>Tasks needing LLM judgment, multi-step SOPs</td><td>milvus-skill, zilliz-skill, memsearch</td></tr>
+<tr><td><strong>REST APIs</strong></td><td>External integrations</td><td>Connecting to third-party services</td><td>GitHub API, Slack API</td></tr>
+<tr><td><strong>MCP HTTP</strong></td><td>Enterprise tool platforms</td><td>Centralized auth, audit logging</td><td>Internal tool gateways</td></tr>
 </tbody>
 </table>
-<h2 id="Get-Started" class="common-anchor-header">Приступайте к работе<button data-href="#Get-Started" class="anchor-icon" translate="no">
+<h2 id="Get-Started" class="common-anchor-header">Get Started<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -241,15 +241,15 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Все, о чем мы говорили в этой статье, доступно уже сегодня:</p>
+    </button></h2><p>Everything we’ve discussed in this article is available today:</p>
 <ul>
-<li><a href="https://github.com/zilliztech/memsearch"><strong>memsearch</strong></a> - слой памяти на основе навыков для агентов ИИ. Добавьте его в Claude Code или любой другой агент, поддерживающий навыки.</li>
-<li><a href="https://docs.zilliz.com/reference/cli/overview"><strong>Zilliz CLI</strong></a> - управление Milvus и Zilliz Cloud из терминала. Установите его и изучите подкоманды, которые могут использовать ваши агенты.</li>
-<li><a href="https://milvus.io/docs/milvus_for_agents.md"><strong>Milvus Skill</strong></a> и <a href="https://docs.zilliz.com/docs/agents/zilliz-skill"><strong>Zilliz Skill</strong></a> - дайте своему агенту по кодированию ИИ собственные знания Milvus и Zilliz Cloud.</li>
+<li><a href="https://github.com/zilliztech/memsearch"><strong>memsearch</strong></a> — the Skills-based memory layer for AI agents. Drop it into Claude Code or any agent that supports Skills.</li>
+<li><a href="https://docs.zilliz.com/reference/cli/overview"><strong>Zilliz CLI</strong></a> — manage Milvus and Zilliz Cloud from your terminal. Install it and explore the subcommands your agents can use.</li>
+<li><a href="https://milvus.io/docs/milvus_for_agents.md"><strong>Milvus Skill</strong></a> and <a href="https://docs.zilliz.com/docs/agents/zilliz-skill"><strong>Zilliz Skill</strong></a> — give your AI coding agent native Milvus and Zilliz Cloud knowledge.</li>
 </ul>
-<p>У вас есть вопросы о векторном поиске, архитектуре агентов или создании с помощью CLI и Skills? Присоединяйтесь к <a href="https://discord.com/invite/8uyFbECzPX">сообществу Milvus Discord</a> или <a href="https://milvus.io/office-hours">запишитесь на бесплатную сессию Office Hours</a>, чтобы обсудить ваш сценарий использования.</p>
-<p>Готовы к созданию? <a href="https://cloud.zilliz.com/signup">Зарегистрируйтесь в Zilliz Cloud</a> - новые аккаунты с рабочей электронной почтой получают $100 в виде бесплатных кредитов. У вас уже есть аккаунт? <a href="https://cloud.zilliz.com/login">Войдите здесь</a>.</p>
-<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Часто задаваемые вопросы<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
+<p>Have questions about vector search, agent architecture, or building with CLI and Skills? Join the <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord community</a> or <a href="https://milvus.io/office-hours">book a free Office Hours session</a> to talk through your use case.</p>
+<p>Ready to build? <a href="https://cloud.zilliz.com/signup">Sign up for Zilliz Cloud</a> — new accounts with a work email get $100 in free credits. Already have an account? <a href="https://cloud.zilliz.com/login">Sign in here</a>.</p>
+<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Frequently Asked Questions<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -264,8 +264,8 @@ origin: 'https://milvus.io/blog/is-mcp-dead-cli-and-skills-for-ai-agents.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="What-is-wrong-with-MCP-for-AI-agents" class="common-anchor-header">Что не так с MCP для агентов ИИ?</h3><p>В производстве MCP имеет три основных архитектурных ограничения. Во-первых, он загружает все схемы инструментов в контекстное окно в начале сеанса - подключение всего трех MCP-серверов к модели с 200 тыс. токенов может потребовать более 70 % доступного контекста, прежде чем агент что-либо предпримет. Во-вторых, инструменты MCP пассивны: они ждут вызова и не могут кодировать многоэтапные рабочие процессы, логику обработки ошибок или стандартные операционные процедуры. В-третьих, серверы MCP работают как отдельные процессы, не имеющие доступа к LLM агента, поэтому для любого инструмента, которому нужны суждения (например, для фильтрации результатов поиска по релевантности), требуется настройка отдельной модели с собственным ключом API. Эти проблемы наиболее остро проявляются при использовании MCP через stdio; MCP через HTTP смягчает некоторые из них.</p>
-<h3 id="What-is-the-difference-between-MCP-and-Agent-Skills" class="common-anchor-header">В чем разница между MCP и Agent Skills?</h3><p>MCP - это протокол вызова инструментов, определяющий, как агент обнаруживает и вызывает внешние инструменты. Навык агента - это файл в формате Markdown, содержащий полную стандартную операционную процедуру - триггеры, пошаговые инструкции, обработку ошибок и правила эскалации. Ключевое архитектурное отличие: Навыки работают внутри процесса агента, поэтому они могут использовать собственный LLM агента для принятия решений, таких как фильтрация релевантности или повторное ранжирование результатов. Инструменты MCP работают в отдельном процессе и не могут получить доступ к интеллектуальным данным агента. Навыки также используют прогрессивное раскрытие - при запуске загружаются только легкие метаданные, а полный контент загружается по требованию - использование контекстного окна минимально по сравнению с предварительной загрузкой схемы в MCP.</p>
-<h3 id="When-should-I-still-use-MCP-instead-of-CLI-or-Skills" class="common-anchor-header">В каких случаях следует использовать MCP вместо CLI или Skills?</h3><p>MCP по HTTP по-прежнему имеет смысл использовать для корпоративных инструментальных платформ, где требуется централизованный OAuth, контроль доступа на основе ролей, стандартизированная телеметрия и ведение журнала аудита для многих внутренних инструментов. Фрагментированные инструменты CLI не в состоянии последовательно обеспечить эти корпоративные требования. Для локальных рабочих процессов разработки - когда агенты взаимодействуют с инструментами на вашей машине - CLI + Skills обычно предлагают лучшую производительность, меньшие накладные расходы на контекст и более гибкую логику рабочего процесса, чем MCP через stdio.</p>
-<h3 id="How-do-CLI-tools-and-Agent-Skills-work-together" class="common-anchor-header">Как работают вместе инструменты CLI и навыки агента?</h3><p>CLI обеспечивает уровень выполнения (фактические команды), а Skills - уровень знаний (когда выполнять команды, в каком порядке и как обрабатывать сбои). Например, Zilliz CLI управляет такими инфраструктурными операциями, как управление кластером, CRUD коллекции и векторный поиск. Milvus Skill обучает агента правильным паттернам pymilvus для проектирования схем, гибридного поиска и конвейеров RAG. CLI выполняет работу, а Skill знает рабочий процесс. Этот многоуровневый шаблон - CLI для выполнения, навыки для знаний, плагин для UX - является тем, как мы структурировали все наши инструменты для разработчиков в Zilliz.</p>
-<h3 id="MCP-vs-Skills-vs-CLI-when-should-I-use-each" class="common-anchor-header">MCP vs Skills vs CLI: когда следует использовать каждый из них?</h3><p>Инструменты CLI, такие как git, docker или zilliz-cli, лучше всего подходят для оперативных задач - они предоставляют иерархические подкоманды и загружаются по требованию. Навыки, такие как milvus-skill, лучше всего подходят для логики рабочего процесса агента - они несут в себе операционные процедуры, восстановление после ошибок и могут получить доступ к LLM агента. MCP через HTTP по-прежнему подходит для корпоративных инструментальных платформ, нуждающихся в централизованном OAuth, разрешениях и регистрации аудита. MCP через stdio - локальная версия - заменяется CLI + Skills в большинстве производственных систем.</p>
+    </button></h2><h3 id="What-is-wrong-with-MCP-for-AI-agents" class="common-anchor-header">What is wrong with MCP for AI agents?</h3><p>MCP has three main architectural limitations in production. First, it loads all tool schemas into the context window at session start — connecting just three MCP servers on a 200K-token model can consume over 70% of available context before the agent does anything. Second, MCP tools are passive: they wait to be called and can’t encode multi-step workflows, error-handling logic, or standard operating procedures. Third, MCP servers run as separate processes with no access to the agent’s LLM, so any tool that needs judgment (like filtering search results for relevance) requires configuring a separate model with its own API key. These problems are most acute with MCP over stdio; MCP over HTTP mitigates some of them.</p>
+<h3 id="What-is-the-difference-between-MCP-and-Agent-Skills" class="common-anchor-header">What is the difference between MCP and Agent Skills?</h3><p>MCP is a tool-calling protocol that defines how an agent discovers and invokes external tools. An Agent Skill is a Markdown file containing a full standard operating procedure — triggers, step-by-step instructions, error handling, and escalation rules. The key architectural difference: Skills run inside the agent’s process, so they can leverage the agent’s own LLM for judgment calls like relevance filtering or result reranking. MCP tools run in a separate process and can’t access the agent’s intelligence. Skills also use progressive disclosure — only lightweight metadata loads at startup, with full content loading on demand — keeping context window usage minimal compared to MCP’s upfront schema loading.</p>
+<h3 id="When-should-I-still-use-MCP-instead-of-CLI-or-Skills" class="common-anchor-header">When should I still use MCP instead of CLI or Skills?</h3><p>MCP over HTTP still makes sense for enterprise tooling platforms where you need centralized OAuth, role-based access control, standardized telemetry, and audit logging across many internal tools. Fragmented CLI tools struggle to provide these enterprise requirements consistently. For local development workflows — where agents interact with tools on your machine — CLI + Skills typically offers better performance, lower context overhead, and more flexible workflow logic than MCP over stdio.</p>
+<h3 id="How-do-CLI-tools-and-Agent-Skills-work-together" class="common-anchor-header">How do CLI tools and Agent Skills work together?</h3><p>CLI provides the execution layer (the actual commands), while Skills provide the knowledge layer (when to run which commands, in what order, and how to handle failures). For example, Zilliz CLI handles infrastructure operations like cluster management, collection CRUD, and vector search. Milvus Skill teaches the agent the right pymilvus patterns for schema design, hybrid search, and RAG pipelines. The CLI does the work; the Skill knows the workflow. This layered pattern — CLI for execution, Skills for knowledge, a plugin for UX — is how we’ve structured all of our developer tooling at Zilliz.</p>
+<h3 id="MCP-vs-Skills-vs-CLI-when-should-I-use-each" class="common-anchor-header">MCP vs Skills vs CLI: when should I use each?</h3><p>CLI tools like git, docker, or zilliz-cli are best for operational tasks — they expose hierarchical subcommands and load on demand. Skills like milvus-skill are best for agent workflow logic — they carry operating procedures, error recovery, and can access the agent’s LLM. MCP over HTTP still fits enterprise tool platforms needing centralized OAuth, permissions, and audit logging. MCP over stdio — the local version — is being replaced by CLI + Skills in most production setups.</p>

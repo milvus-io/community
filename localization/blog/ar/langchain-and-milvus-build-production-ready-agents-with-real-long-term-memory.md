@@ -1,9 +1,9 @@
 ---
 id: >-
   langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md
-title: >-
-  LangChain 1.0 وMilvus: كيفية بناء وكلاء جاهزين للإنتاج بذاكرة حقيقية طويلة
-  المدى
+title: >
+  LangChain 1.0 and Milvus: How to Build Production-Ready Agents with Real
+  Long-Term Memory
 author: Min Yin
 date: 2025-12-19T00:00:00.000Z
 cover: assets.zilliz.com/langchain1_0_cover_8c4bc608af.png
@@ -16,16 +16,16 @@ meta_title: >
   LangChain 1.0 and Milvus: Build Production-Ready AI Agents with Long-Term
   Memory
 desc: >-
-  اكتشف كيف تبسّط سلسلة اللغات 1.0 بنية الوكيل وكيف تضيف Milvus ذاكرة طويلة
-  المدى لتطبيقات الذكاء الاصطناعي القابلة للتطوير والجاهزة للإنتاج.
+  Discover how LangChain 1.0 simplifies agent architecture and how Milvus adds
+  long-term memory for scalable, production-ready AI applications.
 origin: >-
   https://milvus.io/blog/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md
 ---
-<p>LangChain هو إطار عمل شائع مفتوح المصدر لتطوير تطبيقات مدعومة بنماذج لغوية كبيرة (LLMs). وهو يوفر مجموعة أدوات معيارية لبناء عوامل الاستدلال واستخدام الأدوات، وربط النماذج بالبيانات الخارجية، وإدارة تدفقات التفاعل.</p>
-<p>وبإصدار الإصدار <strong>1.0</strong> من <strong>LangChain 1.0،</strong> يخطو إطار العمل خطوة نحو بنية أكثر ملاءمة للإنتاج. يستبدل الإصدار الجديد التصميم السابق المستند إلى السلسلة بحلقة ReAct الموحدة (الاستدلال ← استدعاء الأداة ← المراقبة ← اتخاذ القرار) ويقدم البرمجيات الوسيطة لإدارة التنفيذ والتحكم والسلامة.</p>
-<p>ومع ذلك، فإن الاستدلال وحده لا يكفي. يحتاج الوكلاء أيضًا إلى القدرة على تخزين المعلومات واستدعائها وإعادة استخدامها. هذا هو المكان الذي يمكن أن تلعب فيه <a href="https://milvus.io/"><strong>Milvus،</strong></a> وهي قاعدة بيانات متجهة مفتوحة المصدر، دورًا أساسيًا. توفر Milvus طبقة ذاكرة قابلة للتطوير وعالية الأداء تمكّن الوكلاء من تخزين المعلومات والبحث عنها واسترجاعها بكفاءة عبر التشابه الدلالي.</p>
-<p>في هذا المنشور، سنستكشف في هذا المنشور كيف يقوم LangChain 1.0 بتحديث بنية الوكيل، وكيف يساعد دمج Milvus الوكلاء على تجاوز مرحلة التفكير المنطقي - مما يتيح ذاكرة ذكية ومستمرة لحالات الاستخدام في العالم الحقيقي.</p>
-<h2 id="Why-the-Chain-based-Design-Falls-Short" class="common-anchor-header">لماذا يقصر التصميم القائم على السلسلة<button data-href="#Why-the-Chain-based-Design-Falls-Short" class="anchor-icon" translate="no">
+<p>LangChain is a popular open-source framework for developing applications powered by large language models (LLMs). It provides a modular toolkit for building reasoning and tool-using agents, connecting models to external data, and managing interaction flows.</p>
+<p>With the release of <strong>LangChain 1.0</strong>, the framework takes a step toward a more production-friendly architecture. The new version replaces the earlier Chain-based design with a standardized ReAct loop (Reason → Tool Call → Observe → Decide) and introduces Middleware for managing execution, control, and safety.</p>
+<p>However, reasoning alone isn’t enough. Agents also need the ability to store, recall, and reuse information. That’s where <a href="https://milvus.io/"><strong>Milvus</strong></a>, an open-source vector database, can play an essential role. Milvus provides a scalable, high-performance memory layer that enables agents to store, search, and retrieve information efficiently via semantic similarity.</p>
+<p>In this post, we’ll explore how LangChain 1.0 updates agent architecture, and how integrating Milvus helps agents go beyond reasoning  — enabling persistent, intelligent memory for real-world use cases.</p>
+<h2 id="Why-the-Chain-based-Design-Falls-Short" class="common-anchor-header">Why the Chain-based Design Falls Short<button data-href="#Why-the-Chain-based-Design-Falls-Short" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,20 +40,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في أيامها الأولى (الإصدار 0.x)، تمحورت بنية LangChain حول السلاسل. كانت كل سلسلة تُعرّف تسلسلًا ثابتًا وتأتي مع قوالب معدة مسبقًا تجعل تنسيق LLM بسيطًا وسريعًا. كان هذا التصميم رائعًا لبناء النماذج الأولية بسرعة. ولكن مع تطور نظام LLM البيئي وتزايد تعقيد حالات الاستخدام في العالم الحقيقي، بدأت تظهر التصدعات في هذه البنية.</p>
-<p><strong>1. عدم المرونة</strong></p>
-<p>وفرت الإصدارات المبكرة من LangChain خطوط أنابيب معيارية مثل SimpleSequentialChain أو LLMChain، حيث يتبع كل منها تدفقًا خطيًا ثابتًا - إنشاء الموجة ← استدعاء النموذج ← معالجة الإخراج. عمل هذا التصميم بشكل جيد للمهام البسيطة والمتوقعة وجعل من السهل وضع نموذج أولي سريع.</p>
-<p>ومع ذلك، مع نمو التطبيقات بشكل أكثر ديناميكية، بدأت هذه القوالب الجامدة تبدو مقيدة. عندما لم يعد منطق العمل يتلاءم بدقة مع تسلسل محدد مسبقًا، أصبح لديك خياران غير مرضيين: إما إجبار منطقك على التوافق مع إطار العمل أو تجاوزه تمامًا عن طريق استدعاء واجهة برمجة تطبيقات LLM مباشرةً.</p>
-<p><strong>2. عدم وجود تحكم على مستوى الإنتاج</strong></p>
-<p>ما كان يعمل بشكل جيد في العروض التوضيحية غالبًا ما يتعطل في الإنتاج. لم تتضمن السلاسل الضمانات اللازمة للتطبيقات واسعة النطاق أو المستمرة أو الحساسة. تضمنت المشكلات الشائعة ما يلي:</p>
+    </button></h2><p>In its early days (version 0.x), LangChain’s architecture centered around Chains. Each Chain defined a fixed sequence and came with prebuilt templates that made LLM orchestration simple and fast. This design was great for quickly building prototypes. But as the LLM ecosystem evolved and real-world use cases grew more complex, cracks in this architecture began to show.</p>
+<p><strong>1. Lack of Flexibility</strong></p>
+<p>Early versions of LangChain provided modular pipelines such as SimpleSequentialChain or LLMChain, each following a fixed, linear flow—prompt creation → model call → output processing. This design worked well for simple and predictable tasks and made it easy to prototype quickly.</p>
+<p>However, as applications grew more dynamic, these rigid templates began to feel restrictive. When business logic no longer fits neatly into a predefined sequence, you are left with two unsatisfying options: force your logic to conform to the framework or bypass it entirely by calling the LLM API directly.</p>
+<p><strong>2. Lack of Production-Grade Control</strong></p>
+<p>What worked fine in demos often broke in production. The Chains didn’t include the safeguards needed for large-scale, persistent, or sensitive applications. Common issues included:</p>
 <ul>
-<li><p><strong>تجاوز السياق:</strong> يمكن أن تتجاوز المحادثات الطويلة حدود الرمز المميز، مما يتسبب في حدوث أعطال أو اقتطاع صامت.</p></li>
-<li><p><strong>تسريب البيانات الحساسة:</strong> قد يتم إرسال معلومات التعريف الشخصية (مثل رسائل البريد الإلكتروني أو المعرفات) عن غير قصد إلى نماذج الجهات الخارجية.</p></li>
-<li><p><strong>عمليات غير خاضعة للإشراف:</strong> قد يقوم الوكلاء بحذف البيانات أو إرسال بريد إلكتروني دون موافقة بشرية.</p></li>
+<li><p><strong>Context overflow:</strong> Long conversations could exceed token limits, causing crashes or silent truncation.</p></li>
+<li><p><strong>Sensitive data leaks:</strong> Personally identifiable information (like emails or IDs) could be inadvertently sent to third-party models.</p></li>
+<li><p><strong>Unsupervised operations:</strong> Agents might delete data or send email without human approval.</p></li>
 </ul>
-<p><strong>3. عدم وجود توافق بين النماذج المختلفة</strong></p>
-<p>يطبّق كل مزوّد خدمة LLM - OpenAI و Anthropic والعديد من النماذج الصينية - بروتوكولاته الخاصة للاستدلال واستدعاء الأدوات. في كل مرة تقوم فيها بتبديل الموفرين، كان عليك إعادة كتابة طبقة التكامل: قوالب المطالبة والمهايئات ومحللي الاستجابة. أدى هذا العمل المتكرر إلى إبطاء التطوير وجعل التجريب مؤلمًا.</p>
-<h2 id="LangChain-10-All-in-ReAct-Agent" class="common-anchor-header">سلسلة اللغات 1.0: وكيل ReAct الكل في الكل<button data-href="#LangChain-10-All-in-ReAct-Agent" class="anchor-icon" translate="no">
+<p><strong>3. Lack of Cross-Model Compatibility</strong></p>
+<p>Each LLM provider—OpenAI, Anthropic, and many Chinese models—implements its own protocols for reasoning and tool calling. Every time you switched providers, you had to rewrite the integration layer: prompt templates, adapters, and response parsers. This repetitive work slowed development and made experimentation painful.</p>
+<h2 id="LangChain-10-All-in-ReAct-Agent" class="common-anchor-header">LangChain 1.0: All-in ReAct Agent<button data-href="#LangChain-10-All-in-ReAct-Agent" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,31 +68,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>عندما قام فريق LangChain بتحليل المئات من تطبيقات الوكلاء على مستوى الإنتاج، برزت فكرة واحدة: جميع الوكلاء الناجحين تقريبًا يتقاربون بشكل طبيعي مع <strong>نمط ReAct ("التفكير + التمثيل")</strong>.</p>
-<p>وسواء كان ذلك في نظام متعدد الوكلاء أو وكيل واحد يقوم بالتفكير العميق، تظهر نفس حلقة التحكم: التناوب بين خطوات التفكير الموجزة مع استدعاءات الأدوات المستهدفة، ثم تغذية الملاحظات الناتجة في القرارات اللاحقة حتى يتمكن الوكيل من تقديم إجابة نهائية.</p>
-<p>وللاستفادة من هذه البنية المثبتة، تضع LangChain 1.0 حلقة ReAct في صميم بنيتها، مما يجعلها البنية الافتراضية لبناء وكلاء موثوقين وقابلين للتفسير وجاهزين للإنتاج.</p>
-<p>ولدعم كل شيء بدءًا من الوكلاء البسيطين إلى عمليات التنسيق المعقدة، يتبنى LangChain 1.0 تصميمًا متعدد الطبقات يجمع بين سهولة الاستخدام والتحكم الدقيق:</p>
+    </button></h2><p>When the LangChain team analyzed hundreds of production-grade agent implementations, one insight stood out: nearly all successful agents naturally converged on the <strong>ReAct (“Reasoning + Acting”) pattern</strong>.</p>
+<p>Whether in a multi-agent system or a single agent performing deep reasoning, the same control loop emerges: alternating between brief reasoning steps with targeted tool calls, then feeding the resulting observations into subsequent decisions until the agent can deliver a final answer.</p>
+<p>To build on this proven structure, LangChain 1.0 places the ReAct loop at the core of its architecture, making it the default structure for building reliable, interpretable, and production-ready agents.</p>
+<p>To support everything from simple agents to complex orchestrations, LangChain 1.0 adopts a layered design that combines ease of use with precise control:</p>
 <ul>
-<li><p><strong>السيناريوهات القياسية:</strong> ابدأ بدالة create_agent() - وهي حلقة ReAct نظيفة وموحدة تتعامل مع الاستدعاءات المنطقية واستدعاءات الأدوات خارج الصندوق.</p></li>
-<li><p><strong>سيناريوهات موسعة:</strong> أضف البرمجيات الوسيطة للحصول على تحكم دقيق. تسمح لك البرمجيات الوسيطة بفحص أو تعديل ما يحدث داخل الوكيل - على سبيل المثال، إضافة اكتشاف معلومات تحديد الهوية الشخصية أو نقاط التحقق من الموافقة البشرية أو إعادة المحاولة التلقائية أو خطافات المراقبة.</p></li>
-<li><p><strong>سيناريوهات معقدة:</strong> بالنسبة لتدفقات العمل ذات الحالة أو التنسيق متعدد العوامل، استخدم LangGraph، وهو محرك تنفيذ قائم على الرسم البياني يوفر تحكمًا دقيقًا في التدفق المنطقي والتبعيات وحالات التنفيذ.</p></li>
+<li><p><strong>Standard scenarios:</strong> Start with the create_agent() function — a clean, standardized ReAct loop that handles reasoning and tool calls out of the box.</p></li>
+<li><p><strong>Extended scenarios:</strong> Add Middleware to gain fine-grained control. Middleware lets you inspect or modify what happens inside the agent — for example, adding PII detection, human-approval checkpoints, automatic retries, or monitoring hooks.</p></li>
+<li><p><strong>Complex scenarios:</strong> For stateful workflows or multi-agent orchestration, use LangGraph, a graph-based execution engine that provides precise control over logic flow, dependencies, and execution states.</p></li>
 </ul>
-<p>والآن دعونا نفصل المكونات الرئيسية الثلاثة التي تجعل تطوير الوكيل أبسط وأكثر أمانًا واتساقًا عبر النماذج.</p>
-<h3 id="1-The-createagent-A-Simpler-Way-to-Build-Agents" class="common-anchor-header">1. إنشاء_الوكيل(): طريقة أبسط لبناء الوكلاء</h3><p>أحد الإنجازات الرئيسية في LangChain 1.0 هو كيفية تقليل تعقيد بناء الوكلاء إلى دالة واحدة - create_agent(). لم تعد بحاجة إلى التعامل يدويًا مع إدارة الحالة أو معالجة الأخطاء أو تدفق المخرجات. تتم إدارة هذه الميزات على مستوى الإنتاج الآن تلقائيًا بواسطة وقت تشغيل LangGraph الموجود تحتها.</p>
-<p>بثلاث معلمات فقط، يمكنك تشغيل وكيل يعمل بكامل طاقته:</p>
+<p>Now let’s break down the three key components that make agent development simpler, safer, and more consistent across models.</p>
+<h3 id="1-The-createagent-A-Simpler-Way-to-Build-Agents" class="common-anchor-header">1. The create_agent(): A Simpler Way to Build Agents</h3><p>A key breakthrough in LangChain 1.0 is how it reduces the complexity of building agents to a single function — create_agent(). You no longer need to manually handle state management, error handling, or streaming outputs. These production-level features are now automatically managed by the LangGraph runtime underneath.</p>
+<p>With just three parameters, you can launch a fully functional agent:</p>
 <ul>
-<li><p><strong>النموذج</strong> - إما مُعرِّف نموذج (سلسلة) أو كائن نموذج مُستحدث.</p></li>
-<li><p><strong>الأدوات</strong> - قائمة بالوظائف التي تمنح الوكيل قدراته.</p></li>
-<li><p><strong>system_prompt</strong> - التعليمات التي تحدد دور الوكيل ونبرته وسلوكه.</p></li>
+<li><p><strong>model</strong> — either a model identifier (string) or an instantiated model object.</p></li>
+<li><p><strong>tools</strong> — a list of functions that give the agent its abilities.</p></li>
+<li><p><strong>system_prompt</strong> — the instruction that defines the agent’s role, tone, and behavior.</p></li>
 </ul>
-<p>تحت الغطاء، تعمل عملية إنشاء_وكيل() على حلقة الوكيل القياسية - استدعاء نموذج، والسماح له باختيار الأدوات للتنفيذ، والانتهاء بمجرد عدم الحاجة إلى المزيد من الأدوات:</p>
+<p>Under the hood, create_agent() runs on the standard agent loop — calling a model, letting it choose tools to execute, and completing once no more tools are needed:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/langchain_chain_1_1192c31ce3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>كما أنه يرث أيضًا قدرات LangGraph المدمجة لاستمرارية الحالة واستعادة الانقطاع والتدفق. المهام التي كانت تستغرق مئات الأسطر من التعليمات البرمجية للتنسيق يتم التعامل معها الآن من خلال واجهة برمجة تطبيقات واحدة توضيحية.</p>
+<p>It also inherits LangGraph’s built-in capabilities for state persistence, interruption recovery, and streaming. Tasks that once took hundreds of lines of orchestration code are now handled through a single, declarative API.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.<span class="hljs-property">agents</span> <span class="hljs-keyword">import</span> create_agent
 agent = <span class="hljs-title function_">create_agent</span>(
     model=<span class="hljs-string">&quot;openai:gpt-4o&quot;</span>,
@@ -103,17 +103,17 @@ result = agent.<span class="hljs-title function_">invoke</span>({
     <span class="hljs-string">&quot;messages&quot;</span>: [{<span class="hljs-string">&quot;role&quot;</span>: <span class="hljs-string">&quot;user&quot;</span>, <span class="hljs-string">&quot;content&quot;</span>: <span class="hljs-string">&quot;What’s the weather like in Shanghai today?&quot;</span>}]
 })
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-The-Middleware-A-Composable-Layer-for-Production-Ready-Control" class="common-anchor-header">2. البرمجيات الوسيطة: طبقة قابلة للتركيب للتحكم الجاهز للإنتاج</h3><p>البرمجيات الوسيطة هي الجسر الرئيسي الذي ينقل LangChain من النموذج الأولي إلى الإنتاج. وهي تعرض خطافات في نقاط استراتيجية في حلقة تنفيذ الوكيل، مما يسمح لك بإضافة منطق مخصص دون إعادة كتابة عملية ReAct الأساسية.</p>
-<p>تتبع الحلقة الرئيسية للوكيل عملية قرار من ثلاث خطوات - النموذج ← الأداة ← الإنهاء:</p>
+<h3 id="2-The-Middleware-A-Composable-Layer-for-Production-Ready-Control" class="common-anchor-header">2. The Middleware: A Composable Layer for Production-Ready Control</h3><p>Middleware is the key bridge that takes LangChain from prototype to production. It exposes hooks at strategic points in the agent’s execution loop, allowing you to add custom logic without rewriting the core ReAct process.</p>
+<p>An agent’s main loop follows a three-step decision process — Model → Tool → Termination:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/langchain_1_0_chain_902054bde2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>يوفر LangChain 1.0 بعض <a href="https://docs.langchain.com/oss/python/langchain/middleware#built-in-middleware">البرامج الوسيطة المعدة مسبقًا</a> للأنماط الشائعة. فيما يلي أربعة أمثلة.</p>
+<p>LangChain 1.0 provides a few <a href="https://docs.langchain.com/oss/python/langchain/middleware#built-in-middleware">prebuilt middlewares</a> for common patterns. Here are four examples.</p>
 <ul>
-<li><strong>كشف PII: أي تطبيق يتعامل مع بيانات المستخدم الحساسة</strong></li>
+<li><strong>PII detection: Any application handling sensitive user data</strong></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> create_agent
 <span class="hljs-keyword">from</span> langchain.agents.middleware <span class="hljs-keyword">import</span> PIIMiddleware
@@ -137,7 +137,7 @@ agent = create_agent(
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>التلخيص: تلخيص سجل المحادثة تلقائيًا عند الاقتراب من حدود الرمز المميز.</strong></li>
+<li><strong>Summarization: Automatically summarize conversation history when approaching token limits.</strong></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> create_agent
 <span class="hljs-keyword">from</span> langchain.agents.middleware <span class="hljs-keyword">import</span> SummarizationMiddleware
@@ -156,7 +156,7 @@ agent = create_agent(
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>إعادة محاولة الأداة: إعادة محاولة مكالمات الأداة الفاشلة تلقائياً مع إمكانية تكوينها بشكل أسي قابل للتكوين.</strong></li>
+<li><strong>Tool retry: Automatically retry failed tool calls with configurable exponential backoff.</strong></li>
 </ul>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> create_agent
 <span class="hljs-keyword">from</span> langchain.agents.middleware <span class="hljs-keyword">import</span> ToolRetryMiddleware
@@ -176,10 +176,10 @@ agent = create_agent(
 )
 <button class="copy-code-btn"></button></code></pre>
 <ul>
-<li><strong>البرمجيات الوسيطة المخصصة</strong></li>
+<li><strong>Custom Middleware</strong></li>
 </ul>
-<p>بالإضافة إلى خيارات البرمجيات الوسيطة الرسمية مسبقة الإنشاء، يمكنك أيضًا إنشاء برمجيات وسيطة مخصصة باستخدام طريقة قائمة على الديكور أو طريقة قائمة على الفئة.</p>
-<p>على سبيل المثال، يوضح المقتطف أدناه كيفية تسجيل استدعاءات النموذج قبل التنفيذ:</p>
+<p>In addition to the official, prebuilt middleware options, you can also create custom middleware using decorator-based or class-based way.</p>
+<p>For example, the snippet below shows how to log model calls before execution:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.agents.middleware <span class="hljs-keyword">import</span> before_model
 <span class="hljs-keyword">from</span> langchain.agents.middleware <span class="hljs-keyword">import</span> AgentState
 <span class="hljs-keyword">from</span> langgraph.runtime <span class="hljs-keyword">import</span> Runtime
@@ -193,8 +193,8 @@ agent = create_agent(
     middleware=[log_before_model],
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Structured-Output-A-Standardized-Way-to-Handle-Data" class="common-anchor-header">3. الإخراج المهيكل: طريقة موحدة للتعامل مع البيانات</h3><p>في تطوير الوكيل التقليدي، لطالما كان من الصعب إدارة المخرجات المهيكلة. كل مزود نموذج يتعامل معه بشكل مختلف - على سبيل المثال، يقدم OpenAI واجهة برمجة تطبيقات أصلية للإخراج المنظم، بينما يدعم الآخرون الاستجابات المنظمة بشكل غير مباشر من خلال استدعاءات الأدوات. هذا يعني في كثير من الأحيان كتابة محولات مخصصة لكل مزود، مما يضيف عملًا إضافيًا ويجعل الصيانة أكثر صعوبة مما ينبغي.</p>
-<p>في LangChain 1.0، يتم التعامل مع الإخراج المهيكل مباشرةً من خلال معلمة_تنسيق_الاستجابة في create_agent().  تحتاج فقط إلى تحديد مخطط بياناتك مرة واحدة. تقوم LangChain تلقائيًا باختيار أفضل استراتيجية تنفيذ تلقائيًا بناءً على النموذج الذي تستخدمه - لا حاجة إلى إعداد إضافي أو رمز خاص بالبائع.</p>
+<h3 id="3-Structured-Output-A-Standardized-Way-to-Handle-Data" class="common-anchor-header">3. Structured Output: A Standardized Way to Handle Data</h3><p>In traditional agent development, structured output has always been difficult to manage. Each model provider handles it differently — for example, OpenAI offers a native Structured Output API, while others only support structured responses indirectly through tool calls. This often meant writing custom adapters for each provider, adding extra work and making maintenance more painful than it should be.</p>
+<p>In LangChain 1.0, structured output is handled directly through the response_format parameter in create_agent().  You only need to define your data schema once. LangChain automatically picks the best enforcement strategy based on the model you’re using — no extra setup or vendor-specific code required.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> create_agent
 <span class="hljs-keyword">from</span> pydantic <span class="hljs-keyword">import</span> BaseModel, Field
 <span class="hljs-keyword">class</span> <span class="hljs-title class_">WeatherReport</span>(<span class="hljs-title class_ inherited__">BaseModel</span>):
@@ -210,11 +210,11 @@ result = agent.invoke({<span class="hljs-string">&quot;role&quot;</span>: <span 
 weather_data = result[<span class="hljs-string">&#x27;structured_response&#x27;</span>]  <span class="hljs-comment"># Retrieve the structured response</span>
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{weather_data.location}</span>: <span class="hljs-subst">{weather_data.temperature}</span>°C, <span class="hljs-subst">{weather_data.condition}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>تدعم LangChain استراتيجيتين للإخراج المنظم:</p>
-<p><strong>1. استراتيجية الموفر:</strong> يدعم بعض مزودي النماذج الإخراج المنظم أصلاً من خلال واجهات برمجة التطبيقات الخاصة بهم (مثل OpenAI و Grok). عندما يتوفر مثل هذا الدعم، تستخدم LangChain تطبيق المخطط المدمج الخاص بالمزود مباشرةً. يوفر هذا النهج أعلى مستوى من الموثوقية والاتساق، لأن النموذج نفسه يضمن تنسيق الإخراج.</p>
-<p><strong>2. استراتيجية استدعاء الأداة:</strong> بالنسبة للنماذج التي لا تدعم الإخراج المهيكل الأصلي، تستخدم LangChain استراتيجية استدعاء الأداة لتحقيق نفس النتيجة.</p>
-<p>لا داعي للقلق بشأن الاستراتيجية المستخدمة - حيث يكتشف إطار العمل قدرات النموذج ويتكيف تلقائيًا. يتيح لك هذا التجريد التبديل بين موفري النماذج المختلفة بحرية دون تغيير منطق عملك.</p>
-<h2 id="How-Milvus-Enhances-Agent-Memory" class="common-anchor-header">كيف يعزز ميلفوس ذاكرة الوكيل<button data-href="#How-Milvus-Enhances-Agent-Memory" class="anchor-icon" translate="no">
+<p>LangChain supports two strategies for structured output:</p>
+<p><strong>1. Provider Strategy:</strong> Some model providers natively support structured output through their APIs (e.g. OpenAI and Grok). When such support is available, LangChain uses the provider’s built-in schema enforcement directly. This approach offers the highest level of reliability and consistency, since the model itself guarantees the output format.</p>
+<p><strong>2. Tool Calling Strategy:</strong> For models that don’t support native structured output, LangChain uses tool calling to achieve the same result.</p>
+<p>You don’t need to worry about which strategy is being used — the framework detects the model’s capabilities and adapts automatically. This abstraction lets you switch between different model providers freely without changing your business logic.</p>
+<h2 id="How-Milvus-Enhances-Agent-Memory" class="common-anchor-header">How Milvus Enhances Agent Memory<button data-href="#How-Milvus-Enhances-Agent-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -229,10 +229,10 @@ weather_data = result[<span class="hljs-string">&#x27;structured_response&#x27;<
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بالنسبة للوكلاء على مستوى الإنتاج، لا يكون عنق الزجاجة الحقيقي في الأداء في كثير من الأحيان هو محرك التفكير - بل نظام الذاكرة. في LangChain 1.0، تعمل قواعد البيانات المتجهة في نظام LangChain 1.0 بمثابة ذاكرة خارجية للوكيل، مما يوفر استدعاءً طويل المدى من خلال الاسترجاع الدلالي.</p>
-<p>تُعد<a href="https://milvus.io/">Milvus</a> واحدة من أكثر قواعد البيانات المتجهة مفتوحة المصدر المتاحة اليوم نضجًا، وهي مصممة خصيصًا للبحث المتجه على نطاق واسع في تطبيقات الذكاء الاصطناعي. وهي تتكامل بشكل أصلي مع LangChain، لذا لن تضطر إلى التعامل يدويًا مع عملية تحويل المتجهات أو إدارة الفهرس أو البحث عن التشابه. تقوم حزمة langchain_milvus بتغليف Milvus كواجهة VectorStore قياسية، مما يسمح لك بتوصيلها بالوكلاء الخاصين بك ببضعة أسطر من التعليمات البرمجية.</p>
-<p>من خلال القيام بذلك، يعالج Milvus ثلاثة تحديات رئيسية في بناء أنظمة ذاكرة وكلاء قابلة للتطوير وموثوقة:</p>
-<h4 id="1-Fast-Retrieval-from-Massive-Knowledge-Bases" class="common-anchor-header"><strong>1. الاسترجاع السريع من قواعد المعرفة الضخمة</strong></h4><p>عندما يحتاج الوكيل إلى معالجة الآلاف من المستندات أو المحادثات السابقة أو كتيبات المنتجات، فإن البحث البسيط عن الكلمات الرئيسية لا يكفي. يستخدم Milvus البحث عن التشابه المتجه للعثور على المعلومات ذات الصلة الدلالية في أجزاء من الثانية - حتى لو كان الاستعلام يستخدم صياغة مختلفة. وهذا يسمح لوكيلك باستدعاء المعرفة بناءً على المعنى، وليس فقط التطابق النصي الدقيق.</p>
+    </button></h2><p>For production-grade agents, the real performance bottleneck often isn’t the reasoning engine — it’s the memory system. In LangChain 1.0, vector databases act as an agent’s external memory, providing long-term recall through semantic retrieval.</p>
+<p><a href="https://milvus.io/">Milvus</a> is one of the most mature open-source vector databases available today, purpose-built for large-scale vector search in AI applications. It integrates natively with LangChain, so you don’t have to manually handle vectorization, index management, or similarity search. The langchain_milvus package wraps Milvus as a standard VectorStore interface, allowing you to connect it to your agents with just a few lines of code.</p>
+<p>By doing so, Milvus addresses three key challenges in building scalable and reliable agent memory systems:</p>
+<h4 id="1-Fast-Retrieval-from-Massive-Knowledge-Bases" class="common-anchor-header"><strong>1. Fast Retrieval from Massive Knowledge Bases</strong></h4><p>When an agent needs to process thousands of documents, past conversations, or product manuals, simple keyword search just isn’t enough. Milvus uses vector similarity search to find semantically relevant information in milliseconds — even if the query uses different wording. This allows your agent to recall knowledge based on meaning, not just exact text matches.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> create_agent
 <span class="hljs-keyword">from</span> langchain_milvus <span class="hljs-keyword">import</span> Milvus
 <span class="hljs-keyword">from</span> langchain_openai <span class="hljs-keyword">import</span> OpenAIEmbeddings
@@ -252,7 +252,7 @@ agent = create_agent(
     system_prompt=<span class="hljs-string">&quot;You can retrieve information from the knowledge base to answer questions.&quot;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="2-Persistent-Long-Term-Memory" class="common-anchor-header"><strong>2. الذاكرة المستمرة طويلة المدى</strong></h4><p>يمكن لبرنامج LangChain's SummarizationMiddleware الخاص بـ LangChain تلخيص تاريخ المحادثة عندما يطول كثيرًا، ولكن ماذا يحدث لجميع التفاصيل التي يتم تلخيصها؟ يحتفظ بها ميلفوس. يمكن تلخيص كل محادثة ومكالمة أداة وخطوة تفكير وتخزينها للرجوع إليها على المدى الطويل. عند الحاجة، يمكن للوكيل استرجاع الذكريات ذات الصلة بسرعة من خلال البحث الدلالي، مما يتيح الاستمرارية الحقيقية عبر الجلسات.</p>
+<h4 id="2-Persistent-Long-Term-Memory" class="common-anchor-header"><strong>2. Persistent Long-Term Memory</strong></h4><p>LangChain’s SummarizationMiddleware can condense conversation history when it gets too long, but what happens to all the details that get summarized away? Milvus keeps them. Every conversation, tool call, and reasoning step can be vectorized and stored for long-term reference. When needed, the agent can quickly retrieve relevant memories through semantic search, enabling true continuity across sessions.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> langchain_milvus <span class="hljs-keyword">import</span> Milvus
 <span class="hljs-keyword">from</span> langchain.agents <span class="hljs-keyword">import</span> create_agent
 <span class="hljs-keyword">from</span> langchain.agents.middleware <span class="hljs-keyword">import</span> SummarizationMiddleware
@@ -279,7 +279,7 @@ agent = create_agent(
     ]
 )
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="3-Unified-Management-of-Multimodal-Content" class="common-anchor-header"><strong>3. الإدارة الموحدة للمحتوى متعدد الوسائط</strong></h4><p>يتعامل الوكلاء الحديثون مع أكثر من مجرد نصوص - فهم يتفاعلون مع الصور والصوت والفيديو. يدعم Milvus التخزين متعدد النواقل والمخطط الديناميكي، مما يسمح لك بإدارة التضمينات من طرائق متعددة في نظام واحد. يوفر ذلك أساسًا موحدًا للذاكرة للوكلاء متعددي الوسائط، مما يتيح استرجاعًا متسقًا عبر أنواع مختلفة من البيانات.</p>
+<h4 id="3-Unified-Management-of-Multimodal-Content" class="common-anchor-header"><strong>3. Unified Management of Multimodal Content</strong></h4><p>Modern agents handle more than text — they interact with images, audio, and video. Milvus supports multi-vector storage and dynamic schema, allowing you to manage embeddings from multiple modalities in a single system. This provides a unified memory foundation for multimodal agents, enabling consistent retrieval across different types of data.</p>
 <pre><code translate="no"><span class="hljs-comment"># Filter retrievals by source (e.g., search only medical reports)</span>
 vectorstore.similarity_search(
     query=<span class="hljs-string">&quot;What is the patient&#x27;s blood pressure reading?&quot;</span>,
@@ -287,7 +287,7 @@ vectorstore.similarity_search(
     expr=<span class="hljs-string">&quot;source == &#x27;medical_reports&#x27; AND modality == &#x27;text&#x27;&quot;</span>  <span class="hljs-comment"># Milvus scalar filtering</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="LangChain-vs-LangGraph-How-to-Choose-the-One-That-Fits-for-Your-Agents" class="common-anchor-header">LangChain مقابل LangGraph: كيفية اختيار النظام الذي يناسب وكلاءك<button data-href="#LangChain-vs-LangGraph-How-to-Choose-the-One-That-Fits-for-Your-Agents" class="anchor-icon" translate="no">
+<h2 id="LangChain-vs-LangGraph-How-to-Choose-the-One-That-Fits-for-Your-Agents" class="common-anchor-header">LangChain vs. LangGraph: How to Choose the One That Fits for Your Agents<button data-href="#LangChain-vs-LangGraph-How-to-Choose-the-One-That-Fits-for-Your-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -302,25 +302,25 @@ vectorstore.similarity_search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تُعد الترقية إلى الإصدار 1.0 من LangChain خطوة أساسية نحو بناء وكلاء على مستوى الإنتاج - ولكن هذا لا يعني أنه الخيار الوحيد أو الأفضل دائمًا لكل حالة استخدام. يحدد اختيار إطار العمل المناسب مدى سرعة دمج هذه الإمكانيات في نظام عامل وقابل للصيانة.</p>
-<p>في الواقع، يمكن النظر إلى LangChain 1.0 وLangGraph 1.0 كجزء من نفس المكدس متعدد الطبقات، مصممين للعمل معًا بدلًا من استبدال أحدهما الآخر: يساعدك LangChain على بناء وكلاء قياسيين بسرعة، بينما يمنحك LangGraph تحكمًا دقيقًا في سير العمل المعقد. بعبارة أخرى، يساعدك LangChain على التحرك بسرعة، بينما يساعدك LangGraph على التعمق.</p>
-<p>فيما يلي مقارنة سريعة لكيفية اختلافهما في التموضع التقني:</p>
+    </button></h2><p>Upgrading to LangChain 1.0 is an essential step toward building production-grade agents — but that doesn’t mean it’s always the only or best choice for every use case. Choosing the right framework determines how quickly you can combine these capabilities into a working, maintainable system.</p>
+<p>Actually, LangChain 1.0 and LangGraph 1.0 can be seen as part of the same layered stack, designed to work together rather than replace each other: LangChain helps you build standard agents quickly, while LangGraph gives you fine-grained control for complex workflows. In other words, LangChain helps you move fast, while LangGraph helps you go deep.</p>
+<p>Below is a quick comparison of how they differ in technical positioning:</p>
 <table>
 <thead>
-<tr><th><strong>البعد</strong></th><th><strong>سلسلة اللغات 1.0</strong></th><th><strong>سلسلة اللغات 1.0</strong></th></tr>
+<tr><th><strong>Dimension</strong></th><th><strong>LangChain 1.0</strong></th><th><strong>LangChain 1.0</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>مستوى التجريد</strong></td><td>تجريد عالي المستوى، مصمم لسيناريوهات الوكيل القياسية</td><td>إطار عمل تزامن منخفض المستوى، مصمم لسير العمل المعقد</td></tr>
-<tr><td><strong>القدرة الأساسية</strong></td><td>حلقة ReAct القياسية (السبب ← استدعاء الأداة ← المراقبة ← الاستجابة)</td><td>آلات الحالة المخصصة ومنطق التفرع المعقد (مخطط الحالة + التوجيه الشرطي)</td></tr>
-<tr><td><strong>آلية التمديد</strong></td><td>البرمجيات الوسيطة للقدرات على مستوى الإنتاج</td><td>الإدارة اليدوية للعقد، والحواف، وانتقالات الحالة</td></tr>
-<tr><td><strong>التنفيذ الأساسي</strong></td><td>الإدارة اليدوية للعقد والحواف وانتقالات الحالة</td><td>وقت تشغيل أصلي مع مثابرة واسترداد مدمجة</td></tr>
-<tr><td><strong>حالات الاستخدام النموذجية</strong></td><td>80% من سيناريوهات الوكيل القياسية</td><td>التعاون متعدد الوكلاء وتنسيق سير العمل طويل الأمد</td></tr>
-<tr><td><strong>منحنى التعلم</strong></td><td>بناء وكيل في حوالي 10 أسطر من التعليمات البرمجية</td><td>يتطلب فهم المخططات البيانية للحالة وتنسيق العقدة</td></tr>
+<tr><td><strong>Abstraction Level</strong></td><td>High-level abstraction, designed for standard agent scenarios</td><td>Low-level orchestration framework, designed for complex workflows</td></tr>
+<tr><td><strong>Core Capability</strong></td><td>Standard ReAct loop (Reason → Tool Call → Observation → Response)</td><td>Custom state machines and complex branching logic (StateGraph + Conditional Routing)</td></tr>
+<tr><td><strong>Extension Mechanism</strong></td><td>Middleware for production-grade capabilities</td><td>Manual management of nodes, edges, and state transitions</td></tr>
+<tr><td><strong>Underlying Implementation</strong></td><td>Manual management of nodes, edges, and state transitions</td><td>Native runtime with built-in persistence and recovery</td></tr>
+<tr><td><strong>Typical Use Cases</strong></td><td>80% of standard agent scenarios</td><td>Multi-agent collaboration and long-running workflow orchestration</td></tr>
+<tr><td><strong>Learning Curve</strong></td><td>Build an agent in ~10 lines of code</td><td>Requires understanding of state graphs and node orchestration</td></tr>
 </tbody>
 </table>
-<p>إذا كنت جديدًا في بناء الوكلاء أو ترغب في إنشاء مشروع وتشغيله بسرعة، ابدأ باستخدام LangChain. أما إذا كنت تعرف بالفعل أن حالة استخدامك تتطلب تزامنًا معقدًا أو تعاونًا متعدد الوكلاء أو سير عمل طويل الأمد، فانتقل مباشرةً إلى LangGraph.</p>
-<p>يمكن أن يتعايش كلا الإطارين في نفس المشروع - يمكنك البدء باستخدام LangChain بشكل بسيط ثم استخدام LangGraph عندما يحتاج نظامك إلى مزيد من التحكم والمرونة. المفتاح هو اختيار الأداة المناسبة لكل جزء من سير عملك.</p>
-<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>If you’re new to building agents or want to get a project up and running quickly, start with LangChain. If you already know your use case requires complex orchestration, multi-agent collaboration, or long-running workflows, go straight to LangGraph.</p>
+<p>Both frameworks can coexist in the same project — you can start simple with LangChain and bring in LangGraph when your system needs more control and flexibility. The key is to choose the right tool for each part of your workflow.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -335,8 +335,8 @@ vectorstore.similarity_search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>قبل ثلاث سنوات، بدأت LangChain قبل ثلاث سنوات كغلاف خفيف الوزن لاستدعاء LLMs. أما اليوم، فقد تطورت لتصبح إطار عمل متكامل على مستوى الإنتاج.</p>
-<p>في الأساس، توفر طبقات البرمجيات الوسيطة السلامة والامتثال وإمكانية المراقبة. ويضيف LangGraph التنفيذ المستمر، وتدفق التحكم، وإدارة الحالة. وفي طبقة الذاكرة، يسدّ <a href="https://milvus.io/">ميلفوس</a> فجوة حرجة - توفير ذاكرة طويلة الأجل قابلة للتطوير وموثوقة تسمح للوكلاء باسترجاع السياق والاستدلال على التاريخ والتحسين بمرور الوقت.</p>
-<p>وتشكل كل من LangChain وLangGraph وMilvus معًا سلسلة أدوات عملية لعصر الوكلاء الحديث - تربط بين النماذج الأولية السريعة والنشر على نطاق المؤسسة، دون التضحية بالموثوقية أو الأداء.</p>
-<p>🚀 هل أنت جاهز لمنح وكيلك ذاكرة موثوقة وطويلة الأمد؟ استكشف <a href="https://milvus.io">Milvus</a> وشاهد كيف يعمل على تشغيل ذاكرة ذكية طويلة المدى لوكلاء LangChain في الإنتاج.</p>
-<p>هل لديك أسئلة أو تريد التعمق في أي ميزة؟ انضم إلى <a href="https://discord.com/invite/8uyFbECzPX">قناة Discord</a> الخاصة بنا أو قم بتسجيل المشكلات على <a href="https://github.com/milvus-io/milvus">GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات لأسئلتك من خلال <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">ساعات عمل Milvus المكتبية</a>.</p>
+    </button></h2><p>Three years ago, LangChain started as a lightweight wrapper for calling LLMs. Today, it has grown into a complete, production-grade framework.</p>
+<p>At the core, middleware layers provide safety, compliance, and observability. LangGraph adds persistent execution, control flow, and state management. And at the memory layer, <a href="https://milvus.io/">Milvus</a> fills a critical gap—providing scalable, reliable long-term memory that allows agents to retrieve context, reason over history, and improve over time.</p>
+<p>Together, LangChain, LangGraph, and Milvus form a practical toolchain for the modern agent era—bridging rapid prototyping with enterprise-scale deployment, without sacrificing reliability or performance.</p>
+<p>🚀 Ready to give your agent a reliable, long-term memory? Explore <a href="https://milvus.io">Milvus</a> and see how it powers intelligent, long-term memory for LangChain agents in production.</p>
+<p>Have questions or want a deep dive on any feature? Join our <a href="https://discord.com/invite/8uyFbECzPX">Discord channel</a> or file issues on <a href="https://github.com/milvus-io/milvus">GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>.</p>

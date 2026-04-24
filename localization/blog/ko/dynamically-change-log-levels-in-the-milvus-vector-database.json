@@ -1,1 +1,1 @@
-{"codeList":["$ curl -X PUT 192.168.48.12:9091/log/level -d level=error\n"],"headingContent":"","anchorList":[{"label":"메커니즘","href":"Mechanism","type":2,"isActive":false},{"label":"로그 수준을 동적으로 변경하는 방법","href":"How-to-dynamically-change-log-levels","type":2,"isActive":false}]}
+{"codeList":["$ curl -X PUT 192.168.48.12:9091/log/level -d level=error\n"],"headingContent":"","anchorList":[{"label":"Mechanism","href":"Mechanism","type":2,"isActive":false},{"label":"How to dynamically change log levels","href":"How-to-dynamically-change-log-levels","type":2,"isActive":false}]}

@@ -1,8 +1,7 @@
 ---
 id: anthropic-managed-agents-memory-milvus.md
-title: >-
-  Cara Menambahkan Memori Jangka Panjang ke Agen Terkelola Anthropic dengan
-  Milvus
+title: |
+  How to Add Long-Term Memory to Anthropic's Managed Agents with Milvus
 author: Min Yin
 date: 2026-4-21
 cover: assets.zilliz.com/anthropic_managed_agents_memory_milvus_md_1_d3e5055603.png
@@ -15,16 +14,16 @@ meta_keywords: >-
   database
 meta_title: |
   Add Long-Term Memory to Anthropic's Managed Agents with Milvus
-desc: >-
-  Agen Terkelola Anthropic membuat agen-agen dapat diandalkan, tetapi setiap
-  sesi dimulai dengan kosong. Berikut ini cara memasangkan Milvus untuk
-  penarikan semantik di dalam sesi dan berbagi memori di seluruh agen.
+desc: >
+  Anthropic's Managed Agents made agents reliable, but every session starts
+  blank. Here's how to pair Milvus for semantic recall inside a session and
+  shared memory across agents.
 origin: 'https://milvus.io/blog/anthropic-managed-agents-memory-milvus.md'
 ---
-<p><a href="https://www.anthropic.com/engineering/managed-agents">Agen Terkelola</a> Anthropic membuat infrastruktur agen menjadi tangguh. Tugas 200 langkah kini dapat bertahan dari kerusakan harness, batas waktu sandbox, atau perubahan infrastruktur di tengah penerbangan tanpa campur tangan manusia, dan Anthropic melaporkan p50 time-to-first-token turun sekitar 60% dan p95 turun lebih dari 90% setelah pemisahan.</p>
-<p>Hal yang tidak dapat diatasi oleh keandalan adalah memori. Migrasi kode 200 langkah yang mencapai konflik ketergantungan baru pada langkah 201 tidak dapat secara efisien melihat kembali bagaimana ia menangani konflik terakhir. Agen yang menjalankan pemindaian kerentanan untuk satu pelanggan tidak tahu bahwa agen lain telah menyelesaikan kasus yang sama satu jam yang lalu. Setiap sesi dimulai dari halaman kosong, dan otak paralel tidak memiliki akses ke apa yang telah dikerjakan oleh yang lain.</p>
-<p>Perbaikannya adalah memasangkan <a href="https://milvus.io/">basis data vektor Milvus</a> dengan Agen Terkelola Anthropic: penarikan kembali semantik dalam sebuah sesi, dan <a href="https://milvus.io/docs/milvus_for_agents.md">lapisan memori vektor</a> bersama di seluruh sesi. Kontrak sesi tetap tidak tersentuh, harness mendapatkan satu lapisan baru, dan tugas agen cakrawala panjang mendapatkan kemampuan yang berbeda secara kualitatif.</p>
-<h2 id="What-Managed-Agents-Solved-and-What-They-Didnt" class="common-anchor-header">Apa yang Diselesaikan oleh Agen Terkelola (dan Apa yang Tidak Diselesaikan)<button data-href="#What-Managed-Agents-Solved-and-What-They-Didnt" class="anchor-icon" translate="no">
+<p>Anthropic’s <a href="https://www.anthropic.com/engineering/managed-agents">Managed Agents</a> make agent infrastructure resilient. A 200-step task now survives a harness crash, a sandbox timeout, or a mid-flight infrastructure change without human intervention, and Anthropic reports p50 time-to-first-token dropped roughly 60% and p95 dropped over 90% after the decoupling.</p>
+<p>What reliability doesn’t solve is memory. A 200-step code migration that hits a new dependency conflict on step 201 can’t efficiently look back at how it handled the last one. An agent running vulnerability scans for one customer has no idea that another agent already solved the same case an hour ago. Every session starts on a blank page, and parallel brains have no access to what the others have already worked out.</p>
+<p>The fix is to pair the <a href="https://milvus.io/">Milvus vector database</a> with Anthropic’s Managed Agents: semantic recall within a session, and a shared <a href="https://milvus.io/docs/milvus_for_agents.md">vector memory layer</a> across sessions. The session contract stays untouched, the harness gets one new layer, and long-horizon agent tasks get qualitatively different capabilities.</p>
+<h2 id="What-Managed-Agents-Solved-and-What-They-Didnt" class="common-anchor-header">What Managed Agents Solved (and What They Didn’t)<button data-href="#What-Managed-Agents-Solved-and-What-They-Didnt" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,29 +38,29 @@ origin: 'https://milvus.io/blog/anthropic-managed-agents-memory-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Managed Agents memecahkan keandalan dengan memisahkan agen menjadi tiga modul independen. Yang tidak dipecahkannya adalah memori, baik sebagai penarikan semantik di dalam satu sesi atau sebagai pengalaman bersama di seluruh sesi paralel.</strong> Inilah yang dipisahkan, dan di mana letak celah memori di dalam desain yang dipisahkan itu.</p>
+    </button></h2><p><strong>Managed Agents solved reliability by decoupling the agent into three independent modules. What it didn’t solve is memory, either as semantic recall inside a single session or as shared experience across parallel sessions.</strong> Here’s what got decoupled, and where the memory gap sits inside that decoupled design.</p>
 <table>
 <thead>
-<tr><th>Modul</th><th>Apa yang dilakukannya</th></tr>
+<tr><th>Module</th><th>What it does</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Sesi</strong></td><td>Catatan peristiwa yang hanya ditambahkan dari semua yang terjadi. Disimpan di luar harness.</td></tr>
-<tr><td><strong>Harness</strong></td><td>Lingkaran yang memanggil Claude dan merutekan panggilan alat Claude ke infrastruktur yang relevan.</td></tr>
-<tr><td><strong>Sandbox</strong></td><td>Lingkungan eksekusi yang terisolasi di mana Claude menjalankan kode dan mengedit file.</td></tr>
+<tr><td><strong>Session</strong></td><td>An append-only event log of everything that happened. Stored outside the harness.</td></tr>
+<tr><td><strong>Harness</strong></td><td>The loop that calls Claude and routes Claude’s tool calls to the relevant infrastructure.</td></tr>
+<tr><td><strong>Sandbox</strong></td><td>The isolated execution environment where Claude runs code and edits files.</td></tr>
 </tbody>
 </table>
-<p>Pembingkaian yang membuat desain ini berhasil dinyatakan secara eksplisit dalam postingan Anthropic:</p>
-<p><em>"Sesi bukanlah jendela konteks Claude."</em></p>
-<p>Jendela konteks bersifat sementara: dibatasi dalam token, direkonstruksi per panggilan model, dan dibuang ketika panggilan kembali. Sesi ini tahan lama, disimpan di luar harness, dan mewakili sistem pencatatan untuk seluruh tugas.</p>
+<p>The reframe that makes this design work is stated explicitly in Anthropic’s post:</p>
+<p><em>“The session is not Claude’s context window.”</em></p>
+<p>The context window is ephemeral: bounded in tokens, reconstructed per model call, and discarded when the call returns. The session is durable, stored outside the harness, and represents the system of record for the entire task.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/anthropic_managed_agents_memory_milvus_md_3_edae1b022d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Ketika sebuah harness macet, platform akan memulai yang baru dengan <code translate="no">wake(sessionId)</code>. Harness baru membaca log peristiwa melalui <code translate="no">getSession(id)</code>, dan tugas diambil dari langkah terakhir yang direkam, tanpa logika pemulihan khusus untuk ditulis dan tidak ada penitipan anak di tingkat sesi yang harus dioperasikan.</p>
-<p>Apa yang tidak dibahas oleh posting Managed Agents, dan tidak diklaim, adalah apa yang dilakukan oleh agen ketika perlu mengingat apa pun. Dua celah muncul saat Anda mendorong beban kerja nyata melalui arsitektur. Yang satu berada di dalam satu sesi; yang lain berada di seluruh sesi.</p>
-<h2 id="Problem-1-Why-Linear-Session-Logs-Fail-Past-a-Few-Hundred-Steps" class="common-anchor-header">Masalah 1: Mengapa Log Sesi Linier Gagal Melewati Beberapa Ratus Langkah<button data-href="#Problem-1-Why-Linear-Session-Logs-Fail-Past-a-Few-Hundred-Steps" class="anchor-icon" translate="no">
+<p>When a harness crashes, the platform starts a fresh one with <code translate="no">wake(sessionId)</code>. The new harness reads the event log via <code translate="no">getSession(id)</code>, and the task picks up from the last recorded step, with no custom recovery logic to write and no session-level babysitting to operate.</p>
+<p>What the Managed Agents post doesn’t address, and doesn’t claim to, is what the agent does when it needs to remember anything. Two gaps show up the moment you push real workloads through the architecture. One lives inside a single session; the other lives across sessions.</p>
+<h2 id="Problem-1-Why-Linear-Session-Logs-Fail-Past-a-Few-Hundred-Steps" class="common-anchor-header">Problem 1: Why Linear Session Logs Fail Past a Few Hundred Steps<button data-href="#Problem-1-Why-Linear-Session-Logs-Fail-Past-a-Few-Hundred-Steps" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,16 +75,16 @@ origin: 'https://milvus.io/blog/anthropic-managed-agents-memory-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Log sesi linear gagal melewati beberapa ratus langkah karena pembacaan berurutan dan pencarian semantik pada dasarnya merupakan beban kerja yang berbeda, dan</strong> <strong>API</strong> <code translate="no">**getEvents()**</code> <strong>hanya melayani yang pertama.</strong> Mengiris berdasarkan posisi atau mencari stempel waktu sudah cukup untuk menjawab "di mana sesi ini berakhir." Hal ini tidak cukup untuk menjawab pertanyaan yang diperkirakan akan dibutuhkan oleh agen pada tugas yang panjang: apakah kita pernah melihat masalah seperti ini sebelumnya, dan apa yang kita lakukan untuk mengatasinya?</p>
-<p>Pertimbangkan migrasi kode pada langkah 200 yang mengenai konflik ketergantungan baru. Langkah yang wajar adalah melihat ke belakang. Apakah agen pernah mengalami hal serupa sebelumnya dalam tugas yang sama? Pendekatan apa yang dicoba? Apakah berhasil, atau malah memundurkan sesuatu yang lain ke hilir?</p>
-<p>Dengan <code translate="no">getEvents()</code> ada dua cara untuk menjawabnya, dan keduanya buruk:</p>
+    </button></h2><p><strong>Linear session logs fail past a few hundred steps because sequential reads and semantic search are fundamentally different workloads, and the</strong> <code translate="no">**getEvents()**</code> <strong>API serves only the first one.</strong> Slicing by position or seeking to a timestamp is enough to answer “where did this session leave off.” It is not enough to answer the question an agent will predictably need on any long task: have we seen this kind of problem before, and what did we do about it?</p>
+<p>Consider a code migration at step 200 that hits a new dependency conflict. The natural move is to look back. Did the agent run into something similar earlier in this same task? What approach was tried? Did it hold, or did it regress something else downstream?</p>
+<p>With <code translate="no">getEvents()</code> there are two ways to answer that, and both are bad:</p>
 <table>
 <thead>
-<tr><th>Opsi</th><th>Masalah</th></tr>
+<tr><th>Option</th><th>Problem</th></tr>
 </thead>
 <tbody>
-<tr><td>Memindai setiap peristiwa secara berurutan</td><td>Lambat pada 200 langkah. Tidak dapat dipertahankan pada 2.000 langkah.</td></tr>
-<tr><td>Membuang sebagian besar aliran ke dalam jendela konteks</td><td>Mahal untuk token, tidak dapat diandalkan pada skala besar, dan menghabiskan memori kerja agen yang sebenarnya untuk langkah saat ini.</td></tr>
+<tr><td>Scan every event sequentially</td><td>Slow at 200 steps. Untenable at 2,000.</td></tr>
+<tr><td>Dump a large slice of the stream into the context window</td><td>Expensive on tokens, unreliable at scale, and crowds out the agent’s actual working memory for the current step.</td></tr>
 </tbody>
 </table>
 <p>
@@ -94,8 +93,8 @@ origin: 'https://milvus.io/blog/anthropic-managed-agents-memory-milvus.md'
     <span></span>
   </span>
 </p>
-<p>Sesi ini bagus untuk pemulihan dan audit, tetapi tidak dibangun dengan indeks yang mendukung "apakah saya pernah melihat ini sebelumnya." Tugas cakrawala panjang adalah di mana pertanyaan tersebut tidak lagi menjadi opsional.</p>
-<h2 id="Solution-1-How-to-Add-Semantic-Memory-to-a-Managed-Agents-Session" class="common-anchor-header">Solusi 1: Cara Menambahkan Memori Semantik ke Sesi Agen Terkelola<button data-href="#Solution-1-How-to-Add-Semantic-Memory-to-a-Managed-Agents-Session" class="anchor-icon" translate="no">
+<p>The session is good for recovery and audit, but it was not built with an index that supports “have I seen this before.” Long-horizon tasks are where that question stops being optional.</p>
+<h2 id="Solution-1-How-to-Add-Semantic-Memory-to-a-Managed-Agents-Session" class="common-anchor-header">Solution 1: How to Add Semantic Memory to a Managed Agent’s Session<button data-href="#Solution-1-How-to-Add-Semantic-Memory-to-a-Managed-Agents-Session" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,15 +109,15 @@ origin: 'https://milvus.io/blog/anthropic-managed-agents-memory-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Tambahkan koleksi Milvus di samping log sesi dan dual-write dari</strong> <code translate="no">**emitEvent**</code>. Kontrak sesi tetap tidak tersentuh, dan harness mendapatkan kueri semantik dari masa lalunya.</p>
+    </button></h2><p><strong>Add a Milvus collection alongside the session log and dual-write from</strong> <code translate="no">**emitEvent**</code><strong>.</strong> The session contract stays untouched, and the harness gains semantic query over its own past.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/anthropic_managed_agents_memory_milvus_md_5_404a1048aa.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Desain Anthropic menyisakan ruang untuk hal ini. Postingan mereka menyatakan bahwa "setiap peristiwa yang diambil juga dapat ditransformasikan dalam harness sebelum diteruskan ke jendela konteks Claude. Transformasi ini dapat berupa apa pun yang dikodekan oleh harness, termasuk organisasi konteks ... dan rekayasa konteks." Rekayasa konteks berada di dalam harness; sesi hanya perlu menjamin daya tahan dan kemampuan bertanya.</p>
-<p>Polanya: setiap kali <code translate="no">emitEvent</code> ditembakkan, harness juga menghitung <a href="https://zilliz.com/learn/everything-you-need-to-know-about-vector-embeddings">penyematan vektor</a> untuk peristiwa yang layak diindeks dan memasukkannya ke dalam koleksi Milvus.</p>
+<p>Anthropic’s design leaves headroom for exactly this. Their post states that “any fetched events can also be transformed in the harness before being passed to Claude’s context window. These transformations can be whatever the harness encodes, including context organization… and context engineering.” Context engineering lives in the harness; the session only has to guarantee durability and queryability.</p>
+<p>The pattern: every time <code translate="no">emitEvent</code> fires, the harness also computes a <a href="https://zilliz.com/learn/everything-you-need-to-know-about-vector-embeddings">vector embedding</a> for events worth indexing and inserts them into a Milvus collection.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 milvus_client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -144,7 +143,7 @@ INDEXABLE_EVENT_TYPES = {<span class="hljs-string">&quot;decision&quot;</span>, 
             }]
         )
 <button class="copy-code-btn"></button></code></pre>
-<p>Ketika agen mencapai langkah 200 dan perlu mengingat keputusan sebelumnya, kueri adalah <a href="https://zilliz.com/glossary/vector-similarity-search">pencarian vektor</a> yang dicakup dalam sesi itu:</p>
+<p>When the agent hits step 200 and needs to recall prior decisions, the query is a <a href="https://zilliz.com/glossary/vector-similarity-search">vector search</a> scoped to that session:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">async</span> <span class="hljs-keyword">def</span> <span class="hljs-title function_">recall_similar</span>(<span class="hljs-params">query: <span class="hljs-built_in">str</span>, session_id: <span class="hljs-built_in">str</span>, top_k: <span class="hljs-built_in">int</span> = <span class="hljs-number">5</span></span>):
     query_vector = <span class="hljs-keyword">await</span> embed(query)
     results = milvus_client.search(
@@ -156,14 +155,14 @@ INDEXABLE_EVENT_TYPES = {<span class="hljs-string">&quot;decision&quot;</span>, 
     )
     <span class="hljs-keyword">return</span> results[<span class="hljs-number">0</span>]  <span class="hljs-comment"># top_k most relevant past events</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Tiga detail produksi penting sebelum kapal ini dikirim:</p>
+<p>Three production details matter before this ships:</p>
 <ul>
-<li><strong>Pilih apa yang akan diindeks.</strong> Tidak semua peristiwa layak untuk disematkan. Status perantara yang dipanggil alat, log percobaan ulang, dan peristiwa status yang berulang-ulang mencemari kualitas pengambilan lebih cepat daripada memperbaikinya. Kebijakan <code translate="no">INDEXABLE_EVENT_TYPES</code> bergantung pada tugas, bukan global.</li>
-<li><strong>Tentukan batas konsistensi.</strong> Jika harness mengalami crash di antara penambahan sesi dan sisipan Milvus, satu lapisan akan mendahului lapisan lainnya. Jendelanya kecil tapi nyata. Pilih jalur rekonsiliasi (coba lagi saat restart, log tulis-depan, atau rekonsiliasi akhir) daripada berharap.</li>
-<li><strong>Kontrol pengeluaran penyematan.</strong> Sesi 200 langkah yang memanggil API penyematan eksternal secara sinkron pada setiap langkah menghasilkan faktur yang tidak direncanakan. Antrian penyematan dan kirimkan secara asinkron dalam beberapa kelompok.</li>
+<li><strong>Pick what to index.</strong> Not every event deserves an embedding. Tool-call intermediate states, retry logs, and repetitive status events pollute retrieval quality faster than they improve it. The <code translate="no">INDEXABLE_EVENT_TYPES</code> policy is task-dependent, not global.</li>
+<li><strong>Define the consistency boundary.</strong> If the harness crashes between the session append and the Milvus insert, one layer is briefly ahead of the other. The window is small but real. Pick a reconciliation path (retry on restart, write-ahead log, or eventual reconciliation) rather than hoping.</li>
+<li><strong>Control embedding spend.</strong> A 200-step session that calls an external embedding API synchronously on every step produces an invoice nobody planned for. Queue embeddings and send them asynchronously in batches.</li>
 </ul>
-<p>Dengan semua itu, pemanggilan kembali memerlukan waktu milidetik untuk pencarian vektor ditambah kurang dari 100ms untuk panggilan penyematan. Lima peristiwa masa lalu yang paling relevan mendarat dalam konteks sebelum agen melihat adanya gesekan. Sesi ini mempertahankan tugas aslinya sebagai log yang tahan lama; harness mendapatkan kemampuan untuk menanyakan masa lalunya sendiri secara semantik daripada secara berurutan. Itu adalah perubahan sederhana di permukaan API dan perubahan struktural dalam apa yang dapat dilakukan agen pada tugas jangka panjang.</p>
-<h2 id="Problem-2-Why-Parallel-Claude-Agents-Cant-Share-Experience" class="common-anchor-header">Masalah 2: Mengapa Agen Claude Paralel Tidak Dapat Berbagi Pengalaman<button data-href="#Problem-2-Why-Parallel-Claude-Agents-Cant-Share-Experience" class="anchor-icon" translate="no">
+<p>With those in place, recall takes milliseconds for the vector search plus under 100ms for the embedding call. The top-five most relevant past events land in context before the agent notices friction. The session keeps its original job as the durable log; the harness gains the ability to query its own past semantically rather than sequentially. That’s a modest change at the API surface and a structural change in what the agent can do on long-horizon tasks.</p>
+<h2 id="Problem-2-Why-Parallel-Claude-Agents-Cant-Share-Experience" class="common-anchor-header">Problem 2: Why Parallel Claude Agents Can’t Share Experience<button data-href="#Problem-2-Why-Parallel-Claude-Agents-Cant-Share-Experience" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -178,12 +177,12 @@ INDEXABLE_EVENT_TYPES = {<span class="hljs-string">&quot;decision&quot;</span>, 
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Agen Claude Paralel tidak dapat berbagi pengalaman karena sesi Agen Terkelola diisolasi secara desain. Isolasi yang sama yang membuat penskalaan horizontal menjadi bersih juga mencegah setiap otak belajar dari setiap otak lainnya.</strong></p>
-<p>Dalam decoupled harness, otak tidak memiliki status dan independen. Isolasi tersebut membuka latensi yang memenangkan laporan Anthropic, dan juga membuat setiap sesi berjalan dalam kegelapan tentang setiap sesi lainnya.</p>
-<p>Agen A menghabiskan waktu 40 menit untuk mendiagnosis vektor injeksi SQL yang rumit untuk satu pelanggan. Satu jam kemudian, Agen B mengambil kasus yang sama untuk pelanggan yang berbeda dan menghabiskan 40 menitnya sendiri berjalan di jalan buntu yang sama, menjalankan panggilan alat yang sama, dan sampai pada jawaban yang sama.</p>
-<p>Untuk satu pengguna yang menjalankan agen sesekali, itu adalah komputasi yang sia-sia. Untuk platform yang menjalankan lusinan <a href="https://zilliz.com/glossary/ai-agents">agen AI</a> secara bersamaan di seluruh tinjauan kode, pemindaian kerentanan, dan pembuatan dokumentasi untuk pelanggan yang berbeda setiap hari, biayanya bertambah secara struktural.</p>
-<p>Jika pengalaman yang dihasilkan setiap sesi menguap begitu sesi berakhir, maka kecerdasan tersebut tidak berguna. Platform yang dibangun dengan cara ini berskala linier tetapi tidak menjadi lebih baik dalam hal apa pun dari waktu ke waktu, seperti yang dilakukan oleh insinyur manusia.</p>
-<h2 id="Solution-2-How-to-Build-a-Shared-Agent-Memory-Pool-with-Milvus" class="common-anchor-header">Solusi 2: Cara Membangun Kumpulan Memori Agen Bersama dengan Milvus<button data-href="#Solution-2-How-to-Build-a-Shared-Agent-Memory-Pool-with-Milvus" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Parallel Claude agents can’t share experience because Managed Agents sessions are isolated by design. The same isolation that makes horizontal scaling clean also prevents every brain from learning from every other brain.</strong></p>
+<p>In a decoupled harness, brains are stateless and independent. That isolation unlocks the latency wins Anthropic reports, and it also keeps every session running in the dark about every other session.</p>
+<p>Agent A spends 40 minutes diagnosing a tricky SQL injection vector for one customer. An hour later, Agent B picks up the same case for a different customer and spends its own 40 minutes walking the same dead ends, running the same tool calls, and arriving at the same answer.</p>
+<p>For a single user running the occasional agent, that is wasted compute. For a platform running dozens of concurrent <a href="https://zilliz.com/glossary/ai-agents">AI agents</a> across code review, vulnerability scans, and documentation generation for different customers every day, the cost compounds structurally.</p>
+<p>If the experience every session produces evaporates the moment the session ends, the intelligence is disposable. A platform built this way scales linearly but doesn’t get better at anything over time, the way human engineers do.</p>
+<h2 id="Solution-2-How-to-Build-a-Shared-Agent-Memory-Pool-with-Milvus" class="common-anchor-header">Solution 2: How to Build a Shared Agent Memory Pool with Milvus<button data-href="#Solution-2-How-to-Build-a-Shared-Agent-Memory-Pool-with-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -198,11 +197,11 @@ INDEXABLE_EVENT_TYPES = {<span class="hljs-string">&quot;decision&quot;</span>, 
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Buat satu koleksi vektor yang dibaca oleh setiap harness saat startup dan ditulis saat dimatikan, dipartisi oleh penyewa sehingga pengalaman pool di seluruh sesi tanpa bocor ke pelanggan.</strong></p>
-<p>Ketika sebuah sesi berakhir, keputusan utama, masalah yang dihadapi, dan pendekatan yang berhasil akan dimasukkan ke dalam koleksi Milvus bersama. Ketika otak baru diinisialisasi, harness menjalankan kueri semantik sebagai bagian dari penyiapan dan menyuntikkan pengalaman masa lalu yang paling cocok ke dalam jendela konteks. Langkah pertama dari agen baru mewarisi pelajaran dari setiap agen sebelumnya.</p>
-<p>Dua keputusan teknik membawa ini dari prototipe ke produksi.</p>
-<h3 id="Isolating-Tenants-with-the-Milvus-Partition-Key" class="common-anchor-header">Mengisolasi Penyewa dengan Kunci Partisi Milvus</h3><p><strong>Partisi oleh</strong> <code translate="no">**tenant_id**</code>,<strong> dan pengalaman agen Pelanggan A secara fisik tidak tinggal di partisi yang sama dengan Pelanggan B. Itu adalah isolasi pada lapisan data dan bukan konvensi kueri.</strong></p>
-<p>Pekerjaan otak A pada basis kode Perusahaan A tidak boleh diambil oleh agen Perusahaan B. <a href="https://milvus.io/docs/use-partition-key.md">Kunci partisi</a> Milvus menangani hal ini pada satu koleksi, tanpa koleksi kedua per penyewa dan tidak ada logika pemecahan dalam kode aplikasi.</p>
+    </button></h2><p><strong>Build one vector collection that every harness reads from at startup and writes to at shutdown, partitioned by tenant so experience pools across sessions without leaking across customers.</strong></p>
+<p>When a session ends, the key decisions, problems encountered, and approaches that worked are pushed into the shared Milvus collection. When a new brain initializes, the harness runs a semantic query as part of setup and injects the top-matching past experiences into the context window. Step one of the new agent inherits the lessons of every prior agent.</p>
+<p>Two engineering decisions carry this from prototype to production.</p>
+<h3 id="Isolating-Tenants-with-the-Milvus-Partition-Key" class="common-anchor-header">Isolating Tenants with the Milvus Partition Key</h3><p><strong>Partition by</strong> <code translate="no">**tenant_id**</code><strong>, and Customer A’s agent experiences physically don’t live in the same partition as Customer B’s. That’s isolation at the data layer rather than a query convention.</strong></p>
+<p>Brain A’s work on Company A’s codebase should never be retrievable by Company B’s agents. Milvus’s <a href="https://milvus.io/docs/use-partition-key.md">partition key</a> handles this on a single collection, with no second collection per tenant and no sharding logic in application code.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Declare partition key at schema creation.</span>
 schema.add_field(
     field_name=<span class="hljs-string">&quot;tenant_id&quot;</span>,
@@ -220,25 +219,25 @@ results = milvus_client.search(
     output_fields=[<span class="hljs-string">&quot;content&quot;</span>, <span class="hljs-string">&quot;step&quot;</span>, <span class="hljs-string">&quot;session_id&quot;</span>]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>Pengalaman agen Pelanggan A tidak pernah muncul di kueri Pelanggan B, bukan karena filter kueri ditulis dengan benar (meskipun memang harus begitu), tetapi karena data secara fisik tidak berada di partisi yang sama dengan Pelanggan B. Satu koleksi untuk beroperasi, isolasi logis diberlakukan pada lapisan kueri, isolasi fisik diberlakukan pada lapisan partisi.</p>
-<p>Lihat <a href="https://milvus.io/docs/multi_tenancy.md">dokumen strategi multi-tenancy</a> untuk mengetahui kapan kunci partisi cocok dibandingkan dengan koleksi atau basis data yang terpisah, dan <a href="https://milvus.io/blog/build-multi-tenancy-rag-with-milvus-best-practices-part-one.md">panduan pola RAG multi-tenancy</a> untuk catatan penerapan produksi.</p>
-<h3 id="Why-Agent-Memory-Quality-Needs-Ongoing-Work" class="common-anchor-header">Mengapa Kualitas Memori Agen Perlu Dilakukan Secara Berkesinambungan</h3><p><strong>Kualitas memori terkikis seiring berjalannya waktu: solusi yang cacat yang pernah berhasil diulang dan diperkuat, dan entri basi yang terkait dengan dependensi yang sudah tidak digunakan akan terus menyesatkan agen yang mewarisinya. Pertahanan adalah program operasional, bukan fitur basis data.</strong></p>
-<p>Agen tersandung pada solusi yang cacat yang kebetulan berhasil sekali. Solusi tersebut akan ditulis ke dalam kumpulan bersama. Agen berikutnya mengambilnya, memutar ulang, dan memperkuat pola yang buruk dengan catatan penggunaan kedua yang "berhasil".</p>
-<p>Entri basi mengikuti versi yang lebih lambat dari jalur yang sama. Perbaikan yang disematkan pada versi ketergantungan yang sudah tidak digunakan lagi enam bulan yang lalu akan terus diambil, dan terus menyesatkan agen-agen yang mewarisinya. Semakin tua dan semakin banyak digunakan, semakin banyak yang terakumulasi.</p>
+<p>Customer A’s agent experiences never surface in Customer B’s queries, not because the query filter is written correctly (though it has to be), but because the data physically does not live in the same partition as Customer B’s. One collection to operate, logical isolation enforced at the query layer, physical isolation enforced at the partition layer.</p>
+<p>See the <a href="https://milvus.io/docs/multi_tenancy.md">multi-tenancy strategies docs</a> for when partition key fits versus when separate collections or databases do, and the <a href="https://milvus.io/blog/build-multi-tenancy-rag-with-milvus-best-practices-part-one.md">multi-tenancy RAG patterns guide</a> for production deployment notes.</p>
+<h3 id="Why-Agent-Memory-Quality-Needs-Ongoing-Work" class="common-anchor-header">Why Agent Memory Quality Needs Ongoing Work</h3><p><strong>Memory quality erodes over time: flawed workarounds that happened to succeed once get replayed and reinforced, and stale entries tied to deprecated dependencies keep misleading agents that inherit them. The defenses are operational programs, not database features.</strong></p>
+<p>An agent stumbles on a flawed workaround that happens to succeed once. It gets written to the shared pool. The next agent retrieves it, replays it, and reinforces the bad pattern with a second “successful” usage record.</p>
+<p>Stale entries follow a slower version of the same path. A fix pinned to a dependency version that was deprecated six months ago keeps getting retrieved, and keeps misleading agents that inherit it. The older and more heavily used the pool, the more of this accumulates.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/anthropic_managed_agents_memory_milvus_md_6_24f71b1c21.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Tiga program operasional bertahan melawan hal ini:</p>
+<p>Three operational programs defend against this:</p>
 <ul>
-<li><strong>Skor kepercayaan.</strong> Melacak seberapa sering memori telah berhasil diterapkan dalam sesi hilir. Membusukkan entri yang gagal dalam pemutaran ulang. Mempromosikan entri yang berhasil berulang kali.</li>
-<li><strong>Pembobotan waktu.</strong> Mengutamakan pengalaman terbaru. Menghentikan entri yang melewati ambang batas keusangan yang diketahui, sering kali terkait dengan lonjakan versi ketergantungan utama.</li>
-<li><strong>Pemeriksaan oleh manusia.</strong> Entri dengan frekuensi pengambilan yang tinggi memiliki daya ungkit yang tinggi. Ketika salah satu dari mereka salah, maka akan salah berkali-kali, yang mana peninjauan manusia akan memberikan hasil paling cepat.</li>
+<li><strong>Confidence score.</strong> Track how often a memory has been successfully applied in downstream sessions. Decay entries that fail in replay. Promote entries that succeed repeatedly.</li>
+<li><strong>Time weighting.</strong> Prefer recent experiences. Retire entries past a known staleness threshold, often tied to major dependency version bumps.</li>
+<li><strong>Human spot checks.</strong> Entries with high retrieval frequency are high-leverage. When one of them is wrong, it is wrong many times, which is where human review pays back fastest.</li>
 </ul>
-<p>Milvus saja tidak dapat menyelesaikan masalah ini, begitu juga dengan Mem0, Zep, atau produk memori lainnya. Menerapkan satu pool dengan banyak penyewa dan nol kebocoran antar penyewa adalah sesuatu yang Anda rekayasa sekali. Menjaga agar pool tersebut tetap akurat, segar, dan berguna merupakan pekerjaan operasional yang terus menerus yang tidak dapat dilakukan oleh database yang sudah dikonfigurasi sebelumnya.</p>
-<h2 id="Takeaways-What-Milvus-Adds-to-Anthropics-Managed-Agents" class="common-anchor-header">Kesimpulan: Apa yang Ditambahkan Milvus pada Agen Terkelola Anthropic<button data-href="#Takeaways-What-Milvus-Adds-to-Anthropics-Managed-Agents" class="anchor-icon" translate="no">
+<p>Milvus alone doesn’t solve this, and neither does Mem0, Zep, or any other memory product. Enforcing one pool with many tenants and zero cross-tenant leakage is something you engineer once. Keeping that pool accurate, fresh, and useful is continuous operational work that no database ships pre-configured.</p>
+<h2 id="Takeaways-What-Milvus-Adds-to-Anthropics-Managed-Agents" class="common-anchor-header">Takeaways: What Milvus Adds to Anthropic’s Managed Agents<button data-href="#Takeaways-What-Milvus-Adds-to-Anthropics-Managed-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -253,11 +252,11 @@ results = milvus_client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Milvus mengubah Managed Agents dari platform yang dapat diandalkan namun mudah dilupakan menjadi platform yang meningkatkan pengalaman dari waktu ke waktu dengan menambahkan semantic recall di dalam sebuah sesi dan memori bersama di seluruh agen.</strong></p>
-<p>Managed Agents menjawab pertanyaan keandalan dengan jelas: otak dan tangan adalah hewan ternak, dan salah satu dari mereka dapat mati tanpa melakukan tugas. Itulah masalah infrastruktur, dan Anthropic menyelesaikannya dengan baik.</p>
-<p>Yang tetap terbuka adalah pertumbuhan. Insinyur manusia bertambah seiring berjalannya waktu; kerja bertahun-tahun berubah menjadi pengenalan pola, dan mereka tidak bernalar berdasarkan prinsip-prinsip dasar pada setiap tugas. Agen yang dikelola saat ini tidak demikian, karena setiap sesi dimulai dari halaman kosong.</p>
-<p>Menyambungkan sesi ke Milvus untuk mengingat semantik di dalam tugas dan menyatukan pengalaman di seluruh otak dalam koleksi vektor bersama adalah hal yang memberi agen masa lalu yang dapat mereka gunakan. Memasukkan Milvus adalah bagian infrastruktur; memangkas ingatan yang salah, menghapus ingatan yang sudah basi, dan menegakkan batas-batas penyewa adalah bagian operasionalnya. Setelah keduanya ada, bentuk memori tidak lagi menjadi beban dan mulai menjadi modal.</p>
-<h2 id="Get-Started" class="common-anchor-header">Memulai<button data-href="#Get-Started" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Milvus turns Managed Agents from a reliable-but-forgetful platform into one that compounds experience over time by adding semantic recall inside a session and shared memory across agents.</strong></p>
+<p>Managed Agents answered the reliability question cleanly: both brains and hands are cattle, and any one can die without taking the task with it. That’s the infrastructure problem, and Anthropic solved it well.</p>
+<p>What stayed open was growth. Human engineers compound over time; years of work turn into pattern recognition, and they don’t reason from first principles on every task. Today’s managed agents don’t, because every session starts on a blank page.</p>
+<p>Wiring the session to Milvus for semantic recall inside a task and pooling experience across brains in a shared vector collection is what gives agents a past they can actually use. Plugging in Milvus is the infrastructure piece; pruning wrong memories, retiring stale ones, and enforcing tenant boundaries is the operational piece. Once both are in place, the shape of memory stops being a liability and starts being compounding capital.</p>
+<h2 id="Get-Started" class="common-anchor-header">Get Started<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -273,12 +272,12 @@ results = milvus_client.search(
         ></path>
       </svg>
     </button></h2><ul>
-<li><strong>Cobalah secara lokal:</strong> jalankan instans Milvus tertanam dengan <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>. Tanpa Docker, tanpa cluster, hanya <code translate="no">pip install pymilvus</code>. Beban kerja produksi dapat dialihkan ke <a href="https://milvus.io/docs/install_standalone-docker.md">Milvus Standalone atau Distributed</a> saat Anda membutuhkannya.</li>
-<li><strong>Baca dasar pemikiran desainnya:</strong> <a href="https://www.anthropic.com/engineering/managed-agents">Pos rekayasa Managed Agents</a> Anthropic membahas sesi, harness, dan decoupling sandbox secara mendalam.</li>
-<li><strong>Punya pertanyaan?</strong> Bergabunglah dengan komunitas <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> untuk diskusi desain memori agen, atau pesan sesi <a href="https://milvus.io/office-hours">Jam Kantor Milvus</a> untuk membahas beban kerja Anda.</li>
-<li><strong>Lebih suka dikelola?</strong> <a href="https://cloud.zilliz.com/signup">Daftar ke Zilliz Cloud</a> (atau <a href="https://cloud.zilliz.com/login">masuk</a>) untuk Milvus yang di-host dengan kunci partisi, penskalaan, dan multi-tenancy. Akun baru mendapatkan kredit gratis untuk email kantor.</li>
+<li><strong>Try it locally:</strong> spin up an embedded Milvus instance with <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>. No Docker, no cluster, just <code translate="no">pip install pymilvus</code>. Production workloads graduate to <a href="https://milvus.io/docs/install_standalone-docker.md">Milvus Standalone or Distributed</a> when you need them.</li>
+<li><strong>Read the design rationale:</strong> Anthropic’s <a href="https://www.anthropic.com/engineering/managed-agents">Managed Agents engineering post</a> walks through the session, harness, and sandbox decoupling in depth.</li>
+<li><strong>Got questions?</strong> Join the <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord</a> community for agent memory design discussions, or book a <a href="https://milvus.io/office-hours">Milvus Office Hours</a> session to walk through your workload.</li>
+<li><strong>Prefer managed?</strong> <a href="https://cloud.zilliz.com/signup">Sign up for Zilliz Cloud</a> (or <a href="https://cloud.zilliz.com/login">sign in</a>) for hosted Milvus with partition keys, scaling, and multi-tenancy built in. New accounts get free credits on a work email.</li>
 </ul>
-<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Pertanyaan yang Sering Diajukan<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
+<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Frequently Asked Questions<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -293,11 +292,11 @@ results = milvus_client.search(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>T: Apa perbedaan antara sesi dan jendela konteks di Agen Terkelola Anthropic?</strong></p>
-<p>Jendela konteks adalah sekumpulan token sementara yang dilihat oleh satu panggilan Claude. Jendela ini dibatasi dan disetel ulang per pemanggilan model. Sesi adalah log peristiwa yang tahan lama dan hanya ditambahkan dari semua yang terjadi di seluruh tugas, disimpan di luar harness. Ketika sebuah harness macet, <code translate="no">wake(sessionId)</code> memunculkan harness baru yang membaca log sesi dan melanjutkan. Sesi adalah sistem pencatatan; jendela konteks adalah memori kerja. Sesi bukanlah jendela konteks.</p>
-<p><strong>T: Bagaimana cara mempertahankan memori agen di seluruh sesi Claude?</strong></p>
-<p>Sesi itu sendiri sudah persisten; itulah yang diambil oleh <code translate="no">getSession(id)</code>. Yang biasanya hilang adalah memori jangka panjang yang dapat ditanyakan. Polanya adalah menanamkan peristiwa bersinyal tinggi (keputusan, resolusi, strategi) ke dalam basis data vektor seperti Milvus selama <code translate="no">emitEvent</code>, kemudian melakukan kueri berdasarkan kemiripan semantik pada waktu pengambilan. Hal ini memberikan Anda log sesi yang tahan lama yang disediakan oleh Anthropic dan lapisan pemanggilan kembali semantik untuk melihat kembali ratusan langkah.</p>
-<p><strong>T: Dapatkah beberapa agen Claude berbagi memori?</strong></p>
-<p>Tidak bisa. Setiap sesi Managed Agents diisolasi secara desain, yang memungkinkan mereka menskalakan secara horizontal. Untuk berbagi memori di seluruh agen, tambahkan koleksi vektor bersama (misalnya di Milvus) yang dibaca oleh setiap harness saat startup dan ditulis saat dimatikan. Gunakan fitur kunci partisi Milvus untuk mengisolasi penyewa sehingga memori agen Pelanggan A tidak pernah bocor ke sesi Pelanggan B.</p>
-<p><strong>T: Apa basis data vektor terbaik untuk memori agen AI?</strong></p>
-<p>Jawaban yang jujur tergantung pada skala dan bentuk penerapan. Untuk prototipe dan beban kerja yang kecil, opsi tertanam lokal seperti Milvus Lite berjalan dalam proses tanpa infrastruktur. Untuk agen produksi di banyak penyewa, Anda menginginkan basis data dengan multi-tenancy yang matang (kunci partisi, pencarian terfilter), pencarian hybrid (vektor + skalar + kata kunci), dan latensi milidetik pada jutaan vektor. Milvus dibuat khusus untuk beban kerja vektor pada skala tersebut, itulah sebabnya mengapa Milvus muncul di sistem memori agen produksi yang dibangun di atas LangChain, Google ADK, Deep Agents, dan OpenAgents.</p>
+    </button></h2><p><strong>Q: What’s the difference between a session and a context window in Anthropic’s Managed Agents?</strong></p>
+<p>The context window is the ephemeral set of tokens a single Claude call sees. It’s bounded and resets per model invocation. The session is the durable, append-only event log of everything that happened across the whole task, stored outside the harness. When a harness crashes, <code translate="no">wake(sessionId)</code> spawns a new harness that reads the session log and resumes. The session is the system of record; the context window is working memory. The session is not the context window.</p>
+<p><strong>Q: How do I persist agent memory across Claude sessions?</strong></p>
+<p>The session itself is already persistent; that’s what <code translate="no">getSession(id)</code> retrieves. What’s typically missing is queryable long-term memory. The pattern is to embed high-signal events (decisions, resolutions, strategies) into a vector database like Milvus during <code translate="no">emitEvent</code>, then query by semantic similarity at retrieval time. This gives you both the durable session log Anthropic provides and a semantic recall layer for looking back across hundreds of steps.</p>
+<p><strong>Q: Can multiple Claude agents share memory?</strong></p>
+<p>Not out of the box. Each Managed Agents session is isolated by design, which is what lets them scale horizontally. To share memory across agents, add a shared vector collection (for example in Milvus) that each harness reads from at startup and writes to at shutdown. Use Milvus’s partition key feature to isolate tenants so Customer A’s agent memories never leak into Customer B’s sessions.</p>
+<p><strong>Q: What’s the best vector database for AI agent memory?</strong></p>
+<p>The honest answer depends on scale and deployment shape. For prototypes and small workloads, a local embedded option like Milvus Lite runs in-process with no infrastructure. For production agents across many tenants, you want a database with mature multi-tenancy (partition keys, filtered search), hybrid search (vector + scalar + keyword), and millisecond-latency at millions of vectors. Milvus is purpose-built for vector workloads at that scale, which is why it appears in production agent memory systems built on LangChain, Google ADK, Deep Agents, and OpenAgents.</p>

@@ -1,6 +1,7 @@
 ---
 id: why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
-title: Почему ИИ-агенты вроде OpenClaw сжигают токены и как сократить расходы
+title: |
+  Why AI Agents like OpenClaw Burn Through Tokens and How to Cut Costs
 author: Min Yin
 date: 2026-2-28
 cover: assets.zilliz.com/Blog_Open_Claw_Burning_Through_Tokens_1_39b7ee4fdf.jpg
@@ -13,22 +14,22 @@ meta_keywords: >-
   hybrid search BM25 vector, AI agent memory, memsearch, Milvus
 meta_title: |
   Why AI Agents like OpenClaw Burn Through Tokens and How to Cut Costs
-desc: >-
-  Почему счета за токены у OpenClaw и других ИИ-агентов растут, и как это
-  исправить с помощью BM25 + векторного поиска (index1, QMD, Milvus) и памяти,
-  ориентированной на Markdown (memsearch).
+desc: >
+  Why OpenClaw and other AI agents’ token bills spike, and how to fix it with
+  BM25 + vector retrieval (index1, QMD, Milvus) and Markdown-first memory
+  (memsearch).
 origin: >-
   https://milvus.io/blog/why-ai-agents-like-openclaw-burn-through-tokens-and-how-to-cut-costs.md
 ---
-<p>Если вы проводили время с <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (ранее Clawdbot и Moltbot), вы уже знаете, насколько хорош этот агент искусственного интеллекта. Он быстрый, локальный, гибкий и способен выполнять удивительно сложные рабочие процессы в Slack, Discord, вашей кодовой базе и практически во всем остальном, к чему вы его подключите. Но как только вы начинаете использовать его всерьез, быстро проявляется одна закономерность: <strong>использование токенов начинает расти.</strong></p>
-<p>Это не вина конкретно OpenClaw - так сегодня ведет себя большинство агентов ИИ. Они запускают вызов LLM практически для всего: поиска файла, планирования задачи, написания заметки, выполнения инструмента или последующего вопроса. А поскольку универсальной валютой этих вызовов являются токены, каждое действие имеет свою стоимость.</p>
-<p>Чтобы понять, откуда берутся эти затраты, нам нужно заглянуть под капот к двум основным участникам:</p>
+<p>If you’ve spent any time with <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">OpenClaw</a> (formerly Clawdbot and Moltbot), you already know how good this AI Agent is. It’s fast, local, flexible, and capable of pulling off surprisingly complex workflows across Slack, Discord, your codebase, and practically anything else you hook it into. But once you start using it seriously, one pattern quickly emerges: <strong>your token usage starts to climb.</strong></p>
+<p>This isn’t OpenClaw’s fault specifically — it’s how most AI agents behave today. They trigger an LLM call for almost everything: looking up a file, planning a task, writing a note, executing a tool, or asking a follow-up question. And because tokens are the universal currency of these calls, every action has a cost.</p>
+<p>To understand where that cost comes from, we need to look under the hood at two big contributors:</p>
 <ul>
-<li><strong>Поиск:</strong> Плохо построенный поиск втягивает в себя огромные объемы контекста - целые файлы, журналы, сообщения и участки кода, которые на самом деле не нужны модели.</li>
-<li><strong>Память:</strong> Хранение неважной информации заставляет агента перечитывать и обрабатывать ее при последующих вызовах, что со временем увеличивает расход маркеров.</li>
+<li><strong>Search:</strong> Badly constructed searches pull in sprawling context payloads — entire files, logs, messages, and code regions that the model didn’t actually need.</li>
+<li><strong>Memory:</strong> Storing unimportant information forces the agent to reread and reprocess it on future calls, compounding token usage over time.</li>
 </ul>
-<p>Обе эти проблемы приводят к увеличению эксплуатационных расходов без улучшения возможностей.</p>
-<h2 id="How-AI-Agents-Like-OpenClaw-Actually-Perform-Searches--and-Why-That-Burns-Tokens" class="common-anchor-header">Как ИИ-агенты вроде OpenClaw на самом деле выполняют поиск - и почему это сжигает токены<button data-href="#How-AI-Agents-Like-OpenClaw-Actually-Perform-Searches--and-Why-That-Burns-Tokens" class="anchor-icon" translate="no">
+<p>Both issues silently increase operational costs without improving capability.</p>
+<h2 id="How-AI-Agents-Like-OpenClaw-Actually-Perform-Searches--and-Why-That-Burns-Tokens" class="common-anchor-header">How AI Agents Like OpenClaw Actually Perform Searches — and Why That Burns Tokens<button data-href="#How-AI-Agents-Like-OpenClaw-Actually-Perform-Searches--and-Why-That-Burns-Tokens" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,10 +44,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Когда агенту нужна информация из вашей кодовой базы или библиотеки документов, он обычно выполняет эквивалент общепроектного <strong>Ctrl+F</strong>. Каждая совпадающая строка возвращается - без ранжирования, без фильтрации и без приоритетов. В Claude Code это реализовано с помощью специального инструмента Grep, построенного на ripgrep. В OpenClaw нет встроенного инструмента поиска по кодовой базе, но его инструмент exec позволяет базовой модели выполнять любые команды, а загруженные навыки могут подсказать агенту, как использовать инструменты вроде rg. В обоих случаях поиск по кодовой базе возвращает совпадения ключевых слов без ранжирования и фильтрации.</p>
-<p>Такой грубый подход хорошо работает в небольших проектах. Но по мере роста репозиториев растет и цена. Нерелевантные совпадения нагромождаются в контекстном окне LLM, заставляя модель читать и обрабатывать тысячи лексем, которые ей на самом деле не нужны. Один неохватный поиск может потянуть за собой полные файлы, огромные блоки комментариев или журналы, в которых есть ключевое слово, но нет основного намерения. Повторите эту схему в течение длительного сеанса отладки или исследования, и объем информации быстро увеличится.</p>
-<p>И OpenClaw, и Claude Code пытаются управлять этим ростом. OpenClaw обрезает избыточные результаты работы инструментов и уплотняет длинные истории разговоров, а Claude Code ограничивает вывод данных из файлов и поддерживает уплотнение контекста. Эти меры работают, но только после того, как раздутый запрос уже выполнен. Неранжированные результаты поиска все еще потребляют токены, и вы все еще платите за них. Управление контекстом помогает будущим обращениям, а не первоначальному вызову, который вызвал потери.</p>
-<h2 id="How-AI-Agent-Memory-Works-and-Why-It-Also-Costs-Tokens" class="common-anchor-header">Как работает память агентов ИИ и почему она тоже стоит жетонов<button data-href="#How-AI-Agent-Memory-Works-and-Why-It-Also-Costs-Tokens" class="anchor-icon" translate="no">
+    </button></h2><p>When an agent needs information from your codebase or document library, it typically does the equivalent of a project-wide <strong>Ctrl+F</strong>. Every matching line is returned — unranked, unfiltered, and unprioritized. Claude Code implements this through a dedicated Grep tool built on ripgrep. OpenClaw doesn’t have a built-in codebase search tool, but its exec tool lets the underlying model run any command, and loaded skills can guide the agent to use tools like rg. In both cases, codebase search returns keyword matches unranked and unfiltered.</p>
+<p>This brute-force approach works fine in small projects. But as repositories grow, so does the price. Irrelevant matches pile into the LLM’s context window, forcing the model to read and process thousands of tokens it didn’t actually need. A single unscoped search might drag in full files, huge comment blocks, or logs that share a keyword but not the underlying intent. Repeat that pattern across a long debugging or research session, and the bloat adds up quickly.</p>
+<p>Both OpenClaw and Claude Code try to manage this growth. OpenClaw prunes oversized tool outputs and compacts long conversation histories, while Claude Code limits file-read output and supports context compaction. These mitigations work — but only after the bloated query has already been executed. The unranked search results still consumed tokens, and you still paid for them. Context management helps future turns, not the original call that generated the waste.</p>
+<h2 id="How-AI-Agent-Memory-Works-and-Why-It-Also-Costs-Tokens" class="common-anchor-header">How AI Agent Memory Works and Why It Also Costs Tokens<button data-href="#How-AI-Agent-Memory-Works-and-Why-It-Also-Costs-Tokens" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,11 +62,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Поиск - не единственный источник лишних жетонов. Каждый фрагмент контекста, который агент извлекает из памяти, должен быть также загружен в контекстное окно LLM, и это тоже стоит токенов.</p>
-<p>API LLM, на которые сегодня опирается большинство агентов, не имеют состояния: API сообщений Anthropic требует полной истории разговора при каждом запросе, API завершения чата OpenAI работает аналогичным образом. Даже более новый государственный API Responses от OpenAI, который управляет состоянием разговора на стороне сервера, по-прежнему требует полного контекстного окна при каждом вызове. Память, загруженная в контекст, стоит токенов независимо от того, как она туда попала.</p>
-<p>Чтобы обойти эту проблему, агентские фреймворки записывают заметки в файлы на диске и загружают соответствующие заметки обратно в контекстное окно, когда они нужны агенту. Например, OpenClaw хранит курируемые заметки в файле MEMORY.md и добавляет ежедневные журналы в файлы Markdown с временными метками, а затем индексирует их с помощью гибридного BM25 и векторного поиска, чтобы агент мог вызвать соответствующий контекст по требованию.</p>
-<p>Дизайн памяти OpenClaw работает хорошо, но он требует полной экосистемы OpenClaw: процесса шлюза, соединений с платформой обмена сообщениями и остального стека. То же самое можно сказать и о памяти Claude Code, которая привязана к его CLI. Если вы создаете собственного агента вне этих платформ, вам понадобится отдельное решение. В следующем разделе мы рассмотрим доступные инструменты для решения обеих проблем.</p>
-<h2 id="How-to-Stop-OpenClaw-From-Burning-Through-Tokens" class="common-anchor-header">Как остановить OpenClaw от сжигания токенов<button data-href="#How-to-Stop-OpenClaw-From-Burning-Through-Tokens" class="anchor-icon" translate="no">
+    </button></h2><p>Search isn’t the only source of token overhead. Every piece of context an agent recalls from memory must also be loaded into the LLM’s context window, and that costs tokens as well.</p>
+<p>The LLM APIs that most agents rely on today are stateless: Anthropic’s Messages API requires the full conversation history with every request, and OpenAI’s Chat Completions API works the same way. Even OpenAI’s newer stateful Responses API, which manages conversation state server-side, still bills for the full context window on every call. Memory loaded into context costs tokens regardless of how it gets there.</p>
+<p>To work around this, agent frameworks write notes to files on disk and load relevant notes back into the context window when the agent needs them. For instance, OpenClaw stores curated notes in MEMORY.md and appends daily logs to timestamped Markdown files, then indexes them with hybrid BM25 and vector search so the agent can recall relevant context on demand.</p>
+<p>OpenClaw’s memory design works well, but it requires the full OpenClaw ecosystem: the Gateway process, messaging platform connections, and the rest of the stack. The same is true of Claude Code’s memory, which is tied to its CLI. If you’re building a custom agent outside these platforms, you need a standalone solution. The next section covers the tools available for both problems.</p>
+<h2 id="How-to-Stop-OpenClaw-From-Burning-Through-Tokens" class="common-anchor-header">How to Stop OpenClaw From Burning Through Tokens<button data-href="#How-to-Stop-OpenClaw-From-Burning-Through-Tokens" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,88 +81,89 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Если вы хотите сократить количество потребляемых OpenClaw токенов, есть два рычага, за которые вы можете потянуть.</p>
+    </button></h2><p>If you want to reduce how many tokens OpenClaw consumes, there are two levers you can pull.</p>
 <ul>
-<li>Первый - <strong>улучшение поиска</strong> - замена дампов ключевых слов в стиле grep на ранжированные, ориентированные на релевантность инструменты поиска, чтобы модель видела только ту информацию, которая действительно важна.</li>
-<li>Второй - <strong>улучшение памяти</strong> - переход от непрозрачного, зависящего от фреймворка хранилища к тому, что можно понять, проверить и контролировать.</li>
+<li>The first is <strong>better retrieval</strong> — replacing grep-style keyword dumps with ranked, relevance-driven search tools so the model only sees the information that actually matters.</li>
+<li>The second is <strong>better memory</strong> — moving from opaque, framework-dependent storage to something you can understand, inspect, and control.</li>
 </ul>
-<h3 id="Replacing-grep-with-Better-Retrieval-index1-QMD-and-Milvus" class="common-anchor-header">Замена grep на лучший поиск: index1, QMD и Milvus</h3><p>Многие агенты кодирования ИИ осуществляют поиск в кодовых базах с помощью grep или ripgrep. В Claude Code есть специальный инструмент Grep, построенный на ripgrep. В OpenClaw нет встроенного инструмента для поиска по кодовой базе, но его инструмент exec позволяет базовой модели выполнять любые команды, а такие навыки, как ripgrep или QMD, могут быть загружены, чтобы управлять поиском агента. Без навыка, ориентированного на поиск, агент будет использовать любой подход, который выберет базовая модель. Суть проблемы одинакова для всех агентов: без ранжированного поиска совпадения ключевых слов попадают в контекстное окно без фильтрации.</p>
-<p>Это работает, когда проект достаточно мал, чтобы каждое совпадение удобно помещалось в контекстном окне. Проблема возникает, когда кодовая база или библиотека документов разрастается до такой степени, что ключевое слово дает десятки или сотни совпадений и агенту приходится загружать их все в подсказку. При таких масштабах вам нужны результаты, ранжированные по релевантности, а не просто отфильтрованные по совпадению.</p>
-<p>Стандартное решение - гибридный поиск, сочетающий два взаимодополняющих метода ранжирования:</p>
+<h3 id="Replacing-grep-with-Better-Retrieval-index1-QMD-and-Milvus" class="common-anchor-header">Replacing grep with Better Retrieval: index1, QMD, and Milvus</h3><p>Many AI coding agents search codebases with grep or ripgrep. Claude Code has a dedicated Grep tool built on ripgrep. OpenClaw doesn’t have a built-in codebase search tool, but its exec tool lets the underlying model run any command, and skills like ripgrep or QMD can be loaded to guide how the agent searches. Without a retrieval-focused skill, the agent falls back on whatever approach the underlying model chooses. The core problem is the same across agents: without ranked retrieval, keyword matches enter the context window unfiltered.</p>
+<p>This works when a project is small enough that every match fits comfortably in the context window. The problem starts when a codebase or document library grows to the point where a keyword returns dozens or hundreds of hits and the agent has to load all of them into the prompt. At that scale, you need results ranked by relevance, not just filtered by match.</p>
+<p>The standard fix is hybrid search, which combines two complementary ranking methods:</p>
 <ul>
-<li>BM25 оценивает каждый результат по тому, как часто и насколько уникально термин встречается в данном документе. Сфокусированный файл, в котором слово "аутентификация" упоминается 15 раз, ранжируется выше, чем обширный файл, в котором оно упоминается один раз.</li>
-<li>Векторный поиск преобразует текст в числовые представления смысла, поэтому "аутентификация" может соответствовать "потоку входа" или "управлению сеансами", даже если у них нет общих ключевых слов.</li>
+<li>BM25 scores each result by how often and how uniquely a term appears in a given document. A focused file that mentions “authentication” 15 times ranks higher than a sprawling file that mentions it once.</li>
+<li>Vector search converts text into numerical representations of meaning, so “authentication” can match “login flow” or “session management” even when they share no keywords.</li>
 </ul>
-<p>Ни один из методов сам по себе не является достаточным: BM25 пропускает перефразированные термины, а векторный поиск - точные термины, например коды ошибок. Комбинирование обоих методов и объединение ранжированных списков с помощью алгоритма слияния позволяет устранить оба пробела.</p>
-<p>Приведенные ниже инструменты реализуют эту схему в разных масштабах. Grep - базовый инструмент, с которого все начинают. index1, QMD и Milvus добавляют гибридный поиск с возрастающей производительностью.</p>
-<h4 id="index1-fast-hybrid-search-on-a-single-machine" class="common-anchor-header">index1: быстрый гибридный поиск на одной машине</h4><p><a href="https://github.com/gladego/index1">index1</a> - это инструмент CLI, который упаковывает гибридный поиск в один файл базы данных SQLite. FTS5 обрабатывает BM25, sqlite-vec - векторное сходство, а RRF объединяет ранжированные списки. Вкрапления генерируются Ollama локально, поэтому ничего не покидает вашу машину.</p>
-<p>index1 разбивает код по структуре, а не по количеству строк: Markdown-файлы разбиваются по заголовкам, Python-файлы - по AST, JavaScript и TypeScript - по шаблонам regex. Это означает, что результаты поиска возвращают целостные блоки, такие как полная функция или полный раздел документации, а не произвольные диапазоны строк, которые обрываются на середине блока. Время отклика составляет от 40 до 180 мс для гибридных запросов. Без Ollama он возвращается к BM25-only, который по-прежнему ранжирует результаты, а не выводит каждое совпадение в контекстное окно.</p>
-<p>index1 также включает модуль эпизодической памяти для хранения извлеченных уроков, первопричин ошибок и архитектурных решений. Эти воспоминания хранятся в той же базе данных SQLite, что и индекс кода, а не в виде отдельных файлов.</p>
-<p>Примечание: index1 - это проект на ранней стадии (0 звезд, 4 фиксации на февраль 2026 года). Оцените его в сравнении с вашей собственной кодовой базой, прежде чем делать коммит.</p>
+<p>Neither method alone is sufficient: BM25 misses paraphrased terms, and vector search misses exact terms like error codes. Combining both and merging the ranked lists through a fusion algorithm covers both gaps.</p>
+<p>The tools below implement this pattern at different scales. Grep is the baseline everyone starts with. index1, QMD, and Milvus each add hybrid search with increasing capacity.</p>
+<h4 id="index1-fast-hybrid-search-on-a-single-machine" class="common-anchor-header">index1: fast hybrid search on a single machine</h4><p><a href="https://github.com/gladego/index1">index1</a> is a CLI tool that packages hybrid search into a single SQLite database file. FTS5 handles BM25, sqlite-vec handles vector similarity, and RRF fuses the ranked lists. Embeddings are generated locally by Ollama, so nothing leaves your machine.</p>
+<p>index1 chunks code by structure, not by line count: Markdown files split by headings, Python files by AST, JavaScript and TypeScript by regex patterns. This means search results return coherent units like a full function or a complete documentation section, not arbitrary line ranges that cut off mid-block. Response time is 40 to 180ms for hybrid queries. Without Ollama, it falls back to BM25-only, which still ranks results rather than dumping every match into the context window.</p>
+<p>index1 also includes an episodic memory module for storing lessons learned, bug root causes, and architectural decisions. These memories live inside the same SQLite database as the code index rather than as standalone files.</p>
+<p>Note: index1 is an early-stage project (0 stars, 4 commits as of February 2026). Evaluate it against your own codebase before committing.</p>
 <ul>
-<li><strong>Лучше всего подходит для</strong>: одиночных разработчиков или небольших команд с кодовой базой, умещающейся на одной машине, которые ищут быстрое улучшение по сравнению с grep.</li>
-<li><strong>Перерастет его, если</strong>: вам нужен многопользовательский доступ к одному и тому же индексу, или ваши данные превышают тот объем, который удобно обрабатывать в одном файле SQLite.</li>
+<li><strong>Best for</strong>: solo developers or small teams with a codebase that fits on one machine, looking for a fast improvement over grep.</li>
+<li><strong>Outgrow it when</strong>: you need multi-user access to the same index, or your data exceeds what a single SQLite file handles comfortably.</li>
 </ul>
-<h4 id="QMD-higher-accuracy-through-local-LLM-re-ranking" class="common-anchor-header">QMD: более высокая точность за счет локального переранжирования LLM</h4><p><a href="https://github.com/tobi/qmd">QMD</a> (Query Markup Documents), созданный основателем Shopify Тоби Лютке, добавляет третий этап: LLM-реранжирование. После того как BM25 и векторный поиск возвращают кандидатов, локальная языковая модель перечитывает лучшие результаты и упорядочивает их по фактической релевантности вашему запросу. Это позволяет выявить случаи, когда и ключевые слова, и семантические совпадения дают правдоподобные, но неверные результаты.</p>
-<p>QMD работает полностью на вашей машине, используя три модели GGUF общим объемом около 2 ГБ: модель встраивания (embeddinggemma-300M), кросс-кодерный реранкер (Qwen3-Reranker-0.6B) и модель расширения запроса (qmd-query-expansion-1.7B). Все три загружаются автоматически при первом запуске. Никаких вызовов облачного API, никаких ключей API.</p>
-<p>Компромиссом является время холодного старта: загрузка трех моделей с диска занимает примерно 15-16 секунд. QMD поддерживает режим постоянного сервера (qmd mcp), который сохраняет модели в памяти между запросами, устраняя штраф за холодный старт при повторных запросах.</p>
+<h4 id="QMD-higher-accuracy-through-local-LLM-re-ranking" class="common-anchor-header">QMD: higher accuracy through local LLM re-ranking</h4><p><a href="https://github.com/tobi/qmd">QMD</a> (Query Markup Documents), built by Shopify founder Tobi Lütke, adds a third stage: LLM re-ranking. After BM25 and vector search each return candidates, a local language model re-reads the top results and reorders them by actual relevance to your query. This catches cases where both keyword and semantic matches return plausible but wrong results.</p>
+<p>QMD runs entirely on your machine using three GGUF models totaling about 2 GB: an embedding model (embeddinggemma-300M), a cross-encoder reranker (Qwen3-Reranker-0.6B), and a query expansion model (qmd-query-expansion-1.7B). All three download automatically on first run. No cloud API calls, no API keys.</p>
+<p>The tradeoff is cold-start time: loading three models from disk takes roughly 15 to 16 seconds. QMD supports a persistent server mode (qmd mcp) that keeps models in memory between requests, eliminating the cold-start penalty for repeated queries.</p>
 <ul>
-<li><strong>Лучше всего подходит для:</strong> сред, критичных к конфиденциальности, где никакие данные не могут покинуть вашу машину, и где точность поиска важнее времени отклика.</li>
-<li><strong>Перерастайте его, если:</strong> вам нужны ответы за доли секунды, общий командный доступ, или ваш набор данных превышает возможности одной машины.</li>
+<li><strong>Best for:</strong> privacy-critical environments where no data can leave your machine, and where retrieval accuracy matters more than response time.</li>
+<li><strong>Outgrow it when:</strong> you need sub-second responses, shared team access, or your dataset exceeds single-machine capacity.</li>
 </ul>
-<h4 id="Milvus-hybrid-search-at-team-and-enterprise-scale" class="common-anchor-header">Milvus: гибридный поиск в масштабах команды и предприятия</h4><p>Вышеописанные инструменты для одной машины хорошо подходят для индивидуальных разработчиков, но их возможности ограничены, когда нескольким людям или агентам требуется доступ к одной и той же базе знаний. <a href="https://github.com/milvus-io/milvus"></a></p>
-<p><a href="https://github.com/milvus-io/milvus">Milvus</a> - это векторная база данных с открытым исходным кодом, созданная для следующего этапа: распределенная, многопользовательская и способная работать с миллиардами векторов.</p>
-<p>Ключевая особенность Milvus для этого случая - встроенный Sparse-BM25, доступный с Milvus 2.5 и значительно ускоренный в 2.6. Вы предоставляете необработанный текст, и Milvus выполняет его внутреннюю токенизацию с помощью анализатора, построенного на tantivy, а затем преобразует результат в разреженные векторы, которые предварительно вычисляются и сохраняются во время индексации.</p>
-<p>Поскольку представление BM25 уже сохранено, при поиске не нужно пересчитывать оценки на лету. Эти разреженные векторы хранятся вместе с плотными векторами (семантическими вкраплениями) в той же Коллекции. Во время запроса вы объединяете оба сигнала с помощью ранжировщика, такого как RRFRanker, который Milvus предоставляет из коробки. Та же гибридная схема поиска, что и в Index1 и QMD, но работающая на горизонтально масштабируемой инфраструктуре.</p>
-<p>Milvus также предоставляет возможности, которые не под силу одномашинным инструментам: многопользовательская изоляция (отдельные базы данных или коллекции для каждой команды), репликация данных с автоматическим обходом отказа и горячее/холодное хранение данных для экономичного хранения. Для агентов это означает, что несколько разработчиков или несколько экземпляров агентов могут одновременно запрашивать одну и ту же базу знаний, не наступая на данные друг друга.</p>
+<h4 id="Milvus-hybrid-search-at-team-and-enterprise-scale" class="common-anchor-header">Milvus: hybrid search at team and enterprise scale</h4><p>The single-machine tools above work well for individual developers, but they hit limits when multiple people or agents need access to the same knowledge base. <a href="https://github.com/milvus-io/milvus"></a></p>
+<p><a href="https://github.com/milvus-io/milvus">Milvus</a> is an open-source vector database built for that next stage: distributed, multi-user, and capable of handling billions of vectors.</p>
+<p>Its key feature for this use case is built-in Sparse-BM25, available since Milvus 2.5 and significantly faster in 2.6. You provide raw text, and Milvus tokenizes it internally using an analyzer built on tantivy, then converts the result to sparse vectors that are pre-computed and stored at index time.</p>
+<p>Because the BM25 representation is already stored, retrieval doesn’t need to recalculate scores on the fly. These sparse vectors live alongside dense vectors (semantic embeddings) in the same Collection. At query time, you fuse both signals with a ranker such as RRFRanker, which Milvus provides out of the box. Same hybrid search pattern as index1 and QMD, but running on infrastructure that scales horizontally.</p>
+<p>Milvus also provides capabilities that single-machine tools cannot: multi-tenant isolation (separate databases or collections per team), data replication with automatic failover, and hot/cold data tiering for cost-efficient storage. For agents, this means multiple developers or multiple agent instances can query the same knowledge base concurrently without stepping on each other’s data.</p>
 <ul>
-<li><strong>Лучшее решение для</strong>: нескольких разработчиков или агентов, совместно использующих базу знаний, больших или быстрорастущих наборов документов, а также для производственных сред, нуждающихся в репликации, отказоустойчивости и контроле доступа.</li>
+<li><strong>Best for</strong>: multiple developers or agents sharing a knowledge base, large or fast-growing document sets, or production environments that need replication, failover, and access control.</li>
 </ul>
-<p>Подведем итоги:</p>
+<p>To sum up:</p>
 <table>
 <thead>
-<tr><th>Инструмент</th><th>Этап</th><th>Развертывание</th><th>Миграционный сигнал</th></tr>
+<tr><th>Tool</th><th>Stage</th><th>Deployment</th><th>Migration signal</th></tr>
 </thead>
 <tbody>
-<tr><td>Claude Native Grep</td><td>Прототипирование</td><td>Встроенный, без необходимости настройки</td><td>Счета растут или запросы замедляются</td></tr>
-<tr><td>индекс1</td><td>Одномашинный (скорость)</td><td>Локальный SQLite + Ollama</td><td>Нужен многопользовательский доступ или данные перерастают рамки одной машины</td></tr>
-<tr><td>QMD</td><td>Одномашинный (точность)</td><td>Три локальные модели GGUF</td><td>Нужны общие индексы для команды</td></tr>
-<tr><td>Milvus</td><td>Команда или производство</td><td>Распределенный кластер</td><td>Большие наборы документов или многопользовательские требования</td></tr>
+<tr><td>Claude Native Grep</td><td>Prototyping</td><td>Built-in, zero setup</td><td>Bills climb or queries slow down</td></tr>
+<tr><td>index1</td><td>Single-machine (speed)</td><td>Local SQLite + Ollama</td><td>Need multi-user access or data outgrows one machine</td></tr>
+<tr><td>QMD</td><td>Single-machine (accuracy)</td><td>Three local GGUF models</td><td>Need team-shared indexes</td></tr>
+<tr><td>Milvus</td><td>Team or Production</td><td>Distributed cluster</td><td>Large document sets or multi-tenant requirements</td></tr>
 </tbody>
 </table>
-<h3 id="Reducing-AI-Agent-Token-Costs-by-Giving-Them-Persistent-Editable-Memory-with-memsearch" class="common-anchor-header">Сокращение расходов на токены агентов ИИ за счет предоставления им постоянной, редактируемой памяти с помощью memsearch</h3><p>Оптимизация поиска позволяет сократить трату токенов на один запрос, но это не помогает справиться с тем, что агент сохраняет между сессиями.</p>
-<p>Каждый фрагмент контекста, который агент вспоминает из памяти, должен быть загружен в подсказку, и на это тоже тратятся жетоны. Вопрос не в том, хранить ли память, а в том, как. От способа хранения зависит, сможете ли вы увидеть, что запомнил агент, исправить это, если что-то не так, и взять с собой при смене инструмента.</p>
-<p>Большинство фреймворков терпят неудачу по всем трем пунктам. Mem0 и Zep хранят все в векторной базе данных, что работает для поиска, но делает память..:</p>
+<h3 id="Reducing-AI-Agent-Token-Costs-by-Giving-Them-Persistent-Editable-Memory-with-memsearch" class="common-anchor-header">Reducing AI Agent Token Costs by Giving Them Persistent, Editable Memory with memsearch</h3><p>Search optimization reduces token waste per query, but it doesn’t help with what the agent retains between sessions.</p>
+<p>Every piece of context an agent recalls from memory has to be loaded into the prompt, and that costs tokens too. The question isn’t whether to store memory, but how. The storage method determines whether you can see what the agent remembers, fix it when it’s wrong, and take it with you if you switch tools.</p>
+<p>Most frameworks fail on all three counts. Mem0 and Zep store everything in a vector database, which works for retrieval, but makes memory:</p>
 <ul>
-<li><strong>Непрозрачной.</strong> Вы не можете увидеть, что помнит агент, не обратившись к API.</li>
-<li><strong>Трудно редактируемой.</strong> Исправление или удаление памяти означает вызов API, а не открытие файла.</li>
-<li><strong>Заблокирована.</strong> Переход на другой фреймворк означает экспорт, конвертацию и повторный импорт данных.</li>
+<li><strong>Opaque.</strong> You can’t see what the agent remembers without querying an API.</li>
+<li><strong>Hard to edit.</strong> Correcting or removing a memory means API calls, not opening a file.</li>
+<li><strong>Locked in.</strong> Switching frameworks means exporting, converting, and reimporting your data.</li>
 </ul>
-<p>OpenClaw использует другой подход. Вся память хранится в обычных файлах Markdown на диске. Агент автоматически пишет ежедневные журналы, а человек может открывать и редактировать любой файл памяти напрямую. Это решает все три проблемы: память читаема, редактируема и переносима.</p>
-<p>Компромисс заключается в накладных расходах на развертывание. Запуск памяти OpenClaw означает запуск всей экосистемы OpenClaw: процесса шлюза, соединений платформы обмена сообщениями и всего остального стека. Для команд, уже использующих OpenClaw, это нормально. Для всех остальных барьер слишком высок. <strong>memsearch</strong> был создан, чтобы устранить этот пробел: он извлекает шаблон памяти OpenClaw, основанный на Markdown, в отдельную библиотеку, которая работает с любым агентом.</p>
-<p><strong><a href="https://github.com/zilliztech/memsearch">memsearch</a></strong>, созданный Zilliz (командой, стоящей за Milvus), рассматривает файлы в формате Markdown как единый источник истины. В файле MEMORY.md хранятся долгосрочные факты и решения, которые вы пишете вручную. Ежедневные журналы (2026-02-26.md) генерируются автоматически из сводок сессий. Векторный индекс, хранящийся в Milvus, - это производный слой, который можно перестроить из Markdown в любое время.</p>
-<p>На практике это означает, что вы можете открыть любой файл memsearch в текстовом редакторе, прочитать, что именно знает агент, и изменить это. Сохраните файл, и наблюдатель за файлами memsearch обнаружит изменение и автоматически переиндексирует его. Вы можете управлять воспоминаниями с помощью Git, просматривать созданные ИИ воспоминания с помощью запросов на перенос или перемещаться на новую машину, копируя папку. Если индекс Milvus потерян, вы восстанавливаете его из файлов. Файлы никогда не подвергаются риску.</p>
-<p>Под капотом memsearch использует ту же гибридную схему поиска, что описана выше: разделение фрагментов по структуре заголовков и границам абзацев, BM25 + векторный поиск, а также компактная команда на базе LLM, которая суммирует старые воспоминания, когда журналы становятся большими.  <span class="img-wrapper">
+<p>OpenClaw takes a different approach. All memory lives in plain Markdown files on disk. The agent writes daily logs automatically, and humans can open and edit any memory file directly. This solves all three problems: the memory is readable, editable, and portable by design.</p>
+<p>The trade-off is deployment overhead. Running OpenClaw’s memory means running the full OpenClaw ecosystem: the Gateway process, messaging platform connections, and the rest of the stack. For teams already using OpenClaw, that’s fine. For everyone else, the barrier is too high. <strong>memsearch</strong> was built to close this gap: it extracts OpenClaw’s Markdown-first memory pattern into a standalone library that works with any agent.</p>
+<p><strong><a href="https://github.com/zilliztech/memsearch">memsearch</a></strong>, built by Zilliz (the team behind Milvus), treats Markdown files as the single source of truth. A MEMORY.md holds long-term facts and decisions you write by hand. Daily logs (2026-02-26.md) are generated automatically from session summaries. The vector index, stored in Milvus, is a derived layer that can be rebuilt from the Markdown at any time.</p>
+<p>In practice, this means you can open any memory file in a text editor, read exactly what the agent knows, and change it. Save the file, and memsearch’s file watcher detects the change and re-indexes automatically. You can manage memories with Git, review AI-generated memories through pull requests, or move to a new machine by copying a folder. If the Milvus index is lost, you rebuild it from the files. The files are never at risk.</p>
+<p>Under the hood, memsearch uses the same hybrid search pattern described above: chunks split by heading structure and paragraph boundaries, BM25 + vector retrieval, and an LLM-powered compact command that summarizes old memories when logs grow large.
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Blog_Open_Claw_Burning_Through_Tokens_3_d9df026b47.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Лучше всего подходит для: команд, которым нужна полная видимость того, что запоминает агент, необходим контроль версий над памятью или нужна система памяти, которая не привязана к какому-то одному фреймворку агента.</p>
-<p>Подведем итоги:</p>
+<p>Best for: teams that want full visibility into what the agent remembers, need version control over memory, or want a memory system that isn’t locked to any single agent framework.</p>
+<p>To sum up:</p>
 <table>
 <thead>
-<tr><th>Возможности</th><th>Mem0 / Zep</th><th>memsearch</th></tr>
+<tr><th>Capability</th><th>Mem0 / Zep</th><th>memsearch</th></tr>
 </thead>
 <tbody>
-<tr><td>Источник истины</td><td>Векторная база данных (единственный источник данных)</td><td>Файлы Markdown (первичные) + Milvus (индекс)</td></tr>
-<tr><td>Прозрачность</td><td>Черный ящик, для проверки требуется API</td><td>Откройте любой файл .md для чтения</td></tr>
-<tr><td>Возможность редактирования</td><td>Изменение через вызовы API</td><td>Редактирование непосредственно в любом текстовом редакторе, автоматическая переиндексация</td></tr>
-<tr><td>Контроль версий</td><td>Требуется отдельное ведение журнала аудита</td><td>Git работает как родной</td></tr>
-<tr><td>Стоимость миграции</td><td>Экспорт → преобразование формата → повторный импорт</td><td>Копирование папки Markdown</td></tr>
-<tr><td>Сотрудничество человека и ИИ</td><td>ИИ пишет, человек наблюдает</td><td>Люди могут редактировать, дополнять и рецензировать</td></tr>
+<tr><td>Source of truth</td><td>Vector database (sole data source)</td><td>Markdown files (primary) + Milvus (index)</td></tr>
+<tr><td>Transparency</td><td>Black box, requires API to inspect</td><td>Open any .md file to read</td></tr>
+<tr><td>Editability</td><td>Modify via API calls</td><td>Edit directly in any text editor, auto re-indexed</td></tr>
+<tr><td>Version control</td><td>Requires separate audit logging</td><td>Git works natively</td></tr>
+<tr><td>Migration cost</td><td>Export → convert format → re-import</td><td>Copy the Markdown folder</td></tr>
+<tr><td>Human-AI collaboration</td><td>AI writes, humans observe</td><td>Humans can edit, supplement, and review</td></tr>
 </tbody>
 </table>
-<h2 id="Which-setup-fits-your-scale" class="common-anchor-header">Какая настройка подходит для вашего масштаба<button data-href="#Which-setup-fits-your-scale" class="anchor-icon" translate="no">
+<h2 id="Which-setup-fits-your-scale" class="common-anchor-header">Which setup fits your scale<button data-href="#Which-setup-fits-your-scale" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -178,17 +180,17 @@ origin: >-
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>Сценарий</th><th>Поиск</th><th>Память</th><th>Когда двигаться дальше</th></tr>
+<tr><th>Scenario</th><th>Search</th><th>Memory</th><th>When to move on</th></tr>
 </thead>
 <tbody>
-<tr><td>Ранний прототип</td><td>Grep (встроенный)</td><td>-</td><td>Счета растут или запросы замедляются</td></tr>
-<tr><td>Одиночный разработчик, только поиск</td><td><a href="https://github.com/gladego/index1">index1</a> (скорость) или <a href="https://github.com/tobi/qmd">QMD</a> (точность)</td><td>-</td><td>Нужен многопользовательский доступ или данные перерастают рамки одной машины</td></tr>
-<tr><td>Один разработчик, оба</td><td><a href="https://github.com/gladego/index1">индекс1</a></td><td><a href="https://github.com/zilliztech/memsearch">memsearch</a></td><td>Нужен многопользовательский доступ или данные перерастают одну машину</td></tr>
-<tr><td>Команда или производство, оба</td><td><a href="https://github.com/milvus-io/milvus">Milvus</a></td><td><a href="https://github.com/zilliztech/memsearch">memsearch</a></td><td>-</td></tr>
-<tr><td>Быстрая интеграция, только память</td><td>-</td><td>Mem0 или Zep</td><td>Необходимость проверки, редактирования или миграции памяти</td></tr>
+<tr><td>Early prototype</td><td>Grep (built-in)</td><td>—</td><td>Bills climb or queries slow down</td></tr>
+<tr><td>Single developer, search only</td><td><a href="https://github.com/gladego/index1">index1</a> (speed) or <a href="https://github.com/tobi/qmd">QMD</a> (accuracy)</td><td>—</td><td>Need multi-user access or data outgrows one machine</td></tr>
+<tr><td>Single developer, both</td><td><a href="https://github.com/gladego/index1">index1</a></td><td><a href="https://github.com/zilliztech/memsearch">memsearch</a></td><td>Need multi-user access or data outgrows one machine</td></tr>
+<tr><td>Team or production, both</td><td><a href="https://github.com/milvus-io/milvus">Milvus</a></td><td><a href="https://github.com/zilliztech/memsearch">memsearch</a></td><td>—</td></tr>
+<tr><td>Quick integration, memory only</td><td>—</td><td>Mem0 or Zep</td><td>Need to inspect, edit, or migrate memories</td></tr>
 </tbody>
 </table>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -203,18 +205,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Расходы на токены, связанные с постоянно работающими агентами ИИ, не являются неизбежными. В этом руководстве мы рассмотрели две области, в которых улучшение инструментария может сократить потери: поиск и память.</p>
-<p>Grep работает в небольших масштабах, но по мере роста кодовых баз нерейтинговые совпадения ключевых слов переполняют контекстное окно контентом, который никогда не был нужен модели. <a href="https://github.com/gladego/index1"></a><a href="https://github.com/gladego/index1">index1</a> и <a href="https://github.com/tobi/qmd"></a> QMD решают эту проблему на одной машине, сочетая скоринг ключевых слов BM25 с векторным поиском и возвращая только самые релевантные результаты. Для команд, многоагентных систем или производственных рабочих нагрузок <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> обеспечивает ту же гибридную схему поиска на горизонтально масштабируемой инфраструктуре.</p>
-<p>Что касается памяти, то большинство фреймворков хранят все в векторной базе данных: непрозрачной, трудно редактируемой вручную и привязанной к фреймворку, который ее создал. <a href="https://github.com/zilliztech/memsearch">memsearch</a> использует другой подход. Память живет в обычных файлах Markdown, которые можно читать, редактировать и контролировать с помощью Git. Milvus служит производным индексом, который может быть перестроен из этих файлов в любое время. Вы остаетесь в курсе того, что известно агенту.</p>
-<p>И <a href="https://github.com/zilliztech/memsearch"></a><a href="https://github.com/zilliztech/memsearch">memsearch</a>, и <a href="https://github.com/milvus-io/milvus"></a><a href="https://github.com/milvus-io/milvus">Milvus</a> имеют открытый исходный код. Мы активно развиваем memsearch и будем рады обратной связи от тех, кто использует его в производстве. Откройте проблему, отправьте PR или просто расскажите нам, что работает, а что нет.</p>
-<p>Проекты, упомянутые в этом руководстве:</p>
+    </button></h2><p>The token costs that come with always-on AI agents aren’t inevitable. This guide covered two areas where better tooling can cut the waste: search and memory.</p>
+<p>Grep works at small scale, but as codebases grow, unranked keyword matches flood the context window with content the model never needed. <a href="https://github.com/gladego/index1"></a><a href="https://github.com/gladego/index1">index1</a> and <a href="https://github.com/tobi/qmd"></a><a href="https://github.com/tobi/qmd">QMD</a> solve this on a single machine by combining BM25 keyword scoring with vector search and returning only the most relevant results. For teams, multi-agent setups, or production workloads, <a href="https://milvus.io"></a><a href="https://milvus.io">Milvus</a> provides the same hybrid search pattern on infrastructure that scales horizontally.</p>
+<p>For memory, most frameworks store everything in a vector database: opaque, hard to edit by hand, and locked to the framework that created it. <a href="https://github.com/zilliztech/memsearch">memsearch</a> takes a different approach. Memory lives in plain Markdown files you can read, edit, and version-control with Git. Milvus serves as a derived index that can be rebuilt from those files at any time. You stay in control of what the agent knows.</p>
+<p>Both <a href="https://github.com/zilliztech/memsearch"></a><a href="https://github.com/zilliztech/memsearch">memsearch</a> and <a href="https://github.com/milvus-io/milvus"></a><a href="https://github.com/milvus-io/milvus">Milvus</a> are open source. We’re actively developing memsearch and would love feedback from anyone running it in production. Open an issue, submit a PR, or just tell us what’s working and what isn’t.</p>
+<p>Projects mentioned in this guide:</p>
 <ul>
-<li><a href="https://github.com/zilliztech/memsearch">memsearch</a>: Память для ИИ-агентов, основанная на Markdown, при поддержке Milvus.</li>
-<li><a href="https://github.com/milvus-io/milvus">Milvus</a>: Векторная база данных с открытым исходным кодом для масштабируемого гибридного поиска.</li>
-<li><a href="https://github.com/gladego/index1">index1</a>: BM25 + векторный гибридный поиск для агентов кодирования ИИ.</li>
-<li><a href="https://github.com/tobi/qmd">QMD</a>: локальный гибридный поиск с повторным ранжированием LLM.</li>
+<li><a href="https://github.com/zilliztech/memsearch">memsearch</a>: Markdown-first memory for AI agents, backed by Milvus.</li>
+<li><a href="https://github.com/milvus-io/milvus">Milvus</a>: Open-source vector database for scalable hybrid search.</li>
+<li><a href="https://github.com/gladego/index1">index1</a>: BM25 + vector hybrid search for AI coding agents.</li>
+<li><a href="https://github.com/tobi/qmd">QMD</a>: Local hybrid search with LLM re-ranking.</li>
 </ul>
-<h2 id="Keep-Reading" class="common-anchor-header">Продолжить чтение<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -230,8 +232,8 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">Мы извлекли систему памяти OpenClaw и выложили ее в открытый доступ (memsearch)</a></li>
-<li><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Постоянная память для кода Клода: memsearch ccplugin</a></li>
-<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">Что такое OpenClaw? Полное руководство по агенту искусственного интеллекта с открытым исходным кодом</a></li>
-<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Самоучитель по OpenClaw: Подключение к Slack для локального ИИ-ассистента</a></li>
+<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)</a></li>
+<li><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Persistent Memory for Claude Code: memsearch ccplugin</a></li>
+<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a></li>
+<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></li>
 </ul>

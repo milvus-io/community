@@ -1,6 +1,7 @@
 ---
 id: claude-code-memory-memsearch.md
-title: クロード・コードの流出ソースを読んだ。メモリーの実際の仕組みはこうだ
+title: |
+  We Read Claude Code's Leaked Source. Here's How Its Memory Actually Works
 author: Cheney Zhang
 date: 2026-4-3
 cover: assets.zilliz.com/claude_memory_845a789ee8.jpg
@@ -13,22 +14,23 @@ meta_keywords: >-
   cross-agent memory
 meta_title: |
   Claude Code Memory System Explained: 4 Layers, 5 Limits, and a Fix
-desc: >-
-  クロード・コードがリークしたソースから、grepのみの検索で200行を上限とする4層のメモリが明らかになった。各レイヤーの動作とmemsearchが修正する内容は以下の通りだ。
+desc: >
+  Claude Code's leaked source reveals a 4-layer memory capped at 200 lines with
+  grep-only search. Here's how each layer works and what memsearch fixes.
 origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
 ---
-<p>クロード・コードのソースコードが誤って公開されてしまった。バージョン2.1.88には59.8MBのソースマップファイルが含まれていた。その1つのファイルには、完全で読みやすいTypeScriptコードベース（512,000行）が含まれており、現在はGitHub全体でミラーリングされている。</p>
-<p><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">メモリ・</a>システムは私たちの注意を引いた。クロード・コードは、市場で最も人気のあるAIコーディング・エージェントであり、メモリは、ほとんどのユーザーがボンネットの中でどのように動作しているのかを理解せずに操作している部分である。そこで、私たちは掘り下げてみた。</p>
-<p>簡単に説明しよう：クロード・コードのメモリは、想像以上に基本的なものだ。メモの上限は200行。もし「ポートの競合」について質問しても、メモに「docker-compose mapping」と書かれていれば、何も得られない。そしてクロード・コードから何も出てこない。別のエージェントに切り替えると、ゼロからのスタートとなる。</p>
-<p>ここに4つのレイヤーがある：</p>
+<p>Claude Code’s source code was shipped publicly by accident. Version 2.1.88 included a 59.8 MB source map file that should have been stripped from the build. That one file contained the full, readable TypeScript codebase — 512,000 lines, now mirrored across GitHub.</p>
+<p>The <a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">memory system</a> caught our attention. Claude Code is the most popular AI coding agent on the market, and memory is the part most users interact with without understanding how it works under the hood. So we dug in.</p>
+<p>The short version: Claude Code’s memory is more basic than you’d think. It caps out at 200 lines of notes. It can only find memories by exact keyword match — if you ask about “port conflicts,” but the note says “docker-compose mapping,” you get nothing. And none of it leaves Claude Code. Switch to a different agent and you start from zero.</p>
+<p>Here are the four layers:</p>
 <ul>
-<li><strong>CLAUDE.md</strong>- クロードが従うべきルールを自分で書いたファイル。手動で、静的で、事前に書き留めようと思う量によって制限される。</li>
-<li><strong>Auto Memory</strong>- セッション中にクロードが自分でメモを取る。便利だが、200行のインデックスが上限。</li>
-<li><strong>オートドリーム</strong>- あなたがアイドルである間、乱雑な記憶を統合するバックグラウンドクリーンアッププロセス。数日前の雑然とした記憶を整理するのに役立つ。</li>
-<li><strong>KAIROS</strong>- リークされたコードにあった未発表の常時稼働デーモンモード。公開ビルドにはまだない。</li>
+<li><strong>CLAUDE.md</strong> — a file you write yourself with rules for Claude to follow. Manual, static, and limited by how much you think to write down in advance.</li>
+<li><strong>Auto Memory</strong> — Claude takes its own notes during sessions. Useful, but capped at a 200-line index with no search-by-meaning.</li>
+<li><strong>Auto Dream</strong> — a background cleanup process that consolidates messy memories while you’re idle. Helps with days-old clutter, can’t bridge months.</li>
+<li><strong>KAIROS</strong> — an unreleased always-on daemon mode found in the leaked code. Not in any public build yet.</li>
 </ul>
-<p>以下では、各レイヤーを紐解き、アーキテクチャが破綻している部分と、そのギャップに対処するために構築したものを取り上げる。</p>
-<h2 id="How-Does-CLAUDEmd-Work" class="common-anchor-header">CLAUDE.mdはどのように機能するのか？<button data-href="#How-Does-CLAUDEmd-Work" class="anchor-icon" translate="no">
+<p>Below, we unpack each layer, then cover where the architecture breaks down and what we built to address the gaps.</p>
+<h2 id="How-Does-CLAUDEmd-Work" class="common-anchor-header">How Does CLAUDE.md Work?<button data-href="#How-Does-CLAUDEmd-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,10 +45,10 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>CLAUDE.mdはMarkdownファイルで、プロジェクトフォルダーに作成します。コードスタイルのルール、プロジェクトの構造、テストコマンド、デプロイ手順など、クロードに覚えておいてほしいことを何でも書き込むことができます。Claudeはセッションの開始時にこのファイルを読み込みます。</p>
-<p>プロジェクトレベル（リポジトリルート）、個人用（<code translate="no">~/.claude/CLAUDE.md</code> ）、組織用（enterprise config）の3つのスコープがあります。短いファイルほど、より確実に追跡される。</p>
-<p>CLAUDE.mdは、あなたが事前に書き留めたものだけを保持します。デバッグの決定事項、会話の途中で触れた環境設定、一緒に発見したエッジケースなど、あなたが立ち止まって手動で追加しない限り、どれも捕捉されません。ほとんどの人はそうしない。</p>
-<h2 id="How-Does-Auto-Memory-Work" class="common-anchor-header">オートメモリーの仕組み<button data-href="#How-Does-Auto-Memory-Work" class="anchor-icon" translate="no">
+    </button></h2><p>CLAUDE.md is a Markdown file you create and place in your project folder. You fill it with whatever you want Claude to remember: code style rules, project structure, test commands, deploy steps. Claude loads it at the start of every session.</p>
+<p>Three scopes exist: project-level (in the repo root), personal (<code translate="no">~/.claude/CLAUDE.md</code>), and organizational (enterprise config). Shorter files get followed more reliably.</p>
+<p>The limit is obvious: CLAUDE.md only holds things you wrote down in advance. Debugging decisions, preferences you mentioned mid-conversation, edge cases you discovered together — none of that gets captured unless you stop and manually add it. Most people don’t.</p>
+<h2 id="How-Does-Auto-Memory-Work" class="common-anchor-header">How Does Auto Memory Work?<button data-href="#How-Does-Auto-Memory-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -61,8 +63,8 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Auto Memoryは、作業中に表面化したものをキャプチャします。クロードが保存する価値のあるものを判断し、ユーザー（役割と好み）、フィードバック（あなたの修正）、プロジェクト（決定とコンテキスト）、リファレンス（物事の保存場所）の4つのカテゴリーに整理して、あなたのマシン上のメモリー・フォルダーに書き込みます。</p>
-<p>各ノートは個別のMarkdownファイルです。エントリーポイントは<code translate="no">MEMORY.md</code> 、各行が詳細ファイルを指す短いラベル（150文字以下）であるインデックスです。クロードはインデックスを読み、関連すると思われる特定のファイルを引っ張ってくる。</p>
+    </button></h2><p>Auto Memory captures what surfaces during work. Claude decides what’s worth keeping and writes it to a memory folder on your machine, organized into four categories: user (role and preferences), feedback (your corrections), project (decisions and context), and reference (where things live).</p>
+<p>Each note is a separate Markdown file. The entry point is <code translate="no">MEMORY.md</code> — an index where each line is a short label (under 150 characters) pointing to a detailed file. Claude reads the index, then pulls specific files when they seem relevant.</p>
 <pre><code translate="no">~<span class="hljs-regexp">/.claude/</span>projects/-<span class="hljs-title class_">Users</span>-me-myproject/memory/
 ├── <span class="hljs-variable constant_">MEMORY</span>.<span class="hljs-property">md</span>                  ← index file, one pointer per line
 ├── user_role.<span class="hljs-property">md</span>               ← <span class="hljs-string">&quot;Backend engineer, fluent in Go, new to React&quot;</span>
@@ -76,9 +78,9 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
 - [<span class="hljs-title class_">Auth</span> rewrite](project_auth_rewrite.<span class="hljs-property">md</span>) — <span class="hljs-title class_">Compliance</span>-driven, not tech debt
 - [<span class="hljs-title class_">Bug</span> tracker](reference_linear.<span class="hljs-property">md</span>) — <span class="hljs-title class_">Pipeline</span> bugs → <span class="hljs-title class_">Linear</span> <span class="hljs-variable constant_">INGEST</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>MEMORY.mdの最初の200行がすべてのセッションに読み込まれる。それ以上は見えない。</p>
-<p>一つの賢い設計の選択：リークされたシステム・プロンプトは、クロードに自分自身のメモリーを事実ではなくヒントとして扱うように指示する。これは、他の<a href="https://milvus.io/blog/openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md">AIエージェントフレームワークが</a>採用し始めているパターンである。</p>
-<h2 id="How-Does-Auto-Dream-Consolidate-Stale-Memories" class="common-anchor-header">オート・ドリームはどのようにして古くなった記憶を統合するのか？<button data-href="#How-Does-Auto-Dream-Consolidate-Stale-Memories" class="anchor-icon" translate="no">
+<p>The first 200 lines of MEMORY.md get loaded into every session. Anything beyond that is invisible.</p>
+<p>One smart design choice: the leaked system prompt tells Claude to treat its own memory as a hint, not a fact. It verifies against real code before acting on anything remembered, which helps reduce hallucinations — a pattern that other <a href="https://milvus.io/blog/openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md">AI agent frameworks</a> are starting to adopt.</p>
+<h2 id="How-Does-Auto-Dream-Consolidate-Stale-Memories" class="common-anchor-header">How Does Auto Dream Consolidate Stale Memories?<button data-href="#How-Does-Auto-Dream-Consolidate-Stale-Memories" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -93,13 +95,13 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Auto Memoryはメモを取り込むが、何週間も使っているとそのメモは古くなる。昨日のデプロイのバグ」というエントリーは、1週間後には無意味になる。あるメモにはPostgreSQLを使っていると書いてあるが、新しいメモにはMySQLに移行したと書いてある。削除されたファイルにはまだメモリーが残っている。インデックスは矛盾と古い参照でいっぱいになる。</p>
-<p>オート・ドリームはクリーンアップ・プロセスである。バックグラウンドで実行され</p>
+    </button></h2><p>Auto Memory captures notes, but after weeks of use those notes go stale. An entry saying “yesterday’s deploy bug” becomes meaningless a week later. A note says you use PostgreSQL; a newer one says you migrated to MySQL. Deleted files still have memory entries. The index fills with contradictions and outdated references.</p>
+<p>Auto Dream is the cleanup process. It runs in the background and:</p>
 <ul>
-<li>曖昧な時間参照を正確な日付に置き換えます。"昨日のデプロイ問題" → "2026-03-28のデプロイ問題"。</li>
-<li>矛盾を解決します。PostgreSQL note + MySQL note → 現在の真実を保持します。</li>
-<li>古いエントリを削除。削除されたファイルや完了したタスクを参照しているノートは削除されます。</li>
-<li><code translate="no">MEMORY.md</code> を200行以下に保つ。</li>
+<li>Replaces vague time references with exact dates. “Yesterday’s deploy issue” → “2026-03-28 deploy issue.”</li>
+<li>Resolves contradictions. PostgreSQL note + MySQL note → keeps the current truth.</li>
+<li>Deletes stale entries. Notes referencing deleted files or completed tasks get removed.</li>
+<li>Keeps <code translate="no">MEMORY.md</code> under 200 lines.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -107,9 +109,9 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
     <span></span>
   </span>
 </p>
-<p><strong>トリガー条件：</strong>最後のクリーンアップから24時間以上経過しており、かつ新しいセッションが5つ以上蓄積されている。dream "と入力して手動で実行することもできる。このプロセスは、バックグラウンドのサブエージェントで実行されます - 実際のスリープのように、アクティブな作業を中断することはありません。</p>
-<p>ドリームエージェントのシステムプロンプトはこう始まる：<em>"あなたは夢を見ています-あなたのメモリーファイルに対する反射的なパスです。"</em></p>
-<h2 id="What-Is-KAIROS-Claude-Codes-Unreleased-Always-On-Mode" class="common-anchor-header">KAIROSとは？クロード・コードの未発表常時稼働モード<button data-href="#What-Is-KAIROS-Claude-Codes-Unreleased-Always-On-Mode" class="anchor-icon" translate="no">
+<p><strong>Trigger conditions:</strong> more than 24 hours since last cleanup AND at least 5 new sessions accumulated. You can also type “dream” to run it manually. The process runs in a background sub-agent — like actual sleep, it won’t interrupt your active work.</p>
+<p>The dream agent’s system prompt starts with: <em>“You are performing a dream — a reflective pass over your memory files.”</em></p>
+<h2 id="What-Is-KAIROS-Claude-Codes-Unreleased-Always-On-Mode" class="common-anchor-header">What Is KAIROS? Claude Code’s Unreleased Always-On Mode<button data-href="#What-Is-KAIROS-Claude-Codes-Unreleased-Always-On-Mode" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,18 +126,18 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>最初の3つのレイヤーはライブまたはロールアウトしている。リークされたコードには、出荷されていないものも含まれている：KAIROSだ。</p>
-<p>KAIROSはギリシャ語で「正しい瞬間」を意味する言葉から名付けられたようだが、ソースには150回以上登場する。KAIROSは、Claude Codeをあなたが積極的に使用するツールから、あなたのプロジェクトを継続的に監視するバックグラウンド・アシスタントに変えるだろう。</p>
-<p>リークされたコードに基づくと、KAIROSは以下のようになる：</p>
+    </button></h2><p>The first three layers are live or rolling out. The leaked code also contains something that hasn’t shipped: KAIROS.</p>
+<p>KAIROS — apparently named after the Greek word for “the right moment” — appears over 150 times in the source. It would turn Claude Code from a tool you actively use into a background assistant that watches your project continuously.</p>
+<p>Based on the leaked code, KAIROS:</p>
 <ul>
-<li>一日中、観察、決定、行動の実行ログを保持する。</li>
-<li>タイマーでチェックイン。一定間隔でシグナルを受信し、行動するか静観するかを決定する。</li>
-<li>あなたの邪魔をしない。15秒以上あなたの邪魔になる行動はすべて延期される。</li>
-<li>ドリームクリーンアップを内部で実行し、さらにバックグラウンドで完全なobserve-think-actループを実行する。</li>
-<li>通常のClaude Codeにはない特別なツールがある：ファイルをプッシュしたり、通知を送ったり、GitHubのプルリクエストを監視したり。</li>
+<li>Keeps a running log of observations, decisions, and actions throughout the day.</li>
+<li>Checks in on a timer. At regular intervals, it receives a signal and decides: act, or stay quiet.</li>
+<li>Stays out of your way. Any action that would block you for more than 15 seconds gets deferred.</li>
+<li>Runs dream cleanup internally, plus a full observe-think-act loop in the background.</li>
+<li>Has exclusive tools that regular Claude Code doesn’t: pushing files to you, sending notifications, monitoring your GitHub pull requests.</li>
 </ul>
-<p>KAIROSはコンパイル時の機能フラグに隠れています。公開ビルドにはありません。Anthropicは、<a href="https://milvus.io/blog/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md">エージェントのメモリが</a>セッション単位でなくなり、常時オンになったときに何が起こるかを探っているのだと考えてください。</p>
-<h2 id="Where-Does-Claude-Codes-Memory-Architecture-Break-Down" class="common-anchor-header">クロードコードのメモリアーキテクチャはどこで破綻するのか？<button data-href="#Where-Does-Claude-Codes-Memory-Architecture-Break-Down" class="anchor-icon" translate="no">
+<p>KAIROS is behind a compile-time feature flag. It’s not in any public build. Think of it as Anthropic exploring what happens when <a href="https://milvus.io/blog/langchain-and-milvus-build-production-ready-agents-with-real-long-term-memory.md">agent memory</a> stops being session-by-session and becomes always-on.</p>
+<h2 id="Where-Does-Claude-Codes-Memory-Architecture-Break-Down" class="common-anchor-header">Where Does Claude Code’s Memory Architecture Break Down?<button data-href="#Where-Does-Claude-Codes-Memory-Architecture-Break-Down" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -150,17 +152,17 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Claude Codeのメモリは実際に動作する。しかし、5つの構造的な制限によって、プロジェクトが大きくなるにつれて処理できることが制限される。</p>
+    </button></h2><p>Claude Code’s memory does real work. But five structural limitations constrain what it can handle as projects grow.</p>
 <table>
 <thead>
-<tr><th>制限</th><th>何が起こるか</th></tr>
+<tr><th>Limitation</th><th>What happens</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>200行インデックス上限</strong></td><td><code translate="no">MEMORY.md</code> 25KBを保持。何ヶ月もプロジェクトを運営すると、古いエントリーが新しいエントリーに押されてしまう。"先週はどんなRedis設定にしたっけ？"- がなくなる。</td></tr>
-<tr><td><strong>Grepのみの検索</strong></td><td>メモリー検索では、リテラルな<a href="https://milvus.io/docs/full-text-search.md">キーワードマッチを</a>使う。あなたは "デプロイ時のポートの競合 "を覚えているが、メモには "docker-composeのポートマッピング "と書かれている。Grepはそのギャップを埋められない。</td></tr>
-<tr><td><strong>要約のみ、推論なし</strong></td><td>Auto Memoryはハイレベルなメモを保存し、デバッグの手順やそこに至った理由は保存しません。<em>どのようにしたかが</em>失われる。</td></tr>
-<tr><td><strong>基礎を修正せずに複雑さを積み重ねる</strong></td><td>CLAUDE.md → Auto Memory → Auto Dream → KAIROS。各層が存在するのは、最後の層が十分でなかったからだ。しかし、いくらレイヤーを重ねても、その下にあるものは変わらない：1つのツール、ローカルファイル、セッションごとのキャプチャ。</td></tr>
-<tr><td><strong>メモリーはクロード・コードの中に閉じ込められている</strong></td><td>OpenCode、Codex CLI、その他のエージェントに切り替えると、ゼロからのスタートとなる。エクスポートも、共有フォーマットも、移植性もありません。</td></tr>
+<tr><td><strong>200-line index cap</strong></td><td><code translate="no">MEMORY.md</code> holds ~25 KB. Run a project for months, and old entries get pushed out by new ones. “What Redis config did we settle on last week?” — gone.</td></tr>
+<tr><td><strong>Grep-only retrieval</strong></td><td>Memory search uses literal <a href="https://milvus.io/docs/full-text-search.md">keyword matching</a>. You remember “deploy-time port conflicts,” but the note says “docker-compose port mapping.” Grep can’t bridge that gap.</td></tr>
+<tr><td><strong>Summaries only, no reasoning</strong></td><td>Auto Memory saves high-level notes, not the debugging steps or reasoning that got you there. The <em>how</em> is lost.</td></tr>
+<tr><td><strong>Complexity stacks without fixing the foundation</strong></td><td>CLAUDE.md → Auto Memory → Auto Dream → KAIROS. Each layer exists because the last one wasn’t enough. But no amount of layering changes what’s underneath: one tool, local files, session-by-session capture.</td></tr>
+<tr><td><strong>Memory is locked inside Claude Code</strong></td><td>Switch to OpenCode, Codex CLI, or any other agent and you start from zero. No export, no shared format, no portability.</td></tr>
 </tbody>
 </table>
 <p>
@@ -169,8 +171,8 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
     <span></span>
   </span>
 </p>
-<p>これらはバグではありません。シングルツール、ローカルファイルアーキテクチャの自然な限界なのです。毎月新しいエージェントが出荷され、ワークフローは変化しますが、プロジェクトで蓄積した知識は、それらと一緒に消えてはいけません。それが、<a href="https://github.com/zilliztech/memsearch">memsearchを</a>開発した理由です。</p>
-<h2 id="What-Is-memsearch-Persistent-Memory-for-Any-AI-Coding-Agent" class="common-anchor-header">memsearchとは？あらゆるAIコーディング・エージェントのための永続的なメモリ<button data-href="#What-Is-memsearch-Persistent-Memory-for-Any-AI-Coding-Agent" class="anchor-icon" translate="no">
+<p>These aren’t bugs. They’re the natural limits of single-tool, local-file architecture. New agents ship every month, workflows shift, but the knowledge you’ve built up in a project shouldn’t disappear with them. That’s why we built <a href="https://github.com/zilliztech/memsearch">memsearch</a>.</p>
+<h2 id="What-Is-memsearch-Persistent-Memory-for-Any-AI-Coding-Agent" class="common-anchor-header">What Is memsearch? Persistent Memory for Any AI Coding Agent<button data-href="#What-Is-memsearch-Persistent-Memory-for-Any-AI-Coding-Agent" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -185,29 +187,29 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/memsearch">memsearch</a>はエージェントからメモリを取り出し、独自のレイヤーに格納します。エージェントは行ったり来たりします。メモリは残ります。</p>
+    </button></h2><p><a href="https://github.com/zilliztech/memsearch">memsearch</a> pulls memory out of the agent and into its own layer. Agents come and go. Memory stays.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_code_memory_memsearch_md_3_4151da0414.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="How-to-Install-memsearch" class="common-anchor-header">memsearchのインストール方法</h3><p>Claude Codeユーザーはマーケットプレイスからインストールします：</p>
+<h3 id="How-to-Install-memsearch" class="common-anchor-header">How to Install memsearch</h3><p>Claude Code users install from the marketplace:</p>
 <pre><code translate="no">/plugin marketplace add zilliztech/memsearch
 /plugin install memsearch
 <button class="copy-code-btn"></button></code></pre>
-<p>完了。設定不要。</p>
-<p>他のプラットフォームも同様に簡単。OpenClaw:<code translate="no">openclaw plugins install clawhub:memsearch</code>.uv または pip 経由の Python API：</p>
+<p>Done. No configuration needed.</p>
+<p>Other platforms are just as simple. OpenClaw: <code translate="no">openclaw plugins install clawhub:memsearch</code>. Python API via uv or pip:</p>
 <pre><code translate="no">uv tool install <span class="hljs-string">&quot;memsearch[onnx]&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="What-Does-memsearch-Capture" class="common-anchor-header">memsearch は何を捕捉するのか？</h3><p>一度インストールすると、memsearch はエージェントのライフサイクルにフックします。すべての会話は自動的に要約され、インデックス化されます。履歴が必要な質問をすると、リコールが勝手にトリガーされます。</p>
+<h3 id="What-Does-memsearch-Capture" class="common-anchor-header">What Does memsearch Capture?</h3><p>Once installed, memsearch hooks into the agent’s lifecycle. Every conversation gets summarized and indexed automatically. When you ask a question that needs history, recall triggers on its own.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_code_memory_memsearch_md_4_13b257186e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>メモリーファイルは、日付付きMarkdownとして保存されます：</p>
+<p>Memory files are stored as dated Markdown — one file per day:</p>
 <pre><code translate="no">.memsearch/
 └── memory/
     ├── <span class="hljs-number">2026</span><span class="hljs-number">-03</span><span class="hljs-number">-28.</span>md    ← one <span class="hljs-keyword">file</span> per day
@@ -215,9 +217,9 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
     ├── <span class="hljs-number">2026</span><span class="hljs-number">-03</span><span class="hljs-number">-30.</span>md
     └── <span class="hljs-number">2026</span><span class="hljs-number">-04</span><span class="hljs-number">-01.</span>md
 <button class="copy-code-btn"></button></code></pre>
-<p>どのテキストエディタでもメモリーファイルを開き、読み、編集することができます。移行したい場合は、フォルダをコピーする。バージョン管理が必要な場合は、gitがネイティブで動作する。</p>
-<p><a href="https://milvus.io/docs/overview.md">Milvusに</a>保存されている<a href="https://milvus.io/docs/index-explained.md">ベクターインデックスは</a>キャッシュレイヤーであり、万が一失われた場合は、Markdownファイルから再構築します。あなたのデータはインデックスではなく、ファイルに保存されています。</p>
-<h2 id="How-Does-memsearch-Find-Memories-Semantic-Search-vs-Grep" class="common-anchor-header">memsearchはどうやってメモリーを見つけるのか？セマンティック検索とGrepの比較<button data-href="#How-Does-memsearch-Find-Memories-Semantic-Search-vs-Grep" class="anchor-icon" translate="no">
+<p>You can open, read, and edit memory files in any text editor. If you want to migrate, you copy the folder. If you want version control, git works natively.</p>
+<p>The <a href="https://milvus.io/docs/index-explained.md">vector index</a> stored in <a href="https://milvus.io/docs/overview.md">Milvus</a> is a cache layer — if it’s ever lost, you rebuild it from the Markdown files. Your data lives in the files, not the index.</p>
+<h2 id="How-Does-memsearch-Find-Memories-Semantic-Search-vs-Grep" class="common-anchor-header">How Does memsearch Find Memories? Semantic Search vs. Grep<button data-href="#How-Does-memsearch-Find-Memories-Semantic-Search-vs-Grep" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -232,11 +234,11 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>クロード・コードの記憶検索では、grep（リテラル・キーワード・マッチング）を使っています。これは数十のメモがあるときには有効ですが、数ヶ月の履歴があり、正確な表現を思い出せないときには破綻します。</p>
-<p>memsearchは代わりに<a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">ハイブリッド検索を</a>使う。<a href="https://zilliz.com/glossary/semantic-search">セマンティック・ベクトルは</a>言い回しが異なっていてもクエリに関連するコンテンツを見つけ、BM25は正確なキーワードにマッチする。<a href="https://milvus.io/docs/rrf-ranker.md">RRF（Reciprocal Rank Fusion）は</a>、両方の結果セットをマージし、一緒にランク付けします。</p>
-<p>例えば、"先週のRedisのタイムアウトはどのように修正されましたか？"と質問したとします。- セマンティック検索は意図を理解し、それを見つける。例えば、&quot;search for<code translate="no">handleTimeout</code>&quot; - BM25は正確な関数名をヒットします。この2つの経路はお互いの死角をカバーする。</p>
-<p>リコールがトリガーされると、サブエージェントは3段階で検索を行い、必要なときだけさらに深く検索を行う：</p>
-<h3 id="L1-Semantic-Search--Short-Previews" class="common-anchor-header">L1: 意味検索 - 短いプレビュー</h3><p>サブエージェントはmilvusインデックスに対して<code translate="no">memsearch search</code> 、最も関連性の高い結果を引き出す：</p>
+    </button></h2><p>Claude Code’s memory retrieval uses grep — literal keyword matching. That works when you have a few dozen notes, but it breaks down after months of history when you can’t remember the exact wording.</p>
+<p>memsearch uses <a href="https://milvus.io/blog/get-started-with-hybrid-semantic-full-text-search-with-milvus-2-5.md">hybrid search</a> instead. <a href="https://zilliz.com/glossary/semantic-search">Semantic vectors</a> find content related to your query even when the wording is different, while BM25 matches exact keywords. <a href="https://milvus.io/docs/rrf-ranker.md">RRF (Reciprocal Rank Fusion)</a> merges and ranks both result sets together.</p>
+<p>Say you ask “How did we fix that Redis timeout last week?” — semantic search understands the intent and finds it. Say you ask &quot;search for <code translate="no">handleTimeout</code>&quot; — BM25 hits the exact function name. The two paths cover each other’s blind spots.</p>
+<p>When recall triggers, the sub-agent searches in three stages, going deeper only when needed:</p>
+<h3 id="L1-Semantic-Search--Short-Previews" class="common-anchor-header">L1: Semantic Search — Short Previews</h3><p>The sub-agent runs <code translate="no">memsearch search</code> against the Milvus index and pulls the most relevant results:</p>
 <pre><code translate="no">┌─ L1 search results ────────────────────────────┐
 │                                                 │
 │  <span class="hljs-meta">#a3f8c1 [score: 0.85] memory/2026-03-28.md    │</span>
@@ -256,8 +258,8 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
 │                                                 │
 └─────────────────────────────────────────────────┘
 <button class="copy-code-btn"></button></code></pre>
-<p>各結果は関連性スコア、ソースファイル、200文字のプレビューを表示する。ほとんどのクエリはここで終了する。</p>
-<h3 id="L2-Full-Context--Expand-a-Specific-Result" class="common-anchor-header">L2:フルコンテキスト - 特定の結果を展開する</h3><p>L1のプレビューだけでは不十分な場合、サブエージェントは<code translate="no">memsearch expand a3f8c1</code> 、完全なエントリーを引き出します：</p>
+<p>Each result shows a relevance score, source file, and a 200-character preview. Most queries stop here.</p>
+<h3 id="L2-Full-Context--Expand-a-Specific-Result" class="common-anchor-header">L2: Full Context — Expand a Specific Result</h3><p>If L1’s preview isn’t enough, the sub-agent runs <code translate="no">memsearch expand a3f8c1</code> to pull the complete entry:</p>
 <pre><code translate="no">┌─ L2 expanded result ───────────────────────────┐
 │                                                 │
 │  <span class="hljs-comment">## 2026-03-28 Deploy troubleshooting           │</span>
@@ -274,7 +276,7 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
 │  [<span class="hljs-built_in">source</span>: memory/2026-03-28.md  lines: 42-55]  │
 └─────────────────────────────────────────────────┘
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="L3-Raw-Conversation-Transcript" class="common-anchor-header">L3: 生の会話記録</h3><p>何を言われたかを正確に確認する必要がある場合、サブエージェントはオリジナルのやり取りを取り出します：</p>
+<h3 id="L3-Raw-Conversation-Transcript" class="common-anchor-header">L3: Raw Conversation Transcript</h3><p>In rare cases where you need to see exactly what was said, the sub-agent pulls the original exchange:</p>
 <pre><code translate="no">┌─ L3 raw transcript ───────────────────────────┐
 │                                                │
 │  [user] docker-compose up won&#x27;t start, Redis   │
@@ -293,8 +295,8 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
 │                                                │
 └────────────────────────────────────────────────┘
 <button class="copy-code-btn"></button></code></pre>
-<p>トランスクリプトは、あなたの正確な言葉、エージェントの正確な応答、すべてのツールコールのすべてを保存します。3つの段階は、軽いものから重いものまであり、サブエージェントがどの程度深く掘り下げるかを決定し、整理された結果をメインセッションに返します。</p>
-<h2 id="How-Does-memsearch-Share-Memory-Across-AI-Coding-Agents" class="common-anchor-header">memsearchはどのようにAIコーディングエージェント間でメモリを共有するのか？<button data-href="#How-Does-memsearch-Share-Memory-Across-AI-Coding-Agents" class="anchor-icon" translate="no">
+<p>The transcript preserves everything: your exact words, the agent’s exact response, and every tool call. The three stages go from light to heavy — the sub-agent decides how deep to drill, then returns organized results to your main session.</p>
+<h2 id="How-Does-memsearch-Share-Memory-Across-AI-Coding-Agents" class="common-anchor-header">How Does memsearch Share Memory Across AI Coding Agents?<button data-href="#How-Does-memsearch-Share-Memory-Across-AI-Coding-Agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -309,19 +311,19 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>これがmemsearchとClaude Codeのメモリの最も根本的なギャップだ。</p>
-<p>クロードコードのメモリは一つのツールの中に閉じ込められている。OpenCode、OpenClaw、Codex CLIを使えば、ゼロから始めることになる。MEMORY.mdはローカルで、一人のユーザーと一人のエージェントに縛られています。</p>
-<p>memsearchは4つのコーディングエージェントをサポートしている：Claude Code、OpenClaw、OpenCode、Codex CLIです。これらは同じMarkdownメモリーフォーマットと同じ<a href="https://milvus.io/docs/manage-collections.md">milvusコレクションを</a>共有しています。どのエージェントから書き込まれたメモリも、他のすべてのエージェントから検索可能です。</p>
+    </button></h2><p>This is the most fundamental gap between memsearch and Claude Code’s memory.</p>
+<p>Claude Code’s memory is locked inside one tool. Use OpenCode, OpenClaw, or Codex CLI, and you start from scratch. MEMORY.md is local, bound to one user and one agent.</p>
+<p>memsearch supports four coding agents: Claude Code, OpenClaw, OpenCode, and Codex CLI. They share the same Markdown memory format and the same <a href="https://milvus.io/docs/manage-collections.md">Milvus collection</a>. Memories written from any agent are searchable from every other agent.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/claude_code_memory_memsearch_md_5_6ed2e386b9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>つの実際のシナリオ</strong></p>
-<p><strong>ツールの切り替え</strong>あなたは、デプロイパイプラインを理解するためにクロードコードで午後を過ごし、いくつかの問題にぶつかりました。会話は自動要約され、インデックス化されます。翌日、OpenCodeに切り替えて、"昨日のポートの衝突はどうやって解決したんだっけ？"と質問する。OpenCodeはmemsearchを検索し、昨日のClaude Codeの記憶を見つけ、正しい答えを教えてくれる。</p>
-<p><strong>チームコラボレーション。</strong>Milvusのバックエンドを<a href="https://cloud.zilliz.com/signup">Zilliz Cloudに</a>向けると、複数の開発者が異なるマシンで異なるエージェントを使い、同じプロジェクトのメモリを読み書きします。新しいチームメンバーが加わっても、Slackやドキュメントを何ヶ月も読み込む必要はありません。</p>
-<h2 id="Developer-API" class="common-anchor-header">開発者API<button data-href="#Developer-API" class="anchor-icon" translate="no">
+<p><strong>Two real scenarios:</strong></p>
+<p><strong>Switching tools.</strong> You spend an afternoon in Claude Code figuring out the deploy pipeline, hitting several snags. Conversations get auto-summarized and indexed. The next day you switch to OpenCode and ask “how did we resolve that port conflict yesterday?” OpenCode searches memsearch, finds yesterday’s Claude Code memories, and gives you the right answer.</p>
+<p><strong>Team collaboration.</strong> Point the Milvus backend at <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> and multiple developers on different machines, using different agents, read and write the same project memory. A new team member joins and doesn’t need to dig through months of Slack and docs — the agent already knows.</p>
+<h2 id="Developer-API" class="common-anchor-header">Developer API<button data-href="#Developer-API" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -336,8 +338,8 @@ origin: 'https://milvus.io/blog/claude-code-memory-memsearch.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>独自の<a href="https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md">エージェントツールを</a>構築する場合、memsearch は CLI と Python API を提供します。</p>
-<p><strong>CLI</strong></p>
+    </button></h2><p>If you’re building your own <a href="https://milvus.io/blog/how-to-build-productionready-multiagent-systems-with-agno-and-milvus.md">agent tooling</a>, memsearch provides a CLI and Python API.</p>
+<p><strong>CLI:</strong></p>
 <pre><code translate="no" class="language-bash"><span class="hljs-comment"># Index markdown files</span>
 memsearch index ./memory
 
@@ -353,7 +355,7 @@ memsearch watch ./memory
 <span class="hljs-comment"># Compact old memories</span>
 memsearch compact
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Python API：</strong></p>
+<p><strong>Python API:</strong></p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> memsearch <span class="hljs-keyword">import</span> MemSearch
 
 mem = MemSearch(paths=[<span class="hljs-string">&quot;./memory&quot;</span>])
@@ -362,8 +364,8 @@ results = <span class="hljs-keyword">await</span> mem.search(<span class="hljs-s
 <span class="hljs-keyword">await</span> mem.compact()                        <span class="hljs-comment"># compact old memories</span>
 <span class="hljs-keyword">await</span> mem.watch()                          <span class="hljs-comment"># auto-index on file change</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>milvusはベクター検索を扱います。<a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>(設定不要)でローカルに実行するか、<a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>(無料ティアあり)を使ってコラボレーションするか、Dockerを使ってセルフホストする。<a href="https://milvus.io/docs/embeddings.md">エンベッディングの</a>デフォルトはONNX - CPUで動作し、GPUは不要。OpenAIやOllamaといつでも交換可能。</p>
-<h2 id="Claude-Code-Memory-vs-memsearch-Full-Comparison" class="common-anchor-header">クロード・コード・メモリとmemsearchの比較：完全比較<button data-href="#Claude-Code-Memory-vs-memsearch-Full-Comparison" class="anchor-icon" translate="no">
+<p>Under the hood, Milvus handles vector search. Run locally with <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> (zero config), collaborate via <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (free tier available), or self-host with Docker. <a href="https://milvus.io/docs/embeddings.md">Embeddings</a> default to ONNX — runs on CPU, no GPU needed. Swap in OpenAI or Ollama any time.</p>
+<h2 id="Claude-Code-Memory-vs-memsearch-Full-Comparison" class="common-anchor-header">Claude Code Memory vs. memsearch: Full Comparison<button data-href="#Claude-Code-Memory-vs-memsearch-Full-Comparison" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -380,20 +382,20 @@ results = <span class="hljs-keyword">await</span> mem.search(<span class="hljs-s
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>特徴</th><th>クロードコードメモリ</th><th>memsearch</th></tr>
+<tr><th>Feature</th><th>Claude Code memory</th><th>memsearch</th></tr>
 </thead>
 <tbody>
-<tr><td>何が保存されるか</td><td>クロードが重要視するもの</td><td>すべての会話を自動要約</td></tr>
-<tr><td>ストレージの制限</td><td>~200行インデックス (~25 KB)</td><td>無制限（毎日のファイル＋ベクターインデックス）</td></tr>
-<tr><td>古い記憶の検索</td><td>Grepキーワードマッチ</td><td>意味ベース＋キーワードのハイブリッド検索 (Milvus)</td></tr>
-<tr><td>読めるか？</td><td>メモリフォルダを手動でチェック</td><td>任意の.mdファイルを開く</td></tr>
-<tr><td>編集できるか？</td><td>手動でファイルを編集</td><td>同じ - 保存時に自動再インデックス</td></tr>
-<tr><td>バージョン管理</td><td>設計されていない</td><td>gitはネイティブに動作する</td></tr>
-<tr><td>クロスツールサポート</td><td>クロードコードのみ</td><td>4エージェント、共有メモリ</td></tr>
-<tr><td>長期リコール</td><td>数週間で劣化</td><td>数ヶ月間持続</td></tr>
+<tr><td>What gets saved</td><td>What Claude considers important</td><td>Every conversation, auto-summarized</td></tr>
+<tr><td>Storage limit</td><td>~200-line index (~25 KB)</td><td>Unlimited (daily files + vector index)</td></tr>
+<tr><td>Finding old memories</td><td>Grep keyword matching</td><td>Meaning-based + keyword hybrid search (Milvus)</td></tr>
+<tr><td>Can you read them?</td><td>Check memory folder manually</td><td>Open any .md file</td></tr>
+<tr><td>Can you edit them?</td><td>Edit files by hand</td><td>Same — auto re-indexes on save</td></tr>
+<tr><td>Version control</td><td>Not designed for it</td><td>git works natively</td></tr>
+<tr><td>Cross-tool support</td><td>Claude Code only</td><td>4 agents, shared memory</td></tr>
+<tr><td>Long-term recall</td><td>Degrades after weeks</td><td>Persistent across months</td></tr>
 </tbody>
 </table>
-<h2 id="Get-Started-with-memsearch" class="common-anchor-header">memsearchを始めよう<button data-href="#Get-Started-with-memsearch" class="anchor-icon" translate="no">
+<h2 id="Get-Started-with-memsearch" class="common-anchor-header">Get Started with memsearch<button data-href="#Get-Started-with-memsearch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -408,14 +410,14 @@ results = <span class="hljs-keyword">await</span> mem.search(<span class="hljs-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>クロード・コードの記憶には、自己懐疑的なデザイン、夢の統合コンセプト、KAIROSの15秒間のブロック予算など、本当の強みがある。Anthropicはこの問題について懸命に考えている。</p>
-<p>しかし、単一ツールのメモリーには限界がある。ワークフローが複数のエージェント、複数の人々、あるいは数週間以上の履歴にまたがると、それ自体が存在するメモリが必要になる。</p>
+    </button></h2><p>Claude Code’s memory has real strengths — the self-skeptical design, the dream consolidation concept, and the 15-second blocking budget in KAIROS. Anthropic is thinking hard about this problem.</p>
+<p>But single-tool memory has a ceiling. Once your workflow spans multiple agents, multiple people, or more than a few weeks of history, you need memory that exists on its own.</p>
 <ul>
-<li><a href="https://github.com/zilliztech/memsearch">memsearchを試して</a>みよう - オープンソース、MITライセンス。クロードコードに2つのコマンドでインストールできます。</li>
-<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">memsearchがどのように動作するかは</a>、<a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Claude Codeプラグインガイドを</a>参照してください。</li>
-<li>質問がありますか？<a href="https://discord.com/invite/8uyFbECzPX">MilvusのDiscordコミュニティーに</a>参加するか、<a href="https://milvus.io/office-hours">無料のオフィスアワーセッションをご予約</a>ください。</li>
+<li>Try <a href="https://github.com/zilliztech/memsearch">memsearch</a> — open source, MIT licensed. Install in Claude Code with two commands.</li>
+<li>Read <a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">how memsearch works under the hood</a> or the <a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Claude Code plugin guide</a>.</li>
+<li>Got questions? Join the <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord community</a> or <a href="https://milvus.io/office-hours">book a free Office Hours session</a> to walk through your use case.</li>
 </ul>
-<h2 id="Frequently-Asked-Questions" class="common-anchor-header">よくある質問<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
+<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Frequently Asked Questions<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -430,7 +432,7 @@ results = <span class="hljs-keyword">await</span> mem.search(<span class="hljs-s
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="How-does-Claude-Codes-memory-system-work-under-the-hood" class="common-anchor-header">Claude Codeのメモリシステムはどのように動作しますか？</h3><p>Claude Codeは4層のメモリアーキテクチャを使用しており、全てローカルのMarkdownファイルとして保存されています。CLAUDE.mdはあなたが手動で書く静的ルールファイルです。Auto Memoryは、セッション中にClaude自身のメモを保存し、ユーザーの好み、フィードバック、プロジェクトのコンテキスト、参照ポインタの4つのカテゴリーに整理します。Auto Dreamは、バックグラウンドで古くなった記憶を統合する。KAIROSは、流出したソースコードから見つかった未発表の常時稼働デーモンである。システム全体の上限は200行のインデックスで、検索可能なのはキーワードの完全一致のみである。</p>
-<h3 id="Can-AI-coding-agents-share-memory-across-different-tools" class="common-anchor-header">AIコーディング・エージェントは、異なるツール間でメモリを共有できるのか？</h3><p>ネイティブではない。クロード・コードのメモリはクロード・コードにロックされており、エクスポート・フォーマットやエージェント間のプロトコルはありません。memsearchは、<a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベース</a>（milvus）にインデックスされた日付入りのMarkdownファイルとしてメモリを保存することで、この問題を解決しています。サポートされている4つのエージェントは全て同じメモリストアを読み書きするため、ツールを切り替えてもコンテキストは自動的に移行します。</p>
-<h3 id="What-is-the-difference-between-keyword-search-and-semantic-search-for-agent-memory" class="common-anchor-header">エージェントメモリのキーワード検索とセマンティック検索の違いは何ですか？</h3><p>キーワード検索(grep)は正確な文字列にマッチします - メモリに "docker-compose port mapping "と書かれていても、"port conflicts "と検索すると何も返されません。memsearchはハイブリッド検索で両方のアプローチを組み合わせ、1つのクエリで意味ベースのリコールと正確なキーワード精度を提供する。</p>
-<h3 id="What-was-leaked-in-the-Claude-Code-source-code-incident" class="common-anchor-header">クロード・コードのソースコード流出事件で何が流出したのか？</h3><p>クロードコードのバージョン2.1.88は、59.8MBのソースマップファイルと共に出荷されました。このファイルには、完全なメモリシステムの実装、Auto Dreamのコンソリデーション処理、未発表の常時稼働エージェントモードであるKAIROSへのリファレンスを含む、約512,000行に及ぶ可読のTypeScriptコードベースが含まれていた。このコードは、削除される前にすぐにGitHubにミラーされた。</p>
+    </button></h2><h3 id="How-does-Claude-Codes-memory-system-work-under-the-hood" class="common-anchor-header">How does Claude Code’s memory system work under the hood?</h3><p>Claude Code uses a four-layer memory architecture, all stored as local Markdown files. CLAUDE.md is a static rules file you write manually. Auto Memory lets Claude save its own notes during sessions, organized into four categories — user preferences, feedback, project context, and reference pointers. Auto Dream consolidates stale memories in the background. KAIROS is an unreleased always-on daemon found in the leaked source code. The entire system is capped at a 200-line index and searchable only by exact keyword matching — no semantic search or meaning-based recall.</p>
+<h3 id="Can-AI-coding-agents-share-memory-across-different-tools" class="common-anchor-header">Can AI coding agents share memory across different tools?</h3><p>Not natively. Claude Code’s memory is locked to Claude Code — there’s no export format or cross-agent protocol. If you switch to OpenCode, Codex CLI, or OpenClaw, you start from scratch. memsearch solves this by storing memories as dated Markdown files indexed in a <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> (Milvus). All four supported agents read and write the same memory store, so context transfers automatically when you switch tools.</p>
+<h3 id="What-is-the-difference-between-keyword-search-and-semantic-search-for-agent-memory" class="common-anchor-header">What is the difference between keyword search and semantic search for agent memory?</h3><p>Keyword search (grep) matches exact strings — if your memory says “docker-compose port mapping” but you search “port conflicts,” it returns nothing. Semantic search converts text into <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a> that capture meaning, so related concepts match even with different wording. memsearch combines both approaches with hybrid search, giving you meaning-based recall and exact keyword precision in a single query.</p>
+<h3 id="What-was-leaked-in-the-Claude-Code-source-code-incident" class="common-anchor-header">What was leaked in the Claude Code source code incident?</h3><p>Version 2.1.88 of Claude Code shipped with a 59.8 MB source map file that should have been stripped from the production build. The file contained the complete, readable TypeScript codebase — roughly 512,000 lines — including the full memory system implementation, the Auto Dream consolidation process, and references to KAIROS, an unreleased always-on agent mode. The code was quickly mirrored across GitHub before it could be taken down.</p>

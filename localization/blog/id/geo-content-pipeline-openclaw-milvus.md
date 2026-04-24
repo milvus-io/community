@@ -1,8 +1,7 @@
 ---
 id: geo-content-pipeline-openclaw-milvus.md
-title: >-
-  Konten GEO dalam Skala Besar: Cara Mendapatkan Peringkat di Pencarian AI Tanpa
-  Meracuni Merek Anda
+title: |
+  GEO Content at Scale: How to Rank in AI Search Without Poisoning Your Brand
 author: 'Dean Luo, Lumina Wang'
 date: 2026-3-24
 cover: assets.zilliz.com/1774360780756_980bb85342.jpg
@@ -15,23 +14,22 @@ meta_keywords: >-
   content at scale, SEO to GEO
 meta_title: |
   GEO at Scale: Rank in AI Search Without AI Content Spam
-desc: >-
-  Lalu lintas organik Anda menurun karena jawaban AI menggantikan klik. Pelajari
-  cara menghasilkan konten GEO dalam skala besar tanpa halusinasi dan kerusakan
-  merek.
+desc: >
+  Your organic traffic is declining as AI answers replace clicks. Learn how to
+  generate GEO content at scale without the hallucinations and brand damage.
 origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
 ---
-<p>Lalu lintas penelusuran organik Anda menurun, dan ini bukan karena SEO Anda memburuk. Sekitar 60% dari kueri Google sekarang berakhir dengan nol klik <a href="https://sparktoro.com/blog/in-2024-half-of-google-searches-end-without-a-click-to-another-web-property/">menurut SparkToro</a> - pengguna mendapatkan jawaban mereka dari rangkuman yang dihasilkan AI alih-alih mengklik halaman Anda. Kebingungan, Pencarian ChatGPT, Ikhtisar AI Google - ini bukan ancaman di masa depan. Mereka sudah memakan lalu lintas Anda.</p>
-<p><strong>Generative Engine Optimization (GEO</strong> ) adalah cara Anda melawannya. Di mana SEO tradisional mengoptimalkan algoritme peringkat (kata kunci, tautan balik, kecepatan halaman), GEO mengoptimalkan model AI yang menyusun jawaban dengan mengambil dari berbagai sumber. Tujuannya: menyusun konten Anda sehingga mesin pencari AI mengutip <em>merek Anda</em> dalam tanggapan mereka.</p>
-<p>Masalahnya, GEO membutuhkan konten dalam skala yang tidak dapat diproduksi oleh sebagian besar tim pemasaran secara manual. Model AI tidak bergantung pada satu sumber - model ini mensintesis lusinan sumber. Agar muncul secara konsisten, Anda memerlukan cakupan di ratusan kueri berekor panjang, masing-masing menargetkan pertanyaan spesifik yang mungkin ditanyakan pengguna kepada asisten AI.</p>
-<p>Jalan pintas yang jelas - memiliki artikel yang dihasilkan oleh LLM - menciptakan masalah yang lebih buruk. Mintalah GPT-4 untuk menghasilkan 50 artikel dan Anda akan mendapatkan 50 artikel yang penuh dengan statistik yang dibuat-buat, frasa yang didaur ulang, dan klaim yang tidak pernah dibuat oleh merek Anda. Itu bukan GEO. Itu adalah <strong>spam konten AI dengan nama merek Anda di atasnya</strong>.</p>
-<p>Perbaikannya adalah dengan mendasarkan setiap panggilan generasi pada dokumen sumber yang terverifikasi - spesifikasi produk nyata, pesan merek yang disetujui, dan data aktual yang digunakan LLM alih-alih menciptakan. Tutorial ini akan membahas pipeline produksi yang melakukan hal tersebut, yang dibangun di atas tiga komponen:</p>
+<p>Your organic search traffic is declining, and it’s not because your SEO got worse. Roughly 60% of Google queries now end in zero clicks <a href="https://sparktoro.com/blog/in-2024-half-of-google-searches-end-without-a-click-to-another-web-property/">according to SparkToro</a> — users get their answers from AI-generated summaries instead of clicking through to your page. Perplexity, ChatGPT Search, Google AI Overview — these aren’t future threats. They’re already eating your traffic.</p>
+<p><strong>Generative Engine Optimization (GEO)</strong> is how you fight back. Where traditional SEO optimizes for ranking algorithms (keywords, backlinks, page speed), GEO optimizes for AI models that compose answers by pulling from multiple sources. The goal: structure your content so that AI search engines cite <em>your brand</em> in their responses.</p>
+<p>The problem is that GEO requires content at a scale most marketing teams can’t produce manually. AI models don’t rely on a single source — they synthesize across dozens. To show up consistently, you need coverage across hundreds of long-tail queries, each targeting a specific question a user might ask an AI assistant.</p>
+<p>The obvious shortcut — having an LLM batch-generate articles — creates a worse problem. Ask GPT-4 to produce 50 articles and you’ll get 50 articles full of fabricated statistics, recycled phrasing, and claims your brand never made. That’s not GEO. That’s <strong>AI content spam with your brand name on it</strong>.</p>
+<p>The fix is grounding every generation call in verified source documents — real product specs, approved brand messaging, and actual data that the LLM draws on instead of inventing. This tutorial walks through a production pipeline that does exactly that, built on three components:</p>
 <ul>
-<li><strong><a href="https://github.com/nicepkg/openclaw">OpenClaw</a></strong> - kerangka kerja agen AI sumber terbuka yang mengatur alur kerja dan terhubung ke platform perpesanan seperti Telegram, WhatsApp, dan Slack</li>
-<li><strong><a href="https://milvus.io/intro">Milvus</a></strong> - <a href="https://zilliz.com/learn/what-is-vector-database">basis data vektor</a> yang menangani penyimpanan pengetahuan, deduplikasi semantik, dan pengambilan RAG</li>
-<li><strong>LLM (GPT-4o, Claude, Gemini)</strong> - mesin pembuat dan pengevaluasi</li>
+<li><strong><a href="https://github.com/nicepkg/openclaw">OpenClaw</a></strong> — an open-source AI agent framework that orchestrates the workflow and connects to messaging platforms like Telegram, WhatsApp, and Slack</li>
+<li><strong><a href="https://milvus.io/intro">Milvus</a></strong> — a <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> that handles knowledge storage, semantic deduplication, and RAG retrieval</li>
+<li><strong>LLMs (GPT-4o, Claude, Gemini)</strong> — the generation and evaluation engines</li>
 </ul>
-<p>Pada akhirnya, Anda akan memiliki sistem kerja yang memasukkan dokumen merek ke dalam basis pengetahuan yang didukung Milvus, memperluas topik unggulan menjadi kueri berekor panjang, menduplikasi secara semantik, dan menghasilkan artikel secara batch dengan penilaian kualitas bawaan.</p>
+<p>By the end, you’ll have a working system that ingests brand documents into a Milvus-backed knowledge base, expands seed topics into long-tail queries, deduplicates them semantically, and batch-generates articles with built-in quality scoring.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_4_8ef2bfd688.png" alt="" class="doc-image" id="" />
@@ -39,9 +37,9 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
   </span>
 </p>
 <blockquote>
-<p><strong>Catatan:</strong> Ini adalah sistem kerja yang dibuat untuk alur kerja pemasaran yang sebenarnya, tetapi kode ini adalah titik awal. Anda harus menyesuaikan petunjuk, ambang batas penilaian, dan struktur basis pengetahuan dengan kasus penggunaan Anda sendiri.</p>
+<p><strong>Note:</strong> This is a working system built for a real marketing workflow, but the code is a starting point. You’ll want to adapt the prompts, scoring thresholds, and knowledge base structure to your own use case.</p>
 </blockquote>
-<h2 id="How-the-Pipeline-Solves-Volume-×-Quality" class="common-anchor-header">Bagaimana Pipeline Memecahkan Volume × Kualitas<button data-href="#How-the-Pipeline-Solves-Volume-×-Quality" class="anchor-icon" translate="no">
+<h2 id="How-the-Pipeline-Solves-Volume-×-Quality" class="common-anchor-header">How the Pipeline Solves Volume × Quality<button data-href="#How-the-Pipeline-Solves-Volume-×-Quality" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -58,34 +56,34 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
       </svg>
     </button></h2><table>
 <thead>
-<tr><th>Komponen</th><th>Peran</th></tr>
+<tr><th>Component</th><th>Role</th></tr>
 </thead>
 <tbody>
-<tr><td>Cakar Terbuka</td><td>Orkestrasi agen, integrasi perpesanan (Lark, Telegram, WhatsApp)</td></tr>
-<tr><td>Milvus</td><td>Penyimpanan pengetahuan, deduplikasi semantik, pengambilan RAG</td></tr>
-<tr><td>LLM (GPT-4o, Claude, Gemini)</td><td>Perluasan kueri, pembuatan artikel, penilaian kualitas</td></tr>
-<tr><td>Model penyematan</td><td>Teks ke vektor untuk Milvus (OpenAI, 1536 dimensi secara default)</td></tr>
+<tr><td>OpenClaw</td><td>Agent orchestration, messaging integration (Lark, Telegram, WhatsApp)</td></tr>
+<tr><td>Milvus</td><td>Knowledge storage, semantic deduplication, RAG retrieval</td></tr>
+<tr><td>LLMs (GPT-4o, Claude, Gemini)</td><td>Query expansion, article generation, quality scoring</td></tr>
+<tr><td>Embedding model</td><td>Text to vectors for Milvus (OpenAI, 1536 dimensions by default)</td></tr>
 </tbody>
 </table>
-<p>Pipeline berjalan dalam dua fase. <strong>Fase 0</strong> memasukkan materi sumber ke dalam basis pengetahuan. <strong>Fase 1</strong> menghasilkan artikel darinya.</p>
+<p>The pipeline runs in two phases. <strong>Phase 0</strong> ingests source material into the knowledge base. <strong>Phase 1</strong> generates articles from it.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_6_e03b129785.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Inilah yang terjadi di dalam Fase 1:</p>
+<p>Here’s what happens inside Phase 1:</p>
 <ol>
-<li>Seorang pengguna mengirimkan pesan melalui Lark, Telegram, atau WhatsApp. OpenClaw menerimanya dan merutekannya ke keterampilan pembuatan GEO.</li>
-<li>Keterampilan ini memperluas topik pengguna menjadi kueri penelusuran ekor panjang menggunakan LLM - pertanyaan spesifik yang diajukan pengguna nyata kepada mesin pencari AI.</li>
-<li>Setiap kueri disematkan dan diperiksa terhadap Milvus untuk mencari duplikat semantik. Kueri yang terlalu mirip dengan konten yang sudah ada (kemiripan kosinus &gt; 0,85) akan dibuang.</li>
-<li>Kueri yang masih ada memicu pengambilan RAG dari <strong>dua koleksi Milvus sekaligus</strong>: basis pengetahuan (dokumen merek) dan arsip artikel (konten yang dibuat sebelumnya). Pengambilan ganda ini membuat output tetap didasarkan pada materi sumber yang sebenarnya.</li>
-<li>LLM menghasilkan setiap artikel dengan menggunakan konteks yang diambil, lalu menilainya berdasarkan rubrik kualitas GEO.</li>
-<li>Artikel yang telah selesai ditulis kembali ke Milvus, memperkaya kumpulan dedup dan RAG untuk kumpulan berikutnya.</li>
+<li>A user sends a message through Lark, Telegram, or WhatsApp. OpenClaw receives it and routes it to the GEO generation skill.</li>
+<li>The skill expands the user’s topic into long-tail search queries using an LLM — the specific questions real users ask AI search engines.</li>
+<li>Each query is embedded and checked against Milvus for semantic duplicates. Queries too similar to existing content (cosine similarity &gt; 0.85) are dropped.</li>
+<li>Surviving queries trigger RAG retrieval from <strong>two Milvus collections at once</strong>: the knowledge base (brand documents) and the article archive (previously generated content). This dual retrieval keeps output grounded in real source material.</li>
+<li>The LLM generates each article using the retrieved context, then scores it against a GEO quality rubric.</li>
+<li>The finished article writes back to Milvus, enriching the dedup and RAG pools for the next batch.</li>
 </ol>
-<p>Definisi keterampilan GEO juga membuat aturan pengoptimalan: memimpin dengan jawaban langsung, menggunakan format terstruktur, mengutip sumber secara eksplisit, dan menyertakan analisis asli. Mesin pencari AI mengurai konten berdasarkan struktur dan mendeprioritaskan klaim yang tidak bersumber, sehingga setiap aturan memetakan perilaku pengambilan tertentu.</p>
-<p>Generasi berjalan dalam beberapa batch. Putaran pertama diberikan kepada klien untuk ditinjau. Setelah arahnya dikonfirmasi, pipeline ditingkatkan ke produksi penuh.</p>
-<h2 id="Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="common-anchor-header">Mengapa Lapisan Pengetahuan Adalah Perbedaan Antara Spam GEO dan AI<button data-href="#Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="anchor-icon" translate="no">
+<p>The GEO skill definition also bakes in optimization rules: lead with a direct answer, use structured formatting, cite sources explicitly, and include original analysis. AI search engines parse content by structure and deprioritize unsourced claims, so each rule maps to a specific retrieval behavior.</p>
+<p>Generation runs in batches. A first round goes to the client for review. Once the direction is confirmed, the pipeline scales to full production.</p>
+<h2 id="Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="common-anchor-header">Why a Knowledge Layer Is the Difference Between GEO and AI Spam<button data-href="#Why-a-Knowledge-Layer-Is-the-Difference-Between-GEO-and-AI-Spam" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -100,23 +98,23 @@ origin: 'https://milvus.io/blog/geo-content-pipeline-openclaw-milvus.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Yang membedakan pipeline ini dari "hanya meminta ChatGPT" adalah lapisan pengetahuan. Tanpanya, keluaran LLM terlihat halus tetapi tidak ada yang bisa diverifikasi - dan mesin pencari AI semakin baik dalam mendeteksi hal itu. <a href="https://zilliz.com/what-is-milvus">Milvus</a>, basis data vektor yang mendukung pipeline ini, membawa beberapa kemampuan yang penting di sini:</p>
-<p><strong>Deduplikasi semantik menangkap apa yang terlewatkan oleh kata kunci.</strong> Pencocokan kata kunci memperlakukan "tolok ukur kinerja Milvus" dan "Bagaimana Milvus dibandingkan dengan database vektor lainnya?" sebagai kueri yang tidak terkait. <a href="https://zilliz.com/learn/vector-similarity-search">Kesamaan vektor</a> mengenali bahwa mereka menanyakan pertanyaan yang sama, sehingga pipeline melewatkan duplikat alih-alih membuang-buang panggilan pembuatan.</p>
-<p><strong>RAG koleksi ganda memisahkan sumber dan keluaran.</strong> <code translate="no">geo_knowledge</code> menyimpan dokumen merek yang dicerna. <code translate="no">geo_articles</code> menyimpan konten yang dihasilkan. Setiap kueri generasi menyentuh keduanya - basis pengetahuan menjaga fakta tetap akurat, dan arsip artikel menjaga konsistensi nada di seluruh batch. Kedua koleksi tersebut dikelola secara independen, sehingga pembaruan materi sumber tidak pernah mengganggu artikel yang sudah ada.</p>
-<p><strong>Lingkaran umpan balik yang semakin baik seiring dengan bertambahnya skala.</strong> Setiap artikel yang dihasilkan segera dikirim ke Milvus. Kumpulan berikutnya memiliki kumpulan dedup yang lebih besar dan konteks RAG yang lebih kaya. Senyawa berkualitas dari waktu ke waktu.</p>
-<p><strong>Beberapa opsi penerapan untuk kebutuhan yang berbeda.</strong></p>
+    </button></h2><p>What separates this pipeline from “just prompting ChatGPT” is the knowledge layer. Without it, LLM output looks polished but says nothing verifiable — and AI search engines are increasingly good at detecting that. <a href="https://zilliz.com/what-is-milvus">Milvus</a>, the vector database powering this pipeline, brings several capabilities that matter here:</p>
+<p><strong>Semantic deduplication catches what keywords miss.</strong> Keyword matching treats “Milvus performance benchmarks” and “How does Milvus compare to other vector databases?” as unrelated queries. <a href="https://zilliz.com/learn/vector-similarity-search">Vector similarity</a> recognizes they’re asking the same question, so the pipeline skips the duplicate instead of wasting a generation call.</p>
+<p><strong>Dual-collection RAG keeps sources and outputs separate.</strong> <code translate="no">geo_knowledge</code> stores ingested brand documents. <code translate="no">geo_articles</code> stores generated content. Every generation query hits both — the knowledge base keeps facts accurate, and the article archive keeps tone consistent across the batch. The two collections are maintained independently, so updating source materials never disrupts existing articles.</p>
+<p><strong>A feedback loop that improves with scale.</strong> Each generated article writes back to Milvus immediately. The next batch has a larger dedup pool and richer RAG context. Quality compounds over time.</p>
+<p><strong>Multiple deployment options for different needs.</strong></p>
 <ul>
-<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite</strong></a>: Versi ringan dari Milvus yang berjalan di laptop Anda dengan satu baris kode, tanpa perlu Docker. Sangat bagus untuk membuat prototipe, dan hanya itu yang dibutuhkan dalam tutorial ini.</p></li>
-<li><p><a href="https://milvus.io/docs/install_standalone-docker.md"><strong>Milvus</strong></a> Standalone dan Milvus Distributed: versi yang lebih terukur untuk penggunaan produksi.</p></li>
-<li><p><a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a> adalah Milvus terkelola tanpa kerumitan. Anda tidak perlu khawatir tentang pengaturan teknis dan pemeliharaan sama sekali. Tersedia tier gratis.</p></li>
+<li><p><a href="https://milvus.io/docs/milvus_lite.md"><strong>Milvus Lite</strong></a>: A lightweight version of Milvus that runs on your laptop with one line of code, no Docker needed. Great for prototyping, and it’s all this tutorial requires.</p></li>
+<li><p><a href="https://milvus.io/docs/install_standalone-docker.md"><strong>Milvus</strong></a> Standalone and Milvus Distributed: the more scalable version for production use.</p></li>
+<li><p><a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a> is a managed Milvus with zero hassle. You don’t need to worry about the technical setup and maintenance at all. Free tier available.</p></li>
 </ul>
-<p>Tutorial ini menggunakan Milvus Lite - tidak ada akun yang harus dibuat, tidak ada instalasi di luar <code translate="no">pip install pymilvus</code>, dan semuanya berjalan secara lokal sehingga Anda dapat mencoba pipeline lengkap sebelum melakukan apa pun.</p>
-<p>Perbedaan dalam penerapannya ada pada URI:</p>
+<p>This tutorial uses Milvus Lite — no account to create, no installation beyond <code translate="no">pip install pymilvus</code>, and everything runs locally so you can try the full pipeline before committing to anything.</p>
+<p>The difference in deployment is in the URI:</p>
 <pre><code translate="no" class="language-python">MILVUS_URI = <span class="hljs-string">&quot;./geo_milvus.db&quot;</span>           <span class="hljs-comment"># Local dev (Milvus Lite, no Docker needed)</span>
 MILVUS_URI = <span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>  <span class="hljs-comment"># Production (Zilliz Cloud)</span>
 client = MilvusClient(uri=MILVUS_URI)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Step-by-Step-Tutorial" class="common-anchor-header">Tutorial Langkah-demi-Langkah<button data-href="#Step-by-Step-Tutorial" class="anchor-icon" translate="no">
+<h2 id="Step-by-Step-Tutorial" class="common-anchor-header">Step-by-Step Tutorial<button data-href="#Step-by-Step-Tutorial" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -131,7 +129,7 @@ client = MilvusClient(uri=MILVUS_URI)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Seluruh pipeline dikemas sebagai OpenClaw Skill - direktori yang berisi file instruksi <code translate="no">SKILL.MD</code> dan implementasi kode.</p>
+    </button></h2><p>The entire pipeline is packaged as an OpenClaw Skill — a directory containing a <code translate="no">SKILL.MD</code> instruction file and the code implementation.</p>
 <pre><code translate="no">skills/geo-generator/
 ├── SKILL.md                    <span class="hljs-comment"># Skill definition (instructions + metadata)</span>
 ├── index.js                    <span class="hljs-comment"># OpenClaw tool registration, bridges to Python</span>
@@ -148,7 +146,7 @@ client = MilvusClient(uri=MILVUS_URI)
     └── templates/
         └── geo_template.md     <span class="hljs-comment"># GEO article prompt template</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-1-Define-the-OpenClaw-Skill" class="common-anchor-header">Langkah 1: Tentukan Keterampilan OpenClaw</h3><p><code translate="no">SKILL.md</code> memberi tahu OpenClaw apa yang dapat dilakukan oleh skill ini dan bagaimana cara memakainya. Ini memaparkan dua alat: <code translate="no">geo_ingest</code> untuk memberi makan basis pengetahuan dan <code translate="no">geo_generate</code> untuk pembuatan artikel batch. Ini juga berisi aturan pengoptimalan GEO yang membentuk apa yang dihasilkan oleh LLM.</p>
+<h3 id="Step-1-Define-the-OpenClaw-Skill" class="common-anchor-header">Step 1: Define the OpenClaw Skill</h3><p><code translate="no">SKILL.md</code> tells OpenClaw what this skill can do and how to invoke it. It exposes two tools: <code translate="no">geo_ingest</code> for feeding the knowledge base and <code translate="no">geo_generate</code> for batch article generation. It also contains the GEO optimization rules that shape what the LLM produces.</p>
 <pre><code translate="no" class="language-markdown">---
 name: geo-generator
 description: Batch generate GEO-optimized articles <span class="hljs-keyword">using</span> Milvus vector database <span class="hljs-keyword">and</span> LLM, <span class="hljs-keyword">with</span> knowledge <span class="hljs-keyword">base</span> ingestion
@@ -218,7 +216,7 @@ For each article, <span class="hljs-keyword">return</span>:
 - Respect the user&#x27;s specified count — <span class="hljs-keyword">do</span> <span class="hljs-keyword">not</span> over-generate
 - All progress updates should include current/total count
 </span><button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Register-Tools-and-Bridge-to-Python" class="common-anchor-header">Langkah 2: Daftarkan Alat dan Jembatan ke Python</h3><p>OpenClaw berjalan di Node.js, tetapi pipeline GEO ada di Python. <code translate="no">index.js</code> menjembatani keduanya - ini mendaftarkan setiap alat dengan OpenClaw dan mendelegasikan eksekusi ke skrip Python yang sesuai.</p>
+<h3 id="Step-2-Register-Tools-and-Bridge-to-Python" class="common-anchor-header">Step 2: Register Tools and Bridge to Python</h3><p>OpenClaw runs on Node.js, but the GEO pipeline is in Python. <code translate="no">index.js</code> bridges the two — it registers each tool with OpenClaw and delegates execution to the corresponding Python script.</p>
 <pre><code translate="no" class="language-javascript">function _runPython(script, <span class="hljs-keyword">args</span>, config) {
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Promise((resolve) =&gt; {
     <span class="hljs-keyword">const</span> child = execFile(<span class="hljs-string">&quot;python3&quot;</span>, [script, ...<span class="hljs-keyword">args</span>], {
@@ -248,7 +246,7 @@ For each article, <span class="hljs-keyword">return</span>:
   ], config);
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Ingest-Source-Material" class="common-anchor-header">Langkah 3: Mencerna Materi Sumber</h3><p>Sebelum menghasilkan apa pun, Anda memerlukan basis pengetahuan. <code translate="no">ingest.py</code> mengambil halaman web atau membaca dokumen lokal, memotong teks, menyematkannya, dan menuliskannya ke koleksi <code translate="no">geo_knowledge</code> di Milvus. Inilah yang membuat konten yang dihasilkan tetap berlandaskan pada informasi yang nyata dan bukan halusinasi LLM.</p>
+<h3 id="Step-3-Ingest-Source-Material" class="common-anchor-header">Step 3: Ingest Source Material</h3><p>Before generating anything, you need a knowledge base. <code translate="no">ingest.py</code> fetches web pages or reads local documents, chunks the text, embeds it, and writes it to the <code translate="no">geo_knowledge</code> collection in Milvus. This is what keeps generated content grounded in real information rather than LLM hallucinations.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">ingest_sources</span>(<span class="hljs-params">files=<span class="hljs-literal">None</span>, urls=<span class="hljs-literal">None</span></span>):
     llm = get_llm_client()
     milvus = get_milvus_client()
@@ -265,7 +263,7 @@ For each article, <span class="hljs-keyword">return</span>:
         ]
         insert_knowledge(milvus, records)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Expand-Long-Tail-Queries" class="common-anchor-header">Langkah 4: Perluas Kueri Ekor Panjang</h3><p>Diberikan topik seperti "database vektor Milvus," LLM menghasilkan satu set kueri penelusuran yang spesifik dan realistis - jenis pertanyaan yang diketikkan oleh pengguna nyata ke dalam mesin telusur AI. Permintaan ini mencakup berbagai jenis maksud: informasi, perbandingan, cara, pemecahan masalah, dan FAQ.</p>
+<h3 id="Step-4-Expand-Long-Tail-Queries" class="common-anchor-header">Step 4: Expand Long-Tail Queries</h3><p>Given a topic like “Milvus vector database,” the LLM generates a set of specific, realistic search queries — the kind of questions real users type into AI search engines. The prompt covers different intent types: informational, comparison, how-to, problem-solving, and FAQ.</p>
 <pre><code translate="no" class="language-python">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;\
 You are an SEO/GEO keyword research expert. Generate long-tail search queries.
 Requirements:
@@ -280,7 +278,7 @@ Requirements:
     queries = [q.strip() <span class="hljs-keyword">for</span> q <span class="hljs-keyword">in</span> result.strip().splitlines() <span class="hljs-keyword">if</span> q.strip()]
     <span class="hljs-keyword">return</span> queries[:count]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Deduplicate-via-Milvus" class="common-anchor-header">Langkah 5: Deduplikasi melalui Milvus</h3><p>Di sinilah <a href="https://zilliz.com/learn/vector-similarity-search">pencarian vektor</a> mendapatkan tempatnya. Setiap kueri yang diperluas disematkan dan dibandingkan dengan koleksi <code translate="no">geo_knowledge</code> dan <code translate="no">geo_articles</code>. Jika kemiripan kosinus melebihi 0,85, kueri tersebut merupakan duplikat semantik dari sesuatu yang sudah ada di sistem dan akan dibuang - mencegah pipeline menghasilkan lima artikel yang sedikit berbeda yang semuanya menjawab pertanyaan yang sama.</p>
+<h3 id="Step-5-Deduplicate-via-Milvus" class="common-anchor-header">Step 5: Deduplicate via Milvus</h3><p>This is where <a href="https://zilliz.com/learn/vector-similarity-search">vector search</a> earns its place. Each expanded query is embedded and compared against both the <code translate="no">geo_knowledge</code> and <code translate="no">geo_articles</code> collections. If cosine similarity exceeds 0.85, the query is a semantic duplicate of something already in the system and gets dropped — preventing the pipeline from generating five slightly different articles that all answer the same question.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">deduplicate_queries</span>(<span class="hljs-params">llm_client, milvus_client, queries</span>):
     embeddings = get_embeddings_batch(llm_client, queries)
     unique = []
@@ -291,7 +289,7 @@ Requirements:
         unique.append((query, emb))
     <span class="hljs-keyword">return</span> unique
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Generate-Articles-with-Dual-Source-RAG" class="common-anchor-header">Langkah 6: Hasilkan Artikel dengan RAG Sumber Ganda</h3><p>Untuk setiap pertanyaan yang masih ada, generator mengambil konteks dari kedua koleksi Milvus: materi sumber otoritatif dari <code translate="no">geo_knowledge</code> dan artikel yang dibuat sebelumnya dari <code translate="no">geo_articles</code>. Pengambilan ganda ini membuat konten tetap berdasarkan fakta (basis pengetahuan) dan konsisten secara internal (riwayat artikel).</p>
+<h3 id="Step-6-Generate-Articles-with-Dual-Source-RAG" class="common-anchor-header">Step 6: Generate Articles with Dual-Source RAG</h3><p>For each surviving query, the generator retrieves context from both Milvus collections: authoritative source material from <code translate="no">geo_knowledge</code> and previously generated articles from <code translate="no">geo_articles</code>. This dual retrieval keeps content factually grounded (knowledge base) and internally consistent (article history).</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_context</span>(<span class="hljs-params">client, embedding, top_k=<span class="hljs-number">3</span></span>):
     context_parts = []
 
@@ -306,7 +304,7 @@ Requirements:
 
     <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;\n\n&quot;</span>.join(context_parts)
 <button class="copy-code-btn"></button></code></pre>
-<p>Kedua koleksi ini menggunakan dimensi penyematan yang sama (1536) namun menyimpan metadata yang berbeda karena memiliki peran yang berbeda: <code translate="no">geo_knowledge</code> melacak dari mana setiap bagian berasal (untuk atribusi sumber), sementara <code translate="no">geo_articles</code> menyimpan kueri asli dan skor GEO (untuk pencocokan dedup dan pemfilteran kualitas).</p>
+<p>The two collections use the same embedding dimension (1536) but store different metadata because they serve different roles: <code translate="no">geo_knowledge</code> tracks where each chunk came from (for source attribution), while <code translate="no">geo_articles</code> stores the original query and GEO score (for dedup matching and quality filtering).</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">generate_one</span>(<span class="hljs-params">llm_client, milvus_client, query, embedding</span>):
     context = get_context(milvus_client, embedding)  <span class="hljs-comment"># Dual-source RAG</span>
     template = _load_template()                       <span class="hljs-comment"># GEO template</span>
@@ -318,7 +316,7 @@ Requirements:
     insert_article(milvus_client, article)  <span class="hljs-comment"># Write back for future dedup &amp; RAG</span>
     <span class="hljs-keyword">return</span> article
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="The-Milvus-Data-Model" class="common-anchor-header">Model Data Milvus</h3><p>Berikut ini adalah tampilan setiap koleksi jika Anda membuatnya dari awal:</p>
+<h3 id="The-Milvus-Data-Model" class="common-anchor-header">The Milvus Data Model</h3><p>Here’s what each collection looks like if you’re creating them from scratch:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># geo_knowledge — Source material for RAG retrieval</span>
 schema.add_field(<span class="hljs-string">&quot;embedding&quot;</span>, DataType.FLOAT_VECTOR, dim=<span class="hljs-number">1536</span>)
 schema.add_field(<span class="hljs-string">&quot;content&quot;</span>, DataType.VARCHAR, max_length=<span class="hljs-number">65535</span>)
@@ -332,7 +330,7 @@ schema.add_field(<span class="hljs-string">&quot;title&quot;</span>, DataType.VA
 schema.add_field(<span class="hljs-string">&quot;content&quot;</span>, DataType.VARCHAR, max_length=<span class="hljs-number">65535</span>)
 schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataType.INT64)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Running-the-Pipeline" class="common-anchor-header">Menjalankan Pipeline<button data-href="#Running-the-Pipeline" class="anchor-icon" translate="no">
+<h2 id="Running-the-Pipeline" class="common-anchor-header">Running the Pipeline<button data-href="#Running-the-Pipeline" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -347,29 +345,29 @@ schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataTyp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Masukkan direktori <code translate="no">skills/geo-generator/</code> ke dalam folder keahlian OpenClaw Anda, atau kirimkan file zip ke Lark dan biarkan OpenClaw menginstalnya. Anda harus mengkonfigurasi <code translate="no">OPENAI_API_KEY</code>.</p>
+    </button></h2><p>Drop the <code translate="no">skills/geo-generator/</code> directory into your OpenClaw skills folder, or send the zip file to Lark and let OpenClaw install it. You’ll need to configure your <code translate="no">OPENAI_API_KEY</code>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_3_da7d249862.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Dari sana, berinteraksi dengan pipeline melalui pesan obrolan:</p>
-<p><strong>Contoh 1:</strong> Memasukkan URL sumber ke dalam basis pengetahuan, lalu membuat artikel.</p>
+<p>From there, interact with the pipeline through chat messages:</p>
+<p><strong>Example 1:</strong> Ingest source URLs into the knowledge base, then generate articles.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_2_db83ddb4bd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Contoh 2:</strong> Unggah sebuah buku (Wuthering Heights), lalu hasilkan 3 artikel GEO dan ekspor ke dokumen Lark.</p>
+<p><strong>Example 2:</strong> Upload a book (Wuthering Heights), then generate 3 GEO articles and export them to a Lark doc.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/geo_content_pipeline_openclaw_milvus_1_33657096fc.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Taking-This-Pipeline-to-Production" class="common-anchor-header">Membawa Pipeline Ini ke Produksi<button data-href="#Taking-This-Pipeline-to-Production" class="anchor-icon" translate="no">
+<h2 id="Taking-This-Pipeline-to-Production" class="common-anchor-header">Taking This Pipeline to Production<button data-href="#Taking-This-Pipeline-to-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -384,14 +382,14 @@ schema.add_field(<span class="hljs-string">&quot;geo_score&quot;</span>, DataTyp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Semua yang ada di tutorial ini berjalan di Milvus Lite, yang berarti berjalan di laptop Anda dan berhenti ketika laptop Anda mati. Untuk pipeline GEO yang sebenarnya, itu tidak cukup. Anda ingin artikel yang dihasilkan ketika Anda sedang rapat. Anda ingin basis pengetahuan tersedia saat seorang kolega menjalankan batch pada hari Selasa depan.</p>
-<p>Pada titik ini, ada dua solusi.</p>
-<p><strong>Menginstal Milvus secara mandiri menggunakan mode Mandiri atau Terdistribusi.</strong> Tim teknisi Anda menginstal versi lengkap di server - sebuah komputer khusus, baik secara fisik maupun yang disewa dari penyedia cloud seperti AWS. Ini sangat mumpuni dan memberi Anda kontrol penuh atas penerapan Anda, tetapi memang membutuhkan tim teknik khusus untuk menyiapkan, memelihara, dan menskalakan.</p>
-<p><strong>Gunakan</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a><strong>.</strong> Zilliz Cloud adalah Milvus yang dikelola sepenuhnya dengan fitur-fitur tingkat perusahaan yang lebih canggih di atasnya, dibangun oleh tim yang sama.</p>
+    </button></h2><p>Everything in this tutorial runs on Milvus Lite, which means it runs on your laptop and stops when your laptop does. For a real GEO pipeline, that’s not enough. You want articles generating while you’re in meetings. You want the knowledge base available when a colleague runs a batch next Tuesday.</p>
+<p>At this point, there are two solutions.</p>
+<p><strong>Self-host Milvus using the Standalone or Distributed mode.</strong> Your engineering team installs the full version on a server — a dedicated computer, either physical or rented from a cloud provider like AWS. It’s highly capable and gives you full control over your deployment, but it does need a dedicated engineering team to set up, maintain, and scale.</p>
+<p><strong>Use</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a><strong>.</strong> Zilliz Cloud is the fully managed Milvus with more advanced enterprise-grade features on top, built by the same team.</p>
 <ul>
-<li><p><strong>Tidak ada kerumitan dalam pengoperasian dan pemeliharaan.</strong></p></li>
-<li><p><strong>Tersedia tingkat gratis.</strong> <a href="https://cloud.zilliz.com/signup">Tingkat gratis</a> mencakup penyimpanan 5GB - cukup untuk membaca seluruh <em>Wuthering Heights</em> sebanyak 360 kali, atau 360 buku. Tersedia juga uji coba gratis selama 30 hari untuk beban kerja yang lebih besar.</p></li>
-<li><p><strong>Selalu menjadi yang pertama dalam antrean untuk fitur-fitur baru.</strong> Ketika Milvus merilis peningkatan, Zilliz Cloud mendapatkannya secara otomatis - tidak perlu menunggu tim Anda menjadwalkan peningkatan.</p></li>
+<li><p><strong>Zero hassle in operation and maintenance.</strong></p></li>
+<li><p><strong>Free tier available.</strong> The <a href="https://cloud.zilliz.com/signup">free tier</a> includes 5GB of storage — enough for ingesting all of <em>Wuthering Heights</em> for 360 times, or 360 books. There’s also a 30-day free trial for larger workloads.</p></li>
+<li><p><strong>Always first in line for new features.</strong> When Milvus releases improvements, Zilliz Cloud gets them automatically — no waiting for your team to schedule an upgrade.</p></li>
 </ul>
 <pre><code translate="no">
 MILVUS_URI = <span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</span>  <span class="hljs-comment"># That&#x27;s the only change.</span>
@@ -399,8 +397,8 @@ MILVUS_URI = <span class="hljs-string">&quot;https://xxx.zillizcloud.com&quot;</
 client = MilvusClient(uri=MILVUS_URI)
 
 <button class="copy-code-btn"></button></code></pre>
-<p><a href="https://cloud.zilliz.com/signup">Daftar ke Zilliz Cloud</a>, dan cobalah.</p>
-<h2 id="When-GEO-Content-Generation-Backfires" class="common-anchor-header">Ketika Pembuatan Konten GEO Menjadi Bumerang<button data-href="#When-GEO-Content-Generation-Backfires" class="anchor-icon" translate="no">
+<p><a href="https://cloud.zilliz.com/signup">Sign up for Zilliz Cloud</a>, and give it a spin.</p>
+<h2 id="When-GEO-Content-Generation-Backfires" class="common-anchor-header">When GEO Content Generation Backfires<button data-href="#When-GEO-Content-Generation-Backfires" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -415,12 +413,12 @@ client = MilvusClient(uri=MILVUS_URI)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Pembuatan konten GEO hanya berfungsi sebaik basis pengetahuan di belakangnya. Beberapa kasus di mana pendekatan ini lebih banyak merugikan daripada menguntungkan:</p>
-<p><strong>Tidak ada sumber materi yang otoritatif.</strong> Tanpa basis pengetahuan yang kuat, LLM akan kembali ke data pelatihan. Hasilnya akan menjadi generik dan paling buruk adalah halusinasi. Inti dari langkah RAG adalah untuk membumikan pembangkitan dalam informasi yang terverifikasi - lewati saja, dan Anda hanya melakukan rekayasa cepat dengan langkah-langkah tambahan.</p>
-<p><strong>Mempromosikan sesuatu yang tidak ada.</strong> Jika produk tidak berfungsi seperti yang dijelaskan, itu bukan GEO - itu adalah informasi yang salah. Langkah penilaian mandiri menangkap beberapa masalah kualitas, tetapi tidak dapat memverifikasi klaim yang tidak bertentangan dengan basis pengetahuan.</p>
-<p><strong>Audiens Anda adalah murni manusia.</strong> Pengoptimalan GEO (judul terstruktur, jawaban langsung di paragraf pertama, kepadatan kutipan) dirancang untuk dapat ditemukan oleh AI. Hal ini dapat terasa seperti rumus jika Anda menulis murni untuk pembaca manusia. Ketahui audiens mana yang Anda targetkan.</p>
-<p><strong>Catatan tentang ambang batas dedup.</strong> Pipeline membuang kueri dengan kemiripan kosinus di atas 0,85. Jika terlalu banyak duplikat yang hampir sama, turunkan ambang batasnya. Jika pipeline membuang kueri yang tampaknya benar-benar berbeda, naikkan. 0,85 adalah titik awal yang masuk akal, tetapi nilai yang tepat tergantung pada seberapa sempit topik Anda.</p>
-<h2 id="Conclusion" class="common-anchor-header">Kesimpulan<button data-href="#Conclusion" class="anchor-icon" translate="no">
+    </button></h2><p>GEO content generation only works as well as the knowledge base behind it. A few cases where this approach does more harm than good:</p>
+<p><strong>No authoritative source material.</strong> Without a solid knowledge base, the LLM falls back on training data. The output ends up generic at best, hallucinated at worst. The entire point of the RAG step is to ground generation in verified information — skip that, and you’re just doing prompt engineering with extra steps.</p>
+<p><strong>Promoting something that doesn’t exist.</strong> If the product doesn’t work as described, that’s not GEO — that’s misinformation. The self-scoring step catches some quality issues, but it can’t verify claims the knowledge base doesn’t contradict.</p>
+<p><strong>Your audience is purely human.</strong> GEO optimization (structured headings, direct first-paragraph answers, citation density) is designed for AI discoverability. It can feel formulaic if you’re writing purely for human readers. Know which audience you’re targeting.</p>
+<p><strong>A note on the dedup threshold.</strong> The pipeline drops queries with cosine similarity above 0.85. If too many near-duplicates are getting through, lower it. If the pipeline discards queries that seem genuinely different, raise it. 0.85 is a reasonable starting point, but the right value depends on how narrow your topic is.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -435,17 +433,21 @@ client = MilvusClient(uri=MILVUS_URI)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>GEO adalah tempat SEO berada sepuluh tahun yang lalu - cukup awal sehingga infrastruktur yang tepat memberi Anda keunggulan yang nyata. Tutorial ini membangun pipeline yang menghasilkan artikel yang benar-benar dikutip oleh mesin pencari AI, yang didasarkan pada materi sumber merek Anda sendiri, bukan halusinasi LLM. Tumpukannya adalah <a href="https://github.com/nicepkg/openclaw">OpenClaw</a> untuk orkestrasi, <a href="https://milvus.io/intro">Milvus</a> untuk penyimpanan pengetahuan dan pengambilan <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>, dan LLM untuk pembuatan dan penilaian.</p>
-<p>Kode sumber lengkap tersedia di <a href="https://github.com/nicepkg/openclaw">github.com/nicepkg/openclaw</a>.</p>
-<p>Jika Anda sedang membangun strategi GEO dan membutuhkan infrastruktur untuk mendukungnya:</p>
+    </button></h2><p>GEO is where SEO was ten years ago — early enough that the right infrastructure gives you a real edge. This tutorial builds a pipeline that generates articles AI search engines actually cite, grounded in your brand’s own source material instead of LLM hallucinations. The stack is <a href="https://github.com/nicepkg/openclaw">OpenClaw</a> for orchestration, <a href="https://milvus.io/intro">Milvus</a> for knowledge storage and <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> retrieval, and LLMs for generation and scoring.</p>
+<p>The full source code is available at <a href="https://github.com/nicepkg/openclaw">github.com/nicepkg/openclaw</a>.</p>
+<p>If you’re building a GEO strategy and need the infrastructure to support it:</p>
 <ul>
-<li>Bergabunglah dengan <a href="https://slack.milvus.io/">komunitas Milvus Slack</a> untuk melihat bagaimana tim lain menggunakan pencarian vektor untuk konten, dedup, dan RAG.</li>
-<li><a href="https://milvus.io/office-hours">Pesan sesi Jam Kantor Milvus gratis selama 20 menit</a> untuk membahas kasus penggunaan Anda dengan tim.</li>
-<li>Jika Anda lebih suka melewatkan penyiapan infrastruktur, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (Milvus yang dikelola) memiliki tingkat gratis - satu perubahan URI dan Anda sudah bisa berproduksi.</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to see how other teams are using vector search for content, dedup, and RAG.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your use case with the team.</li>
+<li>If you’d rather skip infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) has a free tier — one URI change and you’re in production.</li>
 </ul>
 <hr>
-<p>Beberapa pertanyaan yang muncul ketika tim pemasaran mulai menjelajahi GEO:</p>
-<p><strong>Lalu lintas SEO saya menurun. Apakah GEO adalah penggantinya?</strong>GEO tidak menggantikan SEO - GEO memperluasnya ke saluran baru. SEO tradisional masih mendorong lalu lintas dari pengguna yang mengklik halaman. GEO menargetkan pangsa kueri yang terus meningkat di mana pengguna mendapatkan jawaban langsung dari AI (Perplexity, ChatGPT Search, Google AI Overview) tanpa harus mengunjungi situs web. Jika Anda melihat rasio klik-nol meningkat di analitik Anda, itulah lalu lintas yang dirancang untuk ditangkap kembali oleh GEO - bukan melalui klik, tetapi melalui kutipan merek dalam jawaban yang dihasilkan oleh AI.</p>
-<p>Apa<strong>perbedaan konten GEO dengan konten yang dihasilkan AI biasa?</strong>Sebagian besar konten yang dihasilkan AI bersifat umum - LLM diambil dari data pelatihan dan menghasilkan sesuatu yang terdengar masuk akal, tetapi tidak didasarkan pada fakta, klaim, atau data aktual merek Anda. Konten GEO didasarkan pada basis pengetahuan dari materi sumber yang telah diverifikasi menggunakan RAG (retrieval-augmented generation). Perbedaannya terlihat pada output: detail produk yang spesifik alih-alih generalisasi yang tidak jelas, angka yang nyata alih-alih statistik yang dibuat-buat, dan suara merek yang konsisten di lusinan artikel.</p>
-<p><strong>Berapa banyak artikel yang saya perlukan agar GEO dapat bekerja?</strong>Tidak ada angka ajaib, tetapi logikanya mudah: Model AI melakukan sintesis dari berbagai sumber untuk setiap jawaban. Semakin banyak kueri panjang yang Anda bahas dengan konten berkualitas, semakin sering merek Anda muncul. Mulailah dengan 20-30 artikel seputar topik inti Anda, ukur artikel mana yang dikutip (periksa tingkat penyebutan AI dan lalu lintas rujukan Anda), dan tingkatkan dari sana.</p>
-<p><strong>Apakah mesin pencari AI tidak akan menghukum konten yang dibuat secara massal? Ya</strong>, jika<strong>konten</strong>tersebut berkualitas rendah. Mesin pencari AI semakin baik dalam mendeteksi klaim yang tidak bersumber, frasa daur ulang, dan konten yang tidak menambah nilai orisinal. Itulah sebabnya mengapa pipeline ini menyertakan basis pengetahuan untuk landasan dan langkah penilaian mandiri untuk kontrol kualitas. Tujuannya bukan untuk menghasilkan lebih banyak konten - tetapi untuk menghasilkan konten yang benar-benar berguna bagi model AI untuk dikutip.</p>
+<p>A few questions that come up when marketing teams start exploring GEO:</p>
+<p><strong>My SEO traffic is dropping. Is GEO the replacement?</strong>
+GEO doesn’t replace SEO — it extends it to a new channel. Traditional SEO still drives traffic from users who click through to pages. GEO targets the growing share of queries where users get answers directly from AI (Perplexity, ChatGPT Search, Google AI Overview) without ever visiting a website. If you’re seeing zero-click rates climb in your analytics, that’s the traffic GEO is designed to recapture — not through clicks, but through brand citations in AI-generated answers.</p>
+<p><strong>How is GEO content different from regular AI-generated content?</strong>
+Most AI-generated content is generic — the LLM draws from training data and produces something that sounds reasonable but isn’t grounded in your brand’s actual facts, claims, or data. GEO content is grounded in a knowledge base of verified source material using RAG (retrieval-augmented generation). The difference shows in the output: specific product details instead of vague generalizations, real numbers instead of fabricated stats, and consistent brand voice across dozens of articles.</p>
+<p><strong>How many articles do I need for GEO to work?</strong>
+There’s no magic number, but the logic is straightforward: AI models synthesize from multiple sources per answer. The more long-tail queries you cover with quality content, the more often your brand shows up. Start with 20-30 articles around your core topic, measure which ones get cited (check your AI mention rate and referral traffic), and scale from there.</p>
+<p><strong>Won’t AI search engines penalize mass-generated content?</strong>
+They will if it’s low-quality. AI search engines are getting better at detecting unsourced claims, recycled phrasing, and content that doesn’t add original value. That’s exactly why this pipeline includes a knowledge base for grounding and a self-scoring step for quality control. The goal isn’t to generate more content — it’s to generate content that’s genuinely useful enough for AI models to cite.</p>

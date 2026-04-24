@@ -1,7 +1,9 @@
 ---
 id: >-
   how-to-cut-vector-database-costs-by-up-to-80-a-practical-milvus-optimization-guide.md
-title: 如何削减高达 80% 的向量数据库成本：Milvus 实用优化指南
+title: >
+  How to Cut Vector Database Costs by Up to 80%: A Practical Milvus Optimization
+  Guide
 author: Jack Li
 date: 2026-3-20
 cover: assets.zilliz.com/cover_reduce_vdb_cost_by_80_56ed2fe3ae.png
@@ -14,15 +16,17 @@ meta_keywords: >-
   optimization, HNSW vs IVF_SQ8, vector search cost
 meta_title: |
   Milvus Cost Optimization Guide: Cut Vector Database Costs by Up to 80%
-desc: Milvus 是免费的，但基础架构并非如此。了解如何利用更好的索引、MMap 和分层存储将向量数据库内存成本降低 60-80%。
+desc: >
+  Milvus is free, but the infrastructure isn't. Learn how to reduce vector
+  database memory costs by 60-80% with better indexes, MMap, and tiered storage.
 origin: >-
   https://milvus.io/blog/how-to-cut-vector-database-costs-by-up-to-80-a-practical-milvus-optimization-guide.md
 ---
-<p>您的 RAG 原型运行良好。然后它投入生产，流量增长，现在你的向量数据库账单从每月 500 美元涨到了 5000 美元。听起来很熟悉吧？</p>
-<p>这是目前人工智能应用中最常见的扩展问题之一。你构建的东西创造了真正的价值，但基础设施成本的增长速度却超过了用户群的增长速度。而当你查看账单时，向量数据库往往是最大的惊喜--在我们所见过的部署中，它可以占到应用程序总成本的大约 40-50%，仅次于 LLM API 调用。</p>
-<p>在本指南中，我将介绍这些费用的实际去向，以及可以降低这些费用的具体做法--在许多情况下可以降低 60-80%。我将以最流行的开源向量数据库<a href="https://milvus.io/">Milvus</a> 为主要例子，因为这是我最熟悉的数据库，但这些原则适用于大多数向量数据库。</p>
-<p><em>需要说明的是：</em> <em><a href="https://milvus.io/">Milvus</a></em> <em>本身是免费开源的，你无需为软件付费。成本完全来自于运行它的基础设施：云实例、内存、存储和网络。好消息是，大部分基础设施成本是可以降低的。</em></p>
-<h2 id="Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="common-anchor-header">使用 VectorDB 时，钱到底花到哪里去了？<button data-href="#Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="anchor-icon" translate="no">
+<p>Your RAG prototype worked great. Then it went to production, traffic grew, and now your vector database bill has gone from $500 to $5,000 a month. Sound familiar?</p>
+<p>This is one of the most common scaling problems in AI applications right now. You’ve built something that creates real value, but the infrastructure costs are growing faster than your user base is growing. And when you look at the bill, the vector database is often the biggest surprise — in the deployments we’ve seen, it can account for roughly 40-50% of total application cost, second only to LLM API calls.</p>
+<p>In this guide, I’ll walk through where the money actually goes and the specific things you can do to bring it down — in many cases by 60-80%. I’ll use <a href="https://milvus.io/">Milvus</a>, the most popular open-source vector database, as the primary example since that’s what I know best, but the principles apply to most vector databases.</p>
+<p><em>To be clear:</em> <em><a href="https://milvus.io/">Milvus</a></em> <em>itself is free and open source — you never pay for the software. The cost comes entirely from the infrastructure you run it on: cloud instances, memory, storage, and network. The good news is that most of that infrastructure cost is reducible.</em></p>
+<h2 id="Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="common-anchor-header">Where Does the Money Actually Go When Using a VectorDB?<button data-href="#Where-Does-the-Money-Actually-Go-When-Using-a-VectorDB" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,20 +41,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>让我们从一个具体的例子开始。假设你有 1 亿个向量，768 个维度，以 float32 格式存储--这是一个非常典型的 RAG 设置。下面是在 AWS 上每月的大致费用：</p>
+    </button></h2><p>Let’s start with a concrete example. Say you have 100 million vectors, 768 dimensions, stored as float32 — a pretty typical RAG setup. Here’s roughly what that costs on AWS per month:</p>
 <table>
 <thead>
-<tr><th><strong>成本构成</strong></th><th><strong>份额</strong></th><th><strong>~每月成本</strong></th><th><strong>备注</strong></th></tr>
+<tr><th><strong>Cost Component</strong></th><th><strong>Share</strong></th><th><strong>~Monthly Cost</strong></th><th><strong>Notes</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>计算（CPU + 内存）</td><td>85-90%</td><td>$2,800</td><td>主要由内存驱动</td></tr>
-<tr><td>网络</td><td>5-10%</td><td>$250</td><td>跨 AZ 流量、大型结果有效载荷</td></tr>
-<tr><td>存储</td><td>2-5%</td><td>$100</td><td>便宜 - 对象存储（S3/MinIO）约为 0.03 美元/GB</td></tr>
+<tr><td>Compute   (CPU + memory)</td><td>85-90%</td><td>$2,800</td><td>The big one — mostly driven by memory</td></tr>
+<tr><td>Network</td><td>5-10%</td><td>$250</td><td>Cross-AZ traffic, large result payloads</td></tr>
+<tr><td>Storage</td><td>2-5%</td><td>$100</td><td>Cheap — object storage (S3/MinIO) is ~$0.03/GB</td></tr>
 </tbody>
 </table>
-<p>结论很简单：内存是 85-90% 的资金去向。网络和存储在边际上很重要，但如果你想有意义地削减成本，内存就是杠杆。本指南的所有内容都将围绕这一点展开。</p>
-<p><strong>关于网络和存储的快速说明：</strong>只返回需要的字段（ID、分数、关键元数据），避免跨区域查询，可以降低网络成本。在存储方面，Milvus 已经将存储与计算分离开来--你的向量放在像 S3 这样的廉价对象存储中，因此即使是 100M 的向量，存储费用通常也低于 50 美元/月。这两项都不会像内存优化那样起到推动作用。</p>
-<h2 id="Why-Memory-Is-So-Expensive-for-Vector-Search" class="common-anchor-header">为什么向量搜索的内存如此昂贵？<button data-href="#Why-Memory-Is-So-Expensive-for-Vector-Search" class="anchor-icon" translate="no">
+<p>The takeaway is simple: memory is where 85-90% of your money goes. Network and storage matter at the margins, but if you want to cut costs meaningfully, memory is the lever. Everything in this guide focuses on that.</p>
+<p><strong>Quick note on network and storage:</strong> You can reduce network costs by only returning the fields you need (ID, score, key metadata) and avoiding cross-region queries. For storage, Milvus already separates storage from compute — your vectors sit in cheap object storage like S3, so even at 100M vectors, storage is usually under $50/month. Neither of these will move the needle like memory optimization will.</p>
+<h2 id="Why-Memory-Is-So-Expensive-for-Vector-Search" class="common-anchor-header">Why Memory Is So Expensive for Vector Search<button data-href="#Why-Memory-Is-So-Expensive-for-Vector-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,18 +69,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>如果你来自传统数据库，向量搜索对内存的要求可能会令人吃惊。关系数据库可以利用基于磁盘的 B 树索引和操作系统页面缓存。向量搜索则不同，它涉及大量浮点运算，HNSW 或 IVF 等索引需要在内存中保持加载状态，以提供毫秒级的延迟。</p>
-<p>下面是一个估算内存需求的快速公式：</p>
-<p><strong>所需内存 = （向量 × 维度 × 4 字节） × 索引乘数</strong></p>
-<p>对于我们使用 HNSW 的 100M × 768 × float32 示例（乘数 ~1.8x）：</p>
+    </button></h2><p>If you’re coming from traditional databases, the memory requirements for vector search can be surprising. A relational database can leverage disk-based B-tree indexes and the OS page cache. Vector search is different — it involves massive floating-point computation, and indexes like HNSW or IVF need to stay loaded in memory to deliver millisecond-level latency.</p>
+<p>Here’s a quick formula to estimate your memory needs:</p>
+<p><strong>Memory required = (vectors × dimensions × 4 bytes) × index multiplier</strong></p>
+<p>For our 100M × 768 × float32 example with HNSW (multiplier ~1.8x):</p>
 <ul>
-<li>原始数据：1 亿 × 768 × 4 字节 ≈ 307 GB</li>
-<li>使用 HNSW 索引：307 GB × 1.8 ≈ 553 GB</li>
-<li>加上操作系统开销、缓存和净空：总计 ~768 GB</li>
-<li>在 AWS 上：3× r6i.8xlarge（每个 256 GB）≈ 2,800 美元/月</li>
+<li>Raw data: 100M × 768 × 4 bytes ≈ 307 GB</li>
+<li>With HNSW index: 307 GB × 1.8 ≈ 553 GB</li>
+<li>With OS overhead, cache, and headroom: ~768 GB total</li>
+<li>On AWS: 3× r6i.8xlarge (256 GB each) ≈ $2,800/month</li>
 </ul>
-<p><strong>这就是基线。现在让我们来看看如何降低成本。</strong></p>
-<h2 id="1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="common-anchor-header">1.选择正确的索引，减少 4 倍内存使用量<button data-href="#1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="anchor-icon" translate="no">
+<p><strong>That’s the baseline. Now let’s look at how to bring it down.</strong></p>
+<h2 id="1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="common-anchor-header">1. Pick the Right Index to Get 4x Less Memory Usage<button data-href="#1-Pick-the-Right-Index-to-Get-4x-Less-Memory-Usage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,31 +95,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>这是影响最大的一项改变。对于同样的 1 亿向量数据集，内存使用量可能会有 4-6 倍的变化，这取决于你对索引的选择。</p>
+    </button></h2><p>This is the single highest-impact change you can make. For the same 100M-vector dataset, memory usage can vary by 4-6x depending on your index choice.</p>
 <ul>
-<li><strong>FLAT / IVF_FLAT</strong>：几乎不压缩，因此内存使用量接近原始数据大小，约为<strong>300 GB</strong></li>
-<li><strong>HNSW</strong>：存储额外的图形结构，因此内存使用量通常是原始数据大小的<strong>1.5 至 2.0 倍</strong>，或约<strong>450 至 600 GB</strong></li>
-<li><strong>IVF_SQ8</strong>：将 float32 值压缩为 uint8，<strong>压缩率</strong>约为<strong>4 倍</strong>，因此内存使用量可降至约<strong>75 至 100 GB</strong></li>
-<li><strong>IVF_PQ / DiskANN</strong>：使用更强的压缩或基于磁盘的索引，因此内存可进一步降至约<strong>30 至 60 GB</strong></li>
+<li><strong>FLAT / IVF_FLAT</strong>: almost no compression, so memory usage stays close to the raw data size, around <strong>300 GB</strong></li>
+<li><strong>HNSW</strong>: stores an extra graph structure, so memory usage is usually <strong>1.5x to 2.0x</strong> the raw data size, or about <strong>450 to 600 GB</strong></li>
+<li><strong>IVF_SQ8</strong>: compresses float32 values into uint8, giving about <strong>4x compression</strong>, so memory use can drop to around <strong>75 to 100 GB</strong></li>
+<li><strong>IVF_PQ / DiskANN</strong>: use stronger compression or a disk-based index, so memory can drop further to about <strong>30 to 60 GB</strong></li>
 </ul>
-<p>许多团队一开始使用 HNSW，因为它的查询速度最快，但最终却要多支付 3-5 倍的费用。</p>
-<p>以下是主要索引类型的比较：</p>
+<p>Many teams start with HNSW because it has the best query speed, but they end up paying 3-5x more than they need to.</p>
+<p>Here’s how the main index types compare:</p>
 <table>
 <thead>
-<tr><th><strong>索引</strong></th><th><strong>内存倍增器</strong></th><th><strong>查询速度</strong></th><th><strong>召回率</strong></th><th><strong>最适合</strong></th></tr>
+<tr><th><strong>Index</strong></th><th><strong>Memory Multiplier</strong></th><th><strong>Query Speed</strong></th><th><strong>Recall</strong></th><th><strong>Best For</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>扁平</td><td>~1.0x</td><td>慢</td><td>100%</td><td>小数据集（&lt;1M），测试</td></tr>
-<tr><td>IVF_FLAT</td><td>~1.05x</td><td>中</td><td>95-99%</td><td>一般使用</td></tr>
-<tr><td>IVF_SQ8</td><td>~0.30x</td><td>中型</td><td>93-97%</td><td>成本敏感型生产（推荐）</td></tr>
-<tr><td>IVF_PQ</td><td>~0.12x</td><td>快速</td><td>70-80%</td><td>超大数据集，粗检索</td></tr>
-<tr><td>HNSW</td><td>~1.8x</td><td>非常快</td><td>98-99%</td><td>仅当延迟比成本更重要时</td></tr>
-<tr><td>磁盘ANN</td><td>~0.08x</td><td>中速</td><td>95-98%</td><td>使用 NVMe SSD 进行超大规模运行</td></tr>
+<tr><td>FLAT</td><td>~1.0x</td><td>Slow</td><td>100%</td><td>Small datasets (&lt;1M), testing</td></tr>
+<tr><td>IVF_FLAT</td><td>~1.05x</td><td>Medium</td><td>95-99%</td><td>General use</td></tr>
+<tr><td>IVF_SQ8</td><td>~0.30x</td><td>Medium</td><td>93-97%</td><td>Cost-sensitive production (recommended)</td></tr>
+<tr><td>IVF_PQ</td><td>~0.12x</td><td>Fast</td><td>70-80%</td><td>Very large datasets, coarse retrieval</td></tr>
+<tr><td>HNSW</td><td>~1.8x</td><td>Very fast</td><td>98-99%</td><td>Only when latency matters more than cost</td></tr>
+<tr><td>DiskANN</td><td>~0.08x</td><td>Medium</td><td>95-98%</td><td>Very large scale with NVMe SSDs</td></tr>
 </tbody>
 </table>
-<p><strong>底线</strong>从 HNSW 或 IVF_FLAT 切换到 IVF_SQ8，召回率通常只下降 2-3%（例如，从 97% 降至 94-95%），而内存成本却降低了约 70%。对于大多数 RAG 工作负载来说，这种折衷是绝对值得的。如果您正在进行粗略检索，或者您的准确率标准较低，IVF_PQ 或 IVF_RABITQ 可以进一步节省成本。</p>
-<p><strong>我的建议</strong>如果要在生产中运行 HNSW，而且成本是个问题，请先在测试 Collections 上试用 IVF_SQ8。测量实际查询的召回率。大多数团队都会惊讶于准确率的下降幅度如此之小。</p>
-<h2 id="2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="common-anchor-header">2.停止将所有内容载入内存，降低 60%-80% 的成本<button data-href="#2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="anchor-icon" translate="no">
+<p><strong>The bottom line:</strong> Switching from HNSW or IVF_FLAT to IVF_SQ8 typically drops recall by only 2-3% (e.g., from 97% to 94-95%) while cutting memory cost by about 70%. For most RAG workloads, that tradeoff is absolutely worth it. If you’re doing coarse retrieval or your accuracy bar is lower, IVF_PQ or IVF_RABITQ can further boost savings.</p>
+<p><strong>My recommendation:</strong> If you’re running HNSW in production and cost is a concern, try IVF_SQ8 on a test collection first. Measure recall on your actual queries. Most teams are surprised by how small the accuracy drop is.</p>
+<h2 id="2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="common-anchor-header">2. Stop Loading Everything into Memory for 60%-80% Cost Reduction<button data-href="#2-Stop-Loading-Everything-into-Memory-for-60-80-Cost-Reduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -130,46 +134,46 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>即使选择了更高效的索引，内存中的数据仍可能多于需要。Milvus 提供了两种方法来解决这个问题：<strong>MMap（自 2.3 版起可用）和分层存储（自 2.6 版起可用）。这两种方法都能减少 60-80% 的内存使用量。</strong></p>
-<p>这两种方法的核心理念是一样的：并非所有数据都需要始终保存在内存中。两者的区别在于如何处理不在内存中的数据。</p>
-<h3 id="MMap-Memory-Mapped-Files" class="common-anchor-header">MMap（内存映射文件）</h3><p>MMap 将数据文件从本地磁盘映射到进程地址空间。完整的数据集仍保留在节点的本地磁盘上，操作系统只在需要访问时才将页面加载到内存中。在使用 MMap 之前，所有数据都会从对象存储（S3/MinIO）下载到查询节点的本地磁盘。</p>
+    </button></h2><p>Even after picking a more efficient index, you might still have more data in memory than necessary. Milvus offers two ways to fix this: <strong>MMap (available since 2.3) and tiered storage (available since 2.6). Both can reduce memory usage by 60-80%.</strong></p>
+<p>The core idea behind both is the same: not all your data needs to live in memory at all times. The difference is how they handle the data that’s not in memory.</p>
+<h3 id="MMap-Memory-Mapped-Files" class="common-anchor-header">MMap (Memory-Mapped Files)</h3><p>MMap maps your data files from local disk into the process address space. The full dataset remains on the node’s local disk, and the OS loads pages into memory on demand—only when they’re accessed. Before using MMap, all data gets downloaded from object storage (S3/MinIO) to the QueryNode’s local disk.</p>
 <ul>
-<li>内存使用率降至满载模式的约 10-30</li>
-<li>延迟保持稳定且可预测（数据在本地磁盘上，无需网络获取）</li>
-<li>权衡：本地磁盘必须足够大，以容纳整个数据集</li>
+<li>Memory usage drops to ~10-30% of full-load mode</li>
+<li>Latency stays stable and predictable (data is on local disk, no network fetch)</li>
+<li>Tradeoff: local disk must be large enough to hold the full dataset</li>
 </ul>
-<h3 id="Tiered-Storage" class="common-anchor-header">分层存储</h3><p>分层存储更进一步。它不是将所有数据下载到本地磁盘，而是将本地磁盘用作热门数据的缓存，并将对象存储作为主层。只有在需要时，才会从对象存储中获取数据。</p>
+<h3 id="Tiered-Storage" class="common-anchor-header">Tiered Storage</h3><p>Tiered storage takes it a step further. Instead of downloading everything to the local disk, it uses the local disk as a cache for hot data and keeps object storage as the primary layer. Data is fetched from object storage only when needed.</p>
 <ul>
-<li>内存使用率降至满载模式的 10% 以下</li>
-<li>本地磁盘使用率也会下降--只缓存热数据（通常占总数的 10-30）</li>
-<li>权衡：缓存丢失会增加 50-200 毫秒的延迟（从对象存储中获取数据）</li>
+<li>Memory usage drops to &lt;10% of full-load mode</li>
+<li>Local disk usage also drops — only hot data is cached (usually 10-30% of total)</li>
+<li>Tradeoff: cache misses add 50-200ms latency (fetching from object storage)</li>
 </ul>
-<h3 id="Data-flow-and-resource-usage" class="common-anchor-header">数据流和资源使用</h3><table>
+<h3 id="Data-flow-and-resource-usage" class="common-anchor-header">Data flow and resource usage</h3><table>
 <thead>
-<tr><th><strong>模式</strong></th><th><strong>数据流</strong></th><th><strong>内存使用量</strong></th><th><strong>本地磁盘使用</strong></th><th><strong>延迟</strong></th></tr>
+<tr><th><strong>Mode</strong></th><th><strong>Data Flow</strong></th><th><strong>Memory Usage</strong></th><th><strong>Local Disk Usage</strong></th><th><strong>Latency</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>传统满负荷</td><td>对象存储 → 内存 (100%)</td><td>非常高（100）</td><td>低（仅临时）</td><td>非常低且稳定</td></tr>
-<tr><td>MMap</td><td>对象存储 → 本地磁盘（100%） → 内存（按需）</td><td>低 (10-30%)</td><td>高（100）</td><td>低且稳定</td></tr>
-<tr><td>分层存储</td><td>对象存储 ↔ 本地缓存（热数据） → 内存（按需）</td><td>非常低（&lt;10）</td><td>低（仅热数据）</td><td>高速缓存命中率低，高速缓存未命中率高</td></tr>
+<tr><td>Traditional full load</td><td>Object storage → memory (100%)</td><td>Very high (100%)</td><td>Low (temporary only)</td><td>Very low and stable</td></tr>
+<tr><td>MMap</td><td>Object storage → local disk (100%) → memory (on demand)</td><td>Low (10-30%)</td><td>High (100%)</td><td>Low and stable</td></tr>
+<tr><td>Tiered storage</td><td>Object storage ↔ local cache (hot data) → memory (on demand)</td><td>Very low (&lt;10%)</td><td>Low (hot data only)</td><td>Low on cache hit, higher on cache miss</td></tr>
 </tbody>
 </table>
-<p><strong>硬件建议：</strong>这两种方法都严重依赖本地磁盘 I/O，因此强烈建议使用<strong>NVMe SSD</strong>，<strong>IOPS</strong> 最好在<strong>10,000 以上</strong>。</p>
-<h3 id="MMap-vs-Tiered-Storage-Which-One-Should-You-Use" class="common-anchor-header">MMap 与分层存储：您应该使用哪一种？</h3><table>
+<p><strong>Hardware recommendation:</strong> both methods depend heavily on local disk I/O, so <strong>NVMe SSDs</strong> are strongly recommended, ideally with <strong>IOPS above 10,000</strong>.</p>
+<h3 id="MMap-vs-Tiered-Storage-Which-One-Should-You-Use" class="common-anchor-header">MMap vs. Tiered Storage: Which One Should You Use?</h3><table>
 <thead>
-<tr><th><strong>您的情况</strong></th><th><strong>使用此方法</strong></th><th><strong>为什么</strong></th></tr>
+<tr><th><strong>Your Situation</strong></th><th><strong>Use This</strong></th><th><strong>Why</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>对延迟敏感（P99 &lt; 20ms）</td><td>MMap</td><td>数据已在本地磁盘上 - 无需网络获取，延迟稳定</td></tr>
-<tr><td>统一访问（无明显的冷热分区）</td><td>MMap</td><td>分层存储需要冷热倾斜才能有效；没有冷热倾斜，缓存命中率就会很低</td></tr>
-<tr><td>成本优先（偶尔出现延迟峰值也没关系）</td><td>分层存储</td><td>节省内存和本地磁盘（减少 70-90% 的磁盘空间）</td></tr>
-<tr><td>明确冷热模式（80/20 规则）</td><td>分层存储</td><td>热数据保持缓存，冷数据在对象存储中保持廉价</td></tr>
-<tr><td>超大规模（&gt;500M 向量）</td><td>分层存储</td><td>在这种规模下，一个节点的本地磁盘往往无法容纳整个数据集</td></tr>
+<tr><td>Latency-sensitive (P99 &lt; 20ms)</td><td>MMap</td><td>Data is already on local disk — no network fetch, stable latency</td></tr>
+<tr><td>Uniform access (no clear hot/cold split)</td><td>MMap</td><td>Tiered storage needs hot/cold skew to be effective; without it, cache hit rate is low</td></tr>
+<tr><td>Cost is the priority (occasional latency spikes OK)</td><td>Tiered storage</td><td>Saves on both memory and local disk (70-90% less disk)</td></tr>
+<tr><td>Clear hot/cold pattern (80/20 rule)</td><td>Tiered storage</td><td>Hot data stays cached, cold data stays cheap in object storage</td></tr>
+<tr><td>Very large scale (&gt;500M vectors)</td><td>Tiered storage</td><td>One node’s local disk often can’t hold the full dataset at this scale</td></tr>
 </tbody>
 </table>
-<p><strong>注：</strong>MMap 需要 Milvus 2.3 以上版本。分层存储要求 Milvus 2.6 以上。两者都需要使用 NVMe SSD（建议使用 10,000+ IOPS）。</p>
-<h3 id="How-to-Configure-MMap" class="common-anchor-header">如何配置 MMap</h3><p><strong>选项 1：YAML 配置（建议用于新部署）</strong></p>
-<p>编辑 Milvus 配置文件 milvus.yaml，在 queryNode 部分添加以下设置：</p>
+<p><strong>Note:</strong> MMap requires Milvus 2.3+. Tiered storage requires Milvus 2.6+. Both work best with NVMe SSDs (10,000+ IOPS recommended).</p>
+<h3 id="How-to-Configure-MMap" class="common-anchor-header">How to Configure MMap</h3><p><strong>Option 1: YAML configuration (recommended for new deployments)</strong></p>
+<p>Edit the Milvus configuration file milvus.yaml and add the following settings under the queryNode section:</p>
 <pre><code translate="no">queryNode:
   mmap:
     vectorField: <span class="hljs-literal">true</span>      <span class="hljs-comment"># vector data</span>
@@ -178,7 +182,7 @@ origin: >-
     scalarIndex: <span class="hljs-literal">true</span>      <span class="hljs-comment"># scalar index</span>
     growingMmapEnabled: <span class="hljs-literal">false</span>  <span class="hljs-comment"># incremental data stays in memory</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>选项 2：Python SDK 配置（适用于现有收集）</strong></p>
+<p><strong>Option 2: Python SDK configuration (for existing collections)</strong></p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 client = MilvusClient(uri=<span class="hljs-string">&quot;http://localhost:19530&quot;</span>)
@@ -199,7 +203,7 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
 <span class="hljs-built_in">print</span>(client.describe_collection(<span class="hljs-string">&quot;my_collection&quot;</span>)[<span class="hljs-string">&quot;properties&quot;</span>])
 <span class="hljs-comment"># Output: {&#x27;mmap.enabled&#x27;: &#x27;True&#x27;}</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-to-Configure-Tiered-Storage-Milvus-26+" class="common-anchor-header">如何配置分层存储（Milvus 2.6+)</h3><p>编辑 Milvus 配置文件 milvus.yaml，在 queryNode 部分添加以下设置：</p>
+<h3 id="How-to-Configure-Tiered-Storage-Milvus-26+" class="common-anchor-header">How to Configure Tiered Storage (Milvus 2.6+)</h3><p>Edit the Milvus configuration file milvus.yaml and add the following settings under the queryNode section:</p>
 <pre><code translate="no">queryNode:
   segcore:
     tieredStorage:
@@ -221,7 +225,7 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
       backgroundEvictionEnabled: true  <span class="hljs-comment"># Background eviction thread</span>
       cacheTtl: <span class="hljs-number">3600</span>                   <span class="hljs-comment"># Automatically evict if not accessed for 1 hour</span>
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Use-Lower-Dimensional-Embeddings" class="common-anchor-header">使用低维 Embeddings<button data-href="#Use-Lower-Dimensional-Embeddings" class="anchor-icon" translate="no">
+<h2 id="Use-Lower-Dimensional-Embeddings" class="common-anchor-header">Use Lower-Dimensional Embeddings<button data-href="#Use-Lower-Dimensional-Embeddings" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -236,23 +240,23 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>这一点很容易被忽视，但维度直接影响成本。内存、存储和计算量都会随着维数的增加而线性增长。对于相同数据，1536 维模型的基础设施成本大约是 384 维模型的 4 倍。</p>
-<p>查询成本也是如此--余弦相似度为 O(D)，因此 768 维向量每次查询所需的计算量大约是 384 维向量的两倍。在高 QPS 工作负载中，这一差异直接转化为所需节点的减少。</p>
-<p>以下是常见嵌入模型的比较（以 384 维作为 1.0x 基准）：</p>
+    </button></h2><p>This one is easy to overlook, but the dimension directly scales your cost. Memory, storage, and compute all grow linearly with dimension count. A 1536-dim model costs roughly 4x more infrastructure than a 384-dim model for the same data.</p>
+<p>Query cost scales the same way — cosine similarity is O(D), so 768-dim vectors take about twice the compute of 384-dim vectors per query. In high-QPS workloads, that difference translates directly into fewer nodes needed.</p>
+<p>Here’s how common embedding models compare (using 384-dim as the 1.0x baseline):</p>
 <table>
 <thead>
-<tr><th><strong>模型</strong></th><th><strong>维数</strong></th><th><strong>相对成本</strong></th><th><strong>恢复</strong></th><th><strong>最佳</strong></th></tr>
+<tr><th><strong>Model</strong></th><th><strong>Dimensions</strong></th><th><strong>Relative Cost</strong></th><th><strong>Recall</strong></th><th><strong>Best For</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>text-embedding-3-large</td><td>3072</td><td>8.0x</td><td>98%+</td><td>精度要求极高时（研究、医疗保健）</td></tr>
-<tr><td>文本嵌入-3-小</td><td>1536</td><td>4.0x</td><td>95-97%</td><td>一般 RAG 工作负载</td></tr>
-<tr><td>DistilBERT</td><td>768</td><td>2.0x</td><td>92-95%</td><td>良好的性价比平衡</td></tr>
-<tr><td>all-MiniLM-L6-v2</td><td>384</td><td>1.0x</td><td>88-92%</td><td>成本敏感型工作负载</td></tr>
+<tr><td>text-embedding-3-large</td><td>3072</td><td>8.0x</td><td>98%+</td><td>When accuracy is non-negotiable (research, healthcare)</td></tr>
+<tr><td>text-embedding-3-small</td><td>1536</td><td>4.0x</td><td>95-97%</td><td>General RAG workloads</td></tr>
+<tr><td>DistilBERT</td><td>768</td><td>2.0x</td><td>92-95%</td><td>Good cost-performance balance</td></tr>
+<tr><td>all-MiniLM-L6-v2</td><td>384</td><td>1.0x</td><td>88-92%</td><td>Cost-sensitive workloads</td></tr>
 </tbody>
 </table>
-<p><strong>实用建议</strong>不要认为你需要最大的模型。在实际查询的代表性样本上进行测试（通常 100 万向量就足够了），然后找到符合准确性标准的最低维度模型。许多团队发现，768 维与 1536 维一样适合他们的使用情况。</p>
-<p><strong>已经采用了高维模型？</strong>您可以在事后减少维度。PCA（主成分分析）可以去除冗余特征，而<a href="https://milvus.io/blog/matryoshka-embeddings-detail-at-multiple-scales.md">Matryoshka 嵌入</a>则可以让您截断到前 N 个维度，同时保留大部分质量。在重新嵌入整个数据集之前，这两种方法都值得一试。</p>
-<h2 id="Manage-Data-Lifecycle-with-Compaction-and-TTL" class="common-anchor-header">利用压缩和 TTL 管理数据生命周期<button data-href="#Manage-Data-Lifecycle-with-Compaction-and-TTL" class="anchor-icon" translate="no">
+<p><strong>Practical advice:</strong> Don’t assume you need the biggest model. Test on a representative sample of your actual queries (1M vectors is usually enough) and find the lowest-dimension model that meets your accuracy bar. Many teams discover that 768 dimensions works just as well as 1536 for their use case.</p>
+<p><strong>Already committed to a high-dimensional model?</strong> You can reduce dimensions after the fact. PCA (Principal Component Analysis) can strip out redundant features, and <a href="https://milvus.io/blog/matryoshka-embeddings-detail-at-multiple-scales.md">Matryoshka embeddings</a> let you truncate to the first N dimensions while retaining most of the quality. Both are worth trying before re-embedding your entire dataset.</p>
+<h2 id="Manage-Data-Lifecycle-with-Compaction-and-TTL" class="common-anchor-header">Manage Data Lifecycle with Compaction and TTL<button data-href="#Manage-Data-Lifecycle-with-Compaction-and-TTL" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -267,23 +271,23 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>这一点不那么重要，但仍然很重要，尤其是对于长期运行的生产系统。Milvus 使用只附加的存储模型：删除数据时，数据会被标记为已删除，但不会立即删除。随着时间的推移，这些死数据会不断累积，浪费存储空间，并导致查询扫描的行数超出需要。</p>
-<h3 id="Compaction-Reclaim-Storage-from-Deleted-Data" class="common-anchor-header">压缩从删除数据中回收存储空间</h3><p>压缩是 Milvus 的后台清理流程。它能合并小片段，物理删除已删除数据，并重写压缩文件。如果出现以下情况，你会需要它</p>
+    </button></h2><p>This one is less glamorous but still matters, especially for long-running production systems. Milvus uses an append-only storage model: when you delete data, it’s marked as deleted but not removed immediately. Over time, this dead data accumulates, wastes storage space, and causes queries to scan more rows than they need to.</p>
+<h3 id="Compaction-Reclaim-Storage-from-Deleted-Data" class="common-anchor-header">Compaction: Reclaim Storage from Deleted Data</h3><p>Compaction is Milvus’s background process for cleaning up. It merges small segments, physically removes deleted data, and rewrites compacted files. You’ll want this if:</p>
 <ul>
-<li>频繁写入和删除（产品目录、内容更新、实时日志）</li>
-<li>数据段数量不断增加（这会增加每次查询的开销）</li>
-<li>存储使用量的增长速度远远超过实际有效数据的增长速度</li>
+<li>You have frequent writes and deletes (product catalogs, content updates, real-time logs)</li>
+<li>Your segment count keeps growing (this increases per-query overhead)</li>
+<li>Storage usage is growing much faster than your actual valid data</li>
 </ul>
-<p><strong>注意：</strong>压缩是 I/O 密集型工作。将其安排在低流量时段（如每晚），或仔细调整触发器，以免与生产查询竞争。</p>
-<h3 id="TTLTime-to-Live-Automatically-Expire-Old-Vector-Data" class="common-anchor-header">TTL（生存时间）：自动过期旧向量数据</h3><p>对于自然过期的数据，TTL 比手动删除更有效。为数据设置一个有效期，Milvus 就会在过期时自动将其标记为删除。压缩处理实际的清理工作。</p>
-<p>这对以下方面很有用</p>
+<p><strong>Heads up:</strong> Compaction is I/O-intensive. Schedule it during low-traffic periods (e.g., nightly) or tune the triggers carefully so it doesn’t compete with production queries.</p>
+<h3 id="TTLTime-to-Live-Automatically-Expire-Old-Vector-Data" class="common-anchor-header">TTL(Time to Live): Automatically Expire Old Vector Data</h3><p>For data that naturally expires, TTL is cleaner than manual deletion. Set a lifetime on your data, and Milvus automatically marks it for deletion when it expires. Compaction handles the actual cleanup.</p>
+<p>This is useful for:</p>
 <ul>
-<li>日志和会话数据--只保留最近 7 天或 30 天的数据</li>
-<li>对时间敏感的 RAG--偏好最新知识，让旧文件过期</li>
-<li>实时推荐--只检索最近的用户行为</li>
+<li>Logs and session data — keep only the last 7 or 30 days</li>
+<li>Time-sensitive RAG — prefer recent knowledge, let old documents expire</li>
+<li>Real-time recommendations — only retrieve from recent user behavior</li>
 </ul>
-<p>压缩和 TTL 可共同防止系统悄无声息地累积浪费。这并不是最大的成本杠杆，但它能防止存储缓慢增长，让团队措手不及。</p>
-<h2 id="One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="common-anchor-header">多一个选择：Zilliz Cloud（全面托管 Milvus）<button data-href="#One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="anchor-icon" translate="no">
+<p>Together, compaction and TTL keep your system from silently accumulating waste. It’s not the biggest cost lever, but it prevents the kind of slow storage creep that catches teams off guard.</p>
+<h2 id="One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="common-anchor-header">One More Option: Zilliz Cloud (Fully Managed Milvus)<button data-href="#One-More-Option-Zilliz-Cloud-Fully-Managed-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -298,12 +302,12 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>完全披露：<a href="https://zilliz.com/">Zilliz Cloud</a>是由 Milvus 背后的同一个团队打造的，因此请谨慎对待。</p>
-<p>话虽如此，这里有一个与直觉相反的部分：尽管 Milvus 是免费开源的，但托管服务的成本实际上可能比自助托管更低。原因很简单--软件是免费的，但运行它的云基础设施却不是免费的，你需要工程师来操作和维护它。如果托管服务可以用更少的机器和更少的工程师工时完成同样的工作，那么即使支付了服务本身的费用，您的总费用也会下降。</p>
-<p><a href="https://zilliz.com/">Zilliz Cloud</a>是建立在 Milvus 基础上的完全托管服务，并与 Milvus 的 API 兼容。与成本相关的有两点：</p>
+    </button></h2><p>Full disclosure: <a href="https://zilliz.com/">Zilliz Cloud</a> is built by the same team behind Milvus, so take this with the appropriate grain of salt.</p>
+<p>That said, here’s the counterintuitive part: even though Milvus is free and open source, a managed service can actually cost less than self-hosting. The reason is simple — the software is free, but the cloud infrastructure to run it isn’t, and you need engineers to operate and maintain it. If a managed service can do the same work with fewer machines and fewer engineer hours, your total bill goes down even after paying for the service itself.</p>
+<p><a href="https://zilliz.com/">Zilliz Cloud</a> is a fully managed service built on Milvus and API-compatible with it. Two things are relevant to cost:</p>
 <ul>
-<li><strong>更好的单位节点性能。</strong>Zilliz Cloud 在 Cardinal（我们的优化搜索引擎）上运行。根据<a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch">VectorDBBench 的结果</a>，它的吞吐量比开源 Milvus 高 3-5 倍，速度快 10 倍。在实践中，这意味着同样的工作负载，您需要的计算节点数量大约是其三分之一到五分之一。</li>
-<li><strong>内置优化。</strong>本指南中涉及的功能--MMap、分层存储和索引量化--均已内置并自动调整。自动缩放可根据实际负载调整容量，因此您无需为不需要的余量付费。</li>
+<li><strong>Better performance per node.</strong> Zilliz Cloud runs on Cardinal, our optimized search engine. Based on <a href="https://zilliz.com/vdbbench-leaderboard?dataset=vectorSearch">VectorDBBench results</a>, it delivers 3-5x higher throughput than open-source Milvus and is 10x faster. In practice, that means you need roughly one-third to one-fifth as many compute nodes for the same workload.</li>
+<li><strong>Built-in optimizations.</strong> The features covered in this guide — MMap, tiered storage, and index quantization — are built in and automatically tuned. Auto-scaling adjusts capacity based on actual load, so you’re not paying for headroom you don’t need.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -311,8 +315,8 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
     <span></span>
   </span>
 </p>
-<p>由于 API 和数据格式兼容，因此<a href="https://zilliz.com/zilliz-migration-service">迁移</a>非常简单。Zilliz 还提供迁移工具来提供帮助。有关详细比较，请参阅<a href="https://zilliz.com/zilliz-vs-milvus">Zilliz Cloud 对比 Milvus</a></p>
-<h2 id="Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="common-anchor-header">总结：削减向量数据库成本的分步计划<button data-href="#Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="anchor-icon" translate="no">
+<p><a href="https://zilliz.com/zilliz-migration-service">Migration</a> is straightforward since the APIs and data formats are compatible. Zilliz also provides migration tooling to help. For a detailed comparison, see: <a href="https://zilliz.com/zilliz-vs-milvus">Zilliz Cloud vs. Milvus</a></p>
+<h2 id="Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="common-anchor-header">Summary: A Step-by-Step Plan to Cut Vector Database Costs<button data-href="#Summary-A-Step-by-Step-Plan-to-Cut-Vector-Database-Costs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -327,15 +331,15 @@ client.load_collection(<span class="hljs-string">&quot;my_collection&quot;</span
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>如果你只做一件事，那就是：检查你的索引类型。</strong></p>
-<p>如果你正在对成本敏感的工作负载上运行 HNSW，请改用 IVF_SQ8。仅此一项，就能将内存成本降低约 70%，而召回损失却微乎其微。</p>
-<p>如果你想更进一步，以下是优先顺序：</p>
+    </button></h2><p><strong>If you only do one thing, do this: check your index type.</strong></p>
+<p>If you’re running HNSW on a cost-sensitive workload, switch to IVF_SQ8. That alone can cut memory cost by ~70% with minimal recall loss.</p>
+<p>If you want to go further, here’s the priority order:</p>
 <ul>
-<li>对于大多数工作负载，<strong>切换索引</strong>- HNSW → IVF_SQ8。零架构变化带来最大收益。</li>
-<li><strong>启用 MMap 或分层存储</strong>- 停止将所有内容保存在内存中。这是配置变更，而不是重新设计。</li>
-<li><strong>评估嵌入尺寸</strong>- 测试更小的模型是否能满足你的精度需求。这需要重新 Embeddings，但可以节省更多成本。</li>
-<li><strong>设置压缩和 TTL</strong>- 防止无声数据膨胀，尤其是在频繁写入/删除的情况下。</li>
+<li><strong>Switch your index</strong> — HNSW → IVF_SQ8 for most workloads. Biggest bang for zero architectural change.</li>
+<li><strong>Enable MMap or tiered storage</strong> — Stop keeping everything in memory. This is a config change, not a redesign.</li>
+<li><strong>Evaluate your embedding dimensions</strong> — Test whether a smaller model meets your accuracy needs. This requires re-embedding but the savings compound.</li>
+<li><strong>Set up compaction and TTL</strong> — Prevent silent data bloat, especially if you have frequent writes/deletes.</li>
 </ul>
-<p>这些策略结合起来，可以将向量数据库的费用降低 60-80%。并不是每个团队都需要所有这四种策略--从索引更改开始，衡量影响，然后逐级往下。</p>
-<p>对于希望减少操作工作、提高成本效率的团队来说，<a href="https://zilliz.com/">Zilliz Cloud</a>（托管 Milvus Operator）是另一种选择。</p>
-<p>如果您正在进行上述任何一项优化，并希望比较一下，<a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus 社区 Slack</a>是一个很好的提问场所。您还可以加入<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a>，与工程团队就您的具体设置进行快速交流。</p>
+<p>Combined, these strategies can reduce your vector database bill by 60-80%. Not every team needs all four — start with the index change, measure the impact, and work your way down the list.</p>
+<p>For teams looking to reduce operational work and improve cost efficiency, <a href="https://zilliz.com/">Zilliz Cloud</a> (managed Milvus) is another option.</p>
+<p>If you’re working through any of these optimizations and want to compare notes, the <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus community Slack</a> is a good place to ask questions. You can also join <a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md">Milvus Office Hours</a> for a quick chat with the engineering team about your specific setup.</p>

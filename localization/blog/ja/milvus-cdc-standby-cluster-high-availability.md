@@ -1,6 +1,8 @@
 ---
 id: milvus-cdc-standby-cluster-high-availability.md
-title: ベクターデータベースの高可用性：CDCでmilvusスタンバイクラスタを構築する方法
+title: >
+  Vector Database High Availability: How to Build a Milvus Standby Cluster with
+  CDC
 author: Cal Huang
 date: 2026-3-26
 cover: assets.zilliz.com/download_2867bc5064.jpg
@@ -13,23 +15,24 @@ meta_keywords: >-
   recovery, change data capture
 meta_title: |
   Vector Database High Availability: Milvus CDC Standby Cluster Guide
-desc: >-
-  Milvus
-  CDCで高可用性ベクターデータベースを構築する方法をご紹介します。プライマリ-スタンバイレプリケーション、フェイルオーバー、本番DRのステップバイステップガイド。
+desc: >
+  Learn how to build a high-availability vector database with Milvus CDC.
+  Step-by-step guide to primary-standby replication, failover, and production
+  DR.
 origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
 ---
-<p>すべてのプロダクション・データベースには、物事がうまくいかなくなったときのための計画が必要だ。リレーショナル・データベースには、WALシッピング、ビンログ・レプリケーション、自動フェイルオーバーが何十年も前から備わっている。しかし、<a href="https://zilliz.com/learn/what-is-a-vector-database">ベクトル・データベースは</a>、AIアプリケーションの中核インフラになりつつあるにもかかわらず、この面ではまだ追いついていない。ほとんどがノードレベルの冗長性を提供するのがせいぜいだ。クラスタ全体がダウンした場合、バックアップからリストアし、<a href="https://zilliz.com/learn/vector-index">ベクターインデックスを</a>ゼロから再構築することになる。MLパイプラインを通じて<a href="https://zilliz.com/glossary/vector-embeddings">エンベッディングを</a>再生成するのは安くはないため、このプロセスには数時間かかり、数千の計算コストがかかる。</p>
-<p><a href="https://milvus.io/">Milvusは</a>異なるアプローチを取る。クラスタ内の高速フェイルオーバーのためのノードレベルレプリカ、クラスタレベルとクロスリージョンの保護のためのCDCベースのレプリケーション、そしてセーフティネットリカバリーのためのバックアップです。このレイヤーモデルは従来のデータベースでは標準的な手法であり、Milvusはこれをベクターワークロードに導入した最初の主要なベクターデータベースです。</p>
-<p>本ガイドでは、ベクターデータベースで利用可能な高可用性戦略（"production-ready "が実際に何を意味するのか評価できるように）と、Milvus CDCのプライマリ-スタンバイレプリケーションをゼロからセットアップするための実践的なチュートリアルの2つを取り上げます。</p>
+<p>Every production database needs a plan for when things go wrong. Relational databases have had WAL shipping, binlog replication, and automated failover for decades. But <a href="https://zilliz.com/learn/what-is-a-vector-database">vector databases</a> — despite becoming core infrastructure for AI applications — are still catching up on this front. Most offer node-level redundancy at best. If a full cluster goes down, you’re restoring from backups and rebuilding <a href="https://zilliz.com/learn/vector-index">vector indexes</a> from scratch — a process that can take hours and cost thousands in compute, because regenerating <a href="https://zilliz.com/glossary/vector-embeddings">embeddings</a> through your ML pipeline is not cheap.</p>
+<p><a href="https://milvus.io/">Milvus</a> takes a different approach. It offers layered high availability: node-level replicas for fast failover within a cluster, CDC-based replication for cluster-level and cross-region protection, and backup for safety-net recovery. This layered model is standard practice in traditional databases — Milvus is the first major vector database to bring it to vector workloads.</p>
+<p>This guide covers two things: the high-availability strategies available for vector databases (so you can evaluate what “production-ready” actually means), and a hands-on tutorial for setting up Milvus CDC primary-standby replication from scratch.</p>
 <blockquote>
-<p>これはシリーズの<strong>第1部</strong>です：</p>
+<p>This is <strong>Part 1</strong> of a series:</p>
 <ul>
-<li><strong>パート1</strong>（本記事）：新しいクラスタでのプライマリ/スタンバイ・レプリケーションの設定</li>
-<li><strong>パート2</strong>:<a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backupを</a>使用して、すでにデータがある既存のクラスタにCDCを追加する</li>
-<li><strong>パート3</strong>: フェイルオーバーの管理 - プライマリ停止時のスタンバイの昇格</li>
+<li><strong>Part 1</strong> (this article): Setting up primary-standby replication on new clusters</li>
+<li><strong>Part 2</strong>: Adding CDC to an existing cluster that already has data, using <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a></li>
+<li><strong>Part 3</strong>: Managing failover — promoting the standby when the primary goes down</li>
 </ul>
 </blockquote>
-<h2 id="Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="common-anchor-header">なぜベクターデータベースでは高可用性が重要なのか？<button data-href="#Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="anchor-icon" translate="no">
+<h2 id="Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="common-anchor-header">Why Does High Availability Matter More for Vector Databases?<button data-href="#Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,17 +47,17 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>従来のSQLデータベースがダウンした場合、構造化されたレコードへのアクセスは失われますが、データ自体は通常、上流のソースから再インポートすることができます。ベクターデータベースがダウンした場合、復旧は根本的に難しくなります。</p>
-<p>ベクトル・データベースは、MLモデルによって生成された高密度の数値表現である<a href="https://zilliz.com/glossary/vector-embeddings">エンベッディングを</a>保存している。<a href="https://zilliz.com/ai-models">エンベッディングデータベースを</a>再構築するということは、エンベッディングパイプラインを通してデータセット全体を再実行することを意味する。何億ものベクトルを持つデータセットでは、これには何日もかかり、GPU計算で何千ドルもかかる。</p>
-<p>一方、<a href="https://zilliz.com/learn/what-is-vector-search">ベクトル検索に</a>依存するシステムは、しばしばクリティカルパスに入っている：</p>
+    </button></h2><p>When a traditional SQL database goes down, you lose access to structured records — but the data itself can usually be re-imported from upstream sources. When a vector database goes down, recovery is fundamentally harder.</p>
+<p>Vector databases store <a href="https://zilliz.com/glossary/vector-embeddings">embeddings</a> — dense numerical representations generated by ML models. Rebuilding them means re-running your entire dataset through the embedding pipeline: loading raw documents, chunking them, calling an <a href="https://zilliz.com/ai-models">embedding model</a>, and re-indexing everything. For a dataset with hundreds of millions of vectors, this can take days and cost thousands of dollars in GPU compute.</p>
+<p>Meanwhile, the systems that depend on <a href="https://zilliz.com/learn/what-is-vector-search">vector search</a> are often in the critical path:</p>
 <ul>
-<li>顧客に対応するチャットボットや検索を支える<strong><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>パイプライン</strong>- ベクトル・データベースがダウンすると、検索は停止し、AIは一般的な回答や幻覚のような回答を返す。</li>
-<li>商品やコンテンツの提案をリアルタイムで提供する<strong>レコメンデーション・エンジン</strong>- ダウンタイムは収益を逃すことを意味する。</li>
-<li><a href="https://zilliz.com/glossary/similarity-search">類似性検索に</a>依存する<strong>不正検知や異常監視</strong>システムは、疑わしいアクティビティにフラグを立てる。</li>
-<li>記憶とツールの検索にベクター・ストアを使用する<strong>自律エージェント・システム</strong>- エージェントは知識ベースがないと失敗したりループしたりする。</li>
+<li><strong><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> pipelines</strong> that power customer-facing chatbots and search — if the vector database is down, retrieval stops and the AI returns generic or hallucinated answers.</li>
+<li><strong>Recommendation engines</strong> that serve product or content suggestions in real time — downtime means missed revenue.</li>
+<li><strong>Fraud detection and anomaly monitoring</strong> systems that rely on <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> to flag suspicious activity — a gap in coverage creates a window of vulnerability.</li>
+<li><strong>Autonomous agent systems</strong> that use vector stores for memory and tool retrieval — agents fail or loop without their knowledge base.</li>
 </ul>
-<p>これらのユースケースのためにベクターデータベースを評価するのであれば、高可用性は後で確認するための機能ではありません。高可用性は、最初に確認すべき機能の一つです。</p>
-<h2 id="What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="common-anchor-header">ベクターデータベースにおけるプロダクショングレードの高可用性とは？<button data-href="#What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="anchor-icon" translate="no">
+<p>If you’re evaluating vector databases for any of these use cases, high availability isn’t a nice-to-have feature to check later. It should be one of the first things you look at.</p>
+<h2 id="What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="common-anchor-header">What Does Production-Grade HA Look Like for a Vector Database?<button data-href="#What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -69,25 +72,25 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>すべての高可用性が同じではありません。単一のクラスタ内のノード障害にしか対応できないベクターデータベースは、プロダクションシステムが必要とするような「高可用性」ではありません。本当のHAは3つのレイヤーをカバーする必要がある：</p>
+    </button></h2><p>Not all high availability is equal. A vector database that only handles node failures within a single cluster is not “highly available” in the way a production system requires. Real HA needs to cover three layers:</p>
 <table>
 <thead>
-<tr><th>レイヤー</th><th>何から守るか</th><th>どのように機能するか</th><th>復旧時間</th><th>データ損失</th></tr>
+<tr><th>Layer</th><th>What It Protects Against</th><th>How It Works</th><th>Recovery Time</th><th>Data Loss</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>ノードレベル</strong>（マルチレプリカ）</td><td>単一ノードのクラッシュ、ハードウェア障害、OOMキル、AZ障害</td><td>同じ<a href="https://milvus.io/docs/glossary.md">データセグメントを</a>複数のノードにコピーし、他のノードが負荷を吸収</td><td>インスタント</td><td>ゼロ</td></tr>
-<tr><td><strong>クラスタレベル</strong>（CDCレプリケーション）</td><td>クラスタ全体がダウン - K8sのロールアウト不良、ネームスペースの削除、ストレージの破損</td><td>すべての書き込みを<a href="https://milvus.io/docs/four_layers.md">ライトアヘッドログ</a>経由でスタンバイクラスタにストリーム；スタンバイは常に数秒遅れ</td><td>分</td><td>秒</td></tr>
-<tr><td><strong>セーフティネット</strong>（定期バックアップ）</td><td>致命的なデータ破損、ランサムウェア、レプリケーションを通じて伝播する人的エラー</td><td>定期的にスナップショットを取得し、別の場所に保存</td><td>時間</td><td>時間（最後のバックアップから）</td></tr>
+<tr><td><strong>Node-level</strong> (multi-replica)</td><td>A single node crash, hardware failure, OOM kill, AZ failure</td><td>Copies the same <a href="https://milvus.io/docs/glossary.md">data segments</a> across multiple nodes; other nodes absorb the load</td><td>Instant</td><td>Zero</td></tr>
+<tr><td><strong>Cluster-level</strong> (CDC replication)</td><td>Entire cluster goes down — bad K8s rollout, namespace deletion, storage corruption</td><td>Streams every write to a standby cluster via the <a href="https://milvus.io/docs/four_layers.md">Write-Ahead Log</a>; standby is always seconds behind</td><td>Minutes</td><td>Seconds</td></tr>
+<tr><td><strong>Safety net</strong> (periodic backup)</td><td>Catastrophic data corruption, ransomware, human error that propagates through replication</td><td>Takes periodic snapshots and stores them in a separate location</td><td>Hours</td><td>Hours (since last backup)</td></tr>
 </tbody>
 </table>
-<p>これらのレイヤーは補完的なものであり、代替ではありません。本番環境では、これらを積み重ねる必要がある：</p>
+<p>These layers are complementary, not alternatives. A production deployment should stack them:</p>
 <ol>
-<li><strong>まず<a href="https://milvus.io/docs/replica.md">マルチレプリカ</a></strong>- 最も一般的な障害（ノードのクラッシュ、AZの障害）に対応し、ダウンタイムとデータロスをゼロにします。</li>
-<li><strong>次に<a href="https://milvus.io/docs/milvus-cdc-overview.md">CDC</a></strong>- マルチレプリカでは対応できない障害（クラスタ全体の停止、致命的なヒューマンエラー）から保護します。スタンバイクラスタは別の障害領域にあります。</li>
-<li><strong><a href="https://milvus.io/docs/milvus_backup_overview.md">定期的なバックアップは</a>常に</strong>- 最後のセーフティネットです。CDCであっても、破損したデータをキャッチする前にスタンバイにレプリケートしてしまえば、あなたを救うことはできません。</li>
+<li><strong><a href="https://milvus.io/docs/replica.md">Multi-replica</a> first</strong> — handles the most common failure (node crashes, AZ failures) with zero downtime and zero data loss.</li>
+<li><strong><a href="https://milvus.io/docs/milvus-cdc-overview.md">CDC</a> next</strong> — protects against failures that multi-replica can’t: cluster-wide outages, catastrophic human error. The standby cluster is in a different failure domain.</li>
+<li><strong><a href="https://milvus.io/docs/milvus_backup_overview.md">Periodic backups</a> always</strong> — your safety net of last resort. Even CDC can’t save you if corrupted data replicates to the standby before you catch it.</li>
 </ol>
-<p>ベクターデータベースを評価する際には、この3つのレイヤーのうち、その製品が実際にどのレイヤーをサポートしているのか？今日、ほとんどのベクターデータベースは最初のものしか提供していない。Milvusはこの3つすべてをサポートしており、CDCはサードパーティのアドオンではなく、ビルトイン機能として提供されています。</p>
-<h2 id="What-Is-Milvus-CDC-and-How-Does-It-Work" class="common-anchor-header">Milvus CDCとは？<button data-href="#What-Is-Milvus-CDC-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<p>When evaluating vector databases, ask: which of these three layers does the product actually support? Most vector databases today only offer the first. Milvus supports all three, with CDC as a built-in feature — not a third-party add-on.</p>
+<h2 id="What-Is-Milvus-CDC-and-How-Does-It-Work" class="common-anchor-header">What Is Milvus CDC and How Does It Work?<button data-href="#What-Is-Milvus-CDC-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -102,31 +105,33 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Milvus CDC (Change Data Capture)</strong>は組み込みのレプリケーション機能で、プライマリクラスタの<a href="https://milvus.io/docs/four_layers.md">WAL (Write-Ahead Log)</a>を読み込み、各エントリを別のスタンバイクラスタにストリームします。スタンバイはエントリーをレプリケートし、通常数秒遅れで同じデータを取得します。</p>
-<p>このパターンはデータベースの世界では確立されている。MySQLにはbinlogレプリケーションがある。PostgreSQLにはWALシッピングがある。MongoDBにはoplogベースのレプリケーションがある。これらは何十年もの間、リレーショナル・データベースやドキュメント・データベースを本番稼動させてきた実績のある技術だ。Milvusは、同じアプローチをベクターワークロードにもたらす。Milvusは、WALベースのレプリケーションをビルトイン機能として提供する最初のメジャーな<a href="https://zilliz.com/learn/what-is-a-vector-database">ベクターデータベース</a>である。</p>
-<p>CDCがディザスタリカバリに適している理由は3つある：</p>
+    </button></h2><p><strong>Milvus CDC (Change Data Capture)</strong> is a built-in replication feature that reads the primary cluster’s <a href="https://milvus.io/docs/four_layers.md">Write-Ahead Log (WAL)</a> and streams each entry to a separate standby cluster. The standby replays the entries and ends up with the same data, typically seconds behind.</p>
+<p>The pattern is well-established in the database world. MySQL has binlog replication. PostgreSQL has WAL shipping. MongoDB has oplog-based replication. These are proven techniques that have kept relational and document databases running in production for decades. Milvus brings the same approach to vector workloads — it’s the first major <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a> to offer WAL-based replication as a built-in feature.</p>
+<p>Three properties make CDC a good fit for disaster recovery:</p>
 <ul>
-<li><strong>低レイテンシー同期。</strong>CDCは、スケジュールされたバッチではなく、オペレーションが発生した時点でストリーミングを行う。通常、スタンバイはプライマリから数秒遅れている。</li>
-<li><strong>順序付けられた再生。</strong>操作は、書き込まれたのと同じ順序でスタンバイに到着する。リコンシリエーションを行わなくても、データは一貫性を保ちます。</li>
-<li><strong>チェックポイント・リカバリ。</strong>CDCプロセスがクラッシュしたり、ネットワークがダウンした場合でも、中断したところから再開します。データがスキップされたり、複製されたりすることはありません。</li>
+<li><strong>Low-latency sync.</strong> CDC streams operations as they happen, not in scheduled batches. The standby stays seconds behind the primary under normal conditions.</li>
+<li><strong>Ordered replay.</strong> Operations arrive at the standby in the same order they were written. Data stays consistent without reconciliation.</li>
+<li><strong>Checkpoint recovery.</strong> If the CDC process crashes or the network drops, it resumes from where it left off. No data is skipped or duplicated.</li>
 </ul>
-<h3 id="How-Does-the-CDC-Architecture-Work" class="common-anchor-header">CDCアーキテクチャの仕組み</h3><p>CDCの展開には3つのコンポーネントがあります：</p>
+<h3 id="How-Does-the-CDC-Architecture-Work" class="common-anchor-header">How Does the CDC Architecture Work?</h3><p>A CDC deployment has three components:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_cdc_standby_cluster_high_availability_1_7c6e5baf76.png" alt="CDC architecture showing Source Cluster with Streaming Nodes and CDC Nodes consuming the WAL, replicating data to the Target Cluster's Proxy layer, which forwards DDL/DCL/DML operations to Streaming Nodes and appends to WAL" class="doc-image" id="cdc-architecture-showing-source-cluster-with-streaming-nodes-and-cdc-nodes-consuming-the-wal,-replicating-data-to-the-target-cluster's-proxy-layer,-which-forwards-ddl/dcl/dml-operations-to-streaming-nodes-and-appends-to-wal" />
-   </span> <span class="img-wrapper"> <span>ストリーミング・ノードとCDCノードがWALを消費し、データをターゲット・クラスタのプロキシ・レイヤにレプリケートします。プロキシ・レイヤはDDL/DCL/DMLオペレーションをストリーミング・ノードに転送し、WALに追加します。</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_cdc_standby_cluster_high_availability_1_7c6e5baf76.png" alt="CDC architecture showing Source Cluster with Streaming Nodes and CDC Nodes consuming the WAL, replicating data to the Target Cluster's Proxy layer, which forwards DDL/DCL/DML operations to Streaming Nodes and appends to WAL" class="doc-image" id="cdc-architecture-showing-source-cluster-with-streaming-nodes-and-cdc-nodes-consuming-the-wal,-replicating-data-to-the-target-cluster's-proxy-layer,-which-forwards-ddl/dcl/dml-operations-to-streaming-nodes-and-appends-to-wal" />
+    <span>CDC architecture showing Source Cluster with Streaming Nodes and CDC Nodes consuming the WAL, replicating data to the Target Cluster's Proxy layer, which forwards DDL/DCL/DML operations to Streaming Nodes and appends to WAL</span>
+  </span>
+</p>
 <table>
 <thead>
-<tr><th>コンポーネント</th><th>役割</th></tr>
+<tr><th>Component</th><th>Role</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>プライマリクラスタ</strong></td><td>本番<a href="https://milvus.io/docs/architecture_overview.md">Milvusインスタンス</a>。すべてのリードとライトはここに送られます。すべての書き込みはWALに記録される。</td></tr>
-<tr><td><strong>CDCノード</strong></td><td>プライマリと並ぶバックグラウンドプロセス。WALエントリを読み込み、スタンバイに転送する。読み取り/書き込みパスから独立して実行されるため、クエリやインサートのパフォーマンスには影響しない。</td></tr>
-<tr><td><strong>スタンバイクラスタ</strong></td><td>転送されたWALエントリを再生する別のMilvusインスタンス。プライマリと同じデータを数秒遅れで保持します。リードクエリを提供できるが、ライトは受け付けない。</td></tr>
+<tr><td><strong>Primary cluster</strong></td><td>The production <a href="https://milvus.io/docs/architecture_overview.md">Milvus instance</a>. All reads and writes go here. Every write is recorded in the WAL.</td></tr>
+<tr><td><strong>CDC Node</strong></td><td>A background process alongside the primary. Reads WAL entries and forwards them to the standby. Runs independently from the read/write path — no impact on query or insert performance.</td></tr>
+<tr><td><strong>Standby cluster</strong></td><td>A separate Milvus instance that replays forwarded WAL entries. Holds the same data as the primary, seconds behind. Can serve read queries but does not accept writes.</td></tr>
 </tbody>
 </table>
-<p>流れ: 書き込みがプライマリにヒット → CDCノードがスタンバイにコピー → スタンバイが複製。スタンバイの書き込みパスには他には何も話しかけない。プライマリがダウンした場合、スタンバイはすでにほぼすべてのデータを持っており、昇格させることができる。</p>
-<h2 id="Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="common-anchor-header">チュートリアルMilvus CDCスタンバイクラスタのセットアップ<button data-href="#Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="anchor-icon" translate="no">
+<p>The flow: writes hit the primary → the CDC Node copies them to the standby → the standby replays them. Nothing else talks to the standby’s write path. If the primary goes down, the standby already has nearly all the data and can be promoted.</p>
+<h2 id="Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="common-anchor-header">Tutorial: Setting Up a Milvus CDC Standby Cluster<button data-href="#Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -141,25 +146,25 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この記事の残りは実践的なチュートリアルです。最終的には、2つのMilvusクラスタが稼働し、それらのクラスタ間でリアルタイムレプリケーションが行われるようになります。</p>
-<h3 id="Prerequisites" class="common-anchor-header">前提条件</h3><p>始める前に</p>
+    </button></h2><p>The rest of this article is a hands-on walkthrough. By the end, you’ll have two Milvus clusters running with real-time replication between them.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>Before starting:</p>
 <ul>
-<li><strong><a href="https://milvus.io/">Milvus</a>v2.6.6以降。</strong>CDCはこのバージョンを必要とします。最新の2.6.xパッチを推奨します。</li>
-<li><strong><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus Operator</a>v1.3.4以降。</strong>本ガイドでは、Kubernetes上のクラスタ管理にOperatorを使用します。</li>
-<li><code translate="no">kubectl</code> 、<code translate="no">helm</code> が設定された<strong>稼働中のKubernetesクラスタ</strong>。</li>
-<li>レプリケーション設定ステップに<strong> <a href="https://milvus.io/docs/install-pymilvus.md">pymilvusを</a>使用したPython</strong>。</li>
+<li><strong><a href="https://milvus.io/">Milvus</a> v2.6.6 or later.</strong> CDC requires this version. Latest 2.6.x patch recommended.</li>
+<li><strong><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus Operator</a> v1.3.4 or later.</strong> This guide uses the Operator for cluster management on Kubernetes.</li>
+<li><strong>A running Kubernetes cluster</strong> with <code translate="no">kubectl</code> and <code translate="no">helm</code> configured.</li>
+<li><strong>Python with <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a></strong> for the replication configuration step.</li>
 </ul>
-<p>現在のリリースには2つの制限があります：</p>
+<p>Two limitations in the current release:</p>
 <table>
 <thead>
-<tr><th>制限事項</th><th>詳細</th></tr>
+<tr><th>Limitation</th><th>Details</th></tr>
 </thead>
 <tbody>
-<tr><td>単一のCDCレプリカ</td><td>クラスタあたり1つのCDCレプリカ。分散CDCは将来のリリースで計画されています。</td></tr>
-<tr><td>BulkInsertなし</td><td>CDCが有効な場合、<a href="https://milvus.io/docs/import-data.md">BulkInsertは</a>サポートされません。こちらも将来のリリースを予定しています。</td></tr>
+<tr><td>Single CDC replica</td><td>One CDC replica per cluster. Distributed CDC is planned for a future release.</td></tr>
+<tr><td>No BulkInsert</td><td><a href="https://milvus.io/docs/import-data.md">BulkInsert</a> is not supported while CDC is enabled. Also planned for a future release.</td></tr>
 </tbody>
 </table>
-<h3 id="Step-1-Upgrade-the-Milvus-Operator" class="common-anchor-header">ステップ1: Milvus Operatorのアップグレード</h3><p>Milvus Operatorをv1.3.4以降にアップグレードします：</p>
+<h3 id="Step-1-Upgrade-the-Milvus-Operator" class="common-anchor-header">Step 1: Upgrade the Milvus Operator</h3><p>Upgrade the Milvus Operator to v1.3.4 or later:</p>
 <pre><code translate="no">helm repo add zilliztech-milvus-operator https://zilliztech.github.io/milvus-operator/
 <span class="hljs-comment"># &quot;zilliztech-milvus-operator&quot; has been added to your repositories</span>
 
@@ -184,12 +189,12 @@ helm -n milvus-operator upgrade milvus-operator zilliztech-milvus-operator/milvu
 <span class="hljs-comment"># CRD Documentation can be found in https://github.com/zilliztech/milvus-operator/tree/main/docs/CRD</span>
 <span class="hljs-comment"># Administration Documentation can be found in https://github.com/zilliztech/milvus-operator/tree/main/docs/administration</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Operator podが動作していることを確認します：</p>
+<p>Verify the operator pod is running:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods -n milvus-<span class="hljs-keyword">operator</span>
 <span class="hljs-meta"># NAME                             READY   STATUS    RESTARTS   AGE</span>
 <span class="hljs-meta"># milvus-operator-9fc99f88-h2hwz   1/1     Running   0          54s</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Deploy-the-Primary-Cluster" class="common-anchor-header">ステップ2: プライマリクラスタのデプロイ</h3><p>プライマリ(ソース)クラスタ用のYAMLファイルを作成します。<code translate="no">components</code> の下の<code translate="no">cdc</code> セクションは、クラスタと一緒にCDCノードをデプロイするようにOperatorに指示します：</p>
+<h3 id="Step-2-Deploy-the-Primary-Cluster" class="common-anchor-header">Step 2: Deploy the Primary Cluster</h3><p>Create a YAML file for the primary (source) cluster. The <code translate="no">cdc</code> section under <code translate="no">components</code> tells the Operator to deploy a CDC Node alongside the cluster:</p>
 <pre><code translate="no"><span class="hljs-comment"># This is a sample to deploy a milvus cluster with cdc.</span>
 apiVersion: milvus.io/v1beta1
 kind: Milvus
@@ -207,14 +212,14 @@ spec:
   dependencies:
     msgStreamType: woodpecker
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">msgStreamType: woodpecker</code> 、KafkaやPulsarのような外部メッセージキューではなく、Milvusの組み込み<a href="https://milvus.io/docs/four_layers.md">Woodpecker WALを</a>使用します。WoodpeckerはMilvus 2.6で導入されたクラウドネイティブなライトアヘッドログで、外部メッセージングインフラストラクチャの必要性を取り除きます。</p>
-<p>設定を適用する：</p>
+<p>The <code translate="no">msgStreamType: woodpecker</code> setting uses Milvus’s built-in <a href="https://milvus.io/docs/four_layers.md">Woodpecker WAL</a> instead of an external message queue like Kafka or Pulsar. Woodpecker is a cloud-native write-ahead log introduced in Milvus 2.6 that removes the need for external messaging infrastructure.</p>
+<p>Apply the configuration:</p>
 <pre><code translate="no">kubectl create namespace milvus
 <span class="hljs-comment"># namespace/milvus created</span>
 kubectl apply -f milvus_source_cluster.yaml
 <span class="hljs-comment"># milvus.milvus.io/source-cluster created</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>すべてのポッドがRunningステータスになるのを待つ。CDCポッドが起動していることを確認します：</p>
+<p>Wait for all pods to reach Running status. Confirm the CDC pod is up:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods -n milvus
 <span class="hljs-meta"># Look for source-cluster-milvus-cdc-xxx in Running state</span>
 <span class="hljs-meta"># NAME                                                READY   STATUS    RESTARTS   AGE</span>
@@ -222,7 +227,7 @@ kubectl apply -f milvus_source_cluster.yaml
 <span class="hljs-meta"># source-cluster-milvus-datanode-85f9f56fd-qgbzq       1/1     Running   0          2m42s</span>
 <span class="hljs-meta"># ...</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Deploy-the-Standby-Cluster" class="common-anchor-header">ステップ3: スタンバイクラスタのデプロイ</h3><p>スタンバイ(ターゲット)クラスタは同じMilvusバージョンを使用しますが、CDCコンポーネントは含まれません：</p>
+<h3 id="Step-3-Deploy-the-Standby-Cluster" class="common-anchor-header">Step 3: Deploy the Standby Cluster</h3><p>The standby (target) cluster uses the same Milvus version but does not include a CDC component — it only receives replicated data:</p>
 <pre><code translate="no"><span class="hljs-comment"># This is a sample to deploy a milvus cluster with cdc.</span>
 apiVersion: milvus.io/v1beta1
 kind: Milvus
@@ -238,11 +243,11 @@ spec:
   dependencies:
     msgStreamType: woodpecker
 <button class="copy-code-btn"></button></code></pre>
-<p>適用します：</p>
+<p>Apply:</p>
 <pre><code translate="no">kubectl apply -f milvus_target_cluster.yaml
 <span class="hljs-comment"># milvus.milvus.io/target-cluster created</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>すべてのポッドが実行されていることを確認します：</p>
+<p>Verify all pods are running:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods -n milvus
 <span class="hljs-meta"># NAME                                                   READY   STATUS    RESTARTS   AGE</span>
 <span class="hljs-meta"># ...</span>
@@ -250,8 +255,8 @@ spec:
 <span class="hljs-meta"># target-cluster-milvus-mixcoord-8649b87c98-btk7m        1/1     Running   0          104m</span>
 <span class="hljs-meta"># ...</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Configure-the-Replication-Relationship" class="common-anchor-header">ステップ4: レプリケーション関係の構成</h3><p>両方のクラスタが実行されている状態で、<a href="https://milvus.io/docs/install-pymilvus.md">pymilvusを</a>使用してPythonを使用してレプリケーション・トポロジを構成します。</p>
-<p>クラスタ接続の詳細と物理チャネル（pchannel）名を定義します：</p>
+<h3 id="Step-4-Configure-the-Replication-Relationship" class="common-anchor-header">Step 4: Configure the Replication Relationship</h3><p>With both clusters running, configure the replication topology using Python with <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a>.</p>
+<p>Define the cluster connection details and physical channel (pchannel) names:</p>
 <pre><code translate="no">source_cluster_addr = <span class="hljs-string">&quot;http://10.98.124.90:19530&quot;</span> <span class="hljs-comment"># example address — replace with your actual Milvus server address</span>
 target_cluster_addr = <span class="hljs-string">&quot;http://10.109.234.172:19530&quot;</span>
 source_cluster_token = <span class="hljs-string">&quot;root:Milvus&quot;</span>
@@ -266,7 +271,7 @@ target_cluster_pchannels = []
     source_cluster_pchannels.append(<span class="hljs-string">f&quot;<span class="hljs-subst">{source_cluster_id}</span>-rootcoord-dml_<span class="hljs-subst">{i}</span>&quot;</span>)
     target_cluster_pchannels.append(<span class="hljs-string">f&quot;<span class="hljs-subst">{target_cluster_id}</span>-rootcoord-dml_<span class="hljs-subst">{i}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>レプリケーション構成を構築します：</p>
+<p>Build the replication configuration:</p>
 <pre><code translate="no">config = {
     <span class="hljs-string">&quot;clusters&quot;</span>: [
         {
@@ -294,7 +299,7 @@ target_cluster_pchannels = []
     ]
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>両方のクラスタに適用します：</p>
+<p>Apply to both clusters:</p>
 <pre><code translate="no">from pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 source_client = MilvusClient(uri=source_cluster_addr, token=source_cluster_token)
@@ -305,15 +310,15 @@ target_client = MilvusClient(uri=target_cluster_addr, token=target_cluster_token
 target_client.update_replicate_configuration(**config)
 target_client.<span class="hljs-built_in">close</span>()
 <button class="copy-code-btn"></button></code></pre>
-<p>これが成功すると、プライマリ上のインクリメンタルな変更がスタンバイに自動的にレプリケートされ始めます。</p>
-<h3 id="Step-5-Verify-That-Replication-Works" class="common-anchor-header">ステップ5: レプリケーションの動作確認</h3><ol>
-<li>プライマリに接続し、<a href="https://milvus.io/docs/manage-collections.md">コレクションを作成し</a>、<a href="https://milvus.io/docs/insert-update-delete.md">いくつかのベクターを挿入</a>し、<a href="https://milvus.io/docs/load-and-release.md">ロード</a>します。</li>
-<li>プライマリで検索を実行し、データがそこにあることを確認する。</li>
-<li>スタンバイに接続し、同じ検索を実行します。</li>
-<li>スタンバイが同じ結果を返せば、レプリケーションは機能しています。</li>
+<p>Once this succeeds, incremental changes on the primary start replicating to the standby automatically.</p>
+<h3 id="Step-5-Verify-That-Replication-Works" class="common-anchor-header">Step 5: Verify That Replication Works</h3><ol>
+<li>Connect to the primary and <a href="https://milvus.io/docs/manage-collections.md">create a collection</a>, <a href="https://milvus.io/docs/insert-update-delete.md">insert some vectors</a>, and <a href="https://milvus.io/docs/load-and-release.md">load it</a></li>
+<li>Run a search on the primary to confirm the data is there</li>
+<li>Connect to the standby and run the same search</li>
+<li>If the standby returns the same results, replication is working</li>
 </ol>
-<p><a href="https://milvus.io/docs/quickstart.md">Milvusクイックスタートでは</a>、コレクションの作成、挿入、検索について説明しています。</p>
-<h2 id="Running-CDC-in-Production" class="common-anchor-header">本番環境でのCDCの実行<button data-href="#Running-CDC-in-Production" class="anchor-icon" translate="no">
+<p>The <a href="https://milvus.io/docs/quickstart.md">Milvus Quickstart</a> covers collection creation, insertion, and search if you need a reference.</p>
+<h2 id="Running-CDC-in-Production" class="common-anchor-header">Running CDC in Production<button data-href="#Running-CDC-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -328,27 +333,27 @@ target_client.<span class="hljs-built_in">close</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>CDCのセットアップは簡単です。CDCの信頼性を長期間維持するには、いくつかの運用領域に注意を払う必要があります。</p>
-<h3 id="Monitor-Replication-Lag" class="common-anchor-header">レプリケーションの遅延の監視</h3><p>スタンバイは常にプライマリより若干遅れている。これは非同期レプリケーション特有のものだ。通常の負荷であれば、遅延は数秒である。しかし、書き込みが急増したり、ネットワークが混雑したり、スタンバイのリソースが圧迫されたりすると、ラグが大きくなることがあります。</p>
-<p>ラグを指標として追跡し、アラートを出す。ラグが回復せずに大きくなるのは、通常、CDCノードが書き込みスループットに追いついていないことを意味します。まずクラスタ間のネットワーク帯域幅を確認し、スタンバイがより多くのリソースを必要とするかどうかを検討します。</p>
-<h3 id="Use-the-Standby-for-Read-Scaling" class="common-anchor-header">スタンバイをリード・スケーリングに使用する</h3><p>スタンバイは、災害が発生するまでアイドル状態で待機しているだけのコールドバックアップではありません。レプリケーションがアクティブな間は<a href="https://milvus.io/docs/single-vector-search.md">検索やクエリのリクエストを</a>受け付け、書き込みだけがブロックされる。これにより、実用的な用途が広がる：</p>
+    </button></h2><p>Setting up CDC is the straightforward part. Keeping it reliable over time requires attention to a few operational areas.</p>
+<h3 id="Monitor-Replication-Lag" class="common-anchor-header">Monitor Replication Lag</h3><p>The standby is always slightly behind the primary — that’s inherent to asynchronous replication. Under normal load, the lag is a few seconds. But write spikes, network congestion, or resource pressure on the standby can cause it to grow.</p>
+<p>Track lag as a metric and alert on it. A lag that grows without recovering usually means the CDC Node can’t keep up with write throughput. Check network bandwidth between clusters first, then consider whether the standby needs more resources.</p>
+<h3 id="Use-the-Standby-for-Read-Scaling" class="common-anchor-header">Use the Standby for Read Scaling</h3><p>The standby isn’t just a cold backup sitting idle until disaster strikes. It accepts <a href="https://milvus.io/docs/single-vector-search.md">search and query requests</a> while replication is active — only writes are blocked. This opens up practical uses:</p>
 <ul>
-<li>バッチ<a href="https://zilliz.com/glossary/similarity-search">類似検索や</a>分析ワークロードをスタンバイにルーティングする。</li>
-<li>ピーク時の読み取りトラフィックを分割し、プライマリへの負担を軽減する。</li>
-<li>本番の書き込みレイテンシに影響を与えることなく、高価なクエリ（大規模なトップK、大規模なコレクションをフィルタリングした検索）を実行できます。</li>
+<li>Route batch <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> or analytics workloads to the standby</li>
+<li>Split read traffic during peak hours to reduce pressure on the primary</li>
+<li>Run expensive queries (large top-K, filtered searches across big collections) without affecting production write latency</li>
 </ul>
-<p>これにより、DRインフラストラクチャがパフォーマンス資産に変わります。スタンバイは、何も故障していないときでも稼げます。</p>
-<h3 id="Size-the-Standby-Correctly" class="common-anchor-header">スタンバイの適切なサイズ</h3><p>スタンバイはプライマリからの書き込みをすべて複製するため、同様の計算リソースとメモリ・リソースが必要になります。読み込みもスタンバイにルーティングするのであれば、その追加負荷も考慮してください。ストレージの要件も同じです。</p>
-<h3 id="Test-Failover-Before-You-Need-It" class="common-anchor-header">必要になる前にフェイルオーバーをテストする</h3><p>フェイルオーバー・プロセスが機能しないことを知るために、実際の障害を待つ必要はありません。定期的にドリルを実行する：</p>
+<p>This turns your DR infrastructure into a performance asset. The standby earns its keep even when nothing is broken.</p>
+<h3 id="Size-the-Standby-Correctly" class="common-anchor-header">Size the Standby Correctly</h3><p>The standby replays every write from the primary, so it needs similar compute and memory resources. If you’re also routing reads to it, account for that additional load. Storage requirements are identical — it holds the same data.</p>
+<h3 id="Test-Failover-Before-You-Need-It" class="common-anchor-header">Test Failover Before You Need It</h3><p>Don’t wait for a real outage to find out your failover process doesn’t work. Run periodic drills:</p>
 <ol>
-<li>プライマリへの書き込みを停止する</li>
-<li>スタンバイが追いつくのを待つ（ラグ → 0）</li>
-<li>スタンバイをプロモートする</li>
-<li>クエリが期待通りの結果を返すことを確認する</li>
-<li>逆プロセス</li>
+<li>Stop writes to the primary</li>
+<li>Wait for the standby to catch up (lag → 0)</li>
+<li>Promote the standby</li>
+<li>Verify queries return expected results</li>
+<li>Reverse the process</li>
 </ol>
-<p>各ステップにかかる時間を測定し、文書化する。目標は、フェイルオーバーをタイミングがわかっている日常的な手順にすることです。このシリーズのパート3では、フェイルオーバー・プロセスについて詳しく説明する。</p>
-<h2 id="Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="common-anchor-header">CDCを自分で管理したくない？Zilliz Cloudにお任せください<button data-href="#Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="anchor-icon" translate="no">
+<p>Measure how long each step takes and document it. The goal is to make failover a routine procedure with known timing — not a stressful improvisation at 3 AM. Part 3 of this series covers the failover process in detail.</p>
+<h2 id="Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="common-anchor-header">Don’t Want to Manage CDC Yourself? Zilliz Cloud Handles It<button data-href="#Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -363,29 +368,29 @@ target_client.<span class="hljs-built_in">close</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>MilvusのCDCレプリケーションのセットアップと運用は強力ですが、運用にはオーバーヘッドが伴います。2つのクラスタを管理し、レプリケーションの健全性を監視し、フェイルオーバーのランブックを処理し、リージョン間でインフラを維持する必要があります。運用の負担なしにプロダクショングレードのHAを求めるチームには、<a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>（マネージドMilvus）がすぐに提供してくれる。</p>
-<p><strong>グローバルクラスタは</strong>Zilliz Cloudの主要機能である。北米、ヨーロッパ、アジアパシフィックなど、複数の地域にまたがるMilvusデプロイメントを単一の論理クラスタとして運用することができる。ボンネットの下では、この記事で説明したのと同じCDC/WALレプリケーション・テクノロジーを使用しているが、完全に管理されている：</p>
+    </button></h2><p>Setting up and operating CDC replication of Milvus is powerful, but it comes with operational overhead: you manage two clusters, monitor replication health, handle failover runbooks, and maintain the infrastructure across regions. For teams that want production-grade HA without the operational burden, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) provides this out of the box.</p>
+<p><strong>Global Cluster</strong> is the headline feature of Zilliz Cloud. It lets you run a Milvus deployment spanning multiple regions — North America, Europe, Asia-Pacific, and more— as a single logical cluster. Under the hood, it uses the same CDC/WAL replication technology described in this article, but fully managed:</p>
 <table>
 <thead>
-<tr><th>機能</th><th>セルフマネージドCDC（この記事）</th><th>Zillizクラウド・グローバル・クラスター</th></tr>
+<tr><th>Capability</th><th>Self-Managed CDC (this article)</th><th>Zilliz Cloud Global Cluster</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>レプリケーション</strong></td><td>構成と監視</td><td>自動化された非同期CDCパイプライン</td></tr>
-<tr><td><strong>フェイルオーバー</strong></td><td>手動ランブック</td><td>自動化 - コード変更なし、接続文字列更新なし</td></tr>
-<tr><td><strong>セルフヒーリング</strong></td><td>障害が発生したクラスタを再プロビジョニング</td><td>自動: 古い状態を検出してリセットし、新しいセカンダリとして再構築する</td></tr>
-<tr><td><strong>クロスリージョン</strong></td><td>両方のクラスタをデプロイして管理</td><td>ローカル・リード・アクセスによるマルチ・リージョンを内蔵</td></tr>
-<tr><td><strong>RPO</strong></td><td>秒（監視状況による）</td><td>秒（計画外）/ゼロ（計画的な切り替え）</td></tr>
-<tr><td><strong>RTO</strong></td><td>分（ランブックによる）</td><td>分（自動化）</td></tr>
+<tr><td><strong>Replication</strong></td><td>You configure and monitor</td><td>Automated, async CDC pipeline</td></tr>
+<tr><td><strong>Failover</strong></td><td>Manual runbook</td><td>Automated — no code changes, no connection string updates</td></tr>
+<tr><td><strong>Self-healing</strong></td><td>You re-provision the failed cluster</td><td>Automatic: detects stale state, resets, and rebuilds as a fresh secondary</td></tr>
+<tr><td><strong>Cross-region</strong></td><td>You deploy and manage both clusters</td><td>Built-in multi-region with local read access</td></tr>
+<tr><td><strong>RPO</strong></td><td>Seconds (depends on your monitoring)</td><td>Seconds (unplanned) / Zero (planned switchover)</td></tr>
+<tr><td><strong>RTO</strong></td><td>Minutes (depends on your runbook)</td><td>Minutes (automated)</td></tr>
 </tbody>
 </table>
-<p>グローバル・クラスタ以外にも、ビジネス・クリティカル・プランにはDR機能が追加されています：</p>
+<p>Beyond Global Cluster, the Business Critical plan includes additional DR features:</p>
 <ul>
-<li><strong>ポイント・イン・タイム・リカバリ(PITR)</strong>-保持ウィンドウ内の任意の時点にコレクションをロールバックします。スタンバイにレプリケートされた不慮の削除やデータ破損からの復旧に便利です。</li>
-<li><strong>クロスリージョンバックアップ</strong>- デスティネーションリージョンへの自動化された継続的なバックアップレプリケーション。新しいクラスタへのリストアは数分で完了します。</li>
-<li><strong>99.99%のアップタイムSLA</strong>- 複数のレプリカによるマルチAZデプロイメントに支えられています。</li>
+<li><strong>Point-in-Time Recovery (PITR)</strong> — roll back a collection to any moment within the retention window, useful for recovering from accidental deletes or data corruption that replicates to the standby.</li>
+<li><strong>Cross-region backup</strong> — automated, ongoing backup replication to a destination region. Restoration to new clusters takes minutes.</li>
+<li><strong>99.99% uptime SLA</strong> — backed by multi-AZ deployment with multiple replicas.</li>
 </ul>
-<p>本番環境でベクトル検索を運用しており、DRが必須要件である場合、Milvusのセルフマネージド・アプローチとともにZilliz Cloudを評価する価値がある。詳細は<a href="https://zilliz.com/contact-sales">Zillizチームまでお問い合わせください</a>。</p>
-<h2 id="Whats-Next" class="common-anchor-header">次の記事<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<p>If you’re running vector search in production and DR is a requirement, it’s worth evaluating Zilliz Cloud alongside the self-managed Milvus approach. <a href="https://zilliz.com/contact-sales">Contact the Zilliz team</a> for details.</p>
+<h2 id="Whats-Next" class="common-anchor-header">What’s Next<button data-href="#Whats-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -400,26 +405,26 @@ target_client.<span class="hljs-built_in">close</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>本記事では、ベクターデータベースのHA環境について説明し、プライマリとスタンバイのペアをゼロから構築する方法を説明した。次回は</p>
+    </button></h2><p>This article covered the HA landscape for vector databases and walked through building a primary-standby pair from scratch. Coming next:</p>
 <ul>
-<li><strong>パート2</strong>: 既存のMilvusクラスタにCDCを追加し、レプリケーションを有効にする前に<a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backupを</a>使用してスタンバイをシードする。</li>
-<li><strong>パート 3</strong>: フェイルオーバーの管理 - スタンバイの昇格、トラフィックのリダイレクト、元のプライマリのリカバリ</li>
+<li><strong>Part 2</strong>: Adding CDC to an existing Milvus cluster that already has data, using <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a> to seed the standby before enabling replication</li>
+<li><strong>Part 3</strong>: Managing failover — promoting the standby, redirecting traffic, and recovering the original primary</li>
 </ul>
-<p>ご期待ください。</p>
+<p>Stay tuned.</p>
 <hr>
-<p>本番環境で<a href="https://milvus.io/">Milvusを</a>運用し、ディザスタリカバリについてお考えでしたら、ぜひお手伝いさせてください：</p>
+<p>If you’re running <a href="https://milvus.io/">Milvus</a> in production and thinking about disaster recovery, we’d love to help:</p>
 <ul>
-<li><a href="https://slack.milvus.io/">MilvusのSlackコミュニティに</a>参加して、質問したり、HAアーキテクチャを共有したり、Milvusを大規模に運用している他のチームから学んだりしましょう。</li>
-<li>CDCの設定、フェイルオーバーの計画、マルチリージョンの展開など、DRのセットアップについて説明する<a href="https://milvus.io/office-hours">20分間のMilvusオフィスアワー（無料）をご予約</a>ください。</li>
-<li>インフラストラクチャのセットアップをスキップして、すぐに本番環境での高可用性を実現したい場合は、Milvusが管理する<a href="https://cloud.zilliz.com/signup">Zilliz Cloudの</a>グローバルクラスタ機能をご利用ください。</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to ask questions, share your HA architecture, and learn from other teams running Milvus at scale.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your DR setup — whether it’s CDC configuration, failover planning, or multi-region deployment.</li>
+<li>If you’d rather skip the infrastructure setup and jump straight to production-ready HA, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers cross-region high availability through its Global Cluster feature — no manual CDC setup needed.</li>
 </ul>
 <hr>
-<p>ベクター・データベースの高可用性をセットアップし始めると、いくつかの疑問が出てきます：</p>
-<p><strong>Q: CDCはプライマリクラスターの速度を落としますか？</strong></p>
-<p>CDC NodeはWALログを非同期で読み込みます。CDCノードは、プライマリ上のリソースのためにクエリやインサートと競合することはありません。CDCを有効にしてもパフォーマンスに違いはありません。</p>
-<p><strong>Q: CDCを有効にする前に存在したデータをレプリケートできますか？</strong></p>
-<p>いいえ - CDCは有効化された時点からの変更のみをキャプチャします。既存のデータをスタンバイに取り込むには、まず<a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backupを</a>使用してスタンバイをシードし、次にCDCを有効にして継続的なレプリケーションを行います。このシリーズのパート2では、このワークフローについて説明します。</p>
-<p><strong>Q: すでにマルチレプリカを有効にしている場合でもCDCは必要ですか?</strong></p>
-<p>CDCとマルチレプリカは異なる障害モードから保護します。<a href="https://milvus.io/docs/replica.md">Multi-replicaは</a>1つのクラスタ内のノード間で同じ<a href="https://milvus.io/docs/glossary.md">セグメントの</a>コピーを保持します。ノードの障害には最適ですが、クラスタ全体がなくなってしまった場合（デプロイの失敗、AZの停止、ネームスペースの削除）には役に立ちません。CDCは、ほぼリアルタイムのデータを持つ別の障害領域に別のクラスタを保持する。開発環境以上のものには、両方が必要です。</p>
-<p><strong>Q: Milvus CDCは他のベクターデータベースのレプリケーションと比較してどうですか？</strong></p>
-<p>現在、ほとんどのベクターデータベースはノードレベルの冗長性（マルチレプリカに相当）は提供していますが、クラスタレベルのレプリケーションは提供していません。PostgreSQLやMySQLのようなリレーショナルデータベースが何十年も使ってきたのと同じパターンです。クロスクラスタやクロスリージョンのフェイルオーバーが要件である場合、これは評価すべき重要な差別化要因となる。</p>
+<p>A few questions that come up when teams start setting up vector database high availability:</p>
+<p><strong>Q: Does CDC slow down the primary cluster?</strong></p>
+<p>No. The CDC Node reads WAL logs asynchronously, independent from the read/write path. It doesn’t compete with queries or inserts for resources on the primary. You won’t see a performance difference with CDC enabled.</p>
+<p><strong>Q: Can CDC replicate data that existed before it was enabled?</strong></p>
+<p>No — CDC only captures changes from the point it’s enabled. To bring existing data into the standby, use <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a> to seed the standby first, then enable CDC for ongoing replication. Part 2 of this series covers this workflow.</p>
+<p><strong>Q: Do I still need CDC if I already have multi-replica enabled?</strong></p>
+<p>They protect against different failure modes. <a href="https://milvus.io/docs/replica.md">Multi-replica</a> keeps copies of the same <a href="https://milvus.io/docs/glossary.md">segments</a> across nodes within one cluster — great for node failures, useless when the entire cluster is gone (bad deployment, AZ outage, namespace deletion). CDC keeps a separate cluster in a different failure domain with near-real-time data. For anything beyond a dev environment, you want both.</p>
+<p><strong>Q: How does Milvus CDC compare to replication in other vector databases?</strong></p>
+<p>Most vector databases today offer node-level redundancy (equivalent to multi-replica) but lack cluster-level replication. Milvus is currently the only major vector database with built-in WAL-based CDC replication — the same proven pattern that relational databases like PostgreSQL and MySQL have used for decades. If cross-cluster or cross-region failover is a requirement, this is a meaningful differentiator to evaluate.</p>
