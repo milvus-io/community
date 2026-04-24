@@ -21,7 +21,7 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
 <p><strong>它最大的亮點在於內建的學習迴圈：</strong>迴圈會根據經驗創建 Skills，在使用過程中加以改進，並搜尋過去的對話以找到可重複使用的模式。其他的代理框架都是在部署之前手工編碼 Skills。Hermes 的 Skills 會從使用中成長，重複的工作流程只需零程式碼變更即可重複使用。</p>
 <p><strong>問題是 Hermes 的擷取僅限於關鍵字。</strong>它匹配的是準確的字詞，而不是使用者想要的意思。當使用者在不同的階段使用不同的字詞時，迴圈無法將它們連結起來，也就無法寫出新的 Skill。當只有幾百個文件時，這個差距是可以忍受的。<strong>過了這一點，迴圈就會停止學習，因為它找不到自己的歷史。</strong></p>
 <p><strong>Milvus 2.6 可以解決這個問題。</strong>它的<a href="https://milvus.io/docs/multi-vector-search.md">混合搜尋</a>功能在單一查詢中涵蓋了意思和精確關鍵字，因此語音迴圈終於可以在各個階段中連結重新措辭的資訊。它非常輕巧，可以放在小型雲端伺服器上 (每個月 5 美元的 VPS 就可以運作)。換上 Milvus 並不需要改變 Hermes - Milvus 會插在檢索層之後，因此學習迴圈會保持不變。Hermes 仍會挑選要執行的 Skill，而 Milvus 則會處理要擷取的內容。</p>
-<p>但更深層的回報不只是更好的回憶：一旦擷取成功，學習迴圈就能將擷取策略本身儲存為技能，而不只是擷取的內容。這就是代理程式的知識工作如何在各個階段中複合的方式。</p>
+<p>但更深層次的回報不只是更好的回憶：一旦擷取成功，學習迴圈就能將擷取策略本身儲存為技能，而不只是擷取的內容。這就是代理程式的知識工作如何在各個階段中複合的方式。</p>
 <h2 id="Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="common-anchor-header">Hermes Agent 架構：四層記憶體如何為技能學習循環提供動力<button data-href="#Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -328,7 +328,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
     <span></span>
   </span>
 </p>
-<p>從這一點開始，<strong>使用者不再命名 Skills。</strong>Hermes 會推斷使用者的意圖、路由到 Skill、從記憶體中抽取相關的片段，然後寫出答案。提示中沒有技能選擇器。</p>
+<p>從這一點開始，<strong>使用者不再命名技能。</strong>Hermes 會推斷使用者的意圖、路由到 Skill、從記憶體中抽取相關的片段，然後寫出答案。提示中沒有技能選擇器。</p>
 <p>大多數的 RAG（retrieval-augmented generation）系統解決了儲存與擷取的問題，但擷取邏輯本身卻是硬性編碼在應用程式碼中。如果以不同的方式或在新的情境中提出問題，擷取就會中斷。Hermes 將擷取策略儲存為 Skill，這表示擷取<strong>路徑成為您可以閱讀、編輯和版本的文件。</strong> <code translate="no">💾 Memory updated · Skill 'hybrid-search-doc-qa' created</code> 這一行不是設定完成的標記。它是<strong>Agent 將行為模式存入長期記憶中。</strong></p>
 <h2 id="Hermes-vs-OpenClaw-Accumulation-vs-Orchestration" class="common-anchor-header">Hermes vs. OpenClaw：累積與協調<button data-href="#Hermes-vs-OpenClaw-Accumulation-vs-Orchestration" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -345,14 +345,14 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Hermes 與 OpenClaw 所回答的是不同的問題。</strong>Hermes 是專為單一代理建立的，它會在不同的階段累積記憶和技能。OpenClaw 則是將複雜的任務分割成不同的部分，並將每個部分交給專門的代理程式。</p>
+    </button></h2><p><strong>Hermes 與 OpenClaw 所回答的是不同的問題。</strong>Hermes 是專為單一代理建立的，它可以在不同的階段累積記憶和技能。OpenClaw 則是將複雜的任務分割成不同的部分，並將每個部分交給專門的代理程式。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_11_afcb575d50.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>OpenClaw 的強項在於協調。它可以優化自動完成任務的程度。Hermes 的優勢在於累積：單一代理程式可在不同階段記憶，其技能可從使用中成長。Hermes 優化了長期的情境和領域經驗。</p>
+<p>OpenClaw 的優勢在於協調。它可以優化自動完成任務的程度。Hermes 的優勢在於累積：單一代理程式可在不同階段記憶，其技能可從使用中成長。Hermes 優化了長期的情境和領域經驗。</p>
 <p><strong>這兩個框架可以堆疊。</strong>Hermes 提供一步到位的遷移路徑，可將<code translate="no">~/.openclaw</code> 記憶體和技能導入 Hermes 的記憶體層。協調堆疊可以位於頂層，底下則是累積代理。</p>
 <p>關於 OpenClaw 的分割，請參閱<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw?</a>的<a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">完整指南</a>。</p>
 <h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
@@ -370,7 +370,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hermes 的學習迴圈 (Learning Loop) 將重複的工作流程轉換成可重複使用的 Skills，但前提是檢索必須能夠跨會話連結這些工作流程。FTS5 關鍵字搜尋則無法做到。<a href="https://milvus.io/docs/multi-vector-search.md"><strong>Milvus 2.6 混合式搜尋則</strong></a>可以：密集向量處理意義，BM25 處理精確關鍵字，RRF 將兩者合併，而<a href="https://milvus.io/docs/tiered-storage-overview.md">分層儲存</a>可讓整個堆疊維持在每月 5 美元的 VPS 上。</p>
+    </button></h2><p>Hermes 的學習迴圈 (Learning Loop) 將重複的工作流程轉換成可重複使用的 Skills，但前提是檢索必須能夠跨會話連結這些工作流程。FTS5 關鍵字搜尋則無法做到。<a href="https://milvus.io/docs/multi-vector-search.md"><strong>Milvus 2.6 混合式搜尋</strong></a>可以：密集向量處理意義，BM25 處理精確關鍵字，RRF 將兩者合併，而<a href="https://milvus.io/docs/tiered-storage-overview.md">分層儲存</a>可讓整個堆疊維持在每月 5 美元的 VPS 上。</p>
 <p>更重要的是：一旦檢索成功，代理程式不僅會儲存更好的答案：它還會儲存更好的檢索策略作為技能。擷取路徑成為一個可版本化的文件，隨著使用而改進。這就是累積領域專業知識的代理程式與每次都從新開始的代理程式的區別。如需比較其他代理如何處理（或未能處理）這個問題，請參閱<a href="https://milvus.io/blog/claude-code-memory-memsearch.md">Claude Code 的記憶體系統說明。</a></p>
 <h2 id="Get-Started" class="common-anchor-header">開始使用<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -387,7 +387,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>請嘗試本文中的工具：</strong></p>
+    </button></h2><p><strong>嘗試本文中的工具：</strong></p>
 <ul>
 <li><a href="https://github.com/NousResearch/hermes-agent">GitHub 上的 Hermes Agent</a>- 安裝腳本、提供者設定，以及上述使用的通道設定。</li>
 <li><a href="https://milvus.io/docs/install_standalone-docker.md">Milvus 2.6 Standalone Quickstart</a>- 知識庫後端的單結點 Docker 部署。</li>
@@ -438,7 +438,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="How-does-Hermes-Agents-Skill-Learning-Loop-actually-work" class="common-anchor-header">Hermes Agent 的技能學習循環實際上是如何運作的？</h3><p>Hermes 會記錄它執行的每個工作流程 - 所呼叫的腳本、傳送的參數以及回傳形狀 - 作為記憶追蹤。當相同的模式出現在兩個或兩個以上的會話中時，學習循環就會啟動並寫入一個可重複使用的 Skill：一個 Markdown 檔案，將工作流程擷取為一個可重複的程序。從這一點開始，Hermes 只會依據意圖路由到 Skill，而不需要使用者命名。關鍵的依賴關係是擷取 - 環路只有在找到較早階段的追蹤時才會啟動，這也是為什麼僅限關鍵字的搜尋在大規模時會變成瓶頸的原因。</p>
+    </button></h2><h3 id="How-does-Hermes-Agents-Skill-Learning-Loop-actually-work" class="common-anchor-header">Hermes Agent 的技能學習循環實際上是如何運作的？</h3><p>Hermes 會記錄它執行的每個工作流程 - 所呼叫的腳本、傳送的參數以及回傳形狀 - 作為記憶追蹤。當相同的模式出現在兩個或兩個以上的階段時，學習循環就會啟動並寫入一個可重複使用的 Skill：一個 Markdown 檔案，將工作流程擷取為一個可重複的程序。從這一點開始，Hermes 只會依據意圖路由到 Skill，而不需要使用者命名。關鍵的依賴點在於擷取 - 環路只有在找到先前階段的追蹤時才會啟動，這也是為什麼在大規模時純關鍵字搜尋會成為瓶頸的原因。</p>
 <h3 id="Whats-the-difference-between-hybrid-search-and-vector-only-search-for-agent-memory" class="common-anchor-header">對於代理程式記憶體，混合搜尋與唯向量搜尋有何不同？</h3><p>唯向量搜尋能很好地處理意義，但會錯過精確的匹配。如果開發人員貼上 ConnectionResetError 之類的錯誤字串，或是 find_similar_task 之類的函式名稱，純向量搜尋可能會傳回語意相關但錯誤的結果。混合搜尋結合了密集向量 (語意) 與 BM25 (關鍵字)，並透過 Reciprocal Rank Fusion 將兩個結果集合併。對於代理程式記憶體 (查詢範圍從模糊的意圖 (「Python並發」) 到精確的符號) 而言，混合搜尋可在一次呼叫中涵蓋兩端，而無需在您的應用程式層中進行路由邏輯。</p>
-<h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">我可以將 Milvus 混合搜尋與 Hermes 以外的 AI 代理一起使用嗎？</h3><p>可以。整合模式是通用的：代理呼叫檢索腳本，腳本查詢 Milvus，結果以包含來源元資料的排序塊返回。任何支援工具呼叫或 shell 執行的代理框架都可以使用相同的方法。Hermes 恰好是一個很好的選擇，因為它的學習循環 (Learning Loop) 特別依賴跨會話檢索來啟動，但 Milvus 方面是與代理無關的 - 它不知道或不關心是哪個代理在呼叫它。</p>
-<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">自託管的 Milvus + Hermes 設定每月費用是多少？</h3><p>單一節點Milvus 2.6 Standalone在2核心/4 GB VPS與分層存儲運行約<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5</mn><mi>/</mi><mi>月</mi></mrow><annotation encoding="application/x-tex">。OpenAI text-embedding-3-small 的成本為</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">5</span></span></span></span>/月<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">。</span><span class="mord mathnormal">OpenAItext</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">embedding</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span> 3</span></span></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span> <span class="mord mathnormal">smallcosts0</span></span></span></span>.02 per 1M tokens - 對於個人知識庫而言，每月只需幾美分。LLM 推理主宰總成本，並隨使用量而擴展，而非隨檢索堆疊而擴展。</p>
+<h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">我可以將 Milvus 混合搜尋與 Hermes 以外的 AI 代理一起使用嗎？</h3><p>可以。整合模式是通用的：代理呼叫檢索腳本，腳本查詢 Milvus，結果以包含來源元資料的排序塊返回。任何支援工具呼叫或 shell 執行的代理框架都可以使用相同的方法。Hermes 恰好是一個很好的選擇，因為它的學習循環 (Learning Loop) 特別依賴於跨會話檢索來啟動，但 Milvus 方面是與代理無關的 - 它不知道或不關心是哪個代理在呼叫它。</p>
+<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">自託管的 Milvus + Hermes 設定每月費用是多少？</h3><p>單結點 Milvus 2.6 Standalone 在 2 核心 / 4 GB VPS 上，搭配分層儲存，每月約 5 美元。OpenAI text-embedding-3-small 的成本為每 100 萬個代幣 0.02 美元 - 個人知識庫每月只需幾美分。LLM 推理在總成本中佔據主導地位，並隨使用量而擴展，而非隨檢索堆疊而擴展。</p>

@@ -17,10 +17,10 @@ desc: >-
   2.6 混合搜索修复了跨会话召回问题。
 origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.md'
 ---
-<p><strong>最近，</strong><a href="https://github.com/NousResearch/hermes-agent"><strong>Hermes Agent 的</strong></a> <strong>身影随处可见。</strong>Hermes 由 Nous Research 公司打造，是一个自托管的个人人工智能 Agents，可在你自己的硬件上运行（5 美元的 VPS 也可以），并通过 Telegram 等现有聊天渠道与你对话。</p>
+<p><strong>最近，</strong><a href="https://github.com/NousResearch/hermes-agent"><strong>Hermes Agent 的</strong></a> <strong>身影随处可见。</strong>Hermes 由 Nous Research 打造，是一个自托管的个人人工智能 Agents，可在你自己的硬件上运行（5 美元的 VPS 也可以），并通过 Telegram 等现有聊天渠道与你对话。</p>
 <p><strong>它最大的亮点是内置的学习回路：</strong>回路根据经验创建技能，在使用过程中改进技能，并搜索过去的对话以找到可重复使用的模式。其他 Agents 框架都是在部署前手工编写技能代码。而 Hermes 的技能是从使用中成长起来的，重复的工作流程无需修改代码即可重复使用。</p>
-<p><strong>不足之处在于，Hermes 的检索仅限于关键词。</strong>它匹配的是准确的词语，而不是用户想要表达的意思。当用户在不同的会话中使用不同的措辞时，循环就无法将它们连接起来，也就无法编写新的 Skill。当只有几百份文档时，这种差距还可以忍受。<strong>超过这个数量，循环就会停止学习，因为它找不到自己的历史记录。</strong></p>
-<p><strong>Milvus 2.6 可以解决这个问题。</strong>它的<a href="https://milvus.io/docs/multi-vector-search.md">混合搜索</a>功能在单个查询中涵盖了含义和精确关键词，因此循环终于可以跨会话连接重新措辞的信息。它非常轻便，可以放在小型云服务器上（每月 5 美元的 VPS 就能运行）。换上它并不需要改变赫尔墨斯--Milvus 插在检索层后面，因此学习循环保持不变。Hermes 仍会选择要运行的技能，而 Milvus 则会处理要检索的内容。</p>
+<p><strong>不足之处在于，Hermes 的检索仅限于关键词。</strong>它只匹配准确的单词，而不匹配用户想要表达的意思。当用户在不同的会话中使用不同的措辞时，循环无法将它们连接起来，也就无法编写新的 Skill。当只有几百份文档时，这种差距还可以忍受。<strong>超过这个数量，循环就会停止学习，因为它找不到自己的历史记录。</strong></p>
+<p><strong>Milvus 2.6 可以解决这个问题。</strong>它的<a href="https://milvus.io/docs/multi-vector-search.md">混合搜索</a>在一次查询中涵盖了含义和精确关键词，因此循环终于可以跨会话连接重新措辞的信息。它非常轻便，可以放在小型云服务器上（每月 5 美元的 VPS 就能运行）。换上它并不需要改变赫尔墨斯--Milvus 插在检索层后面，因此学习循环保持不变。Hermes 仍会选择要运行的技能，而 Milvus 则会处理要检索的内容。</p>
 <p>但是，更深层次的回报远不止更好的检索：一旦检索成功，学习回路就能将检索策略本身作为一项技能存储起来，而不仅仅是检索内容。这样，Agent 的知识工作就能在不同的会话中复合起来。</p>
 <h2 id="Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="common-anchor-header">赫尔墨斯代理架构：四层内存如何为技能学习回路提供动力<button data-href="#Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -37,7 +37,7 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/NousResearch/hermes-agent"><strong>赫尔墨斯</strong></a> <strong>有四层记忆层，而 L4 技能是其与众不同之处。</strong></p>
+    </button></h2><p><a href="https://github.com/NousResearch/hermes-agent"><strong>赫尔墨斯</strong></a> <strong>有四个记忆层，而 L4 技能是它与众不同的记忆层。</strong></p>
 <ul>
 <li><strong>L1</strong>- 会话上下文，在会话关闭时清除</li>
 <li><strong>L2</strong>- 持久事实：项目堆栈、团队约定、已解决的决定</li>
@@ -86,15 +86,15 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
       </svg>
     </button></h2><p><strong>Milvus 2.6带来了两个符合Hermes故障点的升级。</strong> <strong>混合搜索</strong>通过在一次调用中同时涵盖语义和关键字检索，疏通了学习环路。<strong>分层存储</strong>使整个检索后端保持足够小的规模，可以在与 Hermes 相同的 5 美元/月 VPS 上运行。</p>
 <h3 id="What-Hybrid-Search-Solves-Finding-Relevant-Information" class="common-anchor-header">混合搜索能解决什么问题？查找相关信息</h3><p>Milvus 2.6 支持在单个查询中同时运行向量检索（语义）和<a href="https://milvus.io/docs/full-text-search.md">BM25 全文检索</a>（关键词），然后通过<a href="https://milvus.io/docs/multi-vector-search.md">互惠排名融合（RRF）</a>合并两个排名列表。</p>
-<p>例如：问 &quot;asyncio 的原理是什么&quot;，向量检索会命中语义相关的内容。问 &quot;<code translate="no">find_similar_task</code> 函数在哪里定义&quot;，BM25 会精确匹配代码中的函数名称。对于涉及特定任务类型中的函数的问题，混合搜索只需一次调用即可返回正确结果，无需手工编写路由逻辑。</p>
-<p>对于赫尔墨斯来说，这就是解锁学习循环的原因。当第二个会话重新表述意图时，向量检索就会捕捉到 FTS5 错过的语义匹配。循环启动，新的 Skill 开始编写。</p>
+<p>例如：问 &quot;asyncio 的原理是什么&quot;，向量检索会命中语义相关的内容。问 &quot;<code translate="no">find_similar_task</code> 函数在哪里定义&quot;，BM25 会精确匹配代码中的函数名称。对于涉及特定任务类型中的函数的问题，混合搜索只需一次调用就能返回正确结果，无需手工编写路由逻辑。</p>
+<p>对于赫尔墨斯来说，这就是 "学习循环 "的解锁。当第二个会话重新表述意图时，向量检索就会捕捉到 FTS5 错过的语义匹配。循环启动，新的 Skill 开始编写。</p>
 <h3 id="What-Tiered-Storage-Solves-Cost" class="common-anchor-header">分层存储解决了什么问题？成本</h3><p>传统的向量数据库希望在 RAM 中建立完整的 Embeddings 索引，这将个人部署推向更大、更昂贵的基础设施。Milvus 2.6 采用三层存储，根据访问频率在层级之间移动条目，从而避免了这种情况：</p>
 <ul>
 <li><strong>热</strong>--在内存中</li>
 <li><strong>热</strong>--在固态硬盘上</li>
 <li><strong>冷</strong>--对象存储</li>
 </ul>
-<p>只有热数据才会常驻。500 篇文档的知识库可容纳在 2 GB 内存中。整个检索堆栈运行在与 Hermes 目标相同的 5 美元/月的 VPS 上，无需升级基础设施。</p>
+<p>只有热数据才会常驻。500 篇文档的知识库可容纳在 2 GB 内存中。整个检索堆栈运行在与 Hermes 目标相同的每月 5 美元的 VPS 上，无需升级基础设施。</p>
 <h2 id="Hermes-+-Milvus-System-Architecture" class="common-anchor-header">Hermes + Milvus：系统架构<button data-href="#Hermes-+-Milvus-System-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -345,7 +345,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Hermes和OpenClaw解决的是不同的问题。</strong>赫尔墨斯是为单个 Agents 设计的，它可以在不同的会话中积累记忆和技能。OpenClaw 则是将复杂的任务分解成多个部分，然后将每个部分交给专门的 Agents。</p>
+    </button></h2><p><strong>Hermes和OpenClaw解决的是不同的问题。</strong>赫尔墨斯是为单个 Agents 而设计的，它可以在不同的会话中积累记忆和技能。OpenClaw 则是将复杂的任务分解成多个部分，然后将每个部分交给专门的 Agents。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_11_afcb575d50.png" alt="" class="doc-image" id="" />
@@ -389,9 +389,9 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
       </svg>
     </button></h2><p><strong>试用本文中的工具：</strong></p>
 <ul>
-<li><a href="https://github.com/NousResearch/hermes-agent">GitHub 上的 Hermes Agent</a>- 上面使用的安装脚本、提供者设置和通道配置。</li>
+<li><a href="https://github.com/NousResearch/hermes-agent">GitHub 上的 Hermes Agent</a>- 上面使用的安装脚本、提供商设置和通道配置。</li>
 <li><a href="https://milvus.io/docs/install_standalone-docker.md">Milvus 2.6 Standalone 快速入门</a>--知识库后端的单节点 Docker 部署。</li>
-<li><a href="https://milvus.io/docs/multi-vector-search.md">Milvus 混合搜索教程</a>--与本帖中脚本匹配的完整密文 + BM25 + RRF 示例。</li>
+<li><a href="https://milvus.io/docs/multi-vector-search.md">Milvus 混合搜索教程</a>--与本帖中的脚本相匹配的全密集 + BM25 + RRF 示例。</li>
 </ul>
 <p><strong>有关于 Hermes + Milvus 混合搜索的问题？</strong></p>
 <ul>
@@ -421,7 +421,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
 <li><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 发布说明</a>--分层存储、混合搜索、Schema 更改</li>
 <li><a href="https://zilliz.com/blog">Zilliz Cloud &amp; Milvus CLI + Official Skills</a>- Milvus 本地代理的操作符工具</li>
 <li><a href="https://zilliz.com/blog">为什么 RAG 式知识管理对 Agents 不利</a>？</li>
-<li><a href="https://zilliz.com/blog">克劳德代码的内存系统比你想象的更原始</a>--另一个 Agents 的内存堆栈对比文章</li>
+<li><a href="https://zilliz.com/blog">克劳德代码的内存系统比你想象的更原始</a>--关于另一个 Agents 内存堆栈的对比文章</li>
 </ul>
 <h2 id="Frequently-Asked-Questions" class="common-anchor-header">常见问题<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -439,6 +439,6 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
         ></path>
       </svg>
     </button></h2><h3 id="How-does-Hermes-Agents-Skill-Learning-Loop-actually-work" class="common-anchor-header">Hermes Agent 的技能学习循环究竟是如何运作的？</h3><p>赫尔墨斯会把运行的每一个工作流程--调用的脚本、传递的参数和返回的形状--记录下来，作为记忆跟踪。当相同的模式出现在两个或两个以上的会话中时，学习循环就会启动，并写入一个可重复使用的技能（Skill）：一个将工作流程作为可重复程序捕获的 Markdown 文件。从这一点出发，Hermes 只根据意图路由到 Skill，而不需要用户命名。关键的依存关系是检索--只有在能找到早期会话跟踪的情况下，循环才会启动，这就是为什么纯关键字搜索会成为大规模搜索的瓶颈。</p>
-<h3 id="Whats-the-difference-between-hybrid-search-and-vector-only-search-for-agent-memory" class="common-anchor-header">对于 Agents 内存，混合搜索和纯向量搜索有什么区别？</h3><p>纯向量搜索能很好地处理含义，但会错过精确匹配。如果开发人员粘贴了 ConnectionResetError 这样的错误字符串或 find_similar_task 这样的函数名称，纯向量搜索可能会返回语义相关但错误的结果。混合搜索将密集向量（语义）与 BM25（关键字）结合起来，并通过互易等级融合（Reciprocal Rank Fusion）合并两个结果集。对于 Agents 内存（查询范围从模糊的意图（"Python 并发"）到精确的符号），混合搜索只需一次调用即可覆盖两端，无需在应用层中进行路由逻辑。</p>
+<h3 id="Whats-the-difference-between-hybrid-search-and-vector-only-search-for-agent-memory" class="common-anchor-header">对于 Agents 内存，混合搜索和纯向量搜索有什么区别？</h3><p>纯向量搜索能很好地处理意义，但会错过精确匹配。如果开发人员粘贴了 ConnectionResetError 这样的错误字符串或 find_similar_task 这样的函数名称，纯向量搜索可能会返回语义相关但错误的结果。混合搜索将密集向量（语义）与 BM25（关键字）结合起来，并通过互易等级融合（Reciprocal Rank Fusion）合并两个结果集。对于 Agents 内存（查询范围从模糊的意图（"Python 并发"）到精确的符号），混合搜索只需一次调用即可覆盖两端，无需在应用层中进行路由逻辑。</p>
 <h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">我能否将 Milvus 混合搜索与其他人工智能 Agents 一起使用？</h3><p>可以。集成模式是通用的：Agent 调用检索脚本，脚本查询 Milvus，结果以带有源元数据的排序块形式返回。任何支持工具调用或 shell 执行的 Agents 框架都可以使用相同的方法。Hermes 恰好非常适合，因为它的 "学习循环"（Learning Loop）特别依赖于跨会话检索来启动，但 Milvus 方面与 Agents 无关--它不知道也不关心是哪个代理在调用它。</p>
-<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">自托管的 Milvus + Hermes 设置每月费用是多少？</h3><p>单节点 Milvus 2.6 Standalone 在 2 核 / 4 GB VPS 上运行<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">，</mi></mrow></semantics></math></span></span>带分层存储，大约<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>5</mi><mn>/月</mn><mi>。OpenAI 文本嵌入-</mi><mi>3</mi><mi>-small 费用为 5/月</mi></mrow><annotation encoding="application/x-tex">。OpenAI text-embedding-3-small 的成本为</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">5</span></span></span></span>/月<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">。</span><span class="mord mathnormal">OpenAItext</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">embedding</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span> 3</span></span></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span> <span class="mord mathnormal">smallcosts0</span></span></span></span>.02 per 1M tokens - 对于个人知识库而言，每月只需几美分。LLM 推断在总成本中占主导地位，并随使用量而扩展，而不是随检索堆栈而扩展。</p>
+<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">自托管的 Milvus + Hermes 设置每月费用是多少？</h3><p>在 2 核 / 4 GB VPS 上运行 Milvus 2.6 Standalone 单节点，带分层存储，每月约 5 美元。OpenAI text-embeddings-3-small 的成本为每 100 万个代币 0.02 美元--个人知识库每月只需几美分。LLM 推理在总成本中占主导地位，并随使用量而扩展，而不是随检索堆栈而扩展。</p>

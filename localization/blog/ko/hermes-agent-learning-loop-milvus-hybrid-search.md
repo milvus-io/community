@@ -42,7 +42,7 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
 <li><strong>L1</strong> - 세션 컨텍스트, 세션 종료 시 지워짐</li>
 <li><strong>L2</strong> - 지속되는 사실: 프로젝트 스택, 팀 규칙, 해결된 의사 결정</li>
 <li><strong>L3</strong> - 로컬 파일을 통한 SQLite FTS5 키워드 검색</li>
-<li><strong>L4</strong> - 워크플로를 마크다운 파일로 저장. 개발자가 배포 전에 코드로 작성하는 LangChain 도구나 AutoGPT 플러그인과 달리, L4 스킬은 자체 작성 방식으로 개발자가 작성하지 않고도 에이전트가 실제로 실행하는 것에서 성장합니다.</li>
+<li><strong>L4</strong> - 워크플로를 마크다운 파일로 저장. 개발자가 배포 전에 코드로 작성하는 LangChain 도구나 AutoGPT 플러그인과 달리, L4 스킬은 자체 작성 방식으로 개발자가 작성하지 않고도 에이전트가 실제로 실행하는 것에서 확장됩니다.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -66,7 +66,7 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
         ></path>
       </svg>
     </button></h2><p><strong>Hermes는 애초에 교차 세션 워크플로를 트리거하기 위해 검색이 필요합니다.</strong> 하지만 내장된 L3 계층은 의미가 아닌 리터럴 토큰만 일치시키는 SQLite FTS5를 사용합니다.</p>
-<p><strong>사용자가 동일한 의도를 여러 세션에 걸쳐 다르게 표현하면 FTS5는 일치하는 항목을 놓칩니다.</strong> 학습 루프가 실행되지 않습니다. 새로운 스킬이 기록되지 않으며, 다음에 다시 같은 의도가 나오면 사용자는 다시 수작업으로 라우팅을 수행해야 합니다.</p>
+<p><strong>사용자가 동일한 의도를 여러 세션에 걸쳐 다르게 표현하면 FTS5는 일치하는 항목을 놓칩니다.</strong> 학습 루프가 실행되지 않습니다. 새로운 스킬이 작성되지 않으며, 다음에 의도가 다시 나타나면 사용자는 다시 수작업으로 라우팅을 수행해야 합니다.</p>
 <p>예: 지식창고에 "비동기 이벤트 루프, 비동기 작업 스케줄링, 비차단 I/O"가 저장되어 있습니다. 사용자가 "Python 동시성"을 검색합니다. FTS5는 문자 그대로 단어가 겹치지 않고 동일한 질문이라는 것을 알 수 있는 방법이 없는 히트 수가 0개를 반환합니다.</p>
 <p>문서가 수백 개 미만일 때는 그 차이가 견딜 만합니다. 그 이상에서는 문서가 한 어휘를 사용하고 사용자가 다른 어휘로 질문하는데, FTS5는 그 사이에 연결 고리가 없습니다. <strong>검색할 수 없는 콘텐츠는 지식창고에 없는 것이 낫고, 학습 루프는 배울 것이 없습니다.</strong></p>
 <h2 id="How-Milvus-26-Fixes-the-Retrieval-Gap-with-Hybrid-Search-and-Tiered-Storage" class="common-anchor-header">Milvus 2.6이 하이브리드 검색과 계층형 스토리지로 검색 격차를 해소하는 방법<button data-href="#How-Milvus-26-Fixes-the-Retrieval-Gap-with-Hybrid-Search-and-Tiered-Storage" class="anchor-icon" translate="no">
@@ -86,15 +86,15 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
       </svg>
     </button></h2><p><strong>Milvus 2.6은 Hermes의 문제점에 맞는 두 가지 업그레이드를 제공합니다.</strong> <strong>하이브리드 검색은</strong> 한 번의 호출로 시맨틱 검색과 키워드 검색을 모두 처리하여 학습 루프를 차단합니다. <strong>계층형 스토리지는</strong> 전체 검색 백엔드를 Hermes가 구축한 것과 동일한 월 5달러의 VPS에서 실행할 수 있을 만큼 충분히 작게 유지합니다.</p>
 <h3 id="What-Hybrid-Search-Solves-Finding-Relevant-Information" class="common-anchor-header">하이브리드 검색이 해결하는 문제: 관련 정보 찾기</h3><p>Milvus 2.6은 단일 쿼리에서 벡터 검색(시맨틱)과 <a href="https://milvus.io/docs/full-text-search.md">BM25 전체 텍스트 검색</a> (키워드)을 모두 실행한 다음, 두 개의 순위 목록을 상호 순위 <a href="https://milvus.io/docs/multi-vector-search.md">융합(RRF)</a>으로 병합하는 것을 지원합니다.</p>
-<p>예를 들어, &quot;비동기화의 원리는 무엇인가요&quot;라고 질문하면 벡터 검색은 의미론적으로 관련된 콘텐츠를 찾아냅니다. &quot; <code translate="no">find_similar_task</code> 함수는 어디에 정의되어 있나요?&quot;라고 질문하면 BM25가 코드의 함수 이름과 정확하게 일치합니다. 특정 유형의 작업 내에 함수가 포함된 질문의 경우, 하이브리드 검색은 수작업으로 작성된 라우팅 로직 없이도 한 번의 호출로 올바른 결과를 반환합니다.</p>
+<p>예를 들어, &quot;비동기화의 원리는 무엇인가요&quot;라고 질문하면 벡터 검색은 의미론적으로 관련된 콘텐츠를 찾아냅니다. &quot; <code translate="no">find_similar_task</code> 함수는 어디에 정의되어 있나요?&quot;라고 질문하면 BM25가 코드의 함수 이름과 정확히 일치합니다. 특정 유형의 작업 내에 함수가 포함된 질문의 경우, 하이브리드 검색은 수작업으로 작성된 라우팅 로직 없이도 한 번의 호출로 올바른 결과를 반환합니다.</p>
 <p>Hermes의 경우, 이것이 바로 학습 루프의 차단을 해제하는 것입니다. 두 번째 세션에서 의도를 다시 말하면 벡터 검색이 FTS5가 놓친 의미론적 일치를 포착합니다. 루프가 실행되고 새로운 스킬이 작성됩니다.</p>
-<h3 id="What-Tiered-Storage-Solves-Cost" class="common-anchor-header">계층형 스토리지가 해결하는 문제: 비용</h3><p>순진한 벡터 데이터베이스는 전체 임베딩 인덱스를 RAM에 저장하기를 원하기 때문에 개인 배포를 더 크고 비싼 인프라로 밀어붙이게 됩니다. Milvus 2.6은 액세스 빈도에 따라 계층 간에 항목을 이동하는 3계층 스토리지로 이러한 문제를 방지합니다:</p>
+<h3 id="What-Tiered-Storage-Solves-Cost" class="common-anchor-header">계층형 스토리지가 해결하는 문제: 비용</h3><p>순진한 벡터 데이터베이스는 RAM에 전체 임베딩 인덱스를 원할 것이고, 이는 개인 배포를 더 크고 비싼 인프라로 밀어붙일 것입니다. Milvus 2.6은 액세스 빈도에 따라 계층 간에 항목을 이동하는 3계층 스토리지로 이러한 문제를 방지합니다:</p>
 <ul>
 <li><strong>핫</strong> - 메모리</li>
 <li><strong>Warm</strong> - SSD</li>
 <li><strong>콜드</strong> - 오브젝트 스토리지</li>
 </ul>
-<p>핫 데이터만 상주 상태로 유지됩니다. 500개의 문서로 구성된 지식창고는 2GB의 RAM에 들어갑니다. 전체 검색 스택은 인프라 업그레이드 없이도 월 $5의 동일한 VPS Hermes 타깃에서 실행됩니다.</p>
+<p>핫 데이터만 상주 상태로 유지됩니다. 500개 문서로 구성된 지식창고는 2GB의 RAM에 들어갑니다. 전체 검색 스택은 인프라 업그레이드 없이도 월 $5의 동일한 VPS Hermes 타깃에서 실행됩니다.</p>
 <h2 id="Hermes-+-Milvus-System-Architecture" class="common-anchor-header">Hermes + Milvus: 시스템 아키텍처<button data-href="#Hermes-+-Milvus-System-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -140,7 +140,7 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>헤르메스 및</strong> <a href="https://milvus.io/docs/install_standalone-docker.md"><strong>밀버스 2.6 스탠드얼론을</strong></a><strong>설치한</strong><strong> 다음 밀도 및 BM25 필드가 있는 컬렉션을 생성합니다.</strong> 이것이 학습 루프가 실행되기 전의 전체 설정입니다.</p>
+    </button></h2><p><strong>헤르메스 및</strong> <a href="https://milvus.io/docs/install_standalone-docker.md"><strong>밀버스 2.6 스탠드얼론을</strong></a><strong>설치한</strong><strong> 다음, 밀도 및 BM25 필드가 포함된 컬렉션을 생성합니다.</strong> 이것이 학습 루프가 실행되기 전의 전체 설정입니다.</p>
 <h3 id="Install-Hermes" class="common-anchor-header">헤르메스 설치</h3><pre><code translate="no" class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 <button class="copy-code-btn"></button></code></pre>
 <p><code translate="no">hermes</code> 을 실행하여 대화형 초기화 마법사로 들어갑니다:</p>
@@ -440,5 +440,5 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
       </svg>
     </button></h2><h3 id="How-does-Hermes-Agents-Skill-Learning-Loop-actually-work" class="common-anchor-header">헤르메스 에이전트의 스킬 학습 루프는 실제로 어떻게 작동하나요?</h3><p>Hermes는 실행되는 모든 워크플로우(호출된 스크립트, 전달된 인수, 반환 형태 등)를 메모리 트레이스로 기록합니다. 두 개 이상의 세션에서 동일한 패턴이 나타나면 학습 루프가 실행되어 재사용 가능한 스킬, 즉 워크플로우를 반복 가능한 절차로 캡처하는 마크다운 파일을 작성합니다. 그 시점부터는 사용자가 이름을 지정하지 않아도 Hermes가 의도만으로 스킬로 라우팅합니다. 중요한 종속성은 검색입니다. 이전 세션의 흔적을 찾을 수 있을 때만 루프가 실행되기 때문에 키워드 전용 검색은 규모에 따라 병목 현상이 발생합니다.</p>
 <h3 id="Whats-the-difference-between-hybrid-search-and-vector-only-search-for-agent-memory" class="common-anchor-header">상담원 메모리에 대한 하이브리드 검색과 벡터 전용 검색의 차이점은 무엇인가요?</h3><p>벡터 전용 검색은 의미는 잘 처리하지만 정확한 일치 항목을 놓칩니다. 개발자가 ConnectionResetError와 같은 오류 문자열이나 find_similar_task와 같은 함수 이름을 붙여 넣으면 순수 벡터 검색은 의미적으로는 관련이 있지만 잘못된 결과를 반환할 수 있습니다. 하이브리드 검색은 고밀도 벡터(시맨틱)와 BM25(키워드)를 결합하고 상호 순위 융합을 통해 두 결과 세트를 병합합니다. 쿼리가 모호한 의도("Python 동시성")에서 정확한 기호에 이르기까지 다양한 에이전트 메모리의 경우, 하이브리드 검색은 애플리케이션 계층에서 라우팅 로직 없이 한 번의 호출로 양쪽 끝을 모두 처리합니다.</p>
-<h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">Milvus 하이브리드 검색을 Hermes 이외의 AI 에이전트와 함께 사용할 수 있나요?</h3><p>예. 통합 패턴은 에이전트가 검색 스크립트를 호출하고, 스크립트가 Milvus를 쿼리하며, 결과가 소스 메타데이터와 함께 순위가 매겨진 청크로 반환되는 일반적인 방식입니다. 도구 호출이나 셸 실행을 지원하는 모든 에이전트 프레임워크는 동일한 접근 방식을 사용할 수 있습니다. Hermes는 학습 루프가 특히 교차 세션 검색에 의존하여 실행되기 때문에 매우 적합하지만 Milvus는 어떤 에이전트가 호출하는지 알거나 신경 쓰지 않는 에이전트 독립적입니다.</p>
-<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">자체 호스팅 Milvus + Hermes 설정의 월별 비용은 얼마인가요?</h3><p>계층형 스토리지가 있는 2코어/4GB VPS의 단일 노드 Milvus 2.6 독립형은 약 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>$5/월</mi><mi mathvariant="normal">.</mi><mi>OpenAI 텍스트 임베딩-3-소규모 비용</mi><mi>$5/월입니다</mi></mrow><annotation encoding="application/x-tex">.</annotation><annotation encoding="application/x-tex">OpenAI 텍스트 임베딩-3-소액 비용</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">5/월</span><span class="mord">.</span><span class="mord mathnormal">OpenAItext</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">임베딩</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span> 3</span></span></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">-</span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.01968em;">작은 비용</span></span></span></span>1M 토큰당 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">0</span><span class="mord mathnormal" style="margin-right:0.01968em;">.</span></span></span></span>02달러 - 개인 지식 베이스의 경우 월 몇 센트입니다. LLM 추론이 총 비용을 지배하며 검색 스택이 아닌 사용량에 따라 확장됩니다.</p>
+<h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">Milvus 하이브리드 검색을 Hermes 이외의 AI 에이전트와 함께 사용할 수 있나요?</h3><p>예. 통합 패턴은 에이전트가 검색 스크립트를 호출하고, 스크립트가 Milvus를 쿼리하며, 결과가 소스 메타데이터와 함께 순위가 매겨진 청크로 반환되는 일반적인 방식입니다. 도구 호출이나 셸 실행을 지원하는 모든 에이전트 프레임워크는 동일한 접근 방식을 사용할 수 있습니다. Hermes는 학습 루프가 특히 세션 간 검색에 의존하여 실행되기 때문에 매우 적합하지만 Milvus는 어떤 에이전트가 호출하는지 알거나 신경 쓰지 않는 에이전트 독립적입니다.</p>
+<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">자체 호스팅 Milvus + Hermes 설정의 월별 비용은 얼마인가요?</h3><p>계층형 스토리지가 있는 2코어/4GB VPS의 단일 노드 Milvus 2.6 독립형은 월 $5 정도입니다. OpenAI 텍스트 임베딩 3-작은 1백만 토큰당 0.02달러로, 개인 지식창고의 경우 월 몇 센트의 비용이 듭니다. LLM 추론이 총 비용을 지배하며 검색 스택이 아닌 사용량에 따라 확장됩니다.</p>
