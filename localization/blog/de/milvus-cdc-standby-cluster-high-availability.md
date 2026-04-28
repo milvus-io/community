@@ -1,7 +1,7 @@
 ---
 id: milvus-cdc-standby-cluster-high-availability.md
-title: >-
-  Vector Datenbank-Hochverfügbarkeit: Aufbau eines Milvus Standby-Clusters mit
+title: >
+  Vector Database High Availability: How to Build a Milvus Standby Cluster with
   CDC
 author: Cal Huang
 date: 2026-3-26
@@ -15,24 +15,24 @@ meta_keywords: >-
   recovery, change data capture
 meta_title: |
   Vector Database High Availability: Milvus CDC Standby Cluster Guide
-desc: >-
-  Erfahren Sie, wie Sie eine hochverfügbare Vektordatenbank mit Milvus CDC
-  aufbauen. Schritt-für-Schritt-Anleitung für Primär-/Standby-Replikation,
-  Failover und Produktions-DR.
+desc: >
+  Learn how to build a high-availability vector database with Milvus CDC.
+  Step-by-step guide to primary-standby replication, failover, and production
+  DR.
 origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
 ---
-<p>Jede Produktionsdatenbank braucht einen Plan für den Fall, dass etwas schief geht. Relationale Datenbanken verfügen schon seit Jahrzehnten über WAL-Versand, Binlog-Replikation und automatisches Failover. Aber <a href="https://zilliz.com/learn/what-is-a-vector-database">Vektordatenbanken</a> - obwohl sie zur Kerninfrastruktur für KI-Anwendungen geworden sind - holen in dieser Hinsicht noch auf. Die meisten bieten bestenfalls Redundanz auf Knotenebene. Wenn ein kompletter Cluster ausfällt, müssen Sie von Backups wiederherstellen und <a href="https://zilliz.com/learn/vector-index">Vektorindizes</a> von Grund auf neu erstellen - ein Prozess, der Stunden dauern und Tausende von Rechenkosten verursachen kann, da die Neugenerierung von <a href="https://zilliz.com/glossary/vector-embeddings">Einbettungen</a> durch Ihre ML-Pipeline nicht billig ist.</p>
-<p><a href="https://milvus.io/">Milvus</a> verfolgt einen anderen Ansatz. Es bietet eine mehrschichtige Hochverfügbarkeit: Replikate auf Knotenebene für ein schnelles Failover innerhalb eines Clusters, CDC-basierte Replikation für den Schutz auf Clusterebene und über Regionen hinweg sowie ein Backup für die Wiederherstellung des Sicherheitsnetzes. Dieses mehrschichtige Modell ist bei herkömmlichen Datenbanken Standard - Milvus ist die erste große Vektordatenbank, die es auf Vektor-Workloads anwendet.</p>
-<p>Dieser Leitfaden deckt zwei Dinge ab: die Hochverfügbarkeitsstrategien, die für Vektordatenbanken verfügbar sind (damit Sie beurteilen können, was "produktionsreif" tatsächlich bedeutet), und ein praktisches Tutorial für die Einrichtung der Milvus CDC Primär-Standby-Replikation von Grund auf.</p>
+<p>Every production database needs a plan for when things go wrong. Relational databases have had WAL shipping, binlog replication, and automated failover for decades. But <a href="https://zilliz.com/learn/what-is-a-vector-database">vector databases</a> — despite becoming core infrastructure for AI applications — are still catching up on this front. Most offer node-level redundancy at best. If a full cluster goes down, you’re restoring from backups and rebuilding <a href="https://zilliz.com/learn/vector-index">vector indexes</a> from scratch — a process that can take hours and cost thousands in compute, because regenerating <a href="https://zilliz.com/glossary/vector-embeddings">embeddings</a> through your ML pipeline is not cheap.</p>
+<p><a href="https://milvus.io/">Milvus</a> takes a different approach. It offers layered high availability: node-level replicas for fast failover within a cluster, CDC-based replication for cluster-level and cross-region protection, and backup for safety-net recovery. This layered model is standard practice in traditional databases — Milvus is the first major vector database to bring it to vector workloads.</p>
+<p>This guide covers two things: the high-availability strategies available for vector databases (so you can evaluate what “production-ready” actually means), and a hands-on tutorial for setting up Milvus CDC primary-standby replication from scratch.</p>
 <blockquote>
-<p>Dies ist <strong>Teil 1</strong> einer Serie:</p>
+<p>This is <strong>Part 1</strong> of a series:</p>
 <ul>
-<li><strong>Teil 1</strong> (dieser Artikel): Einrichten der Primär-/Standby-Replikation auf neuen Clustern</li>
-<li><strong>Teil 2</strong>: Hinzufügen von CDC zu einem bestehenden Cluster, der bereits Daten hat, mit <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a></li>
-<li><strong>Teil 3</strong>: Verwalten von Failover - Promoten des Standby, wenn der Primary ausfällt</li>
+<li><strong>Part 1</strong> (this article): Setting up primary-standby replication on new clusters</li>
+<li><strong>Part 2</strong>: Adding CDC to an existing cluster that already has data, using <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a></li>
+<li><strong>Part 3</strong>: Managing failover — promoting the standby when the primary goes down</li>
 </ul>
 </blockquote>
-<h2 id="Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="common-anchor-header">Warum ist Hochverfügbarkeit für Vektordatenbanken wichtiger?<button data-href="#Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="anchor-icon" translate="no">
+<h2 id="Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="common-anchor-header">Why Does High Availability Matter More for Vector Databases?<button data-href="#Why-Does-High-Availability-Matter-More-for-Vector-Databases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -47,17 +47,17 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wenn eine herkömmliche SQL-Datenbank ausfällt, verlieren Sie den Zugriff auf strukturierte Datensätze - die Daten selbst können jedoch in der Regel aus vorgelagerten Quellen reimportiert werden. Wenn eine Vektordatenbank ausfällt, ist die Wiederherstellung wesentlich schwieriger.</p>
-<p>Vektordatenbanken speichern <a href="https://zilliz.com/glossary/vector-embeddings">Einbettungen</a> - dichte numerische Darstellungen, die von ML-Modellen erzeugt werden. Um sie wiederherzustellen, muss der gesamte Datensatz die Einbettungspipeline erneut durchlaufen: Laden der Rohdokumente, Chunking, Aufrufen eines <a href="https://zilliz.com/ai-models">Einbettungsmodells</a> und Neuindizierung. Bei einem Datensatz mit Hunderten von Millionen von Vektoren kann dies Tage dauern und Tausende von Dollar an GPU-Rechenleistung kosten.</p>
-<p>In der Zwischenzeit befinden sich die Systeme, die von der <a href="https://zilliz.com/learn/what-is-vector-search">Vektorsuche</a> abhängen, oft in der kritischen Phase:</p>
+    </button></h2><p>When a traditional SQL database goes down, you lose access to structured records — but the data itself can usually be re-imported from upstream sources. When a vector database goes down, recovery is fundamentally harder.</p>
+<p>Vector databases store <a href="https://zilliz.com/glossary/vector-embeddings">embeddings</a> — dense numerical representations generated by ML models. Rebuilding them means re-running your entire dataset through the embedding pipeline: loading raw documents, chunking them, calling an <a href="https://zilliz.com/ai-models">embedding model</a>, and re-indexing everything. For a dataset with hundreds of millions of vectors, this can take days and cost thousands of dollars in GPU compute.</p>
+<p>Meanwhile, the systems that depend on <a href="https://zilliz.com/learn/what-is-vector-search">vector search</a> are often in the critical path:</p>
 <ul>
-<li><strong><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG-Pipelines</a></strong>, die kundenorientierte Chatbots und die Suche antreiben - wenn die Vektordatenbank ausfällt, wird die Abfrage gestoppt und die KI liefert generische oder halluzinierte Antworten.</li>
-<li><strong>Empfehlungsmaschinen</strong>, die Produkt- oder Inhaltsvorschläge in Echtzeit liefern - Ausfallzeiten bedeuten entgangene Einnahmen.</li>
-<li><strong>Betrugserkennungs- und Anomalieüberwachungssysteme</strong>, die sich auf die <a href="https://zilliz.com/glossary/similarity-search">Ähnlichkeitssuche</a> stützen, um verdächtige Aktivitäten zu erkennen - eine Lücke in der Abdeckung schafft ein Fenster der Anfälligkeit.</li>
-<li><strong>Autonome Agentensysteme</strong>, die Vektorspeicher für den Speicher- und Toolabruf verwenden - Agenten versagen oder drehen sich in einer Schleife ohne ihre Wissensbasis.</li>
+<li><strong><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> pipelines</strong> that power customer-facing chatbots and search — if the vector database is down, retrieval stops and the AI returns generic or hallucinated answers.</li>
+<li><strong>Recommendation engines</strong> that serve product or content suggestions in real time — downtime means missed revenue.</li>
+<li><strong>Fraud detection and anomaly monitoring</strong> systems that rely on <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> to flag suspicious activity — a gap in coverage creates a window of vulnerability.</li>
+<li><strong>Autonomous agent systems</strong> that use vector stores for memory and tool retrieval — agents fail or loop without their knowledge base.</li>
 </ul>
-<p>Wenn Sie Vektordatenbanken für einen dieser Anwendungsfälle evaluieren, ist Hochverfügbarkeit keine "Nice-to-have"-Funktion, die man später überprüfen kann. Sie sollte eines der ersten Dinge sein, auf die Sie achten.</p>
-<h2 id="What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="common-anchor-header">Wie sieht Hochverfügbarkeit in der Produktion für eine Vektordatenbank aus?<button data-href="#What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="anchor-icon" translate="no">
+<p>If you’re evaluating vector databases for any of these use cases, high availability isn’t a nice-to-have feature to check later. It should be one of the first things you look at.</p>
+<h2 id="What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="common-anchor-header">What Does Production-Grade HA Look Like for a Vector Database?<button data-href="#What-Does-Production-Grade-HA-Look-Like-for-a-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,25 +72,25 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nicht alle Hochverfügbarkeitsfunktionen sind gleich. Eine Vektordatenbank, die nur Knotenausfälle innerhalb eines einzelnen Clusters bewältigt, ist nicht so "hochverfügbar", wie es ein Produktionssystem erfordert. Echte HA muss drei Schichten abdecken:</p>
+    </button></h2><p>Not all high availability is equal. A vector database that only handles node failures within a single cluster is not “highly available” in the way a production system requires. Real HA needs to cover three layers:</p>
 <table>
 <thead>
-<tr><th>Schicht</th><th>Wovor sie schützt</th><th>Wie es funktioniert</th><th>Wiederherstellungszeit</th><th>Datenverlust</th></tr>
+<tr><th>Layer</th><th>What It Protects Against</th><th>How It Works</th><th>Recovery Time</th><th>Data Loss</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Knotenebene</strong> (Mehrfachreplikate)</td><td>Absturz eines einzelnen Knotens, Hardwareausfall, OOM-Kill, AZ-Ausfall</td><td>Kopiert die gleichen <a href="https://milvus.io/docs/glossary.md">Datensegmente</a> auf mehrere Knoten; andere Knoten absorbieren die Last</td><td>Sofort</td><td>Null</td></tr>
-<tr><td><strong>Cluster-Ebene</strong> (CDC-Replikation)</td><td>Ausfall des gesamten Clusters - fehlerhaftes K8s-Rollout, Namespace-Löschung, Speicherbeschädigung</td><td>Streaming aller Schreibvorgänge an einen Standby-Cluster über das <a href="https://milvus.io/docs/four_layers.md">Write-Ahead-Protokoll</a>; der Standby-Cluster ist immer um Sekunden im Rückstand</td><td>Minuten</td><td>Sekunden</td></tr>
-<tr><td><strong>Sicherheitsnetz</strong> (regelmäßiges Backup)</td><td>Katastrophale Datenbeschädigung, Ransomware, menschliches Versagen, das sich über die Replikation ausbreitet</td><td>Erstellt regelmäßige Snapshots und speichert sie an einem separaten Ort</td><td>Stunden</td><td>Stunden (seit der letzten Sicherung)</td></tr>
+<tr><td><strong>Node-level</strong> (multi-replica)</td><td>A single node crash, hardware failure, OOM kill, AZ failure</td><td>Copies the same <a href="https://milvus.io/docs/glossary.md">data segments</a> across multiple nodes; other nodes absorb the load</td><td>Instant</td><td>Zero</td></tr>
+<tr><td><strong>Cluster-level</strong> (CDC replication)</td><td>Entire cluster goes down — bad K8s rollout, namespace deletion, storage corruption</td><td>Streams every write to a standby cluster via the <a href="https://milvus.io/docs/four_layers.md">Write-Ahead Log</a>; standby is always seconds behind</td><td>Minutes</td><td>Seconds</td></tr>
+<tr><td><strong>Safety net</strong> (periodic backup)</td><td>Catastrophic data corruption, ransomware, human error that propagates through replication</td><td>Takes periodic snapshots and stores them in a separate location</td><td>Hours</td><td>Hours (since last backup)</td></tr>
 </tbody>
 </table>
-<p>Diese Schichten sind komplementär, nicht alternativ. Bei einer Produktionsbereitstellung sollten sie aufeinander aufbauen:</p>
+<p>These layers are complementary, not alternatives. A production deployment should stack them:</p>
 <ol>
-<li><strong><a href="https://milvus.io/docs/replica.md">Multi-Replica</a> zuerst</strong> - behandelt die häufigsten Ausfälle (Knotenabstürze, AZ-Ausfälle) ohne Ausfallzeit und Datenverlust.</li>
-<li><strong><a href="https://milvus.io/docs/milvus-cdc-overview.md">CDC</a> als Nächstes</strong> - schützt vor Ausfällen, die Multireplica nicht bewältigen kann: clusterweite Ausfälle, katastrophale menschliche Fehler. Der Standby-Cluster befindet sich in einer anderen Fehlerdomäne.</li>
-<li><strong><a href="https://milvus.io/docs/milvus_backup_overview.md">Regelmäßige Backups</a></strong> - Ihr Sicherheitsnetz der letzten Instanz. Selbst CDC kann Sie nicht retten, wenn beschädigte Daten auf den Standby-Cluster repliziert werden, bevor Sie es bemerken.</li>
+<li><strong><a href="https://milvus.io/docs/replica.md">Multi-replica</a> first</strong> — handles the most common failure (node crashes, AZ failures) with zero downtime and zero data loss.</li>
+<li><strong><a href="https://milvus.io/docs/milvus-cdc-overview.md">CDC</a> next</strong> — protects against failures that multi-replica can’t: cluster-wide outages, catastrophic human error. The standby cluster is in a different failure domain.</li>
+<li><strong><a href="https://milvus.io/docs/milvus_backup_overview.md">Periodic backups</a> always</strong> — your safety net of last resort. Even CDC can’t save you if corrupted data replicates to the standby before you catch it.</li>
 </ol>
-<p>Fragen Sie sich bei der Bewertung von Vektordatenbanken: Welche dieser drei Schichten unterstützt das Produkt tatsächlich? Die meisten Vektordatenbanken bieten heute nur die erste an. Milvus unterstützt alle drei, wobei CDC eine eingebaute Funktion ist - kein Add-on eines Drittanbieters.</p>
-<h2 id="What-Is-Milvus-CDC-and-How-Does-It-Work" class="common-anchor-header">Was ist Milvus CDC und wie funktioniert es?<button data-href="#What-Is-Milvus-CDC-and-How-Does-It-Work" class="anchor-icon" translate="no">
+<p>When evaluating vector databases, ask: which of these three layers does the product actually support? Most vector databases today only offer the first. Milvus supports all three, with CDC as a built-in feature — not a third-party add-on.</p>
+<h2 id="What-Is-Milvus-CDC-and-How-Does-It-Work" class="common-anchor-header">What Is Milvus CDC and How Does It Work?<button data-href="#What-Is-Milvus-CDC-and-How-Does-It-Work" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,31 +105,33 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Milvus CDC (Change Data Capture)</strong> ist eine integrierte Replikationsfunktion, die das <a href="https://milvus.io/docs/four_layers.md">Write-Ahead Log (WAL)</a> des primären Clusters liest und jeden Eintrag an einen separaten Standby-Cluster weiterleitet. Der Standby-Cluster repliziert die Einträge und erhält am Ende dieselben Daten, in der Regel mit einigen Sekunden Verspätung.</p>
-<p>Das Muster ist in der Datenbankwelt gut etabliert. MySQL hat Binlog-Replikation. PostgreSQL hat WAL-Versand. MongoDB hat eine oplog-basierte Replikation. Dies sind bewährte Techniken, mit denen relationale und Dokumentendatenbanken seit Jahrzehnten in der Produktion laufen. Milvus bietet den gleichen Ansatz für Vektor-Workloads - es ist die erste große <a href="https://zilliz.com/learn/what-is-a-vector-database">Vektordatenbank</a>, die WAL-basierte Replikation als integrierte Funktion anbietet.</p>
-<p>Drei Eigenschaften machen CDC zu einer guten Lösung für die Notfallwiederherstellung:</p>
+    </button></h2><p><strong>Milvus CDC (Change Data Capture)</strong> is a built-in replication feature that reads the primary cluster’s <a href="https://milvus.io/docs/four_layers.md">Write-Ahead Log (WAL)</a> and streams each entry to a separate standby cluster. The standby replays the entries and ends up with the same data, typically seconds behind.</p>
+<p>The pattern is well-established in the database world. MySQL has binlog replication. PostgreSQL has WAL shipping. MongoDB has oplog-based replication. These are proven techniques that have kept relational and document databases running in production for decades. Milvus brings the same approach to vector workloads — it’s the first major <a href="https://zilliz.com/learn/what-is-a-vector-database">vector database</a> to offer WAL-based replication as a built-in feature.</p>
+<p>Three properties make CDC a good fit for disaster recovery:</p>
 <ul>
-<li><strong>Sync mit niedriger Latenz.</strong> CDC überträgt Vorgänge, wenn sie passieren, nicht in geplanten Stapeln. Der Standby bleibt unter normalen Bedingungen nur Sekunden hinter dem Primärserver zurück.</li>
-<li><strong>Geordnete Wiederholung.</strong> Die Vorgänge kommen in der gleichen Reihenfolge beim Standby an, in der sie geschrieben wurden. Die Daten bleiben ohne Abgleich konsistent.</li>
-<li><strong>Checkpoint-Wiederherstellung.</strong> Wenn der CDC-Prozess abstürzt oder das Netzwerk ausfällt, wird er dort fortgesetzt, wo er aufgehört hat. Es werden keine Daten übersprungen oder dupliziert.</li>
+<li><strong>Low-latency sync.</strong> CDC streams operations as they happen, not in scheduled batches. The standby stays seconds behind the primary under normal conditions.</li>
+<li><strong>Ordered replay.</strong> Operations arrive at the standby in the same order they were written. Data stays consistent without reconciliation.</li>
+<li><strong>Checkpoint recovery.</strong> If the CDC process crashes or the network drops, it resumes from where it left off. No data is skipped or duplicated.</li>
 </ul>
-<h3 id="How-Does-the-CDC-Architecture-Work" class="common-anchor-header">Wie funktioniert die CDC-Architektur?</h3><p>Eine CDC-Bereitstellung besteht aus drei Komponenten:</p>
+<h3 id="How-Does-the-CDC-Architecture-Work" class="common-anchor-header">How Does the CDC Architecture Work?</h3><p>A CDC deployment has three components:</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_cdc_standby_cluster_high_availability_1_7c6e5baf76.png" alt="CDC architecture showing Source Cluster with Streaming Nodes and CDC Nodes consuming the WAL, replicating data to the Target Cluster's Proxy layer, which forwards DDL/DCL/DML operations to Streaming Nodes and appends to WAL" class="doc-image" id="cdc-architecture-showing-source-cluster-with-streaming-nodes-and-cdc-nodes-consuming-the-wal,-replicating-data-to-the-target-cluster's-proxy-layer,-which-forwards-ddl/dcl/dml-operations-to-streaming-nodes-and-appends-to-wal" />
-   </span> <span class="img-wrapper"> <span>CDC-Architektur mit Quellcluster mit Streaming-Knoten und CDC-Knoten, die das WAL verbrauchen und Daten an die Proxy-Schicht des Zielclusters replizieren, die DDL/DCL/DML-Operationen an Streaming-Knoten weiterleitet und an das WAL anhängt</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_cdc_standby_cluster_high_availability_1_7c6e5baf76.png" alt="CDC architecture showing Source Cluster with Streaming Nodes and CDC Nodes consuming the WAL, replicating data to the Target Cluster's Proxy layer, which forwards DDL/DCL/DML operations to Streaming Nodes and appends to WAL" class="doc-image" id="cdc-architecture-showing-source-cluster-with-streaming-nodes-and-cdc-nodes-consuming-the-wal,-replicating-data-to-the-target-cluster's-proxy-layer,-which-forwards-ddl/dcl/dml-operations-to-streaming-nodes-and-appends-to-wal" />
+    <span>CDC architecture showing Source Cluster with Streaming Nodes and CDC Nodes consuming the WAL, replicating data to the Target Cluster's Proxy layer, which forwards DDL/DCL/DML operations to Streaming Nodes and appends to WAL</span>
+  </span>
+</p>
 <table>
 <thead>
-<tr><th>Komponente</th><th>Rolle</th></tr>
+<tr><th>Component</th><th>Role</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Primärer Cluster</strong></td><td>Die <a href="https://milvus.io/docs/architecture_overview.md">Milvus-Produktionsinstanz</a>. Alle Lese- und Schreibvorgänge laufen hier ab. Jeder Schreibvorgang wird in der WAL aufgezeichnet.</td></tr>
-<tr><td><strong>CDC-Knoten</strong></td><td>Ein Hintergrundprozess neben dem Primärcluster. Liest WAL-Einträge und leitet sie an den Standby weiter. Läuft unabhängig vom Lese-/Schreibpfad - keine Auswirkungen auf die Abfrage- oder Einfügeleistung.</td></tr>
-<tr><td><strong>Standby-Cluster</strong></td><td>Eine separate Milvus-Instanz, die weitergeleitete WAL-Einträge wiedergibt. Hält dieselben Daten wie die primäre Instanz, mit einer Verzögerung von Sekunden. Kann Leseabfragen bedienen, akzeptiert aber keine Schreibzugriffe.</td></tr>
+<tr><td><strong>Primary cluster</strong></td><td>The production <a href="https://milvus.io/docs/architecture_overview.md">Milvus instance</a>. All reads and writes go here. Every write is recorded in the WAL.</td></tr>
+<tr><td><strong>CDC Node</strong></td><td>A background process alongside the primary. Reads WAL entries and forwards them to the standby. Runs independently from the read/write path — no impact on query or insert performance.</td></tr>
+<tr><td><strong>Standby cluster</strong></td><td>A separate Milvus instance that replays forwarded WAL entries. Holds the same data as the primary, seconds behind. Can serve read queries but does not accept writes.</td></tr>
 </tbody>
 </table>
-<p>Der Ablauf: Schreibzugriffe auf die Primärinstanz → der CDC-Knoten kopiert sie auf die Standby-Instanz → die Standby-Instanz gibt sie wieder. Nichts anderes spricht mit dem Schreibpfad des Standby. Wenn der primäre Knoten ausfällt, verfügt der Standby-Knoten bereits über fast alle Daten und kann befördert werden.</p>
-<h2 id="Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="common-anchor-header">Tutorial: Einrichten eines Milvus CDC Standby-Clusters<button data-href="#Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="anchor-icon" translate="no">
+<p>The flow: writes hit the primary → the CDC Node copies them to the standby → the standby replays them. Nothing else talks to the standby’s write path. If the primary goes down, the standby already has nearly all the data and can be promoted.</p>
+<h2 id="Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="common-anchor-header">Tutorial: Setting Up a Milvus CDC Standby Cluster<button data-href="#Tutorial-Setting-Up-a-Milvus-CDC-Standby-Cluster" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,25 +146,25 @@ origin: 'https://milvus.io/blog/milvus-cdc-standby-cluster-high-availability.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Rest dieses Artikels ist ein praktischer Durchgang. Am Ende werden Sie zwei Milvus-Cluster mit Echtzeit-Replikation zwischen den Clustern in Betrieb haben.</p>
-<h3 id="Prerequisites" class="common-anchor-header">Voraussetzungen</h3><p>Vor dem Start:</p>
+    </button></h2><p>The rest of this article is a hands-on walkthrough. By the end, you’ll have two Milvus clusters running with real-time replication between them.</p>
+<h3 id="Prerequisites" class="common-anchor-header">Prerequisites</h3><p>Before starting:</p>
 <ul>
-<li><strong><a href="https://milvus.io/">Milvus</a> v2.6.6 oder höher.</strong> CDC erfordert diese Version. Der neueste 2.6.x-Patch wird empfohlen.</li>
-<li><strong><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus Operator</a> v1.3.4 oder höher.</strong> Diese Anleitung verwendet den Operator für das Cluster-Management auf Kubernetes.</li>
-<li><strong>Ein laufender Kubernetes-Cluster</strong> mit <code translate="no">kubectl</code> und <code translate="no">helm</code> konfiguriert.</li>
-<li><strong>Python mit <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a></strong> für den Konfigurationsschritt der Replikation.</li>
+<li><strong><a href="https://milvus.io/">Milvus</a> v2.6.6 or later.</strong> CDC requires this version. Latest 2.6.x patch recommended.</li>
+<li><strong><a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus Operator</a> v1.3.4 or later.</strong> This guide uses the Operator for cluster management on Kubernetes.</li>
+<li><strong>A running Kubernetes cluster</strong> with <code translate="no">kubectl</code> and <code translate="no">helm</code> configured.</li>
+<li><strong>Python with <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a></strong> for the replication configuration step.</li>
 </ul>
-<p>Zwei Einschränkungen in der aktuellen Version:</p>
+<p>Two limitations in the current release:</p>
 <table>
 <thead>
-<tr><th>Einschränkung</th><th>Einzelheiten</th></tr>
+<tr><th>Limitation</th><th>Details</th></tr>
 </thead>
 <tbody>
-<tr><td>Einzelne CDC-Replik</td><td>Eine CDC-Replik pro Cluster. Verteilte CDC ist für eine zukünftige Version geplant.</td></tr>
-<tr><td>Kein BulkInsert</td><td><a href="https://milvus.io/docs/import-data.md">BulkInsert</a> wird nicht unterstützt, wenn CDC aktiviert ist. Ebenfalls für ein zukünftiges Release geplant.</td></tr>
+<tr><td>Single CDC replica</td><td>One CDC replica per cluster. Distributed CDC is planned for a future release.</td></tr>
+<tr><td>No BulkInsert</td><td><a href="https://milvus.io/docs/import-data.md">BulkInsert</a> is not supported while CDC is enabled. Also planned for a future release.</td></tr>
 </tbody>
 </table>
-<h3 id="Step-1-Upgrade-the-Milvus-Operator" class="common-anchor-header">Schritt 1: Upgrade des Milvus Operators</h3><p>Aktualisieren Sie den Milvus Operator auf v1.3.4 oder höher:</p>
+<h3 id="Step-1-Upgrade-the-Milvus-Operator" class="common-anchor-header">Step 1: Upgrade the Milvus Operator</h3><p>Upgrade the Milvus Operator to v1.3.4 or later:</p>
 <pre><code translate="no">helm repo add zilliztech-milvus-operator https://zilliztech.github.io/milvus-operator/
 <span class="hljs-comment"># &quot;zilliztech-milvus-operator&quot; has been added to your repositories</span>
 
@@ -187,12 +189,12 @@ helm -n milvus-operator upgrade milvus-operator zilliztech-milvus-operator/milvu
 <span class="hljs-comment"># CRD Documentation can be found in https://github.com/zilliztech/milvus-operator/tree/main/docs/CRD</span>
 <span class="hljs-comment"># Administration Documentation can be found in https://github.com/zilliztech/milvus-operator/tree/main/docs/administration</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Vergewissern Sie sich, dass der Operator-Pod ausgeführt wird:</p>
+<p>Verify the operator pod is running:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods -n milvus-<span class="hljs-keyword">operator</span>
 <span class="hljs-meta"># NAME                             READY   STATUS    RESTARTS   AGE</span>
 <span class="hljs-meta"># milvus-operator-9fc99f88-h2hwz   1/1     Running   0          54s</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Deploy-the-Primary-Cluster" class="common-anchor-header">Schritt 2: Bereitstellen des primären Clusters</h3><p>Erstellen Sie eine YAML-Datei für den primären (Quell-)Cluster. Der Abschnitt <code translate="no">cdc</code> unter <code translate="no">components</code> weist den Operator an, einen CDC-Knoten neben dem Cluster bereitzustellen:</p>
+<h3 id="Step-2-Deploy-the-Primary-Cluster" class="common-anchor-header">Step 2: Deploy the Primary Cluster</h3><p>Create a YAML file for the primary (source) cluster. The <code translate="no">cdc</code> section under <code translate="no">components</code> tells the Operator to deploy a CDC Node alongside the cluster:</p>
 <pre><code translate="no"><span class="hljs-comment"># This is a sample to deploy a milvus cluster with cdc.</span>
 apiVersion: milvus.io/v1beta1
 kind: Milvus
@@ -210,14 +212,14 @@ spec:
   dependencies:
     msgStreamType: woodpecker
 <button class="copy-code-btn"></button></code></pre>
-<p>Die Einstellung <code translate="no">msgStreamType: woodpecker</code> verwendet die in Milvus integrierte <a href="https://milvus.io/docs/four_layers.md">Woodpecker WAL</a> anstelle einer externen Nachrichtenwarteschlange wie Kafka oder Pulsar. Woodpecker ist ein Cloud-natives Write-Ahead-Log, das in Milvus 2.6 eingeführt wurde und die Notwendigkeit einer externen Messaging-Infrastruktur beseitigt.</p>
-<p>Wenden Sie die Konfiguration an:</p>
+<p>The <code translate="no">msgStreamType: woodpecker</code> setting uses Milvus’s built-in <a href="https://milvus.io/docs/four_layers.md">Woodpecker WAL</a> instead of an external message queue like Kafka or Pulsar. Woodpecker is a cloud-native write-ahead log introduced in Milvus 2.6 that removes the need for external messaging infrastructure.</p>
+<p>Apply the configuration:</p>
 <pre><code translate="no">kubectl create namespace milvus
 <span class="hljs-comment"># namespace/milvus created</span>
 kubectl apply -f milvus_source_cluster.yaml
 <span class="hljs-comment"># milvus.milvus.io/source-cluster created</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Warten Sie, bis alle Pods den Status "Running" erreicht haben. Bestätigen Sie, dass der CDC-Pod in Betrieb ist:</p>
+<p>Wait for all pods to reach Running status. Confirm the CDC pod is up:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods -n milvus
 <span class="hljs-meta"># Look for source-cluster-milvus-cdc-xxx in Running state</span>
 <span class="hljs-meta"># NAME                                                READY   STATUS    RESTARTS   AGE</span>
@@ -225,7 +227,7 @@ kubectl apply -f milvus_source_cluster.yaml
 <span class="hljs-meta"># source-cluster-milvus-datanode-85f9f56fd-qgbzq       1/1     Running   0          2m42s</span>
 <span class="hljs-meta"># ...</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Deploy-the-Standby-Cluster" class="common-anchor-header">Schritt 3: Bereitstellen des Standby-Clusters</h3><p>Der Standby-Cluster (Zielcluster) verwendet dieselbe Milvus-Version, enthält aber keine CDC-Komponente - er empfängt nur replizierte Daten:</p>
+<h3 id="Step-3-Deploy-the-Standby-Cluster" class="common-anchor-header">Step 3: Deploy the Standby Cluster</h3><p>The standby (target) cluster uses the same Milvus version but does not include a CDC component — it only receives replicated data:</p>
 <pre><code translate="no"><span class="hljs-comment"># This is a sample to deploy a milvus cluster with cdc.</span>
 apiVersion: milvus.io/v1beta1
 kind: Milvus
@@ -241,11 +243,11 @@ spec:
   dependencies:
     msgStreamType: woodpecker
 <button class="copy-code-btn"></button></code></pre>
-<p>Anwenden:</p>
+<p>Apply:</p>
 <pre><code translate="no">kubectl apply -f milvus_target_cluster.yaml
 <span class="hljs-comment"># milvus.milvus.io/target-cluster created</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Überprüfen Sie, ob alle Pods laufen:</p>
+<p>Verify all pods are running:</p>
 <pre><code translate="no">kubectl <span class="hljs-keyword">get</span> pods -n milvus
 <span class="hljs-meta"># NAME                                                   READY   STATUS    RESTARTS   AGE</span>
 <span class="hljs-meta"># ...</span>
@@ -253,8 +255,8 @@ spec:
 <span class="hljs-meta"># target-cluster-milvus-mixcoord-8649b87c98-btk7m        1/1     Running   0          104m</span>
 <span class="hljs-meta"># ...</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Configure-the-Replication-Relationship" class="common-anchor-header">Schritt 4: Konfigurieren Sie die Replikationsbeziehung</h3><p>Wenn beide Cluster laufen, konfigurieren Sie die Replikationstopologie mit Python und <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a>.</p>
-<p>Definieren Sie die Verbindungsdetails des Clusters und die Namen der physischen Kanäle (pchannel):</p>
+<h3 id="Step-4-Configure-the-Replication-Relationship" class="common-anchor-header">Step 4: Configure the Replication Relationship</h3><p>With both clusters running, configure the replication topology using Python with <a href="https://milvus.io/docs/install-pymilvus.md">pymilvus</a>.</p>
+<p>Define the cluster connection details and physical channel (pchannel) names:</p>
 <pre><code translate="no">source_cluster_addr = <span class="hljs-string">&quot;http://10.98.124.90:19530&quot;</span> <span class="hljs-comment"># example address — replace with your actual Milvus server address</span>
 target_cluster_addr = <span class="hljs-string">&quot;http://10.109.234.172:19530&quot;</span>
 source_cluster_token = <span class="hljs-string">&quot;root:Milvus&quot;</span>
@@ -269,7 +271,7 @@ target_cluster_pchannels = []
     source_cluster_pchannels.append(<span class="hljs-string">f&quot;<span class="hljs-subst">{source_cluster_id}</span>-rootcoord-dml_<span class="hljs-subst">{i}</span>&quot;</span>)
     target_cluster_pchannels.append(<span class="hljs-string">f&quot;<span class="hljs-subst">{target_cluster_id}</span>-rootcoord-dml_<span class="hljs-subst">{i}</span>&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Erstellen Sie die Replikationskonfiguration:</p>
+<p>Build the replication configuration:</p>
 <pre><code translate="no">config = {
     <span class="hljs-string">&quot;clusters&quot;</span>: [
         {
@@ -297,7 +299,7 @@ target_cluster_pchannels = []
     ]
 }
 <button class="copy-code-btn"></button></code></pre>
-<p>Anwenden auf beide Cluster:</p>
+<p>Apply to both clusters:</p>
 <pre><code translate="no">from pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 source_client = MilvusClient(uri=source_cluster_addr, token=source_cluster_token)
@@ -308,15 +310,15 @@ target_client = MilvusClient(uri=target_cluster_addr, token=target_cluster_token
 target_client.update_replicate_configuration(**config)
 target_client.<span class="hljs-built_in">close</span>()
 <button class="copy-code-btn"></button></code></pre>
-<p>Sobald dies gelungen ist, werden inkrementelle Änderungen auf dem primären Cluster automatisch auf den Standby-Cluster repliziert.</p>
-<h3 id="Step-5-Verify-That-Replication-Works" class="common-anchor-header">Schritt 5: Überprüfen Sie, ob die Replikation funktioniert</h3><ol>
-<li>Stellen Sie eine Verbindung zum primären Cluster her, <a href="https://milvus.io/docs/manage-collections.md">erstellen Sie eine Sammlung</a>, <a href="https://milvus.io/docs/insert-update-delete.md">fügen Sie einige Vektoren ein</a> und <a href="https://milvus.io/docs/load-and-release.md">laden Sie sie</a>.</li>
-<li>Führen Sie eine Suche auf dem Primärsystem durch, um zu überprüfen, ob die Daten vorhanden sind.</li>
-<li>Stellen Sie eine Verbindung zum Standby-System her und führen Sie die gleiche Suche durch.</li>
-<li>Wenn der Standby-Server die gleichen Ergebnisse liefert, funktioniert die Replikation.</li>
+<p>Once this succeeds, incremental changes on the primary start replicating to the standby automatically.</p>
+<h3 id="Step-5-Verify-That-Replication-Works" class="common-anchor-header">Step 5: Verify That Replication Works</h3><ol>
+<li>Connect to the primary and <a href="https://milvus.io/docs/manage-collections.md">create a collection</a>, <a href="https://milvus.io/docs/insert-update-delete.md">insert some vectors</a>, and <a href="https://milvus.io/docs/load-and-release.md">load it</a></li>
+<li>Run a search on the primary to confirm the data is there</li>
+<li>Connect to the standby and run the same search</li>
+<li>If the standby returns the same results, replication is working</li>
 </ol>
-<p>Der <a href="https://milvus.io/docs/quickstart.md">Milvus Quickstart</a> deckt die Erstellung von Sammlungen, das Einfügen und die Suche ab, falls Sie eine Referenz benötigen.</p>
-<h2 id="Running-CDC-in-Production" class="common-anchor-header">Ausführen von CDC in der Produktion<button data-href="#Running-CDC-in-Production" class="anchor-icon" translate="no">
+<p>The <a href="https://milvus.io/docs/quickstart.md">Milvus Quickstart</a> covers collection creation, insertion, and search if you need a reference.</p>
+<h2 id="Running-CDC-in-Production" class="common-anchor-header">Running CDC in Production<button data-href="#Running-CDC-in-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -331,27 +333,27 @@ target_client.<span class="hljs-built_in">close</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Das Einrichten von CDC ist der einfachste Teil. Um die Zuverlässigkeit im Laufe der Zeit aufrechtzuerhalten, müssen Sie auf einige operative Bereiche achten.</p>
-<h3 id="Monitor-Replication-Lag" class="common-anchor-header">Replikationsverzögerung überwachen</h3><p>Der Standby-Server hinkt dem primären Server immer etwas hinterher - das liegt in der Natur der asynchronen Replikation. Bei normaler Auslastung beträgt die Verzögerung nur wenige Sekunden. Schreibspitzen, Netzwerküberlastung oder Ressourcenknappheit auf dem Standby-System können jedoch dazu führen, dass er größer wird.</p>
-<p>Verfolgen Sie die Verzögerung als Metrik und schlagen Sie Alarm. Ein Lag, der wächst, ohne sich zu erholen, bedeutet normalerweise, dass der CDC-Knoten nicht mit dem Schreibdurchsatz mithalten kann. Überprüfen Sie zunächst die Netzwerkbandbreite zwischen den Clustern und überlegen Sie dann, ob der Standby-Knoten mehr Ressourcen benötigt.</p>
-<h3 id="Use-the-Standby-for-Read-Scaling" class="common-anchor-header">Nutzen Sie den Standby für Read Scaling</h3><p>Der Standby-Knoten ist nicht nur ein kaltes Backup, das untätig bleibt, bis der Katastrophenfall eintritt. Er nimmt <a href="https://milvus.io/docs/single-vector-search.md">Such- und Abfrageanfragen</a> an, während die Replikation aktiv ist - nur Schreibvorgänge werden blockiert. Dies eröffnet praktische Einsatzmöglichkeiten:</p>
+    </button></h2><p>Setting up CDC is the straightforward part. Keeping it reliable over time requires attention to a few operational areas.</p>
+<h3 id="Monitor-Replication-Lag" class="common-anchor-header">Monitor Replication Lag</h3><p>The standby is always slightly behind the primary — that’s inherent to asynchronous replication. Under normal load, the lag is a few seconds. But write spikes, network congestion, or resource pressure on the standby can cause it to grow.</p>
+<p>Track lag as a metric and alert on it. A lag that grows without recovering usually means the CDC Node can’t keep up with write throughput. Check network bandwidth between clusters first, then consider whether the standby needs more resources.</p>
+<h3 id="Use-the-Standby-for-Read-Scaling" class="common-anchor-header">Use the Standby for Read Scaling</h3><p>The standby isn’t just a cold backup sitting idle until disaster strikes. It accepts <a href="https://milvus.io/docs/single-vector-search.md">search and query requests</a> while replication is active — only writes are blocked. This opens up practical uses:</p>
 <ul>
-<li>Umleitung von <a href="https://zilliz.com/glossary/similarity-search">Batch-ähnlichen Such-</a> oder Analyse-Workloads auf den Standby-Server</li>
-<li>Aufteilung des Leseverkehrs während der Spitzenzeiten, um den Druck auf den Primärserver zu verringern</li>
-<li>Ausführen teurer Abfragen (große Top-K, gefilterte Suchen in großen Sammlungen) ohne Beeinträchtigung der Schreiblatenz in der Produktion</li>
+<li>Route batch <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> or analytics workloads to the standby</li>
+<li>Split read traffic during peak hours to reduce pressure on the primary</li>
+<li>Run expensive queries (large top-K, filtered searches across big collections) without affecting production write latency</li>
 </ul>
-<p>Dadurch wird Ihre DR-Infrastruktur zu einem Leistungsvorteil. Der Standby verdient seinen Unterhalt auch dann, wenn nichts kaputt ist.</p>
-<h3 id="Size-the-Standby-Correctly" class="common-anchor-header">Richtige Größe des Standbys</h3><p>Der Standby-Server wiederholt alle Schreibvorgänge des Primärspeichers, sodass er ähnliche Rechen- und Speicherressourcen benötigt. Wenn Sie auch Lesevorgänge an sie weiterleiten, sollten Sie diese zusätzliche Last berücksichtigen. Die Speicheranforderungen sind identisch, da sie dieselben Daten enthält.</p>
-<h3 id="Test-Failover-Before-You-Need-It" class="common-anchor-header">Testen Sie Failover, bevor Sie es brauchen</h3><p>Warten Sie nicht auf einen echten Ausfall, um festzustellen, dass Ihr Failover-Prozess nicht funktioniert. Führen Sie regelmäßig Testläufe durch:</p>
+<p>This turns your DR infrastructure into a performance asset. The standby earns its keep even when nothing is broken.</p>
+<h3 id="Size-the-Standby-Correctly" class="common-anchor-header">Size the Standby Correctly</h3><p>The standby replays every write from the primary, so it needs similar compute and memory resources. If you’re also routing reads to it, account for that additional load. Storage requirements are identical — it holds the same data.</p>
+<h3 id="Test-Failover-Before-You-Need-It" class="common-anchor-header">Test Failover Before You Need It</h3><p>Don’t wait for a real outage to find out your failover process doesn’t work. Run periodic drills:</p>
 <ol>
-<li>Stoppen Sie die Schreibvorgänge auf dem Primärserver</li>
-<li>Warten Sie, bis der Standby-Server aufgeholt hat (Lag → 0)</li>
-<li>Hochstufung des Standbys</li>
-<li>Überprüfen Sie, ob die Abfragen die erwarteten Ergebnisse liefern.</li>
-<li>Umkehrung des Prozesses</li>
+<li>Stop writes to the primary</li>
+<li>Wait for the standby to catch up (lag → 0)</li>
+<li>Promote the standby</li>
+<li>Verify queries return expected results</li>
+<li>Reverse the process</li>
 </ol>
-<p>Messen Sie, wie lange jeder Schritt dauert, und dokumentieren Sie dies. Ziel ist es, die Ausfallsicherung zu einem Routineverfahren mit bekanntem Zeitplan zu machen - nicht zu einer stressigen Improvisation um 3 Uhr morgens. Teil 3 dieser Serie behandelt den Failover-Prozess im Detail.</p>
-<h2 id="Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="common-anchor-header">Sie wollen CDC nicht selbst verwalten? Zilliz Cloud kümmert sich darum<button data-href="#Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="anchor-icon" translate="no">
+<p>Measure how long each step takes and document it. The goal is to make failover a routine procedure with known timing — not a stressful improvisation at 3 AM. Part 3 of this series covers the failover process in detail.</p>
+<h2 id="Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="common-anchor-header">Don’t Want to Manage CDC Yourself? Zilliz Cloud Handles It<button data-href="#Dont-Want-to-Manage-CDC-Yourself-Zilliz-Cloud-Handles-It" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -366,29 +368,29 @@ target_client.<span class="hljs-built_in">close</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Das Einrichten und Betreiben der CDC-Replikation von Milvus ist zwar sehr leistungsfähig, bringt aber auch einen gewissen Aufwand mit sich: Sie müssen zwei Cluster verwalten, den Zustand der Replikation überwachen, Failover-Runbooks verwalten und die Infrastruktur über Regionen hinweg pflegen. Für Teams, die eine produktionsgerechte HA ohne den operativen Aufwand wünschen, bietet <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) dies sofort nach dem Auspacken.</p>
-<p><strong>Global Cluster</strong> ist das Hauptmerkmal von Zilliz Cloud. Damit können Sie eine Milvus-Bereitstellung über mehrere Regionen hinweg - Nordamerika, Europa, Asien-Pazifik und mehr - als einen einzigen logischen Cluster betreiben. Unter der Haube kommt dieselbe CDC/WAL-Replikationstechnologie zum Einsatz, die in diesem Artikel beschrieben wurde, allerdings vollständig verwaltet:</p>
+    </button></h2><p>Setting up and operating CDC replication of Milvus is powerful, but it comes with operational overhead: you manage two clusters, monitor replication health, handle failover runbooks, and maintain the infrastructure across regions. For teams that want production-grade HA without the operational burden, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) provides this out of the box.</p>
+<p><strong>Global Cluster</strong> is the headline feature of Zilliz Cloud. It lets you run a Milvus deployment spanning multiple regions — North America, Europe, Asia-Pacific, and more— as a single logical cluster. Under the hood, it uses the same CDC/WAL replication technology described in this article, but fully managed:</p>
 <table>
 <thead>
-<tr><th>Leistungsumfang</th><th>Selbstverwaltete CDC (dieser Artikel)</th><th>Zilliz Cloud Globaler Cluster</th></tr>
+<tr><th>Capability</th><th>Self-Managed CDC (this article)</th><th>Zilliz Cloud Global Cluster</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Replikation</strong></td><td>Sie konfigurieren und überwachen</td><td>Automatisierte, asynchrone CDC-Pipeline</td></tr>
-<tr><td><strong>Ausfallsicherung</strong></td><td>Manuelles Runbook</td><td>Automatisiert - keine Code-Änderungen, keine Aktualisierung der Verbindungszeichenfolge</td></tr>
-<tr><td><strong>Selbstheilung</strong></td><td>Sie stellen den ausgefallenen Cluster neu bereit</td><td>Automatisch: erkennt den veralteten Zustand, setzt ihn zurück und baut ihn als neuen sekundären Cluster neu auf</td></tr>
-<tr><td><strong>Regionsübergreifend</strong></td><td>Sie stellen beide Cluster bereit und verwalten sie</td><td>Integrierte Multi-Region mit lokalem Lesezugriff</td></tr>
-<tr><td><strong>RPO</strong></td><td>Sekunden (abhängig von Ihrer Überwachung)</td><td>Sekunden (ungeplant) / Null (geplante Umschaltung)</td></tr>
-<tr><td><strong>RTO</strong></td><td>Minuten (hängt von Ihrem Runbook ab)</td><td>Minuten (automatisiert)</td></tr>
+<tr><td><strong>Replication</strong></td><td>You configure and monitor</td><td>Automated, async CDC pipeline</td></tr>
+<tr><td><strong>Failover</strong></td><td>Manual runbook</td><td>Automated — no code changes, no connection string updates</td></tr>
+<tr><td><strong>Self-healing</strong></td><td>You re-provision the failed cluster</td><td>Automatic: detects stale state, resets, and rebuilds as a fresh secondary</td></tr>
+<tr><td><strong>Cross-region</strong></td><td>You deploy and manage both clusters</td><td>Built-in multi-region with local read access</td></tr>
+<tr><td><strong>RPO</strong></td><td>Seconds (depends on your monitoring)</td><td>Seconds (unplanned) / Zero (planned switchover)</td></tr>
+<tr><td><strong>RTO</strong></td><td>Minutes (depends on your runbook)</td><td>Minutes (automated)</td></tr>
 </tbody>
 </table>
-<p>Über Global Cluster hinaus umfasst der Business Critical-Plan zusätzliche DR-Funktionen:</p>
+<p>Beyond Global Cluster, the Business Critical plan includes additional DR features:</p>
 <ul>
-<li><strong>Point-in-Time Recovery (PITR)</strong> - Rollback einer Sammlung zu einem beliebigen Zeitpunkt innerhalb des Aufbewahrungsfensters, nützlich für die Wiederherstellung von versehentlich gelöschten oder beschädigten Daten, die auf den Standby-Server repliziert werden.</li>
-<li><strong>Regionsübergreifende Sicherung</strong> - automatische, fortlaufende Sicherungsreplikation in eine Zielregion. Die Wiederherstellung auf neuen Clustern dauert nur Minuten.</li>
-<li><strong>99,99 % SLA für die Betriebszeit</strong> - unterstützt durch eine Multi-AZ-Bereitstellung mit mehreren Replikaten.</li>
+<li><strong>Point-in-Time Recovery (PITR)</strong> — roll back a collection to any moment within the retention window, useful for recovering from accidental deletes or data corruption that replicates to the standby.</li>
+<li><strong>Cross-region backup</strong> — automated, ongoing backup replication to a destination region. Restoration to new clusters takes minutes.</li>
+<li><strong>99.99% uptime SLA</strong> — backed by multi-AZ deployment with multiple replicas.</li>
 </ul>
-<p>Wenn Sie Vektorsuche in der Produktion betreiben und DR eine Anforderung ist, lohnt es sich, Zilliz Cloud neben dem selbstverwalteten Milvus-Ansatz zu evaluieren. <a href="https://zilliz.com/contact-sales">Kontaktieren Sie das Zilliz-Team</a> für weitere Informationen.</p>
-<h2 id="Whats-Next" class="common-anchor-header">Was kommt als Nächstes?<button data-href="#Whats-Next" class="anchor-icon" translate="no">
+<p>If you’re running vector search in production and DR is a requirement, it’s worth evaluating Zilliz Cloud alongside the self-managed Milvus approach. <a href="https://zilliz.com/contact-sales">Contact the Zilliz team</a> for details.</p>
+<h2 id="Whats-Next" class="common-anchor-header">What’s Next<button data-href="#Whats-Next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,26 +405,26 @@ target_client.<span class="hljs-built_in">close</span>()
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In diesem Artikel wurde die HA-Landschaft für Vektordatenbanken behandelt und der Aufbau eines Primär-/Standby-Paares von Grund auf erläutert. Als nächstes folgt:</p>
+    </button></h2><p>This article covered the HA landscape for vector databases and walked through building a primary-standby pair from scratch. Coming next:</p>
 <ul>
-<li><strong>Teil 2</strong>: Hinzufügen von CDC zu einem bestehenden Milvus-Cluster, das bereits Daten enthält, unter Verwendung von <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a> zum Seeden des Standby, bevor die Replikation aktiviert wird</li>
-<li><strong>Teil 3</strong>: Verwalten des Failover - Promoten des Standby, Umleiten des Datenverkehrs und Wiederherstellen des ursprünglichen primären Systems</li>
+<li><strong>Part 2</strong>: Adding CDC to an existing Milvus cluster that already has data, using <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a> to seed the standby before enabling replication</li>
+<li><strong>Part 3</strong>: Managing failover — promoting the standby, redirecting traffic, and recovering the original primary</li>
 </ul>
-<p>Bleiben Sie dran.</p>
+<p>Stay tuned.</p>
 <hr>
-<p>Wenn Sie <a href="https://milvus.io/">Milvus</a> in der Produktion einsetzen und über Disaster Recovery nachdenken, würden wir Ihnen gerne helfen:</p>
+<p>If you’re running <a href="https://milvus.io/">Milvus</a> in production and thinking about disaster recovery, we’d love to help:</p>
 <ul>
-<li>Treten Sie der <a href="https://slack.milvus.io/">Milvus-Slack-Community</a> bei, um Fragen zu stellen, Ihre HA-Architektur mit anderen zu teilen und von anderen Teams zu lernen, die Milvus in großem Maßstab betreiben.</li>
-<li><a href="https://milvus.io/office-hours">Buchen Sie eine kostenlose 20-minütige Milvus-Sprechstunde</a>, um Ihr DR-Setup durchzugehen - egal ob es sich um die CDC-Konfiguration, die Failover-Planung oder die Bereitstellung mehrerer Regionen handelt.</li>
-<li>Wenn Sie die Einrichtung der Infrastruktur lieber überspringen und direkt mit der produktionsbereiten Hochverfügbarkeit beginnen möchten, bietet <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (verwaltetes Milvus) eine regionsübergreifende Hochverfügbarkeit durch die Global Cluster-Funktion - ohne manuelle CDC-Einrichtung.</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to ask questions, share your HA architecture, and learn from other teams running Milvus at scale.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your DR setup — whether it’s CDC configuration, failover planning, or multi-region deployment.</li>
+<li>If you’d rather skip the infrastructure setup and jump straight to production-ready HA, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers cross-region high availability through its Global Cluster feature — no manual CDC setup needed.</li>
 </ul>
 <hr>
-<p>Ein paar Fragen, die auftauchen, wenn Teams mit der Einrichtung der Hochverfügbarkeit von Vector-Datenbanken beginnen:</p>
-<p><strong>F: Verlangsamt CDC den Primärcluster?</strong></p>
-<p>Nein. Der CDC-Knoten liest die WAL-Protokolle asynchron und unabhängig vom Lese-/Schreibpfad. Er konkurriert nicht mit Abfragen oder Einfügungen um Ressourcen auf dem primären Cluster. Sie werden keinen Leistungsunterschied feststellen, wenn CDC aktiviert ist.</p>
-<p><strong>F: Kann CDC Daten replizieren, die bereits vor der Aktivierung vorhanden waren?</strong></p>
-<p>Nein - CDC erfasst nur Änderungen ab dem Zeitpunkt, an dem es aktiviert wurde. Um vorhandene Daten in den Standby zu bringen, verwenden Sie <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a>, um den Standby zuerst zu seeden und dann CDC für die laufende Replikation zu aktivieren. Teil 2 dieser Serie behandelt diesen Arbeitsablauf.</p>
-<p><strong>F: Brauche ich CDC noch, wenn ich bereits Multi-Replica aktiviert habe?</strong></p>
-<p>Sie schützen vor unterschiedlichen Ausfallmodi. <a href="https://milvus.io/docs/replica.md">Multi-Replica</a> behält Kopien der gleichen <a href="https://milvus.io/docs/glossary.md">Segmente</a> über Knoten innerhalb eines Clusters hinweg - großartig bei Knotenausfällen, nutzlos, wenn der gesamte Cluster weg ist (schlechte Bereitstellung, AZ-Ausfall, Namespace-Löschung). CDC hält einen separaten Cluster in einer anderen Fehlerdomäne mit nahezu Echtzeitdaten. Für alles, was über eine Entwicklungsumgebung hinausgeht, brauchen Sie beides.</p>
-<p><strong>F: Wie lässt sich Milvus CDC mit der Replikation in anderen Vektordatenbanken vergleichen?</strong></p>
-<p>Die meisten Vektordatenbanken bieten heute Redundanz auf Knotenebene (gleichbedeutend mit Multireplika), aber keine Replikation auf Clusterebene. Milvus ist derzeit die einzige große Vektordatenbank mit integrierter WAL-basierter CDC-Replikation - demselben bewährten Muster, das relationale Datenbanken wie PostgreSQL und MySQL seit Jahrzehnten verwenden. Wenn eine cluster- oder regionsübergreifende Ausfallsicherung erforderlich ist, ist dies ein wichtiges Unterscheidungsmerkmal, das es zu bewerten gilt.</p>
+<p>A few questions that come up when teams start setting up vector database high availability:</p>
+<p><strong>Q: Does CDC slow down the primary cluster?</strong></p>
+<p>No. The CDC Node reads WAL logs asynchronously, independent from the read/write path. It doesn’t compete with queries or inserts for resources on the primary. You won’t see a performance difference with CDC enabled.</p>
+<p><strong>Q: Can CDC replicate data that existed before it was enabled?</strong></p>
+<p>No — CDC only captures changes from the point it’s enabled. To bring existing data into the standby, use <a href="https://milvus.io/docs/milvus_backup_overview.md">Milvus Backup</a> to seed the standby first, then enable CDC for ongoing replication. Part 2 of this series covers this workflow.</p>
+<p><strong>Q: Do I still need CDC if I already have multi-replica enabled?</strong></p>
+<p>They protect against different failure modes. <a href="https://milvus.io/docs/replica.md">Multi-replica</a> keeps copies of the same <a href="https://milvus.io/docs/glossary.md">segments</a> across nodes within one cluster — great for node failures, useless when the entire cluster is gone (bad deployment, AZ outage, namespace deletion). CDC keeps a separate cluster in a different failure domain with near-real-time data. For anything beyond a dev environment, you want both.</p>
+<p><strong>Q: How does Milvus CDC compare to replication in other vector databases?</strong></p>
+<p>Most vector databases today offer node-level redundancy (equivalent to multi-replica) but lack cluster-level replication. Milvus is currently the only major vector database with built-in WAL-based CDC replication — the same proven pattern that relational databases like PostgreSQL and MySQL have used for decades. If cross-cluster or cross-region failover is a requirement, this is a meaningful differentiator to evaluate.</p>

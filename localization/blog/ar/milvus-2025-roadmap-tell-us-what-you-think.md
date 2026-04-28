@@ -1,20 +1,21 @@
 ---
 id: milvus-2025-roadmap-tell-us-what-you-think.md
-title: خارطة طريق ميلفوس 2025 - أخبرنا برأيك
+title: |
+  Milvus 2025 Roadmap - Tell Us What You Think
 author: 'Fendy Feng, Field Zhang'
 date: 2025-03-27T00:00:00.000Z
 desc: >-
-  في عام 2025، سنقوم بطرح إصدارين رئيسيين هما Milvus 2.6 و Milvus 3.0، والعديد
-  من الميزات التقنية الأخرى. نرحب بك لمشاركة أفكارك معنا.
+  In 2025, we’re rolling out two major versions, Milvus 2.6 and Milvus 3.0, and
+  many other technical features. We welcome you to share your thoughts with us.
 cover: assets.zilliz.com/2025_roadmap_04e6c5d1c3.png
 tag: Announcements
 recommend: true
 canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think.md'
 ---
-<p>مرحبًا بمستخدمي Milvus والمساهمين!</p>
-<p>نحن متحمسون لمشاركة <a href="https://milvus.io/docs/roadmap.md"><strong>خارطة طريق ميلفوس 2025</strong></a> معكم. 🚀 تسلط هذه الخطة التقنية الضوء على الميزات والتحسينات الرئيسية التي نقوم ببنائها لجعل Milvus أكثر قوة لتلبية احتياجات البحث المتجه.</p>
-<p>ولكن هذه مجرد البداية - نريد آراءكم! تساعد ملاحظاتك في تشكيل Milvus، مما يضمن تطوره لمواجهة تحديات العالم الحقيقي. أخبرنا برأيك وساعدنا في تحسين خارطة الطريق بينما نمضي قدمًا.</p>
-<h2 id="The-Current-Landscape" class="common-anchor-header">المشهد الحالي<button data-href="#The-Current-Landscape" class="anchor-icon" translate="no">
+<p>Hey, Milvus users and contributors!</p>
+<p>We’re excited to share our <a href="https://milvus.io/docs/roadmap.md"><strong>Milvus 2025 roadmap</strong></a> with you. 🚀 This technical plan highlights the key features and improvements we’re building to make Milvus even more powerful for your vector search needs.</p>
+<p>But this is just the beginning—we want your insights! Your feedback helps shape Milvus, ensuring it evolves to meet real-world challenges. Let us know what you think and help us refine the roadmap as we move forward.</p>
+<h2 id="The-Current-Landscape" class="common-anchor-header">The Current Landscape<button data-href="#The-Current-Landscape" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -29,9 +30,9 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>على مدار العام الماضي، رأينا العديد منكم ينشئ تطبيقات مذهلة في مجال RAG وتطبيقات الوكلاء باستخدام Milvus، مستفيدين من العديد من ميزاتنا الشائعة، مثل تكامل النموذج والبحث في النص الكامل والبحث المختلط. لقد قدمت تطبيقاتكم رؤى قيمة حول متطلبات البحث المتجه في العالم الحقيقي.</p>
-<p>مع تطور تقنيات الذكاء الاصطناعي، أصبحت حالات استخدامك أكثر تعقيدًا - من البحث المتجه الأساسي إلى التطبيقات المعقدة متعددة الوسائط التي تشمل الوكلاء الأذكياء والأنظمة المستقلة والذكاء الاصطناعي المجسد. تعمل هذه التحديات التقنية على توجيه خارطة طريقنا بينما نواصل تطوير Milvus لتلبية احتياجاتك.</p>
-<h2 id="Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="common-anchor-header">إصداران رئيسيان في عام 2025: ميلفوس 2.6 وميلفوس 3.0<button data-href="#Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="anchor-icon" translate="no">
+    </button></h2><p>Over the past year, we’ve seen many of you build impressive RAG and agent applications with Milvus, leveraging many of our popular features, such as our model integration, full-text search, and hybrid search. Your implementations have provided valuable insights into real-world vector search requirements.</p>
+<p>As AI technologies evolve, your use cases are becoming more sophisticated - from basic vector search to complex multimodal applications spanning intelligent agents, autonomous systems, and embodied AI. These technical challenges are informing our roadmap as we continue to develop Milvus to meet your needs.</p>
+<h2 id="Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="common-anchor-header">Two Major Releases in 2025: Milvus 2.6 and Milvus 3.0<button data-href="#Two-Major-Releases-in-2025-Milvus-26-and-Milvus-30" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -46,24 +47,24 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>في عام 2025، سنطرح إصدارين رئيسيين: Milvus 2.6 (منتصف العام الميلادي 25) و Milvus 3.0 (نهاية 2025).</p>
-<p>يركز<strong>الإصدار Milvus 2.6</strong> على تحسينات البنية الأساسية التي كنتم تطلبونها:</p>
+    </button></h2><p>In 2025, we’re rolling out two major versions: Milvus 2.6 (Middle of CY25) and Milvus 3.0 (end of 2025).</p>
+<p><strong>Milvus 2.6</strong> focuses on core architecture improvements you’ve been asking for:</p>
 <ul>
-<li><p>نشر أبسط مع عدد أقل من التبعيات (وداعًا لصداع النشر!)</p></li>
-<li><p>خطوط أنابيب استيعاب بيانات أسرع</p></li>
-<li><p>تكاليف تخزين أقل (نسمع مخاوفك بشأن تكلفة الإنتاج)</p></li>
-<li><p>معالجة أفضل لعمليات البيانات واسعة النطاق (حذف/تعديل)</p></li>
-<li><p>بحث قياسي أكثر كفاءة وبحث بالنص الكامل</p></li>
-<li><p>دعم لأحدث نماذج التضمين التي تعمل بها</p></li>
+<li><p>Simpler deployment with fewer dependencies (goodbye, deployment headaches!)</p></li>
+<li><p>Faster data ingestion pipelines</p></li>
+<li><p>Lower storage costs (we hear your production cost concerns)</p></li>
+<li><p>Better handling of large-scale data operations (delete/modify)</p></li>
+<li><p>More efficient scalar and full-text search</p></li>
+<li><p>Support for the latest embedding models you’re working with</p></li>
 </ul>
-<p><strong>ميلفوس 3.0</strong> هو تطورنا المعماري الأكبر، حيث نقدم نظام بحيرة البيانات المتجهة من أجل</p>
+<p><strong>Milvus 3.0</strong> is our bigger architectural evolution, introducing a vector data lake system for:</p>
 <ul>
-<li><p>تكامل سلس لخدمات الذكاء الاصطناعي</p></li>
-<li><p>قدرات بحث من المستوى التالي</p></li>
-<li><p>إدارة بيانات أكثر قوة</p></li>
-<li><p>التعامل بشكل أفضل مع مجموعات البيانات الضخمة غير المتصلة بالإنترنت التي تعمل عليها</p></li>
+<li><p>Seamless AI service integration</p></li>
+<li><p>Next-level search capabilities</p></li>
+<li><p>More robust data management</p></li>
+<li><p>Better handling of those massive offline datasets you’re working with</p></li>
 </ul>
-<h2 id="Technical-Features-Were-Planning---We-Need-Your-Feedback" class="common-anchor-header">الميزات التقنية التي نخطط لها - نحن بحاجة إلى ملاحظاتك<button data-href="#Technical-Features-Were-Planning---We-Need-Your-Feedback" class="anchor-icon" translate="no">
+<h2 id="Technical-Features-Were-Planning---We-Need-Your-Feedback" class="common-anchor-header">Technical Features We’re Planning - We Need Your Feedback<button data-href="#Technical-Features-Were-Planning---We-Need-Your-Feedback" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -78,28 +79,28 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>فيما يلي الميزات التقنية الرئيسية التي نخطط لإضافتها إلى ميلفوس.</p>
+    </button></h2><p>Below are key technical features we are planning to add to Milvus.</p>
 <table>
 <thead>
-<tr><th><strong>مجال الميزات الرئيسية</strong></th><th><strong>الميزات التقنية</strong></th></tr>
+<tr><th><strong>Key Feature Area</strong></th><th><strong>Technical Features</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>معالجة البيانات غير المهيكلة القائمة على الذكاء الاصطناعي</strong></td><td>- إدخال/إخراج البيانات: تكامل أصلي مع خدمات النماذج الرئيسية لاستيعاب النصوص الأولية<br>- معالجة البيانات الأصلية: دعم النص/مرجع URL لمعالجة البيانات الخام<br>- دعم الموتر: تنفيذ قائمة المتجهات (لسيناريوهات كولبيرت/كوبالي/فيديو)<br>- أنواع البيانات الموسعة: التاريخ والوقت والخريطة ودعم نظم المعلومات الجغرافية بناءً على المتطلبات<br>- البحث التكراري: تنقيح متجه الاستعلام من خلال ملاحظات المستخدم</td></tr>
-<tr><td><strong>تحسينات في جودة البحث والأداء</strong></td><td>- المطابقة المتقدمة: إمكانيات مطابقة العبارات والمطابقة المتعددة<br>- ترقية المُحلِّل: تحسين المُحلِّل مع دعم موسع للرموز الرمزية وتحسين إمكانية المراقبة<br>- تحسين JSON: تصفية أسرع من خلال تحسين الفهرسة<br>- فرز التنفيذ: ترتيب النتائج المستند إلى الحقل العددي<br>- أداة إعادة تصنيف متقدمة: إعادة الترتيب المستند إلى النموذج ووظائف التسجيل المخصصة<br>- البحث التكراري: تنقيح متجه الاستعلام من خلال ملاحظات المستخدم</td></tr>
-<tr><td><strong>مرونة إدارة البيانات</strong></td><td>- تغيير المخطط: إضافة/حذف حقل، وتعديل طول متغير الشار<br>- عمليات التجميعات العددية: عمليات العد/التباين/الحد الأدنى/الحد الأقصى<br>- دعم UDF: دعم الدالة المعرفة من قبل المستخدم<br>- إصدار البيانات: نظام التراجع المستند إلى اللقطات<br>- تجميع البيانات: التجميع المشترك من خلال التكوين<br>- أخذ عينات البيانات: الحصول على نتائج سريعة بناءً على بيانات أخذ العينات</td></tr>
-<tr><td><strong>التحسينات المعمارية</strong></td><td>- عقدة الدفق: استيعاب البيانات التدريجي المبسط للبيانات الإضافية<br>- MixCoord: بنية منسق موحد<br>- استقلالية مخزن السجل: تقليل التبعيات الخارجية مثل بولسار<br>- إلغاء البيانات المكررة PK: إلغاء تكرار المفتاح الأساسي العالمي</td></tr>
-<tr><td><strong>كفاءة التكلفة وتحسينات البنية</strong></td><td>- التخزين المتدرج: فصل البيانات الساخنة/الباردة لتقليل تكلفة التخزين<br>- سياسة إخلاء البيانات: يمكن للمستخدمين تحديد سياسة إخلاء البيانات الخاصة بهم<br>- تحديثات مجمعة: دعم تعديلات القيمة الخاصة بالحقل، و ETL، وما إلى ذلك<br>- كبير TopK: إرجاع مجموعات البيانات الضخمة<br>- VTS GA: الاتصال بمصادر مختلفة للبيانات<br>- التكميم المتقدم: تحسين استهلاك الذاكرة والأداء استنادًا إلى تقنيات التكميم<br>- مرونة الموارد: توسيع نطاق الموارد ديناميكيًا لاستيعاب أحمال الكتابة وأحمال القراءة وأحمال مهام الخلفية المتفاوتة</td></tr>
+<tr><td><strong>AI-Driven Unstructured Data Processing</strong></td><td>- Data-In/Out: Native integration with major model services for raw text ingestion<br>- Original Data Handling: Text/URL reference support for raw data processing<br>- Tensor Support: Vector list implementation (for ColBERT/CoPali/Video scenarios)<br>- Extended Data Types: DateTime, Map, GIS support based on requirements<br>- Iterative Search: Query vector refinement through user‘s feedback</td></tr>
+<tr><td><strong>Search Quality &amp; Performance Improvements</strong></td><td>- Advanced Matching: phrase_match &amp; multi_match capabilities<br>- Analyzer Upgrade: Enhance Analyzer with expanded tokenizer support and improved observability<br>- JSON Optimization: Faster filtering through improved indexing<br>- Execution Sorting: Scalar field-based result ordering<br>- Advanced Reranker: Model-based reranking &amp; custom scoring functions<br>- Iterative Search: Query vector refinement through user‘s feedback</td></tr>
+<tr><td><strong>Data Management Flexibility</strong></td><td>- Schema Change: Add/delete field, modify varchar length<br>- Scalar Aggregations: count/distinct/min/max operations<br>- Support UDF: Support user-defined function<br>- Data Versioning: Snapshot-based rollback system<br>- Data Clustering: Co-location through configuration<br>- Data Sampling: Fast get results based on sampling data</td></tr>
+<tr><td><strong>Architectural Improvements</strong></td><td>- Stream Node: Simplified incremental data ingestion<br>- MixCoord: Unified coordinator architecture<br>- Logstore Independence: Reduced external dependencies like pulsar<br>- PK Deduplication: Global primary key deduplication</td></tr>
+<tr><td><strong>Cost Efficiency &amp; Architecture Improvements</strong></td><td>- Tiered Storage: Hot/cold data separation for lower storage cost<br>- Data Evict Policy: Users can define their own data evict policy<br>- Bulk Updates: Support field-specific value modifications, ETL, etc<br>- Large TopK: Returns massive datasets<br>- VTS GA: Connect to different sources of data<br>- Advanced Quantization: Optimize memory consumption and performance based on quantization techniques<br>- Resource Elasticity: Dynamically scale resources to accommodate varying write loads, read loads, and background task loads</td></tr>
 </tbody>
 </table>
-<p>أثناء تنفيذ خارطة الطريق هذه، سنكون ممتنين لأفكارك وملاحظاتك حول ما يلي:</p>
+<p>As we implement this roadmap, we’d appreciate your thoughts and feedback on the following:</p>
 <ol>
-<li><p><strong>أولويات الميزات:</strong> ما هي الميزات الموجودة في خارطة الطريق التي سيكون لها التأثير الأكبر على عملك؟</p></li>
-<li><p><strong>أفكار التنفيذ:</strong> أي أساليب محددة تعتقد أنها ستعمل بشكل جيد لهذه الميزات؟</p></li>
-<li><p><strong>مواءمة حالة الاستخدام:</strong> كيف تتوافق هذه الميزات المخطط لها مع حالات الاستخدام الحالية والمستقبلية؟</p></li>
-<li><p><strong>اعتبارات الأداء:</strong> أي جوانب أداء يجب أن نركز عليها لتلبية احتياجاتك الخاصة؟</p></li>
+<li><p><strong>Feature priorities:</strong> Which features in our roadmap would have the most impact on your work?</p></li>
+<li><p><strong>Implementation ideas:</strong> Any specific approaches you think would work well for these features?</p></li>
+<li><p><strong>Use case alignment:</strong> How do these planned features align with your current and future use cases?</p></li>
+<li><p><strong>Performance considerations:</strong> Any performance aspects we should focus on for your specific needs?</p></li>
 </ol>
-<p><strong>تساعدنا آراؤك في جعل Milvus أفضل للجميع. لا تتردد في مشاركة أفكارك على<a href="https://github.com/milvus-io/milvus/discussions/40263"> منتدى مناقشة Milvus</a> أو <a href="https://discord.com/invite/8uyFbECzPX">قناة Discord</a> الخاصة بنا.</strong></p>
-<h2 id="Welcome-to-Contribute-to-Milvus" class="common-anchor-header">مرحباً بكم في المساهمة في ميلفوس<button data-href="#Welcome-to-Contribute-to-Milvus" class="anchor-icon" translate="no">
+<p><strong>Your insights help us make Milvus better for everyone. Feel free to share your thoughts on our<a href="https://github.com/milvus-io/milvus/discussions/40263"> Milvus Discussion Forum</a> or our <a href="https://discord.com/invite/8uyFbECzPX">Discord Channel</a>.</strong></p>
+<h2 id="Welcome-to-Contribute-to-Milvus" class="common-anchor-header">Welcome to Contribute to Milvus<button data-href="#Welcome-to-Contribute-to-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -114,11 +115,11 @@ canonicalUrl: 'https://milvus.io/blog/milvus-2025-roadmap-tell-us-what-you-think
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>كمشروع مفتوح المصدر، ترحب ميلفوس دائمًا بمساهماتك:</p>
+    </button></h2><p>As an open-source project, Milvus always welcomes your contributions:</p>
 <ul>
-<li><p><strong>شارك بتعليقاتك:</strong> الإبلاغ عن المشكلات أو اقتراح ميزات من خلال <a href="https://github.com/milvus-io/milvus/issues">صفحة مشكلات GitHub</a> الخاصة بنا</p></li>
-<li><p><strong>المساهمات البرمجية:</strong> إرسال طلبات السحب (انظر <a href="https://github.com/milvus-io/milvus/blob/82915a9630ab0ff40d7891b97c367ede5726ff7c/CONTRIBUTING.md">دليل المساهمين</a>)</p></li>
-<li><p><strong>انشر الخبر:</strong> شارك خبراتك في ميلفوس وقم <a href="https://github.com/milvus-io/milvus">بالتألق في مستودع GitHub</a> الخاص <a href="https://github.com/milvus-io/milvus">بنا</a></p></li>
+<li><p><strong>Share feedback:</strong> Report issues or suggest features through our <a href="https://github.com/milvus-io/milvus/issues">GitHub issue page</a></p></li>
+<li><p><strong>Code contributions:</strong> Submit pull requests (see our <a href="https://github.com/milvus-io/milvus/blob/82915a9630ab0ff40d7891b97c367ede5726ff7c/CONTRIBUTING.md">Contributor’s Guide</a>)</p></li>
+<li><p><strong>Spread the word:</strong> Share your Milvus experiences and <a href="https://github.com/milvus-io/milvus">star our GitHub repository</a></p></li>
 </ul>
-<p>نحن متحمسون لبناء هذا الفصل التالي من ميلفوس معك. كودك وأفكارك وملاحظاتك تدفع هذا المشروع إلى الأمام!</p>
-<p>- فريق ميلفوس</p>
+<p>We’re excited to build this next chapter of Milvus with you. Your code, ideas, and feedback drive this project forward!</p>
+<p>– The Milvus Team</p>

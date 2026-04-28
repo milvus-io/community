@@ -1,9 +1,9 @@
 ---
 id: >-
   build-a-bestseller-to-image-pipeline-for-e-commerce-with-nano-banana-2-milvus-qwen-35.md
-title: >-
-  Construire un pipeline Bestseller-to-Image pour le commerce électronique avec
-  Nano Banana 2 + Milvus + Qwen 3.5
+title: >
+  Build a Bestseller-to-Image Pipeline for E-Commerce with Nano Banana 2 +
+  Milvus + Qwen 3.5
 author: Lumina Wang
 date: 2026-3-3
 cover: assets.zilliz.com/blog-images/20260303-100432.png
@@ -18,18 +18,17 @@ meta_keywords: >-
   vector search
 meta_title: |
   Nano Banana 2 + Milvus: E-Commerce AI Image Generation Tutorial
-desc: >-
-  Tutoriel étape par étape : utilisez Nano Banana 2, la recherche hybride Milvus
-  et Qwen 3.5 pour générer des photos de produits de commerce électronique à
-  partir de flat-lays à un tiers du coût.
+desc: >
+  Step-by-step tutorial: use Nano Banana 2, Milvus hybrid search, and Qwen 3.5
+  to generate e-commerce product photos from flat-lays at 1/3 the cost.
 origin: >-
   https://milvus.io/blog/build-a-bestseller-to-image-pipeline-for-e-commerce-with-nano-banana-2-milvus-qwen-35.md
 ---
-<p>Si vous créez des outils d'IA pour les vendeurs du commerce électronique, vous avez probablement entendu cette demande un millier de fois : "J'ai un nouveau produit. Donnez-moi une image promotionnelle qui ait l'air de figurer dans une liste de best-sellers. Pas de photographe, pas de studio, et que ce soit bon marché".</p>
-<p>Voilà le problème en quelques mots. Les vendeurs disposent de photos à plat et d'un catalogue de best-sellers qui convertissent déjà. Ils veulent faire le lien entre les deux grâce à l'IA, à la fois rapidement et à grande échelle.</p>
-<p>Lorsque Google a lancé Nano Banana 2 (Gemini 3.1 Flash Image) le 26 février 2026, nous l'avons testé le jour même et l'avons intégré à notre pipeline de recherche existant basé sur Milvus. Résultat : le coût total de la génération d'images est tombé à environ un tiers de ce qu'il était auparavant, et le débit a doublé. La réduction du prix par image (environ 50% moins cher que Nano Banana Pro) explique en partie cela, mais les économies les plus importantes proviennent de l'élimination totale des cycles de retouche.</p>
-<p>Cet article aborde les points positifs de Nano Banana 2 pour le commerce électronique, les points faibles, et propose un tutoriel pratique pour le pipeline complet : <strong>Milvus</strong> hybrid search pour trouver des best-sellers visuellement similaires, <strong>Qwen</strong> 3.5 pour l'analyse de style, et <strong>Nano Banana 2</strong> pour la génération finale.</p>
-<h2 id="What’s-New-with-Nano-Banana-2" class="common-anchor-header">Quelles sont les nouveautés de Nano Banana 2 ?<button data-href="#What’s-New-with-Nano-Banana-2" class="anchor-icon" translate="no">
+<p>If you build AI tooling for e-commerce sellers, you’ve probably heard this request a thousand times: “I have a new product. Give me a promotional image that looks like it belongs in a bestseller listing. No photographer, no studio, and make it cheap.”</p>
+<p>That’s the problem in a sentence. Sellers have flat-lay photos and a catalog of bestsellers that already convert. They want to bridge the two with AI, both fast and at scale.</p>
+<p>When Google released Nano Banana 2 (Gemini 3.1 Flash Image) on February 26, 2026, we tested it the same day and integrated it into our existing Milvus-based retrieval pipeline. The result: total image generation cost dropped to roughly one-third of what was spent before, and throughput doubled. The per-image price cut (about 50% cheaper than Nano Banana Pro) accounts for part of that, but the larger savings come from eliminating rework cycles entirely.</p>
+<p>This article covers what Nano Banana 2 gets right for e-commerce, where it still falls short, and then walks through a hands-on tutorial for the full pipeline: <strong>Milvus</strong> hybrid search to find visually similar bestsellers, <strong>Qwen</strong> 3.5 for style analysis, and <strong>Nano Banana 2</strong> for final generation.</p>
+<h2 id="What’s-New-with-Nano-Banana-2" class="common-anchor-header">What’s New with Nano Banana 2?<button data-href="#What’s-New-with-Nano-Banana-2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -44,18 +43,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Nano Banana 2 (Gemini 3.1 Flash Image) a été lancé le 26 février 2026. Il apporte la plupart des capacités de Nano Banana Pro à l'architecture Flash, ce qui signifie une génération plus rapide à un prix plus bas. Voici les principales améliorations :</p>
+    </button></h2><p>Nano Banana 2 (Gemini 3.1 Flash Image) launched on February 26, 2026. It brings most of Nano Banana Pro’s capabilities to the Flash architecture, meaning faster generation at a lower price point. Here are the key upgrades:</p>
 <ul>
-<li><strong>Une qualité de niveau professionnel à la vitesse de Flash.</strong> Nano Banana 2 offre une connaissance, un raisonnement et une fidélité visuelle de classe mondiale, auparavant exclusifs à Pro, mais avec la latence et le débit de Flash.</li>
-<li><strong>Sortie de 512 px à 4K.</strong> Quatre niveaux de résolution (512 px, 1K, 2K, 4K) avec prise en charge native. Le niveau 512 px est nouveau et unique à Nano Banana 2.</li>
-<li><strong>14 rapports d'aspect.</strong> Ajoute 4:1, 1:4, 8:1 et 1:8 à l'ensemble existant (1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9).</li>
-<li><strong>Jusqu'à 14 images de référence.</strong> Maintient la ressemblance des personnages pour un maximum de 5 personnages et la fidélité des objets pour un maximum de 14 objets dans un seul flux de travail.</li>
-<li><strong>Rendu de texte amélioré.</strong> Génère un texte lisible et précis dans l'image dans plusieurs langues, avec prise en charge de la traduction et de la localisation au sein d'une même génération.</li>
-<li><strong>Recherche d'images.</strong> Utilise des données web en temps réel et des images issues de Google Search pour générer des représentations plus précises de sujets réels.</li>
-<li><strong>~Environ 50 % moins cher par image.</strong> Résolution de 1K : <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0,</mn></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">067versusPro′s0</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">,067 contre</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7519em;"></span></span></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord"><span class="mord mathnormal">067versusPro</span></span></span></span></span><span class="pstrut" style="height:2.7em;"></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">′s0</span></span></span></span>,134.</li>
+<li><strong>Pro-level quality at Flash speed.</strong> Nano Banana 2 delivers world-class knowledge, reasoning, and visual fidelity previously exclusive to Pro, but with the latency and throughput of Flash.</li>
+<li><strong>512px to 4K output.</strong> Four resolution tiers (512px, 1K, 2K, 4K) with native support. The 512px tier is new and unique to Nano Banana 2.</li>
+<li><strong>14 aspect ratios.</strong> Adds 4:1, 1:4, 8:1, and 1:8 to the existing set (1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9).</li>
+<li><strong>Up to 14 reference images.</strong> Maintains character resemblance for up to 5 characters and object fidelity for up to 14 objects in a single workflow.</li>
+<li><strong>Improved text rendering.</strong> Generates legible, accurate in-image text across multiple languages, with support for translation and localization within a single generation.</li>
+<li><strong>Image Search grounding.</strong> Pulls from real-time web data and images from Google Search to generate more accurate depictions of real-world subjects.</li>
+<li><strong>~50% cheaper per image.</strong> At 1K resolution: <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.067</mn><mi>v</mi><mi>e</mi><mi>r</mi><mi>s</mi><mi>u</mi><mi>s</mi><mi>P</mi><mi>r</mi><msup><mi>o</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mi>s</mi></mrow><annotation encoding="application/x-tex">0.067 versus Pro&#x27;s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7519em;"></span><span class="mord">0.067</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">ers</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mord mathnormal">s</span></span></span></span>0.134.</li>
 </ul>
-<p><strong>Un cas d'utilisation amusant de Nano Banano 2 : Générer un panorama tenant compte de la localisation à partir d'une simple capture d'écran de Google Maps</strong></p>
-<p>À partir d'une capture d'écran de Google Maps et d'une invite de style, le modèle reconnaît le contexte géographique et génère un panorama qui préserve les relations spatiales correctes. Utile pour produire des créations publicitaires ciblées par région (une toile de fond de café parisien, un paysage de rue à Tokyo) sans avoir recours à des photographies de stock.</p>
+<p><strong>A Fun Use Case of Nano Banano 2: Generate a Location-Aware Panorama Based On a Simple Google Map Screenshot</strong></p>
+<p>Given a Google Maps screenshot and a style prompt, the model recognizes the geographic context and generates a panorama that preserves the correct spatial relationships. Useful for producing region-targeted ad creatives (a Parisian café backdrop, a Tokyo streetscape) without sourcing stock photography.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image5.png" alt="" class="doc-image" id="" />
@@ -68,8 +67,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Pour connaître l'ensemble des fonctionnalités, consultez <a href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/">le blog d'annonce de Google</a> et la <a href="https://ai.google.dev/gemini-api/docs/image-generation">documentation destinée aux développeurs</a>.</p>
-<h2 id="What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="common-anchor-header">Que signifie cette mise à jour de Nano Banana pour le commerce électronique ?<button data-href="#What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="anchor-icon" translate="no">
+<p>For the full feature set, see <a href="https://blog.google/innovation-and-ai/technology/ai/nano-banana-2/">Google’s announcement blog</a> and the <a href="https://ai.google.dev/gemini-api/docs/image-generation">developer documentation</a>.</p>
+<h2 id="What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="common-anchor-header">What Does This Nano Banana Update Mean For E-Commerce?<button data-href="#What-Does-This-Nano-Banana-Update-Mean-For-E-Commerce" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,73 +83,73 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le commerce électronique est l'un des secteurs les plus gourmands en images. Listes de produits, annonces sur les places de marché, créations sociales, campagnes de bannières, vitrines localisées : chaque canal exige un flux constant d'actifs visuels, chacun avec ses propres spécifications.</p>
-<p>Les principales exigences en matière de génération d'images par IA dans le commerce électronique se résument à ce qui suit :</p>
+    </button></h2><p>E-commerce is one of the most image-intensive industries. Product listings, marketplace ads, social creatives, banner campaigns, localized storefronts: every channel demands a constant stream of visual assets, each with its own specs.</p>
+<p>The core requirements for AI image generation in e-commerce boil down to:</p>
 <ul>
-<li><strong>Maintenir des coûts bas</strong> - le coût par image doit être adapté à l'échelle d'un catalogue.</li>
-<li>S<strong>'aligner sur l'aspect des best-sellers éprouvés</strong> - les nouvelles images doivent s'aligner sur le style visuel des listes qui convertissent déjà.</li>
-<li>Éviter<strong>la contrefaçon</strong> - il ne faut pas copier les créations des concurrents ni réutiliser des actifs protégés.</li>
+<li><strong>Keep costs low</strong> – per-image cost has to work at catalog scale.</li>
+<li><strong>Match the look of proven bestsellers</strong> – new images should align with the visual style of listings that already convert.</li>
+<li><strong>Avoid infringement</strong> – no copying competitors’ creatives or reusing protected assets.</li>
 </ul>
-<p>En outre, les vendeurs transfrontaliers ont besoin des éléments suivants</p>
+<p>On top of that, cross-border sellers need:</p>
 <ul>
-<li><strong>Prise en charge de formats multiplateformes</strong> - différents rapports d'aspect et spécifications pour les places de marché, les annonces et les vitrines.</li>
-<li><strong>Rendu de texte multilingue</strong> - un texte propre et précis dans l'image dans plusieurs langues.</li>
+<li><strong>Multi-platform format support</strong> – different aspect ratios and specs for marketplaces, ads, and storefronts.</li>
+<li><strong>Multilingual text rendering</strong> – clean, accurate in-image text across multiple languages.</li>
 </ul>
-<p>Nano Banana 2 est proche de remplir toutes les conditions. Les sections ci-dessous décrivent ce que chaque amélioration signifie en pratique : là où elle résout directement un problème de commerce électronique, là où elle n'est pas à la hauteur, et quel est l'impact réel sur les coûts.</p>
-<h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">Réduction des coûts de production jusqu'à 60</h3><p>À une résolution de 1K, Nano Banana 2 coûte <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>0</mi><mn>,067</mn></mrow><annotation encoding="application/x-tex">par image contre</annotation></semantics></math></span></span>0 <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">,</span><span class="mord"><span class="mord mathnormal">067</span></span><span class="mord">par image</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">pour Pro</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span><span class="mord"><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"> </span></span></span></span></span></span></span></span></span><span class="mord mathnormal">′s0</span></span></span></span>,134, ce qui représente une réduction de 50 %. Mais le prix par image n'est que la moitié de l'histoire. Ce qui tuait les budgets des utilisateurs, c'était le travail de reprise. Chaque place de marché applique ses propres spécifications d'image (1:1 pour Amazon, 3:4 pour les vitrines Shopify, ultra-large pour les bannières publicitaires), et la production de chaque variante signifiait une passe de génération séparée avec ses propres modes d'échec.</p>
-<p>Nano Banana 2 regroupe ces étapes supplémentaires en une seule.</p>
+<p>Nano Banana 2 comes close to checking every box. The sections below break down what each upgrade means in practice: where it directly solves an e-commerce pain point, where it falls short, and what the actual cost impact looks like.</p>
+<h3 id="Cut-Output-Generation-Costs-by-Up-to-60" class="common-anchor-header">Cut Output Generation Costs by Up to 60%</h3><p>At 1K resolution, Nano Banana 2 costs <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.067</mn><mi>p</mi><mi>e</mi><mi>r</mi><mi>i</mi><mi>m</mi><mi>a</mi><mi>g</mi><mi>e</mi><mi>v</mi><mi>e</mi><mi>r</mi><mi>s</mi><mi>u</mi><mi>s</mi><mi>P</mi><mi>r</mi><msup><mi>o</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mi>s</mi></mrow><annotation encoding="application/x-tex">0.067 per image versus Pro&#x27;s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9463em;vertical-align:-0.1944em;"></span><span class="mord">0.067</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">ima</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">ers</span><span class="mord mathnormal">u</span><span class="mord mathnormal">s</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathnormal">o</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7519em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mord mathnormal">s</span></span></span></span>0.134, which is a straight 50% cut. But the per-image price is only half the story. What used to kill user budgets was rework. Every marketplace enforces its own image spec (1:1 for Amazon, 3:4 for Shopify storefronts, ultrawide for banner ads), and producing each variant meant a separate generation pass with its own failure modes.</p>
+<p>Nano Banana 2 collapses those extra passes into one.</p>
 <ul>
-<li><p><strong>Quatre niveaux de résolution native.</strong></p></li>
-<li><p>512 px (0,045 $)</p></li>
+<li><p><strong>Four native resolution tiers.</strong></p></li>
+<li><p>512px ($0.045)</p></li>
 <li><p>1K ($0.067)</p></li>
 <li><p>2K ($0.101)</p></li>
 <li><p>4K ($0.151).</p></li>
 </ul>
-<p>Le niveau 512px est nouveau et unique à Nano Banana 2. Les utilisateurs peuvent maintenant générer des ébauches de 512 px à faible coût pour l'itération et sortir l'actif final en 2K ou 4K sans étape d'upscaling séparée.</p>
+<p>The 512px tier is new and unique to Nano Banana 2. Users can now generate low-cost 512px drafts for iteration and output the final asset at 2K or 4K without a separate upscaling step.</p>
 <ul>
-<li><p><strong>14 rapports d'aspect supportés</strong> au total. Voici quelques exemples :</p></li>
+<li><p><strong>14 supported aspect ratios</strong> in total. Here are some examples:</p></li>
 <li><p>4:1</p></li>
 <li><p>1:4</p></li>
 <li><p>8:1</p></li>
 <li><p>1:8</p></li>
 </ul>
-<p>Ces nouveaux rapports ultra-larges et ultra-grands s'ajoutent à l'ensemble existant. Une session de génération peut produire différents formats tels que : L'<strong>image principale d'Amazon</strong> (1:1), le <strong>héros de la vitrine</strong> (3:4) et la <strong>bannière publicitaire</strong> (ultra-large ou autres ratios).</p>
-<p>Aucun recadrage, aucun remplissage, aucun re-promptage n'est nécessaire pour ces 4 rapports. Les 10 autres ratios sont inclus dans le jeu complet, ce qui rend le processus plus flexible sur les différentes plateformes.</p>
-<p>L'économie d'environ 50 % par image permettrait à elle seule de réduire la facture de moitié. C'est l'élimination des travaux de retouche pour toutes les résolutions et tous les rapports d'aspect qui a permis de ramener le coût total à environ un tiers de ce qu'il était auparavant.</p>
-<h3 id="Support-Up-to-14-Reference-Images-with-Bestseller-Style" class="common-anchor-header">Prise en charge de 14 images de référence avec le style Bestseller</h3><p>De toutes les mises à jour de Nano Banana 2, c'est le mélange multiréférences qui a le plus d'impact sur notre pipeline Milvus. Nano Banana 2 accepte jusqu'à 14 images de référence dans une seule requête, en maintenant :</p>
+<p>These new ultra-wide and ultra-tall ratios join the existing set. One generation session can produce various formats like: <strong>Amazon main image</strong> (1:1), <strong>Storefront hero</strong> (3:4) and <strong>Banner ad</strong> (ultra-wide or other ratios.)</p>
+<p>No cropping, no padding, no re-prompting required for these 4 ratios. The remaining 10 aspect ratios are included in the full set, making the process more flexible across different platforms.</p>
+<p>The ~50% per-image savings alone would only halve the bill. Eliminating rework across resolutions and aspect ratios is what brought the total cost down to roughly one-third of what was spent before.</p>
+<h3 id="Support-Up-to-14-Reference-Images-with-Bestseller-Style" class="common-anchor-header">Support Up to 14 Reference Images with Bestseller Style</h3><p>Of all the Nano Banana 2 updates, multi-reference blending has the biggest impact on our Milvus pipeline. Nano Banana 2 accepts up to 14 reference images in a single request, maintaining:</p>
 <ul>
-<li>la ressemblance des caractères pour un maximum de <strong>5 personnages</strong></li>
-<li>La fidélité des objets pour un maximum de <strong>14 objets</strong></li>
+<li>Character resemblance for up to <strong>5 characters</strong></li>
+<li>Object fidelity for up to <strong>14 objects</strong></li>
 </ul>
-<p>En pratique, nous avons récupéré plusieurs images de best-sellers dans Milvus, nous les avons passées en référence et l'image générée a hérité de la composition de la scène, de l'éclairage, de la pose et du placement des accessoires. Il n'a pas été nécessaire de procéder à une ingénierie rapide pour reconstruire ces modèles à la main.</p>
-<p>Les modèles précédents ne prenaient en charge qu'une ou deux références, ce qui obligeait les utilisateurs à choisir un seul best-seller à imiter. Avec 14 emplacements de référence, nous pouvions mélanger les caractéristiques de plusieurs best-sellers et laisser le modèle synthétiser un style composite. C'est cette capacité qui rend possible le pipeline basé sur la recherche dans le tutoriel ci-dessous.</p>
+<p>In practice, we retrieved multiple bestseller images from Milvus, passed them in as references, and the generated image inherited their scene composition, lighting, posing, and prop placement. There was no prompt engineering required to reconstruct those patterns by hand.</p>
+<p>Previous models supported only one or two references, which forced users to pick a single bestseller to mimic. With 14 reference slots, we could blend characteristics from multiple top-performing listings and let the model synthesize a composite style. This is the capability that makes the retrieval-based pipeline in the tutorial below possible.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image15.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Produce-Premium-Commercial-Ready-Visuals-Without-Traditional-Production-Cost-or-Logistics" class="common-anchor-header">Produire des images de qualité supérieure, prêtes à être commercialisées, sans les coûts de production ou la logistique traditionnels</h3><p>Pour une génération d'images cohérente et fiable, évitez de déverser toutes vos exigences dans une seule invite. Une approche plus fiable consiste à travailler par étapes : générez d'abord l'arrière-plan, puis le modèle séparément, et enfin composez-les ensemble.</p>
-<p>Nous avons testé la génération d'arrière-plan sur les trois modèles de Nano Banana avec la même invite : une image ultra-large 4:1 de l'horizon de Shanghai en temps de pluie, vue à travers une fenêtre, avec la tour de la Perle de l'Orient visible. Cette invite permet de tester la composition, les détails architecturaux et le photoréalisme en un seul passage.</p>
+<h3 id="Produce-Premium-Commercial-Ready-Visuals-Without-Traditional-Production-Cost-or-Logistics" class="common-anchor-header">Produce Premium, Commercial-Ready Visuals Without Traditional Production Cost or Logistics</h3><p>For consistent, reliable image generation, avoid dumping all your requirements into a single prompt. A more dependable approach is to work in stages: generate the background first, then the model separately, and finally composite them together.</p>
+<p>We tested background generation across all three Nano Banana models with the same prompt: a 4:1 ultrawide rainy-day Shanghai skyline viewed through a window, with the Oriental Pearl Tower visible. This prompt stress-tests composition, architectural detail, and photorealism in a single pass.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image2.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h4 id="Original-Nano-Banana-vs-Nano-Banana-Pro-vs-Nano-Banana-2" class="common-anchor-header">Nano Banana original vs. Nano Banana Pro vs. Nano Banana 2</h4><ul>
-<li><strong>Original Nano Banana.</strong> Texture de pluie naturelle avec une distribution de gouttelettes crédible, mais détails des bâtiments trop lissés. L'Oriental Pearl Tower était à peine reconnaissable et la résolution ne répondait pas aux exigences de la production.</li>
-<li><strong>Nano Banana Pro.</strong> Atmosphère cinématographique : l'éclairage intérieur chaud s'oppose de manière convaincante à la pluie froide. Cependant, le cadre de la fenêtre a été complètement omis, ce qui a atténué la sensation de profondeur de l'image. Utilisable en tant qu'image de soutien, pas en tant que héros.</li>
-<li><strong>Nano Banana 2.</strong> Rendu de la scène complète. Le cadre de la fenêtre au premier plan crée de la profondeur. La tour de la Perle de l'Orient est clairement détaillée. Les bateaux apparaissent sur la rivière Huangpu. L'éclairage en couches distingue la chaleur intérieure du couvert extérieur. Les textures de la pluie et des taches d'eau étaient quasi photographiques, et le rapport ultra-large 4:1 maintenait la perspective correcte avec seulement une distorsion mineure sur le bord gauche de la fenêtre.</li>
+<h4 id="Original-Nano-Banana-vs-Nano-Banana-Pro-vs-Nano-Banana-2" class="common-anchor-header">Original Nano Banana vs. Nano Banana Pro vs. Nano Banana 2</h4><ul>
+<li><strong>Original Nano Banana.</strong> Natural rain texture with believable droplet distribution, but over-smoothed building details. The Oriental Pearl Tower was barely recognizable, and resolution fell short of production requirements.</li>
+<li><strong>Nano Banana Pro.</strong> Cinematic atmosphere: warm interior lighting played against cold rain convincingly. However, it omitted the window frame entirely, flattening the image’s sense of depth. Usable as a supporting image, not a hero.</li>
+<li><strong>Nano Banana 2.</strong> Rendered the full scene. The window frame in the foreground created depth. The Oriental Pearl Tower was clearly detailed. Ships appeared on the Huangpu River. Layered lighting distinguished interior warmth from exterior overcast. Rain and water-stain textures were near-photographic, and the 4:1 ultrawide ratio held the correct perspective with only minor distortion at the left window edge.</li>
 </ul>
-<p>Pour la plupart des tâches de génération d'arrière-plan dans la photographie de produits, nous avons trouvé que la sortie du Nano Banana 2 était utilisable sans post-traitement.</p>
-<h3 id="Render-In-Image-Text-Cleanly-Across-Languages" class="common-anchor-header">Rendu propre du texte à l'image dans toutes les langues</h3><p>Les étiquettes de prix, les bannières promotionnelles et les textes multilingues sont inévitables dans les images de commerce électronique, et ils ont toujours été un point de rupture pour la génération d'IA. Nano Banana 2 les gère beaucoup mieux, en prenant en charge le rendu du texte dans l'image dans plusieurs langues, avec traduction et localisation en une seule génération.</p>
-<p><strong>Rendu de texte standard.</strong> Lors de nos tests, le rendu de texte était sans erreur dans tous les formats de commerce électronique que nous avons essayés : étiquettes de prix, courtes phrases de marketing, et descriptions de produits bilingues.</p>
-<p><strong>Continuité de l'écriture manuscrite.</strong> Le commerce électronique nécessitant souvent des éléments manuscrits tels que des étiquettes de prix et des cartes personnalisées, nous avons testé si les modèles pouvaient correspondre à un style manuscrit existant et l'étendre - plus précisément, correspondre à une liste de tâches manuscrite et ajouter 5 nouveaux éléments dans le même style. Résultats pour les trois modèles :</p>
+<p>For most background generation tasks in product photography, we found the Nano Banana 2 output usable without post-processing.</p>
+<h3 id="Render-In-Image-Text-Cleanly-Across-Languages" class="common-anchor-header">Render In-Image Text Cleanly Across Languages</h3><p>Price tags, promotional banners, and multilingual copy are unavoidable in e-commerce images, and they’ve historically been a breaking point for AI generation. Nano Banana 2 handles them significantly better, supporting in-image text rendering across multiple languages with translation and localization in a single generation.</p>
+<p><strong>Standard text rendering.</strong> In our testing, text output was error-free across every e-commerce format we tried: price labels, short marketing taglines, and bilingual product descriptions.</p>
+<p><strong>Handwriting continuation.</strong> Since e-commerce often requires handwritten elements like price tags and personalized cards, we tested whether the models could match an existing handwritten style and extend it — specifically, matching a handwritten to-do list and adding 5 new items in the same style. Results across three models:</p>
 <ul>
-<li><strong>Original Nano Banana.</strong> Numéros de séquence répétés, structure mal comprise.</li>
-<li><strong>Nano Banana Pro.</strong> Mise en page correcte, mais mauvaise reproduction du style de police.</li>
-<li><strong>Nano Banana 2.</strong> Aucune erreur. Le poids des traits et le style de la forme des lettres correspondent suffisamment pour qu'il soit impossible de les distinguer de la source.</li>
+<li><strong>Original Nano Banana.</strong> Repeated sequence numbers, misunderstood structure.</li>
+<li><strong>Nano Banana Pro.</strong> Correct layout, but poor font style reproduction.</li>
+<li><strong>Nano Banana 2.</strong> Zero errors. Matched stroke weight and letterform style closely enough to be indistinguishable from the source.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -158,8 +157,8 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p><strong>Toutefois, la</strong> documentation de Google indique que Nano Banana 2 "peut encore éprouver des difficultés avec l'orthographe et les détails fins des images". Nos résultats étaient corrects dans tous les formats que nous avons testés, mais tout flux de production devrait inclure une étape de vérification du texte avant la publication.</p>
-<h2 id="Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="common-anchor-header">Tutoriel étape par étape : Construire un pipeline Bestseller-image avec Milvus, Qwen 3.5 et Nano Banana 2<button data-href="#Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="anchor-icon" translate="no">
+<p><strong>However,</strong> Google’s own documentation notes that Nano Banana 2 “can still struggle with accurate spelling and fine details in images.” Our results were clean across the formats we tested, but any production workflow should include a text verification step before publishing.</p>
+<h2 id="Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="common-anchor-header">Step-by-Step Tutorial: Build a Bestseller-to-Image Pipeline with Milvus, Qwen 3.5, and Nano Banana 2<button data-href="#Step-by-Step-Tutorial-Build-a-Bestseller-to-Image-Pipeline-with-Milvus-Qwen-35-and-Nano-Banana-2" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,15 +173,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Before-we-begin-Architecture-and-Model-Setup" class="common-anchor-header">Avant de commencer : Architecture et configuration du modèle</h3><p>Pour éviter le caractère aléatoire de la génération d'un seul message, nous avons divisé le processus en trois étapes contrôlables : récupérer ce qui fonctionne déjà avec la recherche hybride <strong>Milvus</strong>, analyser pourquoi cela fonctionne avec <strong>Qwen 3.5</strong>, puis générer l'image finale avec ces contraintes intégrées avec <strong>Nano Banana 2</strong>.</p>
-<p>Voici un bref aperçu de chaque outil si vous n'avez jamais travaillé avec eux :</p>
+    </button></h2><h3 id="Before-we-begin-Architecture-and-Model-Setup" class="common-anchor-header">Before we begin: Architecture and Model Setup</h3><p>To avoid the randomness of single-prompt generation, we split the process into three controllable stages: retrieve what already works with <strong>Milvus</strong> hybrid search, analyze why it works with <strong>Qwen 3.5</strong>, then generate the final image with those constraints baked in with <strong>Nano Banana 2</strong>.</p>
+<p>Quick primer on each tool if you haven’t worked with them before:</p>
 <ul>
-<li><strong><a href="https://milvus.io/">Milvus</a></strong><a href="https://milvus.io/">:</a> la base de données vectorielles open-source la plus largement adoptée. Elle stocke votre catalogue de produits sous forme de vecteurs et effectue une recherche hybride (filtres denses + épars + scalaires) pour trouver les images de best-sellers les plus similaires à un nouveau produit.</li>
-<li><strong>Qwen 3.5</strong>: un LLM multimodal populaire. Il prend les images de best-sellers récupérées et extrait les modèles visuels qui les sous-tendent (disposition de la scène, éclairage, pose, humeur) dans un message structuré sur le style.</li>
-<li><strong>Nano Banana 2</strong>: modèle de génération d'images de Google (Gemini 3.1 Flash Image). Prend trois entrées : le nouveau produit flat-lay, une référence de best-seller et l'invite de style de Qwen 3.5. Produit la photo promotionnelle finale.</li>
+<li><strong><a href="https://milvus.io/">Milvus</a></strong><a href="https://milvus.io/">:</a> the most widely adopted open-source vector database. Stores your product catalog as vectors and runs hybrid search (dense + sparse + scalar filters) to find bestseller images most similar to a new product.</li>
+<li><strong>Qwen 3.5</strong>: a popular multimodal LLM. Takes retrieved bestseller images and extracts the visual patterns behind them (scene layout, lighting, pose, mood) into a structured style prompt.</li>
+<li><strong>Nano Banana 2</strong>: image generation model from Google (Gemini 3.1 Flash Image). Takes three inputs: the new product flat-lay, a bestseller reference, and Qwen 3.5’s style prompt. Outputs the final promotional photo.</li>
 </ul>
-<p>La logique qui sous-tend cette architecture part d'un constat : l'atout visuel le plus précieux de tout catalogue de commerce électronique est la bibliothèque d'images de best-sellers qui ont déjà été converties. Les poses, les compositions et l'éclairage de ces photos ont été affinés grâce à des dépenses publicitaires réelles. L'extraction directe de ces modèles est un ordre de grandeur plus rapide que la rétro-ingénierie par l'écriture d'un message, et cette étape d'extraction est exactement ce qu'une base de données vectorielles gère.</p>
-<p>Voici le flux complet. Nous appelons chaque modèle par l'intermédiaire de l'API OpenRouter, de sorte qu'il n'y a pas besoin de GPU local et qu'il n'y a pas de poids de modèle à télécharger.</p>
+<p>The logic behind this architecture starts with one observation: the most valuable visual asset in any e-commerce catalog is the library of bestseller images that have already been converted. The poses, compositions, and lighting in those photos were refined through real ad spend. Retrieving those patterns directly is an order of magnitude faster than reverse-engineering them through prompt writing, and that retrieval step is exactly what a vector database handles.</p>
+<p>Here is the full flow. We call every model through the OpenRouter API, so there is no local GPU requirement and no model weights to download.</p>
 <pre><code translate="no">New product flat-lay
 │
 │── Embed → Llama Nemotron Embed VL 1B v2
@@ -199,14 +198,14 @@ origin: >-
     ├── Inputs: <span class="hljs-keyword">new</span> <span class="hljs-title class_">product</span> + bestseller reference + style prompt
     └── Output: promotional photo
 <button class="copy-code-btn"></button></code></pre>
-<p>Nous nous appuyons sur trois capacités de Milvus pour faire fonctionner l'étape de recherche :</p>
+<p>We lean on three Milvus capabilities to make the retrieval stage work:</p>
 <ol>
-<li><strong>Recherche hybride dense + clairsemée.</strong> Nous exécutons les intégrations d'images et les vecteurs TF-IDF de texte en tant que requêtes parallèles, puis nous fusionnons les deux ensembles de résultats avec le reranking RRF (Reciprocal Rank Fusion).</li>
-<li><strong>Filtrage par champs scalaires.</strong> Nous filtrons les champs de métadonnées tels que la catégorie et le nombre de ventes avant la comparaison des vecteurs, de sorte que les résultats ne comprennent que les produits pertinents et performants.</li>
-<li><strong>Schéma multi-champs.</strong> Nous stockons les vecteurs denses, les vecteurs épars et les métadonnées scalaires dans une seule collection Milvus, ce qui permet de conserver l'ensemble de la logique de recherche dans une seule requête au lieu de la disperser dans plusieurs systèmes.</li>
+<li><strong>Dense + sparse hybrid search.</strong> We run image embeddings and text TF-IDF vectors as parallel queries, then merge the two result sets with RRF (Reciprocal Rank Fusion) reranking.</li>
+<li><strong>Scalar field filtering.</strong> We filter by metadata fields like category and sales_count before vector comparison, so results only include relevant, high-performing products.</li>
+<li><strong>Multi-field schema.</strong> We store dense vectors, sparse vectors, and scalar metadata in a single Milvus collection, which keeps the entire retrieval logic in one query instead of scattered across multiple systems.</li>
 </ol>
-<h3 id="Data-Preparation" class="common-anchor-header">Préparation des données</h3><p><strong>Catalogue de produits historique</strong></p>
-<p>Nous commençons avec deux ressources : un dossier images/ de photos de produits existants et un fichier products.csv contenant leurs métadonnées.</p>
+<h3 id="Data-Preparation" class="common-anchor-header">Data Preparation</h3><p><strong>Historical product catalog</strong></p>
+<p>We start with two assets: an images/ folder of existing product photos and a products.csv file containing their metadata.</p>
 <pre><code translate="no">images/
 ├── SKU001.jpg
 ├── SKU002.jpg
@@ -228,8 +227,8 @@ product_id, image_path, category, color, style, season, sales_count, description
     <span></span>
   </span>
 </p>
-<p><strong>Données sur les nouveaux produits</strong></p>
-<p>Pour les produits pour lesquels nous voulons générer des images promotionnelles, nous préparons une structure parallèle : un dossier new_products/ et new_products.csv.</p>
+<p><strong>New product data</strong></p>
+<p>For the products we want to generate promotional images for, we prepare a parallel structure: a new_products/ folder and new_products.csv.</p>
 <pre><code translate="no">new_products/
 ├── NEW001.jpg    <span class="hljs-comment"># Blue knit cardigan + grey tulle skirt set</span>
 ├── NEW002.jpg    <span class="hljs-comment"># Light green floral ruffle maxi dress</span>
@@ -251,9 +250,9 @@ new_id, image_path, category, style, season, prompt_hint
     <span></span>
   </span>
 </p>
-<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Étape 1 : Installer les dépendances</h3><pre><code translate="no">!pip install pymilvus openai requests pillow scikit-learn tqdm
+<h3 id="Step-1-Install-Dependencies" class="common-anchor-header">Step 1: Install Dependencies</h3><pre><code translate="no">!pip install pymilvus openai requests pillow scikit-learn tqdm
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Import-Modules-and-Configurations" class="common-anchor-header">Étape 2 : Importer les modules et les configurations</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os, io, base64, csv, time
+<h3 id="Step-2-Import-Modules-and-Configurations" class="common-anchor-header">Step 2: Import Modules and Configurations</h3><pre><code translate="no"><span class="hljs-keyword">import</span> os, io, base64, csv, time
 <span class="hljs-keyword">import</span> requests <span class="hljs-keyword">as</span> req
 <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">from</span> <span class="hljs-variable constant_">PIL</span> <span class="hljs-keyword">import</span> <span class="hljs-title class_">Image</span>
@@ -264,7 +263,7 @@ new_id, image_path, category, style, season, prompt_hint
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>, <span class="hljs-title class_">DataType</span>, <span class="hljs-title class_">AnnSearchRequest</span>, <span class="hljs-title class_">RRFRanker</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Configurez tous les modèles et chemins d'accès :</strong></p>
+<p><strong>Configure all models and paths:</strong></p>
 <pre><code translate="no"><span class="hljs-comment"># -- Config --</span>
 OPENROUTER_API_KEY = os.environ.get(
     <span class="hljs-string">&quot;OPENROUTER_API_KEY&quot;</span>,
@@ -293,14 +292,14 @@ llm = OpenAI(api_key=OPENROUTER_API_KEY, base_url=<span class="hljs-string">&quo
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Config loaded. All models via OpenRouter API.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Fonctions utilitaires</strong></p>
-<p>Ces fonctions d'aide gèrent l'encodage des images, les appels à l'API et l'analyse des réponses :</p>
+<p><strong>Utility functions</strong></p>
+<p>These helper functions handle image encoding, API calls, and response parsing:</p>
 <ul>
-<li>image_to_uri() : Convertit une image PIL en un URI de données base64 pour le transport de l'API.</li>
-<li>get_image_embeddings() : Encode par lots des images en vecteurs à 2048 dimensions via l'API d'encodage OpenRouter.</li>
-<li>get_text_embedding() : Encode le texte dans le même espace vectoriel à 2048 dimensions.</li>
-<li>sparse_to_dict() : Convertit une ligne de matrice sparse scipy dans le format {index : value} attendu par Milvus pour les vecteurs sparse.</li>
-<li>extract_images() : Extrait les images générées à partir de la réponse de l'API Nano Banana 2.</li>
+<li>image_to_uri(): Converts a PIL image to a base64 data URI for API transport.</li>
+<li>get_image_embeddings(): Batch-encodes images into 2048-dimensional vectors via the OpenRouter Embedding API.</li>
+<li>get_text_embedding(): Encodes text into the same 2048-dimensional vector space.</li>
+<li>sparse_to_dict(): Converts a scipy sparse matrix row into the {index: value} format Milvus expects for sparse vectors.</li>
+<li>extract_images(): Extracts generated images from the Nano Banana 2 API response.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># -- Utility functions --</span>
 
@@ -377,7 +376,7 @@ llm = OpenAI(api_key=OPENROUTER_API_KEY, base_url=<span class="hljs-string">&quo
 
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Utility functions ready.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Load-the-Product-Catalog" class="common-anchor-header">Étape 3 : Chargement du catalogue de produits</h3><p>Lire products.csv et charger les images de produits correspondantes :</p>
+<h3 id="Step-3-Load-the-Product-Catalog" class="common-anchor-header">Step 3: Load the Product Catalog</h3><p>Read products.csv and load the corresponding product images:</p>
 <pre><code translate="no"><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(PRODUCT_CSV, newline=<span class="hljs-string">&quot;&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:
     products = <span class="hljs-built_in">list</span>(csv.DictReader(f))
 
@@ -392,25 +391,25 @@ product_images = []
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">{p[<span class="hljs-string">&#x27;product_id&#x27;</span>]}</span> | <span class="hljs-subst">{p[<span class="hljs-string">&#x27;category&#x27;</span>]}</span> | <span class="hljs-subst">{p[<span class="hljs-string">&#x27;color&#x27;</span>]}</span> | <span class="hljs-subst">{p[<span class="hljs-string">&#x27;style&#x27;</span>]}</span> | sales: <span class="hljs-subst">{p[<span class="hljs-string">&#x27;sales_count&#x27;</span>]}</span>&quot;</span>)
     display(product_images[i].resize((<span class="hljs-number">180</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">180</span> * product_images[i].height / product_images[i].width))))
 <button class="copy-code-btn"></button></code></pre>
-<p>Exemple de sortie :<br>
+<p>Sample output:<br>
 
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image13.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-4-Generate-Embeddings" class="common-anchor-header">Étape 4 : Générer des liens (Embeddings)</h3><p>La recherche hybride nécessite deux types de vecteurs pour chaque produit.</p>
-<p><strong>4.1 Vecteurs denses : encastrements d'images</strong></p>
-<p>Le modèle nvidia/llama-nemotron-embed-vl-1b-v2 encode chaque image de produit dans un vecteur dense à 2048 dimensions. Comme ce modèle prend en charge les entrées image et texte dans un espace vectoriel partagé, les mêmes encastrements fonctionnent pour la recherche d'image à image et de texte à image.</p>
+<h3 id="Step-4-Generate-Embeddings" class="common-anchor-header">Step 4: Generate Embeddings</h3><p>Hybrid search requires two types of vectors for each product.</p>
+<p><strong>4.1 Dense vectors: image embeddings</strong></p>
+<p>The nvidia/llama-nemotron-embed-vl-1b-v2 model encodes each product image into a 2048-dimensional dense vector. Because this model supports both image and text inputs in a shared vector space, the same embeddings work for image-to-image and text-to-image retrieval.</p>
 <pre><code translate="no"><span class="hljs-comment"># Dense embeddings: image → 2048-dim vector via OpenRouter API</span>
 dense_vectors = get_image_embeddings(product_images, batch_size=<span class="hljs-number">5</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Dense vectors: <span class="hljs-subst">{dense_vectors.shape}</span>  (products x <span class="hljs-subst">{EMBED_DIM}</span>d)&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Résultats :</p>
+<p>Output:</p>
 <pre><code translate="no">Dense vectors: (40, 2048)  (products x 2048d)
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>4,2 vecteurs denses : Encastrements de texte TF-IDF</strong></p>
-<p>Les descriptions textuelles des produits sont encodées dans des vecteurs denses à l'aide du vecteur TF-IDF de scikit-learn. Ces vecteurs capturent la correspondance au niveau des mots-clés que les vecteurs denses peuvent manquer.</p>
+<p><strong>4.2 Sparse vectors: TF-IDF text embeddings</strong></p>
+<p>Product text descriptions are encoded into sparse vectors using scikit-learn’s TF-IDF vectorizer. These capture keyword-level matching that dense vectors can miss.</p>
 <pre><code translate="no"><span class="hljs-comment"># Sparse embeddings: TF-IDF on product descriptions</span>
 descriptions = [p[<span class="hljs-string">&quot;description&quot;</span>] <span class="hljs-keyword">for</span> p <span class="hljs-keyword">in</span> products]
 tfidf = TfidfVectorizer(stop_words=<span class="hljs-string">&quot;english&quot;</span>, max_features=<span class="hljs-number">500</span>)
@@ -420,23 +419,23 @@ sparse_vectors = [sparse_to_dict(tfidf_matrix[i]) <span class="hljs-keyword">for
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sparse vectors: <span class="hljs-subst">{<span class="hljs-built_in">len</span>(sparse_vectors)}</span> products, vocab size: <span class="hljs-subst">{<span class="hljs-built_in">len</span>(tfidf.vocabulary_)}</span>&quot;</span>)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sample sparse vector (SKU001): <span class="hljs-subst">{<span class="hljs-built_in">len</span>(sparse_vectors[<span class="hljs-number">0</span>])}</span> non-zero terms&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Sortie :</p>
+<p>Output:</p>
 <pre><code translate="no">Sparse vectors: <span class="hljs-number">40</span> products, vocab size: <span class="hljs-number">179</span>
 Sample sparse <span class="hljs-title function_">vector</span> <span class="hljs-params">(SKU001)</span>: <span class="hljs-number">11</span> non-zero terms
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Pourquoi les deux types de vecteurs ?</strong> Les vecteurs denses et peu denses se complètent. Les vecteurs denses capturent la similarité visuelle : palette de couleurs, silhouette du vêtement, style général. Les vecteurs peu denses capturent la sémantique des mots-clés : des termes tels que "floral", "midi" ou "mousseline" qui signalent les attributs du produit. La combinaison de ces deux approches permet d'obtenir une qualité d'extraction nettement supérieure à celle de l'une ou l'autre approche prise isolément.</p>
-<h3 id="Step-5-Create-a-Milvus-Collection-with-Hybrid-Schema" class="common-anchor-header">Étape 5 : Création d'une collection Milvus avec un schéma hybride</h3><p>Cette étape permet de créer une collection Milvus unique qui stocke ensemble les vecteurs denses, les vecteurs épars et les champs de métadonnées scalaires. Ce schéma unifié permet d'effectuer une recherche hybride en une seule requête.</p>
+<p><strong>Why both vector types?</strong> Dense and sparse vectors complement each other. Dense vectors capture visual similarity: color palette, garment silhouette, overall style. Sparse vectors capture keyword semantics: terms like “floral,” “midi,” or “chiffon” that signal product attributes. Combining both produces significantly better retrieval quality than either approach alone.</p>
+<h3 id="Step-5-Create-a-Milvus-Collection-with-Hybrid-Schema" class="common-anchor-header">Step 5: Create a Milvus Collection with Hybrid Schema</h3><p>This step creates a single Milvus collection that stores dense vectors, sparse vectors, and scalar metadata fields together. This unified schema is what enables hybrid search in a single query.</p>
 <table>
 <thead>
-<tr><th><strong>Champ</strong></th><th><strong>Type de champ</strong></th><th><strong>Objectif</strong></th></tr>
+<tr><th><strong>Field</strong></th><th><strong>Type</strong></th><th><strong>Purpose</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>vecteur_dense</td><td>FLOAT_VECTOR (2048d)</td><td>Incrustation d'image, similarité COSINE</td></tr>
-<tr><td>vecteur_dense</td><td>VECTEUR_FLOAT_SPARE</td><td>Vecteur clair TF-IDF, produit intérieur</td></tr>
-<tr><td>catégorie</td><td>VARCHAR</td><td>Étiquette de la catégorie pour le filtrage</td></tr>
-<tr><td>sales_count</td><td>INT64</td><td>Volume historique des ventes pour le filtrage</td></tr>
-<tr><td>couleur, style, saison</td><td>VARCHAR</td><td>Étiquettes de métadonnées supplémentaires</td></tr>
-<tr><td>prix</td><td>FLOAT</td><td>Prix du produit</td></tr>
+<tr><td>dense_vector</td><td>FLOAT_VECTOR (2048d)</td><td>Image embedding, COSINE similarity</td></tr>
+<tr><td>sparse_vector</td><td>SPARSE_FLOAT_VECTOR</td><td>TF-IDF sparse vector, inner product</td></tr>
+<tr><td>category</td><td>VARCHAR</td><td>Category label for filtering</td></tr>
+<tr><td>sales_count</td><td>INT64</td><td>Historical sales volume for filtering</td></tr>
+<tr><td>color, style, season</td><td>VARCHAR</td><td>Additional metadata labels</td></tr>
+<tr><td>price</td><td>FLOAT</td><td>Product price</td></tr>
 </tbody>
 </table>
 <pre><code translate="no">milvus_client = MilvusClient(uri=MILVUS_URI)
@@ -464,7 +463,7 @@ index_params.add_index(field_name=<span class="hljs-string">&quot;sparse_vector&
 milvus_client.create_collection(COLLECTION, schema=schema, index_params=index_params)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Milvus collection &#x27;<span class="hljs-subst">{COLLECTION}</span>&#x27; created with hybrid schema.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Insérer les données relatives au produit :</p>
+<p>Insert the product data:</p>
 <pre><code translate="no"><span class="hljs-comment"># Insert all products</span>
 rows = []
 <span class="hljs-keyword">for</span> i, p <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(products):
@@ -485,17 +484,17 @@ milvus_client.insert(COLLECTION, rows)
 stats = milvus_client.get_collection_stats(COLLECTION)
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Inserted <span class="hljs-subst">{stats[<span class="hljs-string">&#x27;row_count&#x27;</span>]}</span> products into Milvus.&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Sortie :</p>
+<p>Output:</p>
 <pre><code translate="no">Inserted <span class="hljs-number">40</span> products <span class="hljs-keyword">into</span> Milvus.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-6-Hybrid-Search-to-Find-Similar-Bestsellers" class="common-anchor-header">Étape 6 : Recherche hybride pour trouver des best-sellers similaires</h3><p>Il s'agit de l'étape principale de recherche. Pour chaque nouveau produit, le pipeline exécute trois opérations simultanément :</p>
+<h3 id="Step-6-Hybrid-Search-to-Find-Similar-Bestsellers" class="common-anchor-header">Step 6: Hybrid Search to Find Similar Bestsellers</h3><p>This is the core retrieval step. For each new product, the pipeline runs three operations simultaneously:</p>
 <ol>
-<li><strong>Recherche dense</strong>: recherche de produits dont les images sont visuellement similaires.</li>
-<li><strong>Recherche éparse</strong>: recherche des produits dont les mots-clés correspondent au texte via TF-IDF.</li>
-<li><strong>Filtrage scalaire</strong>: restreint les résultats à la même catégorie et aux produits dont le nombre de ventes est supérieur à 1500.</li>
-<li><strong>RRF reranking</strong>: fusionne les listes de résultats denses et éparses à l'aide de la fusion réciproque des rangs (Reciprocal Rank Fusion).</li>
+<li><strong>Dense search</strong>: finds products with visually similar image embeddings.</li>
+<li><strong>Sparse search</strong>: finds products with matching text keywords via TF-IDF.</li>
+<li><strong>Scalar filtering</strong>: restricts results to the same category and products with sales_count &gt; 1500.</li>
+<li><strong>RRF reranking</strong>: merges the dense and sparse result lists using Reciprocal Rank Fusion.</li>
 </ol>
-<p>Chargez le nouveau produit :</p>
+<p>Load the new product:</p>
 <pre><code translate="no"><span class="hljs-comment"># Load new products</span>
 <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(NEW_PRODUCT_CSV, newline=<span class="hljs-string">&quot;&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) <span class="hljs-keyword">as</span> f:
     new_products = <span class="hljs-built_in">list</span>(csv.DictReader(f))
@@ -509,12 +508,14 @@ new_img = Image.<span class="hljs-built_in">open</span>(os.path.join(NEW_PRODUCT
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Prompt hint: <span class="hljs-subst">{new_prod[<span class="hljs-string">&#x27;prompt_hint&#x27;</span>]}</span>&quot;</span>)
 display(new_img.resize((<span class="hljs-number">300</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">300</span> * new_img.height / new_img.width))))
 <button class="copy-code-btn"></button></code></pre>
-<p>Sortie : <span class="img-wrapper">
+<p>Output:
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Encodage du nouveau produit :</p>
+<p>Encode the new product:</p>
 <pre><code translate="no"><span class="hljs-comment"># Encode new product</span>
 <span class="hljs-comment"># Dense: image embedding via API</span>
 query_dense = get_image_embeddings([new_img], batch_size=<span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]
@@ -531,18 +532,18 @@ filter_expr = <span class="hljs-string">f&#x27;category == &quot;<span class="hl
 <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Filter: <span class="hljs-subst">{filter_expr}</span>&quot;</span>)
 
 <button class="copy-code-btn"></button></code></pre>
-<p>Sortie : Encoder le nouveau produit : Sortie : Encoder le nouveau produit : Sortie :</p>
+<p>Output:</p>
 <pre><code translate="no"><span class="hljs-title class_">Dense</span> <span class="hljs-attr">query</span>: (<span class="hljs-number">2048</span>,)
 <span class="hljs-title class_">Sparse</span> <span class="hljs-attr">query</span>: <span class="hljs-number">6</span> non-zero terms
 <span class="hljs-title class_">Filter</span>: category == <span class="hljs-string">&quot;midi_dress&quot;</span> and sales_count &gt; <span class="hljs-number">1500</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Exécuter la recherche hybride</strong></p>
-<p>Voici les principaux appels API :</p>
+<p><strong>Execute hybrid search</strong></p>
+<p>The key API calls here:</p>
 <ul>
-<li>AnnSearchRequest crée des requêtes de recherche distinctes pour les champs vectoriels denses et épars.</li>
-<li>expr=filter_expr applique un filtrage scalaire dans chaque demande de recherche.</li>
-<li>RRFRanker(k=60) fusionne les deux listes de résultats classés à l'aide de l'algorithme Reciprocal Rank Fusion.</li>
-<li>hybrid_search exécute les deux requêtes et renvoie les résultats fusionnés et reclassés.</li>
+<li>AnnSearchRequest creates separate search requests for the dense and sparse vector fields.</li>
+<li>expr=filter_expr applies scalar filtering within each search request.</li>
+<li>RRFRanker(k=60) fuses the two ranked result lists using the Reciprocal Rank Fusion algorithm.</li>
+<li>hybrid_search executes both requests and returns merged, reranked results.</li>
 </ul>
 <pre><code translate="no"><span class="hljs-comment"># Hybrid search: dense + sparse + scalar filter + RRF reranking</span>
 dense_req = AnnSearchRequest(
@@ -585,12 +586,14 @@ retrieved_images = []
     display(img.resize((<span class="hljs-number">250</span>, <span class="hljs-built_in">int</span>(<span class="hljs-number">250</span> * img.height / img.width))))
     <span class="hljs-built_in">print</span>()
 <button class="copy-code-btn"></button></code></pre>
-<p>Résultat : les 3 best-sellers les plus similaires, classés par score fusionné.  <span class="img-wrapper">
+<p>Output: the top 3 most similar bestsellers, ranked by fused score.
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image7.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-7-Analyze-Bestseller-Style-with-Qwen-35" class="common-anchor-header">Étape 7 : Analyse du style des best-sellers avec Qwen 3.5</h3><p>Nous introduisons les images de best-sellers récupérées dans Qwen 3.5 et lui demandons d'extraire leur ADN visuel commun : la composition de la scène, la configuration de l'éclairage, la pose du modèle et l'ambiance générale. De cette analyse, nous obtenons une génération unique prête à être transmise à Nano Banana 2.</p>
+<h3 id="Step-7-Analyze-Bestseller-Style-with-Qwen-35" class="common-anchor-header">Step 7: Analyze Bestseller Style with Qwen 3.5</h3><p>We feed the retrieved bestseller images into Qwen 3.5 and ask it to extract their shared visual DNA: scene composition, lighting setup, model pose, and overall mood. From that analysis, we get back a single generation prompt ready to hand off to Nano Banana 2.</p>
 <pre><code translate="no">content = [
     {<span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;image_url&quot;</span>, <span class="hljs-string">&quot;image_url&quot;</span>: {<span class="hljs-string">&quot;url&quot;</span>: image_to_uri(img)}}
     <span class="hljs-keyword">for</span> img in retrieved_images
@@ -621,7 +624,7 @@ style_prompt = response.choices[<span class="hljs-number">0</span>].message.cont
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Style prompt from Qwen3.5:\n&quot;</span>)
 <span class="hljs-built_in">print</span>(style_prompt)
 <button class="copy-code-btn"></button></code></pre>
-<p>Exemple de résultat :</p>
+<p>Sample output:</p>
 <pre><code translate="no">Style prompt from Qwen3.5:
 
 Professional full-body fashion photograph of a model wearing a stylish new dress.
@@ -630,7 +633,7 @@ uncluttered background, either stark white or a softly blurred bright outdoor
 setting. The model stands in a relaxed, natural pose to showcase the garment&#x27;s
 silhouette and drape. Sharp focus, vibrant colors, fresh and elegant commercial aesthetic.
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-8-Generate-the-Promotional-Image-with-Nano-Banana-2" class="common-anchor-header">Étape 8 : Générer l'image promotionnelle avec Nano Banana 2</h3><p>Nous transmettons trois entrées à Nano Banana 2 : la photo du nouveau produit, l'image du best-seller le mieux classé et l'invite de style que nous avons extraite à l'étape précédente. Le modèle les compose en une photo promotionnelle qui associe le nouveau vêtement à un style visuel éprouvé.</p>
+<h3 id="Step-8-Generate-the-Promotional-Image-with-Nano-Banana-2" class="common-anchor-header">Step 8: Generate the Promotional Image with Nano Banana 2</h3><p>We pass three inputs into Nano Banana 2: the new product’s flat-lay photo, the top-ranked bestseller image, and the style prompt we extracted in the previous step. The model composites these into a promotional photo that pairs the new garment with a proven visual style.</p>
 <pre><code translate="no">gen_prompt = (
     <span class="hljs-string">f&quot;I have a new clothing product (Image 1: flat-lay photo) and a reference &quot;</span>
     <span class="hljs-string">f&quot;promotional photo from our bestselling catalog (Image 2).\n\n&quot;</span>
@@ -661,13 +664,13 @@ gen_response = llm.chat.completions.create(
 )
 <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Done!&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Paramètres clés de l'appel API Nano Banana 2 :</p>
+<p>Key parameters for the Nano Banana 2 API call:</p>
 <ul>
-<li>modalités : [&quot;text&quot;, &quot;image&quot;] : déclare que la réponse doit inclure une image.</li>
-<li>image_config.aspect_ratio : contrôle le rapport d'aspect de la sortie (3:4 fonctionne bien pour les portraits et les photos de mode).</li>
-<li>image_config.image_size : définit la résolution. Nano Banana 2 prend en charge les images de 512 px à 4K.</li>
+<li>modalities: [&quot;text&quot;, “image”]: declares that the response should include an image.</li>
+<li>image_config.aspect_ratio: controls the output aspect ratio (3:4 works well for portrait/fashion shots).</li>
+<li>image_config.image_size: sets the resolution. Nano Banana 2 supports 512px through 4K.</li>
 </ul>
-<p>Extraire l'image générée :</p>
+<p>Extract the generated image:</p>
 <pre><code translate="no">generated_images = extract_images(gen_response)
 
 text_content = gen_response.choices[<span class="hljs-number">0</span>].message.content
@@ -684,21 +687,23 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;No image generated. Raw response:&quot;</span>)
     <span class="hljs-built_in">print</span>(gen_response.model_dump())
 <button class="copy-code-btn"></button></code></pre>
-<p>Sortie : <span class="img-wrapper">
+<p>Output:
+
+  <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image9.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-9-Side-by-Side-Comparison" class="common-anchor-header">Étape 9 : Comparaison côte à côte</h3><p>L'image générée respecte les grandes lignes : l'éclairage est doux et uniforme, la pose du modèle semble naturelle et l'ambiance correspond à la référence du best-seller.</p>
-<p>Là où le résultat n'est pas à la hauteur, c'est au niveau du mélange des vêtements. Le cardigan semble collé sur le modèle plutôt que porté, et l'étiquette blanche de l'encolure transparaît. La génération en un seul passage a du mal à intégrer finement les vêtements au corps, c'est pourquoi nous proposons des solutions de contournement dans le résumé.</p>
+<h3 id="Step-9-Side-by-Side-Comparison" class="common-anchor-header">Step 9: Side-by-Side Comparison</h3><p>The output nails the broad strokes: lighting is soft and even, the model’s pose looks natural, and the mood matches the bestseller reference.</p>
+<p>Where we see it fall short is garment blending. The cardigan looks pasted onto the model rather than worn, and a white neckline label bleeds through. Single-pass generation struggles with this kind of fine-grained clothing-to-body integration, so we address workarounds in the summary.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image10.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-10-Batch-Generation-for-All-New-Products" class="common-anchor-header">Étape 10 : Génération de lots pour tous les nouveaux produits</h3><p>Nous regroupons l'ensemble du pipeline en une seule fonction et l'exécutons pour les nouveaux produits restants. Le code des lots est omis ici par souci de concision ; contactez-nous si vous avez besoin de l'implémentation complète.</p>
-<p>Deux choses ressortent des résultats des lots. Les invites de style que nous obtenons de <strong>Qwen 3.5</strong> s'adaptent de manière significative à chaque produit : une robe d'été et un tricot d'hiver reçoivent des descriptions de scène véritablement différentes, adaptées à la saison, au cas d'utilisation et aux accessoires. Les images obtenues par <strong>Nano Banana 2</strong>, quant à elles, sont comparables à de vraies photographies de studio en termes d'éclairage, de texture et de composition.</p>
+<h3 id="Step-10-Batch-Generation-for-All-New-Products" class="common-anchor-header">Step 10: Batch Generation for All New Products</h3><p>We wrap the full pipeline into a single function and run it across the remaining new products. The batch code is omitted here for brevity; reach out if you need the complete implementation.</p>
+<p>Two things stand out across the batch results. The style prompts we get from <strong>Qwen 3.5</strong> adjust meaningfully per product: a summer dress and a winter knit receive genuinely different scene descriptions tailored to season, use case, and accessories. The images we get from <strong>Nano Banana 2</strong>, in turn, hold up against real studio photography in lighting, texture, and composition.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/blog-images/image3.png" alt="" class="doc-image" id="" />
@@ -720,21 +725,21 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Dans cet article, nous avons présenté ce que Nano Banana 2 apporte à la génération d'images pour le commerce électronique, nous l'avons comparé à la version originale de Nano Banana et à la version Pro dans le cadre de tâches de production réelles, et nous avons expliqué comment construire un pipeline bestseller-image avec Milvus, Qwen 3.5 et Nano Banana 2.</p>
-<p>Ce pipeline présente quatre avantages pratiques :</p>
+    </button></h2><p>In this article, we covered what Nano Banana 2 brings to e-commerce image generation, compared it against the original Nano Banana and Pro across real production tasks, and walked through how to build a bestseller-to-image pipeline with Milvus, Qwen 3.5, and Nano Banana 2.</p>
+<p>This pipeline has four practical advantages:</p>
 <ul>
-<li><strong>Coût contrôlé, budgets prévisibles.</strong> Le modèle d'intégration (Llama Nemotron Embed VL 1B v2) est gratuit sur OpenRouter. Nano Banana 2 fonctionne à peu près à la moitié du coût par image de Pro, et la sortie multiformat native élimine les cycles de retouche qui doublaient ou triplaient la facture effective. Pour les équipes de commerce électronique qui gèrent des milliers de références par saison, cette prévisibilité signifie que la production d'images s'adapte au catalogue au lieu de dépasser le budget.</li>
-<li><strong>Automatisation de bout en bout, temps de référencement plus rapide.</strong> Le flux qui va de la photo de produit à plat à l'image promotionnelle finie se déroule sans intervention manuelle. Un nouveau produit peut passer de la photo d'entrepôt à l'image de référencement prête pour le marché en quelques minutes plutôt qu'en quelques jours, ce qui est particulièrement important pendant les saisons de pointe, lorsque le taux de rotation du catalogue est le plus élevé.</li>
-<li><strong>Aucun GPU local n'est nécessaire, ce qui réduit la barrière à l'entrée.</strong> Chaque modèle est exécuté via l'API OpenRouter. Une équipe ne disposant pas d'infrastructure ML ni de personnel d'ingénierie dédié peut exécuter ce pipeline à partir d'un ordinateur portable. Il n'y a rien à provisionner, rien à maintenir et aucun investissement matériel initial.</li>
-<li><strong>Une plus grande précision d'extraction, une plus grande cohérence de la marque.</strong> Milvus combine le filtrage dense, clairsemé et scalaire en une seule requête, ce qui lui permet de surpasser systématiquement les approches à vecteur unique pour la correspondance des produits. En pratique, cela signifie que les images générées héritent de manière plus fiable du langage visuel établi de votre marque : l'éclairage, la composition et le style que vos best-sellers existants ont déjà prouvé convertir. Les images générées ont l'air d'avoir leur place dans votre magasin, et non pas d'être des images génériques d'IA.</li>
+<li><strong>Controlled cost, predictable budgets.</strong> The embedding model (Llama Nemotron Embed VL 1B v2) is free on OpenRouter. Nano Banana 2 runs at roughly half the per-image cost of Pro, and native multi-format output eliminates the rework cycles that used to double or triple the effective bill. For e-commerce teams managing thousands of SKUs per season, that predictability means image production scales with the catalog instead of blowing past budget.</li>
+<li><strong>End-to-end automation, faster time to listing.</strong> The flow from flat-lay product photo to finished promotional image runs without manual intervention. A new product can go from warehouse photo to marketplace-ready listing image in minutes rather than days, which matters most during peak seasons when catalog turnover is highest.</li>
+<li><strong>No local GPU required, lower barrier to entry.</strong> Every model runs through the OpenRouter API. A team with no ML infrastructure and no dedicated engineering headcount can run this pipeline from a laptop. There is nothing to provision, nothing to maintain, and no upfront hardware investment.</li>
+<li><strong>Higher retrieval precision, stronger brand consistency.</strong> Milvus combines dense, sparse, and scalar filtering in a single query, consistently outperforming single-vector approaches for product matching. In practice, this means generated images more reliably inherit your brand’s established visual language: the lighting, composition, and styling that your existing bestsellers already proved converts. The output looks like it belongs in your store, not like generic AI stock art.</li>
 </ul>
-<p>Il existe également des limites qu'il convient de connaître :</p>
+<p>There are also limitations worth being upfront about:</p>
 <ul>
-<li><strong>Le mélange entre le vêtement et le corps.</strong> La génération d'un seul passage peut donner l'impression que les vêtements sont composés plutôt que portés. Les détails fins tels que les petits accessoires sont parfois flous. Solution : générer par étapes (d'abord l'arrière-plan, puis la pose du modèle, puis le composite). Cette approche multi-passages donne à chaque étape un champ d'application plus étroit et améliore considérablement la qualité du mélange.</li>
-<li><strong>Fidélité des détails dans les cas extrêmes.</strong> Les accessoires, les motifs et les mises en page comportant beaucoup de texte peuvent perdre de leur netteté. Solution : ajouter des contraintes explicites à l'invite de génération ("les vêtements s'adaptent naturellement au corps, pas d'étiquettes apparentes, pas d'éléments supplémentaires, les détails du produit sont nets"). Si la qualité n'est toujours pas au rendez-vous pour un produit spécifique, passez à Nano Banana Pro pour la version finale.</li>
+<li><strong>Garment-to-body blending.</strong> Single-pass generation can make clothing look composited rather than worn. Fine details like small accessories sometimes blur. Workaround: generate in stages (background first, then model pose, then composite). This multi-pass approach gives each step a narrower scope and significantly improves blending quality.</li>
+<li><strong>Detail fidelity on edge cases.</strong> Accessories, patterns, and text-heavy layouts can lose sharpness. Workaround: add explicit constraints to the generation prompt (“clothing fits naturally on the body, no exposed labels, no extra elements, product details are sharp”). If quality still falls short on a specific product, switch to Nano Banana Pro for the final</li>
 </ul>
-<p><a href="https://milvus.io/">Milvus</a> est la base de données vectorielles open-source qui alimente l'étape de recherche hybride, et si vous souhaitez y jeter un coup d'œil ou essayer d'y insérer vos propres photos de produits, le<a href="https://milvus.io/docs">quickstart</a> <a href="https://milvus.io/docs"></a><a href="https://milvus.io/docs"></a> prend environ dix minutes. Nous avons une communauté assez active sur <a href="https://discord.gg/milvus"></a><a href="https://discord.gg/milvus">Discord</a> et Slack, et nous serions ravis de voir ce que les gens construisent avec cela. Et si vous finissez par faire fonctionner Nano Banana 2 avec un produit vertical différent ou un catalogue plus important, n'hésitez pas à nous faire part des résultats ! Nous serions ravis de les connaître.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Lire la suite<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+<p><a href="https://milvus.io/">Milvus</a> is the open-source vector database powering the hybrid search step, and if you want to poke around or try swapping in your own product photos, the <a href="https://milvus.io/docs"></a><a href="https://milvus.io/docs">quickstart</a> takes about ten minutes. We’ve got a pretty active community on <a href="https://discord.gg/milvus"></a><a href="https://discord.gg/milvus">Discord</a> and Slack, and we’d love to see what people build with this. And if you end up running Nano Banana 2 against a different product vertical or a bigger catalog, please share the results! We’d love to hear about them.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -750,9 +755,9 @@ text_content = gen_response.choices[<span class="hljs-number">0</span>].message.
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/blog/nano-banana-milvus-turning-hype-into-enterprise-ready-multimodal-rag.md">Nano Banana + Milvus : Transformer le battage médiatique en un RAG multimodal prêt pour l'entreprise</a></li>
-<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">Qu'est-ce qu'OpenClaw ? Guide complet de l'agent d'intelligence artificielle open-source</a></li>
-<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">Tutoriel OpenClaw : Connexion à Slack pour un assistant IA local</a></li>
-<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">Nous avons extrait le système de mémoire d'OpenClaw et l'avons mis en open-source (memsearch)</a></li>
-<li><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Mémoire persistante pour le code Claude : memsearch ccplugin</a></li>
+<li><a href="https://milvus.io/blog/nano-banana-milvus-turning-hype-into-enterprise-ready-multimodal-rag.md">Nano Banana + Milvus: Turning Hype into Enterprise-Ready Multimodal RAG</a></li>
+<li><a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a></li>
+<li><a href="https://milvus.io/blog/stepbystep-guide-to-setting-up-openclaw-previously-clawdbotmoltbot-with-slack.md">OpenClaw Tutorial: Connect to Slack for Local AI Assistant</a></li>
+<li><a href="https://milvus.io/blog/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md">We Extracted OpenClaw’s Memory System and Open-Sourced It (memsearch)</a></li>
+<li><a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">Persistent Memory for Claude Code: memsearch ccplugin</a></li>
 </ul>

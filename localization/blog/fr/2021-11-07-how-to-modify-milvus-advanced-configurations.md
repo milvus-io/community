@@ -1,14 +1,14 @@
 ---
 id: 2021-11-07-how-to-modify-milvus-advanced-configurations.md
-title: Comment modifier les configurations avancées de Milvus ?
+title: How to Modify Milvus Advanced Configurations
 author: Zilliz
 date: 2021-11-08T00:00:00.000Z
-desc: Comment modifier la configuration de Milvus déployé sur Kubernetes ?
+desc: How to modify the configuration of Milvus deployed on Kubernetes
 cover: assets.zilliz.com/modify_4d93b9da3a.png
 tag: Engineering
 ---
-<p><em>Yufen Zong, ingénieur en développement de tests chez Zilliz, est titulaire d'une maîtrise en technologie informatique de l'université des sciences et technologies de Huazhong. Elle s'occupe actuellement de l'assurance qualité de la base de données vectorielles Milvus, notamment des tests d'intégration des interfaces, des tests SDK, des tests d'évaluation des performances, etc. Yufen est une chercheuse de problèmes enthousiaste dans le cadre des essais et du développement de Milvus, et une grande fan de la théorie de l'ingénierie du chaos et de la pratique de l'exercice des fautes.</em></p>
-<h2 id="Background" class="common-anchor-header">Contexte<button data-href="#Background" class="anchor-icon" translate="no">
+<p><em>Yufen Zong, a Zilliz Test Development Engineer, graduated from Huazhong University of Science and Technology with a master’s degree in computer technology. She is currently engaged in the quality assurance of Milvus vector database, including but not limited to interface integration testing, SDK testing, Benchmark testing, etc. Yufen is an enthusiastic problem-shooter in the test and development of Milvus, and a huge fan of chaos engineering theory and fault drill practice.</em></p>
+<h2 id="Background" class="common-anchor-header">Background<button data-href="#Background" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -23,8 +23,8 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Lors de l'utilisation de la base de données vectorielle Milvus, vous devrez modifier la configuration par défaut pour répondre aux exigences de différents scénarios. Précédemment, un utilisateur de Milvus a partagé <a href="/blog/fr/2021-10-22-apply-configuration-changes-on-milvus-2.md">comment modifier la configuration de Milvus déployé à l'aide de Docker Compose</a>. Dans cet article, j'aimerais partager avec vous comment modifier la configuration de Milvus déployé sur Kubernetes.</p>
-<h2 id="Modify-configuration-of-Milvus-on-Kubernetes" class="common-anchor-header">Modifier la configuration de Milvus sur Kubernetes<button data-href="#Modify-configuration-of-Milvus-on-Kubernetes" class="anchor-icon" translate="no">
+    </button></h2><p>While using Milvus vector database, you will need to modify the default configuration to satisfy the requirements of different scenarios. Previously, a Milvus user shared on <a href="/blog/fr/2021-10-22-apply-configuration-changes-on-milvus-2.md">How to Modify the Configuration of Milvus Deployed Using Docker Compose</a>. And in this article, I would like to share with you on how to modify the configuration of Milvus deployed on Kubernetes.</p>
+<h2 id="Modify-configuration-of-Milvus-on-Kubernetes" class="common-anchor-header">Modify configuration of Milvus on Kubernetes<button data-href="#Modify-configuration-of-Milvus-on-Kubernetes" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,11 +39,11 @@ tag: Engineering
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vous pouvez choisir différents plans de modification en fonction des paramètres de configuration que vous souhaitez modifier. Tous les fichiers de configuration de Milvus sont stockés sous <strong>milvus/configs</strong>. Lors de l'installation de Milvus sur Kubernetes, un dépôt Milvus Helm Chart sera ajouté localement. En exécutant <code translate="no">helm show values milvus/milvus</code>, vous pouvez vérifier les paramètres qui peuvent être modifiés directement avec Chart. Pour les paramètres modifiables avec Chart, vous pouvez passer le paramètre à l'aide de <code translate="no">--values</code> ou <code translate="no">--set</code>. Pour plus d'informations, voir <a href="https://artifacthub.io/packages/helm/milvus/milvus">Milvus Helm Chart</a> et <a href="https://helm.sh/docs/">Helm</a>.</p>
-<p>Si les paramètres que vous souhaitez modifier ne figurent pas dans la liste, vous pouvez suivre les instructions ci-dessous.</p>
-<p>Dans les étapes suivantes, le paramètre <code translate="no">rootcoord.dmlChannelNum</code> dans <strong>/milvus/configs/advanced/root_coord.yaml</strong> sera modifié à des fins de démonstration. La gestion des fichiers de configuration de Milvus sur Kubernetes est mise en œuvre par le biais de l'objet de ressource ConfigMap. Pour modifier le paramètre, vous devez d'abord mettre à jour l'objet ConfigMap de la version Chart correspondante, puis modifier les fichiers de ressources de déploiement des pods correspondants.</p>
-<p>Attention, cette méthode ne s'applique qu'à la modification des paramètres de l'application Milvus déployée. Pour modifier les paramètres dans <strong>/milvus/configs/advanced/*.yaml</strong> avant le déploiement, vous devrez redévelopper le Milvus Helm Chart.</p>
-<h3 id="Modify-ConfigMap-YAML" class="common-anchor-header">Modifier le ConfigMap YAML</h3><p>Comme indiqué ci-dessous, votre version de Milvus exécutée sur Kubernetes correspond à un objet ConfigMap portant le même nom que la version. La section <code translate="no">data</code> de l'objet ConfigMap inclut uniquement les configurations dans <strong>milvus.yaml</strong>. Pour modifier le site <code translate="no">rootcoord.dmlChannelNum</code> dans <strong>root_coord.yaml</strong>, vous devez ajouter les paramètres de <strong>root_coord.yaml</strong> à la section <code translate="no">data</code> du ConfigMap YAML et modifier le paramètre spécifique.</p>
+    </button></h2><p>You may choose different modification plans according to the configuration parameters you wish to modify. All Milvus configuration files are stored under <strong>milvus/configs</strong>. While installing Milvus on Kubernetes, a Milvus Helm Chart repository will be added locally. By running <code translate="no">helm show values milvus/milvus</code>, you can check the parameters that can be modified directly with Chart. For the modifiable parameters with Chart, you can pass the parameter using <code translate="no">--values</code> or <code translate="no">--set</code>. For more information, see <a href="https://artifacthub.io/packages/helm/milvus/milvus">Milvus Helm Chart</a> and <a href="https://helm.sh/docs/">Helm</a>.</p>
+<p>If the parameters you expect to modify are not on the list, you can follow the instruction below.</p>
+<p>In the following steps, the parameter <code translate="no">rootcoord.dmlChannelNum</code> in <strong>/milvus/configs/advanced/root_coord.yaml</strong> is to be modified for demonstration purposes. Configuration file management of Milvus on Kubernetes is implemented through ConfigMap resource object. To change the parameter, you should first update the ConfigMap object of corresponding Chart release, and then modify the deployment resource files of corresponding pods.</p>
+<p>Beware that this method only applies to parameter modification on deployed Milvus application. To modify the parameters in <strong>/milvus/configs/advanced/*.yaml</strong> before deployment, you will need to re-develop the Milvus Helm Chart.</p>
+<h3 id="Modify-ConfigMap-YAML" class="common-anchor-header">Modify ConfigMap YAML</h3><p>As shown below, your Milvus release running on Kubernetes corresponds to a ConfigMap object with the same name of the release. The <code translate="no">data</code> section of the ConfigMap object only includes configurations in <strong>milvus.yaml</strong>. To change the <code translate="no">rootcoord.dmlChannelNum</code> in <strong>root_coord.yaml</strong>, you must add the parameters in <strong>root_coord.yaml</strong> to the <code translate="no">data</code> section in the ConfigMap YAML and change the specific parameter.</p>
 <pre><code translate="no">kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -60,8 +60,8 @@ data:
       <span class="hljs-built_in">timeout</span>: 3600 <span class="hljs-comment"># time out, 5 seconds</span>
       timeTickInterval: 200 <span class="hljs-comment"># ms</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Modify-Deployment-YAML" class="common-anchor-header">Modifier le YAML de déploiement</h3><p>Les données stockées dans un ConfigMap peuvent être référencées dans un volume de type configMap puis consommées par des applications conteneurisées s'exécutant dans un pod. Pour diriger les pods vers les nouveaux fichiers de configuration, vous devez modifier les modèles de pods qui ont besoin de charger les configurations dans <strong>root_coord.yaml</strong>. Plus précisément, vous devez ajouter une déclaration mount sous la section <code translate="no">spec.template.spec.containers.volumeMounts</code> dans le YAML de déploiement.</p>
-<p>En prenant le YAML de déploiement du pod rootcoord comme exemple, un volume de type <code translate="no">configMap</code> nommé <strong>milvus-config</strong> est spécifié dans la section <code translate="no">.spec.volumes</code>. Et, dans la section <code translate="no">spec.template.spec.containers.volumeMounts</code>, le volume est déclaré pour monter <strong>milvus.yaml</strong> de votre version de Milvus sur <strong>/milvus/configs/milvus.yaml</strong>. De même, il suffit d'ajouter une déclaration de montage spécifique au conteneur rootcoord pour monter le <strong>fichier root_coord.yaml</strong> sur <strong>/milvus/configs/advanced/root_coord.yaml</strong>, et le conteneur peut ainsi accéder au nouveau fichier de configuration.</p>
+<h3 id="Modify-Deployment-YAML" class="common-anchor-header">Modify Deployment YAML</h3><p>The data stored in a ConfigMap can be referenced in a volume of type configMap and then consumed by containerized applications running in a pod. To direct the pods to the new configuration files, you must modify the pod templates that need to load the configurations in <strong>root_coord.yaml</strong>. Specifically, you need to add a mount declaration under the <code translate="no">spec.template.spec.containers.volumeMounts</code> section in deployment YAML.</p>
+<p>Taking the deployment YAML of rootcoord pod as an example, a <code translate="no">configMap</code> type volume named <strong>milvus-config</strong> is specified in <code translate="no">.spec.volumes</code> section. And, in <code translate="no">spec.template.spec.containers.volumeMounts</code> section, the volume is declared to mount <strong>milvus.yaml</strong> of your Milvus release on <strong>/milvus/configs/milvus.yaml</strong>. Similarly, you only need to add a mount declaration specifically for rootcoord container to mount the <strong>root_coord.yaml</strong> on <strong>/milvus/configs/advanced/root_coord.yaml</strong>, and thus the container can access the new configuration file.</p>
 <pre><code translate="no" class="language-yaml">spec:
   replicas: 1
   selector:
@@ -101,7 +101,7 @@ data:
       securityContext: {}
       schedulerName: default-scheduler
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Verify-the-result" class="common-anchor-header">Vérifier le résultat</h3><p>Le kubelet vérifie si la ConfigMap montée est fraîche à chaque synchronisation périodique. Lorsque la ConfigMap consommée dans le volume est mise à jour, les clés projetées sont automatiquement mises à jour également. Lorsque le nouveau pod fonctionne à nouveau, vous pouvez vérifier si la modification a été effectuée avec succès dans le pod. Les commandes pour vérifier le paramètre <code translate="no">rootcoord.dmlChannelNum</code> sont partagées ci-dessous.</p>
+<h3 id="Verify-the-result" class="common-anchor-header">Verify the result</h3><p>The kubelet checks whether the mounted ConfigMap is fresh on every periodic sync. When the ConfigMap consumed in the volume is updated, projected keys are automatically updated as well. When the new pod is running again, you can verify if the modification is successful in the pod. Commands to check the parameter <code translate="no">rootcoord.dmlChannelNum</code> are shared below.</p>
 <pre><code translate="no" class="language-bash">$ kctl <span class="hljs-built_in">exec</span> -ti milvus-chaos-rootcoord-6f56794f5b-xp2zs -- sh
 <span class="hljs-comment"># cd configs/advanced</span>
 <span class="hljs-comment"># pwd</span>
@@ -117,8 +117,8 @@ rootcoord:
   timeTickInterval: 200 <span class="hljs-comment"># ms</span>
 <span class="hljs-comment"># exit</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>La méthode ci-dessus permet de modifier les configurations avancées dans Milvus déployé sur Kubernetes. La prochaine version de Milvus intégrera toutes les configurations dans un seul fichier et prendra en charge la mise à jour de la configuration via le diagramme helm. Mais avant cela, j'espère que cet article pourra vous aider en tant que solution temporaire.</p>
-<h2 id="Engage-with-our-open-source-community" class="common-anchor-header">Participez à notre communauté open-source :<button data-href="#Engage-with-our-open-source-community" class="anchor-icon" translate="no">
+<p>Above is the method to modify the advanced configurations in Milvus deployed on Kubernetes. Future release of Milvus will integrate all configurations in one file, and will support updating configuration via helm chart. But before that, I hope this article can help you as a temporary solution.</p>
+<h2 id="Engage-with-our-open-source-community" class="common-anchor-header">Engage with our open-source community:<button data-href="#Engage-with-our-open-source-community" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,7 +134,7 @@ rootcoord:
         ></path>
       </svg>
     </button></h2><ul>
-<li><p>Trouvez ou contribuez à Milvus sur <a href="https://bit.ly/307b7jC">GitHub</a>.</p></li>
-<li><p>Interagissez avec la communauté via le <a href="https://bit.ly/3qiyTEk">Forum</a>.</p></li>
-<li><p>Connectez-vous avec nous sur <a href="https://bit.ly/3ob7kd8">Twitter</a>.</p></li>
+<li><p>Find or contribute to Milvus on <a href="https://bit.ly/307b7jC">GitHub</a>.</p></li>
+<li><p>Interact with the community via <a href="https://bit.ly/3qiyTEk">Forum</a>.</p></li>
+<li><p>Connect with us on <a href="https://bit.ly/3ob7kd8">Twitter</a>.</p></li>
 </ul>

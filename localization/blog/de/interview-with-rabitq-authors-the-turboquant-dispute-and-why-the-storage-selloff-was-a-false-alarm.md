@@ -1,9 +1,9 @@
 ---
 id: >-
   interview-with-rabitq-authors-the-turboquant-dispute-and-why-the-storage-selloff-was-a-false-alarm.md
-title: >-
-  Interview mit RaBitQ-Autoren: Der TurboQuant-Streit und warum der
-  Speicherausverkauf ein falscher Alarm war
+title: >
+  Interview with RaBitQ Authors: The TurboQuant Dispute and Why the Storage
+  Selloff Was a False Alarm
 author: 'Cheng Long, Jianyang Gao, Li Liu'
 date: 2026-4-17
 cover: assets.zilliz.com/0415_updated_rabitq_interviewdocx_md_1_d5709718fc.png
@@ -14,18 +14,18 @@ tags: 'Milvus, vector database'
 meta_keywords: 'RaBitQ, TurboQuant, vector quantization, Milvus, IVF_RABITQ'
 meta_title: |
   RaBitQ Authors on the TurboQuant Vector Quantization Dispute
-desc: >-
-  Die Autoren von RaBitQ antworten auf das TurboQuant-Papier von Google: das
-  Ungleichgewicht bei den Benchmarks, die falsche Theorie und warum der
-  Ausverkauf von Speicherkapazität ein falscher Alarm war.
+desc: >
+  RaBitQ's authors respond to Google's TurboQuant paper: the benchmark
+  imbalance, the misattributed theory, and why the storage selloff was a false
+  alarm.
 origin: >-
   https://milvus.io/blog/interview-with-rabitq-authors-the-turboquant-dispute-and-why-the-storage-selloff-was-a-false-alarm.md
 ---
-<p>Googles <a href="https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/">TurboQuant-Papier</a> behauptete eine <strong>6-fache Komprimierung, eine 8-fache Beschleunigung und einen Genauigkeitsverlust von nahezu Null</strong> für Vektordarstellungen. Nach der Veröffentlichung fielen die Aktien von Arbeitsspeichern und Speichermedien drastisch, und die großen Technologiezeitschriften machten schnell Schlagzeilen daraus.</p>
-<p>Die Marktreaktion war jedoch nur der Anfang. Schon bald begannen Forscher zu fragen, ob die Behauptungen in dem Papier übertrieben waren und ob frühere Arbeiten - insbesondere <a href="https://dl.acm.org/doi/10.1145/3654970">RaBitQ</a> - fair behandelt wurden. Der Streit rückte <strong>die Vektorquantisierung</strong> wieder ins Rampenlicht, auch weil dieselben zugrunde liegenden Ideen jetzt in zwei wichtigen Bereichen der KI eine Rolle spielen: <a href="https://zilliz.com/learn/vector-similarity-search">Vektorsuchsysteme</a> und KV-Cache-Kompression für große Modelle.</p>
-<p>Um sowohl die technische Debatte als auch deren Bedeutung für Produktionssysteme zu verstehen, sprachen wir mit <strong>Cheng Long</strong>, außerordentlicher Professor an der NTU Singapur und Leiter von VectorDB@NTU, <strong>Jianyang Gao</strong>, Erstautor von RaBitQ, und <strong>Li Liu</strong>, technischer Leiter bei Zilliz. Das Gespräch drehte sich um die Vektorquantisierung selbst, um die Fragen, die im Zusammenhang mit TurboQuant aufgeworfen wurden, und um die Frage, warum dies für Systeme wie <a href="https://milvus.io/">Milvus</a>, die populärsten <a href="https://zilliz.com/learn/what-is-vector-database">Open-Source-Vektordatenbanken</a>, und für die Suche nach Vektoren in großem Maßstab wichtig ist.</p>
-<p><strong><em>Weiterführende Lektüre:</em></strong> <em>Wenn Sie sich eher für die technische Seite als für das Interview interessieren, lesen Sie unseren Begleitartikel über die</em> <a href="https://milvus.io/blog/turboquant-rabitq-vector-database-cost.md"><em>Auswirkungen der Vektorquantisierung auf die KI-Infrastrukturkosten</em></a><em>.</em></p>
-<h2 id="Why-did-vector-quantization-suddenly-become-such-a-big-topic" class="common-anchor-header">Warum ist die Vektorquantisierung plötzlich so ein großes Thema geworden?<button data-href="#Why-did-vector-quantization-suddenly-become-such-a-big-topic" class="anchor-icon" translate="no">
+<p>Google’s <a href="https://research.google/blog/turboquant-redefining-ai-efficiency-with-extreme-compression/">TurboQuant</a> paper claimed <strong>6x compression, 8x speedup, and near-zero accuracy loss</strong> for vector representations. After it was released, memory and storage stocks fell sharply, and major tech outlets quickly turned it into a headline story.</p>
+<p>The market reaction was only the start. Researchers soon began asking whether the paper’s claims were overstated and whether it treated prior work — especially <a href="https://dl.acm.org/doi/10.1145/3654970">RaBitQ</a> — fairly. The dispute pushed <strong>vector quantization</strong> back into the spotlight, partly because the same underlying ideas now matter in two critical parts of the AI stack: <a href="https://zilliz.com/learn/vector-similarity-search">vector search systems</a> and KV-cache compression for large models.</p>
+<p>To understand both the technical debate and what it means for production systems, we spoke with <strong>Cheng Long</strong>, Associate Professor at NTU Singapore and head of VectorDB@NTU; <strong>Jianyang Gao</strong>, first author of RaBitQ; and <strong>Li Liu</strong>, Director of Engineering at Zilliz. The conversation covered vector quantization itself, the questions raised around TurboQuant, and why this matters for systems like <a href="https://milvus.io/">Milvus</a>, the most popular open-source <a href="https://zilliz.com/learn/what-is-vector-database">vector databases</a>, and large-scale vector retrieval.</p>
+<p><strong><em>Related reading:</em></strong> <em>If you want the engineering side rather than the interview, see our companion article on</em> <a href="https://milvus.io/blog/turboquant-rabitq-vector-database-cost.md"><em>how vector quantization affects AI infrastructure costs</em></a><em>.</em></p>
+<h2 id="Why-did-vector-quantization-suddenly-become-such-a-big-topic" class="common-anchor-header">Why did vector quantization suddenly become such a big topic?<button data-href="#Why-did-vector-quantization-suddenly-become-such-a-big-topic" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,18 +40,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Zilliz: Bevor wir auf die Kontroverse eingehen, könnten Sie zunächst erklären, was Vektorquantisierung ist und warum sie in der KI so wichtig geworden ist?</strong></p>
-<p><strong>Cheng Long:</strong> Die Vektorquantisierung ist eine Technik zur <strong>Datenkompression</strong> und <strong>approximativen Darstellung</strong>. Sie stammt ursprünglich aus der Signalverarbeitung, wo sie zur Bild- und Audiokompression eingesetzt wurde. In modernen KI-Systemen hat sich ihre Rolle geändert, da Vektoren zu einer der Grundeinheiten der Berechnung geworden sind.</p>
-<p>Seine Bedeutung ist heute an zwei Stellen am deutlichsten.</p>
-<p>Zum einen bei der <strong>Echtzeitsuche in Sammlungen mit Milliarden oder gar Zehnmilliarden von Vektoren</strong>. In semantischen Retrievalsystemen ist die Kernaufgabe die Ähnlichkeitssuche über hochdimensionale Vektoren. Rohvektoren sind jedoch groß, und Gleitkommaberechnungen sind teuer. Im großen Maßstab ist es daher schwierig, Latenzzeiten im Millisekundenbereich zu erreichen. Die Vektorquantisierung hilft durch die Komprimierung von Vektoren in Niedrig-Bit-Darstellungen und die Beschleunigung der Abstandsberechnung. Aus diesem Grund ist sie für praktische Arbeitslasten wie die <a href="https://milvus.io/docs/single-vector-search.md">Ein-Vektor-Suche</a>, die <a href="https://milvus.io/docs/multi-vector-search.md">Multi-Vektor-Suche</a> und das Indexdesign in der <a href="https://milvus.io/docs/index-explained.md">Milvus-Sucharchitektur</a> wichtig.</p>
-<p>Das andere ist die <strong>KV-Cache-Kompression</strong> für große Modelle. KV-Cache reduziert redundante Berechnungen während der Generierung, aber die Speicherkosten wachsen schnell, wenn der Kontext länger wird. Es stellt sich also die Frage, wie diese Vektoren komprimiert werden können, ohne die Qualität der Ausgabe zu sehr zu beeinträchtigen. Im Kern ist das auch ein Vektorquantisierungsproblem.</p>
-<p><strong>Zilliz: Wenn sich die Vektorquantisierung durchsetzt - und wenn die Ergebnisse von TurboQuant Bestand haben - bedeutet das, dass der Speicherbedarf stark sinkt?</strong></p>
-<p><strong>Jianyang Gao:</strong> Unter dem gleichen Modell und der gleichen Arbeitslast kann die Komprimierung den Speicherbedarf reduzieren. Aber das rechtfertigt nicht die allgemeine Schlussfolgerung, zu der die Leute vorschnell gekommen sind.</p>
-<p>Wenn TurboQuant von einer <strong>6-fachen Komprimierung</strong> und einer <strong>8-fachen Beschleunigung</strong> spricht, bezieht sich das auf einen Vergleich mit einer <strong>16-Bit/32-Bit-Basisversion</strong>. Das ist nicht dasselbe wie der Vergleich mit anderen Methoden derselben Kategorie. Die tatsächliche Wirkung muss also noch genauer bewertet werden.</p>
-<p><strong>Zilliz: Wenn es bei der Marktreaktion wirklich um die Technologie selbst ging, hätte sie dann nicht schon viel früher erfolgen müssen, als ähnliche Ideen bereits auftauchten?</strong></p>
-<p><strong>Cheng Long:</strong> Aus technischer Sicht könnte man sagen, dass ein ähnliches theoretisches Terrain bereits zuvor erreicht worden war. Aber die Märkte bewegen sich nicht im Gleichschritt mit der Forschung. In der Regel gibt es eine Verzögerung zwischen den akademischen Ergebnissen, der technischen Umsetzung und der finanziellen Interpretation.</p>
-<p>Und über einen längeren Zeitraum hinweg ist der Effekt möglicherweise nicht einmal linear. Die Komprimierung kann es ermöglichen, große Modelle auf kleineren Geräten laufen zu lassen, was eine neue Nachfrage schaffen kann, anstatt sie einfach zu verringern. Die Beziehung zwischen Technologie und Märkten ist komplizierter als eine lineare Extrapolation.</p>
-<h2 id="How-did-RaBitQ-emerge-and-what-did-it-contribute" class="common-anchor-header">Wie ist RaBitQ entstanden, und welchen Beitrag hat es geleistet?<button data-href="#How-did-RaBitQ-emerge-and-what-did-it-contribute" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Zilliz: Before we get into the controversy, could you start by explaining what vector quantization is and why it has become so important in AI?</strong></p>
+<p><strong>Cheng Long:</strong> Vector quantization is a technique for <strong>data compression</strong> and <strong>approximate representation</strong>. It originally came from signal processing, where it was used for image and audio compression. In modern AI systems, its role has changed because vectors have become one of the basic units of computation.</p>
+<p>Today, its importance is clearest in two places.</p>
+<p>One is <strong>real-time search over collections with billions or even tens of billions of vectors</strong>. In semantic retrieval systems, the core task is similarity search over high-dimensional vectors. But raw vectors are large, and floating-point computation is expensive. At scale, that makes it difficult to deliver millisecond-level latency. Vector quantization helps by compressing vectors into low-bit representations and speeding up distance computation. That is why it matters for practical workloads such as <a href="https://milvus.io/docs/single-vector-search.md">single-vector search</a>, <a href="https://milvus.io/docs/multi-vector-search.md">multi-vector search</a>, and index design in <a href="https://milvus.io/docs/index-explained.md">Milvus search architecture</a>.</p>
+<p>The other is <strong>KV cache compression</strong> for large models. KV cache reduces redundant computation during generation, but the memory cost grows quickly as context gets longer. So the problem becomes how to compress those vectors without hurting output quality too much. At its core, that is also a vector quantization problem.</p>
+<p><strong>Zilliz: If vector quantization becomes more widely used — and if TurboQuant’s results hold up — does that mean storage demand drops sharply?</strong></p>
+<p><strong>Jianyang Gao:</strong> Under the same model and the same workload, compression can reduce storage demand. But that does not justify the broader conclusion people jumped to.</p>
+<p>When TurboQuant talks about <strong>6x compression</strong> and <strong>8x speedup</strong>, it is comparing against a basic <strong>16-bit/32-bit baseline</strong>. That is not the same as comparing against other methods in the same category. So the real effect still needs to be evaluated more carefully.</p>
+<p><strong>Zilliz: Then from that perspective, if the market reaction were really about the technology itself, should it have happened much earlier, when similar ideas had already appeared?</strong></p>
+<p><strong>Cheng Long:</strong> From a technical point of view, you could say that similar theoretical territory had already been reached before. But markets do not move in sync with research. There is usually a lag between academic results, engineering adoption, and financial interpretation.</p>
+<p>And over a longer horizon, the effect may not even be linear. Compression can make it possible to run large models on smaller devices, which can create new demand rather than simply reduce it. The relationship between technology and markets is more complicated than a straight-line extrapolation.</p>
+<h2 id="How-did-RaBitQ-emerge-and-what-did-it-contribute" class="common-anchor-header">How did RaBitQ emerge, and what did it contribute?<button data-href="#How-did-RaBitQ-emerge-and-what-did-it-contribute" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -66,23 +66,23 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Zilliz: Wie sind Sie auf die Idee für RaBitQ gekommen?</strong></p>
-<p><strong>Jianyang Gao:</strong> Wir sind von einer Lücke ausgegangen, die wir in Vektordatenbanken gesehen haben. Traditionelle Methoden wie die <a href="https://milvus.io/docs/ivf-pq.md">Produktquantisierung</a> funktionierten empirisch gut, boten aber kaum theoretische Garantien.</p>
-<p>Zu dieser Zeit studierte ich hochdimensionale Wahrscheinlichkeitsrechnung an der NTU Singapur, und das brachte mich zu der Frage, ob wir eine Methode entwickeln könnten, die nicht nur praktisch ist, sondern auch eine klare theoretische Garantie bietet. Das war der Startpunkt für RaBitQ.</p>
-<p><strong>Zilliz: Worin besteht Ihrer Meinung nach die Hauptoriginalität von RaBitQ?</strong></p>
-<p><strong>Jianyang Gao</strong>: Die Schlüsselidee war die Verwendung einer Zufallsrotation, auch bekannt als Johnson-Lindenstrauss-Transformation, um die Verteilung der Vektorkoordinaten gleichmäßiger und berechenbarer zu machen.</p>
-<p>Wenn man das hat, kann man darauf aufbauend einen optimalen Quantisierungsschätzer ableiten. Wir haben dann einen strengen Beweis erbracht, dass er die theoretische untere Grenze erreicht.</p>
-<p>In früheren Arbeiten wurde auch versucht, eine zufällige Rotation einzuführen. Aber aus unserer Sicht haben diese Methoden aufgrund praktischer Probleme bei der Entwicklung von Algorithmen nicht den gewünschten Effekt erzielt.</p>
-<p><strong>Zilliz: Was ist Ihnen aus technischer Sicht an RaBitQ besonders aufgefallen?</strong></p>
-<p><strong>Li Liu:</strong> Wir haben mit vielen Quantisierungsalgorithmen gearbeitet, von <a href="https://milvus.io/docs/ivf-sq8.md">skalaren Quantisierungsmethoden</a> bis zu PQ und anderen Varianten. Das Besondere an RaBitQ war, dass es die Herangehensweise an das Problem veränderte.</p>
-<p>Davor war ein Großteil des Feldes noch ziemlich empirisch. Man konnte sagen, dass eine Methode zu funktionieren schien, aber es war schwieriger, klar zu erklären, warum. RaBitQ ging das Problem auf eine viel mathematischere Weise an. Die Methode wirkte elegant und in gewissem Sinne auch einfach. Diese Denkweise hat eine Menge späterer Arbeiten beeinflusst.</p>
-<p><strong>Zilliz: Einfach ausgedrückt, wie viel Speicherplatz und Kosten können eingespart werden?</strong></p>
-<p><strong>Li Liu:</strong> Wenn man von einer 4-Bit-Komprimierung auf eine 2-Bit-Komprimierung umsteigt, halbiert sich der Speicherbedarf auf derselben Abrufebene.</p>
-<p>Und es geht nicht nur um die Komprimierung. Die Leistung ist mit früheren Ansätzen vergleichbar, und das ist in Produktionsumgebungen wichtig, in denen Teams sowohl auf Speichereffizienz als auch auf Abrufqualität achten. Deshalb ist es für Systeme von Bedeutung, die ein Gleichgewicht zwischen <a href="https://milvus.io/docs/dense-vector.md">dichter Vektorspeicherung</a>, Durchsatz und Abruf benötigen.</p>
-<p><strong>Zilliz: Abgesehen von Milvus, wo sehen Sie RaBitQ heute im Einsatz?</strong></p>
-<p><strong>Cheng Long:</strong> Zunächst möchte ich dem Milvus-Team danken, denn sie waren unter den ersten, die RaBitQ übernommen haben. Wir hatten auch viele Diskussionen und einige gemeinsame Forschungen auf dem Weg dorthin.</p>
-<p>RaBitQ wurde auch in einige andere Systeme übernommen, darunter Meta's FAISS, VSAG, VectorChord, Volcengine OpenSearch, CockroachDB, ElasticSearch, Lucene und turbopuffer. Was auf der Milvus-Seite hervorsticht, ist, dass das Team <a href="https://milvus.io/docs/ivf-rabitq.md">IVF_RABITQ</a> als echte Indexoption in <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6</a> ausgeliefert hat, neben einer breiteren Arbeit an der <a href="https://milvus.io/docs/manage-collections.md">Sammlungsverwaltung</a>, <a href="https://milvus.io/docs/ivf-flat.md">IVF-basierter Indexierung</a> und <a href="https://milvus.io/docs/hnsw.md">HNSW-basierter Indexierung</a>.</p>
-<h2 id="How-should-we-evaluate-TurboQuant" class="common-anchor-header">Wie sollten wir TurboQuant bewerten?<button data-href="#How-should-we-evaluate-TurboQuant" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Zilliz: How did you first arrive at the idea for RaBitQ?</strong></p>
+<p><strong>Jianyang Gao:</strong> We started from a gap we saw in vector databases. Traditional methods such as <a href="https://milvus.io/docs/ivf-pq.md">Product Quantization</a> worked well empirically, but they offered very little in the way of theoretical guarantees.</p>
+<p>At the time, I was studying high-dimensional probability at NTU Singapore, and that led me to ask whether we could build a method that was not only practical, but also came with a clear theoretical guarantee. That was the starting point for RaBitQ.</p>
+<p><strong>Zilliz: What do you see as RaBitQ’s core originality?</strong></p>
+<p><strong>Jianyang Gao:</strong> Its key idea was to use a random rotation, a.k.a., Johnson-Lindenstrauss transformation, to make the distribution of vector coordinates more uniform and more predictable.</p>
+<p>Once you have that, you can derive an optimal quantization estimator on top of it. We then gave a strict proof that it reaches the theoretical lower bound.</p>
+<p>Earlier work had also tried to introduce random rotation. But from our perspective, those methods did not achieve the effect we were looking for because of practical issues in algorithm design.</p>
+<p><strong>Zilliz: From an engineering perspective, what stood out most to you about RaBitQ?</strong></p>
+<p><strong>Li Liu:</strong> We had worked with many quantization algorithms, from <a href="https://milvus.io/docs/ivf-sq8.md">scalar quantization methods</a> to PQ and other variants. What stood out about RaBitQ was that it changed how people approached the problem.</p>
+<p>Before that, much of the field was still fairly empirical. You could say a method seemed to work, but it was harder to explain clearly why. RaBitQ approached the problem in a much more mathematical way. The method felt elegant and, in a sense, simple. That way of thinking influenced a lot of later work.</p>
+<p><strong>Zilliz: Put simply, how much can it save in memory and cost?</strong></p>
+<p><strong>Li Liu:</strong> At the same recall level, moving from 4-bit compression to 2-bit compression cuts memory use by half.</p>
+<p>And it is not just about compression. Its performance compares favorably with earlier approaches, and that matters in production environments where teams care about both memory efficiency and retrieval quality. That is why it matters for systems that need to balance <a href="https://milvus.io/docs/dense-vector.md">dense vector storage</a>, throughput, and recall.</p>
+<p><strong>Zilliz: Beyond Milvus, where do you see RaBitQ being used today?</strong></p>
+<p><strong>Cheng Long:</strong> First, I want to thank the Milvus team, because they were among the earliest to adopt RaBitQ. We also had a lot of discussions and some collaborative research along the way.</p>
+<p>RaBitQ has also been adopted in some other systems including Meta’s FAISS, VSAG, VectorChord, Volcengine OpenSearch, CockroachDB, ElasticSearch, Lucene, and turbopuffer. What stands out on the Milvus side is that the team shipped <a href="https://milvus.io/docs/ivf-rabitq.md">IVF_RABITQ</a> as a real index option in <a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6</a>, alongside broader work on <a href="https://milvus.io/docs/manage-collections.md">collection management</a>, <a href="https://milvus.io/docs/ivf-flat.md">IVF-based indexing</a>, and <a href="https://milvus.io/docs/hnsw.md">HNSW-based indexing</a>.</p>
+<h2 id="How-should-we-evaluate-TurboQuant" class="common-anchor-header">How should we evaluate TurboQuant?<button data-href="#How-should-we-evaluate-TurboQuant" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -97,24 +97,24 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Zilliz: In Ihrer öffentlichen Antwort sagten Sie, dass TurboQuant einige ernsthafte Probleme hat. Was waren Ihrer Meinung nach die wichtigsten?</strong></p>
-<p><strong>Jianyang Gao:</strong> Wir sehen drei Hauptprobleme.</p>
-<p>Eines ist die Art und Weise, wie das Papier frühere Arbeiten beschreibt und Überschneidungen erörtert. Das TurboQuant-Papier stellt die Methodik von RaBitQ falsch dar und ignoriert den ähnlichsten Teil, wie die Johnson-Lindenstrauss-Transformation. Ein weiteres Problem ist die Art und Weise, wie das Papier das theoretische Ergebnis charakterisiert. Es beschreibt RaBitQ als suboptimal, ohne irgendeine Erklärung oder einen Beweis zu liefern, aber RaBitQ ist in Wirklichkeit optimal. Der dritte Punkt ist die Fairness des experimentellen Vergleichs. Sie verwenden eine Single-Core-CPU, um RaBitQ zu bewerten, während sie eine A100-GPU verwenden, um TurboQuant zu bewerten.</p>
-<p><strong>Zilliz: Lassen Sie uns zuerst die Benchmark-Problematik betrachten. Warum glauben Sie, dass der Vergleich nicht fair war?</strong></p>
-<p><strong>Jianyang Gao:</strong> Benchmark-Behauptungen haben nur dann einen Sinn, wenn das Setup vergleichbar ist. Wenn ein System unter einer sehr unterschiedlichen Hardware- oder Softwareumgebung getestet wird, dann kann das Ergebnis eher die Einrichtung als den Algorithmus selbst widerspiegeln.</p>
-<p>Unserer Meinung nach können Unterschiede bei der Wahl des Prozessors, der Implementierungssprache und der Optimierungsstufe einen großen Unterschied ausmachen. Aus diesem Grund muss die Benchmark-Methodik sehr sorgfältig interpretiert werden, insbesondere von Teams, die produktive Retrievalsysteme entwickeln.</p>
-<p><strong>Cheng Long:</strong> In dem Papier werden auch einige andere Behauptungen aufgestellt, die nicht zutreffen.</p>
-<p>Zum Beispiel heißt es in dem Papier, dass <strong>RaBitQ nicht vektorisiert werden kann</strong>. Aber RaBitQ hatte bereits Code mit SIMD-basierten vektorisierten Berechnungen veröffentlicht, als das 2024-Papier veröffentlicht wurde. Aus unserer Sicht war diese Aussage also sachlich falsch.</p>
-<p>Es ist auch erwähnenswert, dass wir letztes Jahr mit NVIDIA zusammengearbeitet haben und eine GPU-Implementierung von RaBitQ fertiggestellt haben. Der zugehörige Code wird derzeit für die Aufnahme in NVIDIAs cuVS-Bibliothek geprüft.</p>
-<p><strong>Zilliz: Milvus evaluierte TurboQuant in der zweiten Hälfte des Jahres 2025, hat es aber nicht übernommen. Was hat Ihr Team bei den Tests festgestellt?</strong></p>
-<p><strong>Li Liu:</strong> Es enthält eine nützliche Idee. Unserer Ansicht nach wird die Zuweisung des Quantisierungsgitters ein wenig optimiert. Aber der wichtigste Schritt in der Methode - die Verwendung von Zufallsrotation für die Quantisierung - wurde zuerst von RaBitQ eingeführt.</p>
-<p>Und wenn es um eine unvoreingenommene Schätzung geht, ist der Ansatz von RaBitQ sauberer und seine theoretische Herleitung ist stärker.</p>
-<p>Da es sich um ein Ergebnis von Google handelt, haben wir es im Jahr 2025 getestet. In unserem Labor, unter einer standardisierten CPU-Umgebung, übertraf TurboQuant unsere interne RaBitQ-Version in den meisten Fällen, die wir bewerteten, nicht. Als der Markt also so stark reagierte, waren wir wirklich überrascht.</p>
-<p><strong>Zilliz: Könnten Sie den Lesern, die sich mit den beiden Arbeiten nicht näher befasst haben, im Klartext erklären, wo sich RaBitQ und TurboQuant überschneiden?</strong></p>
-<p><strong>Li Liu</strong>: Auf einer hohen Ebene beginnen beide Methoden mit einer <strong>zufälligen Rotation</strong>. Mathematisch gesehen bedeutet das, dass der Vektor mit einer zufälligen orthogonalen Matrix multipliziert wird. Man kann sich das so vorstellen, dass man seinen Blickwinkel in einem hochdimensionalen Raum ändert. Dabei werden die relativen Positionen der Datenpunkte nicht verändert, aber die Informationen werden gleichmäßiger über die Dimensionen verteilt.</p>
-<p>Danach folgt die <strong>Quantisierung</strong>. Sie unterteilen den kontinuierlichen reellen Raum in <strong>2^k Gitterzellen</strong>, wobei <strong>k</strong> die Anzahl der Quantisierungsbits ist, und bilden dann jedes Vektorelement auf einen nahe gelegenen Gitterpunkt ab. TurboQuant nimmt hier eine kleine Anpassung vor, indem es das Gitter entsprechend der Datenverteilung zuweist, anstatt es gleichmäßig zu verteilen.</p>
-<p>Der letzte Schritt ist die <strong>Fehlerabschätzung</strong>, und hier liegt der Hauptbeitrag von RaBitQ. Herkömmliche Methoden berechnen direkt aus den quantisierten Werten, was den Fehler schwerer kontrollierbar macht. RaBitQ schätzt den Quantisierungsfehler genauer, und darin liegt seine mathematische Optimalität begründet. Die Lösung von TurboQuant ist komplizierter, und in unserer Umgebung erschien der Kompromiss nicht so attraktiv.</p>
-<h2 id="Why-is-attribution-so-hard-to-resolve-in-practice" class="common-anchor-header">Warum ist die Zuordnung in der Praxis so schwer zu lösen?<button data-href="#Why-is-attribution-so-hard-to-resolve-in-practice" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Zilliz: In your public response, you said TurboQuant had some serious issues. What, in your view, were the main ones?</strong></p>
+<p><strong>Jianyang Gao:</strong> We see three main problems.</p>
+<p>One is the way the paper describes prior work and discusses overlap. The TurboQuant paper misrepresents the methodology of RaBitQ, ignoring the most similar part, such as Johnson-Lindenstrauss Transformation. Another is the way the paper characterizes the theoretical result. It describes RaBitQ as suboptimal without providing any explanation or evidence, but RaBitQ is optimal in fact. The third is the fairness of the experimental comparison. They use single-core CPU to evaluate RaBitQ while using A100 GPU to evaluate TurboQuant.</p>
+<p><strong>Zilliz: Let’s take the benchmark issue first. Why do you think the comparison was not fair?</strong></p>
+<p><strong>Jianyang Gao:</strong> Benchmark claims only mean something if the setup is comparable. If one system is tested under a very different hardware or software environment, then the result may reflect the setup more than the algorithm itself.</p>
+<p>In our view, differences in processor choice, implementation language, and optimization level can make a major difference. That is why benchmark methodology needs to be interpreted very carefully, especially by teams building production retrieval systems.</p>
+<p><strong>Cheng Long:</strong> The paper also made some other claims that do not hold.</p>
+<p>For example, the paper says that <strong>RaBitQ cannot be vectorized</strong>. But RaBitQ had already open-sourced code with SIMD-based vectorized computation when the 2024 paper was published. So from our perspective, that statement was factually incorrect.</p>
+<p>It is also worth mentioning that we began working with NVIDIA last year and completed a GPU implementation of RaBitQ. The related code is under review for inclusion in NVIDIA’s cuVS library.</p>
+<p><strong>Zilliz: Milvus evaluated TurboQuant in the second half of 2025 but did not adopt it. What did your team see in testing?</strong></p>
+<p><strong>Li Liu:</strong> It does contain one useful idea. In our view, it makes a small optimization in how the quantization grid is allocated. But the most important step in the method — using random rotation for quantization — was first introduced by RaBitQ.</p>
+<p>And when it comes to unbiased estimation, RaBitQ’s approach is cleaner and its theoretical derivation is stronger.</p>
+<p>That said, because this was a result from Google, we tested it in 2025. In our lab, under a standardized CPU environment, TurboQuant did not outperform our internal RaBitQ version in most of the cases we evaluated. So when the market reacted so strongly, we were genuinely surprised.</p>
+<p><strong>Zilliz: For readers who have not looked closely at either paper, could you walk through where RaBitQ and TurboQuant overlap in plain language?</strong></p>
+<p><strong>Li Liu:</strong> At a high level, both methods begin with <strong>random rotation</strong>. Mathematically, that means multiplying the vector by a random orthogonal matrix. You can think of it as changing your viewing angle in a high-dimensional space. It does not change the relative positions of the data points, but it distributes the information across dimensions more evenly.</p>
+<p>After that comes <strong>quantization</strong>. You divide the continuous real-valued space into <strong>2^k grid cells</strong>, where <strong>k</strong> is the number of quantization bits, and then map each vector element to a nearby grid point. TurboQuant makes a small adjustment here by allocating the grid according to the data distribution instead of distributing it evenly.</p>
+<p>The last step is <strong>error estimation</strong>, and this is where RaBitQ’s main contribution lies. Traditional methods calculate directly from the quantized values, which makes the error harder to control. RaBitQ estimates the quantization error more precisely, and that is where its mathematical optimality comes from. TurboQuant’s solution is more complicated, and in our setting the tradeoff did not look as attractive.</p>
+<h2 id="Why-is-attribution-so-hard-to-resolve-in-practice" class="common-anchor-header">Why is attribution so hard to resolve in practice?<button data-href="#Why-is-attribution-so-hard-to-resolve-in-practice" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -129,22 +129,22 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Zilliz</strong>: Wie haben Google und ICLR reagiert, nachdem Sie Ihre öffentliche Erklärung veröffentlicht hatten?</p>
-<p><strong>Cheng Long:</strong> ICLR hat keine Maßnahmen ergriffen. Wir haben ihnen während des Überprüfungszeitraums im September letzten Jahres eine E-Mail geschickt, aber keine Antwort erhalten. Im März dieses Jahres schrieben wir erneut und wurden aufgefordert, Kommentare auf OpenReview zu veröffentlichen, aber darüber hinaus gab es keine weiteren Maßnahmen.</p>
-<p>Was Google betrifft, so antwortete einer der Mitautoren vor ein paar Tagen. In der Antwort hieß es, sie würden die arXiv-Version überarbeiten, um die ungenaue Beschreibung der Optimalität von RaBitQ zu korrigieren.</p>
-<p><strong>Zilliz:</strong> Zuvor ging es in der Diskussion um akademisches Fehlverhalten. Jetzt klingt es auch wie eine Frage des Ungleichgewichts und wer die Geschichte gestalten darf. Warum ist es so schwer, Ihre Arbeit zu verteidigen?</p>
-<p><strong>Cheng Long:</strong> Ein Problem ist der Umfang. KI-Konferenzen sind inzwischen so groß, dass bei einem einzigen Zyklus Zehntausende von Beiträgen eingehen können. Die Organisatoren haben einfach nicht die Kapazität, jeden Streitfall dieser Art zu bearbeiten.</p>
-<p>Das andere Problem ist das Ungleichgewicht. Große Unternehmen haben eine viel stärkere öffentliche Stimme. Unabhängige Forscher oder kleinere Teams haben nicht die gleiche Kommunikationskraft.</p>
-<p><strong>Jianyang Gao:</strong> Für Einzelpersonen sind die Kosten extrem hoch. Professor Long und ich haben in den letzten Wochen kaum normal arbeiten können.</p>
-<p>Auch das Verfahren selbst war frustrierend. Als wir uns mit den Autoren in Verbindung setzten, wurden wir strikt abgewiesen, und von den Konferenzorganisatoren erhielten wir keine Antwort. In der Praxis sehen viele Forscher solche Situationen und beschließen, sie loszulassen. Aber auf diese Weise verschwinden auch viele Originalbeiträge aus der öffentlichen Darstellung.</p>
-<p><strong>Zilliz:</strong> Es klingt, als wäre dies nicht das erste Mal, dass Ihr Team mit dieser Art von Problem konfrontiert wird.</p>
-<p><strong>Cheng Long:</strong> Nein, das ist es nicht.</p>
-<p>Wir haben schon öfter Fälle erlebt, in denen Unternehmen RaBitQ nehmen, ein paar technische Änderungen vornehmen, ihm einen neuen Namen geben und es dann nur als etwas beschreiben, das von RaBitQ inspiriert wurde.</p>
-<p>Deshalb schätze ich die Art und Weise, wie einige Branchenteams, darunter auch Milvus, damit umgehen. Wenn sie RaBitQ verwenden, beschreiben sie es objektiv. Und wenn sie Optimierungen hinzufügen, die über die ursprüngliche Version hinausgehen, erklären sie diese klar als ihren eigenen technischen Beitrag. Damit wird die ursprüngliche Arbeit angemessen gewürdigt und gleichzeitig die technische Stärke des Unternehmens gezeigt.</p>
-<p><strong>Zilliz</strong>: Wenn große Unternehmen auf akademischen Arbeiten aufbauen, bieten sie dann in der Regel eine finanzielle Beteiligung oder eine Aufteilung des Nutzens an?</p>
-<p><strong>Jianyang Gao:</strong> In den meisten Fällen nicht.</p>
-<p>Dennoch haben große Unternehmen einen starken Anreiz, einen technischen Fortschritt als etwas darzustellen, das sie selbst entwickelt haben, und nicht als etwas, das sie von anderen übernommen haben. Jeder möchte, dass Kunden und Investoren die fortschrittlichste Arbeit als das Ergebnis der Innovation des eigenen Teams sehen.</p>
-<h2 id="What-comes-next-for-vector-quantization" class="common-anchor-header">Was kommt als nächstes für die Vektorquantisierung?<button data-href="#What-comes-next-for-vector-quantization" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Zilliz:</strong> After you published your public statement, how did Google and ICLR respond?</p>
+<p><strong>Cheng Long:</strong> ICLR did not take action. We emailed them during the review period in September last year, but did not receive a response. We wrote again in March this year and were told to post comments on OpenReview, but beyond that there was no action.</p>
+<p>As for Google, one of the co-authors replied a few days ago. The reply said they would revise the arXiv version to correct its inaccurate description of RaBitQ’s optimality.</p>
+<p><strong>Zilliz:</strong> Earlier the discussion was framed around academic misconduct. Now it also sounds like a question of imbalance and who gets to shape the story. Why is it so hard to defend your work?</p>
+<p><strong>Cheng Long:</strong> One problem is scale. AI conferences are now so large that a single cycle can bring in tens of thousands of papers. Organizers simply do not have the capacity to handle every dispute of this kind.</p>
+<p>The other problem is imbalance. Large companies have a much stronger public voice. Independent researchers or smaller teams do not have the same communication power.</p>
+<p><strong>Jianyang Gao:</strong> For individuals, the cost is extremely high. Professor Long and I have barely been able to work normally in recent weeks.</p>
+<p>The process itself has also been frustrating. We were firmly rejected when we contacted the authors, and we received no response from the conference organizers. In practice, many researchers look at situations like this and decide to let them go. But that is also how many original contributions disappear from the public narrative.</p>
+<p><strong>Zilliz:</strong> It sounds like this is not the first time your team has run into this kind of problem.</p>
+<p><strong>Cheng Long:</strong> No, it is not.</p>
+<p>We have seen cases before where companies take RaBitQ, make a few engineering modifications, give it a new name, and then describe it only as something inspired by RaBitQ.</p>
+<p>That is why I appreciate the way some industry teams handle this, including Milvus. When they use RaBitQ, they describe it objectively. And when they add optimizations beyond the original version, they explain those clearly as their own engineering contribution. That gives proper credit to the original work while also showing the company’s technical strength.</p>
+<p><strong>Zilliz:</strong> When large companies build on academic work, do they usually provide any financial sharing or benefit allocation?</p>
+<p><strong>Jianyang Gao:</strong> In most cases, no.</p>
+<p>That said, large companies still have a strong incentive to present a technical advance as something they created themselves rather than something they adopted from others. Everyone wants customers and investors to see the most advanced work as the result of their own team’s innovation.</p>
+<h2 id="What-comes-next-for-vector-quantization" class="common-anchor-header">What comes next for vector quantization?<button data-href="#What-comes-next-for-vector-quantization" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -159,15 +159,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Zilliz:</strong> An welchen Forschungsrichtungen arbeiten Sie derzeit?</p>
-<p><strong>Cheng Long:</strong> Ein großer Teil unserer Arbeit wird sich weiterhin auf das Abrufen von Vektoren konzentrieren.</p>
-<p>Eine Richtung ist die Kombination von RaBitQ mit verschiedenen Vektor-Retrieval-Indizes, wie IVF und HNSW, so dass das System größere Datenmengen mit geringerer Latenz, höherer Gleichzeitigkeit und geringeren Kosten unterstützen kann. Ich achte auch auf die KV-Cache-Kompression.</p>
-<p><strong>Jianyang Gao:</strong> KV-Cache in großen Modellen und Vektorabfrage haben viele der gleichen Eigenschaften, sowohl mathematisch als auch auf Systemebene, da beide mit hochdimensionalen Vektoren arbeiten.</p>
-<p>In Zukunft möchte ich mehr darüber nachdenken, wie man mathematische Werkzeuge, einschließlich Ideen aus der hochdimensionalen Wahrscheinlichkeitsrechnung, anwenden kann, um Inferenz und Training zu beschleunigen.</p>
-<p><strong>Zilliz:</strong> Wo liegt die Grenze für die Vektorquantisierung als Gebiet? Wie viel Raum bleibt für Verbesserungen?</p>
-<p><strong>Cheng Long:</strong> Aus theoretischer Sicht ist die Obergrenze weitgehend in Sicht. RaBitQ ist bereits asymptotisch optimal.</p>
-<p>Aber auf der technischen Seite gibt es noch sehr viel Spielraum. Man muss sich immer noch mit den Hardwareeigenschaften, der Datenverteilung, den Latenzbeschränkungen und vielen anderen praktischen Faktoren auseinandersetzen. Genau aus diesem Grund müssen Produktionssysteme in Bereichen wie der <a href="https://milvus.io/docs/architecture_overview.md">Architektur verteilter Vektordatenbanken</a>, der <a href="https://milvus.io/docs/sparse_vector.md">Unterstützung dünn besetzter Vektoren</a>, <a href="https://milvus.io/docs/reranking.md">Reranking-Pipelines</a> und der Auswahl von Metriken in <a href="https://milvus.io/docs/metric.md">Milvus-Distanzmetriken</a> noch sorgfältig bearbeitet werden.</p>
-<h2 id="Keep-Reading" class="common-anchor-header">Lesen Sie weiter<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Zilliz:</strong> What research directions are you working on now?</p>
+<p><strong>Cheng Long:</strong> A large part of our work will remain focused on vector retrieval.</p>
+<p>One direction is to combine RaBitQ with different vector retrieval indexes, such as IVF and HNSW, so the system can support larger-scale data with lower latency, higher concurrency, and lower cost. I am also paying attention to KV cache compression.</p>
+<p><strong>Jianyang Gao:</strong> KV cache in large models and vector retrieval share many of the same properties, both mathematically and at the systems level, because both deal with high-dimensional vectors.</p>
+<p>Going forward, I want to think more about how to apply mathematical tools, including ideas from high-dimensional probability, to accelerate inference and training.</p>
+<p><strong>Zilliz:</strong> Where is the ceiling for vector quantization as a field? How much room is left for improvement?</p>
+<p><strong>Cheng Long:</strong> From a theoretical point of view, the ceiling is largely in sight. RaBitQ is already asymptotically optimal.</p>
+<p>But there is still a great deal of room on the engineering side. You still have to deal with hardware characteristics, data distribution, latency constraints, and many other practical factors. That is exactly why production systems still need careful work in areas such as <a href="https://milvus.io/docs/architecture_overview.md">distributed vector database architecture</a>, <a href="https://milvus.io/docs/sparse_vector.md">sparse vector support</a>, <a href="https://milvus.io/docs/reranking.md">reranking pipelines</a>, and metric selection in <a href="https://milvus.io/docs/metric.md">Milvus distance metrics</a>.</p>
+<h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -182,16 +182,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Wenn Sie sich eingehender mit der technischen Seite von RaBitQ und seiner Einbindung in Milvus befassen möchten, finden Sie hier die wichtigsten Ressourcen:</p>
+    </button></h2><p>If you want to dig deeper into the engineering side of RaBitQ and how it fits into Milvus, these are the most relevant resources:</p>
 <ul>
-<li><a href="https://milvus.io/docs/ivf-rabitq.md">IVF_RABITQ-Dokumentation</a> - Details zur Konfiguration und Anleitung zum Tuning.</li>
-<li><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3×-more-queries-with-rabitq.md">Vertiefung der RaBitQ-Integration</a> - wie Milvus RaBitQ in einen Produktionsindex verwandelt hat.</li>
-<li><a href="https://milvus.io/blog/turboquant-rabitq-vector-database-cost.md">Wie sich die Vektorquantisierung auf die KI-Infrastrukturkosten auswirkt</a> - unsere umfassendere Analyse der TurboQuant-RaBitQ-Diskussion.</li>
-<li><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6 Release Post</a> - wo IVF_RABITQ als echte Milvus-Indexoption ausgeliefert wurde.</li>
-<li><a href="https://milvus.io/docs/index-explained.md">Milvus-Index erklärt</a> - wie IVF_RABITQ mit anderen Indexoptionen zusammenpasst.</li>
-<li><a href="https://milvus.io/docs/ivf-flat.md">IVF_FLAT-Indizierung</a> und <a href="https://milvus.io/docs/hnsw.md">HNSW-Indizierung</a> - nützliche Grundlinien, wenn Sie Index-Kompromisse vergleichen wollen.</li>
-<li><a href="https://milvus.io/docs/schema.md">Schemadesign in Milvus</a> und <a href="https://milvus.io/docs/filtered-search.md">gefilterte Suche</a> - nützlich, wenn Sie RaBitQ nicht isoliert, sondern in einer realen Anwendung evaluieren wollen.</li>
-<li><a href="https://milvus.io/docs/quickstart.md">Milvus-Schnellstart</a> und <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG-Systemdesign</a> - hilfreich, wenn Sie dies in einer Retrieval-Pipeline ausprobieren möchten.</li>
+<li><a href="https://milvus.io/docs/ivf-rabitq.md">IVF_RABITQ documentation</a> — configuration details and tuning guidance.</li>
+<li><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3×-more-queries-with-rabitq.md">RaBitQ integration deep dive</a> — how Milvus turned RaBitQ into a production index.</li>
+<li><a href="https://milvus.io/blog/turboquant-rabitq-vector-database-cost.md">How vector quantization affects AI infrastructure costs</a> — our broader analysis of the TurboQuant-RaBitQ discussion.</li>
+<li><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Milvus 2.6 release post</a> — where IVF_RABITQ shipped as a real Milvus index option.</li>
+<li><a href="https://milvus.io/docs/index-explained.md">Milvus index explained</a> — how IVF_RABITQ fits with other index choices.</li>
+<li><a href="https://milvus.io/docs/ivf-flat.md">IVF_FLAT indexing</a> and <a href="https://milvus.io/docs/hnsw.md">HNSW indexing</a> — useful baselines if you are comparing index tradeoffs.</li>
+<li><a href="https://milvus.io/docs/schema.md">Schema design in Milvus</a> and <a href="https://milvus.io/docs/filtered-search.md">filtered search</a> — useful if you are evaluating RaBitQ in a real application rather than in isolation.</li>
+<li><a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a> and <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG system design</a> — helpful if you want to try this in a retrieval pipeline.</li>
 </ul>
-<p>Treten Sie der <a href="https://slack.milvus.io/">Milvus-Slack-Community</a> bei oder <a href="https://milvus.io/office-hours">buchen Sie eine Milvus-Sprechstunde</a>, wenn Sie Ihren Workload durchsprechen möchten.</p>
-<p>Wenn Sie die Einrichtung der Infrastruktur lieber überspringen möchten, können Sie <a href="https://cloud.zilliz.com/signup">sich für die Zilliz Cloud anmelden</a> (vollständig verwaltetes Milvus).</p>
+<p>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> or <a href="https://milvus.io/office-hours">book Milvus Office Hours</a> if you want to talk through your workload.</p>
+<p>If you’d rather skip infrastructure setup, you can <a href="https://cloud.zilliz.com/signup">sign up for Zilliz Cloud</a> (fully managed Milvus) .</p>

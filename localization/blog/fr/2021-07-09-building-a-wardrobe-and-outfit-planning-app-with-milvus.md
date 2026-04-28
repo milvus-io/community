@@ -1,24 +1,26 @@
 ---
 id: building-a-wardrobe-and-outfit-planning-app-with-milvus.md
-title: Vue d'ensemble du système
+title: System overview
 author: Yu Fang
 date: 2021-07-09T06:30:06.439Z
 desc: >-
-  Découvrez comment Milvus, une base de données vectorielles open-source, est
-  utilisée par Mozat pour alimenter une application de mode qui offre des
-  recommandations de style personnalisées et un système de recherche d'images.
+  Discover how Milvus, an open-source vector database, is used by Mozat to power
+  a fashion app that offers personalized style recommendations and an image
+  search system.
 cover: assets.zilliz.com/mozat_blog_0ea9218c71.jpg
 tag: Scenarios
 canonicalUrl: >-
   https://zilliz.com/blog/building-a-wardrobe-and-outfit-planning-app-with-milvus
 ---
-<custom-h1>Construire une application de planification de garde-robe et de tenue avec Milvus</custom-h1><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_1_5f239a8d48.png" alt="stylepedia-1.png" class="doc-image" id="stylepedia-1.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-1.png</span> </span></p>
-<p>Fondée en 2003, <a href="http://www.mozat.com/home">Mozat</a> est une start-up dont le siège se trouve à Singapour et qui possède des bureaux en Chine et en Arabie saoudite. L'entreprise est spécialisée dans la création d'applications de médias sociaux, de communication et de style de vie. <a href="https://stylepedia.com/">Stylepedia</a> est une application de garde-robe créée par Mozat qui aide les utilisateurs à découvrir de nouveaux styles et à entrer en contact avec d'autres passionnés de mode. Ses principales caractéristiques sont la possibilité de créer une garde-robe numérique, des recommandations de style personnalisées, une fonctionnalité de médias sociaux et un outil de recherche d'images pour trouver des articles similaires à ceux vus en ligne ou dans la vie réelle.</p>
-<p><a href="https://milvus.io">Milvus</a> est utilisé pour alimenter le système de recherche d'images de Stylepedia. L'application traite trois types d'images : les images d'utilisateurs, les images de produits et les photographies de mode. Chaque image peut inclure un ou plusieurs éléments, ce qui complique encore plus chaque requête. Pour être utile, un système de recherche d'images doit être précis, rapide et stable, des caractéristiques qui constituent une base technique solide pour l'ajout de nouvelles fonctionnalités à l'application, telles que les suggestions de tenues et les recommandations de contenu de mode.</p>
-<h2 id="System-overview" class="common-anchor-header">Vue d'ensemble du système<button data-href="#System-overview" class="anchor-icon" translate="no">
+<custom-h1>Building a Wardrobe and Outfit Planning App with Milvus</custom-h1><p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_1_5f239a8d48.png" alt="stylepedia-1.png" class="doc-image" id="stylepedia-1.png" />
+    <span>stylepedia-1.png</span>
+  </span>
+</p>
+<p>Founded in 2003, <a href="http://www.mozat.com/home">Mozat</a> is a start-up headquartered in Singapore with offices in China and Saudi Arabia. The company specializes in building social media, communication, and lifestyle applications. <a href="https://stylepedia.com/">Stylepedia</a> is a wardrobe app built by Mozat that helps users discover new styles and connect with other people that are passionate about fashion. Its key features include the ability to curate a digital closet, personalized style recommendations, social media functionality, and an image search tool for finding similar items to something seen online or in real life.</p>
+<p><a href="https://milvus.io">Milvus</a> is used to power the image search system within Stylepedia. The app deals with three image types: user images, product images, and fashion photographs. Each image can include one or more items, further complicating each query. To be useful, an image search system must be accurate, fast, and stable, features that lay a solid technical foundation for adding new functionality to the app such as outfit suggestions and fashion content recommendations.</p>
+<h2 id="System-overview" class="common-anchor-header">System overview<button data-href="#System-overview" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,13 +36,15 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_system_process_8e7e2ab3e4.png" alt="stylepedia-system-process.png" class="doc-image" id="stylepedia-system-process.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-system-process.png</span> </span></p>
-<p>Le système de recherche d'images est divisé en deux parties, l'une hors ligne et l'autre en ligne.</p>
-<p>Hors ligne, les images sont vectorisées et insérées dans une base de données vectorielle (Milvus). Dans le flux de données, les images de produits et les photographies de mode pertinentes sont converties en vecteurs de caractéristiques à 512 dimensions à l'aide de modèles de détection d'objets et d'extraction de caractéristiques. Les données vectorielles sont ensuite indexées et ajoutées à la base de données vectorielle.</p>
-<p>En ligne, la base de données d'images est interrogée et les images similaires sont renvoyées à l'utilisateur. Comme pour la composante hors ligne, l'image interrogée est traitée par des modèles de détection d'objets et d'extraction de caractéristiques afin d'obtenir un vecteur de caractéristiques. À l'aide de ce vecteur, Milvus recherche les vecteurs similaires TopK et obtient les identifiants des images correspondantes. Enfin, après un post-traitement (filtrage, tri, etc.), une collection d'images similaires à l'image de la requête est renvoyée.</p>
-<h2 id="Implementation" class="common-anchor-header">Mise en œuvre<button data-href="#Implementation" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_system_process_8e7e2ab3e4.png" alt="stylepedia-system-process.png" class="doc-image" id="stylepedia-system-process.png" />
+    <span>stylepedia-system-process.png</span>
+  </span>
+</p>
+<p>The image search system is divided into offline and online components.</p>
+<p>Offline, images are vectorized and inserted into a vector database (Milvus). In the data workflow, relevant product images and fashion photographs are converted into 512-dimensional feature vectors using object detection and feature extraction models. The vector data is then indexed and added to the vector database.</p>
+<p>Online, the image database is queried and similar images are returned to the user. Similar to the off-line component, a query image is processed by object detection and feature extraction models to obtain a feature vector. Using the feature vector, Milvus searches for TopK similar vectors and obtains their corresponding image IDs. Finally, after post-processing (filtering, sorting, etc.), a collection of images similar to the query image are returned.</p>
+<h2 id="Implementation" class="common-anchor-header">Implementation<button data-href="#Implementation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -55,21 +59,21 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L'implémentation se décompose en quatre modules :</p>
+    </button></h2><p>The implementation breaks down into four modules:</p>
 <ol>
-<li>Détection de vêtements</li>
-<li>Extraction des caractéristiques</li>
-<li>Recherche de similarité vectorielle</li>
-<li>Post-traitement</li>
+<li>Garment detection</li>
+<li>Feature extraction</li>
+<li>Vector similarity search</li>
+<li>Post-processing</li>
 </ol>
-<h3 id="Garment-detection" class="common-anchor-header">Détection de vêtements</h3><p>Dans le module de détection de vêtements, <a href="https://pytorch.org/hub/ultralytics_yolov5/">YOLOv5</a>, un cadre de détection de cibles en une étape, basé sur l'ancrage, est utilisé comme modèle de détection d'objets en raison de sa petite taille et de son inférence en temps réel. Il propose quatre tailles de modèle (YOLOv5s/m/l/x), et chaque taille spécifique présente des avantages et des inconvénients. Les modèles plus grands sont plus performants (plus grande précision) mais nécessitent beaucoup plus de puissance de calcul et s'exécutent plus lentement. Dans le cas présent, les objets étant relativement grands et faciles à détecter, le plus petit modèle, YOLOv5s, suffit.</p>
-<p>Les vêtements de chaque image sont reconnus et découpés pour servir d'entrées au modèle d'extraction des caractéristiques utilisé dans le traitement ultérieur. Simultanément, le modèle de détection d'objets prédit également la classification des vêtements selon des classes prédéfinies (hauts, vêtements d'extérieur, pantalons, jupes, robes et barboteuses).</p>
-<h3 id="Feature-extraction" class="common-anchor-header">Extraction des caractéristiques</h3><p>Le modèle d'extraction des caractéristiques est la clé de la recherche de similitudes. Les images de vêtements recadrées sont intégrées dans des vecteurs à virgule flottante de 512 dimensions qui représentent leurs attributs dans un format de données numériques lisible par une machine. La méthodologie d'<a href="https://github.com/Joon-Park92/Survey_of_Deep_Metric_Learning">apprentissage métrique profond (DML)</a> est adoptée avec <a href="https://arxiv.org/abs/1905.11946">EfficientNet</a> comme modèle de base.</p>
-<p>L'apprentissage métrique vise à former un module d'extraction de caractéristiques non linéaires basé sur le CNN (ou un encodeur) afin de réduire la distance entre les vecteurs de caractéristiques correspondant à la même classe d'échantillons et d'augmenter la distance entre les vecteurs de caractéristiques correspondant à des classes d'échantillons différentes. Dans ce scénario, la même classe d'échantillons correspond au même vêtement.</p>
-<p>EfficientNet tient compte à la fois de la vitesse et de la précision lors de la mise à l'échelle uniforme de la largeur, de la profondeur et de la résolution du réseau. EfficientNet-B4 est utilisé comme réseau d'extraction de caractéristiques, et la sortie de la dernière couche entièrement connectée est constituée des caractéristiques d'image nécessaires pour effectuer la recherche de similarité vectorielle.</p>
-<h3 id="Vector-similarity-search" class="common-anchor-header">Recherche de similarité vectorielle</h3><p>Milvus est une base de données vectorielles open-source qui prend en charge les opérations de création, de lecture, de mise à jour et de suppression (CRUD) ainsi que la recherche en temps quasi réel sur des ensembles de données d'un trillion d'octets. Dans Stylepedia, elle est utilisée pour la recherche de similarités vectorielles à grande échelle parce qu'elle est très élastique, stable, fiable et rapide comme l'éclair. Milvus étend les capacités des bibliothèques d'index vectoriels largement utilisées (Faiss, NMSLIB, Annoy, etc.) et fournit un ensemble d'API simples et intuitives qui permettent aux utilisateurs de sélectionner le type d'index idéal pour un scénario donné.</p>
-<p>Compte tenu des exigences du scénario et de l'échelle des données, les développeurs de Stylepedia ont utilisé la distribution CPU-only de Milvus associée à l'index HNSW. Deux collections indexées, l'une pour les produits et l'autre pour les photographies de mode, sont construites pour alimenter différentes fonctionnalités de l'application. Chaque collection est ensuite divisée en six partitions en fonction des résultats de la détection et de la classification afin de réduire la portée de la recherche. Milvus effectue des recherches sur des dizaines de millions de vecteurs en quelques millisecondes, offrant ainsi des performances optimales tout en maintenant les coûts de développement à un niveau bas et en minimisant la consommation de ressources.</p>
-<h3 id="Post-processing" class="common-anchor-header">Post-traitement</h3><p>Pour améliorer la similarité entre les résultats de la recherche d'images et l'image de la requête, nous utilisons le filtrage des couleurs et des étiquettes clés (longueur de la manche, longueur du vêtement, style de col, etc.) pour filtrer les images non admissibles. En outre, un algorithme d'évaluation de la qualité des images est utilisé pour s'assurer que les images de meilleure qualité sont présentées aux utilisateurs en premier.</p>
+<h3 id="Garment-detection" class="common-anchor-header">Garment detection</h3><p>In the garment detection module, <a href="https://pytorch.org/hub/ultralytics_yolov5/">YOLOv5</a>, a one-stage, anchor-based target detection framework, is used as the object detection model for its small size and real-time inference. It offers four model sizes (YOLOv5s/m/l/x), and each specific size has pros and cons. The larger models will perform better (higher precision) but require a lot more computing power and run slower. Because the objects in this case are relatively large items and easy to detect, the smallest model, YOLOv5s, suffices.</p>
+<p>Clothing items in each image are recognized and cropped out to serve as the feature extraction model inputs used in subsequent processing. Simultaneously, the object detection model also predicts the garment classification according to predefined classes (tops, outerwear, trousers, skirts, dresses, and rompers).</p>
+<h3 id="Feature-extraction" class="common-anchor-header">Feature extraction</h3><p>The key to similarity search is the feature extraction model. Cropped clothes images are embedded into 512-dimensional floating point vectors that represent their attributes in a machine readable numeric data format. The <a href="https://github.com/Joon-Park92/Survey_of_Deep_Metric_Learning">deep metric learning (DML)</a> methodology is adopted with <a href="https://arxiv.org/abs/1905.11946">EfficientNet</a> as the backbone model.</p>
+<p>Metric learning aims to train a CNN-based nonlinear feature extraction module (or an encoder) to reduce the distance between the feature vectors corresponding to the same class of samples, and increase the distance between the feature vectors corresponding to different classes of samples. In this scenario, the same class of samples refers to the same piece of clothing.</p>
+<p>EfficientNet takes into account both speed and precision when uniformly scaling network width, depth, and resolution. EfficientNet-B4 is used as the feature extraction network, and the output of the ultimate fully connected layer is the image features needed to conduct vector similarity search.</p>
+<h3 id="Vector-similarity-search" class="common-anchor-header">Vector similarity search</h3><p>Milvus is an open-source vector database that supports create, read, update, and delete (CRUD) operations as well as near real-time search on trillion-byte datasets. In Stylepedia, it is used for large-scale vector similarity search because it is highly elastic, stable, reliable, and lightening fast. Milvus extends the capabilities of widely used vector index libraries (Faiss, NMSLIB, Annoy, etc.), and provides a set of simple and intuitive APIs that allow users to select the ideal index type for a given scenario.</p>
+<p>Given the scenario requirements and data scale, Stylepedia’s developers used the CPU-only distribution of Milvus paired with the HNSW index. Two indexed collections, one for products and the other for fashion photographs, are built to power different application functionalities. Each collection is further divided into six partitions based on the detection and classification results to narrow the search scope. Milvus performs search on tens of millions of vectors in milliseconds, providing optimal performance while keeping development costs low and minimizing resource consumption.</p>
+<h3 id="Post-processing" class="common-anchor-header">Post-processing</h3><p>To improve the similarity between the image retrieval results and the query image, we use color filtering and key label (sleeve length, clothes length, collar style, etc.) filtering to filter out ineligible images. In addition, an image quality assessment algorithm is used to make sure that higher quality images are presented to users first.</p>
 <h2 id="Application" class="common-anchor-header">Application<button data-href="#Application" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -85,31 +89,41 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="User-uploads-and-image-search" class="common-anchor-header">Téléchargement par l'utilisateur et recherche d'images</h3><p>Les utilisateurs peuvent prendre des photos de leurs propres vêtements et les télécharger dans leur placard numérique Stylepedia, puis récupérer les images de produits les plus similaires à leurs téléchargements.</p>
+    </button></h2><h3 id="User-uploads-and-image-search" class="common-anchor-header">User uploads and image search</h3><p>Users can take pictures of their own clothes and upload them to their Stylepedia digital closet, then retrieve product images most similar to their uploads.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_search_results_0568e20dc0.png" alt="stylepedia-search-results.png" class="doc-image" id="stylepedia-search-results.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-recherche-résultats.png</span> </span></p>
-<h3 id="Outfit-suggestions" class="common-anchor-header">Suggestions de tenues</h3><p>En effectuant une recherche de similarité dans la base de données Stylepedia, les utilisateurs peuvent trouver des photos de mode qui contiennent un article de mode spécifique. Il peut s'agir de nouveaux vêtements que quelqu'un envisage d'acheter ou d'un article de sa propre collection qui pourrait être porté ou associé différemment. Ensuite, grâce au regroupement des articles avec lesquels l'article est souvent associé, des suggestions de tenues sont générées. Par exemple, une veste de motard noire peut être associée à différents articles, tels qu'une paire de jeans noirs. Les utilisateurs peuvent alors parcourir des photographies de mode pertinentes où cette association se produit dans la formule sélectionnée.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_search_results_0568e20dc0.png" alt="stylepedia-search-results.png" class="doc-image" id="stylepedia-search-results.png" />
+    <span>stylepedia-search-results.png</span>
+  </span>
+</p>
+<h3 id="Outfit-suggestions" class="common-anchor-header">Outfit suggestions</h3><p>By conducting similarity search on the Stylepedia database, users can find fashion photographs that contain a specific fashion item. These could be new garments someone is thinking about purchasing, or something from their own collection that could be worn or paired differently. Then, through the clustering of the items it is often paired with, outfit suggestions are generated. For example, a black biker jacket can go with a variety of items, such as a pair of black skinny jeans. Users can then browse relevant fashion photographs where this match occurs in the selected formula.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_jacket_outfit_e84914da9e.png" alt="stylepedia-jacket-outfit.png" class="doc-image" id="stylepedia-jacket-outfit.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-veste-tailleur.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_jacket_outfit_e84914da9e.png" alt="stylepedia-jacket-outfit.png" class="doc-image" id="stylepedia-jacket-outfit.png" />
+    <span>stylepedia-jacket-outfit.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_jacket_snapshot_25f53cc09b.png" alt="stylepedia-jacket-snapshot.png" class="doc-image" id="stylepedia-jacket-snapshot.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-veste-capture.png</span> </span></p>
-<h3 id="Fashion-photograph-recommendations" class="common-anchor-header">Recommandations de photographies de mode</h3><p>Sur la base de l'historique de navigation de l'utilisateur, de ses goûts et du contenu de sa garde-robe numérique, le système calcule la similarité et fournit des recommandations personnalisées de photographies de mode susceptibles de l'intéresser.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_jacket_snapshot_25f53cc09b.png" alt="stylepedia-jacket-snapshot.png" class="doc-image" id="stylepedia-jacket-snapshot.png" />
+    <span>stylepedia-jacket-snapshot.png</span>
+  </span>
+</p>
+<h3 id="Fashion-photograph-recommendations" class="common-anchor-header">Fashion photograph recommendations</h3><p>Based on a user’s browsing history, likes, and the contents of their digital closet, the system calculates similarity and provides customized fashion photograph recommendations that may be of interest.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_user_wardrobe_6770c856b9.png" alt="stylepedia-user-wardrobe.png" class="doc-image" id="stylepedia-user-wardrobe.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-user-wardrobe.png</span> </span></p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_user_wardrobe_6770c856b9.png" alt="stylepedia-user-wardrobe.png" class="doc-image" id="stylepedia-user-wardrobe.png" />
+    <span>stylepedia-user-wardrobe.png</span>
+  </span>
+</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/stylepedia_streetsnap_rec_901601a34d.png" alt="stylepedia-streetsnap-rec.png" class="doc-image" id="stylepedia-streetsnap-rec.png" />
-   </span> <span class="img-wrapper"> <span>stylepedia-streetsnap-rec.png</span> </span></p>
-<p>En combinant des méthodologies d'apprentissage profond et de vision par ordinateur, Mozat a pu construire un système de recherche de similarité d'images rapide, stable et précis en utilisant Milvus pour alimenter diverses fonctionnalités de l'application Stylepedia.</p>
-<h2 id="Dont-be-a-stranger" class="common-anchor-header">Ne soyez pas un inconnu<button data-href="#Dont-be-a-stranger" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/stylepedia_streetsnap_rec_901601a34d.png" alt="stylepedia-streetsnap-rec.png" class="doc-image" id="stylepedia-streetsnap-rec.png" />
+    <span>stylepedia-streetsnap-rec.png</span>
+  </span>
+</p>
+<p>By combining deep learning and computer vision methodologies, Mozat was able to build a fast, stable, and accurate image similarity search system using Milvus to power various features in the Stylepedia app.</p>
+<h2 id="Dont-be-a-stranger" class="common-anchor-header">Don’t be a stranger<button data-href="#Dont-be-a-stranger" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -125,7 +139,7 @@ canonicalUrl: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li>Trouvez ou contribuez à Milvus sur <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
-<li>Interagissez avec la communauté via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
-<li>Connectez-vous avec nous sur <a href="https://twitter.com/milvusio">Twitter</a>.</li>
+<li>Find or contribute to Milvus on <a href="https://github.com/milvus-io/milvus/">GitHub</a>.</li>
+<li>Interact with the community via <a href="https://join.slack.com/t/milvusio/shared_invite/zt-e0u4qu3k-bI2GDNys3ZqX1YCJ9OM~GQ">Slack</a>.</li>
+<li>Connect with us on <a href="https://twitter.com/milvusio">Twitter</a>.</li>
 </ul>

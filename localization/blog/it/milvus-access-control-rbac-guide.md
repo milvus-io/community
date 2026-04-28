@@ -1,8 +1,7 @@
 ---
 id: milvus-access-control-rbac-guide.md
-title: >-
-  Guida al controllo degli accessi Milvus: Come configurare RBAC per la
-  produzione
+title: |
+  Milvus Access Control Guide: How to Configure RBAC for Production
 author: Jack Li and Juan Xu
 date: 2026-3-26
 cover: assets.zilliz.com/cover_access_control_2_3e211dd48b.png
@@ -15,16 +14,15 @@ meta_keywords: >-
   groups, Milvus production setup
 meta_title: |
   Milvus Access Control: Configure RBAC for Production
-desc: >-
-  Guida passo passo all'impostazione di Milvus RBAC in produzione: utenti,
-  ruoli, gruppi di privilegi, accesso a livello di collezione e un esempio di
-  sistema RAG completo.
+desc: >
+  Step-by-step guide to setting up Milvus RBAC in production — users, roles,
+  privilege groups, collection-level access, and a full RAG system example.
 origin: 'https://milvus.io/blog/milvus-access-control-rbac-guide.md'
 ---
-<p>Ecco una storia che è più comune di quanto dovrebbe essere: un ingegnere QA esegue uno script di pulizia contro quello che pensa sia l'ambiente di staging. Ma la stringa di connessione punta alla produzione. Pochi secondi dopo, le collezioni di vettori principali sono scomparse: i dati delle caratteristiche sono andati persi, la <a href="https://zilliz.com/glossary/similarity-search">ricerca per similarità</a> restituisce risultati vuoti, i servizi si degradano su tutta la linea. L'autopsia individua la stessa causa principale: tutti si connettevano come <code translate="no">root</code>, non c'erano limiti di accesso e nulla impediva a un account di test di eliminare i dati di produzione.</p>
-<p>Non si tratta di un caso isolato. I team che costruiscono su <a href="https://milvus.io/">Milvus</a> - e sui <a href="https://zilliz.com/learn/what-is-a-vector-database">database vettoriali</a> in generale - tendono a concentrarsi sulle <a href="https://zilliz.com/learn/vector-index">prestazioni degli indici</a>, sul throughput e sulla scalabilità dei dati, considerando il controllo degli accessi come un problema da affrontare in un secondo momento. Ma il "dopo" di solito arriva sotto forma di incidente. Quando Milvus passa dal prototipo alla spina dorsale delle <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">pipeline RAG di</a> produzione, dei motori di raccomandazione e della <a href="https://zilliz.com/learn/what-is-vector-search">ricerca vettoriale</a> in tempo reale, la domanda diventa inevitabile: chi può accedere al vostro cluster Milvus e che cosa può fare esattamente?</p>
-<p>Milvus include un sistema RBAC integrato per rispondere a questa domanda. Questa guida spiega cos'è il RBAC, come Milvus lo implementa e come progettare un modello di controllo degli accessi che garantisca la sicurezza della produzione, con esempi di codice e un'analisi completa del sistema RAG.</p>
-<h2 id="What-Is-RBAC-Role-Based-Access-Control" class="common-anchor-header">Che cos'è il RBAC (Role-Based Access Control)?<button data-href="#What-Is-RBAC-Role-Based-Access-Control" class="anchor-icon" translate="no">
+<p>Here’s a story that’s more common than it should be: a QA engineer runs a cleanup script against what they think is the staging environment. Except the connection string points to production. A few seconds later, core vector collections are gone — feature data lost, <a href="https://zilliz.com/glossary/similarity-search">similarity search</a> returning empty results, services degrading across the board. The postmortem finds the same root cause it always does: everyone was connecting as <code translate="no">root</code>, there were no access boundaries, and nothing stopped a test account from dropping production data.</p>
+<p>This isn’t a one-off. Teams building on <a href="https://milvus.io/">Milvus</a> — and <a href="https://zilliz.com/learn/what-is-a-vector-database">vector databases</a> in general — tend to focus on <a href="https://zilliz.com/learn/vector-index">index performance</a>, throughput, and data scale, while treating access control as something to deal with later. But “later” usually arrives in the form of an incident. As Milvus moves from prototype to the backbone of production <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG pipelines</a>, recommendation engines, and real-time <a href="https://zilliz.com/learn/what-is-vector-search">vector search</a>, the question becomes unavoidable: who can access your Milvus cluster, and what exactly are they allowed to do?</p>
+<p>Milvus includes a built-in RBAC system to answer that question. This guide covers what RBAC is, how Milvus implements it, and how to design an access control model that keeps production safe — complete with code examples and a full RAG system walkthrough.</p>
+<h2 id="What-Is-RBAC-Role-Based-Access-Control" class="common-anchor-header">What Is RBAC (Role-Based Access Control)?<button data-href="#What-Is-RBAC-Role-Based-Access-Control" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,9 +37,9 @@ origin: 'https://milvus.io/blog/milvus-access-control-rbac-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Il<strong>controllo degli accessi basato sui ruoli (RBAC)</strong> è un modello di sicurezza in cui i permessi non vengono assegnati direttamente ai singoli utenti. I permessi sono invece raggruppati in ruoli e agli utenti vengono assegnati uno o più ruoli. L'accesso effettivo di un utente è l'unione di tutti i permessi dei ruoli assegnati. RBAC è il modello di controllo degli accessi standard nei sistemi di database di produzione: PostgreSQL, MySQL, MongoDB e la maggior parte dei servizi cloud lo utilizzano.</p>
-<p>RBAC risolve un problema fondamentale di scalabilità: quando si hanno decine di utenti e servizi, la gestione dei permessi per utente diventa impossibile da gestire. Con RBAC, si definisce un ruolo una volta sola (ad esempio, "sola lettura sulla collezione X"), lo si assegna a dieci servizi e lo si aggiorna in un unico posto quando i requisiti cambiano.</p>
-<h2 id="How-Does-Milvus-Implement-RBAC" class="common-anchor-header">Come Milvus implementa il RBAC?<button data-href="#How-Does-Milvus-Implement-RBAC" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Role-Based Access Control (RBAC)</strong> is a security model where permissions are not assigned directly to individual users. Instead, permissions are grouped into roles, and users are assigned one or more roles. A user’s effective access is the union of all permissions from their assigned roles. RBAC is the standard access control model in production database systems — PostgreSQL, MySQL, MongoDB, and most cloud services use it.</p>
+<p>RBAC solves a fundamental scaling problem: when you have dozens of users and services, managing permissions per-user becomes unmaintainable. With RBAC, you define a role once (e.g., “read-only on collection X”), assign it to ten services, and update it in one place when requirements change.</p>
+<h2 id="How-Does-Milvus-Implement-RBAC" class="common-anchor-header">How Does Milvus Implement RBAC?<button data-href="#How-Does-Milvus-Implement-RBAC" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -56,35 +54,39 @@ origin: 'https://milvus.io/blog/milvus-access-control-rbac-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus RBAC si basa su quattro concetti:</p>
+    </button></h2><p>Milvus RBAC is built on four concepts:</p>
 <table>
 <thead>
-<tr><th>Concetto</th><th>Che cos'è</th><th>Esempio</th></tr>
+<tr><th>Concept</th><th>What It Is</th><th>Example</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>La risorsa</strong></td><td>L'oggetto a cui si accede</td><td>Un'<a href="https://milvus.io/docs/architecture_overview.md">istanza Milvus</a>, un <a href="https://milvus.io/docs/manage-databases.md">database</a> o una collezione specifica.</td></tr>
-<tr><td><strong>Privilegio / Gruppo di privilegi</strong></td><td>L'azione che viene eseguita</td><td><code translate="no">Search</code> <code translate="no">Insert</code>, , o un gruppo come (collezione in sola lettura) <code translate="no">DropCollection</code> <code translate="no">COLL_RO</code> </td></tr>
-<tr><td><strong>Ruolo</strong></td><td>Un insieme di privilegi nominati per le risorse</td><td><code translate="no">role_read_only</code>Può ricercare e interrogare tutte le collezioni nel database <code translate="no">default</code>.</td></tr>
-<tr><td><strong>Utente</strong></td><td>Un account Milvus (umano o di servizio)</td><td><code translate="no">rag_writer</code>L'account di servizio utilizzato dalla pipeline di ingestione.</td></tr>
+<tr><td><strong>Resource</strong></td><td>The thing being accessed</td><td>A <a href="https://milvus.io/docs/architecture_overview.md">Milvus instance</a>, a <a href="https://milvus.io/docs/manage-databases.md">database</a>, or a specific collection</td></tr>
+<tr><td><strong>Privilege / Privilege Group</strong></td><td>The action being performed</td><td><code translate="no">Search</code>, <code translate="no">Insert</code>, <code translate="no">DropCollection</code>, or a group like <code translate="no">COLL_RO</code> (collection read-only)</td></tr>
+<tr><td><strong>Role</strong></td><td>A named set of privileges scoped to resources</td><td><code translate="no">role_read_only</code>: can search and query all collections in <code translate="no">default</code> database</td></tr>
+<tr><td><strong>User</strong></td><td>A Milvus account (human or service)</td><td><code translate="no">rag_writer</code>: the service account used by the ingestion pipeline</td></tr>
 </tbody>
 </table>
-<p>L'accesso non viene mai assegnato direttamente agli utenti. Gli utenti ottengono ruoli, i ruoli contengono privilegi e i privilegi sono assegnati alle risorse. Si tratta dello stesso <a href="https://zilliz.com/blog/milvus-2-5-rbac-enhancements">modello RBAC</a> utilizzato nella maggior parte dei sistemi di database di produzione. Se dieci utenti condividono lo stesso ruolo, si aggiorna il ruolo una sola volta e la modifica si applica a tutti.</p>
+<p>Access is never assigned directly to users. Users get roles, roles contain privileges, and privileges are scoped to resources. This is the same <a href="https://zilliz.com/blog/milvus-2-5-rbac-enhancements">RBAC model</a> used in most production database systems. If ten users share the same role, you update the role once and the change applies to all of them.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/milvus_access_control_rbac_guide_1_c872ea8932.png" alt="Milvus RBAC model showing how Users are assigned to Roles, and Roles contain Privileges and Privilege Groups that apply to Resources" class="doc-image" id="milvus-rbac-model-showing-how-users-are-assigned-to-roles,-and-roles-contain-privileges-and-privilege-groups-that-apply-to-resources" />
-   </span> <span class="img-wrapper"> <span>Il modello RBAC di Milvus mostra come gli utenti sono assegnati ai ruoli e i ruoli contengono privilegi e gruppi di privilegi che si applicano alle risorse</span> </span>.</p>
-<p>Quando una richiesta arriva a Milvus, passa attraverso tre controlli:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_access_control_rbac_guide_1_c872ea8932.png" alt="Milvus RBAC model showing how Users are assigned to Roles, and Roles contain Privileges and Privilege Groups that apply to Resources" class="doc-image" id="milvus-rbac-model-showing-how-users-are-assigned-to-roles,-and-roles-contain-privileges-and-privilege-groups-that-apply-to-resources" />
+    <span>Milvus RBAC model showing how Users are assigned to Roles, and Roles contain Privileges and Privilege Groups that apply to Resources</span>
+  </span>
+</p>
+<p>When a request hits Milvus, it goes through three checks:</p>
 <ol>
-<li><strong>Autenticazione</strong> - si tratta di un utente valido con credenziali corrette?</li>
-<li><strong>Controllo dei ruoli</strong> - questo utente ha almeno un ruolo assegnato?</li>
-<li><strong>Controllo dei privilegi</strong> - uno dei ruoli dell'utente concede l'azione richiesta sulla risorsa richiesta?</li>
+<li><strong>Authentication</strong> — is this a valid user with correct credentials?</li>
+<li><strong>Role check</strong> — does this user have at least one role assigned?</li>
+<li><strong>Privilege check</strong> — does any of the user’s roles grant the requested action on the requested resource?</li>
 </ol>
-<p>Se uno dei controlli fallisce, la richiesta viene rifiutata.</p>
+<p>If any check fails, the request is rejected.</p>
 <p>
- <span class="img-wrapper">
-   <img translate="no" src="https://assets.zilliz.com/milvus_access_control_rbac_guide_2_2275b37ea6.png" alt="Milvus authentication and authorization flow: Client Request goes through Authentication, Role Check, and Privilege Check — rejected at any failed step, executed only if all pass" class="doc-image" id="milvus-authentication-and-authorization-flow:-client-request-goes-through-authentication,-role-check,-and-privilege-check-—-rejected-at-any-failed-step,-executed-only-if-all-pass" />
-   <span>Flusso di autenticazione e autorizzazione Milvus: La richiesta del cliente passa attraverso l'autenticazione, il controllo dei ruoli e il controllo dei privilegi - rifiutata in qualsiasi fase non riuscita, viene eseguita solo se tutte le fasi sono superate.</span> </span></p>
-<h2 id="How-to-Enable-Authentication-in-Milvus" class="common-anchor-header">Come abilitare l'autenticazione in Milvus<button data-href="#How-to-Enable-Authentication-in-Milvus" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/milvus_access_control_rbac_guide_2_2275b37ea6.png" alt="Milvus authentication and authorization flow: Client Request goes through Authentication, Role Check, and Privilege Check — rejected at any failed step, executed only if all pass" class="doc-image" id="milvus-authentication-and-authorization-flow:-client-request-goes-through-authentication,-role-check,-and-privilege-check-—-rejected-at-any-failed-step,-executed-only-if-all-pass" />
+    <span>Milvus authentication and authorization flow: Client Request goes through Authentication, Role Check, and Privilege Check — rejected at any failed step, executed only if all pass</span>
+  </span>
+</p>
+<h2 id="How-to-Enable-Authentication-in-Milvus" class="common-anchor-header">How to Enable Authentication in Milvus<button data-href="#How-to-Enable-Authentication-in-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -99,21 +101,21 @@ origin: 'https://milvus.io/blog/milvus-access-control-rbac-guide.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Per impostazione predefinita, Milvus funziona con l'autenticazione disabilitata: ogni connessione ha pieno accesso. Il primo passo è attivarla.</p>
-<h3 id="Docker-Compose" class="common-anchor-header">Docker Compose</h3><p>Modificare <code translate="no">milvus.yaml</code> e impostare <code translate="no">authorizationEnabled</code> su <code translate="no">true</code>:</p>
+    </button></h2><p>By default, Milvus runs with authentication disabled — every connection has full access. The first step is turning it on.</p>
+<h3 id="Docker-Compose" class="common-anchor-header">Docker Compose</h3><p>Edit <code translate="no">milvus.yaml</code> and set <code translate="no">authorizationEnabled</code> to <code translate="no">true</code>:</p>
 <pre><code translate="no"><span class="hljs-attr">common</span>:
   <span class="hljs-attr">security</span>:
     <span class="hljs-attr">authorizationEnabled</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Helm-Charts" class="common-anchor-header">Grafici Helm</h3><p>Modificare <code translate="no">values.yaml</code> e aggiungere l'impostazione sotto <code translate="no">extraConfigFiles</code>:</p>
+<h3 id="Helm-Charts" class="common-anchor-header">Helm Charts</h3><p>Edit <code translate="no">values.yaml</code> and add the setting under <code translate="no">extraConfigFiles</code>:</p>
 <pre><code translate="no"><span class="hljs-attr">extraConfigFiles</span>:
   user.<span class="hljs-property">yaml</span>: |+
     <span class="hljs-attr">common</span>:
       <span class="hljs-attr">security</span>:
         <span class="hljs-attr">authorizationEnabled</span>: <span class="hljs-literal">true</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Per le distribuzioni di <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus Operator</a> su <a href="https://milvus.io/docs/prerequisite-helm.md">Kubernetes</a>, la stessa configurazione va inserita nella sezione <code translate="no">spec.config</code> di Milvus CR.</p>
-<p>Una volta abilitata l'autenticazione e riavviato Milvus, ogni connessione deve fornire le credenziali. Milvus crea un utente predefinito <code translate="no">root</code> con la password <code translate="no">Milvus</code>, da cambiare immediatamente.</p>
+<p>For <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Milvus Operator</a> deployments on <a href="https://milvus.io/docs/prerequisite-helm.md">Kubernetes</a>, the same configuration goes into the Milvus CR’s <code translate="no">spec.config</code> section.</p>
+<p>Once authentication is enabled and Milvus restarts, every connection must provide credentials. Milvus creates a default <code translate="no">root</code> user with the password <code translate="no">Milvus</code> — change this immediately.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 <span class="hljs-comment"># Connect with the default root account</span>
@@ -129,7 +131,7 @@ client.update_password(
     new_password=<span class="hljs-string">&quot;xgOoLudt3Kc#Pq68&quot;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="How-to-Configure-Users-Roles-and-Privileges" class="common-anchor-header">Configurazione di utenti, ruoli e privilegi<button data-href="#How-to-Configure-Users-Roles-and-Privileges" class="anchor-icon" translate="no">
+<h2 id="How-to-Configure-Users-Roles-and-Privileges" class="common-anchor-header">How to Configure Users, Roles, and Privileges<button data-href="#How-to-Configure-Users-Roles-and-Privileges" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -144,31 +146,31 @@ client.update_password(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Con l'autenticazione abilitata, ecco il tipico flusso di lavoro di configurazione.</p>
-<h3 id="Step-1-Create-Users" class="common-anchor-header">Passo 1: Creare gli utenti</h3><p>Non lasciare che i servizi o i membri del team usino <code translate="no">root</code>. Creare account dedicati per ogni utente o servizio.</p>
+    </button></h2><p>With authentication enabled, here’s the typical setup workflow.</p>
+<h3 id="Step-1-Create-Users" class="common-anchor-header">Step 1: Create Users</h3><p>Don’t let services or team members use <code translate="no">root</code>. Create dedicated accounts for each user or service.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>, password=<span class="hljs-string">&quot;P@ssw0rd&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-2-Create-Roles" class="common-anchor-header">Passo 2: Creare i ruoli</h3><p>Milvus ha un ruolo incorporato in <code translate="no">admin</code>, ma in pratica è necessario creare ruoli personalizzati che corrispondano ai modelli di accesso effettivi.</p>
+<h3 id="Step-2-Create-Roles" class="common-anchor-header">Step 2: Create Roles</h3><p>Milvus has a built-in <code translate="no">admin</code> role, but in practice you’ll want custom roles that match your actual access patterns.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">create_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-3-Create-Privilege-Groups" class="common-anchor-header">Passo 3: creare gruppi di privilegi</h3><p>Un gruppo di privilegi raggruppa più privilegi sotto un unico nome, rendendo più facile la gestione degli accessi su scala. Milvus offre 9 gruppi di privilegi integrati:</p>
+<h3 id="Step-3-Create-Privilege-Groups" class="common-anchor-header">Step 3: Create Privilege Groups</h3><p>A privilege group bundles multiple privileges under one name, making it easier to manage access at scale. Milvus provides 9 built-in privilege groups:</p>
 <table>
 <thead>
-<tr><th>Gruppo incorporato</th><th>Ambito di applicazione</th><th>Cosa consente</th></tr>
+<tr><th>Built-in Group</th><th>Scope</th><th>What It Allows</th></tr>
 </thead>
 <tbody>
-<tr><td><code translate="no">COLL_RO</code></td><td>Raccolta</td><td>Operazioni di sola lettura (interrogazione, ricerca, ecc.)</td></tr>
-<tr><td><code translate="no">COLL_RW</code></td><td>Raccolta</td><td>Operazioni di lettura e scrittura</td></tr>
-<tr><td><code translate="no">COLL_Admin</code></td><td>Raccolta</td><td>Gestione completa della raccolta</td></tr>
-<tr><td><code translate="no">DB_RO</code></td><td>Database</td><td>Operazioni di sola lettura sul database</td></tr>
-<tr><td><code translate="no">DB_RW</code></td><td>Database</td><td>Operazioni di lettura e scrittura del database</td></tr>
-<tr><td><code translate="no">DB_Admin</code></td><td>Database</td><td>Gestione completa del database</td></tr>
-<tr><td><code translate="no">Cluster_RO</code></td><td>Cluster</td><td>Operazioni sul cluster in sola lettura</td></tr>
-<tr><td><code translate="no">Cluster_RW</code></td><td>Cluster</td><td>Operazioni di lettura e scrittura sul cluster</td></tr>
-<tr><td><code translate="no">Cluster_Admin</code></td><td>Cluster</td><td>Gestione completa del cluster</td></tr>
+<tr><td><code translate="no">COLL_RO</code></td><td>Collection</td><td>Read-only operations (Query, Search, etc.)</td></tr>
+<tr><td><code translate="no">COLL_RW</code></td><td>Collection</td><td>Read and write operations</td></tr>
+<tr><td><code translate="no">COLL_Admin</code></td><td>Collection</td><td>Full collection management</td></tr>
+<tr><td><code translate="no">DB_RO</code></td><td>Database</td><td>Read-only database operations</td></tr>
+<tr><td><code translate="no">DB_RW</code></td><td>Database</td><td>Read and write database operations</td></tr>
+<tr><td><code translate="no">DB_Admin</code></td><td>Database</td><td>Full database management</td></tr>
+<tr><td><code translate="no">Cluster_RO</code></td><td>Cluster</td><td>Read-only cluster operations</td></tr>
+<tr><td><code translate="no">Cluster_RW</code></td><td>Cluster</td><td>Read and write cluster operations</td></tr>
+<tr><td><code translate="no">Cluster_Admin</code></td><td>Cluster</td><td>Full cluster management</td></tr>
 </tbody>
 </table>
-<p>È anche possibile creare gruppi di privilegi personalizzati quando quelli integrati non sono adatti:</p>
+<p>You can also create custom privilege groups when the built-in ones don’t fit:</p>
 <pre><code translate="no"><span class="hljs-comment"># Create a privilege group</span>
 client.create_privilege_group(group_name=<span class="hljs-string">&#x27;privilege_group_1&#x27;</span>)
 
@@ -178,7 +180,7 @@ client.add_privileges_to_group(
     privileges=[<span class="hljs-string">&#x27;Query&#x27;</span>, <span class="hljs-string">&#x27;Search&#x27;</span>]
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-4-Grant-Privileges-to-a-Role" class="common-anchor-header">Passo 4: Assegnare i privilegi a un ruolo</h3><p>Si concedono privilegi individuali o gruppi di privilegi a un ruolo, con un ambito di risorse specifiche. I parametri <code translate="no">collection_name</code> e <code translate="no">db_name</code> controllano l'ambito - usare <code translate="no">*</code> per tutti.</p>
+<h3 id="Step-4-Grant-Privileges-to-a-Role" class="common-anchor-header">Step 4: Grant Privileges to a Role</h3><p>Grant individual privileges or privilege groups to a role, scoped to specific resources. The <code translate="no">collection_name</code> and <code translate="no">db_name</code> parameters control the scope — use <code translate="no">*</code> for all.</p>
 <pre><code translate="no"><span class="hljs-comment"># Grant a single privilege</span>
 client.grant_privilege_v2(
     role_name=<span class="hljs-string">&quot;role_a&quot;</span>,
@@ -203,10 +205,10 @@ client.grant_privilege_v2(
     db_name=<span class="hljs-string">&#x27;*&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Step-5-Assign-Roles-to-Users" class="common-anchor-header">Passo 5: Assegnare i ruoli agli utenti</h3><p>Un utente può ricoprire più ruoli. Le autorizzazioni effettive sono l'unione di tutti i ruoli assegnati.</p>
+<h3 id="Step-5-Assign-Roles-to-Users" class="common-anchor-header">Step 5: Assign Roles to Users</h3><p>A user can hold multiple roles. Their effective permissions are the union of all assigned roles.</p>
 <pre><code translate="no">client.<span class="hljs-title function_">grant_role</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>, role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="How-to-Audit-and-Revoke-Access" class="common-anchor-header">Come verificare e revocare l'accesso<button data-href="#How-to-Audit-and-Revoke-Access" class="anchor-icon" translate="no">
+<h2 id="How-to-Audit-and-Revoke-Access" class="common-anchor-header">How to Audit and Revoke Access<button data-href="#How-to-Audit-and-Revoke-Access" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -221,14 +223,14 @@ client.grant_privilege_v2(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Sapere quali accessi esistono è importante quanto concederli. Le autorizzazioni obsolete, provenienti da ex membri del team, servizi in pensione o sessioni di debug una tantum, si accumulano silenziosamente e ampliano la superficie di attacco.</p>
-<h3 id="Check-Current-Permissions" class="common-anchor-header">Controllare le autorizzazioni correnti</h3><p>Visualizzate i ruoli assegnati a un utente:</p>
+    </button></h2><p>Knowing what access exists is just as important as granting it. Stale permissions — from former team members, retired services, or one-off debugging sessions — accumulate silently and widen the attack surface.</p>
+<h3 id="Check-Current-Permissions" class="common-anchor-header">Check Current Permissions</h3><p>View a user’s assigned roles:</p>
 <pre><code translate="no">client.<span class="hljs-title function_">describe_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Visualizzare i privilegi concessi a un ruolo:</p>
+<p>View a role’s granted privileges:</p>
 <pre><code translate="no">client.<span class="hljs-title function_">describe_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Revoke-Privileges-from-a-Role" class="common-anchor-header">Revocare i privilegi a un ruolo</h3><pre><code translate="no"><span class="hljs-comment"># Remove a single privilege</span>
+<h3 id="Revoke-Privileges-from-a-Role" class="common-anchor-header">Revoke Privileges from a Role</h3><pre><code translate="no"><span class="hljs-comment"># Remove a single privilege</span>
 client.revoke_privilege_v2(
     role_name=<span class="hljs-string">&quot;role_a&quot;</span>,
     privilege=<span class="hljs-string">&quot;Search&quot;</span>,
@@ -244,16 +246,16 @@ client.revoke_privilege_v2(
     db_name=<span class="hljs-string">&#x27;default&#x27;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Unassign-a-Role-from-a-User" class="common-anchor-header">Disassegnare un ruolo a un utente</h3><pre><code translate="no">client.<span class="hljs-title function_">revoke_role</span>(
+<h3 id="Unassign-a-Role-from-a-User" class="common-anchor-header">Unassign a Role from a User</h3><pre><code translate="no">client.<span class="hljs-title function_">revoke_role</span>(
     user_name=<span class="hljs-string">&#x27;user_1&#x27;</span>,
     role_name=<span class="hljs-string">&#x27;role_a&#x27;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Delete-Users-or-Roles" class="common-anchor-header">Eliminare utenti o ruoli</h3><p>Rimuovere tutte le assegnazioni di ruolo prima di eliminare un utente e revocare tutti i privilegi prima di eliminare un ruolo:</p>
+<h3 id="Delete-Users-or-Roles" class="common-anchor-header">Delete Users or Roles</h3><p>Remove all role assignments before deleting a user, and revoke all privileges before dropping a role:</p>
 <pre><code translate="no">client.<span class="hljs-title function_">drop_user</span>(user_name=<span class="hljs-string">&quot;user_1&quot;</span>)
 client.<span class="hljs-title function_">drop_role</span>(role_name=<span class="hljs-string">&quot;role_a&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Example-How-to-Design-RBAC-for-a-Production-RAG-System" class="common-anchor-header">Esempio: Come progettare il RBAC per un sistema RAG di produzione<button data-href="#Example-How-to-Design-RBAC-for-a-Production-RAG-System" class="anchor-icon" translate="no">
+<h2 id="Example-How-to-Design-RBAC-for-a-Production-RAG-System" class="common-anchor-header">Example: How to Design RBAC for a Production RAG System<button data-href="#Example-How-to-Design-RBAC-for-a-Production-RAG-System" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -268,18 +270,18 @@ client.<span class="hljs-title function_">drop_role</span>(role_name=<span class
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>I concetti astratti diventano più comprensibili con un esempio concreto. Consideriamo un sistema <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> costruito su Milvus con tre servizi distinti:</p>
+    </button></h2><p>Abstract concepts click faster with a concrete example. Consider a <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> system built on Milvus with three distinct services:</p>
 <table>
 <thead>
-<tr><th>Servizio</th><th>Responsabilità</th><th>Accesso richiesto</th></tr>
+<tr><th>Service</th><th>Responsibility</th><th>Required Access</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Amministratore della piattaforma</strong></td><td>Gestisce il cluster Milvus - crea collezioni, monitora lo stato di salute, gestisce gli aggiornamenti</td><td>Amministratore completo del cluster</td></tr>
-<tr><td><strong>Servizio di ingestione</strong></td><td>Genera <a href="https://zilliz.com/glossary/vector-embeddings">embeddings vettoriali</a> dai documenti e li scrive nelle raccolte</td><td>Lettura + scrittura sulle raccolte</td></tr>
-<tr><td><strong>Servizio di ricerca</strong></td><td>Gestisce le query <a href="https://zilliz.com/learn/what-is-vector-search">di ricerca vettoriale</a> degli utenti finali</td><td>Solo lettura sulle collezioni</td></tr>
+<tr><td><strong>Platform admin</strong></td><td>Manages the Milvus cluster — creates collections, monitors health, handles upgrades</td><td>Full cluster admin</td></tr>
+<tr><td><strong>Ingestion service</strong></td><td>Generates <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a> from documents and writes them to collections</td><td>Read + write on collections</td></tr>
+<tr><td><strong>Search service</strong></td><td>Handles <a href="https://zilliz.com/learn/what-is-vector-search">vector search</a> queries from end users</td><td>Read-only on collections</td></tr>
 </tbody>
 </table>
-<p>Ecco una configurazione completa che utilizza <a href="https://milvus.io/docs/install-pymilvus.md">PyMilvus</a>:</p>
+<p>Here’s a complete setup using <a href="https://milvus.io/docs/install-pymilvus.md">PyMilvus</a>:</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient
 
 client = MilvusClient(
@@ -328,9 +330,9 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_admin&quot;</spa
 client.grant_role(user_name=<span class="hljs-string">&quot;rag_reader&quot;</span>, role_name=<span class="hljs-string">&quot;role_read_only&quot;</span>)
 client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</span>, role_name=<span class="hljs-string">&quot;role_read_write&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Ogni servizio ottiene esattamente l'accesso di cui ha bisogno. Il servizio di ricerca non può cancellare accidentalmente i dati. Il servizio di ingestione non può modificare le impostazioni del cluster. E se le credenziali del servizio di ricerca trapelano, l'attaccante può leggere i <a href="https://zilliz.com/glossary/vector-embeddings">vettori di incorporamento</a>, ma non può scrivere, cancellare o passare ad amministratore.</p>
-<p>Per i team che gestiscono l'accesso a più implementazioni di Milvus, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (Milvus gestito) offre un RBAC integrato con una console web per la gestione di utenti, ruoli e autorizzazioni, senza bisogno di script. Utile quando si preferisce gestire l'accesso attraverso un'interfaccia utente piuttosto che mantenere script di configurazione in tutti gli ambienti.</p>
-<h2 id="Access-Control-Best-Practices-for-Production" class="common-anchor-header">Migliori pratiche di controllo degli accessi per la produzione<button data-href="#Access-Control-Best-Practices-for-Production" class="anchor-icon" translate="no">
+<p>Each service gets exactly the access it needs. The search service can’t accidentally delete data. The ingestion service can’t modify cluster settings. And if the search service’s credentials leak, the attacker can read <a href="https://zilliz.com/glossary/vector-embeddings">embedding vectors</a> — but can’t write, delete, or escalate to admin.</p>
+<p>For teams managing access across multiple Milvus deployments, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) provides built-in RBAC with a web console for managing users, roles, and permissions — no scripting required. Useful when you’d rather manage access through a UI than maintain setup scripts across environments.</p>
+<h2 id="Access-Control-Best-Practices-for-Production" class="common-anchor-header">Access Control Best Practices for Production<button data-href="#Access-Control-Best-Practices-for-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -345,26 +347,26 @@ client.grant_role(user_name=<span class="hljs-string">&quot;rag_writer&quot;</sp
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Le fasi di configurazione sopra descritte sono la meccanica. Ecco i principi di progettazione che rendono il controllo degli accessi efficace nel tempo.</p>
-<h3 id="Lock-Down-the-Root-Account" class="common-anchor-header">Bloccare l'account di root</h3><p>Cambiate la password predefinita di <code translate="no">root</code> prima di ogni altra cosa. In produzione, l'account di root deve essere usato solo per operazioni di emergenza e conservato in un gestore di segreti, non codificato nelle configurazioni delle applicazioni o condiviso su Slack.</p>
-<h3 id="Separate-Environments-Completely" class="common-anchor-header">Separare completamente gli ambienti</h3><p>Utilizzate <a href="https://milvus.io/docs/architecture_overview.md">istanze Milvus</a> diverse per lo sviluppo, lo staging e la produzione. La separazione degli ambienti tramite il solo RBAC è fragile: basta una stringa di connessione mal configurata e un servizio di sviluppo scrive sui dati di produzione. La separazione fisica (cluster diversi, credenziali diverse) elimina completamente questa categoria di incidenti.</p>
-<h3 id="Apply-Least-Privilege" class="common-anchor-header">Applicare il minimo privilegio</h3><p>Date a ogni utente e servizio l'accesso minimo necessario per svolgere il proprio lavoro. Iniziate in modo ristretto e allargate solo quando c'è una necessità specifica e documentata. Negli ambienti di sviluppo si può essere più rilassati, ma l'accesso in produzione deve essere rigoroso e rivisto regolarmente.</p>
-<h3 id="Clean-Up-Stale-Access" class="common-anchor-header">Pulire gli accessi obsoleti</h3><p>Quando qualcuno lascia il team o un servizio viene dismesso, revocate i suoi ruoli e cancellate immediatamente i suoi account. Gli account non utilizzati con permessi attivi sono il vettore più comune di accesso non autorizzato: sono credenziali valide che nessuno controlla.</p>
-<h3 id="Scope-Privileges-to-Specific-Collections" class="common-anchor-header">Estendere i privilegi a collezioni specifiche</h3><p>Evitate di concedere <code translate="no">collection_name='*'</code> a meno che il ruolo non abbia realmente bisogno di accedere a tutte le collezioni. Nelle configurazioni multi-tenant o nei sistemi con più pipeline di dati, ogni ruolo deve essere limitato alle sole <a href="https://milvus.io/docs/manage-collections.md">collezioni</a> su cui opera. Questo limita il raggio d'azione in caso di compromissione delle credenziali.</p>
+    </button></h2><p>The setup steps above are the mechanics. Here are the design principles that keep access control effective over time.</p>
+<h3 id="Lock-Down-the-Root-Account" class="common-anchor-header">Lock Down the Root Account</h3><p>Change the default <code translate="no">root</code> password before anything else. In production, the root account should be used only for emergency operations and stored in a secrets manager — not hardcoded in application configs or shared over Slack.</p>
+<h3 id="Separate-Environments-Completely" class="common-anchor-header">Separate Environments Completely</h3><p>Use different <a href="https://milvus.io/docs/architecture_overview.md">Milvus instances</a> for development, staging, and production. Environment separation by RBAC alone is fragile — one misconfigured connection string and a dev service is writing to production data. Physical separation (different clusters, different credentials) eliminates this class of incident entirely.</p>
+<h3 id="Apply-Least-Privilege" class="common-anchor-header">Apply Least Privilege</h3><p>Give each user and service the minimum access needed to do its job. Start narrow and widen only when there’s a specific, documented need. In development environments you can be more relaxed, but production access should be strict and reviewed regularly.</p>
+<h3 id="Clean-Up-Stale-Access" class="common-anchor-header">Clean Up Stale Access</h3><p>When someone leaves the team or a service gets decommissioned, revoke their roles and delete their accounts immediately. Unused accounts with active permissions are the most common vector for unauthorized access — they’re valid credentials that nobody is monitoring.</p>
+<h3 id="Scope-Privileges-to-Specific-Collections" class="common-anchor-header">Scope Privileges to Specific Collections</h3><p>Avoid granting <code translate="no">collection_name='*'</code> unless the role genuinely needs access to every collection. In multi-tenant setups or systems with multiple data pipelines, scope each role to only the <a href="https://milvus.io/docs/manage-collections.md">collections</a> it operates on. This limits the blast radius if credentials are compromised.</p>
 <hr>
-<p>Se state implementando <a href="https://milvus.io/">Milvus</a> in produzione e state lavorando sul controllo degli accessi, sulla sicurezza o sulla progettazione multi-tenant, saremo lieti di aiutarvi:</p>
+<p>If you’re deploying <a href="https://milvus.io/">Milvus</a> in production and working through access control, security, or multi-tenant design, we’d love to help:</p>
 <ul>
-<li>Unitevi alla <a href="https://slack.milvus.io/">community Milvus su Slack</a> per discutere di pratiche reali di implementazione con altri ingegneri che utilizzano Milvus su scala.</li>
-<li><a href="https://milvus.io/office-hours">Prenotate una sessione gratuita di 20 minuti di Milvus Office Hours</a> per esaminare il vostro progetto RBAC, che si tratti della struttura dei ruoli, dello scoping a livello di collezione o della sicurezza multi-ambiente.</li>
-<li>Se preferite saltare la configurazione dell'infrastruttura e gestire il controllo degli accessi attraverso un'interfaccia utente, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (gestito da Milvus) include un RBAC integrato con una console web, oltre alla <a href="https://zilliz.com/cloud-security">crittografia</a>, all'isolamento della rete e alla conformità SOC 2.</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus Slack community</a> to discuss real deployment practices with other engineers running Milvus at scale.</li>
+<li><a href="https://milvus.io/office-hours">Book a free 20-minute Milvus Office Hours session</a> to walk through your RBAC design — whether it’s role structure, collection-level scoping, or multi-environment security.</li>
+<li>If you’d rather skip the infrastructure setup and manage access control through a UI, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) includes built-in RBAC with a web console — plus <a href="https://zilliz.com/cloud-security">encryption</a>, network isolation, and SOC 2 compliance out of the box.</li>
 </ul>
 <hr>
-<p>Alcune domande che sorgono quando i team iniziano a configurare il controllo degli accessi in Milvus:</p>
-<p><strong>D: Posso limitare l'accesso di un utente solo a specifiche collezioni e non a tutte?</strong></p>
-<p>Si. Quando si chiama <a href="https://milvus.io/docs/grant_privilege.md"><code translate="no">grant_privilege_v2</code></a>si imposta <code translate="no">collection_name</code> sulla collezione specifica piuttosto che <code translate="no">*</code>. Il ruolo dell'utente avrà accesso solo a quella collezione. È possibile concedere allo stesso ruolo privilegi su più raccolte, chiamando la funzione una volta per ogni raccolta.</p>
-<p><strong>D: Qual è la differenza tra un privilegio e un gruppo di privilegi in Milvus?</strong></p>
-<p>Un privilegio è una singola azione, come <code translate="no">Search</code>, <code translate="no">Insert</code> o <code translate="no">DropCollection</code>. Un <a href="https://milvus.io/docs/privilege_group.md">gruppo di privilegi</a> raggruppa più privilegi sotto un unico nome, ad esempio <code translate="no">COLL_RO</code> include tutte le operazioni di sola lettura della collezione. La concessione di un gruppo di privilegi è funzionalmente uguale alla concessione di ciascuno dei privilegi che lo compongono individualmente, ma è più facile da gestire.</p>
-<p><strong>D: L'abilitazione dell'autenticazione influisce sulle prestazioni delle query di Milvus?</strong></p>
-<p>L'overhead è trascurabile. Milvus convalida le credenziali e controlla i permessi dei ruoli a ogni richiesta, ma si tratta di una ricerca in memoria che aggiunge microsecondi, non millisecondi. Non c'è alcun impatto misurabile sulla latenza di <a href="https://milvus.io/docs/single-vector-search.md">ricerca</a> o di <a href="https://milvus.io/docs/insert-update-delete.md">inserimento</a>.</p>
-<p><strong>D: Posso usare Milvus RBAC in una configurazione multi-tenant?</strong></p>
-<p>Sì, è possibile. Creare ruoli separati per ogni tenant, estendere i privilegi di ogni ruolo alle collezioni di quel tenant e assegnare il ruolo corrispondente all'account di servizio di ogni tenant. In questo modo si ottiene un isolamento a livello di collezione senza bisogno di istanze Milvus separate. Per una multi-tenancy su larga scala, consultare la <a href="https://milvus.io/docs/multi_tenancy.md">guida</a> alla <a href="https://milvus.io/docs/multi_tenancy.md">multi-tenancy di Milvus</a>.</p>
+<p>A few questions that come up when teams start configuring access control in Milvus:</p>
+<p><strong>Q: Can I restrict a user to only specific collections, not all of them?</strong></p>
+<p>Yes. When you call <a href="https://milvus.io/docs/grant_privilege.md"><code translate="no">grant_privilege_v2</code></a>, set <code translate="no">collection_name</code> to the specific collection rather than <code translate="no">*</code>. The user’s role will only have access to that collection. You can grant the same role privileges on multiple collections by calling the function once per collection.</p>
+<p><strong>Q: What’s the difference between a privilege and a privilege group in Milvus?</strong></p>
+<p>A privilege is a single action like <code translate="no">Search</code>, <code translate="no">Insert</code>, or <code translate="no">DropCollection</code>. A <a href="https://milvus.io/docs/privilege_group.md">privilege group</a> bundles multiple privileges under one name — for example, <code translate="no">COLL_RO</code> includes all read-only collection operations. Granting a privilege group is functionally the same as granting each of its constituent privileges individually, but easier to manage.</p>
+<p><strong>Q: Does enabling authentication affect Milvus query performance?</strong></p>
+<p>The overhead is negligible. Milvus validates credentials and checks role permissions on each request, but this is an in-memory lookup — it adds microseconds, not milliseconds. There is no measurable impact on <a href="https://milvus.io/docs/single-vector-search.md">search</a> or <a href="https://milvus.io/docs/insert-update-delete.md">insert</a> latency.</p>
+<p><strong>Q: Can I use Milvus RBAC in a multi-tenant setup?</strong></p>
+<p>Yes. Create separate roles per tenant, scope each role’s privileges to that tenant’s collections, and assign the corresponding role to each tenant’s service account. This gives you collection-level isolation without needing separate Milvus instances. For larger-scale multi-tenancy, see the <a href="https://milvus.io/docs/multi_tenancy.md">Milvus multi-tenancy guide</a>.</p>

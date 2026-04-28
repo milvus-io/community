@@ -1,6 +1,7 @@
 ---
 id: vector-graph-rag-without-graph-database.md
-title: グラフデータベースなしでグラフRAGを構築した
+title: |
+  We Built Graph RAG Without the Graph Database
 author: Cheney Zhang
 date: 2026-4-17
 cover: assets.zilliz.com/vector_graph_rag_without_graph_database_md_1_e9c1adda4a.jpeg
@@ -11,17 +12,18 @@ tags: 'Milvus, vector database'
 meta_keywords: 'graph RAG, multi-hop RAG, vector database, Milvus, knowledge graph RAG'
 meta_title: |
   Graph RAG Without a Graph Database | Vector Graph RAG
-desc: >-
-  オープンソースのベクトルグラフRAGはmilvusだけを使ってRAGにマルチホップ推論を追加する。87.8%Recall@5、クエリあたり2LLMコール、グラフデータベース不要。
+desc: >
+  Open-source Vector Graph RAG adds multi-hop reasoning to RAG using only
+  Milvus. 87.8% Recall@5, 2 LLM calls per query, no graph database needed.
 origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
 ---
 <blockquote>
-<p><strong><em>TL;DR:</em></strong> <em>グラフRAGにグラフデータベースは必要か？Milvusにエンティティ、リレーション、パッセージを入れる。グラフ探索の代わりに部分グラフ展開を使い、複数ラウンドのエージェントループの代わりに1回のLLM再ランクを使う。これが</em> <a href="https://github.com/zilliztech/vector-graph-rag"><strong><em>ベクトルグラフRAGで</em></strong></a> <em>あり、我々が構築したものである。このアプローチは3つのマルチホップQAベンチマークで87.8%の平均Recall@5を達成し、MilvusインスタンスではHippoRAG 2を上回った。</em></p>
+<p><strong><em>TL;DR:</em></strong> <em>Do you actually need a graph database for Graph RAG? No. Put entities, relations, and passages into Milvus. Use subgraph expansion instead of graph traversal, and one LLM rerank instead of multi-round agent loops. That’s</em> <a href="https://github.com/zilliztech/vector-graph-rag"><strong><em>Vector Graph RAG</em></strong></a><strong><em>,</em></strong> <em>and it’s what we built. This approach hits 87.8% average Recall@5 on three multi-hop QA benchmarks and beats HippoRAG 2 on a single Milvus instance.</em></p>
 </blockquote>
-<p>マルチホップ問題は、ほとんどのRAGパイプラインが最終的にぶつかる壁です。答えはコーパスの中にあるのですが、問題では決して名指しされないエンティティによって接続された複数のパッセージにまたがっているのです。一般的な解決策はグラフデータベースを追加することですが、これは1つのシステムではなく2つのシステムを実行することを意味します。</p>
-<p>私たち自身、この壁にぶつかり続け、それを処理するためだけに2つのデータベースを稼働させたくありませんでした。そこで私たちは、最も広く採用されているオープンソースのベクトルデータベースである<a href="https://milvus.io/docs">Milvusのみを</a>使用して、<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAGに</a>マルチホップ推論をもたらすPythonライブラリである<a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAGを</a>構築し、オープンソース化しました。これは、2つのデータベースの代わりに1つのデータベースで同じマルチホップ機能を提供します。</p>
+<p>Multi-hop questions are the wall that most RAG pipelines hit eventually. The answer is in your corpus, but it spans multiple passages connected by entities the question never names. The common fix is to add a graph database, which means running two systems instead of one.</p>
+<p>We kept hitting this wall ourselves and didn’t want to run two databases just to handle it. So we built and open-sourced <a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a>, a Python library that brings multi-hop reasoning to <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> using only <a href="https://milvus.io/docs">Milvus</a>, the most widely adopted open-source vector database. It provides the same multi-hop capability with one database instead of two.</p>
 <iframe width="826" height="465" src="https://www.youtube.com/embed/yCooOl-koxc" title="Stop Using Graph Database to Build Your Graph RAG System — Vector Graph RAG Explained" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<h2 id="Why-Multi-Hop-Questions-Break-Standard-RAG" class="common-anchor-header">なぜマルチホップ質問は標準RAGを壊すのか<button data-href="#Why-Multi-Hop-Questions-Break-Standard-RAG" class="anchor-icon" translate="no">
+<h2 id="Why-Multi-Hop-Questions-Break-Standard-RAG" class="common-anchor-header">Why Multi-Hop Questions Break Standard RAG<button data-href="#Why-Multi-Hop-Questions-Break-Standard-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -36,19 +38,19 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>マルチホップ質問は、ベクトル検索が見ることができないエンティティ関係に依存するため、標準的なRAGを破壊します。質問と答えをつなぐブリッジエンティティは、多くの場合、質問自体にありません。</p>
-<p>単純な質問は問題なく機能します。文書をチャンクし、埋め込み、最も近い一致を検索し、LLMに送ります。「Milvusはどのようなインデックスをサポートしていますか？"は1つのパッセージにあり、ベクトル検索はそれを見つける。</p>
-<p>マルチホップの質問はそのパターンに当てはまらない。医療知識ベースにおける<em>"第一選択薬の糖尿病薬で注意すべき副作用は？"の</em>ような質問を考えてみよう。</p>
-<p>これに答えるには2つの推論ステップが必要である。まず、システムはメトホルミンが糖尿病の第一選択薬であることを知らなければならない。そうして初めて、メトホルミンの副作用（腎機能モニタリング、消化管不快感、ビタミンB12欠乏症）を調べることができる。</p>
-<p>「メトホルミン」は橋渡し役である。メトホルミン」は、質問と答えをつなぎますが、質問ではメトホルミンについて言及されていません。</p>
+    </button></h2><p>Multi-hop questions break standard RAG because the answer depends on entity relationships that vector search can’t see. The bridge entity connecting the question to the answer often isn’t in the question itself.</p>
+<p>Simple questions work fine. You chunk documents, embed them, retrieve the closest matches, and feed them to an LLM. “What indexes does Milvus support?” lives in one passage, and vector search finds it.</p>
+<p>Multi-hop questions don’t fit that pattern. Take a question like <em>“What side effects should I watch for with first-line diabetes drugs?”</em> in a medical knowledge base.</p>
+<p>Answering it takes two reasoning steps. First, the system has to know that metformin is the first-line drug for diabetes. Only then can it look up metformin’s side effects: kidney function monitoring, GI discomfort, vitamin B12 deficiency.</p>
+<p>“Metformin” is the bridge entity. It connects the question to the answer, but the question never mentions it.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_2_8e769cbe40.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><a href="https://zilliz.com/learn/vector-similarity-search">ベクターの類似検索は</a>そこで止まる。質問のような文章、糖尿病治療ガイドや薬の副作用リストは検索されますが、それらの文章を結びつけるエンティティ関係を追うことはできません。メトホルミンは糖尿病の第一選択薬である」というような事実は、単一のパッセージのテキストではなく、それらの関係の中にあるのです。</p>
-<h2 id="Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="common-anchor-header">グラフ・データベースとエージェント型RAGが解決策でない理由<button data-href="#Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="anchor-icon" translate="no">
+<p>That’s where <a href="https://zilliz.com/learn/vector-similarity-search">Vector similarity search</a> stops. It retrieves passages that look like the question, diabetes treatment guides and drug side effect lists, but it can’t follow the entity relationships that link those passages together. Facts like “metformin is the first-line drug for diabetes” live in those relationships, not in the text of any single passage.</p>
+<h2 id="Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="common-anchor-header">Why Graph Databases and Agentic RAG Aren’t the Answer<button data-href="#Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -63,11 +65,11 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>マルチホップRAGを解決する標準的な方法は、グラフデータベースと反復エージェントループである。どちらも機能する。どちらも、多くのチームが一つの機能に支払いたがる以上のコストがかかる。</p>
-<p>まず、グラフデータベースのルートを取る。ドキュメントからトリプルを抽出し、グラフデータベースに格納し、エッジをトラバースしてマルチホップ接続を見つける。これは、<a href="https://zilliz.com/learn/what-is-vector-database">ベクトルデータベースと</a>並行して第二のシステムを稼働させ、CypherやGremlinを学習し、グラフとベクトルストアを同期させ続けることを意味する。</p>
-<p>反復エージェントループは、もう一つのアプローチである。LLMはバッチを取得し、それを推論し、十分なコンテキストがあるかどうかを判断し、なければ再度取得する。<a href="https://arxiv.org/abs/2212.10509">IRCoT</a>(Trivedi et al., 2023)は、クエリごとに3-5回のLLM呼び出しを行う。エージェントがいつ停止するかを決定するため、エージェントのRAGは10を超える可能性がある。クエリーあたりのコストは予測不可能になり、エージェントが余分なラウンドを実行するたびにP99のレイテンシが急増する。</p>
-<p>どちらも、スタックを再構築することなくマルチホップ推論をしたいチームには合わない。そこで私たちは別の方法を試した。</p>
-<h2 id="What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="common-anchor-header">ベクターデータベース内のグラフ構造、ベクターグラフRAGとは？<button data-href="#What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="anchor-icon" translate="no">
+    </button></h2><p>The standard ways to solve multi-hop RAG are graph databases and iterative agent loops. Both work. Both cost more than most teams want to pay for a single feature.</p>
+<p>Take the graph-database route first. You extract triples from your documents, store them in a graph database, and traverse edges to find multi-hop connections. That means running a second system alongside your <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a>, learning Cypher or Gremlin, and keeping the graph and vector stores in sync.</p>
+<p>Iterative agent loops are the other approach. The LLM retrieves a batch, reasons over it, decides whether it has enough context, and retrieves again if not. <a href="https://arxiv.org/abs/2212.10509">IRCoT</a> (Trivedi et al., 2023) makes 3-5 LLM calls per query. Agentic RAG can exceed 10 because the agent decides when to stop. Cost per query becomes unpredictable, and P99 latency spikes whenever the agent runs extra rounds.</p>
+<p>Neither fits teams that want multi-hop reasoning without rebuilding their stack. So we tried something else.</p>
+<h2 id="What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="common-anchor-header">What is Vector Graph RAG, a Graph Structure Inside a Vector Database<button data-href="#What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -82,42 +84,42 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/vector-graph-rag"><strong>Vector Graph RAGは</strong></a>オープンソースのPythonライブラリで、<a href="https://milvus.io/docs">milvusだけを使って</a> <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAGに</a>マルチホップ推論をもたらします。3つのMilvusコレクションにまたがるID参照としてグラフ構造を保存する。トラバーサルは、グラフデータベースに対するCypherクエリの代わりに、Milvusのプライマリキールックアップのチェーンになります。1つのMilvusが両方の仕事をこなす。</p>
-<p>ナレッジグラフのリレーションシップは単なるテキストである。トリプル<em>（メトホルミンは2型糖尿病の第一選択薬である</em>）は、グラフデータベースにおける有向エッジである。これは文章でもある：「メトホルミンは2型糖尿病の第一選択薬である。この文章をベクトルとして<a href="https://milvus.io/docs">milvusに</a>埋め込むことができる。</p>
+    </button></h2><p><a href="https://github.com/zilliztech/vector-graph-rag"><strong>Vector Graph RAG</strong></a> is an open-source Python library that brings multi-hop reasoning to <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> using only <a href="https://milvus.io/docs">Milvus</a>. It stores graph structure as ID references across three Milvus collections. Traversal becomes a chain of primary-key lookups in Milvus instead of Cypher queries against a graph database. One Milvus does both jobs.</p>
+<p>It works because relationships in a knowledge graph are just text. The triple <em>(which is metformin, is the first-line drug for type 2 diabetes)</em> is a directed edge in a graph database. It’s also a sentence: “Metformin is the first-line drug for type 2 diabetes.” You can embed that sentence as a vector and store it in <a href="https://milvus.io/docs">Milvus</a>, the same as any other text.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_3_da1305389a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>マルチホップのクエリに答えるということは、クエリが言及しているもの（「糖尿病」のような）から言及していないもの（「メトホルミン」のような）までのつながりをたどることを意味する。それは、どのエンティティがどの関係を通じてどのエンティティに接続しているかというつながりをストレージが保持している場合にのみ機能する。プレーンテキストは検索可能だが、追跡可能ではない。</p>
-<p>Milvusでは、つながりを保持するために、各エンティティと各関係に一意なIDを与え、IDによってお互いを参照する別々のコレクションに格納します。<strong>エンティティ</strong>（ノード）、<strong>リレーション</strong>（エッジ）、<strong>パッセージ</strong>（LLMが回答生成に必要とする原文）の合計3つのコレクションである。すべての行にベクトル埋め込みがあるため、3つのいずれかをセマンティック検索できる。</p>
-<p><strong>エンティティは</strong>、重複排除されたエンティティを格納する。各エンティティは、一意のID、<a href="https://zilliz.com/glossary/semantic-search">意味検索の</a>ための<a href="https://zilliz.com/glossary/vector-embeddings">ベクトル埋め込み</a>、参加する関係IDのリストを持つ。</p>
+<p>Answering a multi-hop query means following connections from what the query mentions (like “diabetes”) to what it doesn’t (like “metformin”). That only works if the storage preserves those connections: which entity connects to which through which relation. Plain text is searchable, but not followable.</p>
+<p>To keep connections followable in Milvus, we give each entity and each relation a unique ID, then store them in separate collections that reference each other by ID. Three collections in total: <strong>entities</strong> (the nodes), <strong>relations</strong> (the edges), and <strong>passages</strong> (the source text, which the LLM needs for answer generation). Every row has a vector embedding, so we can semantic-search any of the three.</p>
+<p><strong>Entities</strong> store deduplicated entities. Each has a unique ID, a <a href="https://zilliz.com/glossary/vector-embeddings">vector embedding</a> for <a href="https://zilliz.com/glossary/semantic-search">semantic search</a>, and a list of relation IDs it participates in.</p>
 <table>
 <thead>
-<tr><th>ID</th><th>名前</th><th>埋め込み</th><th>リレーションID</th></tr>
+<tr><th>id</th><th>name</th><th>embedding</th><th>relation_ids</th></tr>
 </thead>
 <tbody>
-<tr><td>e01</td><td>メトホルミン</td><td>[0.12, ...]</td><td>[r01, r02, r03］</td></tr>
-<tr><td>e02</td><td>2型糖尿病</td><td>[0.34, ...]</td><td>[R01, R04］</td></tr>
-<tr><td>e03</td><td>腎機能</td><td>[0.56, ...]</td><td>[r02]</td></tr>
+<tr><td>e01</td><td>metformin</td><td>[0.12, …]</td><td>[r01, r02, r03]</td></tr>
+<tr><td>e02</td><td>type 2 diabetes</td><td>[0.34, …]</td><td>[r01, r04]</td></tr>
+<tr><td>e03</td><td>kidney function</td><td>[0.56, …]</td><td>[r02]</td></tr>
 </tbody>
 </table>
-<p><strong>リレーションは</strong>知識トリプルを格納する。それぞれ、主語と目的語のエンティティID、出典のパッセージID、関係テキスト全文の埋め込みが記録されます。</p>
+<p><strong>Relations</strong> store knowledge triples. Each records its subject and object entity IDs, the passage IDs it came from, and an embedding of the full relationship text.</p>
 <table>
 <thead>
-<tr><th>ID</th><th>サブジェクトID</th><th>オブジェクトID</th><th>テキスト</th><th>埋め込み</th><th>パッセージID</th></tr>
+<tr><th>id</th><th>subject_id</th><th>object_id</th><th>text</th><th>embedding</th><th>passage_ids</th></tr>
 </thead>
 <tbody>
-<tr><td>r01</td><td>e01</td><td>e02</td><td>メトホルミンは2型糖尿病の第一選択薬である</td><td>[0.78, ...]</td><td>[p01]</td></tr>
-<tr><td>r02</td><td>e01</td><td>e03</td><td>メトホルミン投与中の患者は腎機能をモニターすべきである</td><td>[0.91, ...]</td><td>[p02]</td></tr>
+<tr><td>r01</td><td>e01</td><td>e02</td><td>Metformin is the first-line drug for type 2 diabetes</td><td>[0.78, …]</td><td>[p01]</td></tr>
+<tr><td>r02</td><td>e01</td><td>e03</td><td>Patients on metformin should have kidney function monitored</td><td>[0.91, …]</td><td>[p02]</td></tr>
 </tbody>
 </table>
-<p><strong>Passagesは</strong>、そこから抽出されたエンティティと関係への参照とともに、元のドキュメントチャンクを格納する。</p>
-<p>エンティティはその関係のIDを持ち、関係はその主語と目的語のエンティティのIDとソースのパッセージを持ち、パッセージはそこから抽出されたすべてのもののIDを持つ。このID参照のネットワークがグラフである。</p>
-<p>トラバーサルはIDルックアップの連鎖にすぎない。エンティティe01をフェッチしてその<code translate="no">relation_ids</code> 、それらのIDで関係r01とr02をフェッチし、r01の<code translate="no">object_id</code> を読んでエンティティe02を発見し、それを続ける。各ホップは標準的なmilvus<a href="https://milvus.io/docs/get-and-scalar-query.md">プライマリ・キー・クエリー</a>である。Cypherは必要ない。</p>
-<p>Milvusへの余計な往復が増えるのではないかと思うかもしれない。しかし、そんなことはない。サブグラフの展開にはIDベースのクエリーが2-3回、合計20-30msかかる。LLMコールは1-3秒かかり、IDルックアップはその次に見えなくなる。</p>
-<h2 id="How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="common-anchor-header">ベクトルグラフRAGがマルチホップのクエリーに答える方法<button data-href="#How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="anchor-icon" translate="no">
+<p><strong>Passages</strong> store original document chunks, with references to the entities and relations extracted from them.</p>
+<p>The three collections point at each other through ID fields: entities carry the IDs of their relations, relations carry the IDs of their subject and object entities and source passages, and passages carry the IDs of everything extracted from them. That network of ID references is the graph.</p>
+<p>Traversal is just a chain of ID lookups. You fetch entity e01 to get its <code translate="no">relation_ids</code>, fetch relations r01 and r02 by those IDs, read r01’s <code translate="no">object_id</code> to discover entity e02, and keep going. Each hop is a standard Milvus <a href="https://milvus.io/docs/get-and-scalar-query.md">primary-key query</a>. No Cypher required.</p>
+<p>You might wonder whether the extra round trips to Milvus add up. They don’t. Subgraph expansion costs 2-3 ID-based queries totaling 20-30ms. The LLM call takes 1-3 seconds, which makes the ID lookups invisible next to it.</p>
+<h2 id="How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="common-anchor-header">How Vector Graph RAG Answers a Multi-Hop Query<button data-href="#How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -132,28 +134,28 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>検索フローは、<strong>シード検索→サブグラフ展開→LLM再ランク→アンサー生成という</strong>4つのステップで、マルチホップ・クエリーを地に足のついたアンサーへと導く。</p>
+    </button></h2><p>The retrieval flow takes a multi-hop query to a grounded answer in four steps: <strong>seed retrieval → subgraph expansion → LLM rerank → answer generation.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_4_86ccf5b914.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>糖尿病の質問について説明する：<em>"第一選択薬の糖尿病薬で注意すべき副作用は？"</em></p>
-<h3 id="Step-1-Seed-Retrieval" class="common-anchor-header">ステップ1：シードの検索</h3><p>LLMは質問からキーエンティティを抽出します："糖尿病"、"副作用"、"第一選択薬"。Milvusのベクトル検索は、最も関連性の高いエンティティと関係を直接見つける。</p>
-<p>しかし、メトホルミンはその中にない。質問には言及されていないので、ベクトル検索はそれを見つけることができない。</p>
-<h3 id="Step-2-Subgraph-Expansion" class="common-anchor-header">ステップ2：部分グラフの展開</h3><p>ベクトルグラフRAGが標準的なRAGと異なるのはここである。</p>
-<p>システムはシードエンティティから1ホップ先のIDリファレンスを追跡する。シードエンティティのIDを取得し、それらのIDを含むすべての関係を見つけ、新しいエンティティIDをサブグラフに引き込む。デフォルト：1ホップ。</p>
-<p><strong>ブリッジ・エンティティであるMetforminがサブグラフに入ります。</strong></p>
-<p>"Diabetes "は関係を持っています：<em>「Metforminは、2型糖尿病の第一選択薬です。</em>このエッジをたどるとメトホルミンが入る。メトホルミンがサブグラフに入ると、メトホルミン自身の関係もついてくる：<em>"メトホルミン服用患者は腎機能をモニターすべきである"、"メトホルミンは胃腸の不快感を引き起こすかもしれない"、"メトホルミンの長期服用はビタミンB12の欠乏を引き起こすかもしれない"。</em></p>
-<p>別々の通路にあった2つの事実が、グラフ展開の1ホップを通してつながった。問題が言及しなかったブリッジエンティティが発見可能になった。</p>
+<p>We’ll walk through the diabetes question: <em>“What side effects should I watch for with first-line diabetes drugs?”</em></p>
+<h3 id="Step-1-Seed-Retrieval" class="common-anchor-header">Step 1: Seed Retrieval</h3><p>An LLM extracts key entities from the question: “diabetes,” “side effects,” “first-line drug.” Vector search in Milvus finds the most relevant entities and relations directly.</p>
+<p>But metformin isn’t among them. The question doesn’t mention it, so vector search can’t find it.</p>
+<h3 id="Step-2-Subgraph-Expansion" class="common-anchor-header">Step 2: Subgraph Expansion</h3><p>This is where Vector Graph RAG diverges from standard RAG.</p>
+<p>The system follows ID references from the seed entities one hop out. It gets the seed entity IDs, finds all relations containing those IDs, and pulls the new entity IDs into the subgraph. Default: one hop.</p>
+<p><strong>Metformin, the bridge entity, enters the subgraph.</strong></p>
+<p>“Diabetes” has a relation: <em>“Metformin is the first-line drug for type 2 diabetes.”</em> Following that edge brings metformin in. Once metformin is in the subgraph, its own relations come with it: <em>“Patients on metformin should have kidney function monitored,” “Metformin may cause gastrointestinal discomfort,” “Long-term metformin use may lead to vitamin B12 deficiency.”</em></p>
+<p>Two facts that lived in separate passages are now connected through one hop of graph expansion. The bridge entity the question never mentioned is now discoverable.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_5_8ac4a11d1c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-LLM-Rerank" class="common-anchor-header">ステップ3：LLM再ランク</h3><p>拡張により、何十もの関係候補が残ります。ほとんどはノイズである。</p>
+<h3 id="Step-3-LLM-Rerank" class="common-anchor-header">Step 3: LLM Rerank</h3><p>Expansion leaves you with dozens of candidate relations. Most are noise.</p>
 <pre><code translate="no">Expanded candidate pool (example):
 r01: Metformin <span class="hljs-keyword">is</span> the first-line drug <span class="hljs-keyword">for</span> <span class="hljs-built_in">type</span> <span class="hljs-number">2</span> diabetes          ← Key
 r02: Patients on metformin should have kidney function monitored   ← Key
@@ -167,24 +169,24 @@ r09: Sulfonylureas are second-line treatment <span class="hljs-keyword">for</spa
 r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
 ...(more)
 <button class="copy-code-btn"></button></code></pre>
-<p>システムはこれらの候補と元の質問をLLMに送ります。これは反復なしの1回の呼び出しである。</p>
+<p>The system sends these candidates and the original question to an LLM: “Which relate to side effects of first-line diabetes drugs?” It’s one call with no iteration.</p>
 <pre><code translate="no">After LLM filtering:
 ✓ r01: Metformin <span class="hljs-keyword">is</span> the first-line drug <span class="hljs-keyword">for</span> <span class="hljs-built_in">type</span> <span class="hljs-number">2</span> diabetes          → Establishes the bridge: first-line drug = metformin
 ✓ r02: Patients on metformin should have kidney function monitored   → Side effect: kidney impact
 ✓ r03: Metformin may cause gastrointestinal discomfort               → Side effect: GI issues
 ✓ r10: Long-term metformin use may lead to vitamin B12 deficiency    → Side effect: nutrient deficiency
 <button class="copy-code-btn"></button></code></pre>
-<p>選択された関係は、糖尿病→メトホルミン→腎臓のモニタリング/胃腸の不快感/B12欠乏症という連鎖を完全にカバーする。</p>
-<h3 id="Step-4-Answer-Generation" class="common-anchor-header">ステップ4：答えの生成</h3><p>システムは選択された関係の原文を検索し、LLMに送る。</p>
-<p>LLMはトリミングされたトリプルではなく、全パッセージテキストから生成する。トリプルは圧縮された要約である。LLMが根拠のある答えを生成するために必要な文脈、注意点、詳細が欠けています。</p>
-<h3 id="See-Vector-Graph-RAG-in-action" class="common-anchor-header">ベクトルグラフRAGの動作を見る</h3><p>各ステップを視覚化するインタラクティブなフロントエンドも構築しました。左側のステップパネルをクリックすると、グラフがリアルタイムで更新されます：オレンジはシードノード、青は展開されたノード、緑は選択された関係です。検索フローが抽象的ではなく具体的になります。</p>
+<p>The selected relations cover the full chain: diabetes → metformin → kidney monitoring / GI discomfort / B12 deficiency.</p>
+<h3 id="Step-4-Answer-Generation" class="common-anchor-header">Step 4: Answer Generation</h3><p>The system retrieves the original passages for the selected relations and sends them to the LLM.</p>
+<p>The LLM generates from full passage text, not the trimmed triples. Triples are compressed summaries. They lack the context, caveats, and specifics the LLM needs to produce a grounded answer.</p>
+<h3 id="See-Vector-Graph-RAG-in-action" class="common-anchor-header">See Vector Graph RAG in action</h3><p>We also built an interactive frontend that visualizes each step. Click through the steps panel on the left and the graph updates in real time: orange for seed nodes, blue for expanded nodes, green for selected relations. It makes the retrieval flow concrete instead of abstract.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_6_f6d8b1e841.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Why-One-Rerank-Beats-Multiple-Iterations" class="common-anchor-header">1回の再ランクが複数の反復に勝る理由<button data-href="#Why-One-Rerank-Beats-Multiple-Iterations" class="anchor-icon" translate="no">
+<h2 id="Why-One-Rerank-Beats-Multiple-Iterations" class="common-anchor-header">Why One Rerank Beats Multiple Iterations<button data-href="#Why-One-Rerank-Beats-Multiple-Iterations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -199,19 +201,19 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>我々のパイプラインは、クエリごとに2回のLLM呼び出しを行う。IRCoTやAgentic RAGのような反復システムは、検索、理由付け、再検索というループを行うため、3回から10回以上の呼び出しを行う。ベクトル検索とサブグラフ展開は、意味的類似性と構造的接続の両方を1回のパスでカバーし、LLMに1回の再ランクで終了するのに十分な候補を与えるので、我々はループをスキップする。</p>
+    </button></h2><p>Our pipeline makes two LLM calls per query: one for rerank, one for generation. Iterative systems like IRCoT and Agentic RAG run 3 to 10+ calls because they loop: retrieve, reason, retrieve again. We skip the loop because vector search and subgraph expansion cover both semantic similarity and structural connections in one pass, giving the LLM enough candidates to finish in one rerank.</p>
 <table>
 <thead>
-<tr><th>アプローチ</th><th>クエリごとのLLM呼び出し</th><th>レイテンシプロファイル</th><th>相対APIコスト</th></tr>
+<tr><th>Approach</th><th>LLM calls per query</th><th>Latency profile</th><th>Relative API cost</th></tr>
 </thead>
 <tbody>
-<tr><td>ベクトルグラフRAG</td><td>2（再ランク＋生成）</td><td>固定、予測可能</td><td>1x</td></tr>
-<tr><td>IRCoT</td><td>3-5</td><td>可変</td><td>~2-3x</td></tr>
-<tr><td>エージェント型RAG</td><td>5-10+</td><td>予測不可能</td><td>~3-5x</td></tr>
+<tr><td>Vector Graph RAG</td><td>2 (rerank + generate)</td><td>Fixed, predictable</td><td>1x</td></tr>
+<tr><td>IRCoT</td><td>3-5</td><td>Variable</td><td>~2-3x</td></tr>
+<tr><td>Agentic RAG</td><td>5-10+</td><td>Unpredictable</td><td>~3-5x</td></tr>
 </tbody>
 </table>
-<p>本番では、APIコストはおよそ60％削減され、レスポンスは2-3倍速く、レイテンシは予測可能です。エージェントが余分なラウンドを実行することを決定したときに、驚きのスパイクはありません。</p>
-<h2 id="Benchmark-Results" class="common-anchor-header">ベンチマーク結果<button data-href="#Benchmark-Results" class="anchor-icon" translate="no">
+<p>In production, that’s roughly 60% lower API cost, 2-3x faster responses, and predictable latency. No surprise spikes when an agent decides to run extra rounds.</p>
+<h2 id="Benchmark-Results" class="common-anchor-header">Benchmark Results<button data-href="#Benchmark-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -226,36 +228,36 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vector Graph RAGは、3つの標準的なマルチホップQAベンチマークで平均87.8%のRecall@5を達成し、Milvusと2つのLLMコールだけで、HippoRAG 2を含むテストした全てのメソッドに匹敵するか、それを上回った。</p>
-<p>MuSiQue（2-4ホップ、最も難しい）、HotpotQA（2ホップ、最も広く使われている）、2WikiMultiHopQA（2ホップ、クロス・ドキュメント推論）で評価した。指標はRecall@5：検索された結果の上位5位に正しいサポート文章が表示されるかどうかである。</p>
-<p>公正な比較のために、<a href="https://github.com/OSU-NLP-Group/HippoRAG">HippoRAG リポジトリから</a>全く同じ抽出済みトリプルを使用した。再抽出もカスタム前処理も行っていない。この比較では、検索アルゴリズム自体を分離しています。</p>
-<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-Standard-Naive-RAG" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">ベクトルグラフRAGと</a>標準（ナイーブ）RAGの比較</h3><p>
+    </button></h2><p>Vector Graph RAG averages 87.8% Recall@5 across three standard multi-hop QA benchmarks, matching or exceeding every method we tested, including HippoRAG 2, with just Milvus and 2 LLM calls.</p>
+<p>We evaluated on MuSiQue (2-4 hop, the hardest), HotpotQA (2 hop, the most widely used), and 2WikiMultiHopQA (2 hop, cross-document reasoning). The metric is Recall@5: whether the correct supporting passages appear in the top 5 retrieved results.</p>
+<p>We used the exact same pre-extracted triples from the <a href="https://github.com/OSU-NLP-Group/HippoRAG">HippoRAG repository</a> for a fair comparison. No re-extraction, no custom preprocessing. The comparison isolates the retrieval algorithm itself.</p>
+<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-Standard-Naive-RAG" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> vs Standard (Naive) RAG</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_7_61772e68c8.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Vector Graph RAGは平均Recall@5を73.4%から87.8%に引き上げ、19.6%ポイントの改善。</p>
+<p>Vector Graph RAG lifts average Recall@5 from 73.4% to 87.8%, an improvement of 19.6 percentage points.</p>
 <ul>
-<li>MuSiQue：最大の改善（+31.4pp）。3-4ホップベンチマーク、最も難しいマルチホップ問題で、まさにサブグラフの拡張が最も大きな影響を与えるところです。</li>
-<li>2WikiMultiHopQA：急激な向上（+27.7pp）。クロスドキュメントの推論で、これもサブグラフ拡張のスイートスポット。</li>
-<li>HotpotQA: 改善幅は小さいが（+6.1pp）、標準的なRAGはこのデータセットですでに90.8%のスコア。上限は低い。</li>
+<li>MuSiQue: largest gain (+31.4 pp). 3-4 hop benchmark, the hardest multi-hop questions, and exactly where subgraph expansion has the biggest impact.</li>
+<li>2WikiMultiHopQA: sharp improvement (+27.7 pp). Cross-document reasoning, another sweet spot for subgraph expansion.</li>
+<li>HotpotQA: smaller gain (+6.1 pp), but standard RAG already scores 90.8% on this dataset. The ceiling is low.</li>
 </ul>
-<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-State-of-the-Art-Methods-SOTA" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">ベクトルグラフRAGと</a>最新手法（SOTA）の比較</h3><p>
+<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-State-of-the-Art-Methods-SOTA" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> vs State-of-the-Art Methods (SOTA)</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_8_2a0b90b574.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Vector Graph RAGは、HippoRAG 2、IRCoT、NV-Embed-v2に対して87.8%という最高の平均スコアを獲得した。</p>
-<p>ベンチマーク別</p>
+<p>Vector Graph RAG takes the highest average score at 87.8% against HippoRAG 2, IRCoT, and NV-Embed-v2.</p>
+<p>Benchmark by benchmark:</p>
 <ul>
-<li>HotpotQA：HippoRAG2と同点（ともに96.3）</li>
-<li>2WikiMultiHopQA：3.7ポイント差でリード（94.1％対90.4）</li>
-<li>MuSiQue（最も難しい）：1.7ポイント差（73.0％対74.7）</li>
+<li>HotpotQA: ties HippoRAG 2 (both 96.3%)</li>
+<li>2WikiMultiHopQA: leads by 3.7 points (94.1% vs 90.4%)</li>
+<li>MuSiQue (the hardest): trails by 1.7 points (73.0% vs 74.7%)</li>
 </ul>
-<p>Vector Graph RAGは、クエリーあたり2回のLLMコールのみ、グラフデータベースなし、ColBERTv2なしでこの数字を達成している。比較の中で最もシンプルなインフラで実行され、なおかつ最も高い平均値を取っている。</p>
-<h2 id="How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">ベクトルグラフRAGと</a>他のグラフRAGアプローチとの比較<button data-href="#How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="anchor-icon" translate="no">
+<p>Vector Graph RAG achieves these numbers with only 2 LLM calls per query, no graph database, and no ColBERTv2. It runs on the simplest infrastructure in the comparison and still takes the highest average.</p>
+<h2 id="How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="common-anchor-header">How <a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> Compares to Other Graph RAG Approaches<button data-href="#How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -270,24 +272,24 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>異なるグラフRAGアプローチは、異なる問題に対して最適化される。Vector Graph RAGは、予測可能なコストとシンプルなインフラストラクチャで、プロダクション・マルチホップQA用に構築されている。</p>
+    </button></h2><p>Different Graph RAG approaches optimize for different problems. Vector Graph RAG is built for production multi-hop QA with predictable cost and simple infrastructure.</p>
 <table>
 <thead>
-<tr><th></th><th>Microsoft GraphRAG</th><th>HippoRAG 2</th><th>IRCoT / エージェントRAG</th><th><strong>ベクトルグラフRAG</strong></th></tr>
+<tr><th></th><th>Microsoft GraphRAG</th><th>HippoRAG 2</th><th>IRCoT / Agentic RAG</th><th><strong>Vector Graph RAG</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>インフラ</strong></td><td>グラフDB＋ベクトルDB</td><td>ColBERTv2 + インメモリグラフ</td><td>ベクトルDB＋マルチラウンドエージェント</td><td><strong>milvusのみ</strong></td></tr>
-<tr><td><strong>クエリあたりのLLMコール数</strong></td><td>変動</td><td>中程度</td><td>3-10+</td><td><strong>2</strong></td></tr>
-<tr><td><strong>最適</strong></td><td>グローバルなコーパスの要約</td><td>きめ細かな学術検索</td><td>複雑でオープンエンドな検索</td><td><strong>プロダクションマルチホップQA</strong></td></tr>
-<tr><td><strong>スケーリングの懸念</strong></td><td>高価なLLMインデックス作成</td><td>メモリ内のフルグラフ</td><td>予測不可能なレイテンシとコスト</td><td><strong>Milvusでスケーリング可能</strong></td></tr>
-<tr><td><strong>セットアップの複雑さ</strong></td><td>高</td><td>中-高</td><td>中</td><td><strong>低 (pipインストール)</strong></td></tr>
+<tr><td><strong>Infrastructure</strong></td><td>Graph DB + vector DB</td><td>ColBERTv2 + in-memory graph</td><td>Vector DB + multi-round agents</td><td><strong>Milvus only</strong></td></tr>
+<tr><td><strong>LLM calls per query</strong></td><td>Varies</td><td>Moderate</td><td>3-10+</td><td><strong>2</strong></td></tr>
+<tr><td><strong>Best for</strong></td><td>Global corpus summarization</td><td>Fine-grained academic retrieval</td><td>Complex open-ended exploration</td><td><strong>Production multi-hop QA</strong></td></tr>
+<tr><td><strong>Scaling concern</strong></td><td>Expensive LLM indexing</td><td>Full graph in memory</td><td>Unpredictable latency and cost</td><td><strong>Scales with Milvus</strong></td></tr>
+<tr><td><strong>Setup complexity</strong></td><td>High</td><td>Medium-High</td><td>Medium</td><td><strong>Low (pip install)</strong></td></tr>
 </tbody>
 </table>
-<p><a href="https://github.com/microsoft/graphrag">Microsoft GraphRAGは</a>、階層的コミュニティクラスタリングを使って、"このコーパスの主なテーマは何か？"といったグローバルな要約の質問に答える。これはマルチホップQAとは異なる問題だ。&quot;</p>
-<p><a href="https://arxiv.org/abs/2502.14802">HippoRAG 2</a>(Gutierrez et al., 2025)は、ColBERTv2のトークンレベルのマッチングで、認知にヒントを得た検索を行う。完全なグラフをメモリにロードすることは、スケーラビリティを制限する。</p>
-<p><a href="https://arxiv.org/abs/2212.10509">IRCoTの</a>ような反復的アプローチは、LLMコストと予測不可能なレイテンシとインフラの単純さをトレードする。</p>
-<p>Vector Graph RAGは、プロダクション・マルチホップQA：グラフ・データベースを追加することなく、予測可能なコストとレイテンシーを求めるチームをターゲットにしています。</p>
-<h2 id="When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="common-anchor-header">Vector Graph RAGの使用時期と主な使用例<button data-href="#When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="anchor-icon" translate="no">
+<p><a href="https://github.com/microsoft/graphrag">Microsoft GraphRAG</a> uses hierarchical community clustering to answer global summarization questions like ‘what are the main themes across this corpus?’ That’s a different problem than multi-hop QA.&quot;</p>
+<p><a href="https://arxiv.org/abs/2502.14802">HippoRAG 2</a> (Gutierrez et al., 2025) uses cognitive-inspired retrieval with ColBERTv2 token-level matching. Loading the full graph into memory limits scalability.</p>
+<p>Iterative approaches like <a href="https://arxiv.org/abs/2212.10509">IRCoT</a> trade infrastructure simplicity for LLM cost and unpredictable latency.</p>
+<p>Vector Graph RAG targets production multi-hop QA: teams that want predictable cost and latency without adding a graph database.</p>
+<h2 id="When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="common-anchor-header">When to Use Vector Graph RAG and Key Use Cases<button data-href="#When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -302,19 +304,19 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vector Graph RAGは4種類のワークロード向けに構築されています：</p>
+    </button></h2><p>Vector Graph RAG is built for four kinds of workloads:</p>
 <table>
 <thead>
-<tr><th>シナリオ</th><th>適合する理由</th></tr>
+<tr><th>Scenario</th><th>Why it fits</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>知識密度の高いドキュメント</strong></td><td>相互参照を含む法律コード、薬剤-遺伝子-疾患チェーンを含む生物医学文献、会社-人-イベントリンクを含む財務報告書、API依存性グラフを含む技術文書</td></tr>
-<tr><td><strong>2-4ホップの質問</strong></td><td>1ホップの質問は標準的なRAGでうまく機能します。5ホップ以上は反復的な方法が必要かもしれません。2-4ホップの範囲は、サブグラフ展開のスイートスポットです。</td></tr>
-<tr><td><strong>シンプルなデプロイメント</strong></td><td>1つのデータベース、1つの<code translate="no">pip install</code> 、学習するグラフ・インフラなし</td></tr>
-<tr><td><strong>コストとレイテンシに敏感</strong></td><td>クエリ毎に2回のLLMコール。毎日のクエリが数千回になると、その差は大きくなります。</td></tr>
+<tr><td><strong>Knowledge-dense documents</strong></td><td>Legal codes with cross-references, biomedical literature with drug-gene-disease chains, financial filings with company-person-event links, technical docs with API dependency graphs</td></tr>
+<tr><td><strong>2-4 hop questions</strong></td><td>One-hop questions work fine with standard RAG. Five or more hops may need iterative methods. The 2-4 hop range is subgraph expansion’s sweet spot.</td></tr>
+<tr><td><strong>Simple deployment</strong></td><td>One database, one <code translate="no">pip install</code>, no graph infrastructure to learn</td></tr>
+<tr><td><strong>Cost and latency sensitivity</strong></td><td>Two LLM calls per query, fixed and predictable. At thousands of daily queries, the difference adds up.</td></tr>
 </tbody>
 </table>
-<h2 id="Get-Started-with-Vector-Graph-RAG" class="common-anchor-header">ベクターグラフRAGを始める<button data-href="#Get-Started-with-Vector-Graph-RAG" class="anchor-icon" translate="no">
+<h2 id="Get-Started-with-Vector-Graph-RAG" class="common-anchor-header">Get Started with Vector Graph RAG<button data-href="#Get-Started-with-Vector-Graph-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -343,9 +345,9 @@ rag.add_texts([
 result = rag.query(<span class="hljs-string">&quot;What side effects should I watch for with first-line diabetes drugs?&quot;</span>)
 <span class="hljs-built_in">print</span>(result.answer)
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">VectorGraphRAG()</code> 引数なしの場合、デフォルトは<a href="https://milvus.io/docs/milvus_lite.md">Milvus Liteに</a>なる。SQLiteのようにローカルの<code translate="no">.db</code> 。起動するサーバーも設定するものもない。</p>
-<p><code translate="no">add_texts()</code> <code translate="no">query()</code> 、seed、expand、rerank、generateの4ステップの検索フローを実行する。</p>
-<p>本番では、URIパラメータを1つ入れ替える。残りのコードは同じままである：</p>
+<p><code translate="no">VectorGraphRAG()</code> with no arguments defaults to <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>. It creates a local <code translate="no">.db</code> file, like SQLite. No server to start, nothing to configure.</p>
+<p><code translate="no">add_texts()</code> calls an LLM to extract triples from your text, vectorizes them, and stores everything in Milvus. <code translate="no">query()</code> runs the full four-step retrieval flow: seed, expand, rerank, generate.</p>
+<p>For production, swap one URI parameter. The rest of the code stays the same:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Local development</span>
 rag = VectorGraphRAG()
 
@@ -355,7 +357,7 @@ rag = VectorGraphRAG(uri=<span class="hljs-string">&quot;http://your-milvus-serv
 <span class="hljs-comment"># Zilliz Cloud (managed Milvus, free tier available)</span>
 rag = VectorGraphRAG(uri=<span class="hljs-string">&quot;your-zilliz-endpoint&quot;</span>, token=<span class="hljs-string">&quot;your-api-key&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>PDF、ウェブページ、Wordファイルをインポートする：</p>
+<p>To import PDFs, web pages, or Word files:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> vector_graph_rag.loaders <span class="hljs-keyword">import</span> DocumentImporter
 
 importer = DocumentImporter(chunk_size=<span class="hljs-number">1000</span>, chunk_overlap=<span class="hljs-number">200</span>)
@@ -365,7 +367,7 @@ result = importer.import_sources([
 ])
 rag.add_documents(result.documents, extract_triplets=<span class="hljs-literal">True</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">結論<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -380,22 +382,22 @@ rag.add_documents(result.documents, extract_triplets=<span class="hljs-literal">
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>グラフRAGはグラフ・データベースを必要としない。Vector Graph RAGはグラフ構造を3つのMilvusコレクションにまたがるID参照として保存し、グラフのトラバーサルをプライマリキーのルックアップに変え、すべてのマルチホップクエリを固定2回のLLM呼び出しに抑える。</p>
-<p>概要</p>
+    </button></h2><p>Graph RAG doesn’t need a graph database. Vector Graph RAG stores graph structure as ID references across three Milvus collections, which turns graph traversal into primary-key lookups and keeps every multi-hop query at a fixed two LLM calls.</p>
+<p>At a glance:</p>
 <ul>
-<li>オープンソースのPythonライブラリ。Milvus単独でのマルチホップ推論。</li>
-<li>IDでリンクされた3つのコレクション。エンティティ（ノード）、関係（エッジ）、パッセージ（ソーステキスト）。クエリが言及していないブリッジエンティティを発見するためにIDを追跡するサブグラフ展開。</li>
-<li>クエリごとに2回のLLM呼び出し。1回の再ランク、1回の生成。反復なし。</li>
-<li>MuSiQue、HotpotQA、2WikiMultiHopQAの平均Recall@5で87.8%、3つのうち2つでHippoRAG 2に匹敵、もしくは勝っている。</li>
+<li>Open-source Python library. Multi-hop reasoning on Milvus alone.</li>
+<li>Three collections linked by ID. Entities (nodes), relations (edges), passages (source text). Subgraph expansion follows the IDs to discover bridge entities the query doesn’t mention.</li>
+<li>Two LLM calls per query. One rerank, one generation. No iteration.</li>
+<li>87.8% average Recall@5 across MuSiQue, HotpotQA, and 2WikiMultiHopQA, matching or beating HippoRAG 2 on two of three.</li>
 </ul>
-<h3 id="Try-it" class="common-anchor-header">お試しあれ：</h3><ul>
-<li><a href="https://github.com/zilliztech/vector-graph-rag">GitHub: zilliztech/vector-graph-rag</a>コードはこちら。</li>
-<li>完全なAPIと例の<a href="https://zilliztech.github.io/vector-graph-rag">ドキュメント</a></li>
-<li><a href="https://slack.milvus.io/">Discordの</a> <a href="https://slack.milvus.io/">milvus</a> <a href="https://discord.com/invite/8uyFbECzPX">コミュニティに</a>参加して、質問やフィードバックを共有しましょう。</li>
-<li><a href="https://milvus.io/office-hours">Milvusオフィスアワーを予約</a>し、あなたのユースケースについて説明しましょう<a href="https://milvus.io/office-hours">。</a></li>
-<li>インフラストラクチャのセットアップを省略したい場合、<a href="https://cloud.zilliz.com/signup">Zilliz Cloudは</a>マネージドMilvusの無料ティアを提供しています。</li>
+<h3 id="Try-it" class="common-anchor-header">Try it:</h3><ul>
+<li><a href="https://github.com/zilliztech/vector-graph-rag">GitHub: zilliztech/vector-graph-rag</a> for the code</li>
+<li><a href="https://zilliztech.github.io/vector-graph-rag">Docs</a> for the full API and examples</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus</a> <a href="https://discord.com/invite/8uyFbECzPX">community</a> <a href="https://slack.milvus.io/">on Discord</a> to ask questions and share feedback</li>
+<li><a href="https://milvus.io/office-hours">Book a Milvus Office Hours session</a> to walk through your use case</li>
+<li><a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> offers a free tier with managed Milvus if you’d rather skip infrastructure setup</li>
 </ul>
-<h2 id="FAQ" class="common-anchor-header">よくある質問<button data-href="#FAQ" class="anchor-icon" translate="no">
+<h2 id="FAQ" class="common-anchor-header">FAQ<button data-href="#FAQ" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -410,7 +412,7 @@ rag.add_documents(result.documents, extract_triplets=<span class="hljs-literal">
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Can-I-do-Graph-RAG-with-just-a-vector-database" class="common-anchor-header">ベクターデータベースだけでGraph RAGはできますか？</h3><p>はい。Vector Graph RAGは、ナレッジグラフ構造（エンティティ、関係、およびそれらの接続）をID相互参照によってリンクされた3つのMilvusコレクション内に保存します。グラフデータベースのエッジをトラバースする代わりに、Milvusの一次キー検索を連鎖させ、シードエンティティを中心としたサブグラフを展開する。これにより、グラフデータベースのインフラなしで、3つの標準的なマルチホップベンチマークで87.8%の平均Recall@5を達成した。</p>
-<h3 id="How-does-Vector-Graph-RAG-compare-to-Microsoft-GraphRAG" class="common-anchor-header">Vector Graph RAGとMicrosoft GraphRAGの比較は？</h3><p>両者は異なる問題を解決する。Microsoft GraphRAGは、グローバルなコーパスの要約（「これらの文書全体の主要テーマは何か」）のために階層的コミュニティ・クラスタリングを使用する。Vector Graph RAGは、マルチホップ質問応答、つまり、文章中の特定の事実を連鎖させることに重点を置いている。Vector Graph RAGはMilvusと2回のLLMコールを必要とする。Microsoft GraphRAGはグラフデータベースを必要とし、高いインデックス作成コストがかかる。</p>
-<h3 id="What-types-of-questions-benefit-from-multi-hop-RAG" class="common-anchor-header">マルチホップRAGはどのようなタイプの問題に有効ですか？</h3><p>マルチホップRAGは、特にキーとなるエンティティが質問に登場しないような、答えが複数のパッセージに散在する情報の接続に依存するような質問に役立ちます。例として、"糖尿病の第一選択薬にはどのような副作用がありますか? "があります。(ブリッジとしてメトホルミンを発見する必要がある）、法律や規制の文章での相互参照検索、技術文書での依存関係の連鎖のトレースなどです。標準的なRAGは、シングルファクトルックアップをうまく処理します。マルチホップRAGは、推論パスが2～4ステップの長さになる場合に付加価値を与えます。</p>
-<h3 id="Do-I-need-to-extract-knowledge-graph-triples-manually" class="common-anchor-header">ナレッジグラフのトリプルを手動で抽出する必要がありますか？</h3><p><code translate="no">add_texts()</code> と<code translate="no">add_documents()</code> は自動的にLLMを呼び出し、エンティティとリレーションシップを抽出し、ベクトル化し、milvusに保存します。組み込みの<code translate="no">DocumentImporter</code> を使用して、URL、PDF、DOCX ファイルからドキュメントをインポートできます。ベンチマークや移行のために、ライブラリはHippoRAGのような他のフレームワークから事前に抽出されたトリプルのインポートをサポートしています。</p>
+    </button></h2><h3 id="Can-I-do-Graph-RAG-with-just-a-vector-database" class="common-anchor-header">Can I do Graph RAG with just a vector database?</h3><p>Yes. Vector Graph RAG stores knowledge graph structure (entities, relations, and their connections) inside three Milvus collections linked by ID cross-references. Instead of traversing edges in a graph database, it chains primary-key lookups in Milvus to expand a subgraph around seed entities. This achieves 87.8% average Recall@5 on three standard multi-hop benchmarks without any graph database infrastructure.</p>
+<h3 id="How-does-Vector-Graph-RAG-compare-to-Microsoft-GraphRAG" class="common-anchor-header">How does Vector Graph RAG compare to Microsoft GraphRAG?</h3><p>They solve different problems. Microsoft GraphRAG uses hierarchical community clustering for global corpus summarization (“What are the main themes across these documents?”). Vector Graph RAG focuses on multi-hop question answering, where the goal is to chain specific facts across passages. Vector Graph RAG needs only Milvus and two LLM calls per query. Microsoft GraphRAG requires a graph database and carries higher indexing costs.</p>
+<h3 id="What-types-of-questions-benefit-from-multi-hop-RAG" class="common-anchor-header">What types of questions benefit from multi-hop RAG?</h3><p>Multi-hop RAG helps with questions where the answer depends on connecting information scattered across multiple passages, especially when a key entity never appears in the question. Examples include “What side effects does the first-line diabetes drug have?” (requires discovering metformin as the bridge), cross-reference lookups in legal or regulatory text, and dependency chain tracing in technical documentation. Standard RAG handles single-fact lookups well. Multi-hop RAG adds value when the reasoning path is two to four steps long.</p>
+<h3 id="Do-I-need-to-extract-knowledge-graph-triples-manually" class="common-anchor-header">Do I need to extract knowledge graph triples manually?</h3><p>No. <code translate="no">add_texts()</code> and <code translate="no">add_documents()</code> automatically call an LLM to extract entities and relationships, vectorize them, and store them in Milvus. You can import documents from URLs, PDFs, and DOCX files using the built-in <code translate="no">DocumentImporter</code>. For benchmarking or migration, the library supports importing pre-extracted triples from other frameworks like HippoRAG.</p>

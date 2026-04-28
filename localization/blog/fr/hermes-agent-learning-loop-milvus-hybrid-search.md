@@ -1,8 +1,7 @@
 ---
 id: hermes-agent-learning-loop-milvus-hybrid-search.md
-title: >-
-  Comment réparer la boucle d'apprentissage de l'agent Hermes avec la recherche
-  hybride Milvus 2.6
+title: |
+  How to Fix Hermes Agent's Learning Loop with Milvus 2.6 Hybrid Search
 author: Min Yin
 date: 2026-4-24
 cover: >-
@@ -14,18 +13,17 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Hermes Agent, Milvus 2.6, hybrid search, agent memory, skill learning loop'
 meta_title: |
   How to Fix Hermes Agent's Learning Loop with Milvus 2.6 Hybrid Search
-desc: >-
-  La boucle d'apprentissage de l'agent Hermes écrit les compétences à partir de
-  l'utilisation, mais son récupérateur FTS5 manque les requêtes reformulées. La
-  recherche hybride Milvus 2.6 corrige le rappel intersession.
+desc: >
+  Hermes Agent's Learning Loop writes Skills from use, but its FTS5 retriever
+  misses rephrased queries. Milvus 2.6 hybrid search fixes cross-session recall.
 origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.md'
 ---
-<p><a href="https://github.com/NousResearch/hermes-agent"><strong>L'agent Hermes</strong></a> <strong>est omniprésent ces derniers temps.</strong> Construit par Nous Research, Hermes est un agent d'IA personnel auto-hébergé qui fonctionne sur votre propre matériel (un VPS à 5 $ fonctionne) et vous parle par le biais de canaux de discussion existants comme Telegram.</p>
-<p><strong>Son principal atout est une boucle d'apprentissage intégrée :</strong> la boucle crée des compétences à partir de l'expérience, les améliore en cours d'utilisation et recherche des conversations passées pour trouver des modèles réutilisables. D'autres frameworks d'agents codent manuellement les compétences avant de les déployer. Les compétences d'Hermes se développent à l'usage, et les flux de travail répétés deviennent réutilisables sans aucune modification du code.</p>
-<p><strong>L'inconvénient est que la recherche d'Hermes se fait uniquement par mot-clé.</strong> Elle correspond aux mots exacts, mais pas au sens recherché par les utilisateurs. Lorsque les utilisateurs utilisent des termes différents au cours de différentes sessions, la boucle ne peut pas les relier et aucune nouvelle compétence n'est écrite. Lorsqu'il n'y a que quelques centaines de documents, l'écart est tolérable. <strong>Au-delà, la boucle cesse d'apprendre parce qu'elle ne peut pas retrouver son propre historique.</strong></p>
-<p><strong>La solution est Milvus 2.6.</strong> Sa <a href="https://milvus.io/docs/multi-vector-search.md">recherche hybride</a> couvre à la fois le sens et les mots-clés exacts en une seule requête, de sorte que la boucle peut enfin relier les informations reformulées d'une session à l'autre. Il est suffisamment léger pour tenir sur un petit serveur cloud (un VPS à 5 $/mois le fait fonctionner). Le remplacer ne nécessite pas de changer Hermes - Milvus se glisse derrière la couche de recherche, de sorte que la boucle d'apprentissage reste intacte. Hermes choisit toujours les compétences à exécuter, et Milvus s'occupe de ce qu'il faut récupérer.</p>
-<p>Mais les avantages vont au-delà d'une meilleure mémorisation : une fois que la récupération fonctionne, la boucle d'apprentissage peut stocker la stratégie de récupération elle-même en tant que compétence, et pas seulement le contenu qu'elle récupère. C'est ainsi que les connaissances de l'agent se combinent d'une session à l'autre.</p>
-<h2 id="Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="common-anchor-header">Architecture de l'agent Hermes : Comment la mémoire à quatre couches alimente la boucle d'apprentissage des compétences<button data-href="#Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="anchor-icon" translate="no">
+<p><a href="https://github.com/NousResearch/hermes-agent"><strong>Hermes Agent</strong></a> <strong>has been everywhere lately.</strong> Built by Nous Research, Hermes is a self-hosted personal AI agent that runs on your own hardware (a $5 VPS works) and talks to you through existing chat channels like Telegram.</p>
+<p><strong>Its biggest highlight is a built-in learning loop:</strong> the loop creates Skills from experience, improves them during use, and searches past conversations to find reusable patterns. Other agent frameworks hand-code Skills before deployment. Hermes’s Skills grow from use, and repeated workflows become reusable with zero code change.</p>
+<p><strong>The catch is that Hermes’s retrieval is keyword-only.</strong> It matches exact words, but not the meaning users are after. When users use different wording across different sessions, the loop can’t connect them, and no new Skill gets written. When there are only a few hundred documents, the gap is tolerable. <strong>Past that, the loop stops learning because it can’t find its own history.</strong></p>
+<p><strong>The fix is Milvus 2.6.</strong> Its <a href="https://milvus.io/docs/multi-vector-search.md">hybrid search</a> covers both meaning and exact keywords in a single query, so the loop can finally connect rephrased information across sessions. It’s light enough to fit on a small cloud server (a $5/month VPS runs it). Swapping it in doesn’t require changing Hermes — Milvus slots behind the retrieval layer, so the Learning Loop stays intact. Hermes still picks which Skill to run, and Milvus handles what to retrieve.</p>
+<p>But the deeper payoff goes beyond better recall: once retrieval works, the Learning Loop can store the retrieval strategy itself as a Skill – not just the content it retrieves. That’s how the agent’s knowledge work compounds across sessions.</p>
+<h2 id="Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="common-anchor-header">Hermes Agent Architecture: How Four-Layer Memory Powers the Skill Learning Loop<button data-href="#Hermes-Agent-Architecture-How-Four-Layer-Memory-Powers-the-Skill-Learning-Loop" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,12 +38,12 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/NousResearch/hermes-agent"><strong>Hermes</strong></a> <strong>possède quatre couches de mémoire, et L4 Skills est celle qui le distingue des autres.</strong></p>
+    </button></h2><p><a href="https://github.com/NousResearch/hermes-agent"><strong>Hermes</strong></a> <strong>has four memory layers, and L4 Skills is the one that sets it apart.</strong></p>
 <ul>
-<li><strong>L1</strong> - contexte de la session, effacé à la fin de la session</li>
-<li><strong>L2</strong> - faits persistants : pile de projets, conventions d'équipe, décisions prises</li>
-<li><strong>L3</strong> - Recherche par mots-clés SQLite FTS5 sur les fichiers locaux</li>
-<li><strong>L4</strong> - stockage des flux de travail sous forme de fichiers Markdown. Contrairement aux outils LangChain ou aux plugins AutoGPT, que les développeurs créent dans le code avant le déploiement, les compétences L4 sont auto-écrites : elles se développent à partir de ce que l'agent exécute réellement, sans aucun travail de création de la part du développeur.</li>
+<li><strong>L1</strong> — session context, cleared when the session closes</li>
+<li><strong>L2</strong> — persisted facts: project stack, team conventions, resolved decisions</li>
+<li><strong>L3</strong> — SQLite FTS5 keyword search over local files</li>
+<li><strong>L4</strong> — stores workflows as Markdown files. Unlike LangChain tools or AutoGPT plugins, which developers author in code before deployment, L4 Skills are self-written: they grow from what the agent actually runs, with zero developer authoring.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -53,7 +51,7 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
     <span></span>
   </span>
 </p>
-<h2 id="Why-Hermess-FTS5-Keyword-Retrieval-Breaks-the-Learning-Loop" class="common-anchor-header">Pourquoi la recherche de mots-clés de FTS5 de Hermes rompt la boucle d'apprentissage<button data-href="#Why-Hermess-FTS5-Keyword-Retrieval-Breaks-the-Learning-Loop" class="anchor-icon" translate="no">
+<h2 id="Why-Hermess-FTS5-Keyword-Retrieval-Breaks-the-Learning-Loop" class="common-anchor-header">Why Hermes’s FTS5 Keyword Retrieval Breaks the Learning Loop<button data-href="#Why-Hermess-FTS5-Keyword-Retrieval-Breaks-the-Learning-Loop" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -68,11 +66,11 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Hermes a besoin de la récupération pour déclencher des workflows intersession en premier lieu.</strong> Mais sa couche L3 intégrée utilise SQLite FTS5, qui ne correspond qu'à des jetons littéraux, pas au sens.</p>
-<p><strong>Lorsque les utilisateurs formulent la même intention différemment d'une session à l'autre, FTS5 ne trouve pas de correspondance.</strong> La boucle d'apprentissage ne se déclenche pas. Aucune nouvelle compétence n'est écrite, et la prochaine fois que l'intention se présente, l'utilisateur doit à nouveau effectuer le routage à la main.</p>
-<p>Exemple : la base de connaissances stocke "asyncio event loop, async task scheduling, non-blocking I/O". Un utilisateur recherche "Python concurrency". FTS5 renvoie zéro résultat - il n'y a pas de chevauchement de mots, et FTS5 n'a aucun moyen de voir qu'il s'agit de la même question.</p>
-<p>En dessous de quelques centaines de documents, l'écart est tolérable. Au-delà, la documentation utilise un vocabulaire, les utilisateurs posent des questions dans un autre vocabulaire, et FTS5 n'a pas de passerelle entre les deux. <strong>Le contenu non récupérable pourrait tout aussi bien ne pas figurer dans la base de connaissances, et la boucle d'apprentissage n'a rien à apprendre.</strong></p>
-<h2 id="How-Milvus-26-Fixes-the-Retrieval-Gap-with-Hybrid-Search-and-Tiered-Storage" class="common-anchor-header">Comment Milvus 2.6 comble les lacunes en matière de recherche grâce à la recherche hybride et au stockage hiérarchisé<button data-href="#How-Milvus-26-Fixes-the-Retrieval-Gap-with-Hybrid-Search-and-Tiered-Storage" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Hermes needs retrieval to trigger cross-session workflows in the first place.</strong> But its built-in L3 layer uses SQLite FTS5, which only matches literal tokens, not meaning.</p>
+<p><strong>When users phrase the same intent differently across sessions, FTS5 misses the match.</strong> The Learning Loop doesn’t fire. No new Skill gets written, and next time the intent comes around, the user is back to routing by hand.</p>
+<p>Example: the knowledge base stores “asyncio event loop, async task scheduling, non-blocking I/O.” A user searches “Python concurrency.” FTS5 returns zero hits — no literal word overlap, and FTS5 has no way to see that they’re the same question.</p>
+<p>Under a couple hundred documents, the gap is tolerable. Past that, documentation uses one vocabulary, and users ask in another, and FTS5 has no bridge between them. <strong>Unretrievable content might as well not be in the knowledge base, and the Learning Loop has nothing to learn from.</strong></p>
+<h2 id="How-Milvus-26-Fixes-the-Retrieval-Gap-with-Hybrid-Search-and-Tiered-Storage" class="common-anchor-header">How Milvus 2.6 Fixes the Retrieval Gap with Hybrid Search and Tiered Storage<button data-href="#How-Milvus-26-Fixes-the-Retrieval-Gap-with-Hybrid-Search-and-Tiered-Storage" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -87,18 +85,18 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Milvus 2.6 apporte deux mises à niveau qui répondent aux points d'échec d'Hermes.</strong> La <strong>recherche hybride</strong> débloque la boucle d'apprentissage en couvrant à la fois la recherche sémantique et la recherche par mot-clé en un seul appel. Le <strong>stockage hiérarchisé</strong> maintient l'ensemble du backend de recherche suffisamment petit pour fonctionner sur le même VPS à 5$/mois que celui pour lequel Hermes a été conçu.</p>
-<h3 id="What-Hybrid-Search-Solves-Finding-Relevant-Information" class="common-anchor-header">Ce que la recherche hybride résout : Trouver des informations pertinentes</h3><p>Milvus 2.6 permet d'exécuter à la fois la recherche vectorielle (sémantique) et la <a href="https://milvus.io/docs/full-text-search.md">recherche plein texte BM25</a> (mot-clé) dans une seule requête, puis de fusionner les deux listes classées à l'aide de la <a href="https://milvus.io/docs/multi-vector-search.md">fusion réciproque des rangs (RRF)</a>.</p>
-<p>Par exemple : demandez &quot;quel est le principe d'asyncio&quot;, et la recherche vectorielle trouvera des contenus sémantiquement liés. Demandez &quot;où est définie la fonction <code translate="no">find_similar_task</code> &quot;, et BM25 correspond précisément au nom de la fonction dans le code. Pour les questions qui impliquent une fonction à l'intérieur d'un type particulier de tâche, la recherche hybride renvoie le bon résultat en un seul appel, sans aucune logique de routage écrite à la main.</p>
-<p>Pour Hermes, c'est ce qui débloque la boucle d'apprentissage. Lorsqu'une deuxième session reformule l'intention, la recherche vectorielle capture la correspondance sémantique manquée par FTS5. La boucle s'active et une nouvelle compétence est écrite.</p>
-<h3 id="What-Tiered-Storage-Solves-Cost" class="common-anchor-header">Ce que le stockage hiérarchisé résout : Le coût</h3><p>Une base de données vectorielle naïve souhaiterait disposer de l'index d'intégration complet dans la RAM, ce qui pousse les déploiements personnels vers des infrastructures plus grandes et plus coûteuses. Milvus 2.6 évite cela grâce à un stockage à trois niveaux, déplaçant les entrées entre les niveaux en fonction de la fréquence d'accès :</p>
+    </button></h2><p><strong>Milvus 2.6 brings two upgrades that fit Hermes’s failure points.</strong> <strong>Hybrid search</strong> unblocks the Learning Loop by covering both semantic and keyword retrieval in one call. <strong>Tiered storage</strong> keeps the whole retrieval backend small enough to run on the same $5/month VPS Hermes was built for.</p>
+<h3 id="What-Hybrid-Search-Solves-Finding-Relevant-Information" class="common-anchor-header">What Hybrid Search Solves: Finding Relevant Information</h3><p>Milvus 2.6 supports running both vector retrieval (semantic) and <a href="https://milvus.io/docs/full-text-search.md">BM25 full-text search</a> (keyword) in a single query, then merging the two ranked lists with <a href="https://milvus.io/docs/multi-vector-search.md">Reciprocal Rank Fusion (RRF)</a>.</p>
+<p>For example: ask &quot;what is the principle of asyncio&quot;, and vector retrieval hits semantically related content. Ask &quot;where is the <code translate="no">find_similar_task</code> function defined&quot;, and BM25 precisely matches the function name in code. For questions that involve a function inside a particular type of task, hybrid search returns the right result in one call, with no hand-written routing logic.</p>
+<p>For Hermes, this is what unblocks the Learning Loop. When a second session rephrases the intent, vector retrieval catches the semantic match FTS5 missed. The loop fires, and a new Skill gets written.</p>
+<h3 id="What-Tiered-Storage-Solves-Cost" class="common-anchor-header">What Tiered Storage Solves: Cost</h3><p>A naive vector database would want the full embedding index in RAM, which pushes personal deployments toward bigger, more expensive infrastructure. Milvus 2.6 avoids that with three-tier storage, moving entries between tiers based on access frequency:</p>
 <ul>
-<li><strong>Chaud</strong> - en mémoire</li>
-<li><strong>Chaud</strong> - sur SSD</li>
-<li><strong>Froid</strong> - sur le stockage objet</li>
+<li><strong>Hot</strong> — in memory</li>
+<li><strong>Warm</strong> — on SSD</li>
+<li><strong>Cold</strong> — on object storage</li>
 </ul>
-<p>Seules les données chaudes restent résidentes. Une base de connaissances de 500 documents tient dans 2 Go de RAM. L'ensemble de la pile de récupération fonctionne sur le même VPS à 5 $/mois que Hermes cible, sans qu'aucune mise à niveau de l'infrastructure ne soit nécessaire.</p>
-<h2 id="Hermes-+-Milvus-System-Architecture" class="common-anchor-header">Hermes + Milvus : Architecture du système<button data-href="#Hermes-+-Milvus-System-Architecture" class="anchor-icon" translate="no">
+<p>Only hot data stays resident. A 500-document knowledge base fits under 2 GB of RAM. The whole retrieval stack runs on the same $5/month VPS Hermes targets, with no infrastructure upgrade needed.</p>
+<h2 id="Hermes-+-Milvus-System-Architecture" class="common-anchor-header">Hermes + Milvus: System Architecture<button data-href="#Hermes-+-Milvus-System-Architecture" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -113,22 +111,22 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Hermes choisit la compétence à exécuter. Milvus s'occupe de ce qu'il faut récupérer.</strong> Les deux systèmes restent séparés et l'interface d'Hermes ne change pas.</p>
+    </button></h2><p><strong>Hermes picks which Skill to run. Milvus handles what to retrieve.</strong> The two systems stay separate, and Hermes’s interface doesn’t change.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_4_1794304940.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>Le flux :</strong></p>
+<p><strong>The flow:</strong></p>
 <ol>
-<li>Hermes identifie l'intention de l'utilisateur et l'oriente vers une compétence.</li>
-<li>La compétence appelle un script d'extraction par l'intermédiaire de l'outil terminal.</li>
-<li>Le script accède à Milvus, effectue une recherche hybride et renvoie des morceaux classés avec les métadonnées de la source.</li>
-<li>Hermes compose la réponse. La mémoire enregistre le flux de travail.</li>
-<li>Lorsque le même schéma se répète d'une session à l'autre, la boucle d'apprentissage écrit une nouvelle compétence.</li>
+<li>Hermes identifies the user’s intent and routes to a Skill.</li>
+<li>The Skill calls a retrieval script through the terminal tool.</li>
+<li>The script hits Milvus, runs hybrid search, and returns ranked chunks with source metadata.</li>
+<li>Hermes composes the answer. Memory records the workflow.</li>
+<li>When the same pattern repeats across sessions, the Learning Loop writes a new Skill.</li>
 </ol>
-<h2 id="How-to-Install-Hermes-and-Milvus-26" class="common-anchor-header">Comment installer Hermes et Milvus 2.6<button data-href="#How-to-Install-Hermes-and-Milvus-26" class="anchor-icon" translate="no">
+<h2 id="How-to-Install-Hermes-and-Milvus-26" class="common-anchor-header">How to Install Hermes and Milvus 2.6<button data-href="#How-to-Install-Hermes-and-Milvus-26" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,13 +141,13 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Installez Hermes et</strong> <a href="https://milvus.io/docs/install_standalone-docker.md"><strong>Milvus 2.6 Standalone</strong></a><strong>, puis créez une collection avec des champs denses et BM25.</strong> C'est la configuration complète avant que la boucle d'apprentissage ne puisse se déclencher.</p>
-<h3 id="Install-Hermes" class="common-anchor-header">Installer Hermes</h3><pre><code translate="no" class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+    </button></h2><p><strong>Install Hermes and</strong> <a href="https://milvus.io/docs/install_standalone-docker.md"><strong>Milvus 2.6 Standalone</strong></a><strong>, then create a collection with dense and BM25 fields.</strong> That’s the full setup before the Learning Loop can fire.</p>
+<h3 id="Install-Hermes" class="common-anchor-header">Install Hermes</h3><pre><code translate="no" class="language-bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
 <button class="copy-code-btn"></button></code></pre>
-<p>Exécutez <code translate="no">hermes</code> pour accéder à l'assistant d'installation interactif :</p>
+<p>Run <code translate="no">hermes</code> to enter the interactive init wizard:</p>
 <ul>
-<li><strong>Fournisseur LLM</strong> - OpenAI, Anthropic, OpenRouter (OpenRouter a des modèles gratuits)</li>
-<li><strong>Canal</strong> - ce guide utilise un bot FLark</li>
+<li><strong>LLM provider</strong> — OpenAI, Anthropic, OpenRouter (OpenRouter has free models)</li>
+<li><strong>Channel</strong> — this walkthrough uses a FLark bot</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -157,14 +155,14 @@ origin: 'https://milvus.io/blog/hermes-agent-learning-loop-milvus-hybrid-search.
     <span></span>
   </span>
 </p>
-<h3 id="Run-Milvus-26-Standalone" class="common-anchor-header">Exécuter Milvus 2.6 en mode autonome</h3><p>Un seul nœud autonome est suffisant pour un agent personnel :</p>
+<h3 id="Run-Milvus-26-Standalone" class="common-anchor-header">Run Milvus 2.6 Standalone</h3><p>Single-node standalone is enough for a personal agent:</p>
 <pre><code translate="no" class="language-bash">curl -sfL https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh \
 -o standalone_embed.sh
 bash standalone_embed.sh start
 <span class="hljs-comment"># Verify service status</span>
 docker ps | grep milvus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Create-the-Collection" class="common-anchor-header">Créer la collection</h3><p>La conception du schéma plafonne ce que la récupération peut faire. Ce schéma exécute côte à côte des vecteurs denses et des vecteurs épars BM25 :</p>
+<h3 id="Create-the-Collection" class="common-anchor-header">Create the Collection</h3><p>Schema design caps what retrieval can do. This schema runs dense vectors and BM25 sparse vectors side by side:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, DataType, Function, FunctionType
 client = MilvusClient(
     uri=<span class="hljs-string">&quot;http://192.168.x.x:19530&quot;</span>,
@@ -219,7 +217,7 @@ client.create_collection(
     <span></span>
   </span>
 </p>
-<h3 id="Hybrid-Search-Script" class="common-anchor-header">Script de recherche hybride</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> sys, json
+<h3 id="Hybrid-Search-Script" class="common-anchor-header">Hybrid Search Script</h3><pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> sys, json
 <span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> OpenAI
 <span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> MilvusClient, AnnSearchRequest, RRFRanker
 
@@ -275,9 +273,9 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
     output = hybrid_search(query, top_k)
     <span class="hljs-built_in">print</span>(json.dumps(output, ensure_ascii=<span class="hljs-literal">False</span>, indent=<span class="hljs-number">2</span>))
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>La requête dense élargit le pool de candidats de 2× afin que RRF ait suffisamment d'éléments à classer.</strong> <code translate="no">text-embedding-3-small</code> est l'intégration OpenAI la moins chère qui conserve sa qualité de recherche ; remplacez-la par <code translate="no">text-embedding-3-large</code> si le budget le permet.</p>
-<p>L'environnement et la base de connaissances étant prêts, la section suivante met la boucle d'apprentissage à l'épreuve.</p>
-<h2 id="Hermes-Skill-Auto-Generation-in-Practice" class="common-anchor-header">L'autogénération des compétences Hermes en pratique<button data-href="#Hermes-Skill-Auto-Generation-in-Practice" class="anchor-icon" translate="no">
+<p><strong>The dense request widens the candidate pool by 2× so RRF has enough to rank from.</strong> <code translate="no">text-embedding-3-small</code> is the cheapest OpenAI embedding that still holds retrieval quality; swap in <code translate="no">text-embedding-3-large</code> if the budget allows.</p>
+<p>With the environment and knowledge base ready, the next section puts the Learning Loop to the test.</p>
+<h2 id="Hermes-Skill-Auto-Generation-in-Practice" class="common-anchor-header">Hermes Skill Auto-Generation in Practice<button data-href="#Hermes-Skill-Auto-Generation-in-Practice" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -292,37 +290,37 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Deux sessions montrent la boucle d'apprentissage en action.</strong> Dans la première, l'utilisateur nomme le script à la main. Dans la seconde, une nouvelle session pose la même question sans nommer le script. Hermès reprend le modèle et écrit trois Skills.</p>
-<h3 id="Session-1-Call-the-Script-by-Hand" class="common-anchor-header">Session 1 : Appeler le script à la main</h3><p>Ouvrez Hermes dans Lark. Donnez-lui le chemin d'accès au script et la cible de recherche. Hermès invoque l'outil terminal, exécute le script et renvoie la réponse avec l'attribution de la source. <strong>Aucune compétence n'existe encore. Il s'agit d'un simple appel d'outil.</strong></p>
+    </button></h2><p><strong>Two sessions show the Learning Loop in action.</strong> In the first, the user names the script by hand. In the second, a new session asks the same question without naming the script. Hermes picks up the pattern and writes three Skills.</p>
+<h3 id="Session-1-Call-the-Script-by-Hand" class="common-anchor-header">Session 1: Call the Script by Hand</h3><p>Open Hermes in Lark. Give it the script path and the retrieval target. Hermes invokes the terminal tool, runs the script, and returns the answer with source attribution. <strong>No Skill exists yet. This is a plain tool call.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_7_1c2d9261f4.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Session-2-Ask-Without-Naming-the-Script" class="common-anchor-header">Session 2 : Demander sans nommer le script</h3><p>Effacer la conversation. Recommencez à zéro. Posez la même catégorie de questions sans mentionner le scénario ou le chemin.</p>
+<h3 id="Session-2-Ask-Without-Naming-the-Script" class="common-anchor-header">Session 2: Ask Without Naming the Script</h3><p>Clear the conversation. Start fresh. Ask the same category of question without mentioning the script or path.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_8_27253eda82.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Memory-Writes-First-Skill-Follows" class="common-anchor-header">La mémoire écrit d'abord, la compétence suit</h3><p><strong>La boucle d'apprentissage enregistre le flux de travail (script, arguments, forme de retour) et renvoie la réponse.</strong> La mémoire conserve la trace ; aucune compétence n'existe encore.</p>
+<h3 id="Memory-Writes-First-Skill-Follows" class="common-anchor-header">Memory Writes First, Skill Follows</h3><p><strong>The Learning Loop records the workflow (script, arguments, return shape) and returns the answer.</strong> Memory holds the trace; no Skill exists yet.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_9_a0768f84bd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>La correspondance de la deuxième session indique à la boucle que le modèle vaut la peine d'être conservé.</strong> Lorsqu'elle se déclenche, trois compétences sont écrites :</p>
+<p><strong>The second session’s match tells the loop the pattern is worth keeping.</strong> When it fires, three Skills get written:</p>
 <table>
 <thead>
-<tr><th>Compétence</th><th>Rôle</th></tr>
+<tr><th>Skill</th><th>Role</th></tr>
 </thead>
 <tbody>
-<tr><td><code translate="no">hybrid-search-doc-qa</code></td><td>Exécuter une recherche hybride sémantique + mot-clé sur la mémoire et composer la réponse</td></tr>
-<tr><td><code translate="no">milvus-docs-ingest-verification</code></td><td>Vérifier que les documents ont été intégrés dans la base de connaissances</td></tr>
-<tr><td><code translate="no">terminal</code></td><td>Exécuter des commandes shell : scripts, configuration de l'environnement, inspection</td></tr>
+<tr><td><code translate="no">hybrid-search-doc-qa</code></td><td>Run hybrid semantic + keyword search over Memory and compose the answer</td></tr>
+<tr><td><code translate="no">milvus-docs-ingest-verification</code></td><td>Verify documents have been ingested into the knowledge base</td></tr>
+<tr><td><code translate="no">terminal</code></td><td>Run shell commands: scripts, environment setup, inspection</td></tr>
 </tbody>
 </table>
 <p>
@@ -331,9 +329,9 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
     <span></span>
   </span>
 </p>
-<p>À partir de ce moment, les <strong>utilisateurs cessent de nommer les compétences.</strong> Hermes déduit l'intention, se dirige vers la compétence, extrait les éléments pertinents de la mémoire et rédige la réponse. Il n'y a pas de sélecteur de compétence dans l'invite.</p>
-<p>La plupart des systèmes RAG (retrieval-augmented generation) résolvent le problème du stockage et de la recherche, mais la logique de recherche elle-même est codée en dur dans le code de l'application. Si vous posez la question d'une autre manière ou dans un nouveau scénario, la récupération s'interrompt. Hermes stocke la stratégie de recherche en tant que compétence, ce qui signifie que <strong>le chemin de recherche devient un document que vous pouvez lire, éditer et modifier.</strong> La ligne <code translate="no">💾 Memory updated · Skill 'hybrid-search-doc-qa' created</code> n'est pas un marqueur de fin d'installation. C'est <strong>l'agent qui enregistre un modèle de comportement dans sa mémoire à long terme.</strong></p>
-<h2 id="Hermes-vs-OpenClaw-Accumulation-vs-Orchestration" class="common-anchor-header">Hermes vs. OpenClaw : Accumulation ou orchestration<button data-href="#Hermes-vs-OpenClaw-Accumulation-vs-Orchestration" class="anchor-icon" translate="no">
+<p>From this point on, <strong>users stop naming Skills.</strong> Hermes infers intent, routes to the Skill, pulls the relevant chunks from Memory, and writes the answer. There’s no Skill selector in the prompt.</p>
+<p>Most RAG (retrieval-augmented generation) systems solve the storing-and-fetching problem, but the fetch logic itself is hard-coded in application code. Ask in a different way or in a new scenario, and retrieval breaks. Hermes stores the fetch strategy as a Skill, which means <strong>the fetch path becomes a document you can read, edit, and version.</strong> The line <code translate="no">💾 Memory updated · Skill 'hybrid-search-doc-qa' created</code> isn’t a setup-complete marker. It’s <strong>the Agent committing a behavior pattern to long-term memory.</strong></p>
+<h2 id="Hermes-vs-OpenClaw-Accumulation-vs-Orchestration" class="common-anchor-header">Hermes vs. OpenClaw: Accumulation vs. Orchestration<button data-href="#Hermes-vs-OpenClaw-Accumulation-vs-Orchestration" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -348,16 +346,16 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Hermes et OpenClaw répondent à des problèmes différents.</strong> Hermes est conçu pour un agent unique qui accumule de la mémoire et des compétences au fil des sessions. OpenClaw est conçu pour décomposer une tâche complexe en plusieurs parties et confier chacune d'entre elles à un agent spécialisé.</p>
+    </button></h2><p><strong>Hermes and OpenClaw answer different problems.</strong> Hermes is built for a single agent that accumulates memory and skills across sessions. OpenClaw is built for breaking a complex task into pieces and handing each piece to a specialized agent.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_11_afcb575d50.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>La force d'OpenClaw réside dans l'orchestration. Il optimise la part d'une tâche qui est effectuée automatiquement. La force d'Hermes est l'accumulation : un agent unique qui se souvient à travers les sessions, avec des compétences qui se développent à l'usage. Hermes optimise le contexte à long terme et l'expérience du domaine.</p>
-<p><strong>Les deux frameworks s'empilent.</strong> Hermes propose un chemin de migration en une étape qui permet d'intégrer la mémoire et les compétences de <code translate="no">~/.openclaw</code> dans les couches de mémoire d'Hermes. Une pile d'orchestration peut être placée au-dessus, avec un agent d'accumulation en dessous.</p>
-<p>Pour le côté OpenClaw de la séparation, voir <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">Qu'est-ce qu'OpenClaw ? Complete Guide to the Open-Source AI Agent</a> sur le blog de Milvus.</p>
+<p>OpenClaw’s strength is orchestration. It optimizes for how much of a task gets done automatically. Hermes’s strength is accumulation: a single agent that remembers across sessions, with skills that grow from use. Hermes optimizes for long-term context and domain experience.</p>
+<p><strong>The two frameworks stack.</strong> Hermes ships a one-step migration path that pulls <code translate="no">~/.openclaw</code> memory and skills into Hermes’s memory layers. An orchestration stack can sit on top, with an accumulation agent underneath.</p>
+<p>For the OpenClaw side of the split, see <a href="https://milvus.io/blog/openclaw-formerly-clawdbot-moltbot-explained-a-complete-guide-to-the-autonomous-ai-agent.md">What Is OpenClaw? Complete Guide to the Open-Source AI Agent</a> on the Milvus blog.</p>
 <h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -373,9 +371,9 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La boucle d'apprentissage d'Hermes transforme les flux de travail répétés en compétences réutilisables, mais seulement si la récupération peut les relier entre les sessions. La recherche par mot-clé de FTS5 ne le peut pas. La <a href="https://milvus.io/docs/multi-vector-search.md"><strong>recherche hybride Milvus 2.6</strong></a> le peut : les vecteurs denses gèrent le sens, BM25 gère les mots-clés exacts, RRF fusionne les deux, et le <a href="https://milvus.io/docs/tiered-storage-overview.md">stockage par paliers</a> permet de conserver l'ensemble sur un VPS à 5 $/mois.</p>
-<p>Le point le plus important : une fois que la recherche fonctionne, l'agent ne se contente pas de stocker de meilleures réponses : il stocke de meilleures stratégies de recherche en tant que compétences. Le chemin de recherche devient un document versionnable qui s'améliore à l'usage. C'est ce qui différencie un agent qui accumule de l'expertise dans un domaine d'un agent qui repart à zéro à chaque session. Pour une comparaison de la façon dont les autres agents gèrent (ou non) ce problème, voir <a href="https://milvus.io/blog/claude-code-memory-memsearch.md">Le système de mémoire de Claude Code expliqué.</a></p>
-<h2 id="Get-Started" class="common-anchor-header">Pour commencer<button data-href="#Get-Started" class="anchor-icon" translate="no">
+    </button></h2><p>Hermes’s Learning Loop turns repeated workflows into reusable Skills, but only if retrieval can connect them across sessions. FTS5 keyword search can’t. <a href="https://milvus.io/docs/multi-vector-search.md"><strong>Milvus 2.6 hybrid search</strong></a> can: dense vectors handle meaning, BM25 handles exact keywords, RRF merges both, and <a href="https://milvus.io/docs/tiered-storage-overview.md">tiered storage</a> keeps the whole stack on a $5/month VPS.</p>
+<p>The bigger point: once retrieval works, the agent doesn’t just store better answers: it stores better retrieval strategies as Skills. The fetch path becomes a versionable document that improves with use. That’s what separates an agent that accumulates domain expertise from one that starts fresh every session. For a comparison of how other agents handle (or fail to handle) this problem, see <a href="https://milvus.io/blog/claude-code-memory-memsearch.md">Claude Code’s Memory System Explained.</a></p>
+<h2 id="Get-Started" class="common-anchor-header">Get Started<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -390,22 +388,22 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Essayez les outils présentés dans cet article :</strong></p>
+    </button></h2><p><strong>Try the tools in this article:</strong></p>
 <ul>
-<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent sur GitHub</a> - script d'installation, configuration du fournisseur et configuration des canaux utilisés ci-dessus.</li>
-<li><a href="https://milvus.io/docs/install_standalone-docker.md">Milvus 2.6 Standalone Quickstart</a> - déploiement Docker à nœud unique pour le backend de la base de connaissances.</li>
-<li>Milvus<a href="https://milvus.io/docs/multi-vector-search.md">Hybrid Search Tutorial</a> - densité complète + BM25 + exemple RRF correspondant au script de ce billet.</li>
+<li><a href="https://github.com/NousResearch/hermes-agent">Hermes Agent on GitHub</a> — install script, provider setup, and channel configuration used above.</li>
+<li><a href="https://milvus.io/docs/install_standalone-docker.md">Milvus 2.6 Standalone Quickstart</a> — single-node Docker deploy for the knowledge-base backend.</li>
+<li><a href="https://milvus.io/docs/multi-vector-search.md">Milvus Hybrid Search Tutorial</a> — full dense + BM25 + RRF example matching the script in this post.</li>
 </ul>
-<p><strong>Vous avez des questions sur la recherche hybride Hermes + Milvus ?</strong></p>
+<p><strong>Got questions about Hermes + Milvus hybrid search?</strong></p>
 <ul>
-<li>Rejoignez le <a href="https://discord.gg/milvus">Discord Milvus</a> pour poser des questions sur la recherche hybride, le stockage hiérarchisé ou les modèles de routage des compétences - d'autres développeurs construisent des piles similaires.</li>
-<li><a href="https://milvus.io/community#office-hours">Réservez une session Milvus Office Hours</a> pour découvrir votre propre agent + la configuration de la base de connaissances avec l'équipe Milvus.</li>
+<li>Join the <a href="https://discord.gg/milvus">Milvus Discord</a> to ask about hybrid search, tiered storage, or Skill-routing patterns — other developers are building similar stacks.</li>
+<li><a href="https://milvus.io/community#office-hours">Book a Milvus Office Hours session</a> to walk through your own agent + knowledge-base setup with the Milvus team.</li>
 </ul>
-<p><strong>Vous voulez sauter l'étape de l'auto-hébergement ?</strong></p>
+<p><strong>Want to skip the self-host?</strong></p>
 <ul>
-<li><a href="https://cloud.zilliz.com/signup">Inscrivez-vous</a> ou <a href="https://cloud.zilliz.com/login">connectez-vous à</a> Zilliz Cloud - Milvus géré avec la recherche hybride et le stockage hiérarchisé. Les nouveaux comptes de messagerie professionnelle bénéficient de <strong> 100 $ de crédits gratuits</strong>.</li>
+<li><a href="https://cloud.zilliz.com/signup">Sign up</a> or <a href="https://cloud.zilliz.com/login">sign in</a> to Zilliz Cloud — managed Milvus with hybrid search and tiered storage out of the box. New work-email accounts get <strong>$100 in free credits</strong>.</li>
 </ul>
-<h2 id="Further-Reading" class="common-anchor-header">Pour en savoir plus<button data-href="#Further-Reading" class="anchor-icon" translate="no">
+<h2 id="Further-Reading" class="common-anchor-header">Further Reading<button data-href="#Further-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -421,12 +419,12 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 release notes</a> - stockage hiérarchisé, recherche hybride, changements de schéma</li>
-<li><a href="https://zilliz.com/blog">Zilliz Cloud &amp; Milvus CLI + Official Skills</a> - outils opérationnels pour les agents natifs de Milvus</li>
-<li><a href="https://zilliz.com/blog">Pourquoi la gestion des connaissances de type RAG ne fonctionne pas pour les agents</a> - le cas de la conception d'une mémoire spécifique à l'agent</li>
-<li><a href="https://zilliz.com/blog">Le système de mémoire de Claude Code est plus primitif que vous ne le pensez</a> - comparaison de la pile de mémoire d'un autre agent</li>
+<li><a href="https://milvus.io/docs/release_notes.md">Milvus 2.6 release notes</a> — tiered storage, hybrid search, schema changes</li>
+<li><a href="https://zilliz.com/blog">Zilliz Cloud &amp; Milvus CLI + Official Skills</a> — operational tooling for Milvus-native agents</li>
+<li><a href="https://zilliz.com/blog">Why RAG-Style Knowledge Management Breaks for Agents</a> — the case for agent-specific memory design</li>
+<li><a href="https://zilliz.com/blog">Claude Code’s Memory System Is More Primitive Than You’d Expect</a> — comparison piece on another agent’s memory stack</li>
 </ul>
-<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Questions fréquemment posées<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
+<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Frequently Asked Questions<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -441,7 +439,7 @@ COLLECTION = <span class="hljs-string">&quot;hermes_milvus&quot;</span>
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="How-does-Hermes-Agents-Skill-Learning-Loop-actually-work" class="common-anchor-header">Comment fonctionne la boucle d'apprentissage des compétences de l'agent Hermes ?</h3><p>Hermes enregistre chaque flux de travail qu'il exécute - le script appelé, les arguments passés, et la forme du retour - comme une trace mémoire. Lorsque le même modèle apparaît dans deux sessions ou plus, la boucle d'apprentissage se déclenche et écrit une compétence réutilisable : un fichier Markdown qui capture le flux de travail comme une procédure répétable. À partir de ce moment, Hermes se dirige vers la compétence par la seule intention, sans que l'utilisateur ne la nomme. La dépendance critique est la récupération - la boucle ne se déclenche que si elle peut trouver la trace de la session précédente, ce qui explique pourquoi la recherche par mot-clé uniquement devient un goulot d'étranglement à grande échelle.</p>
-<h3 id="Whats-the-difference-between-hybrid-search-and-vector-only-search-for-agent-memory" class="common-anchor-header">Quelle est la différence entre la recherche hybride et la recherche vectorielle pour la mémoire des agents ?</h3><p>La recherche vectorielle seule gère bien les significations, mais ne parvient pas à trouver les correspondances exactes. Si un développeur colle une chaîne d'erreur comme ConnectionResetError ou un nom de fonction comme find_similar_task, une recherche purement vectorielle peut renvoyer des résultats sémantiquement liés mais erronés. La recherche hybride combine des vecteurs denses (sémantique) avec BM25 (mot-clé) et fusionne les deux ensembles de résultats avec Reciprocal Rank Fusion. Pour la mémoire d'agent - où les requêtes vont d'une intention vague ("Python concurrency") à des symboles exacts - la recherche hybride couvre les deux extrémités en un seul appel sans logique de routage dans votre couche d'application.</p>
-<h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">Puis-je utiliser la recherche hybride Milvus avec des agents d'IA autres qu'Hermes ?</h3><p>Oui. Le modèle d'intégration est générique : l'agent appelle un script de recherche, le script interroge Milvus et les résultats sont renvoyés sous forme de morceaux classés avec des métadonnées source. Tout cadre d'agent prenant en charge les appels d'outils ou l'exécution d'un shell peut utiliser la même approche. Hermes s'avère être une solution idéale car sa boucle d'apprentissage dépend spécifiquement de l'extraction intersession pour se déclencher, mais le côté Milvus est agnostique - il ne sait pas ou ne se soucie pas de l'agent qui l'appelle.</p>
-<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">Quel est le coût mensuel d'une configuration auto-hébergée Milvus + Hermes ?</h3><p>Un nœud unique Milvus 2.6 Standalone sur un VPS à 2 cœurs / 4 Go avec un stockage hiérarchisé coûte environ 5 $/mois. L'intégration de texte OpenAI-3-small coûte 0,02 $ pour 1M de jetons - quelques centimes par mois pour une base de connaissances personnelle. L'inférence LLM domine le coût total et s'adapte à l'utilisation, et non à la pile de recherche.</p>
+    </button></h2><h3 id="How-does-Hermes-Agents-Skill-Learning-Loop-actually-work" class="common-anchor-header">How does Hermes Agent’s Skill Learning Loop actually work?</h3><p>Hermes records every workflow it runs – the script called, arguments passed, and return shape – as a memory trace. When the same pattern appears across two or more sessions, the Learning Loop fires and writes a reusable Skill: a Markdown file that captures the workflow as a repeatable procedure. From that point on, Hermes routes to the Skill by intent alone, without the user naming it. The critical dependency is retrieval – the loop only fires if it can find the earlier session’s trace, which is why keyword-only search becomes a bottleneck at scale.</p>
+<h3 id="Whats-the-difference-between-hybrid-search-and-vector-only-search-for-agent-memory" class="common-anchor-header">What’s the difference between hybrid search and vector-only search for agent memory?</h3><p>Vector-only search handles meaning well but misses exact matches. If a developer pastes an error string like ConnectionResetError or a function name like find_similar_task, a pure vector search might return semantically related but wrong results. Hybrid search combines dense vectors (semantic) with BM25 (keyword) and merges the two result sets with Reciprocal Rank Fusion. For agent memory – where queries range from vague intent (“Python concurrency”) to exact symbols – hybrid search covers both ends in a single call without routing logic in your application layer.</p>
+<h3 id="Can-I-use-Milvus-hybrid-search-with-AI-agents-other-than-Hermes" class="common-anchor-header">Can I use Milvus hybrid search with AI agents other than Hermes?</h3><p>Yes. The integration pattern is generic: the agent calls a retrieval script, the script queries Milvus, and results return as ranked chunks with source metadata. Any agent framework that supports tool calls or shell execution can use the same approach. Hermes happens to be a strong fit because its Learning Loop specifically depends on cross-session retrieval to fire, but the Milvus side is agent-agnostic – it doesn’t know or care which agent is calling it.</p>
+<h3 id="How-much-does-a-self-hosted-Milvus-+-Hermes-setup-cost-per-month" class="common-anchor-header">How much does a self-hosted Milvus + Hermes setup cost per month?</h3><p>A single-node Milvus 2.6 Standalone on a 2-core / 4 GB VPS with tiered storage runs about $5/month. OpenAI text-embedding-3-small costs $0.02 per 1M tokens – a few cents per month for a personal knowledge base. LLM inference dominates total cost and scales with usage, not with the retrieval stack.</p>

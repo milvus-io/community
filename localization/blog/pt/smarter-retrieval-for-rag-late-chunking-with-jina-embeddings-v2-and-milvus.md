@@ -1,12 +1,12 @@
 ---
 id: smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
-title: 'Smarter Retrieval for RAG: Late Chunking with Jina Embeddings v2 and Milvus'
+title: |
+  Smarter Retrieval for RAG: Late Chunking with Jina Embeddings v2 and Milvus
 author: Wei Zang
 date: 2025-10-11T00:00:00.000Z
 desc: >-
-  Aumente a precisão do RAG utilizando o Late Chunking e o Milvus para obter uma
-  incorporação de documentos eficiente e consciente do contexto e uma pesquisa
-  vetorial mais rápida e inteligente.
+  Boost RAG accuracy using Late Chunking and Milvus for efficient, context‑aware
+  document embeddings and faster, smarter vector search.
 cover: assets.zilliz.com/Milvus_Meets_Late_Chunking_eaff956df1.png
 tag: Tutorials
 tags: 'Milvus, Vector Database, Open Source, Vector Embeddings'
@@ -15,17 +15,17 @@ meta_keywords: 'Late Chunking, RAG accuracy, vector database, Milvus, document e
 canonicalUrl: >-
   https://milvus.io/blog/smarter-retrieval-for-rag-late-chunking-with-jina-embeddings-v2-and-milvus.md
 ---
-<p>A construção de um sistema RAG robusto começa normalmente com a <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>fragmentação de</strong></a> <strong>documentos</strong> <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>- dividindo</strong></a>grandes textos em partes manejáveis para incorporação e recuperação. As estratégias mais comuns incluem:</p>
+<p>Building a robust RAG system usually starts with <strong>document</strong> <a href="https://zilliz.com/learn/guide-to-chunking-strategies-for-rag#Chunking"><strong>chunking</strong></a>—splitting large texts into manageable pieces for embedding and retrieval. Common strategies include:</p>
 <ul>
-<li><p><strong>Partes de tamanho fixo</strong> (por exemplo, a cada 512 tokens)</p></li>
-<li><p><strong>Partes de tamanho variável</strong> (por exemplo, limites de parágrafos ou frases)</p></li>
-<li><p><strong>Janelas deslizantes</strong> (intervalos sobrepostos)</p></li>
-<li><p><strong>Chunking recursivo</strong> (divisões hierárquicas)</p></li>
-<li><p><strong>Chunking semântico</strong> (agrupamento por tópicos)</p></li>
+<li><p><strong>Fixed‑size chunks</strong> (e.g., every 512 tokens)</p></li>
+<li><p><strong>Variable‑size chunks</strong> (e.g., paragraph or sentence boundaries)</p></li>
+<li><p><strong>Sliding windows</strong> (overlapping spans)</p></li>
+<li><p><strong>Recursive chunking</strong> (hierarchical splits)</p></li>
+<li><p><strong>Semantic chunking</strong> (grouping by topic)</p></li>
 </ul>
-<p>Embora estes métodos tenham os seus méritos, muitas vezes não têm em conta o contexto de longo alcance. Para responder a este desafio, a Jina AI cria uma abordagem de Late Chunking: primeiro, incorpora o documento inteiro e, depois, separa os seus pedaços.</p>
-<p>Neste artigo, vamos explorar como funciona o Late Chunking e demonstrar como a sua combinação com o <a href="https://milvus.io/">Milvus - uma</a>base de dados vetorial open-source de alto desempenho criada para pesquisa de semelhanças - pode melhorar drasticamente os seus pipelines RAG. Quer esteja a criar bases de conhecimento empresariais, suporte ao cliente orientado por IA ou aplicações de pesquisa avançada, este passo a passo irá mostrar-lhe como gerir embeddings de forma mais eficaz em escala.</p>
-<h2 id="What-Is-Late-Chunking" class="common-anchor-header">O que é chunking tardio?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
+<p>While these methods have their merits, they often fracture long‑range context. To address this challenge, Jina AI creates a Late Chunking approach: embed the entire document first, then carve out your chunks.</p>
+<p>In this article, we’ll explore how Late Chunking works and demonstrate how combining it with <a href="https://milvus.io/">Milvus</a>—a high-performance open-source vector database built for similarity search—can dramatically improve your RAG pipelines. Whether you’re building enterprise knowledge bases, AI-driven customer support, or advanced search applications, this walkthrough will show you how to manage embeddings more effectively at scale.</p>
+<h2 id="What-Is-Late-Chunking" class="common-anchor-header">What Is Late Chunking?<button data-href="#What-Is-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -40,27 +40,27 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Os métodos tradicionais de fragmentação podem quebrar conexões importantes quando informações importantes abrangem vários blocos, resultando em um desempenho de recuperação ruim.</p>
-<p>Considere estas notas de lançamento do Milvus 2.4.13, divididas em dois pedaços como abaixo:</p>
+    </button></h2><p>Traditional chunking methods can break important connections when key information spans multiple chunks—resulting in poor retrieval performance.</p>
+<p>Consider these release notes for Milvus 2.4.13, split into two chunks like below:</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure1_Chunking_Milvus2_4_13_Release_Note_fe7fbdb833.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><em>Figura 1. Nota de lançamento do Milvus 2.4.13 em pedaços</em></p>
-<p>Se perguntar: "Quais são as novas funcionalidades do Milvus 2.4.13?", um modelo de incorporação normal pode não conseguir ligar "Milvus 2.4.13" (no fragmento 1) às suas funcionalidades (no fragmento 2). O resultado? Vectores mais fracos e menor precisão de recuperação.</p>
-<p>As correcções heurísticas - tais como janelas deslizantes, contextos sobrepostos e análises repetidas - proporcionam um alívio parcial, mas sem garantias.</p>
-<p><strong>O chunking tradicional</strong> segue este processo:</p>
+<p><em>Figure 1. Chunking Milvus 2.4.13 Release Note</em></p>
+<p>If you query, “What are the new features in Milvus 2.4.13?”, a standard embedding model may fail to link “Milvus 2.4.13” (in Chunk 1) with its features (in Chunk 2). The result? Weaker vectors and lower retrieval accuracy.</p>
+<p>Heuristic fixes—such as sliding windows, overlapping contexts, and repeated scans—provide partial relief but no guarantees.</p>
+<p><strong>Traditional chunking</strong> follows this pipeline:</p>
 <ol>
-<li><p>Texto<strong>pré-fragmentado</strong> (por frases, parágrafos ou comprimento máximo de token).</p></li>
-<li><p><strong>Incorporar</strong> cada pedaço separadamente.</p></li>
-<li><p><strong>Agregar</strong> as incorporações de tokens (por exemplo, via pooling médio) em um único vetor de chunk.</p></li>
+<li><p><strong>Pre‑chunk</strong> text (by sentences, paragraphs, or max token length).</p></li>
+<li><p><strong>Embed</strong> each chunk separately.</p></li>
+<li><p><strong>Aggregate</strong> token embeddings (e.g., via average pooling) into a single chunk vector.</p></li>
 </ol>
-<p><strong>O Late Chunking</strong> inverte o pipeline:</p>
+<p><strong>Late Chunking</strong> flips the pipeline:</p>
 <ol>
-<li><p><strong>Incorporar primeiro</strong>: Executa um transformador de contexto longo sobre o documento completo, gerando incorporações de token ricas que capturam o contexto global.</p></li>
-<li><p><strong>Separar depois</strong>: Faça a média dos intervalos contíguos desses token embeddings para formar seus vetores de pedaços finais.</p></li>
+<li><p><strong>Embed first</strong>: Run a long‑context transformer over the full document, generating rich token embeddings that capture global context.</p></li>
+<li><p><strong>Chunk later</strong>: Average‑pool contiguous spans of those token embeddings to form your final chunk vectors.</p></li>
 </ol>
 <p>
   <span class="img-wrapper">
@@ -68,15 +68,15 @@ canonicalUrl: >-
     <span></span>
   </span>
 </p>
-<p><em>Figura 2. Naive Chunking vs. Late Chunking (</em><a href="https://jina.ai/news/late-chunking-in-long-context-embedding-models/"><em>Fonte</em></a><em>)</em></p>
-<p>Ao preservar o contexto completo do documento em cada pedaço, o Late Chunking produz:</p>
+<p><em>Figure 2. Naive Chunking vs. Late Chunking (</em><a href="https://jina.ai/news/late-chunking-in-long-context-embedding-models/"><em>Source</em></a><em>)</em></p>
+<p>By preserving full‑document context in every chunk, Late Chunking yields:</p>
 <ul>
-<li><p><strong>Maior precisão de recuperação - cada</strong>pedaço é contextualmente consciente.</p></li>
-<li><p><strong>Menos pedaços -</strong>envia texto mais focado para o LLM, reduzindo os custos e a latência.</p></li>
+<li><p><strong>Higher retrieval accuracy</strong>—each chunk is contextually aware.</p></li>
+<li><p><strong>Fewer chunks</strong>—you send more focused text to your LLM, cutting costs and latency.</p></li>
 </ul>
-<p>Muitos modelos de contexto longo, como o jina-embeddings-v2-base-en, podem processar até 8.192 tokens - o equivalente a uma leitura de cerca de 20 minutos (aproximadamente 5.000 palavras) - tornando o Late Chunking prático para a maioria dos documentos do mundo real.</p>
-<p>Agora que entendemos o "o quê" e o "porquê" por trás do Late Chunking, vamos mergulhar no "como". Na próxima secção, vamos guiá-lo através de uma implementação prática do pipeline Late Chunking, comparar o seu desempenho com o chunking tradicional e validar o seu impacto no mundo real utilizando o Milvus. Este passo-a-passo prático fará a ponte entre a teoria e a prática, mostrando exatamente como integrar o Late Chunking nos seus fluxos de trabalho RAG.</p>
-<h2 id="Testing-Late-Chunking" class="common-anchor-header">Testando o Late Chunking<button data-href="#Testing-Late-Chunking" class="anchor-icon" translate="no">
+<p>Many long‑context models like jina-embeddings-v2-base-en can process up to 8,192 tokens—equivalent to about a 20-minute read (roughly 5,000 words)—making Late Chunking practical for most real‑world documents.</p>
+<p>Now that we understand the “what” and “why” behind Late Chunking, let’s dive into the “how”. In the next section, we’ll guide you through a hands‑on implementation of the Late Chunking pipeline, benchmark its performance against traditional chunking, and validate its real‑world impact using Milvus. This practical walkthrough will bridge theory and practice, showing exactly how to integrate Late Chunking into your RAG workflows.</p>
+<h2 id="Testing-Late-Chunking" class="common-anchor-header">Testing Late Chunking<button data-href="#Testing-Late-Chunking" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -91,7 +91,7 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Basic-Implementation" class="common-anchor-header">Implementação básica</h3><p>Abaixo estão as principais funções do Late Chunking. Adicionámos documentação clara para o guiar em cada passo. A função <code translate="no">sentence_chunker</code> divide o documento original em partes baseadas em parágrafos, devolvendo o conteúdo da parte e as informações de anotação da parte <code translate="no">span_annotations</code> (ou seja, os índices de início e fim de cada parte).</p>
+    </button></h2><h3 id="Basic-Implementation" class="common-anchor-header">Basic Implementation</h3><p>Below are the core functions for Late Chunking. We’ve added clear docstrings to guide you through each step. The function <code translate="no">sentence_chunker</code> splits the original document into paragraph‑based chunks, returning both the chunk contents and the chunk annotation information <code translate="no">span_annotations</code> (i.e., the start and end indices of each chunk).</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">sentence_chunker</span>(<span class="hljs-params">document, batch_size=<span class="hljs-number">10000</span></span>):
     nlp = spacy.blank(<span class="hljs-string">&quot;en&quot;</span>)
     nlp.add_pipe(<span class="hljs-string">&quot;sentencizer&quot;</span>, config={<span class="hljs-string">&quot;punct_chars&quot;</span>: <span class="hljs-literal">None</span>})
@@ -112,7 +112,7 @@ canonicalUrl: >-
 
     <span class="hljs-keyword">return</span> chunks, span_annotations
 <button class="copy-code-btn"></button></code></pre>
-<p>A função <code translate="no">document_to_token_embeddings</code> utiliza o modelo jinaai/jina-embeddings-v2-base-en e o seu tokenizador para produzir embeddings para todo o documento.</p>
+<p>The function <code translate="no">document_to_token_embeddings</code> uses the jinaai/jina-embeddings-v2-base-en model and its tokenizer to produce embeddings for the entire document.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">document_to_token_embeddings</span>(<span class="hljs-params">model, tokenizer, document, batch_size=<span class="hljs-number">4096</span></span>):
     tokenized_document = tokenizer(document, return_tensors=<span class="hljs-string">&quot;pt&quot;</span>)
     tokens = tokenized_document.tokens()
@@ -133,7 +133,7 @@ canonicalUrl: >-
     model_output = torch.cat(outputs, dim=<span class="hljs-number">1</span>)
     <span class="hljs-keyword">return</span> model_output
 <button class="copy-code-btn"></button></code></pre>
-<p>A função <code translate="no">late_chunking</code> recebe os encaixes dos tokens do documento e a informação original de anotação dos pedaços <code translate="no">span_annotations</code>, produzindo depois os encaixes finais dos pedaços.</p>
+<p>The function <code translate="no">late_chunking</code> takes the document’s token embeddings and the original chunk annotation information <code translate="no">span_annotations</code>, and then produces the final chunk embeddings.</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">late_chunking</span>(<span class="hljs-params">token_embeddings, span_annotation, max_length=<span class="hljs-literal">None</span></span>):
     outputs = []
     <span class="hljs-keyword">for</span> embeddings, annotations <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(token_embeddings, span_annotation):
@@ -159,7 +159,7 @@ canonicalUrl: >-
 
     <span class="hljs-keyword">return</span> outputs
 <button class="copy-code-btn"></button></code></pre>
-<p>Por exemplo, chunking com jinaai/jina-embeddings-v2-base-en:</p>
+<p>For example, chunking with jinaai/jina-embeddings-v2-base-en:</p>
 <pre><code translate="no">tokenizer = AutoTokenizer.from_pretrained(<span class="hljs-string">&#x27;jinaai/jina-embeddings-v2-base-en&#x27;</span>, trust_remote_code=<span class="hljs-literal">True</span>)
 model     = AutoModel.from_pretrained(<span class="hljs-string">&#x27;jinaai/jina-embeddings-v2-base-en&#x27;</span>, trust_remote_code=<span class="hljs-literal">True</span>)
 
@@ -170,12 +170,12 @@ token_embeddings = document_to_token_embeddings(model, tokenizer, document)
 <span class="hljs-comment"># Then perform the late chunking</span>
 chunk_embeddings = late_chunking(token_embeddings, [span_annotations])[<span class="hljs-number">0</span>]
 <button class="copy-code-btn"></button></code></pre>
-<p><em>Dica:</em> Envolver o seu pipeline em funções facilita a troca por outros modelos de contexto longo ou estratégias de chunking.</p>
-<h3 id="Comparison-with-Traditional-Embedding-Methods" class="common-anchor-header">Comparação com os métodos tradicionais de incorporação</h3><p>Para demonstrar ainda mais as vantagens do Late Chunking, também o comparamos com as abordagens tradicionais de incorporação, usando um conjunto de documentos e consultas de amostra.</p>
-<p>E voltemos ao nosso exemplo da nota de lançamento do Milvus 2.4.13:</p>
+<p><em>Tip:</em> Wrapping your pipeline in functions makes it easy to swap in other long‑context models or chunking strategies.</p>
+<h3 id="Comparison-with-Traditional-Embedding-Methods" class="common-anchor-header">Comparison with Traditional Embedding Methods</h3><p>To further demonstrate the advantages of Late Chunking, we also compared it to traditional embedding approaches, using a set of sample documents and queries.</p>
+<p>And let’s revisit our Milvus 2.4.13 release note example:</p>
 <pre><code translate="no"><span class="hljs-title class_">Milvus</span> <span class="hljs-number">2.4</span><span class="hljs-number">.13</span> introduces dynamic replica load, allowing users to adjust the number <span class="hljs-keyword">of</span> collection replicas without needing to release and reload the collection. <span class="hljs-title class_">This</span> version also addresses several critical bugs related to bulk importing, expression parsing, load balancing, and failure recovery. <span class="hljs-title class_">Additionally</span>, significant improvements have been made to <span class="hljs-variable constant_">MMAP</span> resource usage and <span class="hljs-keyword">import</span> performance, enhancing overall system efficiency. <span class="hljs-title class_">We</span> highly recommend upgrading to <span class="hljs-variable language_">this</span> release <span class="hljs-keyword">for</span> better performance and stability.
 <button class="copy-code-btn"></button></code></pre>
-<p>Medimos <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search#Cosine-Similarity">a semelhança de cosseno</a> entre a incorporação da consulta ("milvus 2.4.13") e cada pedaço:</p>
+<p>We measure <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search#Cosine-Similarity">cosine similarity</a> between the query embedding (“milvus 2.4.13”) and each chunk:</p>
 <pre><code translate="no">cos_sim = <span class="hljs-keyword">lambda</span> x, y: np.dot(x, y) / (np.linalg.norm(x) * np.linalg.norm(y))
 
 milvus_embedding = model.encode(<span class="hljs-string">&#x27;milvus 2.4.13&#x27;</span>)
@@ -186,7 +186,7 @@ milvus_embedding = model.encode(<span class="hljs-string">&#x27;milvus 2.4.13&#x
     <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;similarity_traditional(&quot;milvus 2.4.13&quot;, &quot;<span class="hljs-subst">{chunk}</span>&quot;)&#x27;</span>)
     <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;traditional_chunking: &#x27;</span>, cos_sim(milvus_embedding, traditional_embeddings))
 <button class="copy-code-btn"></button></code></pre>
-<p>O Late Chunking superou consistentemente o chunking tradicional, produzindo maiores semelhanças de cosseno em cada pedaço. Isto confirma que a incorporação do documento completo primeiro preserva o contexto global de forma mais eficaz.</p>
+<p>Late Chunking consistently outperformed traditional chunking, yielding higher cosine similarities across every chunk. This confirms that embedding the full document first preserves global context more effectively.</p>
 <pre><code translate="no"><span class="hljs-title function_">similarity_late_chunking</span>(<span class="hljs-string">&quot;milvus 2.4.13&quot;</span>, <span class="hljs-string">&quot;Milvus 2.4.13 introduces dynamic replica load, allowing users to adjust the number of collection replicas without needing to release and reload the collection.&quot;</span>)
 <span class="hljs-attr">late_chunking</span>: <span class="hljs-number">0.8785206</span>
 <span class="hljs-title function_">similarity_traditional</span>(<span class="hljs-string">&quot;milvus 2.4.13&quot;</span>, <span class="hljs-string">&quot;Milvus 2.4.13 introduces dynamic replica load, allowing users to adjust the number of collection replicas without needing to release and reload the collection.&quot;</span>)
@@ -207,9 +207,9 @@ milvus_embedding = model.encode(<span class="hljs-string">&#x27;milvus 2.4.13&#x
 <span class="hljs-title function_">similarity_traditional</span>(<span class="hljs-string">&quot;milvus 2.4.13&quot;</span>, <span class="hljs-string">&quot;We highly recommend upgrading to this release for better performance and stability.&quot;</span>)
 <span class="hljs-attr">traditional_chunking</span>: <span class="hljs-number">0.71859795</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Podemos ver que a incorporação do parágrafo completo primeiro assegura que cada fração tem o contexto "<code translate="no">Milvus 2.4.13</code>", aumentando as pontuações de semelhança e a qualidade da recuperação.</p>
-<h3 id="Testing-Late-Chunking-in-Milvus" class="common-anchor-header"><strong>Testar o Late Chunking no Milvus</strong></h3><p>Uma vez gerados os chunk embeddings, podemos armazená-los no Milvus e efetuar consultas. O código seguinte insere vectores de pedaços na coleção.</p>
-<h4 id="Importing-Embeddings-into-Milvus" class="common-anchor-header"><strong>Importando embeddings para o Milvus</strong></h4><pre><code translate="no">batch_data=[]
+<p>We can see that embedding the full paragraph first ensures each chunk carries the “<code translate="no">Milvus 2.4.13</code>” context—boosting similarity scores and retrieval quality.</p>
+<h3 id="Testing-Late-Chunking-in-Milvus" class="common-anchor-header"><strong>Testing Late Chunking in Milvus</strong></h3><p>Once chunk embeddings are generated, we can store them in Milvus and perform queries. The following code inserts chunk vectors into the collection.</p>
+<h4 id="Importing-Embeddings-into-Milvus" class="common-anchor-header"><strong>Importing Embeddings into Milvus</strong></h4><pre><code translate="no">batch_data=[]
 <span class="hljs-keyword">for</span> i in <span class="hljs-keyword">range</span>(<span class="hljs-built_in">len</span>(chunks)):
     data = {
             <span class="hljs-string">&quot;content&quot;</span>: chunks[i],
@@ -223,8 +223,8 @@ res = client.insert(
     data=batch_data,
 )
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Querying-and-Validation" class="common-anchor-header">Consulta e validação</h4><p>Para validar a exatidão das consultas Milvus, comparamos os seus resultados com as pontuações de similaridade de cosseno de força bruta calculadas manualmente. Se ambos os métodos retornarem resultados top-k consistentes, podemos ter certeza de que a precisão da pesquisa do Milvus é confiável.</p>
-<p>Comparamos a pesquisa nativa do Milvus com uma análise de força bruta de similaridade de cosseno:</p>
+<h4 id="Querying-and-Validation" class="common-anchor-header">Querying and Validation</h4><p>To validate the accuracy of Milvus queries, we compare its retrieval results to brute-force cosine similarity scores calculated manually. If both methods return consistent top‑k results, we can be confident that Milvus’s search accuracy is reliable.</p>
+<p>We compare Milvus’s native search with a brute‑force cosine similarity scan:</p>
 <pre><code translate="no"><span class="hljs-keyword">def</span> <span class="hljs-title function_">late_chunking_query_by_milvus</span>(<span class="hljs-params">query, top_k = <span class="hljs-number">3</span></span>):
     query_vector = model(**tokenizer(query, return_tensors=<span class="hljs-string">&quot;pt&quot;</span>)).last_hidden_state.mean(<span class="hljs-number">1</span>).detach().cpu().numpy().flatten()
 
@@ -248,7 +248,7 @@ res = client.insert(
     results_order = results.argsort()[::-<span class="hljs-number">1</span>]
     <span class="hljs-keyword">return</span> np.array(chunks)[results_order].tolist()[:k]
 <button class="copy-code-btn"></button></code></pre>
-<p>Isto confirma que o Milvus devolve o mesmo top-k de blocos que uma pesquisa manual de cosine-sim.</p>
+<p>This confirms Milvus returns the same top‑k chunks as a manual cosine‑sim scan.</p>
 <pre><code translate="no">&gt; late_chunking_query_by_milvus(<span class="hljs-string">&quot;What are new features in milvus 2.4.13&quot;</span>, 3)
 
 [<span class="hljs-string">&#x27;\n\n### Features\n\n- Dynamic replica adjustment for loaded collections ([#36417](https://github.com/milvus-io/milvus/pull/36417))\n- Sparse vector MMAP in growing segment types ([#36565](https://github.com/milvus-io/milvus/pull/36565))...
@@ -257,8 +257,8 @@ res = client.insert(
 
 [<span class="hljs-string">&#x27;\n\n### Features\n\n- Dynamic replica adjustment for loaded collections ([#36417](https://github.com/milvus-io/milvus/pull/36417))\n- Sparse vector MMAP in growing segment types (#36565)...
 </span><button class="copy-code-btn"></button></code></pre>
-<p>Assim, ambos os métodos produzem os mesmos pedaços top-3, confirmando a precisão do Milvus.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusão<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>So both methods yield the same top-3 chunks, confirming Milvus’s accuracy.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -273,11 +273,11 @@ res = client.insert(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Neste artigo, mergulhamos profundamente na mecânica e nos benefícios do Late Chunking. Começámos por identificar as deficiências das abordagens tradicionais de fragmentação, especialmente quando se trata de documentos longos em que a preservação do contexto é crucial. Introduzimos o conceito de Late Chunking - incorporando todo o documento antes de o dividir em pedaços significativos - e mostrámos como isto preserva o contexto global, levando a uma melhor semelhança semântica e precisão de recuperação.</p>
-<p>De seguida, fizemos uma implementação prática utilizando o modelo jina-embeddings-v2-base-en da Jina AI e avaliámos o seu desempenho em comparação com os métodos tradicionais. Finalmente, demonstrámos como integrar os chunk embeddings no Milvus para uma pesquisa vetorial escalável e precisa.</p>
-<p>O Late Chunking oferece uma abordagem de incorporação que prioriza <strong>o contexto</strong> - perfeita para documentos longos e complexos, onde o contexto é mais importante. Ao incorporar todo o texto antecipadamente e fatiar depois, você ganha:</p>
+    </button></h2><p>In this article, we took a deep dive into the mechanics and benefits of Late Chunking. We began by identifying the shortcomings of traditional chunking approaches, particularly when handling long documents where preserving context is crucial. We introduced the concept of Late Chunking—embedding the entire document before slicing it into meaningful chunks—and showed how this preserves global context, leading to improved semantic similarity and retrieval accuracy.</p>
+<p>We then walked through a hands-on implementation using Jina AI’s jina-embeddings-v2-base-en model and evaluated its performance compared to traditional methods. Finally, we demonstrated how to integrate the chunk embeddings into Milvus for scalable and accurate vector search.</p>
+<p>Late Chunking offers a <strong>context‑first</strong> approach to embedding—perfect for long, complex documents where context matters most. By embedding the entire text upfront and slicing later, you gain:</p>
 <ul>
-<li><p><strong>🔍 Maior precisão na recuperação</strong></p></li>
-<li><p><strong>Solicitações de LLM enxutas e focadas</strong></p></li>
-<li><p>🛠️ <strong>Integração simples</strong> com qualquer modelo de contexto longo</p></li>
+<li><p>🔍 <strong>Sharper retrieval accuracy</strong></p></li>
+<li><p>⚡ <strong>Lean, focused LLM prompts</strong></p></li>
+<li><p>🛠️ <strong>Simple integration</strong> with any long‑context model</p></li>
 </ul>

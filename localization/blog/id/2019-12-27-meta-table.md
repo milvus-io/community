@@ -1,13 +1,13 @@
 ---
 id: 2019-12-27-meta-table.md
-title: Manajemen Metadata Milvus (2) Bidang dalam Tabel Metadata
+title: Milvus Metadata Management (2) Fields in the Metadata Table
 author: Yihua Mo
 date: 2019-12-27T00:00:00.000Z
-desc: Pelajari tentang detail bidang dalam tabel metadata di Milvus.
+desc: Learn about the detail of the fields in metadata tables in Milvus.
 cover: null
 tag: Engineering
 ---
-<custom-h1>Manajemen Metadata Milvus (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">Kolom-kolom dalam Tabel Metadata<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
+<custom-h1>Milvus Metadata Management (2)</custom-h1><h2 id="Fields-in-the-Metadata-Table" class="common-anchor-header">Fields in the Metadata Table<button data-href="#Fields-in-the-Metadata-Table" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -23,73 +23,79 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><blockquote>
-<p>Penulis Yihua Mo</p>
-<p>Tanggal: 2019-12-27</p>
+<p>Author: Yihua Mo</p>
+<p>Date: 2019-12-27</p>
 </blockquote>
-<p>Di blog terakhir, kami menyebutkan cara melihat metadata Anda menggunakan MySQL atau SQLite. Artikel ini terutama bermaksud untuk memperkenalkan secara rinci bidang-bidang dalam tabel metadata.</p>
-<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">Bidang dalam tabel &quot;<code translate="no">Tables</code>&quot;</h3><p>Ambil SQLite sebagai contoh. Hasil berikut ini berasal dari 0.5.0. Beberapa field ditambahkan ke 0.6.0, yang akan diperkenalkan nanti. Ada satu baris di <code translate="no">Tables</code> yang menyatakan tabel vektor 512 dimensi dengan nama <code translate="no">table_1</code>. Ketika tabel dibuat, <code translate="no">index_file_size</code> adalah 1024 MB, <code translate="no">engine_type</code> adalah 1 (FLAT), <code translate="no">nlist</code> adalah 16384, <code translate="no">metric_type</code> adalah 1 (jarak Euclidean L2). <code translate="no">id</code> adalah pengenal unik dari tabel. <code translate="no">state</code> adalah status dari tabel dengan angka 0 yang mengindikasikan status normal. <code translate="no">created_on</code> adalah waktu pembuatan. <code translate="no">flag</code> adalah flag yang dicadangkan untuk penggunaan internal.</p>
+<p>In the last blog, we mentioned how to view your metadata using MySQL or SQLite. This article mainly intends to introduce in detail the fields in the metadata tables.</p>
+<h3 id="Fields-in-the-Tables-table" class="common-anchor-header">Fields in the &quot;<code translate="no">Tables</code>” table</h3><p>Take SQLite as an example. The following result comes from 0.5.0. Some fields are added to 0.6.0, which will be introduced later. There is a row in <code translate="no">Tables</code> specifying a 512-dimensional vector table with the name <code translate="no">table_1</code>. When the table is created, <code translate="no">index_file_size</code> is 1024 MB, <code translate="no">engine_type</code> is 1 (FLAT), <code translate="no">nlist</code> is 16384, <code translate="no">metric_type</code> is 1 (Euclidean distance L2). <code translate="no">id</code> is the unique identifier of the table. <code translate="no">state</code> is the state of the table with 0 indicating a normal state. <code translate="no">created_on</code> is the creation time. <code translate="no">flag</code> is the flag reserved for internal use.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
-   </span> <span class="img-wrapper"> <span>tabel</span> </span></p>
-<p>Tabel berikut ini menunjukkan jenis bidang dan deskripsi bidang di <code translate="no">Tables</code>.</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables.png" alt="tables" class="doc-image" id="tables" />
+    <span>tables</span>
+  </span>
+</p>
+<p>The following table shows field types and descriptions of the fields in <code translate="no">Tables</code>.</p>
 <table>
 <thead>
-<tr><th style="text-align:left">Nama Field</th><th style="text-align:left">Tipe Data</th><th style="text-align:left">Deskripsi</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Pengenal unik dari tabel vektor. <code translate="no">id</code> bertambah secara otomatis.</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Nama tabel vektor. <code translate="no">table_id</code> harus ditentukan oleh pengguna dan mengikuti panduan nama file Linux.</td></tr>
-<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">Status dari tabel vektor. 0 berarti normal dan 1 berarti terhapus (soft delete).</td></tr>
-<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">Dimensi vektor dari tabel vektor. Harus ditentukan oleh pengguna.</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Jumlah milidetik dari 1 Januari 1970 hingga saat tabel dibuat.</td></tr>
-<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">Bendera untuk penggunaan internal, seperti apakah id vektor ditentukan oleh pengguna. Nilai standarnya adalah 0.</td></tr>
-<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">Jika ukuran file data mencapai <code translate="no">index_file_size</code>, file tersebut tidak digabungkan dan digunakan untuk membangun indeks. Standarnya adalah 1024 (MB).</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Jenis indeks yang akan dibuat untuk tabel vektor. Standarnya adalah 0, yang menandakan indeks tidak valid. 1 menentukan FLAT. 2 menentukan IVFLAT. 3 menentukan IVFSQ8. 4 menentukan NSG. 5 menentukan IVFSQ8H.</td></tr>
-<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">Jumlah kluster vektor dalam setiap file data dibagi menjadi beberapa kluster ketika indeks sedang dibangun. Nilai standarnya adalah 16384.</td></tr>
-<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Metode untuk menghitung jarak vektor. 1 menentukan jarak Euclidean (L1) dan 2 menentukan inner product.</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of the vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table. <code translate="no">table_id</code> must be user-defined and follow Linux filename guidelines.</td></tr>
+<tr><td style="text-align:left"><code translate="no">state</code></td><td style="text-align:left">int32</td><td style="text-align:left">State of the vector table. 0 stands for normal and 1 stands for deleted (soft delete).</td></tr>
+<tr><td style="text-align:left"><code translate="no">dimension</code></td><td style="text-align:left">int16</td><td style="text-align:left">Vector dimension of the vector table. Must be user-defined.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">flag</code></td><td style="text-align:left">int64</td><td style="text-align:left">Flag for internal use, such as whether the vector id is user-defined. The default is 0.</td></tr>
+<tr><td style="text-align:left"><code translate="no">index_file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">If the size of a data file reaches <code translate="no">index_file_size</code>, the file is not combined and is used to build indexes. The default is 1024 (MB).</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">nlist</code></td><td style="text-align:left">int32</td><td style="text-align:left">Number of clusters the vectors in each data file are divided into when the index is being built. The default is 16384.</td></tr>
+<tr><td style="text-align:left"><code translate="no">metric_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Method to compute vector distance. 1 specifies Euclidean distance (L1) and 2 specifies inner product.</td></tr>
 </tbody>
 </table>
-<p>Pemartisian tabel diaktifkan di 0.6.0 dengan beberapa bidang baru, termasuk <code translate="no">owner_table</code>,<code translate="no">partition_tag</code> dan <code translate="no">version</code>. Sebuah tabel vektor, <code translate="no">table_1</code>, memiliki sebuah partisi yang disebut <code translate="no">table_1_p1</code>, yang juga merupakan sebuah tabel vektor. <code translate="no">partition_name</code> berhubungan dengan <code translate="no">table_id</code>. Field dalam tabel partisi diwarisi dari tabel pemilik, dengan field <code translate="no">owner table</code> yang menentukan nama tabel pemilik dan field <code translate="no">partition_tag</code> yang menentukan tag partisi.</p>
+<p>Table partitioning is enabled in 0.6.0 with a few new fields, including <code translate="no">owner_table</code>，<code translate="no">partition_tag</code> and <code translate="no">version</code>. A vector table, <code translate="no">table_1</code>, has a partition called <code translate="no">table_1_p1</code>, which is also a vector table. <code translate="no">partition_name</code> corresponds to <code translate="no">table_id</code>. Fields in a partition table are inherited from the owner table, with the <code translate="no">owner table</code> field specifying the name of the owner table and the <code translate="no">partition_tag</code> field specifying the tag of the partition.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
-   </span> <span class="img-wrapper"> <span>tabel_baru</span> </span></p>
-<p>Tabel berikut ini menunjukkan field-field baru di 0.6.0:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tables_new.png" alt="tables_new" class="doc-image" id="tables_new" />
+    <span>tables_new</span>
+  </span>
+</p>
+<p>The following table shows new fields in 0.6.0:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">Nama Field</th><th style="text-align:left">Tipe Data</th><th style="text-align:left">Deskripsi</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">string</td><td style="text-align:left">Tabel induk dari partisi.</td></tr>
-<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">string</td><td style="text-align:left">Tag dari partisi. Tidak boleh berupa string kosong.</td></tr>
-<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">string</td><td style="text-align:left">Versi Milvus.</td></tr>
+<tr><td style="text-align:left"><code translate="no">owner_table</code></td><td style="text-align:left">string</td><td style="text-align:left">Parent table of the partition.</td></tr>
+<tr><td style="text-align:left"><code translate="no">partition_tag</code></td><td style="text-align:left">string</td><td style="text-align:left">Tag of the partition. Must not be an empty string.</td></tr>
+<tr><td style="text-align:left"><code translate="no">version</code></td><td style="text-align:left">string</td><td style="text-align:left">Milvus version.</td></tr>
 </tbody>
 </table>
-<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">Bidang-bidang dalam tabel "<code translate="no">TableFiles&quot;</code> </h3><p>Contoh berikut ini berisi dua berkas, yang keduanya merupakan bagian dari tabel vektor <code translate="no">table_1</code>. Tipe indeks (<code translate="no">engine_type</code>) dari file pertama adalah 1 (FLAT); status file (<code translate="no">file_type</code>) adalah 7 (cadangan dari file asli); <code translate="no">file_size</code> adalah 411200113 byte; jumlah baris vektor adalah 200.000. Jenis indeks file kedua adalah 2 (IVFLAT); status file adalah 3 (file indeks). File kedua sebenarnya adalah indeks dari file pertama. Kami akan memperkenalkan lebih banyak informasi dalam artikel mendatang.</p>
+<h3 id="Fields-in-the-TableFiles-table" class="common-anchor-header">Fields in the “<code translate="no">TableFiles&quot;</code> table</h3><p>The following example contains two files, which both belong to the <code translate="no">table_1</code> vector table. The index type (<code translate="no">engine_type</code>) of the first file is 1 (FLAT); file status (<code translate="no">file_type</code>) is 7 (backup of the original file); <code translate="no">file_size</code> is 411200113 bytes; number of vector rows is 200,000. The index type of the second file is 2 (IVFLAT); file status is 3 (index file). The second file is actually the index of the first file. We will introduce more information in upcoming articles.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
-   </span> <span class="img-wrapper"> <span>file tabel</span> </span></p>
-<p>Tabel berikut ini menunjukkan bidang dan deskripsi dari <code translate="no">TableFiles</code>:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/metadata/tablefiles.png" alt="tablefiles" class="doc-image" id="tablefiles" />
+    <span>tablefiles</span>
+  </span>
+</p>
+<p>The following table shows fields and descriptions of <code translate="no">TableFiles</code>:</p>
 <table>
 <thead>
-<tr><th style="text-align:left">Nama Field</th><th style="text-align:left">Tipe Data</th><th style="text-align:left">Deskripsi</th></tr>
+<tr><th style="text-align:left">Field Name</th><th style="text-align:left">Data Type</th><th style="text-align:left">Description</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Pengenal unik dari tabel vektor. <code translate="no">id</code> bertambah secara otomatis.</td></tr>
-<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Nama tabel vektor.</td></tr>
-<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Jenis indeks yang akan dibuat untuk tabel vektor. Standarnya adalah 0, yang menandakan indeks tidak valid. 1 menentukan FLAT. 2 menentukan IVFLAT. 3 menentukan IVFSQ8. 4 menentukan NSG. 5 menentukan IVFSQ8H.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Nama file yang dihasilkan dari waktu pembuatan file. Sama dengan 1000 dikalikan dengan jumlah milidetik dari 1 Januari 1970 hingga saat tabel dibuat.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Status file. 0 menentukan file data vektor mentah yang baru dibuat. 1 menentukan file data vektor mentah. 2 menentukan bahwa indeks akan dibuat untuk file tersebut. 3 menentukan bahwa file tersebut adalah file indeks. 4 menentukan bahwa file akan dihapus (hapus lunak). 5 menentukan bahwa file tersebut baru dibuat dan digunakan untuk menyimpan data kombinasi. 6 menentukan bahwa file tersebut baru dibuat dan digunakan untuk menyimpan data indeks. 7 menentukan status pencadangan file data vektor mentah.</td></tr>
-<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">Ukuran file dalam byte.</td></tr>
-<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">Jumlah vektor dalam file.</td></tr>
-<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">Stempel waktu untuk waktu pembaruan terakhir, yang menentukan jumlah milidetik dari 1 Januari 1970 hingga saat tabel dibuat.</td></tr>
-<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Jumlah milidetik dari 1 Januari 1970 hingga saat tabel dibuat.</td></tr>
-<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">Tanggal saat tabel dibuat. Ini masih ada di sini karena alasan historis dan akan dihapus di versi mendatang.</td></tr>
+<tr><td style="text-align:left"><code translate="no">id</code></td><td style="text-align:left">int64</td><td style="text-align:left">Unique identifier of a vector table. <code translate="no">id</code> automatically increments.</td></tr>
+<tr><td style="text-align:left"><code translate="no">table_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Name of the vector table.</td></tr>
+<tr><td style="text-align:left"><code translate="no">engine_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">Type of index to build for a vector table. The default is 0, which specifies invalid index. 1 specifies FLAT. 2 specifies IVFLAT. 3 specifies IVFSQ8. 4 specifies NSG. 5 specifies IVFSQ8H.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_id</code></td><td style="text-align:left">string</td><td style="text-align:left">Filename generated from file creation time. Equals 1000 multiplied by the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_type</code></td><td style="text-align:left">int32</td><td style="text-align:left">File status. 0 specifies a newly generated raw vector data file. 1 specifies raw vector data file. 2 specifies that index will be built for the file. 3 specifies that the file is an index file. 4 specifies that the file will be deleted (soft delete). 5 specifies that the file is newly-generated and used to store combination data. 6 specifies that the file is newly-generated and used to store index data. 7 specifies the backup status of the raw vector data file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">file_size</code></td><td style="text-align:left">int64</td><td style="text-align:left">File size in bytes.</td></tr>
+<tr><td style="text-align:left"><code translate="no">row_count</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of vectors in a file.</td></tr>
+<tr><td style="text-align:left"><code translate="no">updated_time</code></td><td style="text-align:left">int64</td><td style="text-align:left">Timestamp for the latest update time, which specifies the number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">created_on</code></td><td style="text-align:left">int64</td><td style="text-align:left">Number of milliseconds from Jan 1, 1970 to the time when the table is created.</td></tr>
+<tr><td style="text-align:left"><code translate="no">date</code></td><td style="text-align:left">int32</td><td style="text-align:left">Date when the table is created. It is still here for historical reasons and will be removed in future versions.</td></tr>
 </tbody>
 </table>
-<h2 id="Related-blogs" class="common-anchor-header">Blog terkait<button data-href="#Related-blogs" class="anchor-icon" translate="no">
+<h2 id="Related-blogs" class="common-anchor-header">Related blogs<button data-href="#Related-blogs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,6 +111,6 @@ tag: Engineering
         ></path>
       </svg>
     </button></h2><ul>
-<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Mengelola Data dalam Mesin Pencari Vektor Skala Besar</a></li>
-<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Manajemen Metadata Milvus (1): Cara Melihat Metadata</a></li>
+<li><a href="https://medium.com/@milvusio/managing-data-in-massive-scale-vector-search-engine-db2e8941ce2f">Managing Data in Massive Scale Vector Search Engine</a></li>
+<li><a href="https://medium.com/@milvusio/milvus-metadata-management-1-6b9e05c06fb0">Milvus Metadata Management (1): How to View Metadata</a></li>
 </ul>

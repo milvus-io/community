@@ -1,13 +1,11 @@
 ---
 id: deploy-milvus-on-kubernetes-step-by-step-guide-for-k8s-users.md
-title: >-
-  Развертывание Milvus на Kubernetes: Пошаговое руководство для пользователей
-  Kubernetes
+title: 'Deploying Milvus on Kubernetes: A Step-by-Step Guide for Kubernetes Users'
 author: Gael Gu
 date: 2024-09-26T00:00:00.000Z
 desc: >-
-  В этом руководстве вы найдете четкое пошаговое описание настройки Milvus на
-  Kubernetes с помощью Milvus Operator.
+  This guide will provide a clear, step-by-step walkthrough for setting up
+  Milvus on Kubernetes using the Milvus Operator.
 cover: >-
   assets.zilliz.com/Deploying_Milvus_on_Kubernetes_A_Step_by_Step_Guide_for_Kubernetes_Users_4193487867.png
 tag: Engineering
@@ -16,9 +14,9 @@ recommend: true
 canonicalUrl: >-
   https://milvus.io/blog/deploy-milvus-on-kubernetes-step-by-step-guide-for-k8s-users.md
 ---
-<p><a href="https://zilliz.com/what-is-milvus"><strong>Milvus</strong></a> - это <a href="https://zilliz.com/learn/what-is-vector-database">векторная база данных</a> с открытым исходным кодом, предназначенная для хранения, индексации и поиска огромных объемов <a href="https://zilliz.com/learn/introduction-to-unstructured-data">неструктурированных данных</a> с помощью векторных представлений, что делает ее идеальной для приложений, основанных на искусственном интеллекте, таких как поиск по сходству, <a href="https://zilliz.com/glossary/semantic-search">семантический поиск</a>, поиск с расширенной генерацией<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">(RAG</a>), рекомендательные системы и другие задачи машинного обучения.</p>
-<p>Но что делает Milvus еще более мощным, так это его бесшовная интеграция с Kubernetes. Если вы являетесь поклонником Kubernetes, то знаете, что эта платформа идеально подходит для оркестровки масштабируемых распределенных систем. Milvus в полной мере использует возможности Kubernetes, позволяя вам легко развертывать, масштабировать и управлять распределенными кластерами Milvus. В этом руководстве вы найдете четкий пошаговый инструктаж по настройке Milvus на Kubernetes с помощью Milvus Operator.</p>
-<h2 id="Prerequisites" class="common-anchor-header">Предварительные условия<button data-href="#Prerequisites" class="anchor-icon" translate="no">
+<p><a href="https://zilliz.com/what-is-milvus"><strong>Milvus</strong></a> is an open-source <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> designed to store, index, and search massive amounts of <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a> through vector representations, making it perfect for AI-driven applications, such as similarity search, <a href="https://zilliz.com/glossary/semantic-search">semantic search</a>, retrieval augmented generation (<a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a>), recommendation engines, and other machine learning tasks.</p>
+<p>But what makes Milvus even more powerful is its seamless integration with Kubernetes. If you’re a Kubernetes aficionado, you know the platform is perfect for orchestrating scalable, distributed systems. Milvus takes full advantage of Kubernetes’ capabilities, allowing you to easily deploy, scale, and manage distributed Milvus clusters. This guide will provide a clear, step-by-step walkthrough for setting up Milvus on Kubernetes using the Milvus Operator.</p>
+<h2 id="Prerequisites" class="common-anchor-header">Prerequisites<button data-href="#Prerequisites" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -33,13 +31,13 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Прежде чем мы начнем, убедитесь, что у вас есть следующие необходимые условия:</p>
+    </button></h2><p>Before we begin, ensure you have the following prerequisites in place:</p>
 <ul>
-<li><p>Запущенный кластер Kubernetes. Если вы проводите тестирование локально, отлично подойдет <code translate="no">minikube</code>.</p></li>
-<li><p><code translate="no">kubectl</code> Установлен и настроен для взаимодействия с кластером Kubernetes.</p></li>
-<li><p>Знакомство с основными концепциями Kubernetes, такими как поды, сервисы и развертывания.</p></li>
+<li><p>A Kubernetes cluster up and running. If you’re testing locally, <code translate="no">minikube</code> is a great choice.</p></li>
+<li><p><code translate="no">kubectl</code> installed and configured to interact with your Kubernetes cluster.</p></li>
+<li><p>Familiarity with basic Kubernetes concepts like pods, services, and deployments.</p></li>
 </ul>
-<h2 id="Step-1-Installing-Minikube-For-Local-Testing" class="common-anchor-header">Шаг 1: Установка Minikube (для локального тестирования)<button data-href="#Step-1-Installing-Minikube-For-Local-Testing" class="anchor-icon" translate="no">
+<h2 id="Step-1-Installing-Minikube-For-Local-Testing" class="common-anchor-header">Step 1: Installing Minikube (For Local Testing)<button data-href="#Step-1-Installing-Minikube-For-Local-Testing" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -54,21 +52,21 @@ canonicalUrl: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Если вам нужно создать локальную среду Kubernetes, вам подойдет инструмент <code translate="no">minikube</code>. Официальные инструкции по установке находятся на <a href="https://minikube.sigs.k8s.io/docs/start/">странице начала работы с minikube</a>.</p>
-<h3 id="1-Install-Minikube" class="common-anchor-header">1. Установите Minikube</h3><p>Перейдите на<a href="https://github.com/kubernetes/minikube/releases"> страницу релизов minikube</a> и загрузите соответствующую версию для вашей операционной системы. Для macOS/Linux вы можете использовать следующую команду:</p>
+    </button></h2><p>If you need to set up a local Kubernetes environment, <code translate="no">minikube</code> is the tool for you. Official installation instructions are on the <a href="https://minikube.sigs.k8s.io/docs/start/">minikube getting started page</a>.</p>
+<h3 id="1-Install-Minikube" class="common-anchor-header">1. Install Minikube</h3><p>Visit the<a href="https://github.com/kubernetes/minikube/releases"> minikube releases page</a> and download the appropriate version for your operating system. For macOS/Linux, you can use the following command:</p>
 <pre><code translate="no">$ curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 $ <span class="hljs-built_in">sudo</span> install minikube-linux-amd64 /usr/local/bin/minikube &amp;&amp; <span class="hljs-built_in">rm</span> minikube-linux-amd64
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Start-Minikube" class="common-anchor-header">2. Запустите Minikube</h3><pre><code translate="no">$ minikube start
+<h3 id="2-Start-Minikube" class="common-anchor-header">2. Start Minikube</h3><pre><code translate="no">$ minikube start
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="3-Interact-with-Cluster" class="common-anchor-header">3. Взаимодействие с кластером</h3><p>Теперь вы можете взаимодействовать с вашими кластерами с помощью kubectl внутри minikube. Если вы не установили kubectl, minikube загрузит соответствующую версию по умолчанию.</p>
+<h3 id="3-Interact-with-Cluster" class="common-anchor-header">3. Interact with Cluster</h3><p>Now, you can interact with your clusters with the kubectl inside minikube. If you haven’t installed kubectl, minikube will download the appropriate version by default.</p>
 <pre><code translate="no">$ minikube kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<p>В качестве альтернативы вы можете создать символическую ссылку на двоичный файл minikube с именем <code translate="no">kubectl</code> для более удобного использования.</p>
+<p>Alternatively, you can create a symbolic link to minikube’s binary named <code translate="no">kubectl</code> for easier usage.</p>
 <pre><code translate="no">$ <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s $(<span class="hljs-built_in">which</span> minikube) /usr/local/bin/kubectl
 $ kubectl cluster-info
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Step-2-Configuring-the-StorageClass" class="common-anchor-header">Шаг 2: Настройка класса хранилища<button data-href="#Step-2-Configuring-the-StorageClass" class="anchor-icon" translate="no">
+<h2 id="Step-2-Configuring-the-StorageClass" class="common-anchor-header">Step 2: Configuring the StorageClass<button data-href="#Step-2-Configuring-the-StorageClass" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -83,30 +81,30 @@ $ kubectl cluster-info
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>В Kubernetes <strong>класс StorageClass</strong> определяет типы хранилищ, доступных для рабочих нагрузок, обеспечивая гибкость в управлении различными конфигурациями хранилищ. Прежде чем приступить к работе, необходимо убедиться, что в вашем кластере доступен StorageClass по умолчанию. Ниже описано, как проверить и при необходимости настроить его.</p>
-<h3 id="1-Check-Installed-StorageClasses" class="common-anchor-header">1. Проверка установленных классов хранения</h3><p>Чтобы увидеть доступные StorageClasses в кластере Kubernetes, выполните следующую команду:</p>
+    </button></h2><p>In Kubernetes, a <strong>StorageClass</strong> defines the types of storage available for your workloads, providing flexibility in managing different storage configurations. Before proceeding, you must ensure a default StorageClass is available in your cluster. Here’s how to check and configure one if necessary.</p>
+<h3 id="1-Check-Installed-StorageClasses" class="common-anchor-header">1. Check Installed StorageClasses</h3><p>To see the available StorageClasses in your Kubernetes cluster, run the following command:</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> sc
 <button class="copy-code-btn"></button></code></pre>
-<p>В результате будет отображен список классов хранения, установленных в вашем кластере. Если класс хранения по умолчанию уже настроен, он будет отмечен символом <code translate="no">(default)</code>.</p>
+<p>This will display the list of storage classes installed in your cluster. If a default StorageClass is already configured, it will be marked with <code translate="no">(default)</code>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/storage_classes_installed_in_your_cluster_21d36d6ac8.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="2-Configure-a-Default-StorageClass-if-necessary" class="common-anchor-header">2. Настройте класс хранения по умолчанию (если необходимо).</h3><p>Если класс хранения по умолчанию не задан, его можно создать, определив в файле YAML. Используйте следующий пример для создания класса хранения по умолчанию:</p>
+<h3 id="2-Configure-a-Default-StorageClass-if-necessary" class="common-anchor-header">2. Configure a Default StorageClass (if necessary)</h3><p>If no default StorageClass is set, you can create one by defining it in a YAML file. Use the following example to create a default StorageClass:</p>
 <pre><code translate="no"><span class="hljs-attr">apiVersion</span>: storage.<span class="hljs-property">k8s</span>.<span class="hljs-property">io</span>/v1
 <span class="hljs-attr">kind</span>: <span class="hljs-title class_">StorageClass</span>
 <span class="hljs-attr">metadata</span>:
  <span class="hljs-attr">name</span>: <span class="hljs-keyword">default</span>-storage<span class="hljs-keyword">class</span>
 <span class="hljs-title class_">provisioner</span>: k8s.<span class="hljs-property">io</span>/minikube-hostpath
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта конфигурация YAML определяет <code translate="no">StorageClass</code> под названием <code translate="no">default-storageclass</code>, который использует провизор <code translate="no">minikube-hostpath</code>, обычно используемый в локальных средах разработки.</p>
-<h3 id="3-Apply-the-StorageClass" class="common-anchor-header">3. Примените StorageClass</h3><p>После создания файла <code translate="no">default-storageclass.yaml</code> примените его к кластеру с помощью следующей команды:</p>
+<p>This YAML configuration defines a <code translate="no">StorageClass</code> called <code translate="no">default-storageclass</code> that uses the <code translate="no">minikube-hostpath</code> provisioner, commonly used in local development environments.</p>
+<h3 id="3-Apply-the-StorageClass" class="common-anchor-header">3. Apply the StorageClass</h3><p>Once the <code translate="no">default-storageclass.yaml</code> file is created, apply it to your cluster using the following command:</p>
 <pre><code translate="no">$ kubectl apply -f <span class="hljs-keyword">default</span>-storageclass.<span class="hljs-property">yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Это установит StorageClass по умолчанию для вашего кластера, что обеспечит правильное управление вашими потребностями в хранении данных в будущем.</p>
-<h2 id="Step-3-Installing-Milvus-Using-the-Milvus-Operator" class="common-anchor-header">Шаг 3: Установка Milvus с помощью Milvus Operator<button data-href="#Step-3-Installing-Milvus-Using-the-Milvus-Operator" class="anchor-icon" translate="no">
+<p>This will set up the default StorageClass for your cluster, ensuring that your storage needs are properly managed in the future.</p>
+<h2 id="Step-3-Installing-Milvus-Using-the-Milvus-Operator" class="common-anchor-header">Step 3: Installing Milvus Using the Milvus Operator<button data-href="#Step-3-Installing-Milvus-Using-the-Milvus-Operator" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,11 +119,11 @@ $ kubectl cluster-info
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Milvus Operator упрощает развертывание Milvus на Kubernetes, управление развертыванием, масштабированием и обновлениями. Перед установкой Milvus Operator необходимо установить <strong>cert-manager</strong>, который предоставляет сертификаты для сервера webhook, используемого Milvus Operator.</p>
-<h3 id="1-Install-cert-manager" class="common-anchor-header">1. Установите cert-manager</h3><p>Milvus Operator требует <a href="https://cert-manager.io/docs/installation/supported-releases/">cert-manager</a> для управления сертификатами для безопасной связи. Убедитесь, что вы установили <strong>cert-manager версии 1.1.3</strong> или более поздней. Чтобы установить его, выполните следующую команду:</p>
+    </button></h2><p>The Milvus Operator simplifies deploying Milvus on Kubernetes, managing the deployment, scaling, and updates. Before installing the Milvus Operator, you’ll need to install the <strong>cert-manager</strong>, which provides certificates for the webhook server used by the Milvus Operator.</p>
+<h3 id="1-Install-cert-manager" class="common-anchor-header">1. Install cert-manager</h3><p>Milvus Operator requires a <a href="https://cert-manager.io/docs/installation/supported-releases/">cert-manager</a> to manage certificates for secure communication. Make sure you install <strong>cert-manager version 1.1.3</strong> or later. To install it, run the following command:</p>
 <pre><code translate="no">$ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 <button class="copy-code-btn"></button></code></pre>
-<p>После установки убедитесь, что капсулы cert-manager запущены, выполнив:</p>
+<p>After the installation, verify that the cert-manager pods are running by executing:</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pods -n cert-manager
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -134,10 +132,10 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<h3 id="2-Install-the-Milvus-Operator" class="common-anchor-header">2. Установите оператор Milvus</h3><p>После того как cert-manager запущен, можно установить Milvus Operator. Выполните следующую команду, чтобы развернуть его с помощью <code translate="no">kubectl</code>:</p>
+<h3 id="2-Install-the-Milvus-Operator" class="common-anchor-header">2. Install the Milvus Operator</h3><p>Once the cert-manager is up and running, you can install the Milvus Operator. Run the following command to deploy it using <code translate="no">kubectl</code>:</p>
 <pre><code translate="no">$ kubectl apply -f <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/zilliztech/milvus-operator/main/deploy/manifests/deployment.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Проверить, запущен ли модуль Milvus Operator, можно с помощью следующей команды:</p>
+<p>You can check if the Milvus Operator pod is running using the following command:</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pods -n milvus-<span class="hljs-keyword">operator</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -146,7 +144,7 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<h3 id="3-Deploy-Milvus-Cluster" class="common-anchor-header">3. Развертывание кластера Milvus</h3><p>После того как капсула Milvus Operator запущена, вы можете развернуть кластер Milvus с оператором. Следующая команда развертывает кластер Milvus с его компонентами и зависимостями в отдельных подкадах с использованием конфигураций по умолчанию:</p>
+<h3 id="3-Deploy-Milvus-Cluster" class="common-anchor-header">3. Deploy Milvus Cluster</h3><p>Once the Milvus Operator pod is running, you can deploy a Milvus cluster with the operator. The following command deploys a Milvus cluster with its components and dependencies in separate pods using default configurations:</p>
 <pre><code translate="no">$ kubectl apply -f <span class="hljs-attr">https</span>:<span class="hljs-comment">//raw.githubusercontent.com/zilliztech/milvus-operator/main/config/samples/milvus_cluster_default.yaml</span>
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -155,16 +153,16 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Чтобы изменить настройки Milvus, вам нужно заменить YAML-файл на свой собственный конфигурационный YAML-файл. Помимо ручного редактирования или создания файла, вы можете использовать Milvus Sizing Tool для настройки конфигураций, а затем загрузить соответствующий YAML-файл.</p>
-<p>В качестве альтернативы можно использовать <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> для более рационального подхода. Этот инструмент позволяет настроить различные параметры, такие как распределение ресурсов и параметры хранения, а затем загрузить соответствующий YAML-файл с нужными конфигурациями. Это гарантирует, что развертывание Milvus будет оптимизировано для конкретного случая использования.</p>
+<p>To customize the Milvus settings, you will need to replace the YAML file with your own configuration YAML file. In addition to manually editing or creating the file, you can use the Milvus Sizing Tool to adjust the configurations and then download the corresponding YAML file.</p>
+<p>Alternatively, you can use the <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> for a more streamlined approach. This tool allows you to adjust various settings, such as resource allocation and storage options, and then download the corresponding YAML file with your desired configurations. This ensures that your Milvus deployment is optimized for your specific use case.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/Figure_Milvus_sizing_tool_024693df9d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Рисунок: Инструмент определения размеров Milvus</p>
-<p>Завершение развертывания может занять некоторое время. Вы можете проверить состояние вашего кластера Milvus с помощью команды:</p>
+<p>Figure: Milvus sizing tool</p>
+<p>It may take some time to finish the deployment. You can check the status of your Milvus cluster via the command:</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> milvus my-release
 <button class="copy-code-btn"></button></code></pre>
 <p>
@@ -173,10 +171,10 @@ $ kubectl cluster-info
     <span></span>
   </span>
 </p>
-<p>Когда ваш кластер Milvus будет готов, все поды в кластере Milvus должны быть запущены или завершены:</p>
+<p>Once your Milvus cluster is ready, all pods in the Milvus cluster should be running or completed:</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pods
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Step-4-Accessing-Your-Milvus-Cluster" class="common-anchor-header">Шаг 4: Доступ к кластеру Milvus<button data-href="#Step-4-Accessing-Your-Milvus-Cluster" class="anchor-icon" translate="no">
+<h2 id="Step-4-Accessing-Your-Milvus-Cluster" class="common-anchor-header">Step 4: Accessing Your Milvus Cluster<button data-href="#Step-4-Accessing-Your-Milvus-Cluster" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -191,17 +189,17 @@ $ kubectl cluster-info
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>После развертывания кластера Milvus вам нужно получить к нему доступ, перенаправив локальный порт на порт службы Milvus. Выполните следующие шаги, чтобы получить порт службы и настроить переадресацию портов.</p>
-<h4 id="1-Get-the-Service-Port" class="common-anchor-header"><strong>1. Получение порта службы</strong></h4><p>Сначала определите порт службы с помощью следующей команды. Замените <code translate="no">&lt;YOUR_MILVUS_PROXY_POD&gt;</code> на имя вашей прокси-подсистемы Milvus, которое обычно начинается с <code translate="no">my-release-milvus-proxy-</code>:</p>
+    </button></h2><p>Once your Milvus cluster is deployed, you need to access it by forwarding a local port to the Milvus service port. Follow these steps to retrieve the service port and set up port forwarding.</p>
+<h4 id="1-Get-the-Service-Port" class="common-anchor-header"><strong>1. Get the Service Port</strong></h4><p>First, identify the service port by using the following command. Replace <code translate="no">&lt;YOUR_MILVUS_PROXY_POD&gt;</code> with the name of your Milvus proxy pod, which typically starts with <code translate="no">my-release-milvus-proxy-</code>:</p>
 <pre><code translate="no">$ kubectl <span class="hljs-keyword">get</span> pod &lt;YOUR_MILVUS_PROXY_POD&gt; --template =<span class="hljs-string">&#x27;{{(index (index .spec.containers 0).ports 0).containerPort}}{{&quot;\n&quot;}}&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта команда вернет номер порта, который использует ваша служба Milvus.</p>
-<h4 id="2-Forward-the-Port" class="common-anchor-header"><strong>2. Переадресация порта</strong></h4><p>Чтобы получить локальный доступ к кластеру Milvus, перенаправьте локальный порт на порт службы с помощью следующей команды. Замените <code translate="no">&lt;YOUR_LOCAL_PORT&gt;</code> на локальный порт, который вы хотите использовать, а <code translate="no">&lt;YOUR_SERVICE_PORT&gt;</code> - на порт службы, полученный на предыдущем шаге:</p>
+<p>This command will return the port number that your Milvus service is using.</p>
+<h4 id="2-Forward-the-Port" class="common-anchor-header"><strong>2. Forward the Port</strong></h4><p>To access your Milvus cluster locally, forward a local port to the service port using the following command. Replace <code translate="no">&lt;YOUR_LOCAL_PORT&gt;</code> with the local port you want to use and <code translate="no">&lt;YOUR_SERVICE_PORT&gt;</code> with the service port retrieved in the previous step:</p>
 <pre><code translate="no">$ kubectl port-forward --address 0.0.0.0 service/my-release-milvus &lt;YOUR_LOCAL_PORT&gt;:&lt;YOUR_SERVICE_PORT&gt;
 <button class="copy-code-btn"></button></code></pre>
-<p>Эта команда позволяет переадресовать порт для прослушивания всех IP-адресов хост-машины. Если вам нужно, чтобы служба прослушивала только <code translate="no">localhost</code>, вы можете опустить опцию <code translate="no">--address 0.0.0.0</code>.</p>
-<p>После настройки переадресации портов вы сможете получить доступ к кластеру Milvus через указанный локальный порт для дальнейших операций или интеграций.</p>
-<h2 id="Step-5-Connecting-to-Milvus-Using-Python-SDK" class="common-anchor-header">Шаг 5: Подключение к Milvus с помощью Python SDK<button data-href="#Step-5-Connecting-to-Milvus-Using-Python-SDK" class="anchor-icon" translate="no">
+<p>This command allows port-forwarding to listen on all IP addresses of the host machine. If you only need the service to listen on <code translate="no">localhost</code>, you can omit the <code translate="no">--address 0.0.0.0</code> option.</p>
+<p>Once the port-forwarding is set up, you can access your Milvus cluster via the specified local port for further operations or integrations.</p>
+<h2 id="Step-5-Connecting-to-Milvus-Using-Python-SDK" class="common-anchor-header">Step 5: Connecting to Milvus Using Python SDK<button data-href="#Step-5-Connecting-to-Milvus-Using-Python-SDK" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -216,11 +214,11 @@ $ kubectl cluster-info
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Теперь, когда ваш кластер Milvus запущен, вы можете взаимодействовать с ним, используя любой Milvus SDK. В этом примере мы будем использовать <a href="https://zilliz.com/blog/what-is-pymilvus">PyMilvus</a>, Milvus's <strong>Python SDK,</strong> для подключения к кластеру и выполнения основных операций.</p>
-<h3 id="1-Install-PyMilvus" class="common-anchor-header">1. Установите PyMilvus</h3><p>Чтобы взаимодействовать с Milvus через Python, необходимо установить пакет <code translate="no">pymilvus</code>:</p>
+    </button></h2><p>With your Milvus cluster up and running, you can now interact with it using any Milvus SDK. In this example, we’ll use <a href="https://zilliz.com/blog/what-is-pymilvus">PyMilvus</a>, Milvus’s <strong>Python SDK,</strong>  to connect to the cluster and perform basic operations.</p>
+<h3 id="1-Install-PyMilvus" class="common-anchor-header">1. Install PyMilvus</h3><p>To interact with Milvus via Python, you need to install the <code translate="no">pymilvus</code> package:</p>
 <pre><code translate="no">$ pip install pymilvus
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="2-Connect-to-Milvus" class="common-anchor-header">2. Подключитесь к Milvus</h3><p>Ниже приведен пример сценария Python, который подключается к кластеру Milvus и демонстрирует выполнение основных операций, таких как создание коллекции.</p>
+<h3 id="2-Connect-to-Milvus" class="common-anchor-header">2. Connect to Milvus</h3><p>The following is a sample Python script that connects to your Milvus cluster and demonstrates how to perform basic operations such as creating a collection.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 <button class="copy-code-btn"></button></code></pre>
 <pre><code translate="no"><span class="hljs-comment"># Connect to the Milvus server</span>
@@ -235,12 +233,12 @@ client.create_collection(
    dimension=<span class="hljs-number">768</span>,  <span class="hljs-comment"># The vectors we will use in this demo has 768 dimensions</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<h4 id="Explanation" class="common-anchor-header">Пояснение:</h4><ul>
-<li><p>Подключение к Milvus: сценарий подключается к серверу Milvus, запущенному на <code translate="no">localhost</code>, используя локальный порт, который вы установили на шаге 4.</p></li>
-<li><p>Создать коллекцию: Он проверяет, существует ли уже коллекция с именем <code translate="no">example_collection</code>, удаляет ее, если да, а затем создает новую коллекцию с векторами размерностью 768.</p></li>
+<h4 id="Explanation" class="common-anchor-header">Explanation:</h4><ul>
+<li><p>Connect to Milvus: The script connects to the Milvus server running on <code translate="no">localhost</code> using the local port you set up in Step 4.</p></li>
+<li><p>Create a Collection: It checks if a collection named <code translate="no">example_collection</code> already exists, drops it if so, and then creates a new collection with vectors of 768 dimensions.</p></li>
 </ul>
-<p>Этот сценарий устанавливает соединение с кластером Milvus и создает коллекцию, служащую отправной точкой для более сложных операций, таких как вставка векторов и выполнение поиска по сходству.</p>
-<h2 id="Conclusion" class="common-anchor-header">Заключение<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>This script establishes a connection to the Milvus cluster and creates a collection, serving as a starting point for more complex operations like inserting vectors and performing similarity searches.</p>
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -255,10 +253,10 @@ client.create_collection(
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Развертывание Milvus в распределенной системе на Kubernetes открывает мощные возможности для управления крупными векторными данными, обеспечивая плавное масштабирование и высокопроизводительные приложения, основанные на искусственном интеллекте. Следуя этому руководству, вы узнали, как настроить Milvus с помощью Milvus Operator, что делает этот процесс простым и эффективным.</p>
-<p>Продолжая изучать Milvus, рассмотрите возможность масштабирования кластера для удовлетворения растущих потребностей или развертывания его на облачных платформах, таких как Amazon EKS, Google Cloud или Microsoft Azure. Для расширенного управления и мониторинга такие инструменты, как <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a>, <a href="https://milvus.io/docs/birdwatcher_overview.md"><strong>Birdwatcher</strong></a> и <a href="https://github.com/zilliztech/attu"><strong>Attu</strong></a>, предлагают ценную поддержку для поддержания работоспособности и производительности ваших развертываний.</p>
-<p>Теперь вы готовы использовать весь потенциал Milvus на Kubernetes - счастливого развертывания! 🚀</p>
-<h2 id="Further-Resources" class="common-anchor-header">Дополнительные ресурсы<button data-href="#Further-Resources" class="anchor-icon" translate="no">
+    </button></h2><p>Deploying Milvus in a distributed setup on Kubernetes unlocks powerful capabilities for managing large-scale vector data, enabling seamless scalability and high-performance AI-driven applications. Following this guide, you’ve learned how to set up Milvus using the Milvus Operator, making the process streamlined and efficient.</p>
+<p>As you continue to explore Milvus, consider scaling your cluster to meet growing demands or deploying it on cloud platforms such as Amazon EKS, Google Cloud, or Microsoft Azure. For enhanced management and monitoring, tools like <a href="https://milvus.io/docs/milvus_backup_overview.md"><strong>Milvus Backup</strong></a>, <a href="https://milvus.io/docs/birdwatcher_overview.md"><strong>Birdwatcher</strong></a>, and <a href="https://github.com/zilliztech/attu"><strong>Attu</strong></a> offer valuable support for maintaining the health and performance of your deployments.</p>
+<p>You’re now ready to harness the full potential of Milvus on Kubernetes—happy deploying! 🚀</p>
+<h2 id="Further-Resources" class="common-anchor-header">Further Resources<button data-href="#Further-Resources" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -274,10 +272,10 @@ client.create_collection(
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/docs/overview.md">Документация по Milvus</a></p></li>
-<li><p><a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">Milvus Lite vs. Standalone vs. Distributed: Какой режим подходит именно вам? </a></p></li>
-<li><p><a href="https://zilliz.com/blog/milvus-on-gpu-with-nvidia-rapids-cuvs">Усиление векторного поиска: Milvus на GPU с NVIDIA RAPIDS cuVS</a></p></li>
-<li><p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">Что такое RAG? </a></p></li>
-<li><p><a href="https://zilliz.com/learn/generative-ai">Ресурсный хаб генеративного ИИ | Zilliz</a></p></li>
-<li><p><a href="https://zilliz.com/ai-models">Лучшие модели ИИ для ваших приложений GenAI | Zilliz</a></p></li>
+<li><p><a href="https://milvus.io/docs/overview.md">Milvus Documentation</a></p></li>
+<li><p><a href="https://zilliz.com/blog/choose-the-right-milvus-deployment-mode-ai-applications">Milvus Lite vs. Standalone vs. Distributed: Which Mode is Right for You? </a></p></li>
+<li><p><a href="https://zilliz.com/blog/milvus-on-gpu-with-nvidia-rapids-cuvs">Supercharging Vector Search: Milvus on GPUs with NVIDIA RAPIDS cuVS</a></p></li>
+<li><p><a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">What is RAG? </a></p></li>
+<li><p><a href="https://zilliz.com/learn/generative-ai">Generative AI Resource Hub | Zilliz</a></p></li>
+<li><p><a href="https://zilliz.com/ai-models">Top Performing AI Models for Your GenAI Apps | Zilliz</a></p></li>
 </ul>

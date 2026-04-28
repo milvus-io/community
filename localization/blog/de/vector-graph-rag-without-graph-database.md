@@ -1,6 +1,7 @@
 ---
 id: vector-graph-rag-without-graph-database.md
-title: Wir haben Graph RAG ohne die Graphdatenbank gebaut
+title: |
+  We Built Graph RAG Without the Graph Database
 author: Cheney Zhang
 date: 2026-4-17
 cover: assets.zilliz.com/vector_graph_rag_without_graph_database_md_1_e9c1adda4a.jpeg
@@ -11,19 +12,18 @@ tags: 'Milvus, vector database'
 meta_keywords: 'graph RAG, multi-hop RAG, vector database, Milvus, knowledge graph RAG'
 meta_title: |
   Graph RAG Without a Graph Database | Vector Graph RAG
-desc: >-
-  Open-Source Vector Graph RAG fügt RAG Multi-Hop-Folgerungen hinzu und
-  verwendet dabei nur Milvus. 87.8% Recall@5, 2 LLM-Aufrufe pro Anfrage, keine
-  Graphdatenbank erforderlich.
+desc: >
+  Open-source Vector Graph RAG adds multi-hop reasoning to RAG using only
+  Milvus. 87.8% Recall@5, 2 LLM calls per query, no graph database needed.
 origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
 ---
 <blockquote>
-<p><strong><em>TL;DR:</em></strong> <em>Braucht man für Graph RAG tatsächlich eine Graphdatenbank? Nein. Geben Sie Entitäten, Relationen und Passagen in Milvus ein. Verwenden Sie Subgraphenexpansion anstelle von Graphentraversal und einen LLM-Rerank anstelle von Mehrrunden-Agentenschleifen. Das ist</em> <a href="https://github.com/zilliztech/vector-graph-rag"><strong><em>Vector Graph RAG</em></strong></a><strong><em>,</em></strong> <em>und das ist es, was wir gebaut haben. Dieser Ansatz erreicht 87,8 % durchschnittlichen Recall@5 bei drei Multi-Hop-QA-Benchmarks und schlägt HippoRAG 2 bei einer einzelnen Milvus-Instanz.</em></p>
+<p><strong><em>TL;DR:</em></strong> <em>Do you actually need a graph database for Graph RAG? No. Put entities, relations, and passages into Milvus. Use subgraph expansion instead of graph traversal, and one LLM rerank instead of multi-round agent loops. That’s</em> <a href="https://github.com/zilliztech/vector-graph-rag"><strong><em>Vector Graph RAG</em></strong></a><strong><em>,</em></strong> <em>and it’s what we built. This approach hits 87.8% average Recall@5 on three multi-hop QA benchmarks and beats HippoRAG 2 on a single Milvus instance.</em></p>
 </blockquote>
-<p>Multi-Hop-Fragen sind die Mauer, gegen die die meisten RAG-Pipelines irgendwann anrennen. Die Antwort ist im Korpus vorhanden, aber sie erstreckt sich über mehrere Passagen, die durch Entitäten verbunden sind, die in der Frage nie genannt werden. Die übliche Lösung besteht darin, eine Graphdatenbank hinzuzufügen, was bedeutet, dass zwei Systeme anstelle von einem betrieben werden.</p>
-<p>Wir sind selbst immer wieder an diese Grenze gestoßen und wollten nicht zwei Datenbanken betreiben, nur um das zu bewältigen. Also haben wir <a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> entwickelt und als Open Source zur Verfügung gestellt, eine Python-Bibliothek, die Multi-Hop-Reasoning in <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> ermöglicht und dabei nur <a href="https://milvus.io/docs">Milvus</a>, die am weitesten verbreitete Open-Source-Vektordatenbank, verwendet. Sie bietet die gleiche Multi-Hop-Fähigkeit mit einer Datenbank statt zwei.</p>
+<p>Multi-hop questions are the wall that most RAG pipelines hit eventually. The answer is in your corpus, but it spans multiple passages connected by entities the question never names. The common fix is to add a graph database, which means running two systems instead of one.</p>
+<p>We kept hitting this wall ourselves and didn’t want to run two databases just to handle it. So we built and open-sourced <a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a>, a Python library that brings multi-hop reasoning to <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> using only <a href="https://milvus.io/docs">Milvus</a>, the most widely adopted open-source vector database. It provides the same multi-hop capability with one database instead of two.</p>
 <iframe width="826" height="465" src="https://www.youtube.com/embed/yCooOl-koxc" title="Stop Using Graph Database to Build Your Graph RAG System — Vector Graph RAG Explained" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<h2 id="Why-Multi-Hop-Questions-Break-Standard-RAG" class="common-anchor-header">Warum Multi-Hop-Fragen den Standard-RAG brechen<button data-href="#Why-Multi-Hop-Questions-Break-Standard-RAG" class="anchor-icon" translate="no">
+<h2 id="Why-Multi-Hop-Questions-Break-Standard-RAG" class="common-anchor-header">Why Multi-Hop Questions Break Standard RAG<button data-href="#Why-Multi-Hop-Questions-Break-Standard-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -38,19 +38,19 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Multi-Hop-Fragen brechen Standard-RAG, weil die Antwort von Entitätsbeziehungen abhängt, die die Vektorsuche nicht sehen kann. Die Brückenentität, die die Frage mit der Antwort verbindet, befindet sich oft nicht in der Frage selbst.</p>
-<p>Einfache Fragen funktionieren gut. Man zerlegt Dokumente, bettet sie ein, sucht die engsten Übereinstimmungen heraus und gibt sie an einen LLM weiter. Die Frage "Welche Indizes unterstützt Milvus?" steht in einem Abschnitt, und die Vektorsuche findet sie.</p>
-<p>Multi-Hop-Fragen passen nicht in dieses Muster. Nehmen wir eine Frage wie <em>"Auf welche Nebenwirkungen sollte ich bei Diabetes-Medikamenten der ersten Wahl achten?"</em> in einer medizinischen Wissensdatenbank.</p>
-<p>Die Beantwortung dieser Frage erfordert zwei Denkschritte. Zunächst muss das System wissen, dass Metformin das Mittel der ersten Wahl bei Diabetes ist. Erst dann kann es die Nebenwirkungen von Metformin nachschlagen: Überwachung der Nierenfunktion, Magen-Darm-Beschwerden, Vitamin-B12-Mangel.</p>
-<p>"Metformin" ist die Brückeneinheit. Es verbindet die Frage mit der Antwort, wird aber in der Frage nicht erwähnt.</p>
+    </button></h2><p>Multi-hop questions break standard RAG because the answer depends on entity relationships that vector search can’t see. The bridge entity connecting the question to the answer often isn’t in the question itself.</p>
+<p>Simple questions work fine. You chunk documents, embed them, retrieve the closest matches, and feed them to an LLM. “What indexes does Milvus support?” lives in one passage, and vector search finds it.</p>
+<p>Multi-hop questions don’t fit that pattern. Take a question like <em>“What side effects should I watch for with first-line diabetes drugs?”</em> in a medical knowledge base.</p>
+<p>Answering it takes two reasoning steps. First, the system has to know that metformin is the first-line drug for diabetes. Only then can it look up metformin’s side effects: kidney function monitoring, GI discomfort, vitamin B12 deficiency.</p>
+<p>“Metformin” is the bridge entity. It connects the question to the answer, but the question never mentions it.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_2_8e769cbe40.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>An dieser Stelle hört die <a href="https://zilliz.com/learn/vector-similarity-search">Vector Ähnlichkeitssuche</a> auf. Sie findet Passagen, die wie die Frage aussehen, Diabetes-Behandlungsleitfäden und Listen mit Nebenwirkungen von Medikamenten, aber sie kann die Entitätsbeziehungen, die diese Passagen miteinander verbinden, nicht nachvollziehen. Fakten wie "Metformin ist das Mittel der ersten Wahl bei Diabetes" finden sich in diesen Beziehungen, nicht im Text einer einzelnen Passage.</p>
-<h2 id="Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="common-anchor-header">Warum Graphdatenbanken und Agentic RAG nicht die Antwort sind<button data-href="#Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="anchor-icon" translate="no">
+<p>That’s where <a href="https://zilliz.com/learn/vector-similarity-search">Vector similarity search</a> stops. It retrieves passages that look like the question, diabetes treatment guides and drug side effect lists, but it can’t follow the entity relationships that link those passages together. Facts like “metformin is the first-line drug for diabetes” live in those relationships, not in the text of any single passage.</p>
+<h2 id="Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="common-anchor-header">Why Graph Databases and Agentic RAG Aren’t the Answer<button data-href="#Why-Graph-Databases-and-Agentic-RAG-Arent-the-Answer" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -65,11 +65,11 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Die Standardmethoden zur Lösung von Multi-Hop-RAG sind Graphdatenbanken und iterative Agentenschleifen. Beide funktionieren. Beide kosten mehr, als die meisten Teams für eine einzige Funktion bezahlen wollen.</p>
-<p>Nehmen Sie zunächst den Weg über die Graph-Datenbank. Sie extrahieren Tripel aus Ihren Dokumenten, speichern sie in einer Graphdatenbank und durchlaufen die Kanten, um Multi-Hop-Verbindungen zu finden. Das bedeutet, dass Sie ein zweites System neben Ihrer <a href="https://zilliz.com/learn/what-is-vector-database">Vektordatenbank</a> betreiben, Cypher oder Gremlin lernen und die Graph- und Vektorspeicher synchron halten müssen.</p>
-<p>Iterative Agentenschleifen sind der andere Ansatz. Der LLM ruft einen Stapel ab, prüft ihn, entscheidet, ob er genügend Kontext hat, und ruft ihn erneut ab, falls nicht. <a href="https://arxiv.org/abs/2212.10509">IRCoT</a> (Trivedi et al., 2023) macht 3-5 LLM-Aufrufe pro Abfrage. Die agentenbasierte RAG kann 10 übersteigen, da der Agent entscheidet, wann er aufhört. Die Kosten pro Abfrage werden unvorhersehbar, und die P99-Latenzzeit steigt an, wenn der Agent zusätzliche Runden durchführt.</p>
-<p>Beides eignet sich nicht für Teams, die Multi-Hop-Recherchen durchführen wollen, ohne ihren Stack neu aufbauen zu müssen. Also haben wir etwas anderes ausprobiert.</p>
-<h2 id="What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="common-anchor-header">Was ist Vector Graph RAG, eine Graphenstruktur innerhalb einer Vektordatenbank?<button data-href="#What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="anchor-icon" translate="no">
+    </button></h2><p>The standard ways to solve multi-hop RAG are graph databases and iterative agent loops. Both work. Both cost more than most teams want to pay for a single feature.</p>
+<p>Take the graph-database route first. You extract triples from your documents, store them in a graph database, and traverse edges to find multi-hop connections. That means running a second system alongside your <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a>, learning Cypher or Gremlin, and keeping the graph and vector stores in sync.</p>
+<p>Iterative agent loops are the other approach. The LLM retrieves a batch, reasons over it, decides whether it has enough context, and retrieves again if not. <a href="https://arxiv.org/abs/2212.10509">IRCoT</a> (Trivedi et al., 2023) makes 3-5 LLM calls per query. Agentic RAG can exceed 10 because the agent decides when to stop. Cost per query becomes unpredictable, and P99 latency spikes whenever the agent runs extra rounds.</p>
+<p>Neither fits teams that want multi-hop reasoning without rebuilding their stack. So we tried something else.</p>
+<h2 id="What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="common-anchor-header">What is Vector Graph RAG, a Graph Structure Inside a Vector Database<button data-href="#What-is-Vector-Graph-RAG-a-Graph-Structure-Inside-a-Vector-Database" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -84,42 +84,42 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><a href="https://github.com/zilliztech/vector-graph-rag"><strong>Vector Graph RAG</strong></a> ist eine quelloffene Python-Bibliothek, die Multi-Hop-Reasoning in <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> nur mit <a href="https://milvus.io/docs">Milvus</a> ermöglicht. Sie speichert die Graphstruktur als ID-Referenzen in drei Milvus-Sammlungen. Traversal wird zu einer Kette von Primärschlüssel-Lookups in Milvus anstelle von Cypher-Abfragen gegen eine Graphdatenbank. Ein Milvus erledigt beide Aufgaben.</p>
-<p>Es funktioniert, weil Beziehungen in einem Wissensgraphen nur Text sind. Das Tripel <em>(Metformin, das Medikament der ersten Wahl bei Typ-2-Diabetes)</em> ist eine gerichtete Kante in einer Graphdatenbank. Es ist auch ein Satz: "Metformin ist das Mittel der ersten Wahl bei Typ-2-Diabetes." Sie können diesen Satz als Vektor einbetten und in <a href="https://milvus.io/docs">Milvus</a> speichern, genau wie jeden anderen Text.</p>
+    </button></h2><p><a href="https://github.com/zilliztech/vector-graph-rag"><strong>Vector Graph RAG</strong></a> is an open-source Python library that brings multi-hop reasoning to <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG</a> using only <a href="https://milvus.io/docs">Milvus</a>. It stores graph structure as ID references across three Milvus collections. Traversal becomes a chain of primary-key lookups in Milvus instead of Cypher queries against a graph database. One Milvus does both jobs.</p>
+<p>It works because relationships in a knowledge graph are just text. The triple <em>(which is metformin, is the first-line drug for type 2 diabetes)</em> is a directed edge in a graph database. It’s also a sentence: “Metformin is the first-line drug for type 2 diabetes.” You can embed that sentence as a vector and store it in <a href="https://milvus.io/docs">Milvus</a>, the same as any other text.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_3_da1305389a.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Die Beantwortung einer Multi-Hop-Anfrage bedeutet, dass man Verbindungen von dem, was in der Anfrage erwähnt wird (wie "Diabetes") zu dem, was nicht erwähnt wird (wie "Metformin"), verfolgen muss. Das funktioniert nur, wenn die Speicherung diese Verbindungen beibehält: welche Entität mit welcher durch welche Beziehung verbunden ist. Einfacher Text ist durchsuchbar, aber nicht nachvollziehbar.</p>
-<p>Damit die Verbindungen in Milvus nachvollziehbar bleiben, geben wir jeder Entität und jeder Beziehung eine eindeutige ID und speichern sie dann in separaten Sammlungen, die sich gegenseitig über die ID referenzieren. Insgesamt gibt es drei Sammlungen: <strong>Entitäten</strong> (die Knoten), <strong>Relationen</strong> (die Kanten) und <strong>Passagen</strong> (der Ausgangstext, den der LLM zur Generierung von Antworten benötigt). Jede Zeile hat eine Vektoreinbettung, so dass wir jede der drei Sammlungen semantisch durchsuchen können.</p>
-<p><strong>Entitäten</strong> speichern deduplizierte Entitäten. Jede hat eine eindeutige ID, eine <a href="https://zilliz.com/glossary/vector-embeddings">Vektoreinbettung</a> für die <a href="https://zilliz.com/glossary/semantic-search">semantische Suche</a> und eine Liste von Beziehungs-IDs, an denen sie beteiligt ist.</p>
+<p>Answering a multi-hop query means following connections from what the query mentions (like “diabetes”) to what it doesn’t (like “metformin”). That only works if the storage preserves those connections: which entity connects to which through which relation. Plain text is searchable, but not followable.</p>
+<p>To keep connections followable in Milvus, we give each entity and each relation a unique ID, then store them in separate collections that reference each other by ID. Three collections in total: <strong>entities</strong> (the nodes), <strong>relations</strong> (the edges), and <strong>passages</strong> (the source text, which the LLM needs for answer generation). Every row has a vector embedding, so we can semantic-search any of the three.</p>
+<p><strong>Entities</strong> store deduplicated entities. Each has a unique ID, a <a href="https://zilliz.com/glossary/vector-embeddings">vector embedding</a> for <a href="https://zilliz.com/glossary/semantic-search">semantic search</a>, and a list of relation IDs it participates in.</p>
 <table>
 <thead>
-<tr><th>id</th><th>Name</th><th>Einbettung</th><th>relation_ids</th></tr>
+<tr><th>id</th><th>name</th><th>embedding</th><th>relation_ids</th></tr>
 </thead>
 <tbody>
-<tr><td>e01</td><td>Metformin</td><td>[0.12, ...]</td><td>[r01, r02, r03]</td></tr>
-<tr><td>e02</td><td>Typ-2-Diabetes</td><td>[0.34, ...]</td><td>[r01, r04]</td></tr>
-<tr><td>e03</td><td>Nierenfunktion</td><td>[0.56, ...]</td><td>[r02]</td></tr>
+<tr><td>e01</td><td>metformin</td><td>[0.12, …]</td><td>[r01, r02, r03]</td></tr>
+<tr><td>e02</td><td>type 2 diabetes</td><td>[0.34, …]</td><td>[r01, r04]</td></tr>
+<tr><td>e03</td><td>kidney function</td><td>[0.56, …]</td><td>[r02]</td></tr>
 </tbody>
 </table>
-<p><strong>Beziehungen</strong> speichern Wissens-Tripel. Jedes Tripel enthält die IDs seiner Subjekt- und Objektentität, die IDs der Passagen, aus denen es stammt, und eine Einbettung des vollständigen Beziehungstextes.</p>
+<p><strong>Relations</strong> store knowledge triples. Each records its subject and object entity IDs, the passage IDs it came from, and an embedding of the full relationship text.</p>
 <table>
 <thead>
-<tr><th>id</th><th>Subjekt_id</th><th>objekt_id</th><th>Text</th><th>Einbettung</th><th>passage_ids</th></tr>
+<tr><th>id</th><th>subject_id</th><th>object_id</th><th>text</th><th>embedding</th><th>passage_ids</th></tr>
 </thead>
 <tbody>
-<tr><td>r01</td><td>e01</td><td>e02</td><td>Metformin ist das Mittel der ersten Wahl bei Typ-2-Diabetes</td><td>[0.78, ...]</td><td>[p01]</td></tr>
-<tr><td>r02</td><td>e01</td><td>e03</td><td>Patienten, die Metformin einnehmen, sollten ihre Nierenfunktion überwachen lassen</td><td>[0.91, ...]</td><td>[p02]</td></tr>
+<tr><td>r01</td><td>e01</td><td>e02</td><td>Metformin is the first-line drug for type 2 diabetes</td><td>[0.78, …]</td><td>[p01]</td></tr>
+<tr><td>r02</td><td>e01</td><td>e03</td><td>Patients on metformin should have kidney function monitored</td><td>[0.91, …]</td><td>[p02]</td></tr>
 </tbody>
 </table>
-<p>Die<strong>Passagen</strong> speichern die Originaldokumente mit Verweisen auf die Entitäten und Relationen, die aus ihnen extrahiert wurden.</p>
-<p>Die drei Sammlungen verweisen über ID-Felder aufeinander: Entitäten tragen die IDs ihrer Relationen, Relationen tragen die IDs ihrer Subjekt- und Objektentitäten und Quellpassagen, und Passagen tragen die IDs von allem, was aus ihnen extrahiert wurde. Dieses Netzwerk von ID-Referenzen ist der Graph.</p>
-<p>Traversal ist einfach eine Kette von ID-Lookups. Man holt die Entität e01, um ihre <code translate="no">relation_ids</code> zu erhalten, holt die Relationen r01 und r02 anhand dieser IDs, liest die <code translate="no">object_id</code> von r01, um die Entität e02 zu entdecken, und so weiter. Jeder Sprung ist eine <a href="https://milvus.io/docs/get-and-scalar-query.md">Standard-Milvus-Primärschlüsselabfrage</a>. Kein Cypher erforderlich.</p>
-<p>Sie werden sich vielleicht fragen, ob sich die zusätzlichen Umwege zu Milvus lohnen. Das tun sie nicht. Die Erweiterung des Untergraphen kostet 2-3 ID-basierte Abfragen von insgesamt 20-30 ms. Der LLM-Aufruf dauert 1-3 Sekunden, was die ID-Abfragen daneben unsichtbar macht.</p>
-<h2 id="How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="common-anchor-header">Wie Vektorgraph RAG eine Multi-Hop-Anfrage beantwortet<button data-href="#How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="anchor-icon" translate="no">
+<p><strong>Passages</strong> store original document chunks, with references to the entities and relations extracted from them.</p>
+<p>The three collections point at each other through ID fields: entities carry the IDs of their relations, relations carry the IDs of their subject and object entities and source passages, and passages carry the IDs of everything extracted from them. That network of ID references is the graph.</p>
+<p>Traversal is just a chain of ID lookups. You fetch entity e01 to get its <code translate="no">relation_ids</code>, fetch relations r01 and r02 by those IDs, read r01’s <code translate="no">object_id</code> to discover entity e02, and keep going. Each hop is a standard Milvus <a href="https://milvus.io/docs/get-and-scalar-query.md">primary-key query</a>. No Cypher required.</p>
+<p>You might wonder whether the extra round trips to Milvus add up. They don’t. Subgraph expansion costs 2-3 ID-based queries totaling 20-30ms. The LLM call takes 1-3 seconds, which makes the ID lookups invisible next to it.</p>
+<h2 id="How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="common-anchor-header">How Vector Graph RAG Answers a Multi-Hop Query<button data-href="#How-Vector-Graph-RAG-Answers-a-Multi-Hop-Query" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -134,28 +134,28 @@ origin: 'https://milvus.io/blog/vector-graph-rag-without-graph-database.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Der Suchfluss führt eine Multi-Hop-Anfrage in vier Schritten zu einer fundierten Antwort: <strong>Seed Retrieval → Subgraph Expansion → LLM Rerank → Antwortgenerierung.</strong></p>
+    </button></h2><p>The retrieval flow takes a multi-hop query to a grounded answer in four steps: <strong>seed retrieval → subgraph expansion → LLM rerank → answer generation.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_4_86ccf5b914.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Wir werden die Diabetesfrage durchgehen: <em>"Auf welche Nebenwirkungen sollte ich bei Diabetes-Medikamenten der ersten Wahl achten?"</em></p>
-<h3 id="Step-1-Seed-Retrieval" class="common-anchor-header">Schritt 1: Seed-Retrieval</h3><p>Ein LLM extrahiert Schlüsselentitäten aus der Frage: "Diabetes", "Nebenwirkungen", "Erstlinienmedikament". Die Vektorsuche in Milvus findet die relevantesten Entitäten und Beziehungen direkt.</p>
-<p>Aber Metformin ist nicht darunter. In der Frage wird es nicht erwähnt, also kann die Vektorsuche es nicht finden.</p>
-<h3 id="Step-2-Subgraph-Expansion" class="common-anchor-header">Schritt 2: Teilgraphen-Expansion</h3><p>Hier weicht Vector Graph RAG von Standard RAG ab.</p>
-<p>Das System folgt den ID-Referenzen der Start-Entitäten einen Schritt weiter. Es holt sich die IDs der Startentitäten, findet alle Relationen, die diese IDs enthalten, und zieht die neuen Entitäts-IDs in den Subgraphen. Standard: ein Sprung.</p>
-<p><strong>Metformin, die Brückenentität, betritt den Subgraphen.</strong></p>
-<p>"Diabetes" hat eine Relation: <em>"Metformin ist das Medikament der ersten Wahl bei Typ-2-Diabetes".</em> Das Folgen dieser Kante bringt Metformin hinein. Sobald Metformin im Teilgraphen ist, kommen seine eigenen Relationen mit ihm: <em>"Patienten, die Metformin einnehmen, sollten ihre Nierenfunktion überwachen lassen", "Metformin kann Magen-Darm-Beschwerden verursachen", "Langfristige Einnahme von Metformin kann zu Vitamin-B12-Mangel führen".</em></p>
-<p>Zwei Fakten, die in getrennten Passagen vorkamen, sind nun durch einen Sprung in der Graphenerweiterung verbunden. Die Brückenentität, die in der Frage nie erwähnt wurde, ist nun auffindbar.</p>
+<p>We’ll walk through the diabetes question: <em>“What side effects should I watch for with first-line diabetes drugs?”</em></p>
+<h3 id="Step-1-Seed-Retrieval" class="common-anchor-header">Step 1: Seed Retrieval</h3><p>An LLM extracts key entities from the question: “diabetes,” “side effects,” “first-line drug.” Vector search in Milvus finds the most relevant entities and relations directly.</p>
+<p>But metformin isn’t among them. The question doesn’t mention it, so vector search can’t find it.</p>
+<h3 id="Step-2-Subgraph-Expansion" class="common-anchor-header">Step 2: Subgraph Expansion</h3><p>This is where Vector Graph RAG diverges from standard RAG.</p>
+<p>The system follows ID references from the seed entities one hop out. It gets the seed entity IDs, finds all relations containing those IDs, and pulls the new entity IDs into the subgraph. Default: one hop.</p>
+<p><strong>Metformin, the bridge entity, enters the subgraph.</strong></p>
+<p>“Diabetes” has a relation: <em>“Metformin is the first-line drug for type 2 diabetes.”</em> Following that edge brings metformin in. Once metformin is in the subgraph, its own relations come with it: <em>“Patients on metformin should have kidney function monitored,” “Metformin may cause gastrointestinal discomfort,” “Long-term metformin use may lead to vitamin B12 deficiency.”</em></p>
+<p>Two facts that lived in separate passages are now connected through one hop of graph expansion. The bridge entity the question never mentioned is now discoverable.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_5_8ac4a11d1c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Step-3-LLM-Rerank" class="common-anchor-header">Schritt 3: LLM Rerank</h3><p>Nach der Expansion bleiben Dutzende von Kandidatenbeziehungen übrig. Die meisten sind Rauschen.</p>
+<h3 id="Step-3-LLM-Rerank" class="common-anchor-header">Step 3: LLM Rerank</h3><p>Expansion leaves you with dozens of candidate relations. Most are noise.</p>
 <pre><code translate="no">Expanded candidate pool (example):
 r01: Metformin <span class="hljs-keyword">is</span> the first-line drug <span class="hljs-keyword">for</span> <span class="hljs-built_in">type</span> <span class="hljs-number">2</span> diabetes          ← Key
 r02: Patients on metformin should have kidney function monitored   ← Key
@@ -169,24 +169,24 @@ r09: Sulfonylureas are second-line treatment <span class="hljs-keyword">for</spa
 r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
 ...(more)
 <button class="copy-code-btn"></button></code></pre>
-<p>Das System sendet diese Kandidaten und die ursprüngliche Frage an einen LLM: "Welche beziehen sich auf Nebenwirkungen von Diabetes-Medikamenten der ersten Wahl?" Das ist ein einziger Aufruf ohne Iteration.</p>
+<p>The system sends these candidates and the original question to an LLM: “Which relate to side effects of first-line diabetes drugs?” It’s one call with no iteration.</p>
 <pre><code translate="no">After LLM filtering:
 ✓ r01: Metformin <span class="hljs-keyword">is</span> the first-line drug <span class="hljs-keyword">for</span> <span class="hljs-built_in">type</span> <span class="hljs-number">2</span> diabetes          → Establishes the bridge: first-line drug = metformin
 ✓ r02: Patients on metformin should have kidney function monitored   → Side effect: kidney impact
 ✓ r03: Metformin may cause gastrointestinal discomfort               → Side effect: GI issues
 ✓ r10: Long-term metformin use may lead to vitamin B12 deficiency    → Side effect: nutrient deficiency
 <button class="copy-code-btn"></button></code></pre>
-<p>Die ausgewählten Beziehungen decken die gesamte Kette ab: Diabetes → Metformin → Nierenüberwachung / GI-Beschwerden / B12-Mangel.</p>
-<h3 id="Step-4-Answer-Generation" class="common-anchor-header">Schritt 4: Generierung der Antwort</h3><p>Das System ruft die Originalpassagen für die ausgewählten Relationen ab und sendet sie an den LLM.</p>
-<p>Der LLM generiert aus dem vollständigen Text der Passage, nicht aus den gekürzten Tripeln. Tripel sind komprimierte Zusammenfassungen. Ihnen fehlen der Kontext, die Vorbehalte und die Besonderheiten, die der LLM benötigt, um eine fundierte Antwort zu geben.</p>
-<h3 id="See-Vector-Graph-RAG-in-action" class="common-anchor-header">Sehen Sie Vector Graph RAG in Aktion</h3><p>Wir haben auch ein interaktives Frontend entwickelt, das die einzelnen Schritte visualisiert. Klicken Sie sich durch die Schritte auf der linken Seite und der Graph wird in Echtzeit aktualisiert: orange für Startknoten, blau für erweiterte Knoten, grün für ausgewählte Beziehungen. Dadurch wird der Abruffluss konkret statt abstrakt.</p>
+<p>The selected relations cover the full chain: diabetes → metformin → kidney monitoring / GI discomfort / B12 deficiency.</p>
+<h3 id="Step-4-Answer-Generation" class="common-anchor-header">Step 4: Answer Generation</h3><p>The system retrieves the original passages for the selected relations and sends them to the LLM.</p>
+<p>The LLM generates from full passage text, not the trimmed triples. Triples are compressed summaries. They lack the context, caveats, and specifics the LLM needs to produce a grounded answer.</p>
+<h3 id="See-Vector-Graph-RAG-in-action" class="common-anchor-header">See Vector Graph RAG in action</h3><p>We also built an interactive frontend that visualizes each step. Click through the steps panel on the left and the graph updates in real time: orange for seed nodes, blue for expanded nodes, green for selected relations. It makes the retrieval flow concrete instead of abstract.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_6_f6d8b1e841.gif" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Why-One-Rerank-Beats-Multiple-Iterations" class="common-anchor-header">Warum ein Rerank besser ist als mehrere Iterationen<button data-href="#Why-One-Rerank-Beats-Multiple-Iterations" class="anchor-icon" translate="no">
+<h2 id="Why-One-Rerank-Beats-Multiple-Iterations" class="common-anchor-header">Why One Rerank Beats Multiple Iterations<button data-href="#Why-One-Rerank-Beats-Multiple-Iterations" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,19 +201,19 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Unsere Pipeline führt zwei LLM-Aufrufe pro Abfrage durch: einen für den Rerank und einen für die Generierung. Iterative Systeme wie IRCoT und Agentic RAG führen 3 bis 10+ Aufrufe durch, weil sie eine Schleife bilden: abrufen, begründen, wieder abrufen. Wir überspringen die Schleife, weil die Vektorsuche und die Subgraphenexpansion sowohl die semantische Ähnlichkeit als auch die strukturellen Verbindungen in einem Durchgang abdecken, so dass der LLM genug Kandidaten hat, um mit einem Rerank fertig zu werden.</p>
+    </button></h2><p>Our pipeline makes two LLM calls per query: one for rerank, one for generation. Iterative systems like IRCoT and Agentic RAG run 3 to 10+ calls because they loop: retrieve, reason, retrieve again. We skip the loop because vector search and subgraph expansion cover both semantic similarity and structural connections in one pass, giving the LLM enough candidates to finish in one rerank.</p>
 <table>
 <thead>
-<tr><th>Ansatz</th><th>LLM-Aufrufe pro Anfrage</th><th>Latenz-Profil</th><th>Relative API-Kosten</th></tr>
+<tr><th>Approach</th><th>LLM calls per query</th><th>Latency profile</th><th>Relative API cost</th></tr>
 </thead>
 <tbody>
-<tr><td>Vektorgraph RAG</td><td>2 (rerank + generieren)</td><td>Fest, vorhersehbar</td><td>1x</td></tr>
-<tr><td>IRCoT</td><td>3-5</td><td>Variabel</td><td>~2-3x</td></tr>
-<tr><td>Agentische RAG</td><td>5-10+</td><td>Unvorhersehbar</td><td>~3-5x</td></tr>
+<tr><td>Vector Graph RAG</td><td>2 (rerank + generate)</td><td>Fixed, predictable</td><td>1x</td></tr>
+<tr><td>IRCoT</td><td>3-5</td><td>Variable</td><td>~2-3x</td></tr>
+<tr><td>Agentic RAG</td><td>5-10+</td><td>Unpredictable</td><td>~3-5x</td></tr>
 </tbody>
 </table>
-<p>In der Produktion bedeutet das etwa 60 % niedrigere API-Kosten, 2-3 mal schnellere Antworten und vorhersehbare Latenzzeiten. Keine überraschenden Spitzen, wenn ein Agent beschließt, zusätzliche Runden zu fahren.</p>
-<h2 id="Benchmark-Results" class="common-anchor-header">Benchmark-Ergebnisse<button data-href="#Benchmark-Results" class="anchor-icon" translate="no">
+<p>In production, that’s roughly 60% lower API cost, 2-3x faster responses, and predictable latency. No surprise spikes when an agent decides to run extra rounds.</p>
+<h2 id="Benchmark-Results" class="common-anchor-header">Benchmark Results<button data-href="#Benchmark-Results" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -228,36 +228,36 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vector Graph RAG erreicht durchschnittlich 87,8 % Recall@5 bei drei Standard-Multi-Hop-QA-Benchmarks und erreicht oder übertrifft damit jede von uns getestete Methode, einschließlich HippoRAG 2, mit nur Milvus und 2 LLM-Aufrufen.</p>
-<p>Wir haben MuSiQue (2-4 Hop, die schwierigste Methode), HotpotQA (2 Hop, die am weitesten verbreitete Methode) und 2WikiMultiHopQA (2 Hop, dokumentenübergreifendes Reasoning) getestet. Die Metrik ist Recall@5: ob die richtigen unterstützenden Passagen in den Top 5 der abgerufenen Ergebnisse erscheinen.</p>
-<p>Um einen fairen Vergleich zu ermöglichen, haben wir genau dieselben vor-extrahierten Tripel aus dem <a href="https://github.com/OSU-NLP-Group/HippoRAG">HippoRAG-Repository</a> verwendet. Keine erneute Extraktion, keine benutzerdefinierte Vorverarbeitung. Der Vergleich isoliert den Abrufalgorithmus selbst.</p>
-<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-Standard-Naive-RAG" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> vs. Standard (Naive) RAG</h3><p>
+    </button></h2><p>Vector Graph RAG averages 87.8% Recall@5 across three standard multi-hop QA benchmarks, matching or exceeding every method we tested, including HippoRAG 2, with just Milvus and 2 LLM calls.</p>
+<p>We evaluated on MuSiQue (2-4 hop, the hardest), HotpotQA (2 hop, the most widely used), and 2WikiMultiHopQA (2 hop, cross-document reasoning). The metric is Recall@5: whether the correct supporting passages appear in the top 5 retrieved results.</p>
+<p>We used the exact same pre-extracted triples from the <a href="https://github.com/OSU-NLP-Group/HippoRAG">HippoRAG repository</a> for a fair comparison. No re-extraction, no custom preprocessing. The comparison isolates the retrieval algorithm itself.</p>
+<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-Standard-Naive-RAG" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> vs Standard (Naive) RAG</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_7_61772e68c8.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Vector Graph RAG hebt den durchschnittlichen Recall@5 von 73,4 % auf 87,8 %, eine Verbesserung um 19,6 Prozentpunkte.</p>
+<p>Vector Graph RAG lifts average Recall@5 from 73.4% to 87.8%, an improvement of 19.6 percentage points.</p>
 <ul>
-<li>MuSiQue: größter Gewinn (+31,4 pp). 3-4-Hop-Benchmark, die schwierigsten Multi-Hop-Fragen und genau dort, wo die Subgraphenerweiterung den größten Einfluss hat.</li>
-<li>2WikiMultiHopQA: deutliche Verbesserung (+27,7 Punkte). Dokumentenübergreifendes Reasoning, ein weiterer Sweet Spot für die Subgraphenerweiterung.</li>
-<li>HotpotQA: geringerer Zuwachs (+6,1 pp), aber Standard-RAG erreicht bereits 90,8 % in diesem Datensatz. Die Obergrenze ist niedrig.</li>
+<li>MuSiQue: largest gain (+31.4 pp). 3-4 hop benchmark, the hardest multi-hop questions, and exactly where subgraph expansion has the biggest impact.</li>
+<li>2WikiMultiHopQA: sharp improvement (+27.7 pp). Cross-document reasoning, another sweet spot for subgraph expansion.</li>
+<li>HotpotQA: smaller gain (+6.1 pp), but standard RAG already scores 90.8% on this dataset. The ceiling is low.</li>
 </ul>
-<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-State-of-the-Art-Methods-SOTA" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">Vektorgrafik-RAG</a> im Vergleich zu State-of-the-Art-Methoden (SOTA)</h3><p>
+<h3 id="Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-vs-State-of-the-Art-Methods-SOTA" class="common-anchor-header"><a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> vs State-of-the-Art Methods (SOTA)</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/vector_graph_rag_without_graph_database_md_8_2a0b90b574.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Vector Graph RAG erzielt mit 87,8 % die höchste Durchschnittspunktzahl im Vergleich zu HippoRAG 2, IRCoT und NV-Embed-v2.</p>
-<p>Benchmark für Benchmark:</p>
+<p>Vector Graph RAG takes the highest average score at 87.8% against HippoRAG 2, IRCoT, and NV-Embed-v2.</p>
+<p>Benchmark by benchmark:</p>
 <ul>
-<li>HotpotQA: Gleichstand mit HippoRAG 2 (beide 96,3%)</li>
-<li>2WikiMultiHopQA: führt mit 3,7 Punkten Vorsprung (94,1% vs. 90,4%)</li>
-<li>MuSiQue (der härteste): liegt um 1,7 Punkte zurück (73,0% vs. 74,7%)</li>
+<li>HotpotQA: ties HippoRAG 2 (both 96.3%)</li>
+<li>2WikiMultiHopQA: leads by 3.7 points (94.1% vs 90.4%)</li>
+<li>MuSiQue (the hardest): trails by 1.7 points (73.0% vs 74.7%)</li>
 </ul>
-<p>Vector Graph RAG erreicht diese Zahlen mit nur 2 LLM-Aufrufen pro Anfrage, ohne Graphdatenbank und ohne ColBERTv2. Es läuft auf der einfachsten Infrastruktur im Vergleich und erreicht trotzdem den höchsten Durchschnitt.</p>
-<h2 id="How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="common-anchor-header">Wie <a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> im Vergleich zu anderen Graph RAG-Ansätzen abschneidet<button data-href="#How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="anchor-icon" translate="no">
+<p>Vector Graph RAG achieves these numbers with only 2 LLM calls per query, no graph database, and no ColBERTv2. It runs on the simplest infrastructure in the comparison and still takes the highest average.</p>
+<h2 id="How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="common-anchor-header">How <a href="https://github.com/zilliztech/vector-graph-rag">Vector Graph RAG</a> Compares to Other Graph RAG Approaches<button data-href="#How-Vector-Graph-RAGhttpsgithubcomzilliztechvector-graph-rag-Compares-to-Other-Graph-RAG-Approaches" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -272,24 +272,24 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Verschiedene Graph RAG-Ansätze sind für unterschiedliche Probleme optimiert. Vector Graph RAG ist für produktive Multi-Hop-QA mit vorhersehbaren Kosten und einfacher Infrastruktur konzipiert.</p>
+    </button></h2><p>Different Graph RAG approaches optimize for different problems. Vector Graph RAG is built for production multi-hop QA with predictable cost and simple infrastructure.</p>
 <table>
 <thead>
-<tr><th></th><th>Microsoft GraphRAG</th><th>HippoRAG 2</th><th>IRCoT/Agentisches RAG</th><th><strong>Vector Graph RAG</strong></th></tr>
+<tr><th></th><th>Microsoft GraphRAG</th><th>HippoRAG 2</th><th>IRCoT / Agentic RAG</th><th><strong>Vector Graph RAG</strong></th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Infrastruktur</strong></td><td>Graph DB + Vektor DB</td><td>ColBERTv2 + In-Memory-Graph</td><td>Vektor-DB + Mehrrunden-Agenten</td><td><strong>Nur Milvus</strong></td></tr>
-<tr><td><strong>LLM-Aufrufe pro Abfrage</strong></td><td>Variiert</td><td>Mäßig</td><td>3-10+</td><td><strong>2</strong></td></tr>
-<tr><td><strong>Am besten geeignet für</strong></td><td>Globale Korpuszusammenfassung</td><td>Feinkörniges akademisches Retrieval</td><td>Komplexe, ergebnisoffene Erkundung</td><td><strong>Mehrstufige QA in der Produktion</strong></td></tr>
-<tr><td><strong>Bedenken hinsichtlich der Skalierung</strong></td><td>Teure LLM-Indizierung</td><td>Vollständiger Graph im Speicher</td><td>Unvorhersehbare Latenzzeiten und Kosten</td><td><strong>Skalierbar mit Milvus</strong></td></tr>
-<tr><td><strong>Komplexität der Einrichtung</strong></td><td>Hoch</td><td>Mittel-Hoch</td><td>Mittel</td><td><strong>Niedrig (Pip-Installation)</strong></td></tr>
+<tr><td><strong>Infrastructure</strong></td><td>Graph DB + vector DB</td><td>ColBERTv2 + in-memory graph</td><td>Vector DB + multi-round agents</td><td><strong>Milvus only</strong></td></tr>
+<tr><td><strong>LLM calls per query</strong></td><td>Varies</td><td>Moderate</td><td>3-10+</td><td><strong>2</strong></td></tr>
+<tr><td><strong>Best for</strong></td><td>Global corpus summarization</td><td>Fine-grained academic retrieval</td><td>Complex open-ended exploration</td><td><strong>Production multi-hop QA</strong></td></tr>
+<tr><td><strong>Scaling concern</strong></td><td>Expensive LLM indexing</td><td>Full graph in memory</td><td>Unpredictable latency and cost</td><td><strong>Scales with Milvus</strong></td></tr>
+<tr><td><strong>Setup complexity</strong></td><td>High</td><td>Medium-High</td><td>Medium</td><td><strong>Low (pip install)</strong></td></tr>
 </tbody>
 </table>
-<p><a href="https://github.com/microsoft/graphrag">Microsoft GraphRAG</a> verwendet hierarchisches Community Clustering, um globale Zusammenfassungsfragen zu beantworten, wie z. B. "Was sind die Hauptthemen in diesem Korpus? Das ist ein anderes Problem als Multi-Hop-QA&quot;.</p>
-<p><a href="https://arxiv.org/abs/2502.14802">HippoRAG 2</a> (Gutierrez et al., 2025) verwendet kognitiv inspiriertes Retrieval mit ColBERTv2-Matching auf Token-Ebene. Das Laden des gesamten Graphen in den Speicher schränkt die Skalierbarkeit ein.</p>
-<p>Iterative Ansätze wie <a href="https://arxiv.org/abs/2212.10509">IRCoT</a> tauschen die Einfachheit der Infrastruktur gegen LLM-Kosten und unvorhersehbare Latenzzeiten.</p>
-<p>Vector Graph RAG zielt auf die produktive Multi-Hop-QA ab: Teams, die vorhersehbare Kosten und Latenzzeiten wünschen, ohne eine Graphdatenbank hinzuzufügen.</p>
-<h2 id="When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="common-anchor-header">Wann wird Vector Graph RAG verwendet und welche Anwendungsfälle gibt es?<button data-href="#When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="anchor-icon" translate="no">
+<p><a href="https://github.com/microsoft/graphrag">Microsoft GraphRAG</a> uses hierarchical community clustering to answer global summarization questions like ‘what are the main themes across this corpus?’ That’s a different problem than multi-hop QA.&quot;</p>
+<p><a href="https://arxiv.org/abs/2502.14802">HippoRAG 2</a> (Gutierrez et al., 2025) uses cognitive-inspired retrieval with ColBERTv2 token-level matching. Loading the full graph into memory limits scalability.</p>
+<p>Iterative approaches like <a href="https://arxiv.org/abs/2212.10509">IRCoT</a> trade infrastructure simplicity for LLM cost and unpredictable latency.</p>
+<p>Vector Graph RAG targets production multi-hop QA: teams that want predictable cost and latency without adding a graph database.</p>
+<h2 id="When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="common-anchor-header">When to Use Vector Graph RAG and Key Use Cases<button data-href="#When-to-Use-Vector-Graph-RAG-and-Key-Use-Cases" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -304,19 +304,19 @@ r10: Long-term metformin use may lead to vitamin B12 deficiency    ← Key
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Vector Graph RAG ist für vier Arten von Workloads ausgelegt:</p>
+    </button></h2><p>Vector Graph RAG is built for four kinds of workloads:</p>
 <table>
 <thead>
-<tr><th>Szenario</th><th>Warum es passt</th></tr>
+<tr><th>Scenario</th><th>Why it fits</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>Wissensintensive Dokumente</strong></td><td>Juristische Codes mit Querverweisen, biomedizinische Literatur mit Wirkstoff-Gen-Krankheits-Ketten, Finanzberichte mit Firmen-Personen-Ereignis-Verknüpfungen, technische Dokumentationen mit API-Abhängigkeitsgraphen</td></tr>
-<tr><td><strong>2-4-Hop-Fragen</strong></td><td>Fragen mit einem Sprung funktionieren gut mit Standard-RAG. Bei fünf oder mehr Sprüngen sind möglicherweise iterative Methoden erforderlich. Der Bereich von 2 bis 4 Hops ist der Sweet Spot der Subgraph Expansion.</td></tr>
-<tr><td><strong>Einfacher Einsatz</strong></td><td>Eine Datenbank, eine <code translate="no">pip install</code>, keine Graph-Infrastruktur zu erlernen</td></tr>
-<tr><td><strong>Empfindlichkeit gegenüber Kosten und Latenzzeiten</strong></td><td>Zwei LLM-Aufrufe pro Abfrage, fest und vorhersehbar. Bei Tausenden von täglichen Abfragen macht sich der Unterschied bemerkbar.</td></tr>
+<tr><td><strong>Knowledge-dense documents</strong></td><td>Legal codes with cross-references, biomedical literature with drug-gene-disease chains, financial filings with company-person-event links, technical docs with API dependency graphs</td></tr>
+<tr><td><strong>2-4 hop questions</strong></td><td>One-hop questions work fine with standard RAG. Five or more hops may need iterative methods. The 2-4 hop range is subgraph expansion’s sweet spot.</td></tr>
+<tr><td><strong>Simple deployment</strong></td><td>One database, one <code translate="no">pip install</code>, no graph infrastructure to learn</td></tr>
+<tr><td><strong>Cost and latency sensitivity</strong></td><td>Two LLM calls per query, fixed and predictable. At thousands of daily queries, the difference adds up.</td></tr>
 </tbody>
 </table>
-<h2 id="Get-Started-with-Vector-Graph-RAG" class="common-anchor-header">Erste Schritte mit Vector Graph RAG<button data-href="#Get-Started-with-Vector-Graph-RAG" class="anchor-icon" translate="no">
+<h2 id="Get-Started-with-Vector-Graph-RAG" class="common-anchor-header">Get Started with Vector Graph RAG<button data-href="#Get-Started-with-Vector-Graph-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -345,9 +345,9 @@ rag.add_texts([
 result = rag.query(<span class="hljs-string">&quot;What side effects should I watch for with first-line diabetes drugs?&quot;</span>)
 <span class="hljs-built_in">print</span>(result.answer)
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">VectorGraphRAG()</code> ohne Argumente wird standardmäßig <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> verwendet. Es wird eine lokale <code translate="no">.db</code> Datei erstellt, wie SQLite. Kein Server zu starten, nichts zu konfigurieren.</p>
-<p><code translate="no">add_texts()</code> RAG ruft einen LLM auf, um Tripel aus Ihrem Text zu extrahieren, vektorisiert sie und speichert alles in Milvus. <code translate="no">query()</code> führt den vollständigen vierstufigen Abfragefluss aus: Seed, Expand, Rerank, Generate.</p>
-<p>Für die Produktion muss ein URI-Parameter ausgetauscht werden. Der Rest des Codes bleibt gleich:</p>
+<p><code translate="no">VectorGraphRAG()</code> with no arguments defaults to <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>. It creates a local <code translate="no">.db</code> file, like SQLite. No server to start, nothing to configure.</p>
+<p><code translate="no">add_texts()</code> calls an LLM to extract triples from your text, vectorizes them, and stores everything in Milvus. <code translate="no">query()</code> runs the full four-step retrieval flow: seed, expand, rerank, generate.</p>
+<p>For production, swap one URI parameter. The rest of the code stays the same:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># Local development</span>
 rag = VectorGraphRAG()
 
@@ -357,7 +357,7 @@ rag = VectorGraphRAG(uri=<span class="hljs-string">&quot;http://your-milvus-serv
 <span class="hljs-comment"># Zilliz Cloud (managed Milvus, free tier available)</span>
 rag = VectorGraphRAG(uri=<span class="hljs-string">&quot;your-zilliz-endpoint&quot;</span>, token=<span class="hljs-string">&quot;your-api-key&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>Zum Importieren von PDFs, Webseiten oder Word-Dateien:</p>
+<p>To import PDFs, web pages, or Word files:</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> vector_graph_rag.loaders <span class="hljs-keyword">import</span> DocumentImporter
 
 importer = DocumentImporter(chunk_size=<span class="hljs-number">1000</span>, chunk_overlap=<span class="hljs-number">200</span>)
@@ -367,7 +367,7 @@ result = importer.import_sources([
 ])
 rag.add_documents(result.documents, extract_triplets=<span class="hljs-literal">True</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Conclusion" class="common-anchor-header">Schlussfolgerung<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -382,20 +382,20 @@ rag.add_documents(result.documents, extract_triplets=<span class="hljs-literal">
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Graph RAG braucht keine Graphdatenbank. Vector Graph RAG speichert die Graphenstruktur als ID-Referenzen über drei Milvus-Sammlungen hinweg, wodurch Graphen-Traversal in Primärschlüssel-Lookups umgewandelt wird und jede Multi-Hop-Abfrage auf zwei LLM-Aufrufe beschränkt bleibt.</p>
-<p>Auf einen Blick:</p>
+    </button></h2><p>Graph RAG doesn’t need a graph database. Vector Graph RAG stores graph structure as ID references across three Milvus collections, which turns graph traversal into primary-key lookups and keeps every multi-hop query at a fixed two LLM calls.</p>
+<p>At a glance:</p>
 <ul>
-<li>Open-Source-Python-Bibliothek. Multi-Hop-Reasoning allein mit Milvus.</li>
-<li>Drei durch ID verknüpfte Sammlungen. Entitäten (Knoten), Beziehungen (Kanten), Passagen (Quelltext). Subgraphenexpansion folgt den IDs, um Brückenentitäten zu entdecken, die in der Anfrage nicht erwähnt werden.</li>
-<li>Zwei LLM-Aufrufe pro Abfrage. Ein Rerank, eine Generierung. Keine Iteration.</li>
-<li>87,8 % durchschnittlicher Recall@5 bei MuSiQue, HotpotQA und 2WikiMultiHopQA, wobei zwei der drei Abfragen mit HippoRAG 2 übereinstimmen oder es sogar übertreffen.</li>
+<li>Open-source Python library. Multi-hop reasoning on Milvus alone.</li>
+<li>Three collections linked by ID. Entities (nodes), relations (edges), passages (source text). Subgraph expansion follows the IDs to discover bridge entities the query doesn’t mention.</li>
+<li>Two LLM calls per query. One rerank, one generation. No iteration.</li>
+<li>87.8% average Recall@5 across MuSiQue, HotpotQA, and 2WikiMultiHopQA, matching or beating HippoRAG 2 on two of three.</li>
 </ul>
-<h3 id="Try-it" class="common-anchor-header">Probieren Sie es aus:</h3><ul>
-<li><a href="https://github.com/zilliztech/vector-graph-rag">GitHub: zilliztech/vector-graph-rag</a> für den Code</li>
-<li><a href="https://zilliztech.github.io/vector-graph-rag">Docs</a> für die vollständige API und Beispiele</li>
-<li>Treten Sie der <a href="https://discord.com/invite/8uyFbECzPX">Milvus-Community</a> <a href="https://slack.milvus.io/">auf Discord</a> bei, um Fragen zu stellen und Feedback zu geben</li>
-<li><a href="https://milvus.io/office-hours">Buchen Sie eine Milvus-Sprechstunde</a>, um Ihren Anwendungsfall durchzugehen</li>
-<li><a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> bietet ein kostenloses Tier mit verwaltetem Milvus, wenn Sie die Einrichtung der Infrastruktur überspringen möchten</li>
+<h3 id="Try-it" class="common-anchor-header">Try it:</h3><ul>
+<li><a href="https://github.com/zilliztech/vector-graph-rag">GitHub: zilliztech/vector-graph-rag</a> for the code</li>
+<li><a href="https://zilliztech.github.io/vector-graph-rag">Docs</a> for the full API and examples</li>
+<li>Join the <a href="https://slack.milvus.io/">Milvus</a> <a href="https://discord.com/invite/8uyFbECzPX">community</a> <a href="https://slack.milvus.io/">on Discord</a> to ask questions and share feedback</li>
+<li><a href="https://milvus.io/office-hours">Book a Milvus Office Hours session</a> to walk through your use case</li>
+<li><a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> offers a free tier with managed Milvus if you’d rather skip infrastructure setup</li>
 </ul>
 <h2 id="FAQ" class="common-anchor-header">FAQ<button data-href="#FAQ" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -412,7 +412,7 @@ rag.add_documents(result.documents, extract_triplets=<span class="hljs-literal">
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Can-I-do-Graph-RAG-with-just-a-vector-database" class="common-anchor-header">Kann ich Graph RAG nur mit einer Vektordatenbank betreiben?</h3><p>Ja. Vector Graph RAG speichert die Struktur des Wissensgraphen (Entitäten, Relationen und ihre Verbindungen) in drei Milvus-Sammlungen, die durch ID-Querverweise verbunden sind. Anstatt Kanten in einer Graphdatenbank zu durchlaufen, werden Primärschlüssel-Lookups in Milvus verkettet, um einen Subgraphen um die Startentitäten zu erweitern. Bei drei Standard-Multi-Hop-Benchmarks wird so ein durchschnittlicher Recall@5 von 87,8 % erreicht, ohne dass eine Graphdatenbank-Infrastruktur benötigt wird.</p>
-<h3 id="How-does-Vector-Graph-RAG-compare-to-Microsoft-GraphRAG" class="common-anchor-header">Was ist der Unterschied zwischen Vector Graph RAG und Microsoft GraphRAG?</h3><p>Sie lösen unterschiedliche Probleme. Microsoft GraphRAG verwendet hierarchisches Community Clustering für die globale Korpuszusammenfassung ("Was sind die Hauptthemen in diesen Dokumenten?"). Vector Graph RAG konzentriert sich auf die Beantwortung von Multi-Hop-Fragen, bei denen das Ziel darin besteht, bestimmte Fakten über Passagen hinweg zu verknüpfen. Vector Graph RAG benötigt nur Milvus und zwei LLM-Aufrufe pro Anfrage. Microsoft GraphRAG benötigt eine Graphdatenbank und verursacht höhere Indizierungskosten.</p>
-<h3 id="What-types-of-questions-benefit-from-multi-hop-RAG" class="common-anchor-header">Welche Arten von Fragen profitieren von Multi-hop RAG?</h3><p>Multi-hop RAG hilft bei Fragen, bei denen die Antwort von der Verknüpfung von Informationen abhängt, die über mehrere Passagen verstreut sind, insbesondere wenn eine Schlüsselentität nie in der Frage vorkommt. Beispiele hierfür sind "Welche Nebenwirkungen hat das Medikament der ersten Wahl für Diabetes?" (erfordert die Entdeckung von Metformin als Brücke), die Suche nach Querverweisen in rechtlichen oder regulatorischen Texten und die Verfolgung der Abhängigkeitskette in technischer Dokumentation. Standard-RAG kann gut mit Einzelfaktor-Suchanfragen umgehen. Multi-Hop-RAG ist von Vorteil, wenn der Argumentationspfad zwei bis vier Schritte lang ist.</p>
-<h3 id="Do-I-need-to-extract-knowledge-graph-triples-manually" class="common-anchor-header">Muss ich Wissensgraphen-Tripel manuell extrahieren?</h3><p>Nein. <code translate="no">add_texts()</code> und <code translate="no">add_documents()</code> rufen automatisch ein LLM auf, um Entitäten und Beziehungen zu extrahieren, sie zu vektorisieren und in Milvus zu speichern. Sie können Dokumente aus URLs, PDFs und DOCX-Dateien importieren, indem Sie die integrierte <code translate="no">DocumentImporter</code> verwenden. Für das Benchmarking oder die Migration unterstützt die Bibliothek den Import von vor-extrahierten Triples aus anderen Frameworks wie HippoRAG.</p>
+    </button></h2><h3 id="Can-I-do-Graph-RAG-with-just-a-vector-database" class="common-anchor-header">Can I do Graph RAG with just a vector database?</h3><p>Yes. Vector Graph RAG stores knowledge graph structure (entities, relations, and their connections) inside three Milvus collections linked by ID cross-references. Instead of traversing edges in a graph database, it chains primary-key lookups in Milvus to expand a subgraph around seed entities. This achieves 87.8% average Recall@5 on three standard multi-hop benchmarks without any graph database infrastructure.</p>
+<h3 id="How-does-Vector-Graph-RAG-compare-to-Microsoft-GraphRAG" class="common-anchor-header">How does Vector Graph RAG compare to Microsoft GraphRAG?</h3><p>They solve different problems. Microsoft GraphRAG uses hierarchical community clustering for global corpus summarization (“What are the main themes across these documents?”). Vector Graph RAG focuses on multi-hop question answering, where the goal is to chain specific facts across passages. Vector Graph RAG needs only Milvus and two LLM calls per query. Microsoft GraphRAG requires a graph database and carries higher indexing costs.</p>
+<h3 id="What-types-of-questions-benefit-from-multi-hop-RAG" class="common-anchor-header">What types of questions benefit from multi-hop RAG?</h3><p>Multi-hop RAG helps with questions where the answer depends on connecting information scattered across multiple passages, especially when a key entity never appears in the question. Examples include “What side effects does the first-line diabetes drug have?” (requires discovering metformin as the bridge), cross-reference lookups in legal or regulatory text, and dependency chain tracing in technical documentation. Standard RAG handles single-fact lookups well. Multi-hop RAG adds value when the reasoning path is two to four steps long.</p>
+<h3 id="Do-I-need-to-extract-knowledge-graph-triples-manually" class="common-anchor-header">Do I need to extract knowledge graph triples manually?</h3><p>No. <code translate="no">add_texts()</code> and <code translate="no">add_documents()</code> automatically call an LLM to extract entities and relationships, vectorize them, and store them in Milvus. You can import documents from URLs, PDFs, and DOCX files using the built-in <code translate="no">DocumentImporter</code>. For benchmarking or migration, the library supports importing pre-extracted triples from other frameworks like HippoRAG.</p>
