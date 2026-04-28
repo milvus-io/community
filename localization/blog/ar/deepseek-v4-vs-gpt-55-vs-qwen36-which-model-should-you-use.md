@@ -3,8 +3,7 @@ id: deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 title: 'DeepSeek V4 مقابل GPT-5.5.5 مقابل Qwen3.6: ما النموذج الذي يجب عليك استخدامه؟'
 author: Lumina Wang
 date: 2026-4-28
-cover: >-
-  assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_1_98e0113041.png
+cover: assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -38,11 +37,11 @@ origin: >-
     </button></h2><p><strong>DeepSeek V4 و GPT-5.5.5 و Qwen3.6-35B-A3B هي نماذج ذكاء اصطناعي مختلفة تستهدف أجزاءً مختلفة من مكدس النماذج.</strong> يركّز DeepSeek V4 على الاستدلال طويل الأمد مفتوح السياق. يركز GPT-5.5.5 على الأداء المستضاف في الحدود، والترميز، والبحث عبر الإنترنت، والمهام ذات الأدوات الثقيلة. يركز Qwen3.6-35B-A3B على النشر متعدد الوسائط مفتوح الوزن مع بصمة أصغر بكثير من المعلمة النشطة.</p>
 <p>المقارنة مهمة لأن نظام <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">البحث المتجه الإنتاجي</a> نادرًا ما يعتمد على النموذج وحده. تؤثر كل من قدرة النموذج، وطول السياق، والتحكم في النشر، وجودة الاسترجاع، وتكلفة العرض على تجربة المستخدم النهائية.</p>
 <h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: نموذج MoE مفتوح الوزن للتحكم في تكلفة السياق الطويل</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4</strong></a> <strong>عبارة عن عائلة نماذج MoE مفتوحة الوزن من طراز MoE التي أصدرتها DeepSeek في 24 أبريل 2026.</strong> يسرد الإصدار الرسمي نوعين مختلفين: DeepSeek V4-Pro و DeepSeek V4-Flash. يحتوي V4-Pro على 1.6 تيرابايت من المعلمات الإجمالية مع تنشيط 49B لكل رمز مميز، بينما يحتوي V4-Flash على 284B من المعلمات الإجمالية مع تنشيط 13B لكل رمز مميز. كلاهما يدعمان نافذة سياق 1M-رمز.</p>
-<p>تسرد <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">بطاقة نموذج DeepSeek V4-Pro</a> أيضًا أن النموذج مرخص من معهد ماساتشوستس للتكنولوجيا ومتاح من خلال Hugging Face و ModelScope. بالنسبة للفرق التي تقوم ببناء تدفقات عمل المستندات ذات السياق الطويل، فإن الجاذبية الرئيسية هي التحكم في التكلفة ومرونة النشر مقارنةً بواجهات برمجة التطبيقات الأمامية المغلقة بالكامل.</p>
+<p>تسرد <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">بطاقة نموذج DeepSeek V4-Pro</a> أيضًا أن النموذج مرخص من معهد ماساتشوستس للتكنولوجيا ومتوفر من خلال Hugging Face و ModelScope. بالنسبة للفرق التي تنشئ تدفقات عمل المستندات ذات السياق الطويل، فإن الجاذبية الرئيسية هي التحكم في التكلفة ومرونة النشر مقارنةً بواجهات برمجة التطبيقات الأمامية المغلقة بالكامل.</p>
 <h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5.5: نموذج حدودي مستضاف للترميز والبحث واستخدام الأدوات</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>هو نموذج حدودي مغلق أصدرته OpenAI في 23 أبريل 2026.</strong> يضعه OpenAI للترميز، والبحث عبر الإنترنت، وتحليل البيانات، وعمل المستندات، وعمل جداول البيانات، وتشغيل البرامج، والمهام القائمة على الأدوات. تسرد مستندات النموذج الرسمي <code translate="no">gpt-5.5</code> مع نافذة سياق واجهة برمجة التطبيقات بمليون رمز، بينما قد تختلف حدود منتجات Codex وChatGPT.</p>
-<p>تشير تقارير OpenAI إلى نتائج معيارية قوية في الترميز: 82.7٪ على Terminal-Bench 2.0، و73.1٪ على Expert-SWE، و58.6٪ على SWE-Bench Pro. <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span> المفاضلة هي السعر: يسرد التسعير الرسمي لواجهة برمجة التطبيقات GPT-5.5 بسعر</span></span></span> <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>5</mi><mn>لكل 1 لكل</mn></mrow></semantics></math></span></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">1</span></span></span></span>مليون <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">رمز إدخال و</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">5</span></span></span><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics>لكل</semantics></math></span></span>1 مليون رمز إخراج، قبل أي تفاصيل تسعير خاصة بالمنتج أو السياق الطويل.</p>
+<p>تشير تقارير OpenAI إلى نتائج معيارية قوية في الترميز: 82.7٪ على Terminal-Bench 2.0، و73.1٪ على Expert-SWE، و58.6٪ على SWE-Bench Pro. المفاضلة هي السعر: يسرد تسعير واجهة برمجة التطبيقات الرسمية GPT-5.5 بسعر 5 دولارات لكل مليون رمز إدخال و30 دولارًا لكل مليون رمز إخراج، قبل أي تفاصيل تسعير خاصة بالمنتج أو السياق الطويل.</p>
 <h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: نموذج معيار نشط أصغر لأحمال العمل المحلية ومتعددة الوسائط</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6.6-35B-A3B</strong></a> <strong>هو نموذج وزارة الطاقة مفتوح الوزن من فريق Qwen التابع لعلي بابا.</strong> تسرد بطاقة النموذج الخاصة به 35 مليار معلمة إجمالية، و3 مليار معلمة مفعلة، ومشفّر رؤية، وترخيص Apache-2.0. وهي تدعم نافذة سياق أصلية مكونة من 262,144 رمزًا ويمكن أن تمتد إلى حوالي 1,010,000 رمز مع تحجيم YaRN.</p>
-<p>وهذا يجعل Qwen3.6-35B-A3B جذابًا عندما يكون النشر المحلي أو العرض الخاص أو إدخال النص المصور أو أعباء العمل باللغة الصينية أكثر أهمية من ملاءمة النموذج الحدودي المُدار.</p>
+<p>هذا يجعل Qwen3.6-35B-A3B جذابًا عندما يكون النشر المحلي أو العرض الخاص أو إدخال النص المصور أو أعباء العمل باللغة الصينية أكثر أهمية من ملاءمة النموذج الحدودي المُدار.</p>
 <h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 مقابل GPT-5.5.5 مقابل Qwen3.6: مقارنة مواصفات النموذج</h3><table>
 <thead>
 <tr><th>النموذج</th><th>نموذج النشر</th><th>معلومات المعلمة العامة</th><th>نافذة السياق</th><th>أقوى ملاءمة</th></tr>
@@ -75,7 +74,7 @@ origin: >-
 <tr><th>السؤال</th><th>الإجابة المتوقعة في وقت الاختبار</th><th>المصدر</th></tr>
 </thead>
 <tbody>
-<tr><td>ما هي تكلفة إنشاء صورة متوسطة الجودة بدقة 1024×1024 مع <code translate="no">gpt-image-2</code> من خلال واجهة برمجة تطبيقات OpenAI؟</td><td><code translate="no">$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">تسعير إنشاء صورة OpenAI</a></td></tr>
+<tr><td>ما هي تكلفة إنشاء صورة متوسطة الجودة بدقة 1024×1024 مع <code translate="no">gpt-image-2</code> من خلال واجهة برمجة تطبيقات OpenAI؟</td><td><code translate="no">\$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">تسعير إنشاء صورة OpenAI</a></td></tr>
 <tr><td>ما هي الأغنية رقم 1 في قائمة بيلبورد هوت 100 لهذا الأسبوع، ومن هو الفنان؟</td><td><code translate="no">Choosin' Texas</code> بواسطة إيلا لانجلي</td><td><a href="https://www.billboard.com/charts/hot-100/">مخطط بيلبورد هوت 100</a></td></tr>
 <tr><td>من يتصدر حالياً ترتيب سائقي الفورمولا 1 لعام 2026؟</td><td>كيمي أنتونيلي</td><td><a href="https://www.formula1.com/en/results/2026/drivers">ترتيب سائقي الفورمولا 1</a></td></tr>
 </tbody>
@@ -87,7 +86,11 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>تستخدم صفحة تسعير الصور في OpenAI التسمية "متوسط" بدلاً من "قياسي" لنتيجة 0.053 دولار 1024×1024، لذلك تم تطبيع السؤال هنا ليتطابق مع صياغة واجهة برمجة التطبيقات الحالية.</p>
+<p>تستخدم صفحة تسعير الصور في OpenAI تسمية "متوسط" بدلاً من "قياسي" لـ <br>
+
+  
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
+   </span> <span class="img-wrapper"> <span>غلاف المدونة الضيق 1152 × 720</span>0 </span>.053 <span class="img-wrapper">دولارًا </span>أمريكيًا 1024 × 1024 × 1024، لذا تم تطبيع السؤال هنا ليتطابق مع صياغة واجهة برمجة التطبيقات الحالية.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -112,7 +115,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>أجاب DeepSeek V4-Pro على السؤال الأول بشكل غير صحيح. ولم يتمكن من الإجابة عن السؤالين الثاني والثالث من خلال البحث المباشر على الويب في هذا الإعداد.</p>
+<p>أجاب DeepSeek V4-Pro على السؤال الأول بشكل غير صحيح. لم يتمكن من الإجابة عن السؤالين الثاني والثالث من خلال البحث المباشر على الويب في هذا الإعداد.</p>
 <p>تضمنت الإجابة الثانية عنوان URL الصحيح ل Billboard ولكنها لم تسترجع الأغنية رقم 1 الحالية. استخدمت الإجابة الثالثة المصدر الخاطئ، لذا اعتبرناها غير صحيحة.</p>
 <h4 id="GPT-55" class="common-anchor-header">GPT-5.5.5</h4><p>
   <span class="img-wrapper">
@@ -120,7 +123,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>تعامل GPT-5.5.5 مع هذا الاختبار بشكل أفضل بكثير. فقد كانت إجاباته قصيرة ودقيقة ومصدرية وسريعة. عندما تعتمد المهمة على معلومات حالية ويتوفر للنموذج استرجاع مباشر، كان لـ GPT-5.5.5 ميزة واضحة في هذا الإعداد.</p>
+<p>تعامل GPT-5.5.5 مع هذا الاختبار بشكل أفضل بكثير. فقد كانت إجاباته قصيرة ودقيقة ومصدرية وسريعة. عندما تعتمد المهمة على معلومات حالية ويتوفر لدى النموذج استرجاع مباشر، كان لـ GPT-5.5.5 ميزة واضحة في هذا الإعداد.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_7_91686c177e.png" alt="" class="doc-image" id="" />
@@ -283,7 +286,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td>GPT-5.5.5</td><td>أفضل قدرة إجمالية</td><td>فازت في اختبارات الاسترجاع المباشر، وتصحيح أخطاء التزامن، واختبارات علامات السياق الطويل</td><td>تكلفة أعلى؛ الأقوى عندما تبرر الدقة واستخدام الأداة العلاوة</td></tr>
-<tr><td>DeepSeek V4-Pro</td><td>نشر طويل السياق ومنخفض التكلفة</td><td>أعطت أقوى إصلاح غير GPT لخلل التزامن وعثرت على محتوى العلامة</td><td>يحتاج إلى أدوات استرجاع خارجية لمهام الويب المباشرة؛ كان تتبع موقع الحرف الدقيق أضعف في هذا الاختبار</td></tr>
+<tr><td>DeepSeek V4-Pro</td><td>سياق طويل، ونشر أقل تكلفة</td><td>أعطت أقوى إصلاح غير GPT لخلل التزامن وعثرت على محتوى العلامة</td><td>يحتاج إلى أدوات استرجاع خارجية لمهام الويب المباشرة؛ كان تتبع موقع الحرف الدقيق أضعف في هذا الاختبار</td></tr>
 <tr><td>Qwen3.6-35B-A3B</td><td>النشر المحلي، والأوزان المفتوحة، والمدخلات متعددة الوسائط، وأعباء العمل باللغة الصينية</td><td>كان أداؤه جيدًا في تحديد الأخطاء وفهم السياق الطويل</td><td>كانت جودة الإصلاح أقل قابلية للتطوير؛ لم يكن الوصول المباشر إلى الويب متاحًا في هذا الإعداد</td></tr>
 </tbody>
 </table>
@@ -307,7 +310,7 @@ origin: >-
     </button></h2><p>لا تلغي نافذة السياق الطويل الحاجة إلى الاسترجاع. بل تغير استراتيجية الاسترجاع.</p>
 <p>في تطبيق RAG، يجب ألا يفحص النموذج كل مستند في كل طلب. تخزن <a href="https://zilliz.com/learn/introduction-to-unstructured-data">بنية قاعدة البيانات المتجهة</a> التضمينات، وتبحث عن الأجزاء ذات الصلة من الناحية الدلالية، وتطبق مرشحات البيانات الوصفية وتعيد مجموعة سياق مضغوطة إلى النموذج. وهذا يعطي النموذج مدخلات أفضل مع تقليل التكلفة والكمون.</p>
 <p>يناسب Milvus هذا الدور لأنه يتعامل مع <a href="https://milvus.io/docs/schema.md">مخططات المجموعة،</a> وفهرسة المتجهات، والبيانات الوصفية القياسية، وعمليات الاسترجاع في نظام واحد. ويمكنك البدء محليًا باستخدام <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite،</a> والانتقال إلى <a href="https://milvus.io/docs/quickstart.md">بدء تشغيل Milvus السريع</a> المستقل، والنشر باستخدام <a href="https://milvus.io/docs/install_standalone-docker.md">تثبيت Docker</a> أو <a href="https://milvus.io/docs/install_standalone-docker-compose.md">نشر Docker Compose،</a> والتوسع أكثر مع <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">نشر Kubernetes</a> عندما ينمو عبء العمل.</p>
-<h2 id="How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="common-anchor-header">كيفية إنشاء خط أنابيب RAG باستخدام Milvus وDeepSeek V4<button data-href="#How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="anchor-icon" translate="no">
+<h2 id="How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="common-anchor-header">كيفية بناء خط أنابيب RAG باستخدام Milvus وDeepSeek V4<button data-href="#How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -546,8 +549,8 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
 <tr><th>يحتاج الإنتاج</th><th>ميزة ميلفوس للنظر فيها</th><th>لماذا يساعد</th></tr>
 </thead>
 <tbody>
-<tr><td>مزج الإشارات الدلالية والكلمات المفتاحية</td><td><a href="https://milvus.io/docs/hybrid_search_with_milvus.md">البحث الهجين مع ميلفوس</a></td><td>يجمع بين البحث المتجه الكثيف مع إشارات متناثرة أو إشارات النص الكامل</td></tr>
-<tr><td>دمج النتائج من مسترجعات متعددة</td><td><a href="https://milvus.io/docs/milvus_hybrid_search_retriever.md">مسترجع البحث الهجين Milvus</a></td><td>يتيح لمهام سير عمل LangChain استخدام الترتيب الموزون أو على غرار RRF</td></tr>
+<tr><td>مزج الإشارات الدلالية والكلمات المفتاحية</td><td><a href="https://milvus.io/docs/hybrid_search_with_milvus.md">البحث الهجين مع ميلفوس</a></td><td>الجمع بين البحث المتجه الكثيف مع إشارات متناثرة أو إشارات النص الكامل</td></tr>
+<tr><td>دمج النتائج من مسترجعات متعددة</td><td><a href="https://milvus.io/docs/milvus_hybrid_search_retriever.md">مسترجع البحث الهجين Milvus</a></td><td>يتيح لمهام سير عمل LangChain استخدام تصنيفات مرجحة أو على غرار RRF</td></tr>
 <tr><td>تقييد النتائج حسب المستأجر أو الطابع الزمني أو نوع المستند</td><td>مرشحات البيانات الوصفية والقياسية</td><td>يبقي الاسترجاع في نطاق شريحة البيانات الصحيحة</td></tr>
 <tr><td>الانتقال من خدمة Milvus المُدارة ذاتيًا إلى الخدمة المُدارة</td><td><a href="https://docs.zilliz.com/docs/migrate-from-milvus">الترحيل من ميلفوس إلى زيليز</a></td><td>يقلل من أعمال البنية التحتية مع الحفاظ على توافق Milvus</td></tr>
 <tr><td>ربط التطبيقات المستضافة بأمان</td><td><a href="https://docs.zilliz.com/docs/manage-api-keys">مفاتيح Zilliz Cloud API</a></td><td>توفير التحكم في الوصول المستند إلى الرمز المميز لعملاء التطبيقات</td></tr>

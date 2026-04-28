@@ -3,8 +3,7 @@ id: deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 title: 'DeepSeek V4 vs GPT-5.5 vs Qwen3.6 : Quel modèle utiliser ?'
 author: Lumina Wang
 date: 2026-4-28
-cover: >-
-  assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_1_98e0113041.png
+cover: assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -39,9 +38,9 @@ origin: >-
     </button></h2><p><strong>DeepSeek V4, GPT-5.5 et Qwen3.6-35B-A3B sont des modèles d'IA différents qui ciblent des parties différentes de la pile de modèles.</strong> DeepSeek V4 se concentre sur l'inférence de contexte long à poids ouvert. GPT-5.5 se concentre sur les performances hébergées à la frontière, le codage, la recherche en ligne et les tâches nécessitant beaucoup d'outils. Qwen3.6-35B-A3B se concentre sur le déploiement multimodal à poids ouvert avec une empreinte de paramètres actifs beaucoup plus petite.</p>
 <p>La comparaison est importante car un système de <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">recherche vectorielle de production</a> dépend rarement du modèle seul. La capacité du modèle, la longueur du contexte, le contrôle du déploiement, la qualité de la recherche et le coût du service ont tous une incidence sur l'expérience finale de l'utilisateur.</p>
 <h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4 : un modèle MoE à poids ouvert pour le contrôle des coûts des contextes longs</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4</strong></a> <strong>est une famille de modèles MoE à poids ouvert publiée par DeepSeek le 24 avril 2026.</strong> Le communiqué officiel mentionne deux variantes : DeepSeek V4-Pro et DeepSeek V4-Flash. V4-Pro a un total de 1,6T de paramètres avec 49B activés par jeton, tandis que V4-Flash a un total de 284B de paramètres avec 13B activés par jeton. Tous deux prennent en charge une fenêtre contextuelle de 1 million de tokens.</p>
-<p>La <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">carte de modèle DeepSeek V4-Pro</a> indique également que le modèle est sous licence MIT et qu'il est disponible auprès de Hugging Face et ModelScope. Pour les équipes qui créent des flux de documents à contexte long, le principal attrait est la maîtrise des coûts et la souplesse de déploiement par rapport à des API de frontière entièrement fermées.</p>
+<p>La <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">carte de modèle DeepSeek V4-Pro</a> indique également que le modèle est sous licence MIT et qu'il est disponible auprès de Hugging Face et ModelScope. Pour les équipes qui créent des flux de documents à contexte long, le principal attrait est la maîtrise des coûts et la souplesse de déploiement par rapport à des API frontières entièrement fermées.</p>
 <h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5 : un modèle frontière hébergé pour le codage, la recherche et l'utilisation d'outils</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>est un modèle frontière fermé publié par OpenAI le 23 avril 2026.</strong> OpenAI le positionne pour le codage, la recherche en ligne, l'analyse de données, le travail sur documents, le travail sur tableur, l'utilisation de logiciels et les tâches basées sur des outils. La documentation officielle du modèle mentionne <code translate="no">gpt-5.5</code> avec une fenêtre contextuelle API de 1 million de jetons, tandis que les limites des produits Codex et ChatGPT peuvent différer.</p>
-<p>OpenAI fait état d'excellents résultats aux tests de codage : 82,7 % sur Terminal-Bench 2.0, 73,1 % sur Expert-SWE et 58,6 % sur SWE-Bench Pro. La contrepartie est le prix : la tarification officielle de l'API indique que GPT-5.5 est de <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>5 pour 1</mn></mrow><annotation encoding="application/x-tex">million de jetons d'entrée</annotation><mrow><mn>et de</mn><mi>5</mi></mrow></semantics></math></span></span>pour <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">1 million de jetons</annotation></semantics></math></span></span>d'entrée et <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span> de 5 pour 1 million de jetons d'entrée et de</span></span></span> <span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">30</span></span></span></span>pour 1 million de jetons de sortie, avant tout détail de tarification spécifique à un produit ou à un contexte long.</p>
+<p>OpenAI fait état d'excellents résultats aux tests de codage : 82,7 % sur Terminal-Bench 2.0, 73,1 % sur Expert-SWE et 58,6 % sur SWE-Bench Pro. La contrepartie est le prix : la tarification officielle de l'API indique que GPT-5.5 coûte 5 dollars pour 1 million de jetons d'entrée et 30 dollars pour 1 million de jetons de sortie, avant tout détail de tarification spécifique à un produit ou à un contexte long.</p>
 <h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B : un modèle à paramètres actifs plus petit pour les charges de travail locales et multimodales</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3B</strong></a> <strong>est un modèle MoE à poids ouvert de l'équipe Qwen d'Alibaba.</strong> Sa carte de modèle répertorie 35B paramètres totaux, 3B paramètres activés, un encodeur de vision et une licence Apache-2.0. Il prend en charge une fenêtre contextuelle native de 262 144 jetons et peut s'étendre à environ 1 010 000 jetons avec la mise à l'échelle YaRN.</p>
 <p>Qwen3.6-35B-A3B est donc intéressant lorsque le déploiement local, les services privés, la saisie d'images ou les charges de travail en langue chinoise sont plus importants que la commodité d'un modèle de frontière géré.</p>
 <h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 vs GPT-5.5 vs Qwen3.6 : Comparaison des spécifications des modèles</h3><table>
@@ -76,7 +75,7 @@ origin: >-
 <tr><th>Question</th><th>Réponse attendue au moment du test</th><th>Source</th></tr>
 </thead>
 <tbody>
-<tr><td>Combien coûte la génération d'une image de qualité moyenne de 1024×1024 à l'adresse <code translate="no">gpt-image-2</code> via l'API OpenAI ?</td><td><code translate="no">$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">Prix de la génération d'images OpenAI</a></td></tr>
+<tr><td>Combien coûte la génération d'une image de qualité moyenne de 1024×1024 à l'adresse <code translate="no">gpt-image-2</code> via l'API OpenAI ?</td><td><code translate="no">\$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">Prix de la génération d'images OpenAI</a></td></tr>
 <tr><td>Quelle est la chanson numéro 1 du Billboard Hot 100 de cette semaine, et qui en est l'artiste ?</td><td><code translate="no">Choosin' Texas</code> par Ella Langley</td><td><a href="https://www.billboard.com/charts/hot-100/">Palmarès Billboard Hot 100</a></td></tr>
 <tr><td>Qui est actuellement en tête du classement des pilotes de F1 2026 ?</td><td>Kimi Antonelli</td><td><a href="https://www.formula1.com/en/results/2026/drivers">Classement des pilotes de Formule 1</a></td></tr>
 </tbody>
@@ -88,7 +87,11 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>La page de tarification des images d'OpenAI utilise l'étiquette "medium" plutôt que "standard" pour le résultat de 0,053 $ 1024×1024, la question est donc normalisée ici pour correspondre à la formulation actuelle de l'API.</p>
+<p>La page de tarification des images d'OpenAI utilise l'étiquette "medium" plutôt que "standard" pour les images suivantes <br>
+
+  
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
+   </span> <span class="img-wrapper"> <span>couverture de blog étroite 1152x720</span>$0 </span>.053 1024×1024, la question est donc normalisée ici pour correspondre à la formulation actuelle de l'API.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -107,21 +110,21 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Résultats de la recherche en temps réel : GPT-5.5 a le plus grand avantage</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
+<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Résultats de la recherche en temps réel : GPT-5.5 a l'avantage le plus net</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_5_1e9d7c4c06.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
 <p>DeepSeek V4-Pro a répondu de manière incorrecte à la première question. Il n'a pas pu répondre aux deuxième et troisième questions par le biais d'une recherche en direct sur le web dans cette configuration.</p>
-<p>La deuxième réponse comprenait l'URL Billboard correcte, mais n'a pas permis de retrouver la chanson numéro 1 du moment. La troisième réponse utilisait la mauvaise source, nous l'avons donc considérée comme incorrecte.</p>
+<p>La deuxième réponse comprenait l'URL correcte du Billboard, mais n'a pas permis de retrouver la chanson numéro 1 du moment. La troisième réponse utilisait la mauvaise source, nous l'avons donc considérée comme incorrecte.</p>
 <h4 id="GPT-55" class="common-anchor-header">GPT-5.5</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_6_b146956865.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>GPT-5.5 a beaucoup mieux géré ce test. Ses réponses étaient courtes, précises, sourcées et rapides. Lorsqu'une tâche dépend d'informations actuelles et que le modèle dispose d'une récupération en direct, GPT-5.5 a un net avantage dans cette configuration.</p>
+<p>GPT-5.5 a beaucoup mieux géré ce test. Ses réponses étaient courtes, précises, sourcées et rapides. Lorsqu'une tâche dépend d'informations actuelles et que le modèle dispose d'une fonction de récupération en direct, GPT-5.5 a un net avantage dans cette configuration.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_7_91686c177e.png" alt="" class="doc-image" id="" />
@@ -284,7 +287,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td>GPT-5.5</td><td>Meilleure capacité globale</td><td>A remporté les tests d'extraction en direct, de débogage de la concurrence et de marqueur de contexte long</td><td>Coût plus élevé ; plus performant lorsque la précision et l'utilisation de l'outil justifient le prix.</td></tr>
-<tr><td>DeepSeek V4-Pro</td><td>Déploiement en contexte long, à moindre coût</td><td>A fourni la meilleure solution non GPT pour le bogue de la concurrence et a trouvé le contenu du marqueur.</td><td>Nécessite des outils d'extraction externes pour les tâches en ligne ; le suivi exact de l'emplacement des caractères était plus faible dans ce test.</td></tr>
+<tr><td>DeepSeek V4-Pro</td><td>Déploiement en contexte long, à moindre coût</td><td>A fourni le meilleur correctif non GPT pour le bogue de concurrence et a trouvé le contenu du marqueur.</td><td>Nécessite des outils d'extraction externes pour les tâches en ligne ; le suivi exact de l'emplacement des caractères était plus faible dans ce test.</td></tr>
 <tr><td>Qwen3.6-35B-A3B</td><td>Déploiement local, poids ouverts, entrée multimodale, charges de travail en langue chinoise</td><td>Bons résultats en matière d'identification des bogues et de compréhension des contextes longs</td><td>La qualité des corrections était moins évolutive ; l'accès au web en direct n'était pas disponible dans cette configuration.</td></tr>
 </tbody>
 </table>
@@ -400,7 +403,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Create-a-Milvus-Collection" class="common-anchor-header">Création d'une collection Milvus</h3><p>Une collection Milvus stocke des champs vectoriels, des champs scalaires et des métadonnées dynamiques facultatives. L'installation rapide ci-dessous utilise l'API de haut niveau <code translate="no">MilvusClient</code>; pour les schémas de production, consultez les documents sur la <a href="https://milvus.io/docs/manage-collections.md">gestion des collections</a> et la <a href="https://milvus.io/docs/create-collection.md">création de collections</a>.</p>
+    </button></h2><h3 id="Create-a-Milvus-Collection" class="common-anchor-header">Création d'une collection Milvus</h3><p>Une collection Milvus stocke des champs vectoriels, des champs scalaires et des métadonnées dynamiques facultatives. La configuration rapide ci-dessous utilise l'API de haut niveau <code translate="no">MilvusClient</code>; pour les schémas de production, consultez les documents sur la <a href="https://milvus.io/docs/manage-collections.md">gestion des collections</a> et la <a href="https://milvus.io/docs/create-collection.md">création de collections</a>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
@@ -554,7 +557,7 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
 <tr><td>Connexion sécurisée aux applications hébergées</td><td><a href="https://docs.zilliz.com/docs/manage-api-keys">Clés API du nuage Zilliz</a></td><td>Contrôle d'accès basé sur des jetons pour les clients des applications</td></tr>
 </tbody>
 </table>
-<p>L'habitude de production la plus importante consiste à évaluer la récupération séparément de la génération. Si le contexte récupéré est faible, l'échange de LLM masque souvent le problème au lieu de le résoudre.</p>
+<p>L'habitude de production la plus importante consiste à évaluer la récupération séparément de la génération. Si le contexte récupéré est faible, l'échange de LLM cache souvent le problème au lieu de le résoudre.</p>
 <h2 id="Get-Started-with-Milvus-and-DeepSeek-RAG" class="common-anchor-header">Démarrer avec Milvus et DeepSeek RAG<button data-href="#Get-Started-with-Milvus-and-DeepSeek-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

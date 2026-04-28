@@ -3,8 +3,7 @@ id: deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 title: 'DeepSeek V4 vs GPT-5.5 vs Qwen3.6: Qual modelo deve ser usado?'
 author: Lumina Wang
 date: 2026-4-28
-cover: >-
-  assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_1_98e0113041.png
+cover: assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -40,9 +39,9 @@ origin: >-
 <p>A comparação é importante porque um sistema <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">de pesquisa vetorial de produção</a> raramente depende apenas do modelo. A capacidade do modelo, o comprimento do contexto, o controlo da implementação, a qualidade da recuperação e o custo de serviço afectam a experiência final do utilizador.</p>
 <h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: Um modelo MoE de peso aberto para controle de custo de contexto longo</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4</strong></a> <strong>é uma família de modelos MoE de peso aberto lançada pela DeepSeek em 24 de abril de 2026.</strong> O lançamento oficial lista duas variantes: DeepSeek V4-Pro e DeepSeek V4-Flash. O V4-Pro tem 1,6T de parâmetros totais com 49B ativados por token, enquanto o V4-Flash tem 284B de parâmetros totais com 13B ativados por token. Ambos suportam uma janela de contexto de 1M-token.</p>
 <p>O <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">cartão do modelo DeepSeek V4-Pro</a> também lista o modelo como licenciado pelo MIT e disponível através do Hugging Face e do ModelScope. Para as equipas que criam fluxos de trabalho de documentos de contexto longo, o principal apelo é o controlo de custos e a flexibilidade de implementação em comparação com APIs de fronteira totalmente fechadas.</p>
-<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: Um modelo de fronteira hospedado para codificação, pesquisa e uso de ferramentas</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>O GPT-5.5</strong></a> <strong>é um modelo de fronteira fechado lançado pela OpenAI a 23 de abril de 2026.</strong> A OpenAI posiciona-o para codificação, pesquisa online, análise de dados, trabalho com documentos, trabalho com folhas de cálculo, operação de software e tarefas baseadas em ferramentas. Os documentos oficiais do modelo listam <code translate="no">gpt-5.5</code> com uma janela de contexto de API de 1M-token, enquanto os limites dos produtos Codex e ChatGPT podem ser diferentes.</p>
-<p>O OpenAI apresenta bons resultados de benchmark de codificação: 82,7% no Terminal-Bench 2.0, 73,1% no Expert-SWE e 58,6% no SWE-Bench Pro. A contrapartida é o preço: o preço oficial da API lista o GPT-5.5 a <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>5</mi></mrow><annotation encoding="application/x-tex">por 1Minputtokens</annotation><mrow><mn>e 5</mn></mrow> por 1</semantics></math></span></span>M <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><annotation encoding="application/x-tex">input tokens e</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">5</span></span></span></span>por 1Minputtokens e 30 por 1M output tokens, antes de qualquer detalhe de preço específico do produto ou de contexto longo.</p>
-<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: Um modelo de parâmetro ativo mais pequeno para cargas de trabalho locais e multimodais</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>O Qwen3.6-35B-A3B</strong></a> <strong>é um modelo MoE de peso aberto da equipa Qwen da Alibaba.</strong> O seu cartão de modelo lista 35B parâmetros totais, 3B parâmetros activados, um codificador de visão e licenciamento Apache-2.0. Ele suporta uma janela de contexto nativa de 262.144 tokens e pode ser estendido para cerca de 1.010.000 tokens com o escalonamento YaRN.</p>
+<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: Um modelo de fronteira hospedado para codificação, pesquisa e uso de ferramentas</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>O GPT-5.5</strong></a> <strong>é um modelo de fronteira fechado lançado pela OpenAI a 23 de abril de 2026.</strong> A OpenAI posiciona-o para codificação, pesquisa online, análise de dados, trabalho com documentos, trabalho com folhas de cálculo, operação de software e tarefas baseadas em ferramentas. Os documentos oficiais do modelo listam <code translate="no">gpt-5.5</code> com uma janela de contexto da API de 1M-token, enquanto os limites dos produtos Codex e ChatGPT podem ser diferentes.</p>
+<p>O OpenAI apresenta bons resultados de benchmark de codificação: 82,7% no Terminal-Bench 2.0, 73,1% no Expert-SWE e 58,6% no SWE-Bench Pro. A compensação é o preço: o preço oficial da API lista o GPT-5.5 a $5 por 1M de tokens de entrada e $30 por 1M de tokens de saída, antes de qualquer detalhe de preço específico do produto ou de contexto longo.</p>
+<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: Um modelo de parâmetro ativo menor para cargas de trabalho locais e multimodais</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>O Qwen3.6-35B-A3B</strong></a> <strong>é um modelo MoE de peso aberto da equipa Qwen da Alibaba.</strong> O seu cartão de modelo lista 35B parâmetros totais, 3B parâmetros activados, um codificador de visão e licença Apache-2.0. Ele suporta uma janela de contexto nativa de 262.144 tokens e pode ser estendido para cerca de 1.010.000 tokens com o escalonamento YaRN.</p>
 <p>Isso torna o Qwen3.6-35B-A3B atraente quando a implantação local, o serviço privado, a entrada de texto de imagem ou as cargas de trabalho em idioma chinês são mais importantes do que a conveniência do modelo de fronteira gerenciado.</p>
 <h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 vs GPT-5.5 vs Qwen3.6: Especificações do modelo comparadas</h3><table>
 <thead>
@@ -76,7 +75,7 @@ origin: >-
 <tr><th>Pergunta</th><th>Resposta esperada no momento do teste</th><th>Fonte</th></tr>
 </thead>
 <tbody>
-<tr><td>Quanto custa gerar uma imagem de qualidade média de 1024×1024 com <code translate="no">gpt-image-2</code> através da API OpenAI?</td><td><code translate="no">$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">Preço da geração de imagens OpenAI</a></td></tr>
+<tr><td>Quanto custa gerar uma imagem de qualidade média de 1024×1024 com <code translate="no">gpt-image-2</code> através da API OpenAI?</td><td><code translate="no">\$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">Preço da geração de imagens OpenAI</a></td></tr>
 <tr><td>Qual é a canção n.º 1 da Billboard Hot 100 desta semana e quem é o artista?</td><td><code translate="no">Choosin' Texas</code> por Ella Langley</td><td><a href="https://www.billboard.com/charts/hot-100/">Gráfico da Billboard Hot 100</a></td></tr>
 <tr><td>Quem lidera atualmente a classificação dos pilotos de F1 de 2026?</td><td>Kimi Antonelli</td><td><a href="https://www.formula1.com/en/results/2026/drivers">Classificação dos pilotos de Fórmula 1</a></td></tr>
 </tbody>
@@ -88,7 +87,11 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>A página de preços de imagens da OpenAI usa o rótulo "médio" em vez de "padrão" para o resultado de $0,053 1024×1024, portanto a pergunta é normalizada aqui para corresponder ao texto atual da API.</p>
+<p>A página de preços de imagens da OpenAI utiliza a etiqueta "médio" em vez de "padrão" para a <br>
+
+  
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
+   </span> <span class="img-wrapper"> <span>capa do blogue estreita 1152x720</span>$0 </span>.053 1024×1024 resultado, por isso a pergunta é normalizada aqui para corresponder ao texto atual da API.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -277,7 +280,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Os três testes apontam para um padrão de seleção prático: <strong>O GPT-5.5 é a escolha de capacidade, o DeepSeek V4-Pro é a escolha de desempenho de custo de contexto longo e o Qwen3.6-35B-A3B é a escolha de controlo local.</strong></p>
+    </button></h2><p>Os três testes apontam para um padrão de seleção prático: <strong>GPT-5.5 é a escolha de capacidade, DeepSeek V4-Pro é a escolha de desempenho de custo de contexto longo e Qwen3.6-35B-A3B é a escolha de controlo local.</strong></p>
 <table>
 <thead>
 <tr><th>Modelo</th><th>Melhor ajuste</th><th>O que aconteceu nos nossos testes</th><th>Principal advertência</th></tr>
@@ -307,7 +310,7 @@ origin: >-
       </svg>
     </button></h2><p>Uma janela de contexto longo não elimina a necessidade de recuperação. Altera a estratégia de recuperação.</p>
 <p>Numa aplicação RAG, o modelo não deve analisar todos os documentos em todos os pedidos. Uma <a href="https://zilliz.com/learn/introduction-to-unstructured-data">arquitetura de base de dados vetorial</a> armazena embeddings, procura pedaços semanticamente relevantes, aplica filtros de metadados e devolve um conjunto de contexto compacto ao modelo. Isto dá ao modelo uma melhor entrada, reduzindo o custo e a latência.</p>
-<p>O Milvus enquadra-se nesta função porque lida com <a href="https://milvus.io/docs/schema.md">esquemas de coleção</a>, indexação de vectores, metadados escalares e operações de recuperação num único sistema. Você pode começar localmente com o <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>, passar para um <a href="https://milvus.io/docs/quickstart.md">quickstart</a> autônomo <a href="https://milvus.io/docs/quickstart.md">do Milvus</a>, implantar com a <a href="https://milvus.io/docs/install_standalone-docker.md">instalação do Docker</a> ou <a href="https://milvus.io/docs/install_standalone-docker-compose.md">a implantação do Docker Compose</a> e escalar ainda mais com a <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">implantação do Kubernetes</a> quando a carga de trabalho crescer.</p>
+<p>O Milvus enquadra-se nesta função porque lida com <a href="https://milvus.io/docs/schema.md">esquemas de coleção</a>, indexação de vectores, metadados escalares e operações de recuperação num único sistema. Você pode começar localmente com o <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>, passar para um <a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a> autônomo, implantar com a <a href="https://milvus.io/docs/install_standalone-docker.md">instalação do Docker</a> ou <a href="https://milvus.io/docs/install_standalone-docker-compose.md">implantação do Docker Compose</a> e escalar ainda mais com a <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">implantação do Kubernetes</a> quando a carga de trabalho crescer.</p>
 <h2 id="How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="common-anchor-header">Como criar um pipeline RAG com Milvus e DeepSeek V4<button data-href="#How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -549,7 +552,7 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
 <tbody>
 <tr><td>Misturar sinais semânticos e de palavras-chave</td><td><a href="https://milvus.io/docs/hybrid_search_with_milvus.md">pesquisa híbrida com Milvus</a></td><td>Combina a pesquisa vetorial densa com sinais esparsos ou de texto integral</td></tr>
 <tr><td>Combinar resultados de vários recuperadores</td><td><a href="https://milvus.io/docs/milvus_hybrid_search_retriever.md">Recuperador de pesquisa híbrida Milvus</a></td><td>Permite que os fluxos de trabalho LangChain utilizem uma classificação ponderada ou do tipo RRF</td></tr>
-<tr><td>Restringir resultados por locatário, carimbo de data/hora ou tipo de documento</td><td>Metadados e filtros escalares</td><td>Mantém a recuperação com o âmbito da fatia de dados correta</td></tr>
+<tr><td>Restringir resultados por locatário, carimbo de data/hora ou tipo de documento</td><td>Metadados e filtros escalares</td><td>Mantém a recuperação limitada à fatia de dados correta</td></tr>
 <tr><td>Passar do Milvus auto-gerido para o serviço gerido</td><td><a href="https://docs.zilliz.com/docs/migrate-from-milvus">Migração do Milvus para o Zilliz</a></td><td>Reduz o trabalho de infraestrutura, mantendo a compatibilidade com o Milvus</td></tr>
 <tr><td>Ligar aplicações alojadas de forma segura</td><td><a href="https://docs.zilliz.com/docs/manage-api-keys">Chaves API do Zilliz Cloud</a></td><td>Fornece controlo de acesso baseado em tokens para clientes de aplicações</td></tr>
 </tbody>

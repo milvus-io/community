@@ -3,8 +3,7 @@ id: deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 title: DeepSeek V4 vs GPT-5.5 vs Qwen3.6：どのモデルを使うべきか？
 author: Lumina Wang
 date: 2026-4-28
-cover: >-
-  assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_1_98e0113041.png
+cover: assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -40,8 +39,8 @@ origin: >-
 <h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4：ロングコンテキストのコスト管理を実現するオープンウェイトの MoE モデル</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V</strong></a> <strong>4は、DeepSeekが2026年4月24日にリリースしたオープンウェイトのMoEモデルファミリーです。</strong>公式リリースには2つのバリエーションが掲載されています：DeepSeek V4-ProとDeepSeek V4-Flashです。V4-Proは総パラメータ1.6T、トークンあたり49Bをアクティブにし、V4-Flashは総パラメータ284B、トークンあたり13Bをアクティブにする。どちらも1Mトークンのコンテキスト・ウィンドウをサポートしています。</p>
 <p>また、<a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">DeepSeek V4-Proモデル・カードには</a>、このモデルがMITライセンスであり、Hugging FaceおよびModelScopeを通じて入手可能であることが記載されています。長いコンテキストのドキュメント・ワークフローを構築するチームにとって、完全にクローズドなフロンティアAPIと比較して、主な魅力はコスト管理とデプロイの柔軟性です。</p>
 <h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5：コーディング、研究、ツール使用のためのホストされたフロンティアモデル</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.</strong></a> <strong>5は、OpenAIが2026年4月23日にリリースしたクローズドフロンティアモデルです。</strong>OpenAIでは、コーディング、オンラインリサーチ、データ分析、文書作業、表計算作業、ソフトウェア操作、ツールベースの作業向けと位置づけています。公式モデルのドキュメントでは、<code translate="no">gpt-5.5</code> 、1MトークンのAPIコンテキストウィンドウが記載されていますが、CodexとChatGPTの製品制限は異なる場合があります。</p>
-<p>OpenAIは強力なコーディングベンチマークの結果を報告しています：Terminal-Bench 2.0では82.7%、Expert-SWEでは73.1%、SWE-Bench Proでは58.6%です。トレードオフは価格である。公式API価格では、GPT-5.5が<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn></mrow><annotation encoding="application/x-tex">M入力トークンあたり</annotation><mrow><mi>5</mi><mn>パー1Minputtokensと5</mn></mrow></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord">、</span><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"></span></span></span></span>1M出力トークンあたり5パー1<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="mord mathnormal">Minputtokensと</span></span></span></span>30となっており、製品固有の価格やロングコンテキストの価格の詳細が記載されていない。</p>
-<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B：ローカルおよびマルチモーダルワークロード用の小型アクティブパラメータモデル</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3</strong></a> <strong>Bは、AlibabaのQwenチームによるオープンウェイトのMoEモデルです。</strong>モデルカードには、35Bの総パラメータ、3Bのアクティブパラメータ、ビジョンエンコーダ、Apache-2.0ライセンスが記載されている。ネイティブの262,144トークンのコンテキスト・ウィンドウをサポートし、YaRNスケーリングで約1,010,000トークンまで拡張できる。</p>
+<p>OpenAIは強力なコーディングベンチマークの結果を報告しています：Terminal-Bench 2.0では82.7%、Expert-SWEでは73.1%、SWE-Bench Proでは58.6%です。トレードオフは価格です。公式のAPI価格では、GPT-5.5が1M入力トークンあたり5ドル、1M出力トークンあたり30ドルとなっています。</p>
+<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B：ローカルおよびマルチモーダルワークロード用の小型アクティブ・パラメータ・モデル</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3</strong></a> <strong>Bは、AlibabaのQwenチームによるオープンウェイトのMoEモデルです。</strong>モデルカードには、35Bの総パラメータ、3Bのアクティブパラメータ、ビジョンエンコーダ、Apache-2.0ライセンスが記載されている。ネイティブの262,144トークンのコンテキスト・ウィンドウをサポートし、YaRNスケーリングで約1,010,000トークンまで拡張できる。</p>
 <p>そのため、Qwen3.6-35B-A3Bは、管理されたフロンティア・モデルの利便性よりも、ローカルへの展開、プライベート・サーバー、画像テキスト入力、中国語のワークロードの方が重要な場合に魅力的となる。</p>
 <h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 vs GPT-5.5 vs Qwen3.6：モデルスペックの比較</h3><table>
 <thead>
@@ -75,7 +74,7 @@ origin: >-
 <tr><th>質問</th><th>テスト時に期待される答え</th><th>ソース</th></tr>
 </thead>
 <tbody>
-<tr><td>1024×1024の中画質の画像をOpenAIのAPIを使って<code translate="no">gpt-image-2</code> 、生成するのにいくらかかりますか？</td><td><code translate="no">$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">OpenAIの画像生成の価格</a></td></tr>
+<tr><td>1024×1024の中画質の画像をOpenAIのAPIを使って<code translate="no">gpt-image-2</code> 、生成するのにいくらかかりますか？</td><td><code translate="no">\$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">OpenAIの画像生成の価格</a></td></tr>
 <tr><td>今週のビルボードホット100で1位の曲とアーティストは？</td><td><code translate="no">Choosin' Texas</code> エラ・ラングレー著</td><td><a href="https://www.billboard.com/charts/hot-100/">ビルボードホット100チャート</a></td></tr>
 <tr><td>2026年F1ドライバーランキングで現在首位に立っているのは？</td><td>キミ・アントネッリ</td><td><a href="https://www.formula1.com/en/results/2026/drivers">F1ドライバーランキング</a></td></tr>
 </tbody>
@@ -87,7 +86,11 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>OpenAIの画像価格ページでは、$0.053 1024×1024の結果に対して「標準」ではなく「中」というラベルが使用されているため、ここでは現在のAPIの文言に合わせて質問を正規化しています。</p>
+<p>OpenAIの画像価格設定ページでは、以下のラベルに「標準」ではなく「中」が使用されています。 <br>
+
+  
+   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
+   </span> <span class="img-wrapper"> <span>ブログの表紙が狭い 1152x720</span>$0 </span>.053 1024×1024 の結果では、「標準」ではなく「中」のラベルを使用しています。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -200,7 +203,7 @@ origin: >-
                                                                                                                 
   stress_test()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Code-Debugging-Results-GPT-55-Gave-the-Most-Complete-Answer" class="common-anchor-header">コードのデバッグ結果：GPT-5.5 が最も完全な回答を返しました。</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>DeepSeek V4-Pro は簡潔な分析を行い、ABBA デッドロックを回避する標準的な方法である順序付きロックの解決策にまっすぐ進みました。その解答は正しい修正を示していましたが、なぜ素朴なロックベースの修正が新たな故障モードを導入する可能性があるのかの説明には多くの時間を割きませんでした。</p>
+<h3 id="Code-Debugging-Results-GPT-55-Gave-the-Most-Complete-Answer" class="common-anchor-header">コードのデバッグ結果：GPT-5.5 が最も完全な答えを返しました。</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>DeepSeek V4-Pro は簡潔な分析を行い、ABBA デッドロックを回避する標準的な方法である順序付きロックの解決策にまっすぐ進みました。その解答は正しい修正を示していましたが、なぜ素朴なロックベースの修正が新たな故障モードを導入する可能性があるのかの説明には多くの時間を割きませんでした。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_8_e2b4c41c46.png" alt="" class="doc-image" id="" />
@@ -221,7 +224,7 @@ origin: >-
   </span>
 </p>
 <p>Qwen3.6-35B-A3Bはバグを正確に特定し、実行シーケンスの例も明確だった。弱点はその修正で、グローバルなクラスレベルのロックを選択し、すべてのアカウントが同じロックを共有するようにした。これは小規模なシミュレーションには有効ですが、実際の銀行システムには不適切なトレードオフです。</p>
-<p><strong>要するに、</strong>GPT-5.5は現在のバグを解決しただけでなく、開発者が次に導入するかもしれないバグについても警告しているのです。DeepSeek V4-Proは、GPT以外のバグを最もきれいに修正しました。Qwen3.6は、問題を発見し、動作するコードを作成しましたが、スケーラビリティの妥協点を指摘しませんでした。</p>
+<p><strong>要するに、</strong>GPT-5.5は現在のバグを解決しただけでなく、開発者が次に導入するかもしれないバグについても警告しているのです。DeepSeek V4-Proは、GPT以外のバグを最もきれいに修正しました。Qwen3.6は問題を発見し、動作するコードを作成しましたが、スケーラビリティの妥協点を指摘しませんでした。</p>
 <h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">どのモデルがロング・コンテキスト検索を最もうまく処理できるか？<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
