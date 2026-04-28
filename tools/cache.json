@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2026-04-24T11:59:49.260Z",
+  "homepage/index.json": "2026-04-28T13:04:45.085Z",
   "blog/en/milvus-cdc-standby-cluster-high-availability.md": "2026-04-24T12:12:30.711Z",
   "blog/en/milvus-access-control-rbac-guide.md": "2026-04-24T12:12:20.019Z",
   "blog/en/choose-embedding-model-rag-2026.md": "2026-04-24T12:05:44.335Z",
@@ -280,5 +280,6 @@
   "blog/en/interview-with-rabitq-authors-the-turboquant-dispute-and-why-the-storage-selloff-was-a-false-alarm.md": "2026-04-24T12:10:42.308Z",
   "blog/en/vector-graph-rag-without-graph-database.md": "2026-04-24T12:15:29.244Z",
   "blog/en/anthropic-managed-agents-memory-milvus.md": "2026-04-24T12:04:37.162Z",
-  "blog/en/hermes-agent-learning-loop-milvus-hybrid-search.md": "2026-04-24T12:09:00.041Z"
+  "blog/en/hermes-agent-learning-loop-milvus-hybrid-search.md": "2026-04-24T12:09:00.041Z",
+  "blog/en/deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md": "2026-04-28T13:07:00.405Z"
 }

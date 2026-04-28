@@ -1,14 +1,10 @@
 {
-  "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
+  "label": "رحلتنا إلى أكثر من 35 ألفًا من نجوم GitHub: القصة الحقيقية لبناء ميلفوس من الصفر",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
       "label": "Introducing Milvus Skills: Operate Milvus from AI Agents with Natural Language",
       "link": "https://milvus.io/docs/milvus_for_agents.md"
-    },
-    {
-      "label": "Webinar | Make Your AI Search Always-On with Zilliz Global Cluster",
-      "link": "https://zilliz.com/event/going-global-scaling-zilliz-for-high-availability-and-low-latency"
     }
   ]
 }
