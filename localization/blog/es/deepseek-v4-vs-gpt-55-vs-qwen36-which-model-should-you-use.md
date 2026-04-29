@@ -41,7 +41,7 @@ origin: >-
 <p>La <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">tarjeta del modelo DeepSeek V4-Pro</a> también indica que el modelo tiene licencia MIT y está disponible a través de Hugging Face y ModelScope. Para los equipos que crean flujos de trabajo de documentos de contexto largo, el principal atractivo es el control de costes y la flexibilidad de despliegue en comparación con las API de frontera totalmente cerradas.</p>
 <h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: un modelo de frontera alojado para codificación, investigación y uso de herramientas</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>es un modelo de frontera cerrada publicado por OpenAI el 23 de abril de 2026.</strong> OpenAI lo posiciona para codificación, investigación en línea, análisis de datos, trabajo con documentos, trabajo con hojas de cálculo, operación de software y tareas basadas en herramientas. En la documentación oficial del modelo se indica <code translate="no">gpt-5.5</code> con una ventana de contexto API de 1 millón de tokens, mientras que los límites de los productos Codex y ChatGPT pueden diferir.</p>
 <p>OpenAI obtiene buenos resultados en las pruebas comparativas de codificación: 82,7% en Terminal-Bench 2.0, 73,1% en Expert-SWE y 58,6% en SWE-Bench Pro. La contrapartida es el precio: en la lista oficial de precios de la API, GPT-5.5 cuesta 5 dólares por 1 millón de tokens de entrada y 30 dólares por 1 millón de tokens de salida, antes de cualquier detalle sobre precios específicos de productos o contextos largos.</p>
-<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: un modelo de parámetros activos más pequeño para cargas de trabajo locales y multimodales</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3B</strong></a> <strong>es un modelo MoE de peso abierto del equipo Qwen de Alibaba.</strong> Su ficha de modelo incluye 35.000 parámetros totales, 3.000 parámetros activados, un codificador de visión y licencia Apache-2.0. Admite una ventana de contexto nativa de 262.144 tokens y puede ampliarse hasta 1.010.000 tokens con el escalado YaRN.</p>
+<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: un modelo de parámetros activos más pequeño para cargas de trabajo locales y multimodales</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3B</strong></a> <strong>es un modelo MoE de peso abierto del equipo Qwen de Alibaba.</strong> Su ficha de modelo incluye 35.000 parámetros totales, 3.000 parámetros activados, un codificador de visión y una licencia Apache-2.0. Admite una ventana de contexto nativa de 262.144 tokens y puede ampliarse hasta 1.010.000 tokens con el escalado YaRN.</p>
 <p>Esto hace que Qwen3.6-35B-A3B resulte atractivo cuando la implantación local, el servicio privado, la entrada de texto con imágenes o las cargas de trabajo en chino son más importantes que la comodidad de un modelo de frontera gestionado.</p>
 <h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 vs GPT-5.5 vs Qwen3.6: Comparación de especificaciones de modelos</h3><table>
 <thead>
@@ -87,11 +87,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>La página de precios de imágenes de OpenAI utiliza la etiqueta "mediana" en lugar de "estándar" para la <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>portada del blog</span> </span>resultado <span class="img-wrapper"> <span>estrecho 1152x720</span>$0 </span>,053 1024×1024, por lo que la pregunta se normaliza aquí para que coincida con la redacción actual de la API.</p>
+<p>La página de precios de imágenes de OpenAI utiliza la etiqueta "medio" en lugar de "estándar" para el resultado de 0,053 $ 1024×1024, por lo que la pregunta se normaliza aquí para que coincida con la redacción actual de la API.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -110,7 +106,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Resultados de la recuperación en tiempo real: GPT-5.5 tuvo la ventaja más clara</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
+<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Resultados de la recuperación en tiempo real: GPT-5.5 tenía la ventaja más clara</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_5_1e9d7c4c06.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -574,7 +570,7 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
         ></path>
       </svg>
     </button></h2><p>Si desea reproducir el tutorial, comience con la <a href="https://milvus.io/docs">documentación</a> oficial <a href="https://milvus.io/docs">de Milvus</a> y la <a href="https://milvus.io/docs/build-rag-with-milvus.md">guía Build RAG with Milvus</a>. Para una configuración gestionada, <a href="https://docs.zilliz.com/docs/connect-to-cluster">conéctese a Zilliz Cloud</a> con su punto final de clúster y clave API en lugar de ejecutar Milvus localmente.</p>
-<p>Si desea ayuda para ajustar la agrupación, indexación, filtros o recuperación híbrida, únase a la <a href="https://slack.milvus.io/">comunidad Milvus Slack</a> o reserve una <a href="https://milvus.io/office-hours">sesión</a> gratuita <a href="https://milvus.io/office-hours">de Milvus Office Hours</a>. Si prefiere omitir la configuración de la infraestructura, utilice <a href="https://cloud.zilliz.com/login">el inicio de sesión de Zilliz</a> <a href="https://cloud.zilliz.com/signup">Cloud</a> o cree una <a href="https://cloud.zilliz.com/signup">cuenta de Zilliz Cloud</a> para ejecutar Milvus administrado.</p>
+<p>Si desea ayuda para ajustar la fragmentación, la indexación, los filtros o la recuperación híbrida, únase a la <a href="https://slack.milvus.io/">comunidad Milvus Slack</a> o reserve una <a href="https://milvus.io/office-hours">sesión</a> gratuita <a href="https://milvus.io/office-hours">de Milvus Office Hours</a>. Si prefiere omitir la configuración de la infraestructura, utilice <a href="https://cloud.zilliz.com/login">el inicio de sesión de Zilliz</a> <a href="https://cloud.zilliz.com/signup">Cloud</a> o cree una <a href="https://cloud.zilliz.com/signup">cuenta de Zilliz Cloud</a> para ejecutar Milvus administrado.</p>
 <h2 id="Questions-Developers-Ask-About-DeepSeek-V4-Milvus-and-RAG" class="common-anchor-header">Preguntas de los desarrolladores sobre DeepSeek V4, Milvus y RAG<button data-href="#Questions-Developers-Ask-About-DeepSeek-V4-Milvus-and-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

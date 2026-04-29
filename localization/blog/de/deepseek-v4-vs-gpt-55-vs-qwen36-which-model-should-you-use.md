@@ -19,8 +19,8 @@ origin: >-
   https://milvus.io/blog/deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 ---
 <p>Neue Modellversionen werden schneller veröffentlicht, als die Produktionsteams sie bewerten können. DeepSeek V4, GPT-5.5 und Qwen3.6-35B-A3B sehen alle auf dem Papier gut aus, aber die schwierigere Frage für KI-Anwendungsentwickler ist die praktische: Welches Modell sollten Sie für abruflastige Systeme, Codierungsaufgaben, Langkontextanalysen und <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG-Pipelines</a> verwenden?</p>
-<p><strong>In diesem Artikel werden die drei Modelle in praktischen Tests verglichen:</strong> Abrufen von Informationen in Echtzeit, Debugging bei gleichzeitiger Verwendung von Fehlern und Abrufen von Markern im langen Kontext. Anschließend wird gezeigt, wie DeepSeek V4 mit der <a href="https://zilliz.com/learn/what-is-vector-database">Milvus-Vektordatenbank</a> verbunden werden kann, so dass der abgerufene Kontext aus einer durchsuchbaren Wissensdatenbank stammt und nicht nur aus den Parametern des Modells.</p>
-<h2 id="What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="common-anchor-header">Was sind DeepSeek V4, GPT-5.5 und Qwen3.6-35B-A3B?<button data-href="#What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="anchor-icon" translate="no">
+<p><strong>In diesem Artikel werden die drei Modelle in praktischen Tests verglichen:</strong> Abrufen von Informationen in Echtzeit, Debugging bei gleichzeitiger Verwendung von Fehlern und Abrufen von Markern im langen Kontext. Anschließend wird gezeigt, wie DeepSeek V4 mit der <a href="https://zilliz.com/learn/what-is-vector-database">Vektordatenbank Milvus</a> verbunden werden kann, so dass der abgerufene Kontext aus einer durchsuchbaren Wissensdatenbank stammt und nicht nur aus den Parametern des Modells.</p>
+<h2 id="What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="common-anchor-header">Was sind DeepSeek V4, GPT-5.5, und Qwen3.6-35B-A3B?<button data-href="#What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -87,11 +87,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>OpenAIs Bildpreis-Seite verwendet die Bezeichnung "medium" statt "standard" für die <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>Blog-Cover schmal 1152x720</span>$0 </span>.053 1024×1024 Ergebnis, daher ist die Frage hier normalisiert, um dem aktuellen API-Wortlaut zu entsprechen.</p>
+<p>Die Bildpreis-Seite von OpenAI verwendet die Bezeichnung "medium" statt "standard" für das Ergebnis $0.053 1024×1024, daher ist die Frage hier normalisiert, um dem aktuellen API-Wortlaut zu entsprechen.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -224,7 +220,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Qwen3.6-35B-A3B identifizierte die Fehler genau, und die Beispiel-Ausführungssequenz war klar. Der schwächste Teil war die Korrektur: Es wählte eine globale Sperre auf Klassenebene, so dass alle Konten dieselbe Sperre teilen. Das funktioniert für eine kleine Simulation, ist aber ein schlechter Kompromiss für ein echtes Bankensystem, da nicht zusammenhängende Kontotransfers immer noch auf dieselbe Sperre warten müssen.</p>
+<p>Qwen3.6-35B-A3B identifizierte die Fehler genau, und die Beispiel-Ausführungssequenz war klar. Der schwächere Teil war die Korrektur: Es wählte eine globale Sperre auf Klassenebene, so dass alle Konten dieselbe Sperre teilen. Das funktioniert für eine kleine Simulation, ist aber ein schlechter Kompromiss für ein echtes Bankensystem, da nicht zusammenhängende Kontotransfers immer noch auf dieselbe Sperre warten müssen.</p>
 <p><strong>Kurz gesagt:</strong> GPT-5.5 löste nicht nur den aktuellen Fehler, sondern warnte auch vor dem nächsten Fehler, den ein Entwickler einführen könnte. DeepSeek V4-Pro lieferte die sauberste Nicht-GPT-Lösung. Qwen3.6 fand die Probleme und produzierte funktionierenden Code, wies aber nicht auf den Kompromiss bei der Skalierbarkeit hin.</p>
 <h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">Welches Modell eignet sich am besten für die Abfrage von langen Kontexten?<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -286,13 +282,13 @@ origin: >-
 <tr><th>Modell</th><th>Beste Passung</th><th>Was in unseren Tests geschah</th><th>Wichtigster Vorbehalt</th></tr>
 </thead>
 <tbody>
-<tr><td>GPT-5.5</td><td>Beste Gesamtleistung</td><td>Gewann die Tests zum Live-Abruf, zur Parallelitätsprüfung und zur Markierung langer Kontexte</td><td>Höhere Kosten; am stärksten, wenn Genauigkeit und Werkzeugnutzung den Aufpreis rechtfertigen</td></tr>
+<tr><td>GPT-5.5</td><td>Beste Gesamtleistung</td><td>Gewann die Tests für Live-Abruf, Parallelitätstests und Marker für lange Kontexte</td><td>Höhere Kosten; am stärksten, wenn Genauigkeit und Werkzeugnutzung den Aufpreis rechtfertigen</td></tr>
 <tr><td>DeepSeek V4-Pro</td><td>Langer Kontext, kostengünstigerer Einsatz</td><td>Bietet die stärkste Nicht-GPT-Behebung des Gleichzeitigkeitsfehlers und findet den Markierungsinhalt</td><td>Benötigt externe Retrieval-Tools für Live-Web-Aufgaben; die genaue Verfolgung der Zeichenposition war in diesem Test schwächer</td></tr>
 <tr><td>Qwen3.6-35B-A3B</td><td>Lokaler Einsatz, offene Gewichte, multimodale Eingabe, chinesischsprachige Arbeitslasten</td><td>Gute Ergebnisse bei der Fehlererkennung und dem Verstehen von langen Kontexten</td><td>Die Qualität der Fehlerbehebung war weniger skalierbar; Live-Web-Zugriff war bei dieser Konfiguration nicht möglich</td></tr>
 </tbody>
 </table>
 <p>Verwenden Sie GPT-5.5, wenn Sie das beste Ergebnis benötigen, und die Kosten zweitrangig sind. Verwenden Sie DeepSeek V4-Pro, wenn Sie einen langen Kontext, geringere Servicekosten und eine API-freundliche Bereitstellung benötigen. Verwenden Sie Qwen3.6-35B-A3B, wenn offene Gewichte, private Bereitstellung, multimodale Unterstützung oder Serving-Stack-Kontrolle am wichtigsten sind.</p>
-<p>Für abruflastige Anwendungen ist die Wahl des Modells jedoch nur die halbe Miete. Selbst ein starkes Langkontextmodell schneidet besser ab, wenn der Kontext durch ein spezielles <a href="https://zilliz.com/learn/generative-ai">semantisches Suchsystem</a> abgerufen, gefiltert und geerdet wird.</p>
+<p>Für abruflastige Anwendungen ist die Wahl des Modells jedoch nur die halbe Miete. Selbst ein starkes Langkontextmodell schneidet besser ab, wenn der Kontext von einem speziellen <a href="https://zilliz.com/learn/generative-ai">semantischen Suchsystem</a> abgerufen, gefiltert und geerdet wird.</p>
 <h2 id="Why-RAG-Still-Matters-for-Long-Context-Models" class="common-anchor-header">Warum RAG für Modelle mit langem Kontext immer noch von Bedeutung ist<button data-href="#Why-RAG-Still-Matters-for-Long-Context-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -326,7 +322,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>In der folgenden Anleitung wird eine kleine RAG-Pipeline mit DeepSeek V4-Pro für die Generierung und Milvus für den Abruf erstellt. Die gleiche Struktur gilt für andere LLMs: Einbettungen erstellen, in einer Sammlung speichern, nach relevantem Kontext suchen und diesen Kontext an das Modell weitergeben.</p>
+    </button></h2><p>In der folgenden Anleitung wird eine kleine RAG-Pipeline mit DeepSeek V4-Pro für die Generierung und Milvus für den Abruf erstellt. Die gleiche Struktur gilt für andere LLMs: Einbettungen erstellen, in einer Sammlung speichern, nach relevantem Kontext suchen und diesen Kontext an das Modell übergeben.</p>
 <p>Eine ausführliche Anleitung finden Sie im offiziellen <a href="https://milvus.io/docs/build-rag-with-milvus.md">Milvus-RAG-Tutorial</a>. In diesem Beispiel wird die Pipeline klein gehalten, damit der Abruffluss leicht zu überprüfen ist.</p>
 <h2 id="Prepare-the-Environment" class="common-anchor-header">Vorbereiten der Umgebung<button data-href="#Prepare-the-Environment" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -462,7 +458,7 @@ Creating embeddings: <span class="hljs-number">100</span>%|███████
     </button></h2><h3 id="Search-Milvus-for-Relevant-Context" class="common-anchor-header">Milvus nach relevantem Kontext durchsuchen</h3><p>Definieren wir eine allgemeine Frage über Milvus.</p>
 <pre><code translate="no" class="language-python">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Durchsuchen Sie die Sammlung nach der Frage und rufen Sie die ersten drei semantischen Übereinstimmungen ab. Dies ist eine einfache <a href="https://milvus.io/docs/single-vector-search.md">Ein-Vektor-Suche</a>. In der Produktion können Sie sie mit einer <a href="https://milvus.io/docs/filtered-search.md">gefilterten Suche</a>, einer <a href="https://milvus.io/docs/full-text-search.md">Volltextsuche</a>, einer <a href="https://milvus.io/docs/multi-vector-search.md">hybriden Suche mit mehreren Vektoren</a> und mit <a href="https://milvus.io/docs/reranking.md">Strategien zur</a> Verbesserung der Relevanz kombinieren.</p>
+<p>Durchsuchen Sie die Sammlung nach der Frage und rufen Sie die ersten drei semantischen Übereinstimmungen ab. Dies ist eine einfache <a href="https://milvus.io/docs/single-vector-search.md">Ein-Vektor-Suche</a>. In der Produktion können Sie sie mit der <a href="https://milvus.io/docs/filtered-search.md">gefilterten Suche</a>, der <a href="https://milvus.io/docs/full-text-search.md">Volltextsuche</a>, der <a href="https://milvus.io/docs/multi-vector-search.md">hybriden Suche mit mehreren Vektoren</a> und mit <a href="https://milvus.io/docs/reranking.md">Strategien zur</a> Verbesserung der Relevanz kombinieren.</p>
 <pre><code translate="no" class="language-python">search_res = milvus_client.search(
     collection_name=collection_name,
     data=embedding_model.encode_queries(

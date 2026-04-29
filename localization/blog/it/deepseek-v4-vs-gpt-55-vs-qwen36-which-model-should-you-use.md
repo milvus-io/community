@@ -12,8 +12,8 @@ meta_keywords: 'DeepSeek V4, GPT-5.5 benchmark, Milvus RAG, Qwen3.6, vector data
 meta_title: |
   DeepSeek V4 RAG Benchmark with Milvus vs GPT-5.5 and Qwen
 desc: >-
-  Confrontate DeepSeek V4, GPT-5.5 e Qwen3.6 nei test di recupero, debug e
-  long-context, quindi costruite una pipeline Milvus RAG con DeepSeek V4.
+  Confrontiamo DeepSeek V4, GPT-5.5 e Qwen3.6 nei test di recupero, debug e
+  long-context, quindi costruiamo una pipeline Milvus RAG con DeepSeek V4.
 origin: >-
   https://milvus.io/blog/deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 ---
@@ -38,9 +38,9 @@ origin: >-
 <p>Il confronto è importante perché un sistema <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">di ricerca vettoriale di produzione</a> raramente dipende solo dal modello. La capacità del modello, la lunghezza del contesto, il controllo dell'implementazione, la qualità del recupero e il costo del servizio influiscono sull'esperienza finale dell'utente.</p>
 <h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: un modello MoE a peso aperto per il controllo dei costi dei contesti lunghi</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4</strong></a> <strong>è una famiglia di modelli MoE a peso aperto rilasciata da DeepSeek il 24 aprile 2026.</strong> Il comunicato ufficiale elenca due varianti: DeepSeek V4-Pro e DeepSeek V4-Flash. V4-Pro ha 1,6T di parametri totali con 49B attivati per token, mentre V4-Flash ha 284B parametri totali con 13B attivati per token. Entrambi supportano una finestra di contesto da 1M di token.</p>
 <p>La <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">scheda del modello DeepSeek V4-Pro</a> riporta anche la licenza MIT del modello, disponibile attraverso Hugging Face e ModelScope. Per i team che costruiscono flussi di lavoro di documenti con contesti lunghi, l'attrattiva principale è il controllo dei costi e la flessibilità di distribuzione rispetto alle API di frontiera completamente chiuse.</p>
-<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: un modello di frontiera ospitato per la codifica, la ricerca e l'uso degli strumenti</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>è un modello di frontiera chiuso rilasciato da OpenAI il 23 aprile 2026.</strong> OpenAI lo posiziona per la codifica, la ricerca online, l'analisi dei dati, il lavoro sui documenti, i fogli di calcolo, il funzionamento del software e le attività basate sugli strumenti. I documenti ufficiali del modello elencano <code translate="no">gpt-5.5</code> con una finestra contestuale API da 1 milione di token, mentre i limiti dei prodotti Codex e ChatGPT possono differire.</p>
+<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: un modello di frontiera ospitato per la codifica, la ricerca e l'uso di strumenti</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>è un modello di frontiera chiuso rilasciato da OpenAI il 23 aprile 2026.</strong> OpenAI lo posiziona per la codifica, la ricerca online, l'analisi dei dati, il lavoro sui documenti, i fogli di calcolo, il funzionamento del software e le attività basate sugli strumenti. I documenti ufficiali del modello elencano <code translate="no">gpt-5.5</code> con una finestra di contesto API da 1 milione di token, mentre i limiti dei prodotti Codex e ChatGPT possono differire.</p>
 <p>OpenAI ha ottenuto ottimi risultati nei benchmark di codifica: 82,7% su Terminal-Bench 2.0, 73,1% su Expert-SWE e 58,6% su SWE-Bench Pro. La contropartita è il prezzo: i prezzi ufficiali dell'API indicano GPT-5.5 a 5 dollari per 1 milione di token di input e 30 dollari per 1 milione di token di output, prima di qualsiasi dettaglio sui prezzi specifici del prodotto o del contesto lungo.</p>
-<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: un modello a parametri attivi più piccolo per carichi di lavoro locali e multimodali</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3B</strong></a> <strong>è un modello MoE di peso aperto del team Qwen di Alibaba.</strong> La sua scheda modello elenca 35B parametri totali, 3B parametri attivati, un codificatore di visione e licenze Apache-2.0. Supporta una finestra di contesto nativa da 262.144 token e può estendersi fino a circa 1.010.000 token con lo scaling YaRN.</p>
+<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: un modello a parametri attivi più piccolo per carichi di lavoro locali e multimodali</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3B</strong></a> <strong>è un modello MoE di peso aperto del team Qwen di Alibaba.</strong> La sua scheda modello elenca 35B parametri totali, 3B parametri attivati, un codificatore di visione e la licenza Apache-2.0. Supporta una finestra di contesto nativa da 262.144 token e può estendersi fino a circa 1.010.000 token con lo scaling YaRN.</p>
 <p>Questo rende Qwen3.6-35B-A3B interessante quando la distribuzione locale, il servizio privato, l'input di immagini e testi o i carichi di lavoro in lingua cinese sono più importanti della convenienza del modello di frontiera gestito.</p>
 <h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 vs GPT-5.5 vs Qwen3.6: Specifiche dei modelli a confronto</h3><table>
 <thead>
@@ -67,7 +67,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Questi test non sostituiscono le suite di benchmark complete. Si tratta di verifiche pratiche che rispecchiano le domande comuni degli sviluppatori: il modello è in grado di recuperare informazioni attuali, di ragionare su sottili bug del codice e di individuare i fatti all'interno di un documento molto lungo?</p>
+    </button></h2><p>Questi test non sostituiscono le suite di benchmark complete. Si tratta di verifiche pratiche che rispecchiano le domande comuni degli sviluppatori: il modello è in grado di recuperare le informazioni correnti, di ragionare su sottili bug del codice e di individuare i fatti all'interno di un documento molto lungo?</p>
 <h3 id="Which-Model-Handles-Real-Time-Information-Retrieval-Best" class="common-anchor-header">Quale modello gestisce meglio il recupero di informazioni in tempo reale?</h3><p>Abbiamo posto a ciascun modello tre domande sensibili al tempo, utilizzando la ricerca sul Web, se disponibile. Le istruzioni erano semplici: restituire solo la risposta e includere l'URL di origine.</p>
 <table>
 <thead>
@@ -86,11 +86,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>La pagina dei prezzi delle immagini di OpenAI utilizza l'etichetta "medium" anziché "standard" per le immagini di <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>copertina del blog stretta 1152x720</span>$0 </span>,053 1024×1024, quindi la domanda è normalizzata qui per corrispondere all'attuale formulazione dell'API.</p>
+<p>La pagina dei prezzi delle immagini di OpenAI utilizza l'etichetta "medium" anziché "standard" per il risultato di 0,053 dollari 1024×1024, quindi la domanda è stata normalizzata per corrispondere all'attuale formulazione dell'API.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -224,7 +220,7 @@ origin: >-
   </span>
 </p>
 <p>Qwen3.6-35B-A3B ha identificato accuratamente i bug e la sequenza di esecuzione di esempio era chiara. La parte più debole è stata la correzione: ha scelto un blocco globale a livello di classe, che fa sì che ogni account condivida lo stesso blocco. Questo funziona per una piccola simulazione, ma non è un buon compromesso per un sistema bancario reale, perché i trasferimenti di conti non correlati devono comunque attendere lo stesso blocco.</p>
-<p><strong>In breve:</strong> GPT-5.5 non solo ha risolto il bug attuale, ma ha anche messo in guardia dal prossimo bug che uno sviluppatore potrebbe introdurre. DeepSeek V4-Pro ha fornito la soluzione non-GPT più pulita. Qwen3.6 ha trovato i problemi e ha prodotto codice funzionante, ma non ha segnalato il compromesso sulla scalabilità.</p>
+<p><strong>In breve:</strong> GPT-5.5 non solo ha risolto il bug attuale, ma ha anche messo in guardia dal prossimo bug che uno sviluppatore potrebbe introdurre. DeepSeek V4-Pro ha fornito la soluzione non-GPT più pulita. Qwen3.6 ha individuato i problemi e prodotto codice funzionante, ma non ha segnalato il compromesso sulla scalabilità.</p>
 <h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">Quale modello gestisce meglio il recupero di un contesto lungo?<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -249,7 +245,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>DeepSeek V4-Pro ha trovato il marcatore nascosto, ma non la posizione corretta del carattere. Inoltre, ha fornito il contesto circostante sbagliato. In questo test, sembra che abbia individuato il marcatore dal punto di vista semantico, ma che abbia perso di vista la posizione esatta durante il ragionamento sul documento.</p>
+<p>DeepSeek V4-Pro ha trovato il marcatore nascosto, ma non la posizione corretta del carattere. Inoltre, ha fornito un contesto circostante sbagliato. In questo test, sembra che abbia individuato il marcatore dal punto di vista semantico, ma che abbia perso di vista la posizione esatta durante il ragionamento sul documento.</p>
 <h4 id="GPT-55" class="common-anchor-header">GPT-5.5</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_12_5b09068036.png" alt="" class="doc-image" id="" />
@@ -350,7 +346,7 @@ origin: >-
 
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;DEEPSEEK_API_KEY&quot;</span>] = <span class="hljs-string">&quot;sk-*****************&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Prepare-the-Milvus-Documentation-Dataset" class="common-anchor-header">Preparare il set di dati della documentazione Milvus</h3><p>Come fonte di conoscenza privata utilizziamo le pagine FAQ dell'<a href="https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip">archivio della documentazione di Milvus 2.4.x</a>. Si tratta di un semplice set di dati di partenza per una piccola demo RAG.</p>
+<h3 id="Prepare-the-Milvus-Documentation-Dataset" class="common-anchor-header">Preparare il set di dati della documentazione Milvus</h3><p>Come fonte di conoscenza privata utilizziamo le pagine delle FAQ dell'<a href="https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip">archivio della documentazione di Milvus 2.4.x</a>. Si tratta di un semplice set di dati di partenza per una piccola demo RAG.</p>
 <p>Per prima cosa, scaricare il file ZIP ed estrarre la documentazione nella cartella <code translate="no">milvus_docs</code>.</p>
 <pre><code translate="no" class="language-python">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
@@ -402,7 +398,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Create-a-Milvus-Collection" class="common-anchor-header">Creare una collezione Milvus</h3><p>Una collezione Milvus memorizza campi vettoriali, campi scalari e metadati dinamici opzionali. La configurazione rapida che segue utilizza l'API di alto livello <code translate="no">MilvusClient</code>; per gli schemi di produzione, consultare i documenti sulla <a href="https://milvus.io/docs/manage-collections.md">gestione delle collezioni</a> e sulla <a href="https://milvus.io/docs/create-collection.md">creazione di collezioni</a>.</p>
+    </button></h2><h3 id="Create-a-Milvus-Collection" class="common-anchor-header">Creare una collezione Milvus</h3><p>Una collezione Milvus memorizza campi vettoriali, campi scalari e metadati dinamici opzionali. La configurazione rapida che segue utilizza l'API di alto livello <code translate="no">MilvusClient</code>; per gli schemi di produzione, consultare i documenti sulla <a href="https://milvus.io/docs/manage-collections.md">gestione delle collezioni</a> e sulla <a href="https://milvus.io/docs/create-collection.md">creazione delle collezioni</a>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
@@ -428,7 +424,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 )
 <button class="copy-code-btn"></button></code></pre>
 <p>La metrica <code translate="no">IP</code> indica la somiglianza del prodotto interno. Milvus supporta anche altri tipi di metriche e indici a seconda del tipo di vettore e del carico di lavoro; si vedano le guide sui <a href="https://milvus.io/docs/id/metric.md">tipi di metriche</a> e sulla <a href="https://milvus.io/docs/index_selection.md">selezione degli indici</a>. L'impostazione <code translate="no">Strong</code> è uno dei <a href="https://milvus.io/docs/consistency.md">livelli di coerenza</a> disponibili.</p>
-<h3 id="Insert-the-Embedded-Documents" class="common-anchor-header">Inserire i documenti incorporati</h3><p>Intervistiamo i dati di testo, creiamo le incorporazioni e inseriamo i dati in Milvus. Qui aggiungiamo un nuovo campo chiamato <code translate="no">text</code>. Poiché non è definito esplicitamente nello schema della raccolta, viene aggiunto automaticamente al campo JSON dinamico riservato. Per i metadati di produzione, consultare il <a href="https://milvus.io/docs/enable-dynamic-field.md">supporto dei campi dinamici</a> e la <a href="https://milvus.io/docs/json-field-overview.md">panoramica dei campi JSON</a>.</p>
+<h3 id="Insert-the-Embedded-Documents" class="common-anchor-header">Inserire i documenti incorporati</h3><p>Intervistiamo i dati di testo, creiamo le incorporazioni e inseriamo i dati in Milvus. In questo caso, aggiungiamo un nuovo campo chiamato <code translate="no">text</code>. Poiché non è definito esplicitamente nello schema della raccolta, viene aggiunto automaticamente al campo JSON dinamico riservato. Per i metadati di produzione, consultare il <a href="https://milvus.io/docs/enable-dynamic-field.md">supporto dei campi dinamici</a> e la <a href="https://milvus.io/docs/json-field-overview.md">panoramica dei campi JSON</a>.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 data = []
@@ -557,7 +553,7 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
 </tbody>
 </table>
 <p>L'abitudine di produzione più importante è quella di valutare il recupero separatamente dalla generazione. Se il contesto recuperato è debole, lo scambio di LLM spesso nasconde il problema invece di risolverlo.</p>
-<h2 id="Get-Started-with-Milvus-and-DeepSeek-RAG" class="common-anchor-header">Iniziare con Milvus e DeepSeek RAG<button data-href="#Get-Started-with-Milvus-and-DeepSeek-RAG" class="anchor-icon" translate="no">
+<h2 id="Get-Started-with-Milvus-and-DeepSeek-RAG" class="common-anchor-header">Iniziare a lavorare con Milvus e DeepSeek RAG<button data-href="#Get-Started-with-Milvus-and-DeepSeek-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"

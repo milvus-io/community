@@ -86,11 +86,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>OpenAI 的图片定价页面使用了 "medium "标签，而不是 "standard "标签。 <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>博客封面窄 1152x720</span>$0 </span>.053 1024×1024 结果，因此此处对问题进行了归一化处理，以符合当前 API 的措辞。</p>
+<p>OpenAI 的图片定价页面使用 "medium "标签，而不是 0.053 美元 1024×1024 结果的 "standard "标签，因此此处对问题进行了规范化处理，以符合当前 API 的措辞。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -216,14 +212,14 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>GPT-5.5 在本次测试中表现最佳。它发现了核心问题，预测了死锁风险，解释了原始代码可能失败的原因，并提供了完整的修正实现。</p>
+<p>GPT-5.5 在本次测试中表现最佳。它发现了核心问题，预见了死锁风险，解释了原始代码可能失败的原因，并提供了完整的修正实现。</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_10_1177f51906.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Qwen3.6-35B-A3B 准确地找出了错误，其示例执行顺序也很清晰。较弱的部分是修复方法：它选择了全局类级锁，使每个账户共享相同的锁。这对于小型模拟来说是可行的，但对于真正的银行系统来说，这是个糟糕的折衷方案，因为不相关的账户转账仍然必须等待同一个锁。</p>
+<p>Qwen3.6-35B-A3B 准确地找出了错误，其示例执行顺序也很清晰。较弱的部分是修复方法：它选择了全局类级锁，使每个账户共享相同的锁。这对于小型模拟来说是可行的，但对于真正的银行系统来说，这是个糟糕的折衷方案，因为不相关的账户转账仍必须等待同一个锁。</p>
 <p><strong>简而言之：</strong>GPT-5.5 不仅解决了当前的错误，还对开发人员可能引入的下一个错误提出了警告。DeepSeek V4-Pro 提供了最简洁的非 GPT 修复。Qwen3.6 发现了问题并生成了可行的代码，但没有指出可扩展性方面的缺陷。</p>
 <h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">哪种模型能最好地处理长文本检索？<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -291,7 +287,7 @@ origin: >-
 </tbody>
 </table>
 <p>当您需要最强的结果时，使用 GPT-5.5，成本是次要的。当您需要长上下文、较低的服务成本和便于 API 部署时，请使用 DeepSeek V4-Pro。当最需要开放权重、私有部署、多模式支持或服务栈控制时，使用 Qwen3.6-35B-A3B。</p>
-<p>不过，对于检索繁重的应用来说，模型的选择只是成功的一半。当上下文由专门的<a href="https://zilliz.com/learn/generative-ai">语义搜索系统</a>进行检索、过滤和基础处理时，即使是强大的长语境模型也会有更好的表现。</p>
+<p>不过，对于检索繁重的应用来说，模型的选择只是成功的一半。当上下文由专门的<a href="https://zilliz.com/learn/generative-ai">语义搜索系统</a>进行检索、过滤和基础处理时，即使是强大的长上下文模型也会有更好的表现。</p>
 <h2 id="Why-RAG-Still-Matters-for-Long-Context-Models" class="common-anchor-header">为什么 RAG 对长上下文模型仍然重要<button data-href="#Why-RAG-Still-Matters-for-Long-Context-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

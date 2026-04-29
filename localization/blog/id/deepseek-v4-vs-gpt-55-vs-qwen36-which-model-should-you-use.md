@@ -87,11 +87,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>Halaman harga gambar OpenAI menggunakan label "medium" daripada "standar" untuk <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>sampul blog sempit 1152x720</span>$ 0 </span>,053 1024×1024, sehingga pertanyaan dinormalisasi di sini agar sesuai dengan kata-kata API saat ini.</p>
+<p>Halaman harga gambar OpenAI menggunakan label "medium" dan bukan "standar" untuk hasil $0,053 1024×1024, sehingga pertanyaan dinormalisasi di sini agar sesuai dengan kata-kata API saat ini.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -257,7 +253,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>GPT-5.5 menemukan konten penanda, posisi, dan konteks di sekitarnya dengan benar. Sistem ini melaporkan posisi sebagai 500.002 dan bahkan membedakan antara penghitungan dengan indeks nol dan indeks satu. Konteks di sekitarnya juga cocok dengan teks yang digunakan saat menyisipkan penanda.</p>
+<p>GPT-5.5 menemukan konten penanda, posisi, dan konteks di sekitarnya dengan benar. GPT-5.5 melaporkan posisi sebagai 500.002 dan bahkan membedakan antara penghitungan dengan indeks nol dan indeks satu. Konteks di sekitarnya juga cocok dengan teks yang digunakan saat menyisipkan penanda.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_13_ca4223c01d.png" alt="" class="doc-image" id="" />

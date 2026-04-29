@@ -36,7 +36,7 @@ origin: >-
       </svg>
     </button></h2><p><strong>DeepSeek V4, GPT-5.5 및 Qwen3.6-35B-A3B는 모델 스택의 서로 다른 부분을 대상으로 하는 서로 다른 AI 모델입니다.</strong> DeepSeek V4는 오픈 웨이트의 긴 컨텍스트 추론에 중점을 둡니다. GPT-5.5는 프론티어 호스팅 성능, 코딩, 온라인 리서치 및 툴을 많이 사용하는 작업에 중점을 둡니다. Qwen3.6-35B-A3B는 훨씬 더 작은 활성 매개변수 풋프린트를 가진 오픈 웨이트 멀티모달 배포에 중점을 둡니다.</p>
 <p><a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">프로덕션 벡터 검색</a> 시스템은 모델에만 의존하는 경우가 거의 없기 때문에 비교가 중요합니다. 모델 기능, 컨텍스트 길이, 배포 제어, 검색 품질, 서비스 비용 등이 모두 최종 사용자 경험에 영향을 미칩니다.</p>
-<h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: 긴 컨텍스트 비용 제어를 위한 개방형 가중치 MoE 모델</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4는</strong></a> <strong>2026년 4월 24일에 출시된 오픈-웨이트 MoE 모델 제품군입니다.</strong> 공식 릴리스에는 두 가지 변형이 있습니다: DeepSeek V4-Pro와 DeepSeek V4-Flash입니다. V4-Pro는 토큰당 49억 개가 활성화된 총 1.6T 개의 매개변수를 가지고 있으며, V4-Flash는 토큰당 13억 개가 활성화된 총 284억 개의 매개변수를 가지고 있습니다. 둘 다 1백만 개의 토큰 컨텍스트 창을 지원합니다.</p>
+<h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: 긴 컨텍스트 비용 제어를 위한 개방형 가중치 MoE 모델</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4는</strong></a> <strong>2026년 4월 24일에 출시된 오픈-웨이트 MoE 모델 제품군입니다.</strong> 공식 릴리스에는 두 가지 변형이 있습니다: DeepSeek V4-Pro와 DeepSeek V4-Flash입니다. V4-Pro는 토큰당 49억 개가 활성화된 총 1.6T 개의 매개변수를 가지고 있으며, V4-Flash는 토큰당 13억 개가 활성화된 총 284억 개의 매개변수를 가지고 있습니다. 두 제품 모두 1백만 개의 토큰 컨텍스트 창을 지원합니다.</p>
 <p><a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">DeepSeek V4-Pro 모델 카드에는</a> 이 모델이 MIT 라이선스를 받았으며 Hugging Face와 ModelScope를 통해 사용 가능하다는 사실도 명시되어 있습니다. 긴 컨텍스트 문서 워크플로우를 구축하는 팀의 경우, 완전히 폐쇄적인 프론티어 API에 비해 비용 관리와 배포 유연성이 가장 큰 매력입니다.</p>
 <h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: 코딩, 연구 및 도구 사용을 위한 호스팅형 프론티어 모델</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5는</strong></a> <strong>OpenAI가 2026년 4월 23일에 출시한 폐쇄형 프론티어 모델입니다.</strong> OpenAI는 코딩, 온라인 리서치, 데이터 분석, 문서 작업, 스프레드시트 작업, 소프트웨어 운영 및 도구 기반 작업에 적합하다고 홍보합니다. 공식 모델 문서( <code translate="no">gpt-5.5</code> )에는 1백만 토큰 API 컨텍스트 창이 나열되어 있지만, Codex와 ChatGPT 제품 제한은 다를 수 있습니다.</p>
 <p>OpenAI는 강력한 코딩 벤치마크 결과를 보고합니다: 터미널 벤치 2.0에서 82.7%, Expert-SWE에서 73.1%, SWE-Bench Pro에서 58.6%. 단점은 가격입니다. 공식 API 가격에는 제품별 또는 장기적인 맥락의 가격 세부 정보 이전에 GPT-5.5가 1백만 입력 토큰당 5달러, 1백만 출력 토큰당 30달러로 표시되어 있습니다.</p>
@@ -86,11 +86,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>OpenAI의 이미지 가격 책정 페이지에서는 '표준'이 아닌 '중간'이라는 레이블을 사용합니다. <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>블로그 커버 좁은 1152x720</span>$0 </span>.053 1024×1024 결과에 대해 "표준"이라는 레이블을 사용하므로 여기에서 질문은 현재 API 문구와 일치하도록 정규화됩니다.</p>
+<p>OpenAI의 이미지 가격 페이지에서는 $0.053 1024×1024 결과에 대해 '표준'이 아닌 '중간'이라는 레이블을 사용하므로 이 질문은 현재 API 문구와 일치하도록 정규화되어 있습니다.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -109,7 +105,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">실시간 검색 결과: GPT-5.5가 가장 명확한 이점을 가짐</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
+<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">실시간 검색 결과: GPT-5.5가 가장 명확한 이점을 가졌습니다.</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_5_1e9d7c4c06.png" alt="" class="doc-image" id="" />
     <span></span>
@@ -146,7 +142,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>두 번째 테스트에서는 세 가지 계층의 동시성 문제가 있는 Python 은행 이체 예제를 사용했습니다. 이 작업은 명백한 경쟁 조건을 찾는 것뿐만 아니라 총 잔액이 깨지는 이유를 설명하고 수정된 코드를 제공하는 것이었습니다.</p>
+    </button></h2><p>두 번째 테스트에서는 세 가지 계층의 동시성 문제가 있는 Python 은행 이체 예제를 사용했습니다. 명백한 경쟁 조건을 찾는 것뿐만 아니라 총 잔액이 깨지는 이유를 설명하고 수정된 코드를 제공하는 것이 과제였습니다.</p>
 <table>
 <thead>
 <tr><th>레이어</th><th>Problem</th><th>무엇이 잘못되었는지</th></tr>
@@ -223,7 +219,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Qwen3.6-35B-A3B는 버그를 정확하게 식별했으며 예제 실행 순서가 명확했습니다. 취약한 부분은 모든 계정이 동일한 잠금을 공유하도록 하는 글로벌 클래스 수준 잠금을 선택한 수정 사항이었습니다. 이는 소규모 시뮬레이션에서는 효과가 있지만, 실제 은행 시스템에서는 관련 없는 계좌 이체가 여전히 동일한 잠금에서 대기해야 하므로 좋지 않은 절충안입니다.</p>
+<p>Qwen3.6-35B-A3B는 버그를 정확하게 식별했으며 예제 실행 순서가 명확했습니다. 취약한 부분은 모든 계정이 동일한 잠금을 공유하도록 하는 글로벌 클래스 수준 잠금을 선택한 수정 사항이었습니다. 이는 소규모 시뮬레이션에서는 효과가 있지만, 실제 은행 시스템에서는 관련 없는 계좌 이체가 여전히 동일한 잠금에서 대기해야 하기 때문에 좋지 않은 절충안입니다.</p>
 <p><strong>요컨대</strong>, GPT-5.5는 현재 버그를 해결했을 뿐만 아니라 개발자가 다음에 도입할 수 있는 버그에 대해서도 경고했습니다. DeepSeek V4-Pro는 가장 깔끔한 비-GPT 수정을 제공했습니다. Qwen3.6은 문제를 발견하고 작동 코드를 생성했지만 확장성 손상에 대해서는 언급하지 않았습니다.</p>
 <h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">긴 컨텍스트 검색을 가장 잘 처리하는 모델은 무엇인가요?<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -411,7 +407,7 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
 <p><code translate="no">MilvusClient</code> 에 대한 몇 가지 참고 사항</p>
 <ul>
-<li><code translate="no">uri</code> 을 <code translate="no">./milvus.db</code> 과 같은 로컬 파일로 설정하는 것이 가장 쉬운 옵션으로, <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite를</a> 자동으로 사용하고 모든 데이터를 해당 파일에 저장하기 때문입니다.</li>
+<li><code translate="no">uri</code> 을 <code translate="no">./milvus.db</code> 과 같은 로컬 파일로 설정하는 것이 가장 쉬운 옵션인데, 이는 <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite를</a> 자동으로 사용하고 모든 데이터를 해당 파일에 저장하기 때문입니다.</li>
 <li>대규모 데이터 세트가 있는 경우 <a href="https://milvus.io/docs/quickstart.md">Docker 또는 Kubernetes에서</a> 더 높은 성능의 Milvus 서버를 설정할 수 있습니다. 이 설정에서는 <code translate="no">http://localhost:19530</code> 와 같은 서버 URI를 <code translate="no">uri</code> 로 사용합니다.</li>
 <li>Milvus의 완전 관리형 클라우드 서비스인 <a href="https://docs.zilliz.com/">질리즈 클라우드를</a> 사용하려면 <code translate="no">uri</code> 및 <code translate="no">token</code> 을 질리즈 클라우드의 <a href="https://docs.zilliz.com/docs/connect-to-cluster">공개 엔드포인트 및 API 키로</a> 설정하세요.</li>
 </ul>
@@ -556,7 +552,7 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
 <tr><td>호스팅된 애플리케이션을 안전하게 연결</td><td><a href="https://docs.zilliz.com/docs/manage-api-keys">질리즈 클라우드 API 키</a></td><td>애플리케이션 클라이언트를 위한 토큰 기반 접근 제어 제공</td></tr>
 </tbody>
 </table>
-<p>가장 중요한 프로덕션 습관은 검색을 생성과 별도로 평가하는 것입니다. 검색된 컨텍스트가 약한 경우, LLM을 교체하면 문제가 해결되는 대신 문제가 숨겨지는 경우가 많습니다.</p>
+<p>가장 중요한 프로덕션 습관은 검색을 생성과 별도로 평가하는 것입니다. 검색된 컨텍스트가 취약한 경우 LLM을 교체하면 문제가 해결되지 않고 숨겨지는 경우가 많습니다.</p>
 <h2 id="Get-Started-with-Milvus-and-DeepSeek-RAG" class="common-anchor-header">Milvus 및 DeepSeek RAG 시작하기<button data-href="#Get-Started-with-Milvus-and-DeepSeek-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

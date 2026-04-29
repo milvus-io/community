@@ -34,11 +34,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>DeepSeek V4、GPT-5.5、Qwen3.6-35B-A3Bは、モデル・スタックの異なる部分をターゲットとする異なるAIモデルです。</strong>DeepSeek V4は、オープンウェイトのロングコンテキスト推論に重点を置いています。GPT-5.5は、フロンティア・ホスト・パフォーマンス、コーディング、オンライン・リサーチ、ツールを多用するタスクに重点を置いています。Qwen3.6-35B-A3Bは、アクティブ・パラメータ・フットプリントがはるかに小さく、オープンウェイトのマルチモーダル展開に重点を置いている。</p>
+    </button></h2><p><strong>DeepSeek V4、GPT-5.5、Qwen3.6-35B-A3Bは、モデル・スタックの異なる部分をターゲットとする異なるAIモデルです。</strong>DeepSeek V4は、オープンウェイトのロングコンテキスト推論に重点を置いています。GPT-5.5は、フロンティア・ホスト・パフォーマンス、コーディング、オンライン・リサーチ、ツールを多用するタスクに重点を置いています。Qwen3.6-35B-A3Bは、アクティブ・パラメータのフットプリントがはるかに小さく、オープンウェイトのマルチモーダル展開に重点を置いています。</p>
 <p><a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">本番のベクトル検索</a>システムがモデルだけに依存することはほとんどないため、この比較は重要です。モデルの能力、コンテキストの長さ、デプロイメントの制御、検索品質、およびサービング・コストはすべて、最終的なユーザー・エクスペリエンスに影響します。</p>
 <h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4：ロングコンテキストのコスト管理を実現するオープンウェイトの MoE モデル</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V</strong></a> <strong>4は、DeepSeekが2026年4月24日にリリースしたオープンウェイトのMoEモデルファミリーです。</strong>公式リリースには2つのバリエーションが掲載されています：DeepSeek V4-ProとDeepSeek V4-Flashです。V4-Proは総パラメータ1.6T、トークンあたり49Bをアクティブにし、V4-Flashは総パラメータ284B、トークンあたり13Bをアクティブにする。どちらも1Mトークンのコンテキスト・ウィンドウをサポートしています。</p>
 <p>また、<a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">DeepSeek V4-Proモデル・カードには</a>、このモデルがMITライセンスであり、Hugging FaceおよびModelScopeを通じて入手可能であることが記載されています。長いコンテキストのドキュメント・ワークフローを構築するチームにとって、完全にクローズドなフロンティアAPIと比較して、主な魅力はコスト管理とデプロイの柔軟性です。</p>
-<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5：コーディング、研究、ツール使用のためのホストされたフロンティアモデル</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.</strong></a> <strong>5は、OpenAIが2026年4月23日にリリースしたクローズドフロンティアモデルです。</strong>OpenAIでは、コーディング、オンラインリサーチ、データ分析、文書作業、表計算作業、ソフトウェア操作、ツールベースの作業向けと位置づけています。公式モデルのドキュメントでは、<code translate="no">gpt-5.5</code> 、1MトークンのAPIコンテキストウィンドウが記載されていますが、CodexとChatGPTの製品制限は異なる場合があります。</p>
+<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5：コーディング、研究、ツール使用のためのホストされたフロンティアモデル</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.</strong></a> <strong>5は、OpenAIが2026年4月23日にリリースしたクローズドフロンティアモデルです。</strong>OpenAIはこのモデルをコーディング、オンラインリサーチ、データ分析、文書作業、表計算作業、ソフトウェア操作、ツールベースの作業向けに位置づけています。公式モデルのドキュメントでは、<code translate="no">gpt-5.5</code> 、1MトークンのAPIコンテキストウィンドウが記載されていますが、CodexとChatGPTの製品制限は異なる場合があります。</p>
 <p>OpenAIは強力なコーディングベンチマークの結果を報告しています：Terminal-Bench 2.0では82.7%、Expert-SWEでは73.1%、SWE-Bench Proでは58.6%です。トレードオフは価格です。公式のAPI価格では、GPT-5.5が1M入力トークンあたり5ドル、1M出力トークンあたり30ドルとなっています。</p>
 <h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B：ローカルおよびマルチモーダルワークロード用の小型アクティブ・パラメータ・モデル</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3</strong></a> <strong>Bは、AlibabaのQwenチームによるオープンウェイトのMoEモデルです。</strong>モデルカードには、35Bの総パラメータ、3Bのアクティブパラメータ、ビジョンエンコーダ、Apache-2.0ライセンスが記載されている。ネイティブの262,144トークンのコンテキスト・ウィンドウをサポートし、YaRNスケーリングで約1,010,000トークンまで拡張できる。</p>
 <p>そのため、Qwen3.6-35B-A3Bは、管理されたフロンティア・モデルの利便性よりも、ローカルへの展開、プライベート・サーバー、画像テキスト入力、中国語のワークロードの方が重要な場合に魅力的となる。</p>
@@ -81,16 +81,12 @@ origin: >-
 </table>
 <table>
 <thead>
-<tr><th>注：これらは一刻を争う質問です。予想される回答は、テストを実施した時点での結果を反映しています。</th></tr>
+<tr><th>注：これらの質問は一刻を争うものです。予想される回答は、テストを実施した時点での結果を反映しています。</th></tr>
 </thead>
 <tbody>
 </tbody>
 </table>
-<p>OpenAIの画像価格設定ページでは、以下のラベルに「標準」ではなく「中」が使用されています。 <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>ブログの表紙が狭い 1152x720</span>$0 </span>.053 1024×1024 の結果では、「標準」ではなく「中」のラベルを使用しています。</p>
+<p>OpenAIの画像価格設定ページでは、$0.053 1024×1024の結果に対して「標準」ではなく「中」というラベルが使用されているため、ここでは現在のAPIの文言に合わせて質問を正規化しています。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -152,7 +148,7 @@ origin: >-
 <tr><th>レイヤー</th><th>問題点</th><th>何が問題か</th></tr>
 </thead>
 <tbody>
-<tr><td>基本</td><td>レース条件</td><td><code translate="no">if self.balance &gt;= amount</code> <code translate="no">self.balance -= amount</code> はアトミックではない。2つのスレッドが同時にバランスチェックを通過し、両方がお金を引くことができる。</td></tr>
+<tr><td>基本</td><td>レース条件</td><td><code translate="no">if self.balance &gt;= amount</code> <code translate="no">self.balance -= amount</code> はアトミックではない。2つのスレッドが同時に残高チェックを通過し、両方がお金を引くことができる。</td></tr>
 <tr><td>ミディアム</td><td>デッドロックのリスク</td><td>素朴なアカウントごとのロックは、転送A→BがAを先にロックし、転送B→AがBを先にロックするとデッドロックになる可能性がある。これは古典的なABBAデッドロックです。</td></tr>
 <tr><td>上級</td><td>誤ったロック・スコープ</td><td><code translate="no">self.balance</code> のみを保護しても、<code translate="no">target.balance</code> は保護されない。正しい修正は、安定した順序で、通常はアカウントIDで、両方のアカウントをロックするか、より低い同時実行性でグローバル・ロックを使用しなければならない。</td></tr>
 </tbody>
@@ -203,7 +199,7 @@ origin: >-
                                                                                                                 
   stress_test()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Code-Debugging-Results-GPT-55-Gave-the-Most-Complete-Answer" class="common-anchor-header">コードのデバッグ結果：GPT-5.5 が最も完全な答えを返しました。</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>DeepSeek V4-Pro は簡潔な分析を行い、ABBA デッドロックを回避する標準的な方法である順序付きロックの解決策にまっすぐ進みました。その解答は正しい修正を示していましたが、なぜ素朴なロックベースの修正が新たな故障モードを導入する可能性があるのかの説明には多くの時間を割きませんでした。</p>
+<h3 id="Code-Debugging-Results-GPT-55-Gave-the-Most-Complete-Answer" class="common-anchor-header">コードのデバッグ結果：GPT-5.5 が最も完全な回答を返しました。</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>DeepSeek V4-Pro は簡潔な分析を行い、ABBA デッドロックを回避する標準的な方法である順序付きロックの解決策にまっすぐ進みました。その解答は正しい修正を示していましたが、なぜ素朴なロックベースの修正が新たな故障モードを導入する可能性があるのかの説明には多くの時間を割きませんでした。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_8_e2b4c41c46.png" alt="" class="doc-image" id="" />
@@ -224,7 +220,7 @@ origin: >-
   </span>
 </p>
 <p>Qwen3.6-35B-A3Bはバグを正確に特定し、実行シーケンスの例も明確だった。弱点はその修正で、グローバルなクラスレベルのロックを選択し、すべてのアカウントが同じロックを共有するようにした。これは小規模なシミュレーションには有効ですが、実際の銀行システムには不適切なトレードオフです。</p>
-<p><strong>要するに、</strong>GPT-5.5は現在のバグを解決しただけでなく、開発者が次に導入するかもしれないバグについても警告しているのです。DeepSeek V4-Proは、GPT以外のバグを最もきれいに修正しました。Qwen3.6は問題を発見し、動作するコードを作成しましたが、スケーラビリティの妥協点を指摘しませんでした。</p>
+<p><strong>要するに、</strong>GPT-5.5は現在のバグを解決しただけでなく、開発者が次に導入するかもしれないバグについても警告しているのです。DeepSeek V4-Proは、GPT以外のバグを最もきれいに修正しました。Qwen3.6は、問題を発見し、動作するコードを作成しましたが、スケーラビリティの妥協点を指摘しませんでした。</p>
 <h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">どのモデルがロング・コンテキスト検索を最もうまく処理できるか？<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -355,7 +351,7 @@ os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;DE
 <pre><code translate="no" class="language-python">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p><code translate="no">milvus_docs/en/faq</code> フォルダからすべてのMarkdownファイルを読み込みます。各ドキュメントについて、<code translate="no">#</code> によってファイル・コンテンツを分割します。これは、主要な Markdown セクションを大まかに分割するためです。</p>
+<p><code translate="no">milvus_docs/en/faq</code> フォルダからすべてのMarkdownファイルを読み込みます。各ドキュメントについて、<code translate="no">#</code> でファイル・コンテンツを分割します。これは、主要な Markdown セクションを大まかに分割するためです。</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 
 text_lines = []

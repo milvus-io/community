@@ -87,11 +87,7 @@ origin: >-
 <tbody>
 </tbody>
 </table>
-<p>La page de tarification des images d'OpenAI utilise l'étiquette "medium" plutôt que "standard" pour les images suivantes <br>
-
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg" alt="blog cover narrow 1152x720" class="doc-image" id="blog-cover-narrow-1152x720" />
-   </span> <span class="img-wrapper"> <span>couverture de blog étroite 1152x720</span>$0 </span>.053 1024×1024, la question est donc normalisée ici pour correspondre à la formulation actuelle de l'API.</p>
+<p>La page de tarification des images d'OpenAI utilise l'étiquette "medium" plutôt que "standard" pour le résultat de 0,053 $ 1024×1024, la question est donc normalisée ici pour correspondre à la formulation actuelle de l'API.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -110,21 +106,21 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Résultats de la recherche en temps réel : GPT-5.5 a l'avantage le plus net</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
+<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Résultats de la recherche en temps réel : GPT-5.5 a le plus grand avantage</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_5_1e9d7c4c06.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
 <p>DeepSeek V4-Pro a répondu de manière incorrecte à la première question. Il n'a pas pu répondre aux deuxième et troisième questions par le biais d'une recherche en direct sur le web dans cette configuration.</p>
-<p>La deuxième réponse comprenait l'URL correcte du Billboard, mais n'a pas permis de retrouver la chanson numéro 1 du moment. La troisième réponse utilisait la mauvaise source, nous l'avons donc considérée comme incorrecte.</p>
+<p>La deuxième réponse comprenait l'URL Billboard correcte, mais n'a pas permis de retrouver la chanson numéro 1 du moment. La troisième réponse utilisait la mauvaise source, nous l'avons donc considérée comme incorrecte.</p>
 <h4 id="GPT-55" class="common-anchor-header">GPT-5.5</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_6_b146956865.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>GPT-5.5 a beaucoup mieux géré ce test. Ses réponses étaient courtes, précises, sourcées et rapides. Lorsqu'une tâche dépend d'informations actuelles et que le modèle dispose d'une fonction de récupération en direct, GPT-5.5 a un net avantage dans cette configuration.</p>
+<p>GPT-5.5 a beaucoup mieux géré ce test. Ses réponses étaient courtes, précises, sourcées et rapides. Lorsqu'une tâche dépend d'informations actuelles et que le modèle dispose d'une récupération en direct, GPT-5.5 a un net avantage dans cette configuration.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_7_91686c177e.png" alt="" class="doc-image" id="" />
@@ -155,7 +151,7 @@ origin: >-
 <tbody>
 <tr><td>De base</td><td>Condition de course</td><td><code translate="no">if self.balance &gt;= amount</code> et <code translate="no">self.balance -= amount</code> ne sont pas atomiques. Deux threads peuvent passer la vérification du solde en même temps, puis tous deux soustraire de l'argent.</td></tr>
 <tr><td>Moyen</td><td>Risque de blocage</td><td>Un verrouillage naïf par compte peut entraîner un blocage lorsque le transfert A→B verrouille A en premier et que le transfert B→A verrouille B en premier. Il s'agit de l'impasse ABBA classique.</td></tr>
-<tr><td>Avancé</td><td>Portée de verrouillage incorrecte</td><td>Protéger uniquement <code translate="no">self.balance</code> ne protège pas <code translate="no">target.balance</code>. Une solution correcte doit verrouiller les deux comptes dans un ordre stable, généralement par ID de compte, ou utiliser un verrou global avec une concurrence plus faible.</td></tr>
+<tr><td>Avancé</td><td>Étendue du verrouillage incorrecte</td><td>Protéger uniquement <code translate="no">self.balance</code> ne protège pas <code translate="no">target.balance</code>. Une solution correcte doit verrouiller les deux comptes dans un ordre stable, généralement par ID de compte, ou utiliser un verrou global avec une concurrence plus faible.</td></tr>
 </tbody>
 </table>
 <p>L'invite et le code sont présentés ci-dessous :</p>
@@ -287,7 +283,7 @@ origin: >-
 </thead>
 <tbody>
 <tr><td>GPT-5.5</td><td>Meilleure capacité globale</td><td>A remporté les tests d'extraction en direct, de débogage de la concurrence et de marqueur de contexte long</td><td>Coût plus élevé ; plus performant lorsque la précision et l'utilisation de l'outil justifient le prix.</td></tr>
-<tr><td>DeepSeek V4-Pro</td><td>Déploiement en contexte long, à moindre coût</td><td>A fourni le meilleur correctif non GPT pour le bogue de concurrence et a trouvé le contenu du marqueur.</td><td>Nécessite des outils d'extraction externes pour les tâches en ligne ; le suivi exact de l'emplacement des caractères était plus faible dans ce test.</td></tr>
+<tr><td>DeepSeek V4-Pro</td><td>Déploiement en contexte long, à moindre coût</td><td>A fourni la meilleure solution non GPT pour le bogue de concurrence et a trouvé le contenu du marqueur.</td><td>Nécessite des outils d'extraction externes pour les tâches en ligne ; le suivi exact de l'emplacement des caractères était plus faible dans ce test.</td></tr>
 <tr><td>Qwen3.6-35B-A3B</td><td>Déploiement local, poids ouverts, entrée multimodale, charges de travail en langue chinoise</td><td>Bons résultats en matière d'identification des bogues et de compréhension des contextes longs</td><td>La qualité des corrections était moins évolutive ; l'accès au web en direct n'était pas disponible dans cette configuration.</td></tr>
 </tbody>
 </table>
@@ -593,4 +589,4 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
     </button></h2><h3 id="Is-DeepSeek-V4-good-for-RAG" class="common-anchor-header">DeepSeek V4 est-il bon pour RAG ?</h3><p>DeepSeek V4-Pro convient parfaitement à RAG lorsque vous avez besoin d'un traitement de contexte long et d'un coût de service inférieur à celui des modèles fermés haut de gamme. Vous avez toujours besoin d'une couche d'extraction telle que Milvus pour sélectionner les morceaux pertinents, appliquer des filtres de métadonnées et garder l'invite ciblée.</p>
 <h3 id="Should-I-use-GPT-55-or-DeepSeek-V4-for-a-RAG-pipeline" class="common-anchor-header">Dois-je utiliser GPT-5.5 ou DeepSeek V4 pour un pipeline RAG ?</h3><p>Utilisez GPT-5.5 lorsque la qualité de la réponse, l'utilisation de l'outil et la recherche en direct sont plus importantes que le coût. Utilisez DeepSeek V4-Pro lorsque le traitement du contexte long et le contrôle des coûts sont plus importants, en particulier si votre couche d'extraction fournit déjà un contexte de base de haute qualité.</p>
 <h3 id="Can-I-run-Qwen36-35B-A3B-locally-for-private-RAG" class="common-anchor-header">Puis-je exécuter Qwen3.6-35B-A3B localement pour un RAG privé ?</h3><p>Oui, Qwen3.6-35B-A3B est un poids ouvert conçu pour un déploiement plus contrôlable. C'est un bon candidat lorsque la confidentialité, le service local, l'entrée multimodale ou les performances en langue chinoise sont importants, mais vous devez toujours valider la latence, la mémoire et la qualité d'extraction pour votre matériel.</p>
-<h3 id="Do-long-context-models-make-vector-databases-unnecessary" class="common-anchor-header">Les modèles à contexte long rendent-ils les bases de données vectorielles inutiles ?</h3><p>Non. Les modèles à contexte long peuvent lire plus de texte, mais ils bénéficient toujours de la récupération. Une base de données vectorielle réduit l'entrée aux morceaux pertinents, prend en charge le filtrage des métadonnées, réduit le coût des jetons et facilite la mise à jour de l'application au fur et à mesure que les documents changent.</p>
+<h3 id="Do-long-context-models-make-vector-databases-unnecessary" class="common-anchor-header">Les modèles à contexte long rendent-ils les bases de données vectorielles inutiles ?</h3><p>Non. Les modèles à contexte long peuvent lire plus de texte, mais ils bénéficient toujours de la récupération. Une base de données vectorielle réduit l'entrée à des morceaux pertinents, prend en charge le filtrage des métadonnées, réduit le coût des jetons et facilite la mise à jour de l'application en fonction de l'évolution des documents.</p>
