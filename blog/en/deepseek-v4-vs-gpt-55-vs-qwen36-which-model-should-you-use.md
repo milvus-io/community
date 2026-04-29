@@ -73,9 +73,7 @@ We asked each model three time-sensitive questions using web search where availa
 | Note: These are time-sensitive questions. The expected answers reflect the results at the time we ran the test. |
 | --- |
 
-OpenAI's image pricing page uses the label "medium" rather than "standard" for the \
-![blog cover narrow 1152x720](https://assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg)
-$0.053 1024×1024 result, so the question is normalized here to match the current API wording.
+OpenAI's image pricing page uses the label "medium" rather than "standard" for the \$0.053 1024×1024 result, so the question is normalized here to match the current API wording.
 
 ![](https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png)
 
