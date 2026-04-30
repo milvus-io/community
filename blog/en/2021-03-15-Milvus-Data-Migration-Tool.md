@@ -12,18 +12,24 @@ canonicalUrl: https://zilliz.com/blog/Milvus-Data-Migration-Tool
 # Introducing Milvus Data Migration Tool
 
 
-***Important Note**: The Mivus Data Migration Tool has been deprecated. For data migration from other databases to Milvus, we recommend that you use the more advanced Milvus-migration Tool.*
+***Important Note**: The Mivus Data Migration Tool has been deprecated. For data migration from other databases to Milvus, we recommend that you use the more advanced vector transport service (VTS).*
 
-The Milvus-migration tool currently supprots: 
+**For more information, see the [Vector Transport Service landing page](https://zilliz.com/vector-transport-service) or its [GitHub repository](https://github.com/zilliztech/vts).**
 
-- Elasticsearch to Milvus 2.x
-- Faiss to Milvus 2.x
+VTS currently supports migration from: 
+
+- Pinecone
+- Qdrant
+- Elasticsearch
+- PostgreSQL
+- Tencent Cloud VectorDB
+- OpenSearch
+- Faiss 
 - Milvus 1.x to Milvus 2.x
 - Milvus 2.3.x to Milvus 2.3.x or above
 
-We will support migration from more vector data sources such as Pinecone, Chroma, and Qdrant. Stay tuned. 
 
-**For more information, see the [Milvus-migration documentation](https://milvus.io/docs/migrate_overview.md) or its [GitHub repository](https://github.com/zilliztech/milvus-migration).**
+
 
 
 
