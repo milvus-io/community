@@ -20,13 +20,16 @@ VTS currently supports migration from:
 
 - Pinecone
 - Qdrant
-- Elasticsearch to Milvus 2.x
+- Elasticsearch
 - PostgreSQL
 - Tencent Cloud VectorDB
 - OpenSearch
-- Faiss to Milvus 2.x
+- Faiss 
 - Milvus 1.x to Milvus 2.x
 - Milvus 2.3.x to Milvus 2.3.x or above
+
+
+
 
 
 
