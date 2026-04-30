@@ -282,5 +282,6 @@
   "blog/en/anthropic-managed-agents-memory-milvus.md": "2026-04-24T12:04:37.162Z",
   "blog/en/hermes-agent-learning-loop-milvus-hybrid-search.md": "2026-04-24T12:09:00.041Z",
   "blog/en/deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md": "2026-04-29T03:54:08.149Z",
-  "blog/en/claude-context-reduce-claude-code-token-usage.md": "2026-04-30T10:14:44.332Z"
+  "blog/en/claude-context-reduce-claude-code-token-usage.md": "2026-04-30T10:14:44.332Z",
+  "blog/en/how-robobrain-builds-longterm-robot-memory-with-milvus.md": "2026-04-30T11:05:35.828Z"
 }
