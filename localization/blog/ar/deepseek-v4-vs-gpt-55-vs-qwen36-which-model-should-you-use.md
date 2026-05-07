@@ -1,6 +1,7 @@
 ---
 id: deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
-title: 'DeepSeek V4 مقابل GPT-5.5.5 مقابل Qwen3.6: ما النموذج الذي يجب عليك استخدامه؟'
+title: |
+  DeepSeek V4 vs GPT-5.5 vs Qwen3.6: Which Model Should You Use?
 author: Lumina Wang
 date: 2026-4-28
 cover: assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg
@@ -11,15 +12,15 @@ tags: 'Milvus, vector database'
 meta_keywords: 'DeepSeek V4, GPT-5.5 benchmark, Milvus RAG, Qwen3.6, vector database'
 meta_title: |
   DeepSeek V4 RAG Benchmark with Milvus vs GPT-5.5 and Qwen
-desc: >-
-  قارن بين DeepSeek V4 وGPT-5.5.5 وQwen3.6 في اختبارات الاسترجاع والتصحيح
-  واختبارات السياق الطويل، ثم أنشئ خط أنابيب Milvus RAG باستخدام DeepSeek V4.
+desc: >
+  Compare DeepSeek V4, GPT-5.5, and Qwen3.6 in retrieval, debugging, and
+  long-context tests, then build a Milvus RAG pipeline with DeepSeek V4.
 origin: >-
   https://milvus.io/blog/deepseek-v4-vs-gpt-55-vs-qwen36-which-model-should-you-use.md
 ---
-<p>تتحرك إصدارات النماذج الجديدة بشكل أسرع من قدرة فرق الإنتاج على تقييمها. تبدو كل من DeepSeek V4 و GPT-5.5.5 و Qwen3.6-35B-A3B قوية على الورق، ولكن السؤال الأصعب بالنسبة لمطوري تطبيقات الذكاء الاصطناعي هو السؤال العملي: أي نموذج يجب أن تستخدمه للأنظمة ذات الاسترجاع الثقيل ومهام الترميز وتحليل السياق الطويل <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">وخطوط أنابيب RAG؟</a></p>
-<p><strong>تقارن هذه المقالة بين النماذج الثلاثة في الاختبارات العملية:</strong> الاسترجاع المباشر للمعلومات، وتصحيح الأخطاء المتزامنة مع التصحيح، واسترجاع علامات السياق الطويل. ثم يوضح كيفية توصيل DeepSeek V4 <a href="https://zilliz.com/learn/what-is-vector-database">بقاعدة بيانات Milvus vector،</a> بحيث يأتي السياق المسترجع من قاعدة معرفية قابلة للبحث بدلاً من معلمات النموذج وحدها.</p>
-<h2 id="What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="common-anchor-header">ما هي DeepSeek V4 و GPT-5.5.5 و Qwen3.6-35B-A3B؟<button data-href="#What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="anchor-icon" translate="no">
+<p>New model releases are moving faster than production teams can evaluate them. DeepSeek V4, GPT-5.5, and Qwen3.6-35B-A3B all look strong on paper, but the harder question for AI application developers is practical: which model should you use for retrieval-heavy systems, coding tasks, long-context analysis, and <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">RAG pipelines</a>?</p>
+<p><strong>This article compares the three models in practical tests:</strong> live information retrieval, concurrency-bug debugging, and long-context marker retrieval. Then it shows how to connect DeepSeek V4 to <a href="https://zilliz.com/learn/what-is-vector-database">Milvus vector database</a>, so retrieved context comes from a searchable knowledge base instead of the model’s parameters alone.</p>
+<h2 id="What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="common-anchor-header">What Are DeepSeek V4, GPT-5.5, and Qwen3.6-35B-A3B?<button data-href="#What-Are-DeepSeek-V4-GPT-55-and-Qwen36-35B-A3B" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -34,25 +35,25 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>DeepSeek V4 و GPT-5.5.5 و Qwen3.6-35B-A3B هي نماذج ذكاء اصطناعي مختلفة تستهدف أجزاءً مختلفة من مكدس النماذج.</strong> يركّز DeepSeek V4 على الاستدلال طويل الأمد مفتوح السياق. يركز GPT-5.5.5 على الأداء المستضاف في الحدود، والترميز، والبحث عبر الإنترنت، والمهام ذات الأدوات الثقيلة. يركز Qwen3.6-35B-A3B على النشر متعدد الوسائط مفتوح الوزن مع بصمة أصغر بكثير من المعلمة النشطة.</p>
-<p>المقارنة مهمة لأن نظام <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">البحث المتجه الإنتاجي</a> نادرًا ما يعتمد على النموذج وحده. تؤثر كل من قدرة النموذج، وطول السياق، والتحكم في النشر، وجودة الاسترجاع، وتكلفة العرض على تجربة المستخدم النهائية.</p>
-<h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: نموذج MoE مفتوح الوزن للتحكم في تكلفة السياق الطويل</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4</strong></a> <strong>عبارة عن عائلة نماذج MoE مفتوحة الوزن من طراز MoE التي أصدرتها DeepSeek في 24 أبريل 2026.</strong> يسرد الإصدار الرسمي نوعين مختلفين: DeepSeek V4-Pro و DeepSeek V4-Flash. يحتوي V4-Pro على 1.6 تيرابايت من المعلمات الإجمالية مع تنشيط 49B لكل رمز مميز، بينما يحتوي V4-Flash على 284B من المعلمات الإجمالية مع تنشيط 13B لكل رمز مميز. كلاهما يدعمان نافذة سياق 1M-رمز.</p>
-<p>تسرد <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">بطاقة نموذج DeepSeek V4-Pro</a> أيضًا أن النموذج مرخص من معهد ماساتشوستس للتكنولوجيا ومتاح من خلال Hugging Face و ModelScope. بالنسبة للفرق التي تقوم ببناء تدفقات عمل المستندات ذات السياق الطويل، فإن الجاذبية الرئيسية هي التحكم في التكلفة ومرونة النشر مقارنةً بواجهات برمجة التطبيقات الأمامية المغلقة بالكامل.</p>
-<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5.5: نموذج حدودي مستضاف للترميز والبحث واستخدام الأدوات</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>هو نموذج حدودي مغلق أصدرته OpenAI في 23 أبريل 2026.</strong> يضعه OpenAI للترميز، والبحث عبر الإنترنت، وتحليل البيانات، وعمل المستندات، وعمل جداول البيانات، وتشغيل البرامج، والمهام القائمة على الأدوات. تسرد مستندات النموذج الرسمي <code translate="no">gpt-5.5</code> مع نافذة سياق واجهة برمجة التطبيقات بمليون رمز، بينما قد تختلف حدود منتجات Codex وChatGPT.</p>
-<p>تشير تقارير OpenAI إلى نتائج معيارية قوية في الترميز: 82.7٪ على Terminal-Bench 2.0، و73.1٪ على Expert-SWE، و58.6٪ على SWE-Bench Pro. المفاضلة هي السعر: يسرد تسعير واجهة برمجة التطبيقات الرسمية GPT-5.5 بسعر 5 دولارات لكل مليون رمز إدخال و30 دولارًا لكل مليون رمز إخراج، قبل أي تفاصيل تسعير خاصة بالمنتج أو السياق الطويل.</p>
-<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: نموذج معيار نشط أصغر لأحمال العمل المحلية ومتعددة الوسائط</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6.6-35B-A3B</strong></a> <strong>هو نموذج وزارة الطاقة مفتوح الوزن من فريق Qwen التابع لعلي بابا.</strong> تسرد بطاقة النموذج الخاصة به 35 مليار معلمة إجمالية، و3 مليار معلمة مفعلة، ومشفّر رؤية، وترخيص Apache-2.0. وهي تدعم نافذة سياق أصلية مكونة من 262,144 رمزًا ويمكن أن تمتد إلى حوالي 1,010,000 رمز مع تحجيم YaRN.</p>
-<p>هذا يجعل Qwen3.6-35B-A3B جذابًا عندما يكون النشر المحلي أو العرض الخاص أو إدخال النص المصور أو أعباء العمل باللغة الصينية أكثر أهمية من ملاءمة النموذج الحدودي المُدار.</p>
-<h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 مقابل GPT-5.5.5 مقابل Qwen3.6: مقارنة مواصفات النموذج</h3><table>
+    </button></h2><p><strong>DeepSeek V4, GPT-5.5, and Qwen3.6-35B-A3B are different AI models that target different parts of the model stack.</strong> DeepSeek V4 focuses on open-weight long-context inference. GPT-5.5 focuses on frontier-hosted performance, coding, online research, and tool-heavy tasks. Qwen3.6-35B-A3B focuses on open-weight multimodal deployment with a much smaller active-parameter footprint.</p>
+<p>The comparison matters because a <a href="https://zilliz.com/learn/comparing-vector-database-vector-search-library-and-vector-search-plugin">production vector search</a> system rarely depends on the model alone. Model capability, context length, deployment control, retrieval quality, and serving cost all affect the final user experience.</p>
+<h3 id="DeepSeek-V4-An-Open-Weight-MoE-Model-for-Long-Context-Cost-Control" class="common-anchor-header">DeepSeek V4: An Open-Weight MoE Model for Long-Context Cost Control</h3><p><a href="https://api-docs.deepseek.com/news/news260424"><strong>DeepSeek V4</strong></a> <strong>is an open-weight MoE model family released by DeepSeek on April 24, 2026.</strong> The official release lists two variants: DeepSeek V4-Pro and DeepSeek V4-Flash. V4-Pro has 1.6T total parameters with 49B activated per token, while V4-Flash has 284B total parameters with 13B activated per token. Both support a 1M-token context window.</p>
+<p>The <a href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro">DeepSeek V4-Pro model card</a> also lists the model as MIT-licensed and available through Hugging Face and ModelScope. For teams building long-context document workflows, the main appeal is cost control and deployment flexibility compared with fully closed frontier APIs.</p>
+<h3 id="GPT-55-A-Hosted-Frontier-Model-for-Coding-Research-and-Tool-Use" class="common-anchor-header">GPT-5.5: A Hosted Frontier Model for Coding, Research, and Tool Use</h3><p><a href="https://openai.com/index/introducing-gpt-5-5/"><strong>GPT-5.5</strong></a> <strong>is a closed frontier model released by OpenAI on April 23, 2026.</strong> OpenAI positions it for coding, online research, data analysis, document work, spreadsheet work, software operation, and tool-based tasks. The official model docs list <code translate="no">gpt-5.5</code> with a 1M-token API context window, while Codex and ChatGPT product limits may differ.</p>
+<p>OpenAI reports strong coding benchmark results: 82.7% on Terminal-Bench 2.0, 73.1% on Expert-SWE, and 58.6% on SWE-Bench Pro. The tradeoff is price: the official API pricing lists GPT-5.5 at $5 per 1M input tokens and $30 per 1M output tokens, before any product-specific or long-context pricing details.</p>
+<h3 id="Qwen36-35B-A3B-A-Smaller-Active-Parameter-Model-for-Local-and-Multimodal-Workloads" class="common-anchor-header">Qwen3.6-35B-A3B: A Smaller Active-Parameter Model for Local and Multimodal Workloads</h3><p><a href="https://huggingface.co/Qwen/Qwen3.6-35B-A3B"><strong>Qwen3.6-35B-A3B</strong></a> <strong>is an open-weight MoE model from Alibaba’s Qwen team.</strong> Its model card lists 35B total parameters, 3B activated parameters, a vision encoder, and Apache-2.0 licensing. It supports a native 262,144-token context window and can extend to about 1,010,000 tokens with YaRN scaling.</p>
+<p>That makes Qwen3.6-35B-A3B attractive when local deployment, private serving, image-text input, or Chinese-language workloads matter more than managed frontier-model convenience.</p>
+<h3 id="DeepSeek-V4-vs-GPT-55-vs-Qwen36-Model-Specs-Compared" class="common-anchor-header">DeepSeek V4 vs GPT-5.5 vs Qwen3.6: Model Specs Compared</h3><table>
 <thead>
-<tr><th>النموذج</th><th>نموذج النشر</th><th>معلومات المعلمة العامة</th><th>نافذة السياق</th><th>أقوى ملاءمة</th></tr>
+<tr><th>Model</th><th>Deployment model</th><th>Public parameter info</th><th>Context window</th><th>Strongest fit</th></tr>
 </thead>
 <tbody>
-<tr><td>DeepSeek V4-Pro</td><td>مفتوح الوزن MoE؛ واجهة برمجة التطبيقات متاحة</td><td>إجمالي 1.6T / 49B نشط</td><td>1 مليون رمز</td><td>عمليات نشر هندسية طويلة السياق وحساسة من حيث التكلفة</td></tr>
-<tr><td>GPT-5.5.5</td><td>نموذج مغلق مستضاف</td><td>غير معلن</td><td>1 مليون توكن في واجهة برمجة التطبيقات</td><td>الترميز، والبحث المباشر، واستخدام الأدوات، وأعلى قدرة إجمالية</td></tr>
-<tr><td>Qwen3.6-35B-A3B</td><td>وزارة الطاقة متعددة الوسائط مفتوحة الوزن</td><td>إجمالي 35 مليار / 3 مليار نشط</td><td>262 ألف أصلية؛ حوالي 1 مليون مع YaRN</td><td>نشر محلي/خاص، ومدخلات متعددة الوسائط، وسيناريوهات باللغة الصينية</td></tr>
+<tr><td>DeepSeek V4-Pro</td><td>Open-weight MoE; API available</td><td>1.6T total / 49B active</td><td>1M tokens</td><td>Long-context, cost-sensitive engineering deployments</td></tr>
+<tr><td>GPT-5.5</td><td>Hosted closed model</td><td>Undisclosed</td><td>1M tokens in the API</td><td>Coding, live research, tool use, and highest overall capability</td></tr>
+<tr><td>Qwen3.6-35B-A3B</td><td>Open-weight multimodal MoE</td><td>35B total / 3B active</td><td>262K native; ~1M with YaRN</td><td>Local/private deployment, multimodal input, and Chinese-language scenarios</td></tr>
 </tbody>
 </table>
-<h2 id="How-We-Tested-DeepSeek-V4-GPT-55-and-Qwen36" class="common-anchor-header">كيف اختبرنا DeepSeek V4 وGPT-5.5.5 و Qwen3.6<button data-href="#How-We-Tested-DeepSeek-V4-GPT-55-and-Qwen36" class="anchor-icon" translate="no">
+<h2 id="How-We-Tested-DeepSeek-V4-GPT-55-and-Qwen36" class="common-anchor-header">How We Tested DeepSeek V4, GPT-5.5, and Qwen3.6<button data-href="#How-We-Tested-DeepSeek-V4-GPT-55-and-Qwen36" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -67,26 +68,26 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>هذه الاختبارات ليست بديلاً عن مجموعات المعايير الكاملة. إنها اختبارات عملية تعكس أسئلة المطورين الشائعة: هل يمكن للنموذج استرداد المعلومات الحالية، والاستدلال على الأخطاء البرمجية الدقيقة، وتحديد موقع الحقائق داخل مستند طويل جدًا؟</p>
-<h3 id="Which-Model-Handles-Real-Time-Information-Retrieval-Best" class="common-anchor-header">أي نموذج يتعامل مع استرجاع المعلومات في الوقت الحقيقي بشكل أفضل؟</h3><p>طرحنا على كل نموذج ثلاثة أسئلة حساسة للوقت باستخدام البحث على الويب حيثما كان متاحًا. كانت التعليمات بسيطة: إرجاع الإجابة فقط وتضمين عنوان URL المصدر.</p>
+    </button></h2><p>These tests are not a replacement for full benchmark suites. They are practical checks that mirror common developer questions: can the model retrieve current information, reason about subtle code bugs, and locate facts inside a very long document?</p>
+<h3 id="Which-Model-Handles-Real-Time-Information-Retrieval-Best" class="common-anchor-header">Which Model Handles Real-Time Information Retrieval Best?</h3><p>We asked each model three time-sensitive questions using web search where available. The instruction was simple: return only the answer and include the source URL.</p>
 <table>
 <thead>
-<tr><th>السؤال</th><th>الإجابة المتوقعة في وقت الاختبار</th><th>المصدر</th></tr>
+<tr><th>Question</th><th>Expected answer at test time</th><th>Source</th></tr>
 </thead>
 <tbody>
-<tr><td>ما هي تكلفة إنشاء صورة متوسطة الجودة بدقة 1024×1024 مع <code translate="no">gpt-image-2</code> من خلال واجهة برمجة تطبيقات OpenAI؟</td><td><code translate="no">\$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">تسعير إنشاء صورة OpenAI</a></td></tr>
-<tr><td>ما هي الأغنية رقم 1 في قائمة بيلبورد هوت 100 لهذا الأسبوع، ومن هو الفنان؟</td><td><code translate="no">Choosin' Texas</code> بواسطة إيلا لانجلي</td><td><a href="https://www.billboard.com/charts/hot-100/">مخطط بيلبورد هوت 100</a></td></tr>
-<tr><td>من يتصدر حالياً ترتيب سائقي الفورمولا 1 لعام 2026؟</td><td>كيمي أنتونيلي</td><td><a href="https://www.formula1.com/en/results/2026/drivers">ترتيب سائقي الفورمولا 1</a></td></tr>
+<tr><td>How much does it cost to generate a 1024×1024 medium-quality image with <code translate="no">gpt-image-2</code> through the OpenAI API?</td><td><code translate="no">\$0.053</code></td><td><a href="https://developers.openai.com/api/docs/guides/image-generation">OpenAI image generation pricing</a></td></tr>
+<tr><td>What is the No. 1 song on this week’s Billboard Hot 100, and who is the artist?</td><td><code translate="no">Choosin' Texas</code> by Ella Langley</td><td><a href="https://www.billboard.com/charts/hot-100/">Billboard Hot 100 chart</a></td></tr>
+<tr><td>Who is currently leading the 2026 F1 driver standings?</td><td>Kimi Antonelli</td><td><a href="https://www.formula1.com/en/results/2026/drivers">Formula 1 driver standings</a></td></tr>
 </tbody>
 </table>
 <table>
 <thead>
-<tr><th>ملاحظة: هذه أسئلة حساسة للوقت. تعكس الإجابات المتوقعة النتائج في الوقت الذي أجرينا فيه الاختبار.</th></tr>
+<tr><th>Note: These are time-sensitive questions. The expected answers reflect the results at the time we ran the test.</th></tr>
 </thead>
 <tbody>
 </tbody>
 </table>
-<p>تستخدم صفحة تسعير الصور في OpenAI التسمية "متوسط" بدلاً من "قياسي" لنتيجة 0.053 دولار 1024×1024، لذلك تم تطبيع السؤال هنا ليتطابق مع صياغة واجهة برمجة التطبيقات الحالية.</p>
+<p>OpenAI’s image pricing page uses the label “medium” rather than “standard” for the $0.053 1024×1024 result, so the question is normalized here to match the current API wording.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_2_408d990bb6.png" alt="" class="doc-image" id="" />
@@ -105,29 +106,29 @@ origin: >-
     <span></span>
   </span>
 </p>
-<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">نتائج الاسترجاع في الوقت الحقيقي: كان لدى GPT-5.5.5 الميزة الأوضح</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
+<h3 id="Real-Time-Retrieval-Results-GPT-55-Had-the-Clearest-Advantage" class="common-anchor-header">Real-Time Retrieval Results: GPT-5.5 Had the Clearest Advantage</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_5_1e9d7c4c06.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>أجاب DeepSeek V4-Pro على السؤال الأول بشكل غير صحيح. لم يتمكن من الإجابة عن السؤالين الثاني والثالث من خلال البحث المباشر على الويب في هذا الإعداد.</p>
-<p>تضمنت الإجابة الثانية عنوان URL الصحيح ل Billboard ولكنها لم تسترجع الأغنية رقم 1 الحالية. استخدمت الإجابة الثالثة المصدر الخاطئ، لذا اعتبرناها غير صحيحة.</p>
-<h4 id="GPT-55" class="common-anchor-header">GPT-5.5.5</h4><p>
+<p>DeepSeek V4-Pro answered the first question incorrectly. It could not answer the second and third questions through live web search in this setup.</p>
+<p>The second answer included the correct Billboard URL but did not retrieve the current No. 1 song. The third answer used the wrong source, so we counted it as incorrect.</p>
+<h4 id="GPT-55" class="common-anchor-header">GPT-5.5</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_6_b146956865.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>تعامل GPT-5.5.5 مع هذا الاختبار بشكل أفضل بكثير. فقد كانت إجاباته قصيرة ودقيقة ومصدرية وسريعة. عندما تعتمد المهمة على معلومات حالية ويتوفر للنموذج استرجاع مباشر، كان لـ GPT-5.5.5 ميزة واضحة في هذا الإعداد.</p>
+<p>GPT-5.5 handled this test much better. Its answers were short, accurate, sourced, and fast. When a task depends on current information and the model has live retrieval available, GPT-5.5 had the clear advantage in this setup.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_7_91686c177e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>أنتج Qwen3.6-35B-A3B نتيجة مشابهة لـ DeepSeek V4-Pro. لم يكن لديه وصول مباشر إلى الويب في هذا الإعداد، لذلك لم يتمكن من إكمال مهمة الاسترجاع في الوقت الفعلي.</p>
-<h2 id="Which-Model-Is-Better-at-Debugging-Concurrency-Bugs" class="common-anchor-header">ما النموذج الأفضل في تصحيح أخطاء التزامن؟<button data-href="#Which-Model-Is-Better-at-Debugging-Concurrency-Bugs" class="anchor-icon" translate="no">
+<p>Qwen3.6-35B-A3B produced a result similar to DeepSeek V4-Pro. It did not have live web access in this setup, so it could not complete the real-time retrieval task.</p>
+<h2 id="Which-Model-Is-Better-at-Debugging-Concurrency-Bugs" class="common-anchor-header">Which Model Is Better at Debugging Concurrency Bugs?<button data-href="#Which-Model-Is-Better-at-Debugging-Concurrency-Bugs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -142,18 +143,18 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>استخدم الاختبار الثاني مثالاً للتحويل المصرفي من Python مع ثلاث طبقات من مشاكل التزامن. لم تكن المهمة هي العثور على حالة السباق الواضحة فحسب، بل كانت المهمة أيضًا شرح سبب تعطل الرصيد الكلي وتقديم كود مصحح.</p>
+    </button></h2><p>The second test used a Python bank-transfer example with three layers of concurrency problems. The task was not just to find the obvious race condition, but also to explain why the total balance breaks and provide corrected code.</p>
 <table>
 <thead>
-<tr><th>الطبقة</th><th>المشكلة</th><th>ما الخطأ الذي يحدث</th></tr>
+<tr><th>Layer</th><th>Problem</th><th>What goes wrong</th></tr>
 </thead>
 <tbody>
-<tr><td>الأساسي</td><td>حالة السباق</td><td><code translate="no">if self.balance &gt;= amount</code> و <code translate="no">self.balance -= amount</code> ليست ذرية. يمكن أن يجتاز خيطين التحقق من الرصيد في نفس الوقت، ثم يقوم كلاهما بطرح الأموال.</td></tr>
-<tr><td>متوسط</td><td>خطر الوصول إلى طريق مسدود</td><td>يمكن أن يؤدي القفل الساذج لكل حساب إلى طريق مسدود عندما يقفل التحويل A →B القفل A أولاً بينما يقفل التحويل B →A القفل B أولاً. هذا هو القفل المسدود الكلاسيكي ABBA.</td></tr>
-<tr><td>متقدم</td><td>نطاق قفل غير صحيح</td><td>الحماية فقط <code translate="no">self.balance</code> لا تحمي <code translate="no">target.balance</code>. يجب أن يكون الإصلاح الصحيح هو قفل كلا الحسابين بترتيب ثابت، عادةً حسب معرّف الحساب، أو استخدام قفل عام مع التزامن الأقل.</td></tr>
+<tr><td>Basic</td><td>Race condition</td><td><code translate="no">if self.balance &gt;= amount</code> and <code translate="no">self.balance -= amount</code> are not atomic. Two threads can pass the balance check at the same time, then both subtract money.</td></tr>
+<tr><td>Medium</td><td>Deadlock risk</td><td>A naive per-account lock can deadlock when transfer A→B locks A first while transfer B→A locks B first. This is the classic ABBA deadlock.</td></tr>
+<tr><td>Advanced</td><td>Incorrect lock scope</td><td>Protecting only <code translate="no">self.balance</code> does not protect <code translate="no">target.balance</code>. A correct fix must lock both accounts in a stable order, usually by account ID, or use a global lock with lower concurrency.</td></tr>
 </tbody>
 </table>
-<p>المطالبة والرمز كما هو موضح أدناه:</p>
+<p>The prompt and code are as shown below:</p>
 <pre><code translate="no" class="language-cpp">The following Python code simulates two bank accounts transferring
   money to each other. The total balance should always equal 2000,                                              
   but it often doesn&#x27;t after running.                                                                           
@@ -199,29 +200,29 @@ origin: >-
                                                                                                                 
   stress_test()
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Code-Debugging-Results-GPT-55-Gave-the-Most-Complete-Answer" class="common-anchor-header">نتائج تصحيح التعليمات البرمجية: أعطى GPT-5.5.5 الإجابة الأكثر اكتمالاً</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>قدم DeepSeek V4-Pro تحليلاً موجزًا وانتقل مباشرةً إلى حل القفل المرتب، وهي الطريقة القياسية لتجنب الجمود في ABBA. أظهرت إجابته الإصلاح الصحيح، لكنه لم يقضِ الكثير من الوقت في شرح السبب الذي يجعل الإصلاح الساذج القائم على القفل الساذج يقدم وضع فشل جديد.</p>
+<h3 id="Code-Debugging-Results-GPT-55-Gave-the-Most-Complete-Answer" class="common-anchor-header">Code Debugging Results: GPT-5.5 Gave the Most Complete Answer</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>DeepSeek V4-Pro gave a concise analysis and went straight to the ordered-lock solution, which is the standard way to avoid ABBA deadlock. Its answer demonstrated the right fix, but it did not spend much time explaining why the naive lock-based fix could introduce a new failure mode.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_8_e2b4c41c46.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h4 id="GPT-55" class="common-anchor-header">GPT-5.5.5</h4><p>
+<h4 id="GPT-55" class="common-anchor-header">GPT-5.5</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_9_d6b1e62c32.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>كان أداء GPT-5.5.5 الأفضل في هذا الاختبار. فقد وجد المشكلات الأساسية، وتوقع خطر الجمود، وشرح سبب فشل الكود الأصلي، وقدم تنفيذًا مصحححًا كاملًا.</p>
+<p>GPT-5.5 performed best on this test. It found the core issues, anticipated the deadlock risk, explained why the original code could fail, and provided a complete corrected implementation.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_10_1177f51906.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>حدد Qwen3.6-35B-A3B الأخطاء بدقة، وكان تسلسل تنفيذ المثال الخاص به واضحًا. كان الجزء الأضعف هو الإصلاح: لقد اختار قفلًا عالميًا على مستوى الفئة، مما يجعل كل حساب يتشارك نفس القفل. ينجح ذلك في محاكاة صغيرة، لكنها مفاضلة ضعيفة بالنسبة لنظام مصرفي حقيقي لأن تحويلات الحسابات غير المرتبطة يجب أن تظل تنتظر على نفس القفل.</p>
-<p><strong>باختصار:</strong> لم يحل GPT-5.5.5 الخطأ الحالي فحسب، بل حذر أيضًا من الخطأ التالي الذي قد يقدمه المطور. أعطى DeepSeek V4-Pro أنظف إصلاح غير GPT. وجد Qwen3.6 المشكلات وأنتج شيفرة تعمل، لكنه لم ينبه إلى الخلل في قابلية التوسع.</p>
-<h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">أي نموذج يتعامل مع استرجاع السياق الطويل بشكل أفضل؟<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
+<p>Qwen3.6-35B-A3B identified the bugs accurately, and its example execution sequence was clear. The weaker part was the fix: it chose a global class-level lock, which makes every account share the same lock. That works for a small simulation, but it is a poor tradeoff for a real banking system because unrelated account transfers must still wait on the same lock.</p>
+<p><strong>In short:</strong> GPT-5.5 not only solved the current bug, but also warned about the next bug a developer might introduce. DeepSeek V4-Pro gave the cleanest non-GPT fix. Qwen3.6 found the issues and produced working code, but did not call out the scalability compromise.</p>
+<h2 id="Which-Model-Handles-Long-Context-Retrieval-Best" class="common-anchor-header">Which Model Handles Long-Context Retrieval Best?<button data-href="#Which-Model-Handles-Long-Context-Retrieval-Best" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -236,31 +237,31 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بالنسبة لاختبار السياق الطويل، استخدمنا النص الكامل لكتاب <em>Dream of the Red Chamber،</em> حوالي 850,000 حرف صيني. أدخلنا علامة مخفية حول موضع 500,000 حرف:</p>
+    </button></h2><p>For the long-context test, we used the full text of <em>Dream of the Red Chamber</em>, roughly 850,000 Chinese characters. We inserted a hidden marker around the 500,000-character position:</p>
 <p><code translate="no">【Milvus test verification code: ZK-7749-ALPHA】</code></p>
-<p>ثم رفعنا الملف إلى كل نموذج وطلبنا منه العثور على محتوى العلامة وموضعها.</p>
-<h3 id="Long-Context-Retrieval-Results-GPT-55-Found-the-Marker-Most-Precisely" class="common-anchor-header">نتائج استرجاع السياق الطويل: عثر GPT-5.5.5 على العلامة بدقة أكبر</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
+<p>Then we uploaded the file to each model and asked it to find both the marker content and its position.</p>
+<h3 id="Long-Context-Retrieval-Results-GPT-55-Found-the-Marker-Most-Precisely" class="common-anchor-header">Long-Context Retrieval Results: GPT-5.5 Found the Marker Most Precisely</h3><h4 id="DeepSeek-V4-Pro" class="common-anchor-header">DeepSeek V4-Pro</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_11_1f1ee0ec72.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>عثر DeepSeek V4-Pro على العلامة المخفية، لكنه لم يعثر على موضع الحرف الصحيح. كما أنه أعطى السياق المحيط الخاطئ. في هذا الاختبار، بدا أنه حدد موقع العلامة بشكل دلالي ولكنه فقد تحديد الموضع الدقيق أثناء التفكير في المستند.</p>
-<h4 id="GPT-55" class="common-anchor-header">GPT-5.5.5</h4><p>
+<p>DeepSeek V4-Pro found the hidden marker, but it did not find the correct character position. It also gave the wrong surrounding context. In this test, it seemed to locate the marker semantically but lose track of the exact position while reasoning over the document.</p>
+<h4 id="GPT-55" class="common-anchor-header">GPT-5.5</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_12_5b09068036.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>وجد GPT-5.5.5 محتوى العلامة والموضع والسياق المحيط بشكل صحيح. فقد أبلغ عن الموضع على أنه 500,002 وحتى أنه ميّز بين العدّ ذي الفهرس الصفري والعدّ ذي الفهرس الواحد. طابق السياق المحيط أيضًا النص المستخدم عند إدراج العلامة.</p>
+<p>GPT-5.5 found the marker content, the position, and the surrounding context correctly. It reported the position as 500,002 and even distinguished between zero-indexed and one-indexed counting. The surrounding context also matched the text used when inserting the marker.</p>
 <h4 id="Qwen36-35B-A3B" class="common-anchor-header">Qwen3.6-35B-A3B</h4><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/deepseek_v4_vs_gpt_55_vs_qwen36_which_model_should_you_use_md_13_ca4223c01d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>وجد Qwen3.6.6-35B-A3B محتوى العلامة والسياق القريب بشكل صحيح، لكن تقدير موقعه كان خاطئًا.</p>
-<h2 id="What-Do-These-Tests-Say-About-Model-Selection" class="common-anchor-header">ماذا تقول هذه الاختبارات عن اختيار النموذج؟<button data-href="#What-Do-These-Tests-Say-About-Model-Selection" class="anchor-icon" translate="no">
+<p>Qwen3.6-35B-A3B found the marker content and nearby context correctly, but its position estimate was wrong.</p>
+<h2 id="What-Do-These-Tests-Say-About-Model-Selection" class="common-anchor-header">What Do These Tests Say About Model Selection?<button data-href="#What-Do-These-Tests-Say-About-Model-Selection" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -275,20 +276,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تشير الاختبارات الثلاثة إلى نمط اختيار عملي: <strong>GPT-5.5.5 هو اختيار القدرة، و DeepSeek V4-Pro هو اختيار أداء تكلفة السياق الطويل، و Qwen3.6-35B-A3B هو اختيار التحكم المحلي.</strong></p>
+    </button></h2><p>The three tests point to a practical selection pattern: <strong>GPT-5.5 is the capability pick, DeepSeek V4-Pro is the long-context cost-performance pick, and Qwen3.6-35B-A3B is the local-control pick.</strong></p>
 <table>
 <thead>
-<tr><th>الطراز</th><th>أفضل ملاءمة</th><th>ما حدث في اختباراتنا</th><th>التحذير الرئيسي</th></tr>
+<tr><th>Model</th><th>Best fit</th><th>What happened in our tests</th><th>Main caveat</th></tr>
 </thead>
 <tbody>
-<tr><td>GPT-5.5.5</td><td>أفضل قدرة إجمالية</td><td>فازت في اختبارات الاسترجاع المباشر، وتصحيح أخطاء التزامن، واختبارات علامات السياق الطويل</td><td>تكلفة أعلى؛ الأقوى عندما تبرر الدقة واستخدام الأداة العلاوة</td></tr>
-<tr><td>DeepSeek V4-Pro</td><td>سياق طويل، ونشر أقل تكلفة</td><td>أعطت أقوى إصلاح غير GPT لخلل التزامن وعثرت على محتوى العلامة</td><td>يحتاج إلى أدوات استرجاع خارجية لمهام الويب المباشرة؛ كان تتبع الموقع الدقيق للأحرف أضعف في هذا الاختبار</td></tr>
-<tr><td>Qwen3.6-35B-A3B</td><td>النشر المحلي، والأوزان المفتوحة، والمدخلات متعددة الوسائط، وأعباء العمل باللغة الصينية</td><td>كان أداؤه جيدًا في تحديد الأخطاء وفهم السياق الطويل</td><td>كانت جودة الإصلاح أقل قابلية للتطوير؛ لم يكن الوصول المباشر إلى الويب متاحًا في هذا الإعداد</td></tr>
+<tr><td>GPT-5.5</td><td>Best overall capability</td><td>Won the live retrieval, concurrency-debugging, and long-context marker tests</td><td>Higher cost; strongest when accuracy and tool use justify the premium</td></tr>
+<tr><td>DeepSeek V4-Pro</td><td>Long-context, lower-cost deployment</td><td>Gave the strongest non-GPT fix for the concurrency bug and found the marker content</td><td>Needs external retrieval tools for live web tasks; exact character-location tracking was weaker in this test</td></tr>
+<tr><td>Qwen3.6-35B-A3B</td><td>Local deployment, open weights, multimodal input, Chinese-language workloads</td><td>Did well on bug identification and long-context comprehension</td><td>Fix quality was less scalable; live web access was unavailable in this setup</td></tr>
 </tbody>
 </table>
-<p>استخدم GPT-5.5.5 عندما تحتاج إلى أقوى النتائج، وتكون التكلفة ثانوية. استخدم DeepSeek V4-Pro عندما تحتاج إلى سياق طويل، وتكلفة خدمة أقل، ونشر سهل الاستخدام لواجهة برمجة التطبيقات. استخدم Qwen3.6-35B-35B-A3B عندما تكون الأوزان المفتوحة أو النشر الخاص أو الدعم متعدد الوسائط أو التحكم في كومة الخدمة أكثر أهمية.</p>
-<p>ومع ذلك، بالنسبة للتطبيقات ذات الاسترجاع الثقيل، فإن اختيار النموذج هو نصف القصة فقط. فحتى النموذج القوي ذو السياق الطويل يحقق أداءً أفضل عندما يتم استرجاع السياق وتصفيته وتأسيسه بواسطة <a href="https://zilliz.com/learn/generative-ai">نظام بحث دلالي</a> مخصص.</p>
-<h2 id="Why-RAG-Still-Matters-for-Long-Context-Models" class="common-anchor-header">لماذا لا يزال RAG مهمًا لنماذج السياق الطويل<button data-href="#Why-RAG-Still-Matters-for-Long-Context-Models" class="anchor-icon" translate="no">
+<p>Use GPT-5.5 when you need the strongest result, and cost is secondary. Use DeepSeek V4-Pro when you need long context, lower serving cost, and API-friendly deployment. Use Qwen3.6-35B-A3B when open weights, private deployment, multimodal support, or serving-stack control matter most.</p>
+<p>For retrieval-heavy applications, though, model choice is only half the story. Even a strong long-context model performs better when the context is retrieved, filtered, and grounded by a dedicated <a href="https://zilliz.com/learn/generative-ai">semantic search system</a>.</p>
+<h2 id="Why-RAG-Still-Matters-for-Long-Context-Models" class="common-anchor-header">Why RAG Still Matters for Long-Context Models<button data-href="#Why-RAG-Still-Matters-for-Long-Context-Models" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -303,10 +304,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لا تلغي نافذة السياق الطويل الحاجة إلى الاسترجاع. بل تغير استراتيجية الاسترجاع.</p>
-<p>في تطبيق RAG، يجب ألا يفحص النموذج كل مستند في كل طلب. تخزن <a href="https://zilliz.com/learn/introduction-to-unstructured-data">بنية قاعدة البيانات المتجهة</a> التضمينات، وتبحث عن الأجزاء ذات الصلة من الناحية الدلالية، وتطبق مرشحات البيانات الوصفية وتعيد مجموعة سياق مضغوطة إلى النموذج. وهذا يعطي النموذج مدخلات أفضل مع تقليل التكلفة والكمون.</p>
-<p>يناسب Milvus هذا الدور لأنه يتعامل مع <a href="https://milvus.io/docs/schema.md">مخططات المجموعة،</a> وفهرسة المتجهات، والبيانات الوصفية القياسية، وعمليات الاسترجاع في نظام واحد. ويمكنك البدء محليًا باستخدام <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite،</a> والانتقال إلى <a href="https://milvus.io/docs/quickstart.md">بدء تشغيل Milvus السريع</a> المستقل، والنشر باستخدام <a href="https://milvus.io/docs/install_standalone-docker.md">تثبيت Docker</a> أو <a href="https://milvus.io/docs/install_standalone-docker-compose.md">نشر Docker Compose،</a> والتوسع أكثر مع <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">نشر Kubernetes</a> عندما ينمو عبء العمل.</p>
-<h2 id="How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="common-anchor-header">كيفية إنشاء خط أنابيب RAG باستخدام Milvus وDeepSeek V4<button data-href="#How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="anchor-icon" translate="no">
+    </button></h2><p>A long context window does not remove the need for retrieval. It changes the retrieval strategy.</p>
+<p>In a RAG application, the model should not scan every document on every request. A <a href="https://zilliz.com/learn/introduction-to-unstructured-data">vector database architecture</a> stores embeddings, searches for semantically relevant chunks, applies metadata filters, and returns a compact context set to the model. That gives the model better input while reducing cost and latency.</p>
+<p>Milvus fits this role because it handles <a href="https://milvus.io/docs/schema.md">collection schemas</a>, vector indexing, scalar metadata, and retrieval operations in one system. You can start locally with <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a>, move to a standalone <a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a>, deploy with <a href="https://milvus.io/docs/install_standalone-docker.md">Docker installation</a> or <a href="https://milvus.io/docs/install_standalone-docker-compose.md">Docker Compose deployment</a>, and scale further with <a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Kubernetes deployment</a> when the workload grows.</p>
+<h2 id="How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="common-anchor-header">How to Build a RAG Pipeline with Milvus and DeepSeek V4<button data-href="#How-to-Build-a-RAG-Pipeline-with-Milvus-and-DeepSeek-V4" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -321,9 +322,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تقوم الإرشادات التفصيلية التالية ببناء خط أنابيب RAG صغير باستخدام DeepSeek V4-Pro للتوليد و Milvus للاسترجاع. تنطبق نفس البنية على نماذج LLMs الأخرى: إنشاء التضمينات، وتخزينها في مجموعة، والبحث عن السياق ذي الصلة، وتمرير هذا السياق إلى النموذج.</p>
-<p>للحصول على شرح أوسع، راجع <a href="https://milvus.io/docs/build-rag-with-milvus.md">البرنامج التعليمي</a> الرسمي لـ <a href="https://milvus.io/docs/build-rag-with-milvus.md">Milvus RAG</a>. يُبقي هذا المثال خط الأنابيب صغيرًا حتى يسهل فحص تدفق الاسترجاع.</p>
-<h2 id="Prepare-the-Environment" class="common-anchor-header">إعداد البيئة<button data-href="#Prepare-the-Environment" class="anchor-icon" translate="no">
+    </button></h2><p>The following walkthrough builds a small RAG pipeline using DeepSeek V4-Pro for generation and Milvus for retrieval. The same structure applies to other LLMs: create embeddings, store them in a collection, search for relevant context, and pass that context into the model.</p>
+<p>For a broader walkthrough, see the official <a href="https://milvus.io/docs/build-rag-with-milvus.md">Milvus RAG tutorial</a>. This example keeps the pipeline small so the retrieval flow is easy to inspect.</p>
+<h2 id="Prepare-the-Environment" class="common-anchor-header">Prepare the Environment<button data-href="#Prepare-the-Environment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -338,20 +339,20 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Install-the-Dependencies" class="common-anchor-header">تثبيت التبعيات</h3><pre><code translate="no" class="language-python">! pip install --upgrade <span class="hljs-string">&quot;pymilvus[model]&quot;</span> openai requests tqdm
+    </button></h2><h3 id="Install-the-Dependencies" class="common-anchor-header">Install the Dependencies</h3><pre><code translate="no" class="language-python">! pip install --upgrade <span class="hljs-string">&quot;pymilvus[model]&quot;</span> openai requests tqdm
 <button class="copy-code-btn"></button></code></pre>
-<p>إذا كنت تستخدم Google Colab، فقد تحتاج إلى إعادة تشغيل وقت التشغيل بعد تثبيت التبعيات. انقر على قائمة <strong>وقت</strong> التشغيل، ثم حدد <strong>إعادة تشغيل الجلسة</strong>.</p>
-<p>يدعم DeepSeek V4-Pro واجهة برمجة تطبيقات على غرار OpenAI. قم بتسجيل الدخول إلى موقع DeepSeek الرسمي وقم بتعيين <code translate="no">DEEPSEEK_API_KEY</code> كمتغير بيئة.</p>
+<p>If you are using Google Colab, you may need to restart the runtime after installing dependencies. Click the <strong>Runtime</strong> menu, then select <strong>Restart session</strong>.</p>
+<p>DeepSeek V4-Pro supports an OpenAI-style API. Log in to the official DeepSeek website and set <code translate="no">DEEPSEEK_API_KEY</code> as an environment variable.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> os
 
 os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;DEEPSEEK_API_KEY&quot;</span>] = <span class="hljs-string">&quot;sk-*****************&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Prepare-the-Milvus-Documentation-Dataset" class="common-anchor-header">إعداد مجموعة بيانات وثائق Milvus Documentation Dataset</h3><p>نحن نستخدم صفحات الأسئلة الشائعة من <a href="https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip">أرشيف وثائق Milvus 2.4.x</a> كمصدر معرفي خاص. هذه مجموعة بيانات مبدئية بسيطة لعرض تجريبي صغير لـ RAG.</p>
-<p>أولاً، قم بتنزيل ملف ZIP واستخرج الوثائق في المجلد <code translate="no">milvus_docs</code>.</p>
+<h3 id="Prepare-the-Milvus-Documentation-Dataset" class="common-anchor-header">Prepare the Milvus Documentation Dataset</h3><p>We use the FAQ pages from the <a href="https://github.com/milvus-io/milvus-docs/releases/download/v2.4.6-preview/milvus_docs_2.4.x_en.zip">Milvus 2.4.x documentation archive</a> as the private knowledge source. This is a simple starter dataset for a small RAG demo.</p>
+<p>First, download the ZIP file and extract the documentation into the <code translate="no">milvus_docs</code> folder.</p>
 <pre><code translate="no" class="language-python">! wget https://github.com/milvus-io/milvus-docs/releases/download/v2<span class="hljs-number">.4</span><span class="hljs-number">.6</span>-preview/milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span>
 ! unzip -q milvus_docs_2<span class="hljs-number">.4</span>.x_en.<span class="hljs-built_in">zip</span> -d milvus_docs
 <button class="copy-code-btn"></button></code></pre>
-<p>نقوم بتحميل جميع ملفات Markdown من المجلد <code translate="no">milvus_docs/en/faq</code>. بالنسبة لكل مستند، نقوم بتقسيم محتوى الملف حسب <code translate="no">#</code> ، والذي يفصل تقريبًا بين أقسام Markdown الرئيسية.</p>
+<p>We load all Markdown files from the <code translate="no">milvus_docs/en/faq</code> folder. For each document, we split the file content by <code translate="no">#</code>, which roughly separates major Markdown sections.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> glob <span class="hljs-keyword">import</span> glob
 
 text_lines = []
@@ -362,19 +363,19 @@ text_lines = []
 
     text_lines += file_text.split(<span class="hljs-string">&quot;# &quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Set-Up-DeepSeek-V4-and-the-Embedding-Model" class="common-anchor-header">إعداد DeepSeek V4 ونموذج التضمين</h3><pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
+<h3 id="Set-Up-DeepSeek-V4-and-the-Embedding-Model" class="common-anchor-header">Set Up DeepSeek V4 and the Embedding Model</h3><pre><code translate="no"><span class="hljs-keyword">from</span> openai <span class="hljs-keyword">import</span> <span class="hljs-title class_">OpenAI</span>
 
 deepseek_client = <span class="hljs-title class_">OpenAI</span>(
     api_key=os.<span class="hljs-property">environ</span>[<span class="hljs-string">&quot;DEEPSEEK_API_KEY&quot;</span>],
     base_url=<span class="hljs-string">&quot;https://api.deepseek.com&quot;</span>,
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>بعد ذلك، اختر نموذج التضمين. يستخدم هذا المثال <code translate="no">DefaultEmbeddingFunction</code> من الوحدة النمطية لنموذج PyMilvus. راجع مستندات Milvus لمعرفة المزيد عن <a href="https://milvus.io/docs/embeddings.md">دوال التضمين</a>.</p>
+<p>Next, choose an embedding model. This example uses <code translate="no">DefaultEmbeddingFunction</code> from the PyMilvus model module. See the Milvus docs for more on <a href="https://milvus.io/docs/embeddings.md">embedding functions</a>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> model <span class="hljs-keyword">as</span> milvus_model
 
 embedding_model = milvus_model.<span class="hljs-title class_">DefaultEmbeddingFunction</span>()
 <button class="copy-code-btn"></button></code></pre>
-<p>أنشئ متجه اختبار، ثم اطبع بُعد المتجه والعناصر القليلة الأولى. يُستخدم البعد الذي تم إرجاعه عند إنشاء مجموعة ميلفوس.</p>
+<p>Generate a test vector, then print the vector dimension and the first few elements. The returned dimension is used when creating the Milvus collection.</p>
 <pre><code translate="no">test_embedding = embedding_model.encode_queries([<span class="hljs-string">&quot;This is a test&quot;</span>])[<span class="hljs-number">0</span>]
 embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 <span class="hljs-built_in">print</span>(embedding_dim)
@@ -383,7 +384,7 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
 [-<span class="hljs-number">0.04836066</span>  <span class="hljs-number">0.07163023</span> -<span class="hljs-number">0.01130064</span> -<span class="hljs-number">0.03789345</span> -<span class="hljs-number">0.03320649</span> -<span class="hljs-number">0.01318448</span>
  -<span class="hljs-number">0.03041712</span> -<span class="hljs-number">0.02269499</span> -<span class="hljs-number">0.02317863</span> -<span class="hljs-number">0.00426028</span>]
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="Load-Data-into-Milvus" class="common-anchor-header">تحميل البيانات إلى ملفوس<button data-href="#Load-Data-into-Milvus" class="anchor-icon" translate="no">
+<h2 id="Load-Data-into-Milvus" class="common-anchor-header">Load Data into Milvus<button data-href="#Load-Data-into-Milvus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -398,24 +399,24 @@ embedding_dim = <span class="hljs-built_in">len</span>(test_embedding)
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Create-a-Milvus-Collection" class="common-anchor-header">إنشاء مجموعة ميلفوس</h3><p>تخزن مجموعة Milvus الحقول المتجهة والحقول القياسية والبيانات الوصفية الديناميكية الاختيارية. ويستخدم الإعداد السريع أدناه واجهة برمجة التطبيقات <code translate="no">MilvusClient</code> عالية المستوى؛ بالنسبة لمخططات الإنتاج، راجع المستندات الخاصة <a href="https://milvus.io/docs/manage-collections.md">بإدارة المجموعات</a> <a href="https://milvus.io/docs/create-collection.md">وإنشاء المجموعات</a>.</p>
+    </button></h2><h3 id="Create-a-Milvus-Collection" class="common-anchor-header">Create a Milvus Collection</h3><p>A Milvus collection stores vector fields, scalar fields, and optional dynamic metadata. The quick setup below uses the high-level <code translate="no">MilvusClient</code> API; for production schemas, review the docs on <a href="https://milvus.io/docs/manage-collections.md">collection management</a> and <a href="https://milvus.io/docs/create-collection.md">creating collections</a>.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> <span class="hljs-title class_">MilvusClient</span>
 
 milvus_client = <span class="hljs-title class_">MilvusClient</span>(uri=<span class="hljs-string">&quot;./milvus_demo.db&quot;</span>)
 
 collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>بعض الملاحظات حول <code translate="no">MilvusClient</code>:</p>
+<p>A few notes about <code translate="no">MilvusClient</code>:</p>
 <ul>
-<li>يعد الإعداد <code translate="no">uri</code> إلى ملف محلي، مثل <code translate="no">./milvus.db</code> ، هو الخيار الأسهل لأنه يستخدم تلقائيًا <a href="https://milvus.io/docs/milvus_lite.md">ملف Milvus Lite</a> ويخزن جميع البيانات في هذا الملف.</li>
-<li>إذا كانت لديك مجموعة بيانات كبيرة، يمكنك إعداد خادم Milvus عالي الأداء على <a href="https://milvus.io/docs/quickstart.md">Docker أو Kubernetes</a>. في هذا الإعداد، استخدم URI الخادم URI، مثل <code translate="no">http://localhost:19530</code> ، كـ <code translate="no">uri</code>.</li>
-<li>إذا كنت ترغب في استخدام <a href="https://docs.zilliz.com/">Zilliz Cloud،</a> الخدمة السحابية المدارة بالكامل لـ Milvus، قم بتعيين <code translate="no">uri</code> و <code translate="no">token</code> إلى <a href="https://docs.zilliz.com/docs/connect-to-cluster">نقطة النهاية العامة ومفتاح واجهة برمجة التطبيقات</a> من Zilliz Cloud.</li>
+<li>Setting <code translate="no">uri</code> to a local file, such as <code translate="no">./milvus.db</code>, is the easiest option because it automatically uses <a href="https://milvus.io/docs/milvus_lite.md">Milvus Lite</a> and stores all data in that file.</li>
+<li>If you have a large dataset, you can set up a higher-performance Milvus server on <a href="https://milvus.io/docs/quickstart.md">Docker or Kubernetes</a>. In that setup, use the server URI, such as <code translate="no">http://localhost:19530</code>, as your <code translate="no">uri</code>.</li>
+<li>If you want to use <a href="https://docs.zilliz.com/">Zilliz Cloud</a>, the fully managed cloud service for Milvus, set <code translate="no">uri</code> and <code translate="no">token</code> to the <a href="https://docs.zilliz.com/docs/connect-to-cluster">public endpoint and API key</a> from Zilliz Cloud.</li>
 </ul>
-<p>تحقق مما إذا كانت المجموعة موجودة بالفعل. إذا كانت موجودة، فاحذفها.</p>
+<p>Check whether the collection already exists. If it does, delete it.</p>
 <pre><code translate="no" class="language-python">if milvus_client.has_collection(collection_name):
     milvus_client.drop_collection(collection_name)
 <button class="copy-code-btn"></button></code></pre>
-<p>قم بإنشاء مجموعة جديدة بالمعلمات المحددة. إذا لم نحدد معلومات الحقل، يقوم ميلفوس تلقائيًا بإنشاء حقل افتراضي <code translate="no">id</code> كمفتاح أساسي وحقل متجه لتخزين البيانات المتجهة. يخزن حقل JSON المحجوز بيانات قياسية غير محددة في المخطط.</p>
+<p>Create a new collection with the specified parameters. If we do not specify field information, Milvus automatically creates a default <code translate="no">id</code> field as the primary key and a vector field to store vector data. A reserved JSON field stores scalar data that is not defined in the schema.</p>
 <pre><code translate="no" class="language-python">milvus_client.create_collection(
     collection_name=collection_name,
     dimension=embedding_dim,
@@ -423,8 +424,8 @@ collection_name = <span class="hljs-string">&quot;my_rag_collection&quot;</span>
     consistency_level=<span class="hljs-string">&quot;Strong&quot;</span>,  <span class="hljs-comment"># Strong consistency level</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>يعني مقياس <code translate="no">IP</code> تشابه المنتج الداخلي. يدعم Milvus أيضًا أنواع المقاييس الأخرى وخيارات الفهرس اعتمادًا على نوع المتجه وعبء العمل؛ راجع الأدلة الخاصة <a href="https://milvus.io/docs/id/metric.md">بأنواع المقاييس</a> <a href="https://milvus.io/docs/index_selection.md">واختيار الفهرس</a>. الإعداد <code translate="no">Strong</code> هو أحد <a href="https://milvus.io/docs/consistency.md">مستويات الاتساق</a> المتاحة.</p>
-<h3 id="Insert-the-Embedded-Documents" class="common-anchor-header">إدراج المستندات المضمنة</h3><p>قم بتكرار البيانات النصية وإنشاء التضمينات وإدراج البيانات في ملفوس. هنا، نقوم بإضافة حقل جديد باسم <code translate="no">text</code>. نظرًا لعدم تعريفه بشكل صريح في مخطط المجموعة، تتم إضافته تلقائيًا إلى حقل JSON الديناميكي المحجوز. بالنسبة للبيانات الوصفية للإنتاج، راجع <a href="https://milvus.io/docs/enable-dynamic-field.md">دعم الحقل الديناميكي</a> <a href="https://milvus.io/docs/json-field-overview.md">والنظرة العامة لحقل JSON</a>.</p>
+<p>The <code translate="no">IP</code> metric means inner product similarity. Milvus also supports other metric types and index choices depending on the vector type and workload; see the guides on <a href="https://milvus.io/docs/id/metric.md">metric types</a> and <a href="https://milvus.io/docs/index_selection.md">index selection</a>. The <code translate="no">Strong</code> setting is one of the available <a href="https://milvus.io/docs/consistency.md">consistency levels</a>.</p>
+<h3 id="Insert-the-Embedded-Documents" class="common-anchor-header">Insert the Embedded Documents</h3><p>Iterate through the text data, create embeddings, and insert the data into Milvus. Here, we add a new field named <code translate="no">text</code>. Since it is not explicitly defined in the collection schema, it is automatically added to the reserved dynamic JSON field. For production metadata, review <a href="https://milvus.io/docs/enable-dynamic-field.md">dynamic field support</a> and the <a href="https://milvus.io/docs/json-field-overview.md">JSON field overview</a>.</p>
 <pre><code translate="no"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
 
 data = []
@@ -438,8 +439,8 @@ milvus_client.insert(collection_name=collection_name, data=data)
 Creating embeddings: <span class="hljs-number">100</span>%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████| <span class="hljs-number">72</span>/<span class="hljs-number">72</span> [<span class="hljs-number">00</span>:<span class="hljs-number">00</span>&lt;<span class="hljs-number">00</span>:<span class="hljs-number">00</span>, <span class="hljs-number">1222631.13</span>it/s]
 {<span class="hljs-string">&#x27;insert_count&#x27;</span>: <span class="hljs-number">72</span>, <span class="hljs-string">&#x27;ids&#x27;</span>: [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>, <span class="hljs-number">16</span>, <span class="hljs-number">17</span>, <span class="hljs-number">18</span>, <span class="hljs-number">19</span>, <span class="hljs-number">20</span>, <span class="hljs-number">21</span>, <span class="hljs-number">22</span>, <span class="hljs-number">23</span>, <span class="hljs-number">24</span>, <span class="hljs-number">25</span>, <span class="hljs-number">26</span>, <span class="hljs-number">27</span>, <span class="hljs-number">28</span>, <span class="hljs-number">29</span>, <span class="hljs-number">30</span>, <span class="hljs-number">31</span>, <span class="hljs-number">32</span>, <span class="hljs-number">33</span>, <span class="hljs-number">34</span>, <span class="hljs-number">35</span>, <span class="hljs-number">36</span>, <span class="hljs-number">37</span>, <span class="hljs-number">38</span>, <span class="hljs-number">39</span>, <span class="hljs-number">40</span>, <span class="hljs-number">41</span>, <span class="hljs-number">42</span>, <span class="hljs-number">43</span>, <span class="hljs-number">44</span>, <span class="hljs-number">45</span>, <span class="hljs-number">46</span>, <span class="hljs-number">47</span>, <span class="hljs-number">48</span>, <span class="hljs-number">49</span>, <span class="hljs-number">50</span>, <span class="hljs-number">51</span>, <span class="hljs-number">52</span>, <span class="hljs-number">53</span>, <span class="hljs-number">54</span>, <span class="hljs-number">55</span>, <span class="hljs-number">56</span>, <span class="hljs-number">57</span>, <span class="hljs-number">58</span>, <span class="hljs-number">59</span>, <span class="hljs-number">60</span>, <span class="hljs-number">61</span>, <span class="hljs-number">62</span>, <span class="hljs-number">63</span>, <span class="hljs-number">64</span>, <span class="hljs-number">65</span>, <span class="hljs-number">66</span>, <span class="hljs-number">67</span>, <span class="hljs-number">68</span>, <span class="hljs-number">69</span>, <span class="hljs-number">70</span>, <span class="hljs-number">71</span>], <span class="hljs-string">&#x27;cost&#x27;</span>: <span class="hljs-number">0</span>}
 <button class="copy-code-btn"></button></code></pre>
-<p>بالنسبة لمجموعات البيانات الأكبر حجمًا، يمكن توسيع نفس النمط مع تصميم مخطط صريح، <a href="https://milvus.io/docs/index-vector-fields.md">وفهارس الحقول المتجهة،</a> والفهارس القياسية، وعمليات دورة حياة البيانات مثل <a href="https://milvus.io/docs/insert-update-delete.md">الإدراج، والإدراج، والحذف</a>.</p>
-<h2 id="Build-the-RAG-Retrieval-Flow" class="common-anchor-header">بناء تدفق استرجاع RAG<button data-href="#Build-the-RAG-Retrieval-Flow" class="anchor-icon" translate="no">
+<p>For larger datasets, the same pattern can be extended with explicit schema design, <a href="https://milvus.io/docs/index-vector-fields.md">vector field indexes</a>, scalar indexes, and data lifecycle operations such as <a href="https://milvus.io/docs/insert-update-delete.md">insert, upsert, and delete</a>.</p>
+<h2 id="Build-the-RAG-Retrieval-Flow" class="common-anchor-header">Build the RAG Retrieval Flow<button data-href="#Build-the-RAG-Retrieval-Flow" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -454,10 +455,10 @@ Creating embeddings: <span class="hljs-number">100</span>%|███████
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Search-Milvus-for-Relevant-Context" class="common-anchor-header">البحث في ميلفوس عن السياق ذي الصلة</h3><p>دعنا نحدد سؤالاً شائعًا عن ميلفوس.</p>
+    </button></h2><h3 id="Search-Milvus-for-Relevant-Context" class="common-anchor-header">Search Milvus for Relevant Context</h3><p>Let’s define a common question about Milvus.</p>
 <pre><code translate="no" class="language-python">question = <span class="hljs-string">&quot;How is data stored in milvus?&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>ابحث في المجموعة عن السؤال واسترجع أهم ثلاث مطابقات دلالية. هذا هو <a href="https://milvus.io/docs/single-vector-search.md">البحث</a> الأساسي <a href="https://milvus.io/docs/single-vector-search.md">أحادي المتجه</a> الأساسي. في الإنتاج، يمكنك دمجه مع <a href="https://milvus.io/docs/filtered-search.md">البحث المصفى،</a> <a href="https://milvus.io/docs/full-text-search.md">والبحث بالنص الكامل،</a> <a href="https://milvus.io/docs/multi-vector-search.md">والبحث الهجين متعدد النوا</a>قل، <a href="https://milvus.io/docs/reranking.md">واستراتيجيات إعادة الترتيب</a> لتحسين الملاءمة.</p>
+<p>Search the collection for the question and retrieve the top three semantic matches. This is a basic <a href="https://milvus.io/docs/single-vector-search.md">single-vector search</a>. In production, you can combine it with <a href="https://milvus.io/docs/filtered-search.md">filtered search</a>, <a href="https://milvus.io/docs/full-text-search.md">full-text search</a>, <a href="https://milvus.io/docs/multi-vector-search.md">multi-vector hybrid search</a>, and <a href="https://milvus.io/docs/reranking.md">reranking strategies</a> to improve relevance.</p>
 <pre><code translate="no" class="language-python">search_res = milvus_client.search(
     collection_name=collection_name,
     data=embedding_model.encode_queries(
@@ -468,7 +469,7 @@ Creating embeddings: <span class="hljs-number">100</span>%|███████
     output_fields=[<span class="hljs-string">&quot;text&quot;</span>],  <span class="hljs-comment"># Return the text field</span>
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>الآن دعنا نلقي نظرة على نتائج البحث للاستعلام.</p>
+<p>Now let’s look at the search results for the query.</p>
 <pre><code translate="no"><span class="hljs-keyword">import</span> json
 
 retrieved_lines_with_distances = [
@@ -491,12 +492,12 @@ retrieved_lines_with_distances = [
     ]
 ]
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Generate-a-RAG-Answer-with-DeepSeek-V4" class="common-anchor-header">إنشاء إجابة RAG باستخدام DeepSeek V4</h3><p>تحويل المستندات المسترجعة إلى تنسيق سلسلة.</p>
+<h3 id="Generate-a-RAG-Answer-with-DeepSeek-V4" class="common-anchor-header">Generate a RAG Answer with DeepSeek V4</h3><p>Convert the retrieved documents into string format.</p>
 <pre><code translate="no" class="language-python">context = <span class="hljs-string">&quot;\n&quot;</span>.<span class="hljs-keyword">join</span>(
     [<span class="hljs-meta">line_with_distance[0</span>] <span class="hljs-keyword">for</span> line_with_distance <span class="hljs-keyword">in</span> retrieved_lines_with_distances]
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>تحديد مطالبات النظام والمستخدم لـ LLM. يتم تجميع هذه المطالبة من المستندات التي تم استرجاعها من ميلفوس.</p>
+<p>Define the system and user prompts for the LLM. This prompt is assembled from the documents retrieved from Milvus.</p>
 <pre><code translate="no" class="language-python">SYSTEM_PROMPT = <span class="hljs-string">&quot;&quot;&quot;
 Human: You are an AI assistant. You are able to find answers to the questions from the contextual passage snippets provided.
 &quot;&quot;&quot;</span>
@@ -510,7 +511,7 @@ Use the following pieces of information enclosed in &lt;context&gt; tags to prov
 &lt;/question&gt;
 &quot;&quot;&quot;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>استخدم النموذج المقدم من DeepSeek V4-Pro لإنشاء استجابة بناءً على المطالبة.</p>
+<p>Use the model provided by DeepSeek V4-Pro to generate a response based on the prompt.</p>
 <pre><code translate="no">response = deepseek_client.chat.completions.create(
     model=<span class="hljs-string">&quot;deepseek-v4-pro&quot;</span>,
     messages=[
@@ -523,8 +524,8 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
 - **Inserted data** (vector data, scalar data, <span class="hljs-keyword">and</span> collection-specific schema) are stored <span class="hljs-keyword">in</span> persistent storage <span class="hljs-keyword">as</span> incremental logs. Milvus supports multiple <span class="hljs-built_in">object</span> storage backends, such <span class="hljs-keyword">as</span> MinIO, AWS S3, Google Cloud Storage, Azure Blob Storage, Alibaba Cloud OSS, <span class="hljs-keyword">and</span> Tencent Cloud Object Storage. Before reaching persistent storage, the data <span class="hljs-keyword">is</span> initially loaded <span class="hljs-keyword">into</span> a message queue; a data node then writes it to disk, <span class="hljs-keyword">and</span> calling `flush()` forces an immediate write.
 - **Metadata**, generated <span class="hljs-keyword">by</span> each Milvus module, <span class="hljs-keyword">is</span> stored <span class="hljs-keyword">in</span> **etcd**.
 <button class="copy-code-btn"></button></code></pre>
-<p>عند هذه النقطة، يكون خط الأنابيب قد أكمل حلقة RAG الأساسية: تضمين المستندات، وتخزين المتجهات في Milvus، والبحث عن السياق ذي الصلة، وإنشاء إجابة باستخدام DeepSeek V4-Pro.</p>
-<h2 id="What-Should-You-Improve-Before-Production" class="common-anchor-header">ما الذي يجب تحسينه قبل الإنتاج؟<button data-href="#What-Should-You-Improve-Before-Production" class="anchor-icon" translate="no">
+<p>At this point, the pipeline has completed the core RAG loop: embed documents, store vectors in Milvus, search for relevant context, and generate an answer with DeepSeek V4-Pro.</p>
+<h2 id="What-Should-You-Improve-Before-Production" class="common-anchor-header">What Should You Improve Before Production?<button data-href="#What-Should-You-Improve-Before-Production" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -539,21 +540,21 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يستخدم العرض التوضيحي تقسيمًا بسيطًا للأقسام واسترجاع أعلى k. هذا يكفي لإظهار الآليات، ولكن عادةً ما يحتاج RAG للإنتاج إلى مزيد من التحكم في الاسترجاع.</p>
+    </button></h2><p>The demo uses simple section splitting and top-k retrieval. That is enough to show the mechanics, but production RAG usually needs more retrieval control.</p>
 <table>
 <thead>
-<tr><th>يحتاج الإنتاج</th><th>ميزة ميلفوس للنظر فيها</th><th>لماذا يساعد</th></tr>
+<tr><th>Production need</th><th>Milvus feature to consider</th><th>Why it helps</th></tr>
 </thead>
 <tbody>
-<tr><td>مزج الإشارات الدلالية والكلمات المفتاحية</td><td><a href="https://milvus.io/docs/hybrid_search_with_milvus.md">البحث الهجين مع ميلفوس</a></td><td>الجمع بين البحث المتجه الكثيف مع إشارات متناثرة أو إشارات النص الكامل</td></tr>
-<tr><td>دمج النتائج من مسترجعات متعددة</td><td><a href="https://milvus.io/docs/milvus_hybrid_search_retriever.md">مسترجع البحث الهجين Milvus</a></td><td>يتيح لمهام سير عمل LangChain استخدام تصنيفات مرجحة أو على غرار RRF</td></tr>
-<tr><td>تقييد النتائج حسب المستأجر أو الطابع الزمني أو نوع المستند</td><td>مرشحات البيانات الوصفية والقياسية</td><td>يبقي الاسترجاع في نطاق شريحة البيانات الصحيحة</td></tr>
-<tr><td>الانتقال من خدمة Milvus المُدارة ذاتيًا إلى الخدمة المُدارة</td><td><a href="https://docs.zilliz.com/docs/migrate-from-milvus">الترحيل من ميلفوس إلى زيليز</a></td><td>يقلل من أعمال البنية التحتية مع الحفاظ على توافق Milvus</td></tr>
-<tr><td>ربط التطبيقات المستضافة بأمان</td><td><a href="https://docs.zilliz.com/docs/manage-api-keys">مفاتيح Zilliz Cloud API</a></td><td>توفير التحكم في الوصول المستند إلى الرمز المميز لعملاء التطبيقات</td></tr>
+<tr><td>Mix semantic and keyword signals</td><td><a href="https://milvus.io/docs/hybrid_search_with_milvus.md">hybrid search with Milvus</a></td><td>Combines dense vector search with sparse or full-text signals</td></tr>
+<tr><td>Merge results from multiple retrievers</td><td><a href="https://milvus.io/docs/milvus_hybrid_search_retriever.md">Milvus hybrid search retriever</a></td><td>Lets LangChain workflows use weighted or RRF-style ranking</td></tr>
+<tr><td>Restrict results by tenant, timestamp, or document type</td><td>Metadata and scalar filters</td><td>Keeps retrieval scoped to the right data slice</td></tr>
+<tr><td>Move from self-managed Milvus to managed service</td><td><a href="https://docs.zilliz.com/docs/migrate-from-milvus">Milvus to Zilliz migration</a></td><td>Reduces infrastructure work while keeping Milvus compatibility</td></tr>
+<tr><td>Connect hosted applications securely</td><td><a href="https://docs.zilliz.com/docs/manage-api-keys">Zilliz Cloud API keys</a></td><td>Provides token-based access control for application clients</td></tr>
 </tbody>
 </table>
-<p>أهم عادة إنتاجية هي تقييم الاسترجاع بشكل منفصل عن التوليد. إذا كان السياق المسترجع ضعيفًا، فغالبًا ما يخفي تبديل LLM المشكلة بدلاً من حلها.</p>
-<h2 id="Get-Started-with-Milvus-and-DeepSeek-RAG" class="common-anchor-header">ابدأ مع ميلفوس و DeepSeek RAG<button data-href="#Get-Started-with-Milvus-and-DeepSeek-RAG" class="anchor-icon" translate="no">
+<p>The most important production habit is to evaluate retrieval separately from generation. If the retrieved context is weak, swapping the LLM often hides the problem instead of solving it.</p>
+<h2 id="Get-Started-with-Milvus-and-DeepSeek-RAG" class="common-anchor-header">Get Started with Milvus and DeepSeek RAG<button data-href="#Get-Started-with-Milvus-and-DeepSeek-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -568,9 +569,9 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إذا كنت ترغب في إعادة إنتاج البرنامج التعليمي، ابدأ <a href="https://milvus.io/docs">بوثائق Milvus</a> الرسمية <a href="https://milvus.io/docs/build-rag-with-milvus.md">ودليل بناء RAG مع Milvus</a>. للحصول على إعداد مُدار، <a href="https://docs.zilliz.com/docs/connect-to-cluster">اتصل بـ Zilliz Cloud</a> باستخدام نقطة نهاية المجموعة ومفتاح واجهة برمجة التطبيقات بدلاً من تشغيل Milvus محليًا.</p>
-<p>إذا كنت تريد المساعدة في ضبط التقطيع أو الفهرسة أو الفلترة أو الاسترجاع المختلط، انضم إلى <a href="https://slack.milvus.io/">مجتمع Milvus Slack</a> أو احجز <a href="https://milvus.io/office-hours">جلسة</a> مجانية في <a href="https://milvus.io/office-hours">ساعات عمل Milvus المكتبية</a>. إذا كنت تفضل تخطي إعداد البنية التحتية، فاستخدم <a href="https://cloud.zilliz.com/login">تسجيل الدخول إلى Zilliz Cloud</a> أو أنشئ <a href="https://cloud.zilliz.com/signup">حساب Zilliz Cloud</a> لتشغيل Milvus المُدار.</p>
-<h2 id="Questions-Developers-Ask-About-DeepSeek-V4-Milvus-and-RAG" class="common-anchor-header">الأسئلة التي يطرحها المطورون حول DeepSeek V4 وMilvus وRAG<button data-href="#Questions-Developers-Ask-About-DeepSeek-V4-Milvus-and-RAG" class="anchor-icon" translate="no">
+    </button></h2><p>If you want to reproduce the tutorial, start with the official <a href="https://milvus.io/docs">Milvus documentation</a> and the <a href="https://milvus.io/docs/build-rag-with-milvus.md">Build RAG with Milvus guide</a>. For a managed setup, <a href="https://docs.zilliz.com/docs/connect-to-cluster">connect to Zilliz Cloud</a> with your cluster endpoint and API key instead of running Milvus locally.</p>
+<p>If you want help tuning chunking, indexing, filters, or hybrid retrieval, join the <a href="https://slack.milvus.io/">Milvus Slack community</a> or book a free <a href="https://milvus.io/office-hours">Milvus Office Hours session</a>. If you would rather skip infrastructure setup, use <a href="https://cloud.zilliz.com/login">Zilliz Cloud login</a> or create a <a href="https://cloud.zilliz.com/signup">Zilliz Cloud account</a> to run managed Milvus.</p>
+<h2 id="Questions-Developers-Ask-About-DeepSeek-V4-Milvus-and-RAG" class="common-anchor-header">Questions Developers Ask About DeepSeek V4, Milvus, and RAG<button data-href="#Questions-Developers-Ask-About-DeepSeek-V4-Milvus-and-RAG" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -585,7 +586,7 @@ Milvus stores data <span class="hljs-keyword">in</span> two distinct ways depend
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Is-DeepSeek-V4-good-for-RAG" class="common-anchor-header">هل DeepSeek V4 جيد لـ RAG؟</h3><p>يعد DeepSeek V4-Pro مناسبًا جدًا لـ RAG عندما تحتاج إلى معالجة السياق الطويل وتكلفة خدمة أقل من النماذج المغلقة المتميزة. ما زلت بحاجة إلى طبقة استرجاع مثل Milvus لتحديد الأجزاء ذات الصلة، وتطبيق مرشحات البيانات الوصفية والحفاظ على تركيز المطالبة.</p>
-<h3 id="Should-I-use-GPT-55-or-DeepSeek-V4-for-a-RAG-pipeline" class="common-anchor-header">هل يجب أن أستخدم GPT-5.5.5 أو DeepSeek V4 لخط أنابيب RAG؟</h3><p>استخدم GPT-5.5.5 عندما تكون جودة الإجابة، واستخدام الأداة، والبحث المباشر أكثر أهمية من التكلفة. استخدم DeepSeek V4-Pro عندما تكون معالجة السياق الطويل والتحكم في التكلفة أكثر أهمية، خاصةً إذا كانت طبقة الاسترجاع لديك توفر بالفعل سياقًا أساسيًا عالي الجودة.</p>
-<h3 id="Can-I-run-Qwen36-35B-A3B-locally-for-private-RAG" class="common-anchor-header">هل يمكنني تشغيل Qwen3.6-35B-A3B محليًا لـ RAG الخاص؟</h3><p>نعم، Qwen3.6.6-35B-A3B مفتوح الوزن ومصمم للنشر الأكثر قابلية للتحكم. إنه مرشح جيد عندما تكون الخصوصية أو الخدمة المحلية أو المدخلات متعددة الوسائط أو الأداء باللغة الصينية مهمة، لكنك لا تزال بحاجة إلى التحقق من زمن الاستجابة والذاكرة وجودة الاسترجاع لجهازك.</p>
-<h3 id="Do-long-context-models-make-vector-databases-unnecessary" class="common-anchor-header">هل تجعل نماذج السياق الطويل قواعد البيانات المتجهة غير ضرورية؟</h3><p>لا، يمكن للنماذج ذات السياق الطويل قراءة المزيد من النصوص، لكنها لا تزال تستفيد من الاسترجاع. تعمل قاعدة البيانات المتجهة على تضييق المدخلات إلى الأجزاء ذات الصلة، وتدعم تصفية البيانات الوصفية وتقلل من تكلفة الرمز المميز، وتسهل تحديث التطبيق مع تغير المستندات.</p>
+    </button></h2><h3 id="Is-DeepSeek-V4-good-for-RAG" class="common-anchor-header">Is DeepSeek V4 good for RAG?</h3><p>DeepSeek V4-Pro is a strong fit for RAG when you need long-context processing and lower serving cost than premium closed models. You still need a retrieval layer such as Milvus to select relevant chunks, apply metadata filters, and keep the prompt focused.</p>
+<h3 id="Should-I-use-GPT-55-or-DeepSeek-V4-for-a-RAG-pipeline" class="common-anchor-header">Should I use GPT-5.5 or DeepSeek V4 for a RAG pipeline?</h3><p>Use GPT-5.5 when answer quality, tool use, and live research matter more than cost. Use DeepSeek V4-Pro when long-context processing and cost control matter more, especially if your retrieval layer already supplies high-quality grounded context.</p>
+<h3 id="Can-I-run-Qwen36-35B-A3B-locally-for-private-RAG" class="common-anchor-header">Can I run Qwen3.6-35B-A3B locally for private RAG?</h3><p>Yes, Qwen3.6-35B-A3B is open weight and designed for more controllable deployment. It is a good candidate when privacy, local serving, multimodal input, or Chinese-language performance matters, but you still need to validate latency, memory, and retrieval quality for your hardware.</p>
+<h3 id="Do-long-context-models-make-vector-databases-unnecessary" class="common-anchor-header">Do long-context models make vector databases unnecessary?</h3><p>No. Long-context models can read more text, but they still benefit from retrieval. A vector database narrows the input to relevant chunks, supports metadata filtering, reduces token cost, and makes the application easier to update as documents change.</p>

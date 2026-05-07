@@ -1,6 +1,8 @@
 ---
 id: claude-context-reduce-claude-code-token-usage.md
-title: クロードコンテキスト：Milvusによるコード検索でClaudeコードトークンの使用量を削減
+title: >
+  Claude Context: Reduce Claude Code Token Usage with Milvus-Powered Code
+  Retrieval
 author: Cheney Zhang
 date: 2026-4-30
 cover: assets.zilliz.com/image_3b2d2999ac.jpg
@@ -11,18 +13,21 @@ tags: 'Milvus, vector database'
 meta_keywords: 'Claude Context, Claude Code token usage, code retrieval, MCP server, Milvus'
 meta_title: |
   Claude Context: Cut Claude Code Token Usage with Milvus
-desc: >-
-  クロード・コードがgrepでトークンを消費？クロード・コンテキストがMilvusを利用したハイブリッド検索でトークン使用量を39.4%削減した方法をご覧ください。
+desc: >
+  Claude Code burning tokens on grep? See how Claude Context uses Milvus-backed
+  hybrid retrieval to cut token usage by 39.4%.
 origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md'
 ---
-<p>大きなコンテキストウィンドウは、AIコーディングエージェントに無限の可能性を感じさせます。多くのクロード・コード・ユーザーにとって、高価な部分はモデル推論だけではありません。キーワードを検索し、ファイルを読み、また検索し、さらにファイルを読み、無関係なコンテキストのためにお金を払い続ける。</p>
-<p>Claude Contextは、Claude Codeや他のAIコーディングエージェントに、関連するコードを見つけるためのより良い方法を提供する、オープンソースのコード検索MCPサーバーです。リポジトリをインデックス化し、検索可能なコードチャンクを<a href="https://zilliz.com/learn/what-is-vector-database">ベクターデータベースに</a>保存し、<a href="https://zilliz.com/blog/hybrid-search-with-milvus">ハイブリッド検索を</a>使用することで、エージェントはgrepの結果でプロンプトを溢れさせるのではなく、実際に必要なコードを取り込むことができます。</p>
-<p>我々のベンチマークでは、Claude Contextは検索品質を維持しながら、トークンの消費を平均39.4%削減し、ツールの呼び出しを36.1%削減しました。この投稿では、なぜ grep スタイルの検索がコンテキストを無駄にするのか、Claude Context がフードの下でどのように動作するのか、実際のデバッグ作業におけるベースラインワークフローとの比較について説明する。</p>
+<p>Large context windows make AI coding agents feel limitless, right up until they start reading half your repository to answer one question. For many Claude Code users, the expensive part is not just model reasoning. It is the retrieval loop: search a keyword, read a file, search again, read more files, and keep paying for irrelevant context.</p>
+<p>Claude Context is an open-source code retrieval MCP server that gives Claude Code and other AI coding agents a better way to find relevant code. It indexes your repository, stores searchable code chunks in a <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a>, and uses <a href="https://zilliz.com/blog/hybrid-search-with-milvus">hybrid retrieval</a> so the agent can pull in the code it actually needs instead of flooding the prompt with grep results.</p>
+<p>In our benchmarks, Claude Context reduced token consumption by 39.4% on average and cut tool calls by 36.1% while preserving retrieval quality. This post explains why grep-style retrieval wastes context, how Claude Context works under the hood, and how it compares with a baseline workflow on real debugging tasks.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_6_68b1f70723.png" alt="Claude Context GitHub repository trending and passing 10,000 stars" class="doc-image" id="claude-context-github-repository-trending-and-passing-10,000-stars" />
-   </span> <span class="img-wrapper"> <span>Claude Context GitHub リポジトリのトレンドと 10,000 スター通過</span> </span></p>
-<h2 id="Why-grep-style-code-retrieval-burns-tokens-in-AI-coding-agents" class="common-anchor-header">なぜgrepスタイルのコード検索はAIコーディングエージェントのトークンを燃やすのか<button data-href="#Why-grep-style-code-retrieval-burns-tokens-in-AI-coding-agents" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_6_68b1f70723.png" alt="Claude Context GitHub repository trending and passing 10,000 stars" class="doc-image" id="claude-context-github-repository-trending-and-passing-10,000-stars" />
+    <span>Claude Context GitHub repository trending and passing 10,000 stars</span>
+  </span>
+</p>
+<h2 id="Why-grep-style-code-retrieval-burns-tokens-in-AI-coding-agents" class="common-anchor-header">Why grep-style code retrieval burns tokens in AI coding agents<button data-href="#Why-grep-style-code-retrieval-burns-tokens-in-AI-coding-agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -37,36 +42,40 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AIコーディングエージェントは、タスクの周りのコードベース（関数の呼び出しパス、命名規則、関連するテスト、データモデル、過去の実装パターン）を理解している場合にのみ、有用なコードを書くことができる。大きなコンテキスト・ウィンドウは助けになるが、検索の問題を解決するわけではない。間違ったファイルがコンテキストに入ると、モデルはトークンを無駄にし、無関係なコードから推論する可能性があります。</p>
-<p>コード検索は通常、2つのパターンに大別される：</p>
+    </button></h2><p>An AI coding agent can only write useful code if it understands the codebase around the task: function call paths, naming conventions, related tests, data models, and historical implementation patterns. A large context window helps, but it does not solve the retrieval problem. If the wrong files enter the context, the model still wastes tokens and may reason from irrelevant code.</p>
+<p>Code retrieval usually falls into two broad patterns:</p>
 <table>
 <thead>
-<tr><th>検索パターン</th><th>どのように機能するか</th><th>どこで破綻するか</th></tr>
+<tr><th>Retrieval pattern</th><th>How it works</th><th>Where it breaks down</th></tr>
 </thead>
 <tbody>
-<tr><td>Grepスタイルの検索</td><td>リテラル文字列を検索し、マッチするファイルや行範囲を読み込む。</td><td>意味的に関連するコードを見逃し、ノイジーなマッチを返し、しばしば検索と読み込みのサイクルを繰り返す必要がある。</td></tr>
-<tr><td>RAGスタイルの検索</td><td>コードを事前に索引付けし、関連するチャンクをセマンティック検索、レキシカル検索、またはハイブリッド検索で取り出す。</td><td>チャンキング、埋め込み、インデックス作成、更新ロジックが必要で、ほとんどのコーディング・ツールは直接所有したくない。</td></tr>
+<tr><td>Grep-style retrieval</td><td>Search literal strings, then read matching files or line ranges.</td><td>Misses semantically related code, returns noisy matches, and often requires repeated search/read cycles.</td></tr>
+<tr><td>RAG-style retrieval</td><td>Index code in advance, then retrieve relevant chunks with semantic, lexical, or hybrid search.</td><td>Requires chunking, embeddings, indexing, and update logic that most coding tools do not want to own directly.</td></tr>
 </tbody>
 </table>
-<p>これは、開発者が<a href="https://zilliz.com/blog/metadata-filtering-hybrid-search-or-agent-in-rag-applications">RAGアプリケーションの</a>設計で目にするのと同じ区別である。リテラルマッチは便利だが、意味が重要なときにそれで十分なことはほとんどない。たとえ正確な単語が一致しなくても、<code translate="no">compute_final_cost()</code> という名前の関数が<code translate="no">calculate_total_price()</code> に関するクエリに関連するかもしれない。そこで<a href="https://zilliz.com/blog/semantic-search-vs-lexical-search-vs-full-text-search">セマンティック検索が</a>役に立つ。</p>
-<p>あるデバッグ作業では、クロード・コードが正しい場所を見つける前に、何度もファイルを検索して読み込んだ。数分後、消費したコードのごく一部しか関連性がなかった。</p>
+<p>This is the same distinction developers see in <a href="https://zilliz.com/blog/metadata-filtering-hybrid-search-or-agent-in-rag-applications">RAG application</a> design: literal matching is useful, but it is rarely enough when meaning matters. A function named <code translate="no">compute_final_cost()</code> may be relevant to a query about <code translate="no">calculate_total_price()</code> even if the exact words do not match. That is where <a href="https://zilliz.com/blog/semantic-search-vs-lexical-search-vs-full-text-search">semantic search</a> helps.</p>
+<p>In one debugging run, Claude Code repeatedly searched and read files before locating the right area. After several minutes, only a small fraction of the code it had consumed was relevant.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_4_69b8455aeb.png" alt="Claude Code grep-style search spending time on irrelevant file reads" class="doc-image" id="claude-code-grep-style-search-spending-time-on-irrelevant-file-reads" />
-   </span> <span class="img-wrapper"> <span>クロード・コードのグレップ・スタイルの検索は、無関係なファイルの読み込みに時間を費やしている</span> </span>。</p>
-<p>エージェントは賢くても、コンテキスト検索のループはまだ高価で不正確な感じがします。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_4_69b8455aeb.png" alt="Claude Code grep-style search spending time on irrelevant file reads" class="doc-image" id="claude-code-grep-style-search-spending-time-on-irrelevant-file-reads" />
+    <span>Claude Code grep-style search spending time on irrelevant file reads</span>
+  </span>
+</p>
+<p>That pattern is common enough that developers complain about it publicly: the agent can be smart, but the context retrieval loop still feels expensive and imprecise.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_8_b857ab4777.png" alt="Developer comment about Claude Code context and token usage" class="doc-image" id="developer-comment-about-claude-code-context-and-token-usage" />
-   </span> <span class="img-wrapper"> <span>クロードコードのコンテキストとトークンの使い方に関する開発者のコメント</span> </span></p>
-<p>Grepスタイルの検索は、3つの予測可能な方法で失敗する：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_8_b857ab4777.png" alt="Developer comment about Claude Code context and token usage" class="doc-image" id="developer-comment-about-claude-code-context-and-token-usage" />
+    <span>Developer comment about Claude Code context and token usage</span>
+  </span>
+</p>
+<p>Grep-style retrieval fails in three predictable ways:</p>
 <ul>
-<li><strong>情報の過負荷：</strong>大規模なリポジトリでは多くのリテラルマッチが生成されるが、そのほとんどは現在のタスクには役に立たない。</li>
-<li><strong>意味の盲点：</strong>grepは文字列にマッチするが、意図や動作、同等の実装パターンにはマッチしない。</li>
-<li><strong>コンテキストの損失：</strong>行レベルのマッチには、周囲のクラス、依存関係、テスト、コールグラフが自動的に含まれない。</li>
+<li><strong>Information overload:</strong> large repositories produce many literal matches, and most are not useful for the current task.</li>
+<li><strong>Semantic blindness:</strong> grep matches strings, not intent, behavior, or equivalent implementation patterns.</li>
+<li><strong>Context loss:</strong> line-level matches do not automatically include the surrounding class, dependencies, tests, or call graph.</li>
 </ul>
-<p>より良いコード検索レイヤーは、キーワードの精度と意味的理解を組み合わせ、モデルがコードについて推論するのに十分な完全なチャンクを返す必要がある。</p>
-<h2 id="What-is-Claude-Context" class="common-anchor-header">クロードコンテキストとは？<button data-href="#What-is-Claude-Context" class="anchor-icon" translate="no">
+<p>A better code retrieval layer needs to combine keyword precision with semantic understanding, then return complete enough chunks for the model to reason about the code.</p>
+<h2 id="What-is-Claude-Context" class="common-anchor-header">What is Claude Context?<button data-href="#What-is-Claude-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,21 +90,21 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Claude Contextは、コード検索のためのオープンソースの<a href="https://zilliz.com/glossary/model-context-protocol-(mcp)">Model Context Protocol</a>サーバーである。AIコーディングツールをMilvusに裏付けされたコードインデックスに接続することで、エージェントはリテラルテキスト検索だけに頼るのではなく、意味によってリポジトリを検索することができる。</p>
-<p>目標は単純で、エージェントがコンテキストを要求したときに、コードチャンクの最小の有用なセットを返すことである。Claude Contextは、コードベースを解析し、埋め込みを生成し、<a href="https://zilliz.com/what-is-milvus">Milvusベクトル</a>データベースにチャンクを格納し、MCP互換ツールで検索を公開することでこれを実現します。</p>
+    </button></h2><p>Claude Context is an open-source <a href="https://zilliz.com/glossary/model-context-protocol-(mcp)">Model Context Protocol</a> server for code retrieval. It connects AI coding tools to a Milvus-backed code index, so an agent can search a repository by meaning instead of relying only on literal text search.</p>
+<p>The goal is simple: when the agent asks for context, return the smallest useful set of code chunks. Claude Context does this by parsing the codebase, generating embeddings, storing chunks in the <a href="https://zilliz.com/what-is-milvus">Milvus vector database</a>, and exposing retrieval through MCP-compatible tools.</p>
 <table>
 <thead>
-<tr><th>Grep問題</th><th>クロードコンテキストのアプローチ</th></tr>
+<tr><th>Grep problem</th><th>Claude Context approach</th></tr>
 </thead>
 <tbody>
-<tr><td>無関係なマッチが多すぎる</td><td>ベクトルの類似性とキーワードの関連性でコードチャンクをランク付けする。</td></tr>
-<tr><td>意味理解なし</td><td><a href="https://zilliz.com/blog/voyage-ai-embeddings-and-rerankers-for-search-and-rag">エンベッディングモデルを</a>使用し、名前が異なっていても関連する実装がマッチするようにする。</td></tr>
-<tr><td>周囲のコンテキストがない</td><td>モデルが動作を推論するのに十分な構造を持つ完全なコードチャンクを返します。</td></tr>
-<tr><td>ファイル読み込みの繰り返し</td><td>まずインデックスを検索し、次に重要なファイルだけを読み込んだり編集したりする。</td></tr>
+<tr><td>Too many irrelevant matches</td><td>Rank code chunks by vector similarity and keyword relevance.</td></tr>
+<tr><td>No semantic understanding</td><td>Use an <a href="https://zilliz.com/blog/voyage-ai-embeddings-and-rerankers-for-search-and-rag">embedding model</a> so related implementations can match even when names differ.</td></tr>
+<tr><td>Missing surrounding context</td><td>Return complete code chunks with enough structure for the model to reason about behavior.</td></tr>
+<tr><td>Repeated file reads</td><td>Search the index first, then read or edit only the files that matter.</td></tr>
 </tbody>
 </table>
-<p>クロードコンテキストはMCPを通して公開されるため、クロードコード、Gemini CLI、カーソルスタイルのMCPホスト、その他のMCP互換環境で動作することができます。同じコア検索レイヤーで複数のエージェントインターフェースをサポートすることができます。</p>
-<h2 id="How-Claude-Context-works-under-the-hood" class="common-anchor-header">クロードコンテキストの仕組み<button data-href="#How-Claude-Context-works-under-the-hood" class="anchor-icon" translate="no">
+<p>Because Claude Context is exposed through MCP, it can work with Claude Code, Gemini CLI, Cursor-style MCP hosts, and other MCP-compatible environments. The same core retrieval layer can support multiple agent interfaces.</p>
+<h2 id="How-Claude-Context-works-under-the-hood" class="common-anchor-header">How Claude Context works under the hood<button data-href="#How-Claude-Context-works-under-the-hood" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -110,29 +119,31 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Claude Context には、再利用可能なコアモジュールと統合モジュールの 2 つのメインレイヤーがあります。コアは構文解析、チャンキング、インデックス作成、検索、インクリメンタルな同期を処理します。上位レイヤーは、MCPやエディタとの統合を通じてこれらの機能を公開します。</p>
+    </button></h2><p>Claude Context has two main layers: a reusable core module and integration modules. The core handles parsing, chunking, indexing, search, and incremental sync. The upper layer exposes those capabilities through MCP and editor integrations.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_5_cf9f17013f.png" alt="Claude Context architecture showing MCP integrations, core module, embedding provider, and vector database" class="doc-image" id="claude-context-architecture-showing-mcp-integrations,-core-module,-embedding-provider,-and-vector-database" />
-   </span> <span class="img-wrapper"> <span>MCPインテグレーション、コアモジュール、エンベッディングプロバイダ、ベクターデータベースを示すClaude Contextアーキテクチャ</span> </span></p>
-<h3 id="How-does-MCP-connect-Claude-Context-to-coding-agents" class="common-anchor-header">MCPはClaude Contextとコーディングエージェントをどのように接続するのですか？</h3><p>MCPはLLMホストと外部ツールの間のインターフェースを提供します。Claude ContextをMCPサーバーとして公開することで、検索レイヤーはどのIDEやコーディングアシスタントからも独立しています。エージェントは検索ツールを呼び出し、Claude Contextはコードインデックスを処理し、関連するチャンクを返します。</p>
-<p>より広範なパターンを理解したい場合は、<a href="https://milvus.io/docs/milvus_and_mcp.md">MCP + Milvusガイドで</a>、MCPがAIツールをベクトルデータベース操作に接続する方法を紹介しています。</p>
-<h3 id="Why-use-Milvus-for-code-retrieval" class="common-anchor-header">なぜMilvusをコード検索に使うのか？</h3><p>コード検索には、高速なベクトル検索、メタデータのフィルタリング、大規模なリポジトリを扱うための十分なスケールが必要です。Milvusは高性能なベクトル検索用に設計されており、高密度ベクトル、疎ベクトル、リランキングワークフローをサポートすることができます。検索を多用するエージェントシステムを構築するチームのために、<a href="https://milvus.io/docs/multi-vector-search.md">マルチベクトルハイブリッド検索の</a>ドキュメントと<a href="https://milvus.io/api-reference/pymilvus/v2.6.x/MilvusClient/Vector/hybrid_search.md">PyMilvus hybrid_search APIは</a>、プロダクションシステムで使用されるのと同じ基本的な検索パターンを示しています。</p>
-<p>Claude Context は Milvus のバックエンドとして Zilliz Cloud を使うことができます。同じアーキテクチャは、セルフマネージドMilvusデプロイメントにも適応できます。</p>
-<h3 id="Which-embedding-providers-does-Claude-Context-support" class="common-anchor-header">Claude Context はどのエンベッディングプロバイダに対応していますか？</h3><p>Claude Context は複数の埋め込みオプションをサポートしています：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_5_cf9f17013f.png" alt="Claude Context architecture showing MCP integrations, core module, embedding provider, and vector database" class="doc-image" id="claude-context-architecture-showing-mcp-integrations,-core-module,-embedding-provider,-and-vector-database" />
+    <span>Claude Context architecture showing MCP integrations, core module, embedding provider, and vector database</span>
+  </span>
+</p>
+<h3 id="How-does-MCP-connect-Claude-Context-to-coding-agents" class="common-anchor-header">How does MCP connect Claude Context to coding agents?</h3><p>MCP provides the interface between the LLM host and external tools. By exposing Claude Context as an MCP server, the retrieval layer stays independent from any one IDE or coding assistant. The agent calls a search tool; Claude Context handles the code index and returns relevant chunks.</p>
+<p>If you want to understand the broader pattern, the <a href="https://milvus.io/docs/milvus_and_mcp.md">MCP + Milvus guide</a> shows how MCP can connect AI tools to vector database operations.</p>
+<h3 id="Why-use-Milvus-for-code-retrieval" class="common-anchor-header">Why use Milvus for code retrieval?</h3><p>Code retrieval needs fast vector search, metadata filtering, and enough scale to handle large repositories. Milvus is designed for high-performance vector search and can support dense vectors, sparse vectors, and reranking workflows. For teams building retrieval-heavy agent systems, the <a href="https://milvus.io/docs/multi-vector-search.md">multi-vector hybrid search</a> docs and <a href="https://milvus.io/api-reference/pymilvus/v2.6.x/MilvusClient/Vector/hybrid_search.md">PyMilvus hybrid_search API</a> show the same underlying retrieval pattern used in production systems.</p>
+<p>Claude Context can use Zilliz Cloud as the managed Milvus backend, which avoids running and scaling the vector database yourself. The same architecture can also be adapted to self-managed Milvus deployments.</p>
+<h3 id="Which-embedding-providers-does-Claude-Context-support" class="common-anchor-header">Which embedding providers does Claude Context support?</h3><p>Claude Context supports multiple embedding options:</p>
 <table>
 <thead>
-<tr><th>プロバイダ</th><th>最適</th></tr>
+<tr><th>Provider</th><th>Best fit</th></tr>
 </thead>
 <tbody>
-<tr><td>OpenAI エンベッディング</td><td>幅広いエコシステムをサポートする汎用のエンベッディングです。</td></tr>
-<tr><td>Voyage AIエンベッディング</td><td>コード指向の検索、特に検索品質が重要な場合に。</td></tr>
-<tr><td>Ollama</td><td>プライバシーに敏感な環境のためのローカル埋め込みワークフロー。</td></tr>
+<tr><td>OpenAI embeddings</td><td>General-purpose hosted embeddings with broad ecosystem support.</td></tr>
+<tr><td>Voyage AI embeddings</td><td>Code-oriented retrieval, especially when search quality matters.</td></tr>
+<tr><td>Ollama</td><td>Local embedding workflows for privacy-sensitive environments.</td></tr>
 </tbody>
 </table>
-<p>関連するMilvusワークフローについては、<a href="https://milvus.io/docs/embeddings.md">Milvusエンベッディングの概要</a>、<a href="https://milvus.io/docs/embed-with-openai.md">OpenAIエンベッディングの統合</a>、<a href="https://milvus.io/docs/embed-with-voyage.md">Voyageエンベッディングの統合</a>、<a href="https://zilliz.com/blog/simplifying-legal-research-with-rag-milvus-ollama">Milvusを使ったOllamaの</a>実行例をご覧ください。</p>
-<h3 id="Why-is-the-core-library-written-in-TypeScript" class="common-anchor-header">なぜコアライブラリはTypeScriptで書かれているのですか？</h3><p>Claude ContextがTypeScriptで書かれているのは、コーディングエージェントの統合、エディタのプラグイン、MCPホストの多くがすでにTypeScriptを多用しているからです。検索コアをTypeScriptで記述することで、アプリケーションレイヤーのツールとの統合が容易になると同時に、クリーンなAPIを公開することができる。</p>
-<p>コアモジュールはベクターデータベースとエンベッディングプロバイダを抽象化し、コンポーザブルな<code translate="no">Context</code> ：</p>
+<p>For related Milvus workflows, see the <a href="https://milvus.io/docs/embeddings.md">Milvus embedding overview</a>, <a href="https://milvus.io/docs/embed-with-openai.md">OpenAI embedding integration</a>, <a href="https://milvus.io/docs/embed-with-voyage.md">Voyage embedding integration</a>, and examples of running <a href="https://zilliz.com/blog/simplifying-legal-research-with-rag-milvus-ollama">Ollama with Milvus</a>.</p>
+<h3 id="Why-is-the-core-library-written-in-TypeScript" class="common-anchor-header">Why is the core library written in TypeScript?</h3><p>Claude Context is written in TypeScript because many coding-agent integrations, editor plugins, and MCP hosts are already TypeScript-heavy. Keeping the retrieval core in TypeScript makes it easier to integrate with application-layer tooling while still exposing a clean API.</p>
+<p>The core module abstracts the vector database and embedding provider into a composable <code translate="no">Context</code> object:</p>
 <pre><code translate="no" class="language-javascript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Context</span>, <span class="hljs-title class_">MilvusVectorDatabase</span>, <span class="hljs-title class_">OpenAIEmbedding</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@zilliz/claude-context-core&#x27;</span>;
 <span class="hljs-comment">// Initialize embedding provider</span>
 <span class="hljs-keyword">const</span> embedding = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OpenAIEmbedding</span>(...);
@@ -145,7 +156,7 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
 <span class="hljs-comment">// Perform semantic search</span>
 <span class="hljs-keyword">const</span> results = <span class="hljs-keyword">await</span> context.<span class="hljs-title function_">semanticSearch</span>(<span class="hljs-string">&#x27;./your-project&#x27;</span>, <span class="hljs-string">&#x27;vector database operations&#x27;</span>);
 <button class="copy-code-btn"></button></code></pre>
-<h2 id="How-Claude-Context-chunks-code-and-keeps-indexes-fresh" class="common-anchor-header">クロードコンテキストがコードをチャンクし、インデックスを新鮮に保つ方法<button data-href="#How-Claude-Context-chunks-code-and-keeps-indexes-fresh" class="anchor-icon" translate="no">
+<h2 id="How-Claude-Context-chunks-code-and-keeps-indexes-fresh" class="common-anchor-header">How Claude Context chunks code and keeps indexes fresh<button data-href="#How-Claude-Context-chunks-code-and-keeps-indexes-fresh" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -160,50 +171,54 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>チャンキングとインクリメンタルな更新は、コード検索システムが実際に使えるかどうかを決定する。チャンクが小さすぎると、モデルはコンテキストを失う。チャンクが大きすぎると、検索システムはノイズを返す。インデックス作成が遅すぎると、開発者はインデックスを使うのをやめてしまう。</p>
-<p>Claude Contextは、ASTベースのチャンキング、フォールバックテキストスプリッター、Merkleツリーベースの変更検出でこれを処理する。</p>
-<h3 id="How-does-AST-based-code-chunking-preserve-context" class="common-anchor-header">ASTベースのコードチャンキングはどのようにコンテキストを保持するのか？</h3><p>ASTチャンキングが主な戦略です。行数や文字数でファイルを分割する代わりに、Claude Context はコード構造を解析し、関数、クラス、メソッドなどの意味的な単位でチャンクします。</p>
-<p>これにより、各チャンクには3つの有用なプロパティが与えられる：</p>
+    </button></h2><p>Chunking and incremental updates determine whether a code retrieval system is usable in practice. If chunks are too small, the model loses context. If chunks are too large, the retrieval system returns noise. If indexing is too slow, developers stop using it.</p>
+<p>Claude Context handles this with AST-based chunking, a fallback text splitter, and Merkle tree-based change detection.</p>
+<h3 id="How-does-AST-based-code-chunking-preserve-context" class="common-anchor-header">How does AST-based code chunking preserve context?</h3><p>AST chunking is the primary strategy. Instead of splitting files by line count or character count, Claude Context parses code structure and chunks around semantic units such as functions, classes, and methods.</p>
+<p>That gives each chunk three useful properties:</p>
 <table>
 <thead>
-<tr><th>プロパティ</th><th>重要な理由</th></tr>
+<tr><th>Property</th><th>Why it matters</th></tr>
 </thead>
 <tbody>
-<tr><td>構文の完全性</td><td>関数やクラスが途中で分割されない。</td></tr>
-<tr><td>論理的一貫性</td><td>関連するロジックがまとまっているため、検索されたチャンクはモデルにとって使いやすくなります。</td></tr>
-<tr><td>多言語サポート</td><td>異なるツリーシッターパーサーで、JavaScript、Python、Java、Go、その他の言語を処理できます。</td></tr>
+<tr><td>Syntactic completeness</td><td>Functions and classes are not split in the middle.</td></tr>
+<tr><td>Logical coherence</td><td>Related logic stays together, so retrieved chunks are easier for the model to use.</td></tr>
+<tr><td>Multi-language support</td><td>Different tree-sitter parsers can handle JavaScript, Python, Java, Go, and other languages.</td></tr>
 </tbody>
 </table>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_9_153144cc04.png" alt="AST-based code chunking preserving complete syntactic units and chunking results" class="doc-image" id="ast-based-code-chunking-preserving-complete-syntactic-units-and-chunking-results" />
-   </span> <span class="img-wrapper"> <span>完全な構文単位とチャンキング結果を保持するASTベースのコードチャンキング</span> </span></p>
-<h3 id="What-happens-when-AST-parsing-fails" class="common-anchor-header">AST解析に失敗した場合はどうなりますか？</h3><p>AST 解析が処理できない言語やファイルに対しては、Claude Context は LangChain の<code translate="no">RecursiveCharacterTextSplitter</code> にフォールバックします。これは AST チャンキングよりも精度は落ちますが、サポートされていない入力でインデックス作成が失敗するのを防ぎます。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_9_153144cc04.png" alt="AST-based code chunking preserving complete syntactic units and chunking results" class="doc-image" id="ast-based-code-chunking-preserving-complete-syntactic-units-and-chunking-results" />
+    <span>AST-based code chunking preserving complete syntactic units and chunking results</span>
+  </span>
+</p>
+<h3 id="What-happens-when-AST-parsing-fails" class="common-anchor-header">What happens when AST parsing fails?</h3><p>For languages or files that AST parsing cannot handle, Claude Context falls back to LangChain’s <code translate="no">RecursiveCharacterTextSplitter</code>. It is less precise than AST chunking, but it prevents indexing from failing on unsupported input.</p>
 <pre><code translate="no" class="language-php"><span class="hljs-comment">// Use recursive character splitting to preserve code structure</span>
 <span class="hljs-keyword">const</span> splitter = <span class="hljs-title class_">RecursiveCharacterTextSplitter</span>.<span class="hljs-title function_">fromLanguage</span>(language, {
     <span class="hljs-attr">chunkSize</span>: <span class="hljs-number">1000</span>,
     <span class="hljs-attr">chunkOverlap</span>: <span class="hljs-number">200</span>,
 });
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="How-does-Claude-Context-avoid-re-indexing-the-whole-repository" class="common-anchor-header">Claude Contextはどのようにしてリポジトリ全体のインデックス付けを回避するのですか？</h3><p>変更のたびにリポジトリ全体のインデックスを再作成するのはコストがかかりすぎます。Claude ContextはMerkleツリーを使って、何が変更されたかを正確に検出します。</p>
-<p>Merkle ツリーは、各ファイルにハッシュを割り当て、子ファイルから各ディレクトリのハッシュを導き出し、リポジトリ全体をルートハッシュにロールバックします。ルートハッシュに変更がなければ、Claude Contextはインデックス作成をスキップできます。ルートが変更された場合は、ツリーをたどって変更されたファイルを見つけ、それらのファイルのみを再度埋め込みます。</p>
+<h3 id="How-does-Claude-Context-avoid-re-indexing-the-whole-repository" class="common-anchor-header">How does Claude Context avoid re-indexing the whole repository?</h3><p>Re-indexing an entire repository after every change is too expensive. Claude Context uses a Merkle tree to detect exactly what changed.</p>
+<p>A Merkle tree assigns each file a hash, derives each directory hash from its children, and rolls the whole repository into a root hash. If the root hash is unchanged, Claude Context can skip indexing. If the root changes, it walks down the tree to find the changed files and re-embeds only those files.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_10_73daa3ca83.png" alt="Merkle tree change detection comparing unchanged and changed file hashes" class="doc-image" id="merkle-tree-change-detection-comparing-unchanged-and-changed-file-hashes" />
-   </span> <span class="img-wrapper"> <span>変更されていないファイルハッシュと変更されたファイルハッシュを比較する Merkle ツリーの変更検出</span> </span></p>
-<p>同期は3つのステージで実行されます：</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_10_73daa3ca83.png" alt="Merkle tree change detection comparing unchanged and changed file hashes" class="doc-image" id="merkle-tree-change-detection-comparing-unchanged-and-changed-file-hashes" />
+    <span>Merkle tree change detection comparing unchanged and changed file hashes</span>
+  </span>
+</p>
+<p>Sync runs in three stages:</p>
 <table>
 <thead>
-<tr><th>ステージ</th><th>何が起こるか</th><th>効率的な理由</th></tr>
+<tr><th>Stage</th><th>What happens</th><th>Why it is efficient</th></tr>
 </thead>
 <tbody>
-<tr><td>クイックチェック</td><td>現在のMerkleルートと最後のスナップショットを比較する。</td><td>何も変更がなければ、チェックはすぐに終わります。</td></tr>
-<tr><td>正確な差分</td><td>ツリーを歩いて、追加、削除、および変更されたファイルを特定します。</td><td>変更されたパスだけが先に進みます。</td></tr>
-<tr><td>インクリメンタル更新</td><td>変更されたファイルの埋め込みを再計算し、milvusを更新します。</td><td>完全な再構築を行わなくても、ベクターインデックスは新しい状態を維持します。</td></tr>
+<tr><td>Quick check</td><td>Compare the current Merkle root with the last snapshot.</td><td>If nothing changed, the check finishes quickly.</td></tr>
+<tr><td>Precise diff</td><td>Walk the tree to identify added, deleted, and modified files.</td><td>Only changed paths move forward.</td></tr>
+<tr><td>Incremental update</td><td>Recompute embeddings for changed files and update Milvus.</td><td>The vector index stays fresh without a full rebuild.</td></tr>
 </tbody>
 </table>
-<p>ローカル同期の状態は<code translate="no">~/.context/merkle/</code> に保存されるため、Claude Context は再起動後にファイルハッシュテーブルとシリアライズされた Merkle ツリーを復元できる。</p>
-<h2 id="What-happens-when-Claude-Code-uses-Claude-Context" class="common-anchor-header">Claude CodeがClaude Contextを使うとどうなるのか？<button data-href="#What-happens-when-Claude-Code-uses-Claude-Context" class="anchor-icon" translate="no">
+<p>Local sync state is stored under <code translate="no">~/.context/merkle/</code>, so Claude Context can restore the file hash table and serialized Merkle tree after a restart.</p>
+<h2 id="What-happens-when-Claude-Code-uses-Claude-Context" class="common-anchor-header">What happens when Claude Code uses Claude Context?<button data-href="#What-happens-when-Claude-Code-uses-Claude-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -218,26 +233,32 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>セットアップは、Claude Codeを起動する前の1つのコマンドです：</p>
+    </button></h2><p>Setup is a single command before launching Claude Code:</p>
 <pre><code translate="no" class="language-nginx">claude mcp add claude-context -e OPENAI_API_KEY=your-openai-api-key -e MILVUS_TOKEN=your-zilliz-cloud-api-key -- npx <span class="hljs-meta">@zilliz</span>/claude-context-mcp<span class="hljs-meta">@latest</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>リポジトリのインデックスを作成した後、Claude Codeはコードベースのコンテキストが必要なときにClaude Contextを呼び出すことができます。以前は grep やファイル読み込みに時間を費やしていた同じバグ発見シナリオで、Claude Context は正確なファイルと行番号を完全な説明付きで発見しました。</p>
+<p>After indexing the repository, Claude Code can call Claude Context when it needs codebase context. In the same bug-finding scenario that previously burned time on grep and file reads, Claude Context found the exact file and line number with a full explanation.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/article_12_9ad25bd75b.gif" alt="Claude Context demo showing Claude Code finding the relevant bug location" class="doc-image" id="claude-context-demo-showing-claude-code-finding-the-relevant-bug-location" />
-   </span> <span class="img-wrapper"> <span>クロード・コードが関連するバグの場所を見つけるクロード・コンテキストのデモ</span> </span></p>
-<p>このツールはバグ探しだけにとどまりません。リファクタリング、重複コード検出、問題解決、テスト生成、エージェントが正確なリポジトリコンテキストを必要とするあらゆるタスクにも役立ちます。</p>
-<p>同等のリコールにおいて、Claude Contextはトークンの消費を39.4%削減し、ツールの呼び出しを36.1%削減しました。ツールの呼び出しと無関係なファイルの読み込みがコーディングエージェントのワークフローのコストを支配することが多いため、これは重要です。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/article_12_9ad25bd75b.gif" alt="Claude Context demo showing Claude Code finding the relevant bug location" class="doc-image" id="claude-context-demo-showing-claude-code-finding-the-relevant-bug-location" />
+    <span>Claude Context demo showing Claude Code finding the relevant bug location</span>
+  </span>
+</p>
+<p>The tool is not limited to bug hunting. It also helps with refactoring, duplicate code detection, issue resolution, test generation, and any task where the agent needs accurate repository context.</p>
+<p>At equivalent recall, Claude Context reduced token consumption by 39.4% and reduced tool calls by 36.1% in our benchmark. That matters because tool calls and irrelevant file reads often dominate the cost of coding-agent workflows.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_3_e20064021b.png" alt="Benchmark chart showing Claude Context reducing token usage and tool calls versus baseline" class="doc-image" id="benchmark-chart-showing-claude-context-reducing-token-usage-and-tool-calls-versus-baseline" />
-   </span> <span class="img-wrapper"> <span>Claude Contextがトークン使用量とツールコールをベースラインに対して削減したことを示すベンチマークチャート</span> </span></p>
-<p>このプロジェクトは現在10,000以上のGitHubスターを獲得しており、リポジトリにはベンチマークの詳細とパッケージのリンクが含まれている。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_3_e20064021b.png" alt="Benchmark chart showing Claude Context reducing token usage and tool calls versus baseline" class="doc-image" id="benchmark-chart-showing-claude-context-reducing-token-usage-and-tool-calls-versus-baseline" />
+    <span>Benchmark chart showing Claude Context reducing token usage and tool calls versus baseline</span>
+  </span>
+</p>
+<p>The project now has more than 10,000 GitHub stars, and the repository includes the full benchmark details and package links.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_7_210af604bd.png" alt="Claude Context GitHub star history showing rapid growth" class="doc-image" id="claude-context-github-star-history-showing-rapid-growth" />
-   </span> <span class="img-wrapper"> <span>Claude ContextのGitHubスターが急速に増えている。</span> </span></p>
-<h2 id="How-does-Claude-Context-compare-with-grep-on-real-bugs" class="common-anchor-header">Claude Context は実際のバグで grep と比べてどうなのか？<button data-href="#How-does-Claude-Context-compare-with-grep-on-real-bugs" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_7_210af604bd.png" alt="Claude Context GitHub star history showing rapid growth" class="doc-image" id="claude-context-github-star-history-showing-rapid-growth" />
+    <span>Claude Context GitHub star history showing rapid growth</span>
+  </span>
+</p>
+<h2 id="How-does-Claude-Context-compare-with-grep-on-real-bugs" class="common-anchor-header">How does Claude Context compare with grep on real bugs?<button data-href="#How-does-Claude-Context-compare-with-grep-on-real-bugs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -252,24 +273,24 @@ origin: 'https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>このベンチマークでは、実際のデバッグ作業において、純粋なテキスト検索とmilvusに支えられたコード検索を比較しています。違いはトークンが少ないだけではありません。Claude Contextはエージェントの検索パスを変更します：変更する必要がある実装の近くから検索を開始します。</p>
+    </button></h2><p>The benchmark compares pure text search with Milvus-backed code retrieval on real debugging tasks. The difference is not just fewer tokens. Claude Context changes the agent’s search path: it starts closer to the implementation that needs to change.</p>
 <table>
 <thead>
-<tr><th>ケース</th><th>ベースラインの動作</th><th>クロードコンテキストの動作</th><th>トークンの削減</th></tr>
+<tr><th>Case</th><th>Baseline behavior</th><th>Claude Context behavior</th><th>Token reduction</th></tr>
 </thead>
 <tbody>
-<tr><td>Django<code translate="no">YearLookup</code> バグ</td><td>間違った関連シンボルを検索し、登録ロジックを編集。</td><td><code translate="no">YearLookup</code> 最適化ロジックを直接発見。</td><td>トークンが 93% 減少</td></tr>
-<tr><td>Xarray<code translate="no">swap_dims()</code> のバグ</td><td><code translate="no">swap_dims</code> に関する言及の周辺に散在するファイルを読んだ。</td><td>実装と関連テストをより直接的に発見。</td><td>トークンが 62% 減少</td></tr>
+<tr><td>Django <code translate="no">YearLookup</code> bug</td><td>Searched for the wrong related symbol and edited registration logic.</td><td>Found the <code translate="no">YearLookup</code> optimization logic directly.</td><td>93% fewer tokens</td></tr>
+<tr><td>Xarray <code translate="no">swap_dims()</code> bug</td><td>Read scattered files around mentions of <code translate="no">swap_dims</code>.</td><td>Found the implementation and related tests more directly.</td><td>62% fewer tokens</td></tr>
 </tbody>
 </table>
-<h3 id="Case-1-Django-YearLookup-bug" class="common-anchor-header">ケース 1: Django YearLookup のバグ</h3><p><strong>問題の説明：</strong>Django フレームワークでは、<code translate="no">YearLookup</code> クエリの最適化が、<code translate="no">__iso_year</code> フィルタリングを壊しています。<code translate="no">__iso_year</code> フィルタを使うと、<code translate="no">YearLookup</code> クラスは標準の BETWEEN 最適化を誤って適用します。</p>
+<h3 id="Case-1-Django-YearLookup-bug" class="common-anchor-header">Case 1: Django YearLookup bug</h3><p><strong>Problem description:</strong> In the Django framework, the <code translate="no">YearLookup</code> query optimization breaks <code translate="no">__iso_year</code> filtering. When using the <code translate="no">__iso_year</code> filter, the <code translate="no">YearLookup</code> class incorrectly applies the standard BETWEEN optimization — valid for calendar years, but not for ISO week-numbering years.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-comment"># This should use EXTRACT(&#x27;isoyear&#x27; FROM ...) but incorrectly uses BETWEEN</span>
 DTModel.objects.<span class="hljs-built_in">filter</span>(start_date__iso_year=<span class="hljs-number">2020</span>)
 
 <span class="hljs-comment"># Generated: WHERE &quot;start_date&quot; BETWEEN 2020-01-01 AND 2020-12-31</span>
 <span class="hljs-comment"># Should be: WHERE EXTRACT(&#x27;isoyear&#x27; FROM &quot;start_date&quot;) = 2020</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>ベースライン (grep)：</strong></p>
+<p><strong>Baseline (grep):</strong></p>
 <pre><code translate="no" class="language-swift">🔧 <span class="hljs-title function_">directory_tree</span>()
 ⚙️ <span class="hljs-title class_">Result</span>: <span class="hljs-title class_">Retrieved</span> <span class="hljs-number">3000</span>+ lines <span class="hljs-keyword">of</span> directory <span class="hljs-title function_">structure</span> (~50k tokens)
    <span class="hljs-title class_">Problem</span>: <span class="hljs-title class_">Massive</span> information overload, no direct relevance
@@ -282,8 +303,8 @@ DTModel.objects.<span class="hljs-built_in">filter</span>(start_date__iso_year=<
 🔧 <span class="hljs-title function_">edit_file</span>(<span class="hljs-string">&#x27;django/db/models/functions/datetime.py&#x27;</span>)
 ⚙️ <span class="hljs-title class_">Modified</span> multiple registration statements, but <span class="hljs-variable language_">this</span> is the wrong direction <span class="hljs-keyword">for</span> a fix
 <button class="copy-code-btn"></button></code></pre>
-<p>テキスト検索で、<code translate="no">YearLookup</code> の最適化ロジックではなく、<code translate="no">ExtractIsoYear</code> の登録に焦点が当てられていました。</p>
-<p><strong>クロード・コンテキスト：</strong></p>
+<p>The text search focused on <code translate="no">ExtractIsoYear</code> registration instead of the optimization logic in <code translate="no">YearLookup</code>.</p>
+<p><strong>Claude Context:</strong></p>
 <pre><code translate="no" class="language-bash">🔧 search_code(<span class="hljs-string">&#x27;YearLookup&#x27;</span>)
 ⚙️ Found <span class="hljs-number">10</span> results <span class="hljs-keyword">for</span> query: <span class="hljs-string">&quot;YearLookup&quot;</span> across the codebase
    <span class="hljs-number">1.</span> Code <span class="hljs-title function_">snippet</span> <span class="hljs-params">(python)</span> [repo__django__django]
@@ -295,13 +316,15 @@ DTModel.objects.<span class="hljs-built_in">filter</span>(start_date__iso_year=<
 🔧 edit_file(django/db/models/lookups.py)
 ⚙️ Successfully modified the core optimization logic, adding ISO year handling
 <button class="copy-code-btn"></button></code></pre>
-<p>意味検索は<code translate="no">YearLookup</code> をコアコンセプトとして理解し、正しいクラスへ直行しました。</p>
+<p>Semantic search understood <code translate="no">YearLookup</code> as the core concept and went straight to the right class.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_2_159ccffec9.png" alt="Django YearLookup benchmark table showing 93 percent fewer tokens with Claude Context" class="doc-image" id="django-yearlookup-benchmark-table-showing-93-percent-fewer-tokens-with-claude-context" />
-   </span> <span class="img-wrapper"> <span>Django YearLookup ベンチマークの表は、Claude Context を使って 93% 少ないトークンを示しています</span> </span>。</p>
-<p><strong>結果：</strong>トークンが 93% 減りました。</p>
-<h3 id="Case-2-Xarray-swapdims-bug" class="common-anchor-header">ケース 2: Xarray の swap_dims バグ</h3><p><strong>問題の説明</strong>Xarray ライブラリの<code translate="no">.swap_dims()</code> メソッドが、元のオブジェクトを予期せず変異させ、不変性の期待に反する。</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_2_159ccffec9.png" alt="Django YearLookup benchmark table showing 93 percent fewer tokens with Claude Context" class="doc-image" id="django-yearlookup-benchmark-table-showing-93-percent-fewer-tokens-with-claude-context" />
+    <span>Django YearLookup benchmark table showing 93 percent fewer tokens with Claude Context</span>
+  </span>
+</p>
+<p><strong>Result:</strong> 93% fewer tokens.</p>
+<h3 id="Case-2-Xarray-swapdims-bug" class="common-anchor-header">Case 2: Xarray swap_dims bug</h3><p><strong>Problem description:</strong> The Xarray library’s <code translate="no">.swap_dims()</code> method unexpectedly mutates the original object, violating the expectation of immutability.</p>
 <pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">import</span> xarray <span class="hljs-keyword">as</span> xr
 nz = <span class="hljs-number">11</span>
@@ -315,7 +338,7 @@ ds2 = ds.swap_dims(z=<span class="hljs-string">&quot;lev&quot;</span>).rename_di
 ds2.swap_dims(z=<span class="hljs-string">&#x27;lev&#x27;</span>)  <span class="hljs-comment"># this unexpectedly modifies ds2[&#x27;lev&#x27;]</span>
 <span class="hljs-comment"># ds2[&#x27;lev&#x27;] now has dimension &#x27;lev&#x27; instead of &#x27;z&#x27;</span>
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>ベースライン（grep）：</strong></p>
+<p><strong>Baseline (grep):</strong></p>
 <pre><code translate="no" class="language-bash">🔧 list_directory(<span class="hljs-string">&#x27;repo__pydata__xarray&#x27;</span>)
 ⚙️ Result: Retrieved directory structure across multiple subdirectories
    Problem: Basic directory navigation, no targeted search
@@ -332,8 +355,8 @@ ds2.swap_dims(z=<span class="hljs-string">&#x27;lev&#x27;</span>)  <span class="
 🔧 read_file(<span class="hljs-string">&#x27;xarray/core/dataset.py&#x27;</span>, offset=3600, <span class="hljs-built_in">limit</span>=40) 
 ⚙️ Result: Read lines 3601-3640 showing rename_dims method
 <button class="copy-code-btn"></button></code></pre>
-<p>ベースライン（grep）：ベースラインは、実際の実装パスを見つける前に、ディレクトリをナビゲートし、近くのコードを読むことに時間を費やした。</p>
-<p><strong>クロード・コンテキスト：</strong></p>
+<p>The baseline spent time navigating directories and reading nearby code before locating the actual implementation path.</p>
+<p><strong>Claude Context:</strong></p>
 <pre><code translate="no" class="language-bash">🔧 search_code(<span class="hljs-string">&#x27;.swap_dims()&#x27;</span>)
 ⚙️ Found <span class="hljs-number">10</span> results <span class="hljs-keyword">for</span> query: <span class="hljs-string">&quot;.swap_dims()&quot;</span> across the codebase
    <span class="hljs-number">1.</span> <span class="hljs-function">Code <span class="hljs-title">snippet</span> (<span class="hljs-params">python</span>) [repo__pydata__xarray]
@@ -345,13 +368,15 @@ ds2.swap_dims(z=<span class="hljs-string">&#x27;lev&#x27;</span>)  <span class="
 🔧 <span class="hljs-title">edit_file</span>(<span class="hljs-params"><span class="hljs-string">&#x27;xarray/core/dataarray.py&#x27;</span></span>)
 ⚙️ Successfully modified the <span class="hljs-keyword">file</span>, ensuring the original DataArray <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> mutated
 </span><button class="copy-code-btn"></button></code></pre>
-<p>意味的検索により、関連する<code translate="no">swap_dims()</code> 実装と関連するコンテキストをより速く特定。</p>
+<p>Semantic search located the relevant <code translate="no">swap_dims()</code> implementation and related context faster.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_1_d75e931f20.png" alt="Xarray swap_dims benchmark table showing 62 percent fewer tokens with Claude Context" class="doc-image" id="xarray-swap_dims-benchmark-table-showing-62-percent-fewer-tokens-with-claude-context" />
-   </span> <span class="img-wrapper"> <span>Xarrayのswap_dimsベンチマークテーブルでは、Claude Contextを使用することでトークンが62%減少している</span> </span>。</p>
-<p><strong>結果：</strong>トークンが62%減少。</p>
-<h2 id="Get-started-with-Claude-Context" class="common-anchor-header">Claude Contextを使い始める<button data-href="#Get-started-with-Claude-Context" class="anchor-icon" translate="no">
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/claude_context_reduce_claude_code_token_usage_1_d75e931f20.png" alt="Xarray swap_dims benchmark table showing 62 percent fewer tokens with Claude Context" class="doc-image" id="xarray-swap_dims-benchmark-table-showing-62-percent-fewer-tokens-with-claude-context" />
+    <span>Xarray swap_dims benchmark table showing 62 percent fewer tokens with Claude Context</span>
+  </span>
+</p>
+<p><strong>Result:</strong> 62% fewer tokens.</p>
+<h2 id="Get-started-with-Claude-Context" class="common-anchor-header">Get started with Claude Context<button data-href="#Get-started-with-Claude-Context" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -366,16 +391,16 @@ ds2.swap_dims(z=<span class="hljs-string">&#x27;lev&#x27;</span>)  <span class="
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>この投稿にあるツールをそのまま試したい場合は、<a href="https://github.com/zilliztech/claude-context">Claude Context GitHubリポジトリと</a> <a href="https://www.npmjs.com/package/%40zilliz/claude-context-mcp">Claude Context MCPパッケージから</a>始めよう。リポジトリにはセットアップ手順、ベンチマーク、TypeScriptのコアパッケージが含まれている。</p>
-<p>検索レイヤーを理解したりカスタマイズしたい場合は、次のステップとしてこれらのリソースが役に立つ：</p>
+    </button></h2><p>If you want to try the exact tool from this post, start with the <a href="https://github.com/zilliztech/claude-context">Claude Context GitHub repository</a> and the <a href="https://www.npmjs.com/package/%40zilliz/claude-context-mcp">Claude Context MCP package</a>. The repository includes setup instructions, benchmarks, and the core TypeScript packages.</p>
+<p>If you want to understand or customize the retrieval layer, these resources are useful next steps:</p>
 <ul>
-<li><a href="https://milvus.io/docs/quickstart.md">Milvusクイックスタートで</a>ベクターデータベースの基本を学ぶ。</li>
-<li><a href="https://milvus.io/docs/full-text-search.md">Milvusの全文検索と</a> <a href="https://milvus.io/docs/full_text_search_with_milvus.md">LangChainの全文検索のチュートリアルを見て</a>、BM25スタイルの検索と高密度なベクトルを組み合わせたい場合。</li>
-<li>インフラストラクチャのオプションを比較する場合は、<a href="https://zilliz.com/blog/top-5-open-source-vector-search-engines">オープンソースのベクトル検索エンジンを</a>確認してください。</li>
-<li>Claude Codeのワークフロー内で直接ベクトルデータベースを操作したい場合は、<a href="https://zilliz.com/blog/zilliz-cloud-just-landed-in-claude-code">Zilliz Cloud Plugin for Claude</a>Codeをお試しください。</li>
+<li>Learn the vector database basics with the <a href="https://milvus.io/docs/quickstart.md">Milvus Quickstart</a>.</li>
+<li>Explore <a href="https://milvus.io/docs/full-text-search.md">Milvus full text search</a> and the <a href="https://milvus.io/docs/full_text_search_with_milvus.md">LangChain full-text search tutorial</a> if you want to combine BM25-style search with dense vectors.</li>
+<li>Review <a href="https://zilliz.com/blog/top-5-open-source-vector-search-engines">open-source vector search engines</a> if you are comparing infrastructure options.</li>
+<li>Try the <a href="https://zilliz.com/blog/zilliz-cloud-just-landed-in-claude-code">Zilliz Cloud Plugin for Claude Code</a> if you want vector database operations directly inside the Claude Code workflow.</li>
 </ul>
-<p>Milvusやコード検索アーキテクチャのヘルプについては、<a href="https://milvus.io/community/">Milvusコミュニティに</a>参加するか、<a href="https://milvus.io/office-hours">Milvusオフィスアワーを</a>予約してマンツーマンで指導を受けてください。インフラストラクチャのセットアップを省略したい場合は、<a href="https://cloud.zilliz.com/signup">Zilliz Cloudにサインアップ</a>するか、<a href="https://cloud.zilliz.com/login">Zilliz Cloudにサインインして</a>バックエンドとしてマネージドMilvusをご利用ください。</p>
-<h2 id="Frequently-Asked-Questions" class="common-anchor-header">よくある質問<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
+<p>For help with Milvus or code retrieval architecture, join the <a href="https://milvus.io/community/">Milvus community</a> or book <a href="https://milvus.io/office-hours">Milvus Office Hours</a> for one-on-one guidance. If you would rather skip infrastructure setup, <a href="https://cloud.zilliz.com/signup">sign up for Zilliz Cloud</a> or <a href="https://cloud.zilliz.com/login">sign in to Zilliz Cloud</a> and use managed Milvus as the backend.</p>
+<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Frequently Asked Questions<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -390,7 +415,7 @@ ds2.swap_dims(z=<span class="hljs-string">&#x27;lev&#x27;</span>)  <span class="
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><h3 id="Why-does-Claude-Code-use-so-many-tokens-on-some-coding-tasks" class="common-anchor-header">なぜClaude Codeはコーディングタスクで多くのトークンを使うのですか？</h3><p>Claude Code は、タスクが大規模なリポジトリで検索とファイル読み込みのループを繰り返す必要がある場合、多くのトークンを使用することができます。エージェントがキーワードで検索し、関連性のないファイルを読み、また検索する場合、たとえそのコードがタスクに有用でなくても、読み取るファイルごとにトークンが追加されます。</p>
-<h3 id="How-does-Claude-Context-reduce-Claude-Code-token-usage" class="common-anchor-header">クロードコンテキストはどのようにしてクロードコードのトークン使用量を減らすのですか？</h3><p>Claude Contextは、エージェントがファイルを読み込む前に、Milvusにバックアップされたコードインデックスを検索することで、トークンの使用量を減らします。ハイブリッド検索で関連するコードチャンクを取得するため、Claude Code はより少ないファイルを検査し、実際に重要なコードにより多くのコンテキストウィンドウを費やすことができます。</p>
-<h3 id="Is-Claude-Context-only-for-Claude-Code" class="common-anchor-header">クロードコンテキストはクロードコードだけのものですか？</h3><p>Claude ContextはMCPサーバーとして公開されているので、MCPをサポートするどのコーディングツールでも動作します。Claude Code はこの記事の主な例ですが、同じ検索レイヤーは他の MCP 互換 IDE やエージェントワークフローをサポートできます。</p>
-<h3 id="Do-I-need-Zilliz-Cloud-to-use-Claude-Context" class="common-anchor-header">Claude Contextを使うにはZilliz Cloudが必要ですか？</h3><p>Claude ContextはマネージドMilvusバックエンドとしてZilliz Cloudを使うことができます。同じ検索アーキテクチャはMilvusのコンセプトに基づいているため、セルフマネージドMilvusデプロイメントにも適応できます。</p>
+    </button></h2><h3 id="Why-does-Claude-Code-use-so-many-tokens-on-some-coding-tasks" class="common-anchor-header">Why does Claude Code use so many tokens on some coding tasks?</h3><p>Claude Code can use many tokens when a task requires repeated search and file-reading loops across a large repository. If the agent searches by keyword, reads irrelevant files, and then searches again, every file read adds tokens even when the code is not useful for the task.</p>
+<h3 id="How-does-Claude-Context-reduce-Claude-Code-token-usage" class="common-anchor-header">How does Claude Context reduce Claude Code token usage?</h3><p>Claude Context reduces token usage by searching a Milvus-backed code index before the agent reads files. It retrieves relevant code chunks with hybrid search, so Claude Code can inspect fewer files and spend more of its context window on code that actually matters.</p>
+<h3 id="Is-Claude-Context-only-for-Claude-Code" class="common-anchor-header">Is Claude Context only for Claude Code?</h3><p>No. Claude Context is exposed as an MCP server, so it can work with any coding tool that supports MCP. Claude Code is the main example in this post, but the same retrieval layer can support other MCP-compatible IDEs and agent workflows.</p>
+<h3 id="Do-I-need-Zilliz-Cloud-to-use-Claude-Context" class="common-anchor-header">Do I need Zilliz Cloud to use Claude Context?</h3><p>Claude Context can use Zilliz Cloud as a managed Milvus backend, which is the easiest path if you do not want to operate vector database infrastructure. The same retrieval architecture is based on Milvus concepts, so teams can also adapt it to self-managed Milvus deployments.</p>
