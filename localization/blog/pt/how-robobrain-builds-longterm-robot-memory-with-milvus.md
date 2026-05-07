@@ -1,6 +1,7 @@
 ---
 id: how-robobrain-builds-longterm-robot-memory-with-milvus.md
-title: Como é que o RoboBrain constrói a memória a longo prazo do robô com o Milvus
+title: |
+  How RoboBrain Builds Long-Term Robot Memory with Milvus
 author: Song Zhi
 date: 2026-4-30
 cover: assets.zilliz.com/robobrain_cover_a96f93fbce.jpg
@@ -11,29 +12,28 @@ tags: 'Milvus, vector database'
 meta_keywords: 'robot agent, robot memory, task execution, vector database, Milvus'
 meta_title: |
   How RoboBrain Builds Long-Term Robot Memory with Milvus
-desc: >-
-  Os módulos dos robots podem trabalhar sozinhos mas falham quando estão
-  encadeados. O Diretor Executivo da Senqi AI explica como o RoboBrain utiliza o
-  estado da tarefa, o feedback e a memória Milvus.
+desc: >
+  Robot modules can work alone but fail when chained. Senqi AI's CEO explains
+  how RoboBrain uses task state, feedback, and Milvus memory.
 origin: >-
   https://milvus.io/blog/how-robobrain-builds-longterm-robot-memory-with-milvus.md
 ---
-<p><em>Este artigo é da autoria de Song Zhi, Diretor Executivo da Senqi AI, uma empresa de IA incorporada que desenvolve infra-estruturas de execução de tarefas para robôs. O RoboBrain é um dos principais produtos da Senqi AI.</em></p>
-<p>A maioria das capacidades dos robôs funciona bem por si só. Um modelo de navegação pode planear um percurso. Um modelo de perceção pode identificar objectos. Um módulo de fala pode aceitar instruções. A falha na produção surge quando essas capacidades têm de ser executadas como uma tarefa contínua.</p>
-<p>Para um robô, uma simples instrução como "vá verificar aquela área, fotografe qualquer coisa invulgar e avise-me" requer planeamento antes de a tarefa começar, adaptação enquanto decorre e produção de um resultado útil quando termina. Cada transferência pode falhar: a navegação pára atrás de um obstáculo, uma fotografia desfocada é aceite como definitiva ou o sistema esquece-se da exceção que tratou há cinco minutos.</p>
-<p>Este é o principal desafio para os <a href="https://zilliz.com/glossary/ai-agents">agentes de IA</a> que operam no mundo físico. Ao contrário dos agentes digitais, os robôs executam contra <a href="https://zilliz.com/learn/introduction-to-unstructured-data">dados</a> contínuos <a href="https://zilliz.com/learn/introduction-to-unstructured-data">não estruturados</a>: caminhos bloqueados, mudanças de luz, limites da bateria, ruído dos sensores e regras do operador.</p>
-<p>O RoboBrain é o sistema operativo de inteligência incorporada da Senqi AI para a execução de tarefas por robôs. Situa-se na camada da tarefa, ligando a perceção, o planeamento, o controlo da execução e o feedback dos dados, para que as instruções em linguagem natural se transformem em fluxos de trabalho de robôs estruturados e recuperáveis.</p>
+<p><em>This post is contributed by Song Zhi, CEO of Senqi AI, an embodied-AI company building task-execution infrastructure for robots. RoboBrain is one of Senqi AI’s core products.</em></p>
+<p>Most robot capabilities work fine on their own. A navigation model can plan a route. A perception model can identify objects. A speech module can accept instructions. The production failure appears when those capabilities have to run as one continuous task.</p>
+<p>For a robot, a simple instruction like “go check that area, photograph anything unusual, and notify me” requires planning before the task starts, adapting while it runs, and producing a useful result when it finishes. Each handoff can break: navigation freezes behind an obstacle, a blurry photo is accepted as final, or the system forgets the exception it handled five minutes ago.</p>
+<p>That is the core challenge for <a href="https://zilliz.com/glossary/ai-agents">AI agents</a> operating in the physical world. Unlike digital agents, robots execute against continuous <a href="https://zilliz.com/learn/introduction-to-unstructured-data">unstructured data</a>: blocked paths, changing light, battery limits, sensor noise, and operator rules.</p>
+<p>RoboBrain is Senqi AI’s embodied-intelligence operating system for robot task execution. It sits at the task layer, connecting perception, planning, execution control, and data feedback so natural-language instructions can become structured, recoverable robot workflows.</p>
 <table>
 <thead>
-<tr><th>Ponto de interrupção</th><th>O que falha na produção</th><th>Como é que o RoboBrain o resolve</th></tr>
+<tr><th>Breakpoint</th><th>What Fails in Production</th><th>How RoboBrain Closes It</th></tr>
 </thead>
 <tbody>
-<tr><td>Planeamento de tarefas</td><td>Instruções vagas deixam os módulos a jusante sem campos de execução concretos.</td><td>A objetivação da tarefa transforma a intenção em estado partilhado.</td></tr>
-<tr><td>Encaminhamento de contexto</td><td>A informação correta existe, mas chega à fase de decisão errada.</td><td>A memória escalonada encaminha separadamente o contexto em tempo real, a curto prazo e a longo prazo.</td></tr>
-<tr><td>Feedback de dados</td><td>Uma única passagem é concluída ou falha sem melhorar a próxima execução.</td><td>Os writebacks de feedback actualizam o estado da tarefa e a memória de longo prazo.</td></tr>
+<tr><td>Task planning</td><td>Vague instructions leave downstream modules without concrete execution fields.</td><td>Task objectification turns intent into shared state.</td></tr>
+<tr><td>Context routing</td><td>The right information exists, but reaches the wrong decision stage.</td><td>Tiered memory routes real-time, short-term, and long-term context separately.</td></tr>
+<tr><td>Data feedback</td><td>A single pass completes or fails without improving the next run.</td><td>Feedback writebacks update task state and long-term memory.</td></tr>
 </tbody>
 </table>
-<h2 id="Three-Breakpoints-in-Robot-Task-Execution" class="common-anchor-header">Três pontos de paragem na execução de tarefas de robôs<button data-href="#Three-Breakpoints-in-Robot-Task-Execution" class="anchor-icon" translate="no">
+<h2 id="Three-Breakpoints-in-Robot-Task-Execution" class="common-anchor-header">Three Breakpoints in Robot Task Execution<button data-href="#Three-Breakpoints-in-Robot-Task-Execution" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -48,16 +48,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>As tarefas de software podem frequentemente ser delimitadas como entrada, processo e resultado. As tarefas do robô correm contra um estado físico em movimento: caminhos bloqueados, mudanças de luz, limites da bateria, ruído dos sensores e regras do operador.</p>
-<p>É por isso que o ciclo de tarefas precisa de mais do que modelos isolados. Precisa de uma forma de preservar o contexto através do planeamento, execução e feedback.</p>
-<h3 id="1-Task-Planning-Vague-Instructions-Produce-Vague-Execution" class="common-anchor-header">1. Planeamento de tarefas: Instruções vagas produzem uma execução vaga</h3><p>Uma frase como "vai dar uma olhadela" esconde uma série de decisões. Que área? O que é que o robô deve fotografar? O que é que conta como invulgar? O que deve fazer se a fotografia falhar? Que resultado deve ser devolvido ao operador?</p>
-<p>Se a camada de tarefa não conseguir resolver estes detalhes em campos concretos - área alvo, objeto de inspeção, condição de conclusão, política de falha e formato de retorno - a tarefa corre sem direção desde o início e nunca recupera o contexto a jusante.</p>
-<h3 id="2-Context-Routing-The-Right-Data-Reaches-the-Wrong-Stage" class="common-anchor-header">2. Encaminhamento do contexto: Os dados corretos chegam à fase errada</h3><p>A pilha do robot pode já conter a informação correta, mas a execução da tarefa depende da sua recuperação na fase correta.</p>
-<p>A fase de arranque precisa de mapas, definições de áreas e regras de funcionamento. A meio da execução precisa do estado do sensor em tempo real. O tratamento de excepções necessita de casos semelhantes de implementações anteriores. Quando essas fontes estão misturadas, o sistema toma o tipo certo de decisão com o contexto errado.</p>
-<p>Quando o encaminhamento falha, o arranque puxa a experiência obsoleta em vez das regras da área, o tratamento de excepções não consegue chegar aos casos de que necessita e a meio da execução obtém o mapa de ontem em vez de leituras em tempo real. Dar a alguém um dicionário não o ajuda a escrever um ensaio. Os dados têm de chegar ao ponto de decisão correto, na fase correta e na forma correta.</p>
-<h3 id="3-Data-Feedback-Single-Pass-Execution-Does-Not-Improve" class="common-anchor-header">3. Feedback dos dados: A execução de uma só passagem não melhora</h3><p>Sem writeback, um robot pode terminar uma execução sem melhorar a próxima. Uma ação concluída ainda precisa de uma verificação de qualidade: a imagem é suficientemente nítida ou o robô deve voltar a fotografar? O caminho ainda está livre ou deve ser desviado? A bateria está acima do limite, ou a tarefa deve ser terminada?</p>
-<p>Um sistema de passagem única não tem qualquer mecanismo para estas chamadas. Ele executa, pára e repete a mesma falha na próxima vez.</p>
-<h2 id="How-RoboBrain-Closes-the-Robot-Task-Loop" class="common-anchor-header">Como o RoboBrain fecha o ciclo de tarefas do robô<button data-href="#How-RoboBrain-Closes-the-Robot-Task-Loop" class="anchor-icon" translate="no">
+    </button></h2><p>Software tasks can often be bounded as input, process, and result. Robot tasks run against a moving physical state: blocked paths, changing light, battery limits, sensor noise, and operator rules.</p>
+<p>That is why the task loop needs more than isolated models. It needs a way to preserve context across planning, execution, and feedback.</p>
+<h3 id="1-Task-Planning-Vague-Instructions-Produce-Vague-Execution" class="common-anchor-header">1. Task Planning: Vague Instructions Produce Vague Execution</h3><p>A phrase like “go take a look” hides a lot of decisions. Which area? What should the robot photograph? What counts as unusual? What should it do if the shot fails? What result should it return to the operator?</p>
+<p>If the task layer cannot resolve those details into concrete fields — target area, inspection object, completion condition, failure policy, and return format — the task runs without direction from the start and never recovers context downstream.</p>
+<h3 id="2-Context-Routing-The-Right-Data-Reaches-the-Wrong-Stage" class="common-anchor-header">2. Context Routing: The Right Data Reaches the Wrong Stage</h3><p>The robot stack may already contain the right information, but task execution depends on retrieving it at the right stage.</p>
+<p>The startup phase needs maps, area definitions, and operating rules. Mid-execution needs live sensor state. Exception handling needs similar cases from prior deployments. When those sources are mixed up, the system makes the right kind of decision with the wrong context.</p>
+<p>When routing fails, startup pulls stale experience instead of area rules, exception handling cannot reach the cases it needs, and mid-execution gets yesterday’s map instead of live readings. Giving someone a dictionary does not help them write an essay. The data has to reach the right decision point, at the right stage, in the right form.</p>
+<h3 id="3-Data-Feedback-Single-Pass-Execution-Does-Not-Improve" class="common-anchor-header">3. Data Feedback: Single-Pass Execution Does Not Improve</h3><p>Without writeback, a robot can finish a run without improving the next one. A completed action still needs a quality check: is the image sharp enough, or should the robot reshoot? Is the path still clear, or should it detour? Is the battery above threshold, or should the task terminate?</p>
+<p>A single-pass system has no mechanism for those calls. It executes, stops, and repeats the same failure next time.</p>
+<h2 id="How-RoboBrain-Closes-the-Robot-Task-Loop" class="common-anchor-header">How RoboBrain Closes the Robot Task Loop<button data-href="#How-RoboBrain-Closes-the-Robot-Task-Loop" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,32 +72,34 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>O RoboBrain liga a compreensão do ambiente, o planeamento da tarefa, o controlo da execução e o feedback dos dados num ciclo operacional.</p>
+    </button></h2><p>RoboBrain connects environment understanding, task planning, execution control, and data feedback into one operating loop.</p>
 <p>
-  
-   <span class="img-wrapper"> <img translate="no" src="https://assets.zilliz.com/how_robobrain_builds_longterm_robot_memory_with_milvus_2_660d1c90e3.png" alt="RoboBrain core middleware architecture showing how user intent flows through task objects, stage-aware memory powered by Milvus, and a policy engine before reaching embodied capabilities" class="doc-image" id="robobrain-core-middleware-architecture-showing-how-user-intent-flows-through-task-objects,-stage-aware-memory-powered-by-milvus,-and-a-policy-engine-before-reaching-embodied-capabilities" />
-   </span> <span class="img-wrapper"> <span>A arquitetura central do middleware RoboBrain mostra como a intenção do utilizador flui através dos objectos de tarefa, da memória com reconhecimento de fases alimentada por Milvus e de um motor de políticas antes de atingir as capacidades incorporadas</span> </span></p>
-<p>Na arquitetura descrita neste artigo, esse ciclo é implementado através de três mecanismos:</p>
+  <span class="img-wrapper">
+    <img translate="no" src="https://assets.zilliz.com/how_robobrain_builds_longterm_robot_memory_with_milvus_2_660d1c90e3.png" alt="RoboBrain core middleware architecture showing how user intent flows through task objects, stage-aware memory powered by Milvus, and a policy engine before reaching embodied capabilities" class="doc-image" id="robobrain-core-middleware-architecture-showing-how-user-intent-flows-through-task-objects,-stage-aware-memory-powered-by-milvus,-and-a-policy-engine-before-reaching-embodied-capabilities" />
+    <span>RoboBrain core middleware architecture showing how user intent flows through task objects, stage-aware memory powered by Milvus, and a policy engine before reaching embodied capabilities</span>
+  </span>
+</p>
+<p>In the architecture described in this contributed post, that loop is implemented through three mechanisms:</p>
 <ol>
-<li><strong>A objetivação</strong> de<strong>tarefas</strong> estrutura o ponto de entrada.</li>
-<li><strong>A memória escalonada</strong> encaminha a informação correta para a fase correta.</li>
-<li><strong>Um ciclo de feedback</strong> escreve os resultados de volta e decide o próximo passo.</li>
+<li><strong>Task objectification</strong> structures the entry point.</li>
+<li><strong>Tiered memory</strong> routes the right information to the right stage.</li>
+<li><strong>A feedback loop</strong> writes results back and decides the next move.</li>
 </ol>
-<p>Estes mecanismos só funcionam em conjunto. Se corrigirmos um sem os outros, a cadeia continua a quebrar-se no ponto seguinte.</p>
-<h3 id="1-Task-Objectification-Turning-Intent-into-Shared-State" class="common-anchor-header">1. Objetivação de tarefas: Transformar a intenção em estado partilhado</h3><p>Antes do início da execução, o RoboBrain transforma cada instrução num objeto de tarefa: tipo de tarefa, área alvo, objeto de inspeção, restrições, resultado esperado, fase atual e política de falhas.</p>
-<p>O objetivo não é apenas analisar a linguagem. O objetivo é dar a cada módulo a jusante a mesma visão de estado da tarefa. Sem essa conversão, a tarefa não tem direção.</p>
-<p>No exemplo da patrulha, o objeto de tarefa preenche o tipo de inspeção, a zona designada, os itens anómalos como o objeto de verificação, a bateria &gt;= 20% como a restrição, uma fotografia clara da anomalia mais o alerta do operador como o resultado esperado e o regresso à base como a política de falha.</p>
-<p>O campo da etapa é atualizado à medida que a execução muda. Um obstáculo faz com que a tarefa passe de navegar para desviar ou pedir ajuda. Uma imagem desfocada faz com que a tarefa passe de inspecionar para voltar a fotografar. Uma bateria fraca leva-a a terminar e a regressar à base.</p>
-<p>Os módulos a jusante já não recebem comandos isolados. Recebem a fase atual da tarefa, as suas restrições e a razão pela qual a fase mudou.</p>
-<h3 id="2-Tiered-Memory-Routing-Context-to-the-Right-Stage" class="common-anchor-header">2. Memória em camadas: Encaminhando o contexto para o estágio correto</h3><p>O RoboBrain divide a informação relevante para a tarefa em três níveis para que os dados certos cheguem à fase certa.</p>
-<p><strong>O estado em tempo real</strong> contém a pose, a bateria, as leituras dos sensores e as observações ambientais. Apoia as decisões em cada passo de controlo.</p>
-<p><strong>O contexto de curto prazo</strong> regista eventos no âmbito da tarefa atual: o obstáculo que o robô evitou há dois minutos, a fotografia que voltou a tirar ou a porta que não conseguiu abrir à primeira tentativa. Evita que o sistema perca a noção do que acabou de acontecer.</p>
-<p><strong>A memória semântica de longo prazo</strong> armazena o conhecimento do cenário, a experiência histórica, os casos de exceção e as notas pós-tarefa. Uma determinada área de estacionamento pode exigir ajustes do ângulo da câmara à noite devido às superfícies reflectoras. Um determinado tipo de anomalia pode ter um historial de falsos positivos e deve desencadear uma análise humana em vez de um alerta automático.</p>
-<p>Este nível de longo prazo baseia-se na <a href="https://zilliz.com/learn/vector-similarity-search">pesquisa de semelhança de vectores</a> através da <a href="https://milvus.io/">base de dados de vectores Milvus</a>, porque recuperar a memória certa significa fazer a correspondência por significado e não por ID ou palavra-chave. As descrições de cenas e os registos de manuseamento são armazenados como <a href="https://zilliz.com/glossary/vector-embeddings">vectores</a> incorporados e recuperados com a <a href="https://zilliz.com/glossary/anns">pesquisa aproximada do vizinho mais próximo</a> para encontrar as correspondências semânticas mais próximas.</p>
-<p>O arranque extrai regras de área e resumos de patrulhas anteriores da memória de longo prazo. A meio da execução baseia-se no estado em tempo real e no contexto a curto prazo. O tratamento de excepções utiliza <a href="https://zilliz.com/glossary/semantic-search">a pesquisa semântica</a> para encontrar casos semelhantes na memória de longo prazo.</p>
-<h3 id="3-Feedback-Loop-Writing-Results-Back-into-the-System" class="common-anchor-header">3. Ciclo de feedback: Escrever os resultados de volta no sistema</h3><p>O RoboBrain escreve os resultados da navegação, perceção e ação no objeto da tarefa após cada passo, actualizando o campo da etapa. O sistema lê essas observações e decide o próximo passo: desviar se o caminho for inacessível, voltar a fotografar se a imagem estiver desfocada, tentar de novo se a porta não abrir, ou terminar se a bateria estiver fraca.</p>
-<p>A execução torna-se um ciclo: executar, observar, ajustar, executar novamente. A cadeia continua a adaptar-se às alterações ambientais, em vez de se interromper à primeira vez que surge algo inesperado.</p>
-<h2 id="How-Milvus-Powers-RoboBrains-Long-Term-Robot-Memory" class="common-anchor-header">Como o Milvus alimenta a memória de longo prazo do RoboBrain<button data-href="#How-Milvus-Powers-RoboBrains-Long-Term-Robot-Memory" class="anchor-icon" translate="no">
+<p>They only work as a set. Fix one without the others and the chain still breaks at the next point.</p>
+<h3 id="1-Task-Objectification-Turning-Intent-into-Shared-State" class="common-anchor-header">1. Task Objectification: Turning Intent into Shared State</h3><p>Before execution starts, RoboBrain turns each instruction into a task object: task type, target area, inspection object, constraints, expected output, current stage, and failure policy.</p>
+<p>The point is not just parsing language. The point is giving every downstream module the same stateful view of the task. Without that conversion, the task has no direction.</p>
+<p>For the patrol example, the task object fills in the inspection type, designated zone, anomalous items as the check object, battery &gt;= 20% as the constraint, a clear anomaly photo plus operator alert as the expected output, and return-to-base as the failure policy.</p>
+<p>The stage field updates as the run changes. An obstacle moves the task from navigating to detouring or requesting help. A blurry image moves it from inspecting to reshooting. A low battery moves it to termination and return-to-base.</p>
+<p>Downstream modules no longer receive isolated commands. They receive the current task stage, its constraints, and the reason the stage changed.</p>
+<h3 id="2-Tiered-Memory-Routing-Context-to-the-Right-Stage" class="common-anchor-header">2. Tiered Memory: Routing Context to the Right Stage</h3><p>RoboBrain splits task-relevant information into three tiers so the right data reaches the right stage.</p>
+<p><strong>Real-time state</strong> holds pose, battery, sensor readings, and environmental observations. It supports decisions at every control step.</p>
+<p><strong>Short-term context</strong> records events within the current task: the obstacle the robot avoided two minutes ago, the photo it reshot, or the door it failed to open on the first try. It keeps the system from losing track of what just happened.</p>
+<p><strong>Long-term semantic memory</strong> stores scene knowledge, historical experience, exception cases, and post-task writebacks. A particular parking area may require camera-angle adjustments at night because of reflective surfaces. A certain anomaly type may have a history of false positives and should trigger human review instead of an automatic alert.</p>
+<p>This long-term tier runs on <a href="https://zilliz.com/learn/vector-similarity-search">vector similarity search</a> through the <a href="https://milvus.io/">Milvus vector database</a>, because retrieving the right memory means matching by meaning, not by ID or keyword. Scene descriptions and handling records are stored as <a href="https://zilliz.com/glossary/vector-embeddings">vector embeddings</a> and retrieved with <a href="https://zilliz.com/glossary/anns">approximate nearest neighbor search</a> to find the closest semantic matches.</p>
+<p>Startup pulls area rules and past patrol summaries from long-term memory. Mid-execution relies on real-time state and short-term context. Exception handling uses <a href="https://zilliz.com/glossary/semantic-search">semantic search</a> to find similar cases in long-term memory.</p>
+<h3 id="3-Feedback-Loop-Writing-Results-Back-into-the-System" class="common-anchor-header">3. Feedback Loop: Writing Results Back into the System</h3><p>RoboBrain writes navigation, perception, and action results back to the task object after each step, updating the stage field. The system reads those observations and decides the next move: detour if the path is unreachable, reshoot if the image is blurry, retry if the door will not open, or terminate if battery is low.</p>
+<p>Execution becomes a cycle: execute, observe, adjust, execute again. The chain keeps adapting to environmental changes instead of cutting off the first time something unexpected shows up.</p>
+<h2 id="How-Milvus-Powers-RoboBrains-Long-Term-Robot-Memory" class="common-anchor-header">How Milvus Powers RoboBrain’s Long-Term Robot Memory<button data-href="#How-Milvus-Powers-RoboBrains-Long-Term-Robot-Memory" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -112,36 +114,36 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Algumas memórias de robôs podem ser consultadas por ID de tarefa, carimbo de data/hora ou metadados de sessão. A experiência operacional de longo prazo geralmente não pode.</p>
-<p>O registo útil é frequentemente o caso que é semanticamente semelhante à cena atual, mesmo que a identificação da tarefa, o nome do local ou a redação sejam diferentes. Isto torna-o um problema <a href="https://zilliz.com/learn/what-is-vector-database">de base de dados vetorial</a>, e o Milvus é adequado para o nível de memória de longo prazo.</p>
-<p>Este nível armazena informações como:</p>
+    </button></h2><p>Some robot memory can be queried by task ID, timestamp, or session metadata. Long-term operational experience usually cannot.</p>
+<p>The useful record is often the case that is semantically similar to the current scene, even if the task ID, location name, or wording is different. That makes it a <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> problem, and Milvus is a fit for the long-term memory tier.</p>
+<p>This tier stores information such as:</p>
 <ul>
-<li>Descrições de regras de área e semântica de localização de pontos</li>
-<li>Definições de tipos de anomalias e resumos de exemplos</li>
-<li>Registos históricos de tratamento e conclusões da revisão pós-tarefa</li>
-<li>Resumos de patrulha escritos no final da tarefa</li>
-<li>Registos de experiência após a tomada de controlo humana</li>
-<li>Causas de falhas e estratégias de correção de cenários semelhantes</li>
+<li>Area rule descriptions and point-location semantics</li>
+<li>Anomaly type definitions and example summaries</li>
+<li>Historical handling records and post-task review conclusions</li>
+<li>Patrol summaries written at task completion</li>
+<li>Experience writebacks after human takeover</li>
+<li>Failure causes and correction strategies from similar scenarios</li>
 </ul>
-<p>Nada disto é naturalmente codificado por um campo estruturado. Tudo isso precisa de ser recordado por significado.</p>
-<p>Um exemplo concreto: o robot patrulha a entrada de um parque de estacionamento à noite. O brilho das luzes de cima torna a deteção de anomalias instável. Os reflexos continuam a ser assinalados como anomalias.</p>
-<p>O sistema precisa de recordar as estratégias de reposicionamento que funcionaram sob o forte brilho noturno, as correcções do ângulo da câmara em áreas semelhantes e as conclusões da revisão humana que marcaram as detecções anteriores como falsos positivos. Uma consulta de correspondência exacta pode encontrar uma identificação de tarefa conhecida ou uma janela de tempo. Não pode encontrar de forma fiável "o caso de encandeamento anterior que se comportou como este", a menos que essa relação já tenha sido identificada.</p>
-<p>A semelhança semântica é o padrão de recuperação que funciona. <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">As métricas de semelhança</a> classificam as memórias armazenadas por relevância, enquanto <a href="https://milvus.io/docs/filtered-search.md">a filtragem de metadados</a> pode restringir o espaço de pesquisa por área, tipo de tarefa ou janela de tempo. Na prática, isto torna-se frequentemente uma <a href="https://zilliz.com/learn/hybrid-search-combining-text-and-image">pesquisa híbrida</a>: correspondência semântica para o significado, filtros estruturados para restrições operacionais.</p>
-<p>Para a implementação, a camada de filtros é frequentemente o local onde a memória semântica se torna operacional. <a href="https://milvus.io/docs/boolean.md">As expressões de filtro Milvus</a> definem restrições escalares, enquanto <a href="https://milvus.io/docs/get-and-scalar-query.md?file=query.md">as consultas escalares Milvus</a> suportam pesquisas exactas quando o sistema precisa de registos por metadados e não por semelhança.</p>
-<p>Este padrão de pesquisa assemelha-se a uma <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">geração aumentada de pesquisa</a> adaptada à tomada de decisões no mundo físico, em vez de uma geração de texto. O robô não está a recuperar documentos para responder a uma pergunta; está a recuperar experiências anteriores para escolher a próxima ação segura.</p>
-<p>Nem tudo entra no Milvus. Os IDs das tarefas, os carimbos de data/hora e os metadados da sessão são guardados numa base de dados relacional. Os registos brutos de tempo de execução são armazenados num sistema de registo. Cada sistema de armazenamento lida com o padrão de consulta para o qual foi criado.</p>
+<p>None of that is naturally keyed by a structured field. All of it needs to be recalled by meaning.</p>
+<p>A concrete example: the robot patrols a parking lot entrance at night. Glare from overhead lights makes anomaly detection unstable. Reflections keep getting flagged as anomalies.</p>
+<p>The system needs to recall reshoot strategies that worked under strong nighttime glare, camera-angle corrections from similar areas, and human-review conclusions that marked earlier detections as false positives. An exact-match query can find a known task ID or time window. It cannot reliably surface “the prior glare case that behaved like this one” unless that relationship has already been labeled.</p>
+<p>Semantic similarity is the retrieval pattern that works. <a href="https://zilliz.com/blog/similarity-metrics-for-vector-search">Similarity metrics</a> rank stored memories by relevance, while <a href="https://milvus.io/docs/filtered-search.md">metadata filtering</a> can narrow the search space by area, task type, or time window. In practice, this often becomes <a href="https://zilliz.com/learn/hybrid-search-combining-text-and-image">hybrid search</a>: semantic matching for meaning, structured filters for operational constraints.</p>
+<p>For implementation, the filter layer is often where semantic memory becomes operational. <a href="https://milvus.io/docs/boolean.md">Milvus filter expressions</a> define scalar constraints, while <a href="https://milvus.io/docs/get-and-scalar-query.md?file=query.md">Milvus scalar queries</a> support exact lookups when the system needs records by metadata rather than similarity.</p>
+<p>This retrieval pattern resembles <a href="https://zilliz.com/learn/Retrieval-Augmented-Generation">retrieval-augmented generation</a> adapted for physical-world decision-making rather than text generation. The robot is not retrieving documents to answer a question; it is retrieving prior experience to choose the next safe action.</p>
+<p>Not everything goes into Milvus. Task IDs, timestamps, and session metadata live in a relational database. Raw runtime logs live in a logging system. Each storage system handles the query pattern it is built for.</p>
 <table>
 <thead>
-<tr><th>Tipo de dados</th><th>Onde residem</th><th>Como são consultados</th></tr>
+<tr><th>Data Type</th><th>Where It Lives</th><th>How It Is Queried</th></tr>
 </thead>
 <tbody>
-<tr><td>IDs de tarefas, carimbos de data/hora, metadados de sessão</td><td>Base de dados relacional</td><td>Pesquisas exactas, junções</td></tr>
-<tr><td>Registos brutos de tempo de execução e fluxos de eventos</td><td>Sistema de registo</td><td>Pesquisa de texto completo, filtros de intervalo de tempo</td></tr>
-<tr><td>Regras de cena, tratamento de casos, retrospectivas de experiência</td><td>Milvus</td><td>Pesquisa de semelhanças vectoriais por significado</td></tr>
+<tr><td>Task IDs, timestamps, session metadata</td><td>Relational database</td><td>Exact lookups, joins</td></tr>
+<tr><td>Raw runtime logs and event streams</td><td>Logging system</td><td>Full-text search, time-range filters</td></tr>
+<tr><td>Scene rules, handling cases, experience writebacks</td><td>Milvus</td><td>Vector similarity search by meaning</td></tr>
 </tbody>
 </table>
-<p>À medida que as tarefas são executadas e as cenas se acumulam, a camada de memória de longo prazo alimenta os processos a jusante: curadoria de amostras para afinação de modelos, análise de dados mais alargada e transferência de conhecimentos entre implementações. A memória transforma-se num ativo de dados que dá a cada implementação futura um ponto de partida mais elevado.</p>
-<h2 id="What-This-Architecture-Changes-in-Deployment" class="common-anchor-header">O que esta arquitetura muda na implementação<button data-href="#What-This-Architecture-Changes-in-Deployment" class="anchor-icon" translate="no">
+<p>As tasks run and scenes accumulate, the long-term memory layer feeds downstream processes: sample curation for model fine-tuning, broader data analysis, and cross-deployment knowledge transfer. The memory compounds into a data asset that gives every future deployment a higher starting point.</p>
+<h2 id="What-This-Architecture-Changes-in-Deployment" class="common-anchor-header">What This Architecture Changes in Deployment<button data-href="#What-This-Architecture-Changes-in-Deployment" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -156,10 +158,10 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>A objetivação da tarefa, a memória em camadas e o ciclo de feedback transformam o ciclo de tarefas do RoboBrain num padrão de implementação: cada tarefa preserva o estado, cada exceção pode recuperar a experiência anterior e cada execução pode melhorar a seguinte.</p>
-<p>Um robô que patrulha um novo edifício não deve começar do zero se já tiver lidado com iluminação, obstáculos, tipos de anomalias ou regras do operador semelhantes noutro local. É isto que torna a execução das tarefas do robô mais repetível em todos os cenários e que torna os custos de implementação a longo prazo mais fáceis de controlar.</p>
-<p>Para as equipas de robótica, a lição mais profunda é que a memória não é apenas uma camada de armazenamento. Faz parte do controlo da execução. O sistema precisa de saber o que está a fazer, o que acabou de mudar, que casos semelhantes aconteceram antes e o que deve ser gravado para a próxima execução.</p>
-<h2 id="Further-Reading" class="common-anchor-header">Leitura adicional<button data-href="#Further-Reading" class="anchor-icon" translate="no">
+    </button></h2><p>Task objectification, tiered memory, and the feedback loop turn RoboBrain’s task loop into a deployment pattern: each task preserves state, each exception can retrieve prior experience, and each run can improve the next one.</p>
+<p>A robot patrolling a new building should not start from scratch if it has already handled similar lighting, obstacles, anomaly types, or operator rules elsewhere. That is what makes robot task execution more repeatable across scenes, and what makes long-term deployment costs easier to control.</p>
+<p>For robotics teams, the deeper lesson is that memory is not just a storage layer. It is part of execution control. The system needs to know what it is doing, what just changed, what similar cases have happened before, and what should be written back for the next run.</p>
+<h2 id="Further-Reading" class="common-anchor-header">Further Reading<button data-href="#Further-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,11 +176,11 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Se estiver a trabalhar em problemas semelhantes com a memória dos robôs, a execução de tarefas ou a recuperação semântica para a IA incorporada, estes recursos são úteis para os próximos passos:</p>
+    </button></h2><p>If you are working on similar problems with robot memory, task execution, or semantic retrieval for embodied AI, these resources are useful next steps:</p>
 <ul>
-<li>Leia a <a href="https://milvus.io/docs">documentação do Milvus</a> ou experimente o <a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a> para ver como funciona a pesquisa vetorial na prática.</li>
-<li>Reveja a <a href="https://milvus.io/docs/architecture_overview.md">visão geral da arquitetura do Milvus</a> se estiver a planear uma camada de memória de produção.</li>
-<li>Procure <a href="https://zilliz.com/vector-database-use-cases">casos de utilização de bases de dados vectoriais</a> para obter mais exemplos de pesquisa semântica em sistemas de produção.</li>
-<li>Junte-se à <a href="https://milvus.io/community">comunidade Milvus</a> para fazer perguntas e partilhar o que está a construir.</li>
-<li>Se pretender gerir o Milvus em vez de executar a sua própria infraestrutura, saiba mais sobre o <a href="https://zilliz.com/cloud">Zilliz Cloud</a>.</li>
+<li>Read the <a href="https://milvus.io/docs">Milvus documentation</a> or try the <a href="https://milvus.io/docs/quickstart.md">Milvus quickstart</a> to see how vector search works in practice.</li>
+<li>Review the <a href="https://milvus.io/docs/architecture_overview.md">Milvus architecture overview</a> if you are planning a production memory layer.</li>
+<li>Browse <a href="https://zilliz.com/vector-database-use-cases">vector database use cases</a> for more examples of semantic search in production systems.</li>
+<li>Join the <a href="https://milvus.io/community">Milvus community</a> to ask questions and share what you are building.</li>
+<li>If you want managed Milvus instead of running your own infrastructure, learn more about <a href="https://zilliz.com/cloud">Zilliz Cloud</a>.</li>
 </ul>
