@@ -4,7 +4,7 @@ title: >
  7 Best Open-Source Tools for Claude Code Context Management
 author: Cheney Zhang
 date: 2026-5-7
-cover: assets.zilliz.com/claude_code_context_management_tools_16_9fdd81ad02.png
+cover: assets.zilliz.com/cccm_11zon_848f7f1c6b.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -16,6 +16,7 @@ desc: >
  Long Claude Code sessions lose signal fast. Learn 7 tools for trimming terminal noise, code retrieval, tool output, memory, and token usage.
 origin: https://milvus.io/blog/claude-code-context-management-tools.md
 ---
+
 
 You can give Claude Code a 1M-token context window and still get worse answers over time. The issue is not only context size. It is context quality.
 
@@ -294,3 +295,4 @@ Yes. Code retrieval finds relevant project files or symbols. Memory retrieval re
 **Do these tools replace prompt caching or a larger context window?**
 
 No. Prompt caching and large context windows help with capacity and cost, but they do not decide what information deserves attention. Context-management tools improve the quality and density of what enters the model in the first place.
+![cccm 11zon](https://assets.zilliz.com/cccm_11zon_848f7f1c6b.png)
