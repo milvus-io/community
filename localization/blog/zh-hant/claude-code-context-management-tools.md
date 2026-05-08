@@ -1,6 +1,7 @@
 ---
 id: claude-code-context-management-tools.md
-title: 適用於 Claude 程式碼上下文管理的 7 個最佳開放原始碼工具
+title: |
+  7 Best Open-Source Tools for Claude Code Context Management
 author: Cheney Zhang
 date: 2026-5-7
 cover: assets.zilliz.com/claude_code_context_management_tools_16_9fdd81ad02.png
@@ -13,7 +14,9 @@ meta_keywords: >-
   agent memory
 meta_title: |
   7 Best Open-Source Tools for Claude Code Context Management
-desc: 長時間的 Claude Code 會話會快速失去訊號。學習 7 種工具，用於修剪終端雜訊、代碼檢索、工具輸出、記憶體和令牌使用。
+desc: >
+  Long Claude Code sessions lose signal fast. Learn 7 tools for trimming
+  terminal noise, code retrieval, tool output, memory, and token usage.
 origin: 'https://milvus.io/blog/claude-code-context-management-tools.md'
 ---
 <p>You can give Claude Code a 1M-token context window and still get worse answers over time. The issue is not only context size. It is context quality.</p>
