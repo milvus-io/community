@@ -374,7 +374,7 @@ answer = response.choices[<span class="hljs-number">0</span>].message.content.st
 <li><strong>Experiment with different document types.</strong> The pipeline here uses a comparison PDF, but it works the same way on scanned contracts, engineering drawings, financial statements, or research papers with dense figures.</li>
 </ul>
 <p>To get started, install <a href="https://github.com/milvus-io/milvus-lite">Milvus Lite</a> with pip install pymilvus and grab the ColQwen2 weights from HuggingFace.</p>
-<p>Got questions, or want to show off what you’ve built? The <a href="https://milvus.io/slack">Milvus Slack</a> is the fastest way to get help from the community and the team. If you’d prefer a one-on-one conversation, you can book time at our <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?uuid=4cb203e5-482a-47e0-90a6-7acc511d61f4">office hours</a>.</p>
+<p>Got questions, or want to show off what you’ve built? The <a href="https://milvus.io/slack">Milvus Slack</a> is the fastest way to get help from the community and the team. If you’d prefer a one-on-one conversation, you can book time at our <a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting">office hours</a>.</p>
 <h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

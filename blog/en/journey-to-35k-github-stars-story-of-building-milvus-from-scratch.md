@@ -174,7 +174,7 @@ Let's keep building the infrastructure that makes AI applications possible—tog
 
 Find us here: [Milvus on GitHub](https://github.com/milvus-io/milvus) |[ Zilliz Cloud](https://zilliz.com/) |[ Discord](https://discuss.milvus.io/) | [LinkedIn](https://www.linkedin.com/company/the-milvus-project/) | [X](https://x.com/zilliz_universe) | [YouTube](https://www.youtube.com/@MilvusVectorDatabase/featured)
 
-[![](https://assets.zilliz.com/office_hour_4fb9130a9b.png)](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?__hstc=175614333.dc4bcf53f6c7d650ea8978dcdb9e7009.1727350436713.1751017913702.1751029841530.667&__hssc=175614333.3.1751029841530&__hsfp=3554976067)
+[![](https://assets.zilliz.com/office_hour_4fb9130a9b.png)](https://meetings.hubspot.com/chloe-williams1/milvus-meeting)
 
 
 

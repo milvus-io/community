@@ -304,4 +304,4 @@ Find us here:
 
 Together, we can build the infrastructure for the next generation of AI development tools—transparent, powerful, and developer-first.
 
-[![](https://assets.zilliz.com/office_hour_83d4623510.png)](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour)
+[![](https://assets.zilliz.com/office_hour_83d4623510.png)](https://meetings.hubspot.com/chloe-williams1/milvus-meeting)

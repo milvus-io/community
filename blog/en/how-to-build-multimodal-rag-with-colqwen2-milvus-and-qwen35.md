@@ -367,7 +367,7 @@ On what to try next:
 
 To get started, install [Milvus Lite](https://github.com/milvus-io/milvus-lite) with pip install pymilvus and grab the ColQwen2 weights from HuggingFace.
 
-Got questions, or want to show off what you've built? The [Milvus Slack](https://milvus.io/slack) is the fastest way to get help from the community and the team. If you'd prefer a one-on-one conversation, you can book time at our [office hours](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?uuid=4cb203e5-482a-47e0-90a6-7acc511d61f4).
+Got questions, or want to show off what you've built? The [Milvus Slack](https://milvus.io/slack) is the fastest way to get help from the community and the team. If you'd prefer a one-on-one conversation, you can book time at our [office hours](https://meetings.hubspot.com/chloe-williams1/milvus-meeting).
 
 ## Keep Reading
 

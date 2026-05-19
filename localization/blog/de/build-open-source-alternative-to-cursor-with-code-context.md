@@ -309,7 +309,7 @@ results.<span class="hljs-title function_">forEach</span>(<span class="hljs-func
 <li><p><a href="https://discuss.milvus.io/">Discord</a> | <a href="https://www.linkedin.com/company/the-milvus-project/">LinkedIn</a> | <a href="https://x.com/zilliz_universe">X</a> | <a href="https://www.youtube.com/@MilvusVectorDatabase/featured">YouTube</a></p></li>
 </ul>
 <p>Together, we can build the infrastructure for the next generation of AI development tools—transparent, powerful, and developer-first.</p>
-<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour">
+<p><a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting">
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/office_hour_83d4623510.png" alt="" class="doc-image" id="" />
     <span></span>

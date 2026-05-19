@@ -472,7 +472,7 @@ selling after a dip, say so explicitly.
 <li><strong><a href="https://docs.openclaw.ai/">OpenClaw</a></strong> <strong>docs</strong> — set up your first agent with Skills and Heartbeat</li>
 <li><strong><a href="https://exa.ai/">Exa</a></strong> <strong>API</strong> — 1,000 free searches per month to start</li>
 </ul>
-<p>Got questions, want help debugging, or just want to show off what you’ve built? Join the <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus Slack</a> channel— it’s the fastest way to get help from both the community and the team. And if you’d rather talk through your setup one-on-one, book a 20-minute <a href="https://meetings.hubspot.com/chloe-williams1/milvus-office-hour?__hstc=175614333.156cb1e50b398e3753dedcd15f8758f6.1769685782884.1773222362027.1773227913204.54&amp;__hssc=175614333.2.1773227913204&amp;__hsfp=1c9f7a3cc56fa6c486704004556598ad&amp;uuid=be611eac-2f37-4c1d-9494-71ae4e097f89">Milvus office hour.</a></p>
+<p>Got questions, want help debugging, or just want to show off what you’ve built? Join the <a href="https://milvusio.slack.com/join/shared_invite/zt-3nntzngkz-gYwhrdSE4~76k0VMyBfD1Q#/shared-invite/email">Milvus Slack</a> channel— it’s the fastest way to get help from both the community and the team. And if you’d rather talk through your setup one-on-one, book a 20-minute <a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting">Milvus office hour.</a></p>
 <h2 id="Keep-Reading" class="common-anchor-header">Keep Reading<button data-href="#Keep-Reading" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

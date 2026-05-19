@@ -322,7 +322,7 @@ For image and audio embeddings, use embed_image() and embed_audio() the same w
 
 That means you get unified multimodal embedding from Gemini where it fits, and Milvus's full multi-vector toolkit — sparse-dense hybrid search, multi-index schemas, reranking — where you need fine-grained control.
 
-Want to try it? Start with the [Milvus quickstart](https://milvus.io/docs/quickstart.md) and run the demo above, or check out the [hybrid search guide](https://milvus.io/docs/hybrid_search_with_milvus.md) for the full multi-vector setup with BGE-M3. Bring your questions to [Discord](https://milvus.io/discord) or [Milvus Office Hours](https://meetings.hubspot.com/chloe-williams1/milvus-office-hour).
+Want to try it? Start with the [Milvus quickstart](https://milvus.io/docs/quickstart.md) and run the demo above, or check out the [hybrid search guide](https://milvus.io/docs/hybrid_search_with_milvus.md) for the full multi-vector setup with BGE-M3. Bring your questions to [Discord](https://milvus.io/discord) or [Milvus Office Hours](https://meetings.hubspot.com/chloe-williams1/milvus-meeting).
 
 ## Keep Reading
 
