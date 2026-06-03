@@ -9,7 +9,7 @@ tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
-meta_keywords: Milvus FLAT index, vector database memory, mmap vector index, FP16 vector quantization, scalar filtering
+meta_keywords: Milvus FLAT index, vector database memory, mmap vector index, FP16 vector quantization, image search
 meta_title: >
  How to Run 25 Million Image Vectors on Under 1GB of Memory in Milvus
 desc: >
