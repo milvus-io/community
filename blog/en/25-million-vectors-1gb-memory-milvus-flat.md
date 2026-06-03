@@ -4,7 +4,7 @@ title: >
  How to Run 25 Million Image Vectors on Under 1GB of Memory in Milvus
 author: Jack Li
 date: 2026-6-3
-cover: 
+cover: assets.zilliz.com/25_million_vectors_1gb_memory_milvus_flat_md_1_19b2539810.png
 tag: Engineering
 recommend: false
 publishToMedium: true
