@@ -3,9 +3,9 @@ id: why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
 title: 我们为何打造 Loon：一个永不停息变化的人工智能数据存储引擎。
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -319,7 +319,7 @@ metadata
 <p>这个名字沿袭了 Zilliz 的鸟类命名传统。loon 是一种生活在湖泊上的潜鸟，这与系统的目标不谋而合：向量数据库每次运行查询、回填列或建立索引时，都不必移动、扫描或重写整个数据湖。它应首先了解当前数据集的版本，包括其列、索引、统计信息、删除日志和对象引用，然后只读取实际需要的部分。</p>
 <p>混合文件格式、行 ID 对齐和 Manifest 并不是三个独立的功能。它们源于同一个设计假设：向量数据集本身就是异构的。</p>
 <h3 id="Three-pieces-one-storage-model" class="common-anchor-header">三个部分，一个存储模型</h3><p>混合文件格式承认不同列有不同的访问模式。标量字段适用于扫描和筛选。向量字段需要高效的行级查找。视频、PDF、图像和音频文件等原始对象属于对象存储，而不是数据库数据文件。</p>
-<p>行 ID 对齐承认这些列可能在物理上是分开的，但它们仍然描述相同的逻辑行。标题、Embeddings、稀疏向量和视频 URI 可能存在于不同的文件和格式中，但它们仍然需要作为一个结果汇集到一起。</p>
+<p>行 ID 对齐承认这些列可能在物理上是分开的，但它们描述的仍是相同的逻辑行。标题、Embeddings、稀疏向量和视频 URI 可能存在于不同的文件和格式中，但它们仍然需要作为一个结果汇集到一起。</p>
 <p>Manifest 承认，数据集不是写完一次就不管了。它将被多个系统、多个版本、多个任务所修改。索引、统计、删除日志、外部对象引用和列组都必须出现在同一版本视图中。</p>
 <p><strong>这就是为什么 Loon 不仅仅是一种更快的向量文件格式。</strong>更快的格式有助于点查找，但不能解决 Schema 演进或多引擎协调问题。行 ID 对齐可以让拆分的列表现得像一个表，但它并不能指定哪些文件属于当前版本。Manifest 可以描述数据集的状态，但如果没有列群和行 ID 对齐，它就无法在一个逻辑 Collections 内清晰地表示不同的物理布局。</p>
 <p>存储模型需要这三样东西：不同列组的不同格式、重构行的共享行 ID 空间，以及告诉每个读写器当前数据集是什么的版本化 Manifest。</p>
@@ -345,7 +345,7 @@ metadata
     <span></span>
   </span>
 </p>
-<p>Manifest 描述数据集的版本状态。ColumnGroups 将逻辑 Collections 映射到物理列组。文件格式层可让每个列组选择合适的格式。文件系统抽象可在对象存储和本地存储中使用。</p>
+<p>Manifest 描述数据集的版本状态。ColumnGroups 将逻辑 Collections 映射为列的物理分组。文件格式层可让每个列组选择合适的格式。文件系统抽象可在对象存储和本地存储中使用。</p>
 <p>重要的一点是，混合文件格式、行 ID 对齐和 Manifest 并不是独立的功能。它们共同定义了存储模型。</p>
 <p>有了这个模型，我们就可以逐一查看三种设计选择：Loon 如何存储不同的 ColumnGroup，如何将它们重新对齐成行，以及 Manifest 如何将这些文件变成版本化数据集。</p>
 <h2 id="Design-1-use-the-right-file-format-for-the-right-column-group" class="common-anchor-header">设计 1：为正确的列组使用正确的文件格式<button data-href="#Design-1-use-the-right-file-format-for-the-right-column-group" class="anchor-icon" translate="no">
@@ -429,7 +429,7 @@ raw video objects
         ></path>
       </svg>
     </button></h2><p>混合文件格式解决了一个问题：不同的列现在可以使用最适合它们的格式。</p>
-<p>但这又产生了第二个问题。如果标量字段住在 Parquet 中，向量住在 Vortex 中，原始对象住在对象存储中，系统如何仍将它们视为一个 Collections？</p>
+<p>但这又产生了第二个问题。如果标量字段住在 Parquet 中，向量住在 Vortex 中，原始对象住在对象存储中，那么系统如何仍将它们视为一个 Collections？</p>
 <p><strong>Loon 通过行 ID 对齐解决了这个问题。</strong></p>
 <h3 id="Row-ID-is-the-storage-layer-coordinate-system" class="common-anchor-header">行 ID 是存储层坐标系</h3><p>每个物理 ColumnGroupFile 都记录了文件路径和所覆盖的行 ID 范围：</p>
 <pre><code translate="no">path
@@ -583,7 +583,7 @@ _index/
 </ul>
 <h3 id="There-is-still-work-ahead" class="common-anchor-header">未来仍有工作要做</h3><ul>
 <li><strong>外部写入路径</strong>很重要，因为 Spark 和 Ray 应该能够生成 ColumnGroups 和 Manifest commits，而无需通过客户端 SDK 循环强制进行每次回填。</li>
-<li><strong>Lakehouse 互操作性</strong>很重要，因为许多团队已经在使用目录和查询引擎，如<strong>Iceberg、Delta Lake、Trino、DuckDB 和 Athena。</strong>向量数据应该能够参与到该生态系统中，而不会损失向量搜索性能。</li>
+<li><strong>Lakehouse 互操作性</strong>很重要，因为许多团队已经在使用目录和查询引擎，如<strong>Iceberg、Delta Lake、Trino、DuckDB 和 Athena。</strong>矢量数据应该能够在不损失矢量搜索性能的情况下参与该生态系统。</li>
 <li><strong>索引布局</strong>很重要，因为图索引和反转结构在对象存储上具有不同的访问模式。</li>
 <li><strong>大型对象语义</strong>很重要，因为原始视频、PDF、图像和音频文件需要与衍生向量数据集一致的引用管理、版本管理和删除行为。</li>
 </ul>

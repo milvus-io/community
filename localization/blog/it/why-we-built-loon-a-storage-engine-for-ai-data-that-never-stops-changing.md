@@ -5,9 +5,9 @@ title: >-
   intelligenza artificiale che non smettono di cambiare.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -109,7 +109,7 @@ origin: >-
 <li>Tre mesi dopo, le didascalie sono sottoposte a revisione umana e devono essere corrette sul posto.</li>
 </ul>
 <p>Il set di dati non è mai stato completato. Continuava ad accumulare nuove interpretazioni delle stesse righe sottostanti.</p>
-<p>Questa è una delle differenze fondamentali tra i dati vettoriali e i dati aziendali tradizionali. La stessa riga viene rielaborata più volte. E la scala trasforma questo inconveniente in un problema di archiviazione: i set di dati multimodali spesso non sono milioni di record, ma centinaia di milioni o miliardi. LAION-5B è un utile riferimento per la forma: miliardi di coppie immagine-testo, ciascuna con metadati, didascalie e incorporazioni. Quindi la parte difficile non è il primo inserimento. La parte difficile è tutto ciò che accade dopo che l'insieme di dati inizia a evolversi. <strong>L'evoluzione espone tre problemi.</strong></p>
+<p>Questa è una delle differenze fondamentali tra i dati vettoriali e i dati aziendali tradizionali. La stessa riga viene rielaborata più volte. E la scala trasforma questo inconveniente in un problema di archiviazione: i set di dati multimodali spesso non sono milioni di record, ma centinaia di milioni o miliardi. LAION-5B è un utile riferimento per la forma: miliardi di coppie immagine-testo, ciascuna con metadati, didascalie e incorporazioni. Quindi la parte difficile non è il primo inserimento. La parte difficile è tutto ciò che accade dopo che il set di dati inizia a evolversi. <strong>L'evoluzione espone tre problemi.</strong></p>
 <h2 id="The-first-problem-long-columns-make-write-amplification-expensive" class="common-anchor-header">Il primo problema: le colonne lunghe rendono costosa l'amplificazione della scrittura.<button data-href="#The-first-problem-long-columns-make-write-amplification-expensive" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -126,9 +126,9 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>I formati colonnari come Parquet sono eccellenti per molti carichi di lavoro analitici. Funzionano bene quando gli schemi sono abbastanza stabili, i dati vengono letti più spesso che riscritti, le scansioni riguardano solo un sottoinsieme di colonne e la compressione è importante. Questo è il mondo per cui molti formati analitici sono stati ottimizzati.</p>
-<h3 id="Vector-rows-are-much-wider-than-analytical-rows" class="common-anchor-header">Le righe vettoriali sono molto più larghe di quelle analitiche</h3><p>TPC-H <code translate="no">lineitem</code> è una buona base di riferimento. Ha 16 colonne: chiavi intere, valori decimali, date, stringhe brevi e un piccolo campo di commento. Una riga non compressa è di circa 150 byte. Dopo la compressione, può essere molto più piccola. Con un gruppo di righe da 64 MB, un sistema di archiviazione può contenere centinaia di migliaia di righe in un unico gruppo.</p>
+<h3 id="Vector-rows-are-much-wider-than-analytical-rows" class="common-anchor-header">Le righe vettoriali sono molto più larghe di quelle analitiche</h3><p>TPC-H <code translate="no">lineitem</code> è un buon punto di riferimento. Ha 16 colonne: chiavi intere, valori decimali, date, stringhe brevi e un piccolo campo di commento. Una riga non compressa è di circa 150 byte. Dopo la compressione, può essere molto più piccola. Con un gruppo di righe da 64 MB, un sistema di archiviazione può contenere centinaia di migliaia di righe in un unico gruppo.</p>
 <p><strong>I set di dati vettoriali non hanno questo aspetto.</strong></p>
-<p>Un set di dati immagine-testo in stile LAION è molto più vicino a ciò che molte pipeline di IA producono oggi. Ogni riga ha ancora i normali metadati: un URL, una didascalia, larghezza, altezza, punteggi di qualità, etichette e così via. Ma una volta aggiunto l'embedding, la forma fisica della riga cambia.</p>
+<p>Un set di dati immagine-testo in stile LAION è molto più vicino a ciò che molte pipeline di IA producono oggi. Ogni riga ha ancora i normali metadati: un URL, una didascalia, larghezza, altezza, punteggi di qualità, etichette e così via. Ma una volta aggiunto l'incorporamento, la forma fisica della riga cambia.</p>
 <p>Un vettore CLIP a 768 dimensioni occupa circa 1,5 KB in fp16 o 3 KB in fp32. Una sola colonna può essere molto più grande di un'intera riga di TPC-H <code translate="no">lineitem</code>.</p>
 <p>E 768 dimensioni non sono insolite o grandi per gli standard odierni. Un embedding a 1024 o 2048 dimensioni è comune nelle pipeline multimodali. <code translate="no">text-embedding-3-large</code> di OpenAI arriva a 3072 dimensioni, pari a circa 12 KB per vettore in fp32.</p>
 <p>Il confronto è netto:</p>
@@ -320,7 +320,7 @@ metadata
       </svg>
     </button></h2><p>Per risolvere tutti questi problemi, abbiamo creato <strong>Loon</strong>, il nuovo motore di storage per Milvus e <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> (la prossima evoluzione di Zilliz Cloud), progettato per i dataset vettoriali in evoluzione.</p>
 <p>Il nome segue la tradizione di Zilliz di dare un nome agli uccelli. Un loon è un uccello subacqueo che vive sui laghi, il che si adatta bene all'obiettivo del sistema: un database vettoriale non deve spostare, scansionare o riscrivere un intero lago di dati ogni volta che esegue una query, riempie una colonna o costruisce un indice. Dovrebbe prima comprendere la versione corrente del dataset, comprese le colonne, gli indici, le statistiche, i registri delle cancellazioni e i riferimenti agli oggetti, quindi leggere solo la parte di cui ha effettivamente bisogno.</p>
-<p>I formati di file ibridi, l'allineamento degli ID di riga e il Manifest non sono tre caratteristiche separate. Esse derivano dallo stesso presupposto progettuale: un set di dati vettoriali è intrinsecamente eterogeneo.</p>
+<p>I formati di file ibridi, l'allineamento degli ID di riga e il Manifest non sono tre caratteristiche separate. Nascono dallo stesso presupposto progettuale: un set di dati vettoriali è intrinsecamente eterogeneo.</p>
 <h3 id="Three-pieces-one-storage-model" class="common-anchor-header">Tre pezzi, un modello di archiviazione</h3><p>I formati di file ibridi riconoscono che colonne diverse hanno modelli di accesso diversi. I campi scalari sono adatti a scansioni e filtri. I campi vettoriali necessitano di una ricerca efficiente a livello di riga. Gli oggetti grezzi come i video, i PDF, le immagini e i file audio devono essere memorizzati negli oggetti, non nei file di dati dei database.</p>
 <p>L'allineamento dell'ID riga riconosce che queste colonne possono essere fisicamente separate, ma descrivono comunque le stesse righe logiche. Una didascalia, un incorporamento, un vettore sparso e un URI video possono risiedere in file e formati diversi, ma devono comunque essere riuniti in un unico risultato.</p>
 <p>Il Manifesto riconosce che il set di dati non viene scritto una volta sola e lasciato in pace. Sarà modificato da più sistemi, in più versioni e per più compiti. Gli indici, le statistiche, i registri delle cancellazioni, i riferimenti a oggetti esterni e i gruppi di colonne devono apparire tutti nella stessa vista versionata.</p>
@@ -439,7 +439,7 @@ raw video objects
 start_index
 end_index
 <button class="copy-code-btn"></button></code></pre>
-<p>ColumnGroup diversi possono coprire lo stesso spazio di ID riga anche se si trovano in file e formati diversi.</p>
+<p>ColumnGroup diversi possono coprire lo stesso spazio ID riga anche se si trovano in file e formati diversi.</p>
 <p>Per l'ID riga <code translate="no">12345</code>, i metadati scalari possono trovarsi in un ColumnGroup Parquet, l'embedding in un ColumnGroup Vortex e il video grezzo può essere rappresentato da un riferimento di memorizzazione di oggetti. Logicamente, si tratta sempre di un'unica riga. In questo modo il livello di memorizzazione ha un sistema di coordinate stabile.</p>
 <p>L'ID riga non è la chiave primaria dell'azienda. È il sistema di coordinate del livello di archiviazione che consente a Loon di dividere fisicamente una raccolta senza perdere la capacità di ricostruirla logicamente.</p>
 <p>
@@ -558,10 +558,10 @@ _index/
 <p>Con un modello di archiviazione basato su Manifest, i motori di analisi possono leggere la stessa vista versionata del dataset del sistema di distribuzione. Possono proiettare solo le colonne di cui hanno bisogno, scansionare solo gli intervalli di righe rilevanti e lavorare su una versione dichiarata del dataset invece che su un'istantanea esportata manualmente.</p>
 <h3 id="Deletes-and-corrections-should-touch-only-what-changed" class="common-anchor-header">Le cancellazioni e le correzioni devono riguardare solo ciò che è stato modificato</h3><p>Le cancellazioni, le correzioni delle didascalie, le correzioni delle etichette e gli aggiornamenti della governance sono operazioni di routine nei dataset AI. Non dovrebbero costringere ogni colonna del vettore lungo a seguire lo stesso percorso di riscrittura.</p>
 <p>Con Loon, la cancellazione dei registri può essere trattata prima come una cancellazione logica. La successiva compattazione può ripulire i gruppi di colonne interessati senza riscrivere i dati non correlati. Se un breve campo di testo cambia, il livello di archiviazione non deve riscrivere centinaia di gigabyte di vettori densi solo perché condividono la stessa riga logica.</p>
-<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">I motori esterni diventano parte del flusso di lavoro, non una via di fuga</h3><p>Il cambiamento più importante è che i motori esterni non sono più trattati come sistemi esterni al database vettoriale.</p>
+<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">I motori esterni diventano parte del flusso di lavoro, non una via di fuga</h3><p>Il cambiamento più importante è che i motori esterni non vengono più trattati come sistemi esterni al database vettoriale.</p>
 <p>Spark, Ray, i lavori di valutazione, i sistemi di etichettatura e le pipeline di governance producono e modificano già gran parte dei dati. Il livello di archiviazione dovrebbe consentire loro di collaborare attorno a un'unica fonte di verità, anziché esportare, copiare e reimportare continuamente.</p>
 <p>Questo è ciò che rende possibile una versione di Manifest. Fornisce al servizio online, all'analisi offline, ai lavori di backfill e alla compattazione una visione condivisa del set di dati.</p>
-<p>Questi possono sembrare dettagli di archiviazione interna, ma influenzano la velocità con cui i team possono iterare sui set di dati AI. Ogni modifica del modello, backfill delle funzionalità, correzione delle didascalie, filtro di qualità e ricostruzione dell'indice dipende dalla stessa domanda: &quot;<strong>Il sistema può aggiornare il dataset senza spostare dati che non è necessario spostare?&quot;.</strong></p>
+<p>Questi possono sembrare dettagli di archiviazione interna, ma influenzano la velocità con cui i team possono iterare sui set di dati AI. Ogni modifica del modello, backfill delle funzionalità, correzione delle didascalie, filtro di qualità e ricostruzione dell'indice dipende dalla stessa domanda: &quot;<strong>Il sistema è in grado di aggiornare il dataset senza spostare i dati di cui non ha bisogno?&quot;.</strong></p>
 <p>Questo è il valore pratico del modello di archiviazione.</p>
 <h2 id="Loon-is-available-in-Milvus-30-beta-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Loon è disponibile in Milvus 3.0 beta e Zilliz Vector Lakebase<button data-href="#Loon-is-available-in-Milvus-30-beta-and-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -580,7 +580,7 @@ _index/
       </svg>
     </button></h2><p>Loon è disponibile in <a href="https://milvus.io/docs/release_notes.md">Milvus 3.0 beta</a> e fa anche parte del livello di storage di <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Zilliz Vector Lakebase</a>, la prossima evoluzione di Zilliz Cloud. Questa release si concentra su tre aree principali:</p>
 <ul>
-<li><strong>Il Manifesto.</strong> L'obiettivo è che le scritture, i backfill, le cancellazioni, le statistiche e gli aggiornamenti dell'indice producano visualizzazioni del dataset in versione che i lettori possano aprire in modo coerente. Per i lettori, questo significa che una query può aprire una versione specifica del Manifest e vedere una vista stabile del dataset. Per gli autori, questo significa che i nuovi file di dati, i registri delle cancellazioni, le statistiche o i file degli indici possono essere preparati prima e poi resi visibili attraverso un commit con versione.</li>
+<li><strong>Il Manifesto.</strong> L'obiettivo è che le scritture, i backfill, le cancellazioni, le statistiche e gli aggiornamenti dell'indice producano visualizzazioni del dataset in versione che i lettori possano aprire in modo coerente. Per i lettori, ciò significa che una query può aprire una versione specifica del Manifest e vedere una vista stabile del dataset. Per gli autori, questo significa che i nuovi file di dati, i registri delle cancellazioni, le statistiche o i file degli indici possono essere preparati prima e poi resi visibili attraverso un commit con versione.</li>
 <li><strong>Il gruppo di colonne e il supporto del formato.</strong> Parquet supporta colonne scalari ed ecosistemiche. Vortex supporta modelli di accesso vettoriali. Lance può essere integrato in modalità di sola lettura per la compatibilità con i set di dati Lance esistenti.</li>
 <li><strong>L'indice su Lake.</strong> Gli indici scalari, gli indici di filtraggio e gli indici invertiti di testo possono partecipare alla pianificazione basata su Manifest per intervallo di righe. Gli indici vettoriali nativi di Lake sono più coinvolti. HNSW e IVF hanno un comportamento diverso sullo storage degli oggetti e HNSW in particolare è sensibile all'accesso casuale e alla localizzazione della cache. Non è possibile riutilizzare semplicemente un layout progettato per un SSD locale e aspettarsi lo stesso risultato.</li>
 </ul>
@@ -588,7 +588,7 @@ _index/
 <li>I<strong>percorsi di scrittura esterni</strong> sono importanti perché Spark e Ray dovrebbero essere in grado di produrre ColumnGroups e Manifest commits senza forzare ogni backfill attraverso un ciclo SDK client.</li>
 <li>L<strong>'interoperabilità di Lakehouse</strong> è importante perché molti team utilizzano già cataloghi e motori di interrogazione come <strong>Iceberg, Delta Lake, Trino, DuckDB e Athena.</strong> I dati vettoriali devono poter partecipare a questo ecosistema senza perdere le prestazioni della ricerca vettoriale.</li>
 <li>Il<strong>layout degli indici</strong> è importante perché gli indici a grafo e le strutture invertite hanno schemi di accesso diversi sullo storage degli oggetti.</li>
-<li><strong>La semantica degli oggetti di grandi dimensioni</strong> è importante perché i video, i PDF, le immagini e i file audio grezzi richiedono un comportamento di gestione dei riferimenti, di versionamento e di cancellazione in linea con il set di dati vettoriale derivato.</li>
+<li><strong>La semantica degli oggetti di grandi dimensioni</strong> è importante perché i video, i PDF, le immagini e i file audio grezzi richiedono un comportamento di gestione dei riferimenti, di versionamento e di cancellazione che sia in linea con il set di dati vettoriale derivato.</li>
 </ul>
 <p>L'esatto comportamento di rilascio, le impostazioni predefinite e il percorso di migrazione dovrebbero seguire le <a href="https://docs.zilliz.com/docs/release-notes-2605">note di rilascio di</a> Milvus e <a href="https://docs.zilliz.com/docs/release-notes-2605">Zilliz Cloud</a>. La direzione dello storage, tuttavia, è chiara: i database vettoriali hanno bisogno di una base versionata e nativa del lago sotto il livello di servizio.</p>
 <h2 id="Try-Loon-under-Zilliz-Vector-Lakebase" class="common-anchor-header">Provate Loon sotto Zilliz Vector Lakebase<button data-href="#Try-Loon-under-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
@@ -606,12 +606,12 @@ _index/
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Se il vostro stack attuale separa il servizio online, l'analisi offline, i backfill e i flussi di lavoro esterni del data lake in sistemi diversi, vale la pena dare un'occhiata a Zilliz Vector Lakebase. È possibile provarlo in <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>. Le nuove iscrizioni via e-mail ricevono 100 dollari di crediti gratuiti. Siete inoltre invitati a <a href="https://zilliz.com/contact-sales">parlarci</a> del vostro caso d'uso.</p>
+    </button></h2><p>Se il vostro stack attuale separa il servizio online, l'analisi offline, i backfill e i flussi di lavoro esterni del data lake in sistemi diversi, vale la pena dare un'occhiata a Zilliz Vector Lakebase. Potete provarlo in <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>. Le nuove iscrizioni via e-mail ricevono 100 dollari di crediti gratuiti. Siete inoltre invitati a <a href="https://zilliz.com/contact-sales">parlarci</a> del vostro caso d'uso.</p>
 <p>Potete anche seguire il <a href="https://milvus.io/docs/release_notes.md">rilascio di Milvus 3.0</a> per vedere come Loon si evolve nel motore open-source.</p>
 <p><strong>Zilliz Vector Lakebase riunisce:</strong></p>
 <ul>
 <li>Servizio a livelli per diversi compromessi in termini di prestazioni e costi in tempo reale</li>
-<li>Ricerca on-demand per carichi di lavoro su larga scala o esplorativi senza calcoli sempre disponibili</li>
+<li>Ricerca on-demand per carichi di lavoro su larga scala o esplorativi senza calcolo continuo</li>
 <li>Ricerca esterna al data lake, in modo da poter indicizzare e ricercare direttamente sui dati del lake esistente</li>
 <li>Ricerca a tutto campo su vettori, testo, JSON e dati geospaziali, con recupero ibrido e reranking</li>
 <li>Storage unificato nativo del lago basato su Vortex, un formato aperto progettato per letture casuali più veloci e a basso costo su dati vettoriali.</li>

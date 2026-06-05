@@ -3,9 +3,9 @@ id: why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
 title: 'Loon을 구축한 이유: 끊임없이 변화하는 AI 데이터를 위한 스토리지 엔진.'
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -199,7 +199,7 @@ metadata
 <h3 id="One-layout-cannot-optimize-for-both-paths" class="common-anchor-header">하나의 레이아웃으로 두 경로를 모두 최적화할 수 없음</h3><p>이것이 핵심적인 충돌입니다. 스칼라 필터링과 분석은 넓고 압축된 스캔 친화적인 레이아웃을 원합니다. 벡터 조회는 좁고 정밀하며 행 주소 지정이 가능한 레이아웃을 원합니다.</p>
 <p>단일 파일 형식은 두 가지를 어느 정도 지원할 수 있지만, 두 가지를 동시에 최적으로 지원할 수는 없습니다.</p>
 <p>모든 열이 Parquet에 있는 경우 스칼라 스캔이 편합니다. 그러나 리콜 후 ANN 조회는 더 어려워집니다. 시스템에는 수백 개의 벡터, 캡션 또는 메타데이터 레코드만 필요할 수 있지만, 스토리지 계층에서는 대부분 관련 없는 행이 포함된 대규모 행 그룹을 읽어야 할 수도 있습니다.</p>
-<p>로컬 SSD에서는 캐시 및 mmap을 통해 이 비용의 일부를 줄일 수 있습니다. 데이터가 오브젝트 스토리지에 저장되면 비용이 더 눈에 띄게 됩니다. 모든 캐시 누락은 원격 범위 읽기가 될 수 있습니다. 후보 행이 여러 행 그룹에 흩어져 있는 경우, 단일 쿼리가 여러 번의 읽기를 트리거하여 각각 쿼리에 필요한 것보다 더 많은 데이터를 가져올 수 있습니다. 레이아웃이 잘못 배치된 경우, 1,000개의 후보 행을 가져오면 수십 또는 수백 메가바이트의 불필요한 I/O가 발생하기 쉽고, 극단적인 경우에는 훨씬 더 많은 양의 I/O가 발생할 수 있습니다.</p>
+<p>로컬 SSD에서는 캐시 및 mmap을 통해 이 비용의 일부를 줄일 수 있습니다. 데이터가 오브젝트 스토리지에 저장되면 비용이 더 잘 드러납니다. 모든 캐시 누락은 원격 범위 읽기가 될 수 있습니다. 후보 행이 여러 행 그룹에 흩어져 있는 경우, 단일 쿼리가 여러 번의 읽기를 트리거하여 각각 쿼리에 필요한 것보다 더 많은 데이터를 가져올 수 있습니다. 레이아웃이 잘못 배치된 경우, 1,000개의 후보 행을 가져오면 수십 또는 수백 메가바이트의 불필요한 I/O가 발생하기 쉽고, 극단적인 경우에는 훨씬 더 많은 양의 I/O가 발생할 수 있습니다.</p>
 <p>행 그룹을 작게 만들면 포인트 조회에는 도움이 되지만 스캔 속도가 저하됩니다. 작은 조각이 너무 많으면 압축 효율이 떨어지고 메타데이터 오버헤드가 증가하며 분석 엔진이 의존하는 긴 순차 읽기가 중단됩니다.</p>
 <p><strong>따라서 문제는 하나의 매직 행 그룹 크기를 찾는 것이 아닙니다. 문제는 동일한 데이터 세트가 두 개의 다른 스토리지 시스템처럼 작동하도록 요청받는다는 것입니다.</strong></p>
 <h3 id="Hybrid-search-forces-both-paths-into-one-query" class="common-anchor-header">두 경로를 하나의 쿼리로 강제하는 하이브리드 검색</h3><p>하이브리드 검색은 이러한 충돌을 무시하기 어렵게 만듭니다. 단일 쿼리는 먼저 스칼라 필터를 적용할 수 있습니다:</p>
@@ -347,7 +347,7 @@ metadata
 </p>
 <p>매니페스트는 데이터 세트의 버전이 지정된 상태를 설명합니다. ColumnGroups는 논리적 컬렉션을 물리적 열 그룹으로 매핑합니다. 파일 형식 계층에서는 각 ColumnGroup이 적절한 형식을 선택할 수 있습니다. 파일 시스템 추상화는 객체 스토리지와 로컬 스토리지에서 작동합니다.</p>
 <p>중요한 점은 하이브리드 파일 형식, 행 ID 정렬, 매니페스트가 별도의 기능이 아니라는 점입니다. 이들은 함께 스토리지 모델을 정의합니다.</p>
-<p>이 모델을 바탕으로 Loon이 서로 다른 ColumnGroup을 저장하는 방법, 이를 다시 행으로 정렬하는 방법, 매니페스트가 해당 파일을 버전화된 데이터 세트로 변환하는 방법 등 세 가지 설계를 하나씩 살펴볼 수 있습니다.</p>
+<p>이 모델을 바탕으로 Loon이 서로 다른 ColumnGroup을 저장하는 방법, 이를 다시 행으로 정렬하는 방법, 매니페스트가 해당 파일을 버전이 지정된 데이터 세트로 변환하는 방법 등 세 가지 설계를 하나씩 살펴볼 수 있습니다.</p>
 <h2 id="Design-1-use-the-right-file-format-for-the-right-column-group" class="common-anchor-header">디자인 1: 올바른 컬럼 그룹에 적합한 파일 형식 사용<button data-href="#Design-1-use-the-right-file-format-for-the-right-column-group" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -555,7 +555,7 @@ _index/
 <p>매니페스트 기반 저장소 모델을 사용하면 분석 엔진은 서비스 시스템과 동일한 버전의 데이터 세트 보기를 읽을 수 있습니다. 필요한 열만 투영하고, 관련 행 범위만 스캔하고, 수동으로 내보낸 스냅샷 대신 선언된 데이터 세트 버전에 대해 작업할 수 있습니다.</p>
 <h3 id="Deletes-and-corrections-should-touch-only-what-changed" class="common-anchor-header">삭제 및 수정은 변경된 항목만 건드려야 합니다.</h3><p>삭제, 캡션 수정, 레이블 수정 및 거버넌스 업데이트는 AI 데이터 세트에서 일상적인 작업입니다. 모든 긴 벡터 열을 동일한 재작성 경로를 통해 강제로 재작성해서는 안 됩니다.</p>
 <p>Loon에서는 로그 삭제를 먼저 논리적 삭제로 처리할 수 있습니다. 나중에 압축을 하면 관련 없는 데이터를 다시 쓰지 않고도 영향을 받는 ColumnGroups를 정리할 수 있습니다. 짧은 텍스트 필드가 변경되는 경우, 동일한 논리적 행을 공유한다고 해서 스토리지 계층에서 수백 기가바이트의 고밀도 벡터를 다시 작성할 필요는 없습니다.</p>
-<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">외부 엔진은 탈출구가 아닌 워크플로우의 일부가 됩니다.</h3><p>더 큰 변화는 외부 엔진이 더 이상 벡터 데이터베이스 외부의 시스템으로 취급되지 않는다는 것입니다.</p>
+<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">외부 엔진은 탈출구가 아닌 워크플로우의 일부가 됩니다.</h3><p>더 큰 변화는 외부 엔진이 더 이상 벡터 데이터베이스 외부의 시스템으로 취급되지 않는다는 점입니다.</p>
 <p>Spark, Ray, 평가 작업, 라벨링 시스템, 거버넌스 파이프라인은 이미 많은 데이터를 생성하고 수정하고 있습니다. 스토리지 계층은 이들이 끊임없이 내보내기, 복사, 다시 가져오기를 반복하는 대신 단일 소스를 중심으로 협업할 수 있도록 지원해야 합니다.</p>
 <p>이것이 바로 매니페스트 버전이 가능하게 하는 것입니다. 온라인 서비스, 오프라인 분석, 백필 작업, 압축 작업에서 데이터 세트에 대한 공유 보기를 제공합니다.</p>
 <p>이러한 기능은 내부 저장소 세부 정보처럼 들릴 수 있지만, 팀이 AI 데이터 세트를 얼마나 빠르게 반복할 수 있는지에 영향을 미칩니다. 모든 모델 변경, 기능 백필, 캡션 수정, 품질 필터 및 인덱스 재구축은 &quot;<strong>시스템이 이동할 필요가 없는 데이터를 이동하지 않고 데이터 세트를 업데이트할 수 있는가?&quot;</strong>라는 동일한 질문에 따라 달라집니다.</p>

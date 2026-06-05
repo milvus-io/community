@@ -5,9 +5,9 @@ title: >-
   pára de mudar.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -39,7 +39,7 @@ origin: >-
     </button></h2><p>Este é um mergulho longo e profundo na engenharia, então aqui estão os pontos-chave antes de entrarmos nos detalhes.</p>
 <ul>
 <li>Os conjuntos de dados de IA não são tabelas estáticas. As mesmas linhas mudam constantemente à medida que as equipes substituem modelos de incorporação, adicionam vetores esparsos, revisam legendas, preenchem rótulos, reconstroem índices e executam análises off-line.</li>
-<li>Os esquemas de armazenamento tradicionais falham de três formas: colunas de vectores longas tornam os backfills dispendiosos, um único formato de ficheiro não pode servir tanto as digitalizações como as leituras pontuais e o armazenamento de bases de dados privadas obriga os pipelines externos a criar cópias extra da verdade.</li>
+<li>Os esquemas de armazenamento tradicionais falham de três formas: colunas de vectores longas tornam os backfills dispendiosos, um único formato de ficheiro não consegue servir bem as digitalizações e as leituras pontuais e o armazenamento de bases de dados privadas obriga os pipelines externos a criar cópias extra da verdade.</li>
 <li>Loon é o novo mecanismo de armazenamento para Milvus e Zilliz Vetor Lakebase. Ele é construído em torno de formatos de arquivo híbridos, alinhamento de ID de linha e um Manifesto que define o estado de versão do conjunto de dados.</li>
 <li>O objetivo é permitir que um único conjunto de dados vectoriais suporte pesquisa online, análise offline, backfills, compactação e computação externa sem copiar, reescrever ou reimportar dados constantemente.</li>
 </ul>
@@ -109,7 +109,7 @@ origin: >-
 <li>Três meses mais tarde, as legendas são sujeitas a revisão humana e têm de ser corrigidas no local.</li>
 </ul>
 <p>O conjunto de dados nunca foi concluído. Continuou a acumular novas interpretações das mesmas linhas subjacentes.</p>
-<p>Esta é uma das principais diferenças entre os dados vectoriais e os dados comerciais tradicionais. A mesma linha é reprocessada vezes sem conta. E a escala transforma isto de um inconveniente num problema de armazenamento: os conjuntos de dados multimodais não são frequentemente milhões de registos, mas centenas de milhões ou milhares de milhões. O LAION-5B é uma referência útil para a forma - milhares de milhões de pares imagem-texto, cada um com metadados, legendas e incorporação. Portanto, a parte mais difícil não é a primeira inserção. A parte difícil é tudo o que acontece depois de o conjunto de dados começar a evoluir. <strong>Essa evolução expõe três problemas.</strong></p>
+<p>Esta é uma das principais diferenças entre os dados vectoriais e os dados comerciais tradicionais. A mesma linha é reprocessada vezes sem conta. E a escala transforma isto de um inconveniente num problema de armazenamento: os conjuntos de dados multimodais não são frequentemente milhões de registos, mas centenas de milhões ou milhares de milhões. O LAION-5B é uma referência útil para a forma - biliões de pares imagem-texto, cada um com metadados, legendas e embeddings. Portanto, a parte mais difícil não é a primeira inserção. A parte difícil é tudo o que acontece depois de o conjunto de dados começar a evoluir. <strong>Essa evolução expõe três problemas.</strong></p>
 <h2 id="The-first-problem-long-columns-make-write-amplification-expensive" class="common-anchor-header">O primeiro problema: colunas longas tornam a amplificação da escrita dispendiosa<button data-href="#The-first-problem-long-columns-make-write-amplification-expensive" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
@@ -156,7 +156,7 @@ origin: >-
 <p>Nos sistemas colunares, os dados antigos não são normalmente actualizados no local. Um registo de eliminação regista as alterações e a compactação reescreve posteriormente as linhas activas em novos ficheiros. Esse modelo é gerenciável quando as linhas são pequenas.</p>
 <p>Com dados vectoriais, uma pequena atualização lógica pode desencadear uma grande reescrita física.</p>
 <p>Um trabalho de revisão humano pode corrigir apenas algumas centenas de bytes numa legenda. Mas se a legenda, o vetor denso, o vetor esparso e outras caraterísticas derivadas partilharem o mesmo ciclo de vida do ficheiro físico, o sistema pode acabar por reescrever também os vectores. A alteração lógica é pequena. A E/S física pode ser enorme.</p>
-<p>Este é o problema da amplificação da escrita no armazenamento vetorial. A parte mais dispendiosa não é apenas o facto de os vectores serem grandes. É o facto de os campos derivados grandes e os campos mutáveis pequenos ficarem frequentemente ligados por uma disposição de armazenamento que os trata como uma unidade.</p>
+<p>Este é o problema da amplificação da escrita no armazenamento vetorial. A parte dispendiosa não é apenas o facto de os vectores serem grandes. É o facto de os campos derivados grandes e os campos mutáveis pequenos ficarem frequentemente ligados por uma disposição de armazenamento que os trata como uma unidade.</p>
 <h3 id="For-AI-datasets-backfill-is-a-routine-workload" class="common-anchor-header">Para conjuntos de dados de IA, o backfill é uma carga de trabalho de rotina</h3><p>Para tabelas analíticas tradicionais, a evolução do esquema pode ocorrer apenas ocasionalmente. Para os conjuntos de dados de IA, é uma rotina. Os modelos de legenda são actualizados. Os modelos de incorporação são substituídos. Os vectores esparsos são adicionados mais tarde. Aparecem caraterísticas de reclassificação. As etiquetas humanas são corrigidas. As etiquetas de governação são preenchidas novamente. Os índices são reconstruídos.</p>
 <p>Estas operações não são simples adições. Elas frequentemente modificam ou estendem linhas existentes.</p>
 <p>É por isso que o armazenamento vetorial não pode apenas otimizar o débito de digitalização. Também tem de tornar os backfills e as actualizações parciais mais baratos.</p>
@@ -197,7 +197,7 @@ video_uri
 metadata
 <button class="copy-code-btn"></button></code></pre>
 <p>Esse padrão lê menos linhas, geralmente centenas ou milhares, mas precisa de acesso preciso por ID de linha. Pretende localizar uma linha e coluna específicas, obter apenas o intervalo de bytes necessário e evitar obter um grupo de linhas inteiro apenas para obter alguns registos.</p>
-<p>A pesquisa pontual tem quase a preferência oposta à digitalização. Ela quer uma granularidade de leitura menor. Idealmente, a camada de armazenamento pode encontrar o segmento relevante ou o intervalo de bytes por ID de linha, ler apenas esse intervalo e descodificar apenas os dados necessários para o resultado.</p>
+<p>A pesquisa pontual tem quase a preferência oposta à varredura. Ela quer uma granularidade de leitura menor. Idealmente, a camada de armazenamento pode encontrar o segmento relevante ou o intervalo de bytes por ID de linha, ler apenas esse intervalo e descodificar apenas os dados necessários para o resultado.</p>
 <p>A compressão também tem uma compensação diferente. Para varreduras, uma compressão mais pesada geralmente vale a pena porque o sistema lê muitos dados e economiza E/S. Para a pesquisa de pontos, a compressão pode tornar-se um problema se a recuperação de uma linha exigir a descodificação de um bloco comprimido muito maior.</p>
 <h3 id="One-layout-cannot-optimize-for-both-paths" class="common-anchor-header">Um layout não pode ser otimizado para ambos os caminhos</h3><p>Este é o conflito central. A filtragem e a análise escalar querem layouts amplos, compactados e de fácil leitura. A pesquisa de vectores quer layouts estreitos, precisos e endereçáveis por linha.</p>
 <p>Um único formato de arquivo pode suportar ambos até certo ponto, mas não pode ser ideal para ambos simultaneamente.</p>
@@ -227,7 +227,7 @@ metadata
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Os dois primeiros problemas ocorrem no interior da base de dados. O terceiro acontece na fronteira entre sistemas.</p>
+    </button></h2><p>Os dois primeiros problemas ocorrem no interior da base de dados. O terceiro ocorre na fronteira entre sistemas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_5_802e6d92c3.png" alt="" class="doc-image" id="" />
@@ -235,7 +235,7 @@ metadata
   </span>
 </p>
 <h3 id="AI-data-pipelines-span-many-systems" class="common-anchor-header">Os pipelines de dados de IA abrangem muitos sistemas</h3><p>No fluxo de trabalho de vídeo, muito pouco acontece na própria base de dados vetorial.</p>
-<p>Os vídeos em bruto vivem no armazenamento de objectos. A geração de clips pode ser executada no Spark ou no Ray. A pontuação estética pode ser executada num serviço GPU. A legendagem pode ser executada num pipeline de inferência LLM. Os embeddings podem ser gerados por outro trabalho de GPU. Os vectores esparsos podem ser provenientes de um serviço SPLADE. A avaliação offline, a filtragem de dados de formação, a revisão humana e os trabalhos de governação podem ser executados noutro local.</p>
+<p>Os vídeos em bruto vivem no armazenamento de objectos. A geração de clips pode ser executada no Spark ou no Ray. A pontuação estética pode ser executada num serviço GPU. As legendas podem ser executadas num pipeline de inferência LLM. Os embeddings podem ser gerados por outro trabalho de GPU. Os vectores esparsos podem ser provenientes de um serviço SPLADE. A avaliação offline, a filtragem de dados de formação, a revisão humana e os trabalhos de governação podem ser executados noutro local.</p>
 <p>A base de dados de vectores serve a pesquisa em linha, mas o conjunto de dados é produzido, corrigido, avaliado e alargado por muitos sistemas.</p>
 <h3 id="Private-storage-formats-create-multiple-copies-of-the-truth" class="common-anchor-header">Os formatos de armazenamento privados criam várias cópias da verdade</h3><p>Se a base de dados utiliza um formato físico privado que só ela pode ler e escrever, cada tarefa externa necessita de uma exportação, uma conversão, uma cópia e uma importação. A mesma coleção pode existir na base de dados, num diretório temporário Spark, num output de avaliação e num diretório local de backfill. Então a verdadeira questão torna-se:</p>
 <ul>
@@ -448,10 +448,10 @@ end_index
     <span></span>
   </span>
 </p>
-<h3 id="New-columns-do-not-have-to-rewrite-old-columns" class="common-anchor-header">Novas colunas não precisam reescrever colunas antigas</h3><p>Para adicionar <code translate="no">embedding_v2</code> não é necessário reescrever a legenda original, os metadados ou <code translate="no">embedding_v1</code> ColumnGroups. O Loon pode escrever um novo vetor ColumnGroup, registrar o intervalo de IDs de linha que ele cobre e confirmar essa alteração por meio do Manifesto.</p>
+<h3 id="New-columns-do-not-have-to-rewrite-old-columns" class="common-anchor-header">Novas colunas não precisam reescrever colunas antigas</h3><p>Adicionar <code translate="no">embedding_v2</code> não requer reescrever a legenda original, os metadados ou <code translate="no">embedding_v1</code> ColumnGroups. O Loon pode escrever um novo vetor ColumnGroup, registrar o intervalo de IDs de linha que ele cobre e confirmar essa alteração por meio do Manifesto.</p>
 <p>O mesmo se aplica a vectores esparsos, caraterísticas de rerank ou outros campos derivados que chegam mais tarde.</p>
 <p>Desde que o novo ColumnGroup cubra o intervalo de ID de linha correto, pode juntar-se à mesma coleção lógica sem forçar a movimentação de dados não relacionados.</p>
-<h3 id="Deletes-and-compaction-can-be-more-targeted" class="common-anchor-header">As eliminações e a compactação podem ser mais direcionadas</h3><p>O alinhamento de ID de linha também ajuda com as exclusões.</p>
+<h3 id="Deletes-and-compaction-can-be-more-targeted" class="common-anchor-header">As eliminações e a compactação podem ser mais direcionadas</h3><p>O alinhamento do ID de linha também ajuda com as exclusões.</p>
 <p>Uma eliminação pode ser expressa primeiro através de um registo de eliminação. A linha torna-se invisível ao nível lógico, enquanto a limpeza física é adiada até à compactação. Quando a compactação é executada, nem sempre é necessário reescrever todos os ColumnGroup ligados às linhas afectadas. Ele pode se concentrar nos ColumnGroup que precisam de limpeza.</p>
 <p>Isso é importante porque nem todas as colunas têm o mesmo perfil de custo. Reescrever um ColumnGroup escalar curto é muito diferente de reescrever centenas de gigabytes de vetores densos.</p>
 <h3 id="Hybrid-search-can-fetch-only-the-columns-it-needs" class="common-anchor-header">A pesquisa híbrida pode buscar apenas as colunas necessárias</h3><p>O alinhamento de ID de linha também é o que torna a pesquisa híbrida prática em cima de formatos de arquivo híbridos.</p>
@@ -528,7 +528,7 @@ _index/
 <li>Um trabalho Spark, por exemplo, pode preencher uma coluna de vetor esparso. Ele grava um novo ColumnGroup, registra a cobertura de linha e as estatísticas e faz o commit de um novo Manifesto. As consultas online podem continuar lendo a versão antiga durante o trabalho. Quando o commit é bem-sucedido, a nova versão torna-se visível.</li>
 </ul>
 <p>O espírito é semelhante ao do Iceberg e do Delta Lake, mas o modelo de objeto é mais amplo. Um conjunto de dados vetorial precisa de controlar índices vectoriais, índices de texto, caraterísticas esparsas, registos de eliminação, estatísticas, referências de blob e intervalos de ID de linha, e não apenas ficheiros de tabela e partições.</p>
-<h3 id="Optimistic-commits-keep-version-updates-simple" class="common-anchor-header">Os commits otimistas mantêm as atualizações de versão simples</h3><p>Cada commit escreve uma nova versão do Manifesto. Um escritor pode criar um novo conteúdo com base na versão N e, em seguida, tentar escrever <code translate="no">manifest-{N+1}.avro</code>. A escrita condicional do armazenamento de objectos ou a semântica de correspondência de geração podem fazer com que o commit falhe se essa versão já existir. O escritor pode então tentar novamente com a versão mais recente.</p>
+<h3 id="Optimistic-commits-keep-version-updates-simple" class="common-anchor-header">Os commits otimistas mantêm as atualizações de versão simples</h3><p>Cada commit escreve uma nova versão do Manifesto. Um escritor pode criar um novo conteúdo com base na versão N e, em seguida, tentar escrever <code translate="no">manifest-{N+1}.avro</code>. A escrita condicional do armazenamento de objectos ou a semântica de correspondência de gerações podem fazer com que o commit falhe se essa versão já existir. O escritor pode então tentar novamente com a versão mais recente.</p>
 <p>Isso dá ao Loon uma concorrência otimista sem forçar cada atualização através de um caminho de coordenação pesado e fortemente consistente. Sem um Manifesto, o armazenamento multi-formato e multi-motor eventualmente se transforma em convenções de nomes e reconciliação manual. Isso pode funcionar para pequenos conjuntos de dados. Não funciona para dados vetoriais em escala TB.</p>
 <p>O Manifesto é o que transforma ficheiros heterogéneos num conjunto de dados que vários sistemas podem ler e atualizar em segurança.</p>
 <h2 id="What-changes-for-users-when-storage-becomes-versioned" class="common-anchor-header">O que muda para os utilizadores quando o armazenamento passa a ser versionado<button data-href="#What-changes-for-users-when-storage-becomes-versioned" class="anchor-icon" translate="no">

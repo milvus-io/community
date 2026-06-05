@@ -5,9 +5,9 @@ title: >-
   ständig verändert.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -61,7 +61,7 @@ origin: >-
     </button></h2><p>Eine Zeit lang gab es ein Argument gegen Vektordatenbanken, das vernünftig klang.</p>
 <p><em>Traditionelle Datenbanken speichern bereits Integer, Strings, JSON, Blobs und Indizes. Warum nicht einen</em> <em>Typ</em> <code translate="no">_vector_</code> <em>hinzufügen</em> <em>, daneben einen ANN-Index erstellen und das Ganze abhaken?</em></p>
 <p>Für die frühe semantische Suche funktioniert das gut genug. Eine Vektorspalte plus ein Index können eine Demo, eine kleine RAG-Anwendung oder eine interne Suchfunktion unterstützen. Das Problem zeigt sich später, wenn der Datensatz sich weniger wie eine Tabelle und mehr wie ein KI-Datensystem verhält.</p>
-<p>Ein Produktionsvektordatensatz hat Zeilen, Primärschlüssel, skalare Felder und abfragbare Spalten. In diesem Sinne sieht er wie eine Datenbanktabelle aus. Aber er hat auch den Umfang und die Workflow-Form eines Datensees. Er kann Hunderte von Millionen von Datensätzen enthalten. Sie wird wiederholt von Spark, Ray, DuckDB, Schulungspipelines, Auswertungsaufträgen und Datenqualitätssystemen gelesen und neu geschrieben.</p>
+<p>Ein Produktionsvektordatensatz hat Zeilen, Primärschlüssel, skalare Felder und abfragbare Spalten. In diesem Sinne sieht er wie eine Datenbanktabelle aus. Aber er hat auch den Umfang und die Workflow-Form eines Datensees. Er kann Hunderte von Millionen von Datensätzen enthalten. Sie wird wiederholt von Spark, Ray, DuckDB, Trainingspipelines, Auswertungsaufgaben und Datenqualitätssystemen gelesen und neu geschrieben.</p>
 <p>Er hängt auch von der Objektspeicherung ab. Die Quellobjekte sind häufig Videos, Bilder, PDFs, Audiodateien oder Webdokumente, die in S3, GCS, OSS oder einem anderen Objektspeicher verbleiben. Die Datenbank speichert Verweise, Metadaten, abgeleitete Merkmale und Indizes. Dann kommen Dinge hinzu, für die herkömmliche Speichermodelle nicht als erstklassige Objekte konzipiert wurden: dichte Einbettungen, spärliche Vektoren, Beschriftungen, Vektorindizes, Textindizes, Löschprotokolle, Statistiken, Modellversionen, Parserversionen, externe Blob-Referenzen und die Versionsbeziehungen zwischen all diesen Objekten.</p>
 <p><strong>Das ist der Punkt, an dem "einfach eine Vektorspalte hinzufügen" zu scheitern beginnt.</strong> Das Problem ist nicht, ob eine Datenbank Vektorbytes speichern kann. Viele Systeme können das. Die schwierigere Frage ist <strong>, ob das Speichermodell damit umgehen kann, wie sich Vektordaten ändern, wie sie abgefragt werden und wie sie über den KI-Datenstapel verteilt werden.</strong></p>
 <p><strong>Aus diesem Grund haben wir Loon entwickelt, die neue Speicher-Engine für Milvus und</strong> <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> <strong>(die nächste Evolution der Zilliz Cloud).</strong></p>
@@ -515,7 +515,7 @@ _index/
 <h3 id="The-Manifest-tracks-more-than-table-files" class="common-anchor-header">Das Manifest verfolgt mehr als nur Tabellendateien</h3><p>In Loon ist der Manifestkörper mit Apache Avro kodiert und in vier Hauptabschnitte gegliedert.</p>
 <ul>
 <li>ColumnGroups beschreiben die Spalten, Formate, Dateien und Zeilen-ID-Bereiche.</li>
-<li>DeltaLogs beschreiben Löschvorgänge. Verschiedene Löschtypen decken unterschiedliche Änderungsquellen ab, z. B. Primärschlüssel-Löschungen von Clients, Positionslöschungen von der internen Verdichtung oder Gleichheitslöschungen von externen Engines.</li>
+<li>DeltaLogs beschreiben Löschvorgänge. Verschiedene Löschtypen decken unterschiedliche Änderungsquellen ab, z. B. Primärschlüssel-Löschungen von Clients, Positionslöschungen durch interne Verdichtung oder Gleichheitslöschungen von externen Engines.</li>
 <li>Statistiken enthalten Planungsmetadaten wie Bloom-Filter, BM25-Statistiken und Min/Max-Werte.</li>
 <li>Indizes beschreiben Index-Typ, Parameter, abgedeckte Spalten und Zeilen-ID-Bereiche. Dies kann Vektorindizes wie HNSW oder IVF, Textindizes, invertierte Indizes, Bitmap-Indizes und verwandte Strukturen umfassen.</li>
 </ul>
@@ -552,7 +552,7 @@ _index/
 <h3 id="Adding-a-new-embedding-should-not-move-the-old-data" class="common-anchor-header">Das Hinzufügen einer neuen Einbettung sollte die alten Daten nicht verschieben</h3><p>Bisher war es für das Hinzufügen von <code translate="no">embedding_v2</code> zu einer bestehenden Sammlung oft erforderlich, Daten zu exportieren, ein neues Modell zu trainieren, Vektoren zu generieren und die Sammlung dann über das SDK erneut zu importieren oder zu aktualisieren. Dieser Weg verursacht eine Menge betrieblicher Arbeit: Versionsverfolgung, fehlgeschlagene Job-Wiederholungen, Index-Neuaufbau, Serving Impact und Konsistenzprüfungen.</p>
 <p><strong>Mit Loon kann dies zu einer Schema-Evolution plus einem neuen ColumnGroup-Commit werden.</strong> Die neue Einbettungsspalte kann als eigene physische ColumnGroup geschrieben, nach Zeilen-ID ausgerichtet und über das Manifest sichtbar gemacht werden. Die alte Beschriftungsspalte, die skalare Metadatenspalte und die ursprüngliche Einbettungsspalte müssen nicht verschoben werden.</p>
 <h3 id="Backfills-should-not-require-a-client-side-update-loop" class="common-anchor-header">Backfills sollten keine clientseitige Aktualisierungsschleife erfordern</h3><p>Viele AI-Datenaktualisierungen sind Backfills. Ein Team kann spärliche Vektoren hinzufügen, nachdem die hybride Suche wichtig geworden ist. Es kann Rerank-Features hinzufügen, nachdem ein neues Modell trainiert wurde. Es kann Beschriftungen nach einer menschlichen Überprüfung korrigieren. Es kann Governance-Tags nach einer Richtlinienaktualisierung hinzufügen.</p>
-<p>In einem herkömmlichen Layout erfolgen diese Änderungen oft über Client-SDK-Updates oder reine Datenbank-Schreibpfade, selbst wenn die Daten von Spark, Ray oder einer anderen externen Engine erzeugt werden.</p>
+<p>In einem herkömmlichen Layout erfolgen diese Änderungen häufig über Client-SDK-Updates oder reine Datenbank-Schreibpfade, selbst wenn die Daten von Spark, Ray oder einer anderen externen Engine erzeugt werden.</p>
 <p>Mit Loon können externe Rechensysteme neue ColumnGroups erstellen und diese über das Manifest übertragen. Die Datenbank muss nicht mehr der einzige Einstiegspunkt für jeden Rewrite sein.</p>
 <h3 id="Offline-analysis-should-not-require-another-copy-of-the-truth" class="common-anchor-header">Offline-Analyse sollte keine weitere Kopie der Wahrheit erfordern</h3><p>Früher haben Teams oft eine Online-Sammlung zur Offline-Auswertung oder -Analyse in Parquet abgelegt. Dadurch wurden zwei Versionen desselben Datensatzes erstellt: die Online-Sammlung und die Analysekopie. Sobald Beschriftungen korrigiert, Einbettungen neu generiert, Löschprotokolle angewendet oder Indizes neu erstellt werden, muss sich das Team fragen, welche Kopie aktuell ist.</p>
 <p>Mit einem Manifest-basierten Speichermodell können Analyse-Engines die gleiche versionierte Datensatzansicht lesen wie das Serving-System. Sie können nur die benötigten Spalten projizieren, nur die relevanten Zeilenbereiche scannen und mit einer deklarierten Version des Datensatzes arbeiten, anstatt mit einem manuell exportierten Snapshot.</p>

@@ -5,9 +5,9 @@ title: >-
   Berhenti Berubah.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -324,7 +324,7 @@ metadata
 <h3 id="Three-pieces-one-storage-model" class="common-anchor-header">Tiga bagian, satu model penyimpanan</h3><p>Format file hibrida mengakui bahwa kolom yang berbeda memiliki pola akses yang berbeda. Bidang skalar bagus untuk pemindaian dan filter. Bidang vektor membutuhkan pencarian tingkat baris yang efisien. Objek mentah seperti video, PDF, gambar, dan file audio termasuk dalam penyimpanan objek, bukan di dalam file data basis data.</p>
 <p>Penjajaran ID baris mengakui bahwa kolom-kolom ini mungkin terpisah secara fisik, namun tetap menggambarkan baris logis yang sama. Caption, embedding, vektor jarang, dan URI video mungkin berada dalam file dan format yang berbeda, tetapi mereka masih harus disatukan sebagai satu hasil.</p>
 <p>Manifes mengakui bahwa dataset tidak ditulis sekali dan ditinggalkan begitu saja. Dataset ini akan dimodifikasi oleh banyak sistem, di berbagai versi, untuk berbagai tugas. Indeks, statistik, log hapus, referensi objek eksternal, dan grup kolom harus muncul dalam tampilan versi yang sama.</p>
-<p><strong>Inilah sebabnya mengapa Loon bukan sekadar format file vektor yang lebih cepat.</strong> Format yang lebih cepat membantu pencarian titik, tetapi tidak menyelesaikan evolusi skema atau koordinasi multi-mesin. Penjajaran ID baris memungkinkan kolom yang terpisah berperilaku sebagai tabel tunggal, tetapi tidak menentukan file mana yang termasuk dalam versi saat ini. Manifes dapat mendeskripsikan status kumpulan data, tetapi tanpa kelompok kolom dan penyelarasan ID baris, Manifes tidak dapat dengan jelas merepresentasikan tata letak fisik yang berbeda di dalam satu koleksi logis.</p>
+<p><strong>Inilah sebabnya mengapa Loon bukan hanya format file vektor yang lebih cepat.</strong> Format yang lebih cepat membantu pencarian titik, tetapi tidak menyelesaikan evolusi skema atau koordinasi multi-mesin. Penjajaran ID baris memungkinkan kolom yang terpisah berperilaku sebagai tabel tunggal, tetapi tidak menentukan file mana yang termasuk dalam versi saat ini. Manifes dapat mendeskripsikan status kumpulan data, tetapi tanpa kelompok kolom dan penyelarasan ID baris, Manifes tidak dapat dengan jelas merepresentasikan tata letak fisik yang berbeda di dalam satu koleksi logis.</p>
 <p>Model penyimpanan membutuhkan ketiganya: format yang berbeda untuk kelompok kolom yang berbeda, ruang ID baris bersama untuk merekonstruksi baris, dan Manifes berversi yang memberi tahu setiap pembaca dan penulis tentang dataset saat ini.</p>
 <h3 id="Where-Loon-fits-in-Milvus-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Di mana Loon cocok dengan Milvus dan Zilliz Vector Lakebase</h3><p>Di Milvus, ia menggantikan lapisan penyimpanan binlog segmen lama dengan model yang dibangun di sekitar Manifest, ColumnGroup, format file, dan abstraksi sistem berkas. Di <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> (evolusi berikutnya dari Zilliz Cloud)<strong>,</strong> arah yang sama berlaku untuk arsitektur Vector Lakebase: menjaga jalur penyajian basis data vektor tetap cepat sambil membuat data yang mendasarinya lebih mudah untuk dikembangkan, dianalisis, dan dikoordinasikan dengan sistem eksternal.</p>
 <p>Komponen Milvus tingkat atas masih mempertahankan peran mereka yang sudah dikenal. Proxy menangani perutean. QueryCoord dan DataCoord menangani penjadwalan. IndexNode membangun indeks. API yang berhadapan dengan aplikasi untuk koleksi, sisipan, pencarian, dan pencarian hibrida tidak perlu mengekspos file Manifes atau ColumnGroup.</p>
@@ -375,7 +375,7 @@ metadata
 </p>
 <h3 id="Loon-separates-a-logical-collection-into-ColumnGroups" class="common-anchor-header">Loon memisahkan koleksi logis ke dalam ColumnGroups.</h3><ul>
 <li>Kolom skalar, kolom filter, kunci bisnis, dan kolom statistik sering kali dipindai, difilter, digabungkan, atau digunakan untuk perencanaan kueri. Mereka mendapat manfaat dari kompresi, pemangkasan kolom, dan kompatibilitas ekosistem. Parket sangat cocok untuk kolom-kolom ini.</li>
-<li>Vektor padat, vektor jarang, dan fitur peringkat ulang sering kali dibaca setelah pemanggilan ANN berdasarkan ID baris. Mereka membutuhkan akses acak latensi rendah, pembacaan rentang byte yang tepat, dan decoding selektif. Tata letak yang berorientasi pada segmen lebih cocok. Loon menggunakan Vortex ke arah ini.</li>
+<li>Vektor padat, vektor jarang, dan fitur peringkat ulang sering kali dibaca setelah pemanggilan kembali ANN berdasarkan ID baris. Mereka membutuhkan akses acak latensi rendah, pembacaan rentang byte yang tepat, dan decoding selektif. Tata letak yang berorientasi pada segmen lebih cocok. Loon menggunakan Vortex ke arah ini.</li>
 <li>Objek mentah seperti video, PDF, gambar, dan file audio tidak boleh disematkan ke dalam file data basis data vektor. File-file tersebut harus tetap berada dalam penyimpanan objek. Basis data mencatat referensi, checksum, jenis MIME, versi parser, dan hubungan tingkat baris.</li>
 </ul>
 <p>Untuk contoh video, tata letak fisik mungkin terlihat seperti ini:</p>
@@ -452,8 +452,8 @@ end_index
 <p>Hal yang sama berlaku untuk vektor yang jarang, fitur peringkat ulang, atau bidang turunan lainnya yang datang kemudian.</p>
 <p>Selama ColumnGroup baru mencakup rentang ID baris yang tepat, ia dapat bergabung dengan koleksi logis yang sama tanpa memaksa data yang tidak terkait untuk dipindahkan.</p>
 <h3 id="Deletes-and-compaction-can-be-more-targeted" class="common-anchor-header">Penghapusan dan pemadatan bisa lebih tepat sasaran</h3><p>Penyelarasan ID baris juga membantu dengan penghapusan.</p>
-<p>Penghapusan pertama-tama dapat dinyatakan melalui log penghapusan. Baris menjadi tidak terlihat pada tingkat logis, sementara pembersihan fisik ditunda sampai pemadatan. Ketika pemadatan akhirnya berjalan, ia tidak selalu perlu menulis ulang setiap ColumnGroup yang terkait dengan baris yang terpengaruh. Ia dapat fokus pada ColumnGroup yang perlu dibersihkan.</p>
-<p>Hal ini penting karena tidak semua kolom memiliki profil biaya yang sama. Menulis ulang sebuah ColumnGroup skalar pendek sangat berbeda dengan menulis ulang ratusan gigabyte vektor padat.</p>
+<p>Penghapusan pertama-tama dapat dinyatakan melalui log penghapusan. Baris menjadi tidak terlihat pada tingkat logis, sementara pembersihan fisik ditunda sampai pemadatan. Ketika pemadatan akhirnya berjalan, ia tidak selalu perlu menulis ulang setiap ColumnGroup yang terkait dengan baris yang terpengaruh. Ia bisa fokus pada ColumnGroup yang perlu dibersihkan.</p>
+<p>Hal ini penting karena tidak semua kolom memiliki profil biaya yang sama. Menulis ulang ColumnGroup skalar pendek sangat berbeda dengan menulis ulang ratusan gigabyte vektor padat.</p>
 <h3 id="Hybrid-search-can-fetch-only-the-columns-it-needs" class="common-anchor-header">Pencarian hibrida hanya dapat mengambil kolom yang dibutuhkannya</h3><p>Penyelarasan ID baris juga yang membuat pencarian hibrida menjadi praktis di atas format file hibrida.</p>
 <p>Setelah pencarian ANN mengembalikan ID baris kandidat, sistem hanya dapat mengambil kolom yang diperlukan untuk hasil akhir: keterangan, metadata, vektor, fitur peringkat, atau referensi objek.</p>
 <p>Sebagai contoh, sebuah kueri mungkin membutuhkan:</p>
@@ -520,7 +520,7 @@ _index/
 <li>Indeks menjelaskan jenis indeks, parameter, kolom yang tercakup, dan rentang ID baris. Ini dapat mencakup indeks vektor seperti HNSW atau IVF, indeks teks, indeks terbalik, indeks bitmap, dan struktur terkait.</li>
 </ul>
 <p>Di sinilah Loon berbeda dari manifes tabel tradisional.</p>
-<p>Dataset vektor tidak hanya perlu melacak file data dan partisi. Dataset ini juga perlu melacak indeks vektor, indeks teks, fitur yang jarang, log yang dihapus, statistik, referensi objek eksternal, dan rentang ID baris yang menghubungkannya.</p>
+<p>Dataset vektor tidak hanya perlu melacak file data dan partisi. Dataset ini juga perlu melacak indeks vektor, indeks teks, fitur-fitur yang jarang, log yang dihapus, statistik, referensi objek eksternal, dan rentang ID baris yang menghubungkannya.</p>
 <h3 id="The-Manifest-must-be-writable-by-more-than-the-database" class="common-anchor-header">Manifes harus dapat ditulis oleh lebih dari database</h3><p>Bagian yang paling penting bukan hanya apa isi Manifest. Melainkan siapa yang dapat menulisnya.</p>
 <ul>
 <li>Jika hanya database yang dapat menulis Manifes, maka itu tetap merupakan metadata internal. Metadata yang lebih bersih, tetapi masih bersifat pribadi untuk satu mesin.</li>
@@ -590,7 +590,7 @@ _index/
 <li><strong>Tata letak indeks</strong> penting karena indeks grafik dan struktur terbalik memiliki pola akses yang berbeda pada penyimpanan objek.</li>
 <li><strong>Semantik objek besar</strong> penting karena video mentah, PDF, gambar, dan file audio memerlukan manajemen referensi, pembuatan versi, dan perilaku penghapusan yang selaras dengan kumpulan data vektor yang diturunkan.</li>
 </ul>
-<p>Perilaku rilis yang tepat, pengaturan default, dan jalur migrasi harus mengikuti <a href="https://docs.zilliz.com/docs/release-notes-2605">catatan rilis</a> Milvus dan <a href="https://docs.zilliz.com/docs/release-notes-2605">Zilliz Cloud</a> yang relevan. Namun, arah penyimpanannya jelas: basis data vektor membutuhkan fondasi asli yang berversi di bawah lapisan penyajian.</p>
+<p>Perilaku rilis yang tepat, pengaturan default, dan jalur migrasi harus mengikuti <a href="https://docs.zilliz.com/docs/release-notes-2605">catatan rilis</a> Milvus dan <a href="https://docs.zilliz.com/docs/release-notes-2605">Zilliz Cloud</a> yang relevan. Namun, arah penyimpanannya jelas: basis data vektor membutuhkan fondasi asli danau yang berversi di bawah lapisan penyajian.</p>
 <h2 id="Try-Loon-under-Zilliz-Vector-Lakebase" class="common-anchor-header">Coba Loon di bawah Zilliz Vector Lakebase<button data-href="#Try-Loon-under-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"

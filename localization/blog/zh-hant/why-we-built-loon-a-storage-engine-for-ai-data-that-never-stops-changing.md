@@ -3,9 +3,9 @@ id: why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
 title: 我們為什麼要建立 Loon：一個永遠不會停止變更的 AI 資料儲存引擎。
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -33,7 +33,7 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>這是一篇長篇深入的工程探討，因此在進入細節之前，先介紹以下重點。</p>
+    </button></h2><p>這是一篇長篇深入的工程探討，因此在進入細節之前，先介紹一下重點。</p>
 <ul>
 <li>AI 資料集並非靜態的表格。當團隊更換嵌入模型、新增稀疏向量、修改標題、回填標籤、重建索引以及執行離線分析時，相同的行列會不斷改變。</li>
 <li>傳統的儲存佈局有三個缺點：長向量列使得回填成本高昂、單一檔案格式無法同時滿足掃描和點讀的需求，以及私有資料庫儲存強迫外部管道建立額外的真相副本。</li>
@@ -56,7 +56,7 @@ origin: >-
         ></path>
       </svg>
     </button></h2><p>有一段時間，有一種反對向量資料庫的論點聽起來很合理。</p>
-<p><em>傳統資料庫已經可以儲存整數、字串、JSON、blob 和索引。為什麼不增加一個</em> <code translate="no">_vector_</code> <em>類型，在旁邊建立一個 ANN 索引，然後就可以了呢？</em></p>
+<p><em>傳統資料庫已經可以儲存整數、字串、JSON、blob 和索引。為什麼不增加一個</em> <code translate="no">_vector_</code> <em>類型，在它旁邊建立一個 ANN 索引，然後就可以了呢？</em></p>
 <p>對於早期的語意搜尋，這已經夠好用了。一個向量列加上一個索引就可以支援一個 demo、一個小型 RAG 應用程式或一個內部搜尋功能。問題稍後就會出現，也就是當資料集開始表現得不像表格，而更像 AI 資料系統時。</p>
 <p>生產向量資料集具有行、主鍵、標量欄位和可查詢欄位。在這個意義上，它看起來就像資料庫的表格。但它也具有資料湖的規模和工作流程形狀。它可能包含數以億計的記錄。它會被 Spark、Ray、DuckDB、訓練管道、評估工作和資料品質系統反覆讀取和重寫。</p>
 <p>它也依賴於物件儲存。來源物件通常是保留在 S3、GCS、OSS 或其他物件儲存空間中的視訊、影像、PDF、音訊檔案或 Web 文件。資料庫會儲存引用、元資料、衍生特徵和索引。然後，它會新增一些傳統儲存模型無法建立為一級物件來管理的東西：密集內嵌、稀疏向量、標題、向量索引、文字索引、刪除記錄、統計資料、模型版本、解析器版本、外部 blob 引用，以及所有這些東西之間的版本關係。</p>
@@ -154,7 +154,7 @@ origin: >-
 <p>對於向量資料，小規模的邏輯更新可能會觸發大規模的實體重寫。</p>
 <p>人工檢閱工作可能只會修正標題中的幾百個位元組。但如果標題、密集向量、稀疏向量和其他衍生特徵共享相同的實體檔案生命週期，系統最終可能也會重寫向量。邏輯上的改變很小。實體 I/O 可能很大。</p>
 <p>這就是向量儲存的寫入放大問題。昂貴的部分不僅在於向量很大。它是因為大型衍生欄位和小型可變欄位經常被視為單一單位的儲存配置綁在一起。</p>
-<h3 id="For-AI-datasets-backfill-is-a-routine-workload" class="common-anchor-header">對於 AI 資料集，回填是例行性的工作量。</h3><p>對於傳統的分析資料表，模式演進可能只是偶爾發生。對於人工智能資料集而言，這是例行公事。字幕模型升級。更換嵌入模型。之後加入稀疏向量。出現 Rerank 特徵。修正人為標籤。回填治理標籤。重建索引。</p>
+<h3 id="For-AI-datasets-backfill-is-a-routine-workload" class="common-anchor-header">對於 AI 資料集，回填是例行性的工作量。</h3><p>對於傳統的分析資料表，模式演進可能只是偶爾發生。對於人工智慧資料集而言，這是例行公事。字幕模型升級。更換嵌入模型。之後加入稀疏向量。出現 Rerank 特徵。修正人為標籤。回填治理標籤。重建索引。</p>
 <p>這些作業不是簡單的追加。它們經常會修改或延伸現有的行。</p>
 <p>這就是向量儲存無法僅優化掃描吞吐量的原因。它還必須降低回填和部分更新的成本。</p>
 <h2 id="The-second-problem-the-same-data-must-support-scans-and-point-reads" class="common-anchor-header">第二個問題：同樣的資料必須支援掃描和點讀<button data-href="#The-second-problem-the-same-data-must-support-scans-and-point-reads" class="anchor-icon" translate="no">
@@ -182,9 +182,9 @@ origin: >-
 <h3 id="Analytical-workloads-want-wide-compressed-scans" class="common-anchor-header">分析型工作負載需要寬範圍的壓縮掃描</h3><p>管道可能會執行篩選器，例如：</p>
 <pre><code translate="no" class="language-sql">WHERE aesthetic_score &gt; 0.8 AND duration &gt; 5
 <button class="copy-code-btn"></button></code></pre>
-<p>或執行離線分析、完整嵌入評估、BM25 統計、位元圖建構、資料品質檢查、計數和群組分析。</p>
-<p>此模式會讀取許多行，但只讀取幾列。它喜歡連續 I/O、較大的行群組、壓縮、列修剪、批次解碼和向量化執行。</p>
-<p>大型行群在這方面很有幫助。它們可讓單一 I/O 請求讀取大量有用的資料，提高壓縮效率，並為執行引擎提供足夠的連續資料，以攤平開銷。當多個列一起讀取時，為了掃描吞吐量而保持它們有條理，也有助於減少向量執行時的快取記憶體錯失。</p>
+<p>或執行離線分析、完整嵌入評估、BM25 統計、位圖建構、資料品質檢查、計數和群組分析。</p>
+<p>此模式讀取許多行，但只讀取幾列。它喜歡連續 I/O、較大的行群組、壓縮、列修剪、批次解碼和向量化執行。</p>
+<p>大型行群在這方面很有幫助。它們可讓單一 I/O 請求讀取大量有用的資料，提高壓縮效率，並為執行引擎提供足夠的連續資料，以攤平開銷。當多個欄位一起讀取時，為了掃描吞吐量而將它們組織起來，也有助於減少向量執行時的快取記憶體錯失。</p>
 <p>Parquet 在這條路徑上很強大。</p>
 <h3 id="ANN-results-need-narrow-row-level-lookups" class="common-anchor-header">ANN 結果需要狹窄的、行層級的查詢</h3><p>ANN 搜尋返回候選行 ID 之後，系統通常需要取得如等欄位：</p>
 <pre><code translate="no">caption
@@ -193,14 +193,14 @@ rerank feature
 video_uri
 metadata
 <button class="copy-code-btn"></button></code></pre>
-<p>這種模式讀取的行數較少，通常是數百或數千行，但它需要依行 ID 進行精確的存取。它希望找到特定的行和列，僅擷取所需的位元組範圍，並避免為了擷取幾條記錄而拉取整個行群。</p>
+<p>此模式讀取的行數較少，通常只有數百或數千行，但它需要依行 ID 進行精確的存取。它希望找到特定的行和列，僅擷取所需的位元組範圍，並避免為了擷取幾條記錄而拉取整個行群。</p>
 <p>點查找與掃描的偏好幾乎相反。它需要較小的讀取粒度。理想的情況是，儲存層可以依行 ID 找到相關的區段或位元組範圍，僅讀取該範圍，並只解碼結果所需的資料。</p>
 <p>壓縮也有不同的取捨。對於掃描，較重的壓縮通常是值得的，因為系統可以讀取大量資料並節省 I/O。對於點查詢，如果擷取一條記錄需要解碼大得多的壓縮區塊，壓縮就會變成負擔。</p>
 <h3 id="One-layout-cannot-optimize-for-both-paths" class="common-anchor-header">一種佈局無法同時優化兩種路徑</h3><p>這是核心衝突。標量篩選和分析需要寬、壓縮、方便掃描的佈局。向量查詢需要狹窄、精確、可回應行的版面。</p>
 <p>單一的檔案格式可以在某種程度上支援這兩種需求，但卻無法同時滿足這兩種需求。</p>
-<p>如果所有欄位都在 Parquet 中，標量掃描就會很舒服。但召回後的 ANN 查找就變得困難了。系統可能只需要幾百個向量、標題或元資料記錄，而儲存層可能必須讀取包含大部分不相關資料的大型行群。</p>
+<p>如果所有欄位都在 Parquet 中，標量掃描會很舒服。但召回後的 ANN 查找就變得困難了。系統可能只需要幾百個向量、標題或元資料記錄，而儲存層可能必須讀取包含大部分不相關資料的大型行群。</p>
 <p>在本機 SSD 上，快取記憶體和 mmap 可以隱藏部分成本。一旦資料儲存在物件儲存中，成本就變得更明顯。每次快取記憶體錯失都可能成為一次遠端範圍讀取。如果候選行分散在許多行群組中，單一查詢可能會觸發多次讀取，每次讀取的資料都會超過查詢所需。在佈局不良的情況下，取得 1,000 個候選行很容易就會造成數十或數百 MB 的不必要 I/O，在極端情況下，甚至會更多。</p>
-<p>將行群縮小有助於點查詢，但卻會損害掃描。太多的小片段會降低壓縮效率、增加元資料開銷，並破壞分析引擎所依賴的長順序讀取。</p>
+<p>將行群縮小有助於點查詢，但會損害掃描。太多的小片段會降低壓縮效率、增加元資料開銷，並破壞分析引擎所依賴的長順序讀取。</p>
 <p><strong>因此，問題不在於找到單一神奇的行群大小。問題在於同一個資料集被要求像兩個不同的儲存系統一樣運作。</strong></p>
 <h3 id="Hybrid-search-forces-both-paths-into-one-query" class="common-anchor-header">混合搜尋將兩種路徑強制整合為一個查詢</h3><p>混合搜尋讓衝突更難忽略。單一查詢可能會先套用標量篩選器：</p>
 <pre><code translate="no" class="language-sql">aesthetic_score &gt; 0.8 AND duration &gt; 5
@@ -266,7 +266,7 @@ metadata
       </svg>
     </button></h2><p>我們很容易將這三個問題視為三個獨立的工程問題。</p>
 <ul>
-<li>寫入放大？增加批次。</li>
+<li>寫入放大？添加批次。</li>
 <li>點讀取？增加快取記憶體。</li>
 <li>外部系統？增加匯出和匯入工具。</li>
 </ul>
@@ -277,11 +277,11 @@ metadata
     <span></span>
   </span>
 </p>
-<p>在視訊範例中，<code translate="no">clip_id</code>,<code translate="no">video_id</code>,<code translate="no">duration</code>, 和<code translate="no">aesthetic_score</code> 是短標量欄位。它們有助於篩選和分析。</p>
+<p>在影片範例中，<code translate="no">clip_id</code>,<code translate="no">video_id</code>,<code translate="no">duration</code>, 和<code translate="no">aesthetic_score</code> 是短標量欄位。它們有助於篩選和分析。</p>
 <ul>
 <li><code translate="no">caption</code> 是文字。可用於 BM25、檢視、修正和回填。</li>
 <li><code translate="no">embedding</code> 是長而密集的向量。用於 ANN 召回，之後用於行層級查詢或重排。</li>
-<li><code translate="no">embedding_v2</code> 是新的模型輸出，通常在原始資料插入很久之後才回填。</li>
+<li><code translate="no">embedding_v2</code> 是新的模型輸出，通常在原始資料插入後很久才回填。</li>
 <li><code translate="no">sparse_vector</code> 支援混合搜尋，並有自己的存取模式。</li>
 <li>原始視訊應留在物件儲存中。資料庫應該儲存參考、校驗和、MIME 類型、解析器版本以及行層級關係。</li>
 <li>向量索引、文字索引、統計資料和刪除記錄都是衍生物件，有自己的版本語意。</li>
@@ -296,7 +296,7 @@ metadata
 <p><strong>這導致三個設計需求：</strong></p>
 <ul>
 <li>首先，不同的列群應該以不同的實體格式儲存。</li>
-<li>第二，這些列群需要一個共用的行 ID 空間，因此它們仍可像單一邏輯表一樣運作。</li>
+<li>第二，這些欄位群組需要共用的行 ID 空間，因此它們仍可像單一邏輯表一樣運作。</li>
 <li>第三，資料集需要一個版本化的 Manifest，以宣告哪些檔案、索引、日誌、統計資料和物件參考屬於目前的檢視。</li>
 </ul>
 <p><strong>這就是 Milvus 和 Zilliz Cloud 背後的新儲存引擎 Loon 背後的設計。</strong></p>
@@ -319,8 +319,8 @@ metadata
 <p>這個名字沿襲了 Zilliz 的鳥類命名傳統。Loon 是一種生活在湖泊上的潛水鳥，與系統的目標不謀而合：向量資料庫每次執行查詢、回填欄位或建立索引時，都不需要移動、掃描或重寫整個資料湖。它應該先瞭解目前資料集的版本，包括其列、索引、統計資料、刪除記錄和物件參考，然後只讀取實際需要的部分。</p>
 <p>混合檔案格式、行 ID 對齊和 Manifest 並非三個獨立的功能。它們源自相同的設計假設：向量資料集本質上是異質的。</p>
 <h3 id="Three-pieces-one-storage-model" class="common-anchor-header">三個部分，一個儲存模型</h3><p>混合檔案格式承認不同的欄位有不同的存取模式。標量欄位適合掃描與篩選。向量欄位需要有效率的行層級查詢。原始物件 (例如視訊、PDF、影像和音訊檔案) 屬於物件儲存空間，而非資料庫資料檔案。</p>
-<p>行 ID 對齊功能承認這些列可能在物理上是分開的，但它們仍描述相同的邏輯行。標題、內嵌、稀疏向量和視訊 URI 可能位於不同的檔案和格式中，但它們仍需要匯集為單一結果。</p>
-<p>Manifest 承認資料集並不是寫完一次就不管了。它會被多個系統、多個版本、多項任務修改。索引、統計資料、刪除記錄、外部物件參考以及列群都必須出現在相同版本的檢視中。</p>
+<p>行 ID 對齊功能承認這些欄位可能在實體上是分開的，但它們描述的仍是相同的邏輯行。標題、內嵌、稀疏向量和視訊 URI 可能位於不同的檔案和格式中，但它們仍需要匯集為單一結果。</p>
+<p>Manifest 承認資料集並不是寫完一次就不管了。它會被多個系統、多個版本、多項任務修改。索引、統計資料、刪除記錄、外部物件引用和列群都必須出現在相同版本的檢視中。</p>
 <p><strong>這就是 Loon 不只是更快的向量檔案格式的原因。</strong>更快的格式有助於點查詢，但無法解決模式演進或多引擎協調的問題。行 ID 對齊可讓分割的欄位表現得像單一表格，但它無法指定哪些檔案屬於目前的版本。Manifest 可以描述資料集狀態，但如果沒有列群和行 ID 對齊，它就無法清楚地表示一個邏輯集合內的不同實體佈局。</p>
 <p>儲存模型需要這三樣東西：不同列群的不同格式、用來重構行的共用行 ID 空間，以及告訴每個讀寫者資料集目前狀態的版本化 Manifest。</p>
 <h3 id="Where-Loon-fits-in-Milvus-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Loon 在 Milvus 和 Zilliz Vector Lakebase 中的定位</h3><p>在 Milvus 中，它以 Manifest、ColumnGroup、檔案格式和檔案系統抽象所建立的模型，取代舊有的段 binlog 儲存層。在<a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a>(Zilliz Cloud 的下一個演進) 中<strong>，</strong>同樣的方向也適用於 Vector Lakebase 架構：保持向量資料庫快速的服務路徑，同時讓底層資料更容易演進、分析，並與外部系統協調。</p>
@@ -332,7 +332,7 @@ metadata
   </span>
 </p>
 <p>改變在下面。</p>
-<p>DataNode、QueryNode、segcore、壓縮和外部連接器可透過相同的儲存抽象運作。這點很重要，因為資料集不再僅由資料庫寫入和讀取。它可能會被外部運算系統擴充，並且同時被線上搜尋所使用。</p>
+<p>DataNode、QueryNode、segcore、壓縮和外部連接器可透過相同的儲存抽象運作。這很重要，因為資料集不再僅由資料庫寫入和讀取。它可能會被外部運算系統擴充，並且同時被線上搜尋所使用。</p>
 <p>從高層級來看，各層是這樣的：</p>
 <pre><code translate="no">Manifest
 → ColumnGroup
@@ -392,7 +392,7 @@ raw video objects
 <h3 id="Loon-also-adapts-the-use-of-file-formats" class="common-anchor-header">Loon 也會適應檔案格式的使用。</h3><p><strong>對於 Parquet 而言，預設設定並不總是向量重資料的理想選擇。</strong>64 MB 的行群對於點查詢來說可能太大，因為一個小的隨機讀取可能會拉出遠多於所需的資料。Loon 將相關路徑中的行群收緊到 1 MB，並停用編碼，例如向量列上的字典編碼，當這些編碼對隨機向量資料沒有幫助時。</p>
 <p><strong>對 Vortex 而言，更重要的工作是佈局。</strong>Loon 使用平衡掃描效率和點查找的佈局。在一個行群中，相關列的區段可以靠近放置，以支援掃描。為了執行作業，子區段讀取可讓系統只擷取相關位元組，而不是拉取整個區段。</p>
 <p><strong>Loon 也支援唯讀的 Lance 整合</strong>，因此現有的 Lance 資料集可以在相容性重要時掛載為 ColumnGroup。</p>
-<h3 id="What-the-benchmark-shows" class="common-anchor-header">基準測試結果</h3><p>在一個本地測試中，使用一個有 40,000 行的單一檔案和模式<code translate="no">{id: int64, name: utf8, value: float64, vector: list&lt;float32&gt;[128]}</code> ，Vortex 顯示了這些結果，對比使用 1 MB 行群的 Parquet：</p>
+<h3 id="What-the-benchmark-shows" class="common-anchor-header">基準測試結果</h3><p>在一個本機測試中，使用具有 40,000 行的單一檔案和模式<code translate="no">{id: int64, name: utf8, value: float64, vector: list&lt;float32&gt;[128]}</code> ，Vortex 顯示出與具有 1 MB 行群的 Parquet 對比的結果：</p>
 <table>
 <thead>
 <tr><th>操作</th><th>Vortex</th><th>Parquet</th><th>差異</th></tr>
@@ -436,7 +436,7 @@ raw video objects
 start_index
 end_index
 <button class="copy-code-btn"></button></code></pre>
-<p>不同的 ColumnGroups 可以覆蓋相同的行 ID 空間，即使它們存在於不同的檔案和格式中。</p>
+<p>不同的 ColumnGroups 可以涵蓋相同的行 ID 空間，即使它們存在於不同的檔案和格式中。</p>
 <p>對於行 ID<code translate="no">12345</code> ，標量元資料可能在 Parquet ColumnGroup 中，嵌入可能在 Vortex ColumnGroup 中，而原始視訊可能由物件儲存參考來表示。在邏輯上，它們仍是同一行。這樣儲存層就有了穩定的座標系統。</p>
 <p>行 ID 並不是商業主鍵。它是儲存層的坐標系統，可讓 Loon 在物理上分割一個集合，而不會失去邏輯上重建的能力。</p>
 <p>
@@ -450,7 +450,7 @@ end_index
 <p>只要新的 ColumnGroup 涵蓋正確的行 ID 範圍，它就可以加入相同的邏輯集合，而不會強迫不相關的資料移動。</p>
 <h3 id="Deletes-and-compaction-can-be-more-targeted" class="common-anchor-header">刪除和壓縮可以更有針對性</h3><p>行 ID 對齊也有助於刪除。</p>
 <p>刪除可以先透過刪除記錄來表達。該行在邏輯層級上會變得不見，而實體清理則會延遲到壓縮為止。當壓縮最終執行時，它並不總是需要重寫與受影響的行相連的每個 ColumnGroup。它可以專注於需要清理的 ColumnGroup。</p>
-<p>這一點很重要，因為並非每一列都有相同的成本配置文件。重寫一個簡短的標量 ColumnGroup 與重寫數百 GB 的密集向量有很大的不同。</p>
+<p>這一點很重要，因為並非每一列都有相同的成本配置文件。重寫一個簡短的標量 ColumnGroup 與重寫數百 GB 的密集向量是完全不同的。</p>
 <h3 id="Hybrid-search-can-fetch-only-the-columns-it-needs" class="common-anchor-header">混合搜尋只能取得它需要的列</h3><p>行 ID 對齊也是混合搜尋在混合檔案格式之上實用的原因。</p>
 <p>ANN 搜尋返回候選行 ID 之後，系統可以只取得最終結果所需的欄位：標題、元資料、向量、重排特徵或物件參考。</p>
 <p>例如，查詢可能需要：</p>
@@ -458,7 +458,7 @@ end_index
 embedding
 video_uri
 <button class="copy-code-btn"></button></code></pre>
-<p>這些欄位可能位於不同的 ColumnGroup。Loon 可以依行 ID 範圍找出相關檔案，讀取必要的位元組範圍，並組合結果。</p>
+<p>這些欄位可能位於不同的 ColumnGroup。Loon 可以依據行 ID 範圍找到相關檔案，讀取必要的位元組範圍，並組合結果。</p>
 <p>如果沒有行 ID 對齊，混合格式就只是並排放置的獨立檔案。有了行 ID 對齊，它們就像單一的邏輯集合。</p>
 <h3 id="Packed-Reader-hides-the-split-from-the-upper-layer" class="common-anchor-header">打包閱讀器隱藏了上層的分割</h3><p>使其可用的運行時元件是 Packed Reader。</p>
 <p>上層看到的是統一的 Arrow RecordBatch 串流。在下面，資料可能來自不同檔案格式的多個 ColumnGroup。Packed Reader 隱藏了這些差異，以行 ID 範圍對齊資料，並透過控制記憶體使用量來排程多檔案 I/O。</p>
@@ -480,7 +480,7 @@ video_uri
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>混合檔案格式定義資料如何實體儲存。行 ID 對齊決定了分開的 ColumnGroups 如何仍然形成單一邏輯表。但系統仍需要回答一個更大的問題：<strong>哪些檔案、日誌、統計資料、索引和物件參考屬於資料集的目前版本？這就是 Manifest 的工作。</strong></p>
+    </button></h2><p>混合檔案格式定義資料如何實體儲存。行 ID 對齊方式決定了分開的 ColumnGroups 仍如何構成單一邏輯表。但系統仍需要回答一個更大的問題：<strong>哪些檔案、日誌、統計資料、索引和物件參考屬於資料集的目前版本？這就是 Manifest 的工作。</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_13_cd18b2da18.png" alt="" class="doc-image" id="" />
@@ -526,7 +526,7 @@ _index/
 </ul>
 <p>這與 Iceberg 和 Delta Lake 的精神類似，但物件模型更為廣泛。向量資料集需要追蹤向量索引、文字索引、稀疏特徵、刪除記錄、統計資料、blob 參考和行 ID 範圍，而不只是表檔案和分割區。</p>
 <h3 id="Optimistic-commits-keep-version-updates-simple" class="common-anchor-header">樂觀的提交讓版本更新變得簡單</h3><p>每次提交都會寫入新的 Manifest 版本。寫入者可以根據版本 N 建立新內容，然後嘗試寫入<code translate="no">manifest-{N+1}.avro</code> 。如果版本已經存在，物件儲存的條件寫入或世代配對語意會使提交失敗。寫入者可以針對更新的版本重新嘗試。</p>
-<p>這讓 Loon 具備樂觀的並發性，而不會強迫每次更新都要經過繁重、強一致的協調路徑。如果沒有 Manifest，多格式和多引擎儲存最終會變成命名慣例和手動協調。對於小型資料集來說，這也許可行。但對於 TB 規模的向量資料卻行不通。</p>
+<p>這讓 Loon 具備樂觀的並發性，而不會強迫每次更新都要經過繁重、強一致的協調路徑。如果沒有 Manifest，多格式和多引擎儲存最終會變成命名慣例和手動協調。對於小型資料集來說，這也許可行。但對於 TB 規模的向量資料則行不通。</p>
 <p>Manifest 可以將異質檔案轉換成一個資料集，讓多個系統可以安全地讀取和更新。</p>
 <h2 id="What-changes-for-users-when-storage-becomes-versioned" class="common-anchor-header">當儲存變成版本控制時，使用者會有什麼改變<button data-href="#What-changes-for-users-when-storage-becomes-versioned" class="anchor-icon" translate="no">
       <svg translate="no"
@@ -546,9 +546,9 @@ _index/
     </button></h2><p>對應用程式開發人員而言，Loon 不應該成為新的 API 負擔。</p>
 <p>使用者仍可使用熟悉的 Milvus 概念：集合、插入、搜尋及混合搜尋。在正常的應用程式開發過程中，他們應該不需要考慮 Manifest 檔案、ColumnGroups、行 ID 範圍或檔案佈局。</p>
 <p>轉變在底下。儲存設備變得更了解 AI 資料集的實際演進方式。</p>
-<h3 id="Adding-a-new-embedding-should-not-move-the-old-data" class="common-anchor-header">新增嵌入不應移動舊資料</h3><p>以前，將<code translate="no">embedding_v2</code> 加入現有的資料集時，往往需要匯出資料、訓練新模型、產生向量，然後透過 SDK 重新匯入或大量更新資料集。這條路徑會產生大量的作業工作：版本追蹤、失敗作業重試、索引重建、服務影響以及一致性檢查。</p>
+<h3 id="Adding-a-new-embedding-should-not-move-the-old-data" class="common-anchor-header">新增嵌入不應移動舊資料</h3><p>以前，將<code translate="no">embedding_v2</code> 加入現有的資料集時，通常需要匯出資料、訓練新模型、產生向量，然後透過 SDK 重新匯入或大量更新資料集。這條路徑會產生大量的作業工作：版本追蹤、失敗作業重試、索引重建、服務影響以及一致性檢查。</p>
 <p><strong>有了 Loon，這可以變成模式演進加上新的 ColumnGroup commit。</strong>新的嵌入列可以寫成自己的實體 ColumnGroup，以行 ID 對齊，並透過 Manifest 變得可見。舊的標題列、標量元資料列和原始的嵌入列不需要移動。</p>
-<h3 id="Backfills-should-not-require-a-client-side-update-loop" class="common-anchor-header">回填不應需要用戶端更新循環</h3><p>許多 AI 資料更新都是回填。一個團隊可能會在混合搜尋變得重要之後加入稀疏向量。它可能會在新模型訓練完成後新增 rerank 特徵。它可能會在人工檢閱後修正標題。它可能會在政策更新後新增治理標籤。</p>
+<h3 id="Backfills-should-not-require-a-client-side-update-loop" class="common-anchor-header">回填不應需要用戶端更新循環</h3><p>許多 AI 資料更新都是回填。一個團隊可能會在混合搜尋變得重要之後加入稀疏向量。它可能會在新模型訓練完成後新增 rerank 特徵。它可能會在人工檢閱後修正標題。它可能會在政策更新後加入治理標籤。</p>
 <p>在傳統佈局中，即使資料是由 Spark、Ray 或其他外部引擎產生，這些變更通常也會透過用戶端 SDK 更新或僅資料庫寫入路徑發生。</p>
 <p>有了 Loon，外部計算系統可以產生新的 ColumnGroups，並透過 Manifest 提交。資料庫不再是每次重寫的唯一入口。</p>
 <h3 id="Offline-analysis-should-not-require-another-copy-of-the-truth" class="common-anchor-header">離線分析不應需要另一份真相</h3><p>以前，團隊通常會將一個線上集合轉換成 Parquet，以進行離線評估或分析。這樣會產生同一資料集的兩個版本：線上合集和分析副本。一旦修正標題、重新生成嵌入、套用刪除記錄或重建索引，團隊就必須詢問哪一個副本是最新的。</p>
@@ -585,7 +585,7 @@ _index/
 <li><strong>外部寫入路徑</strong>很重要，因為 Spark 和 Ray 應該能夠產生 ColumnGroups 和 Manifest commits，而不需要強制每次回填都經過客戶端 SDK 循環。</li>
 <li><strong>Lakehouse 互操作性</strong>很重要，因為許多團隊已經使用目錄和查詢引擎，例如<strong>Iceberg、Delta Lake、Trino、DuckDB 和 Athena。</strong>向量資料應該能夠參與這個生態系統，而不會失去向量搜尋的效能。</li>
 <li><strong>索引佈局</strong>很重要，因為圖索引和倒轉結構在物件儲存上有不同的存取模式。</li>
-<li><strong>大型物件語意</strong>很重要，因為原始視訊、PDF、影像和音訊檔案需要與衍生向量資料集一致的參考管理、版本和刪除行為。</li>
+<li><strong>大型物件語意</strong>很重要，因為原始影片、PDF、影像和音訊檔案需要與衍生向量資料集一致的參考管理、版本和刪除行為。</li>
 </ul>
 <p>確切的發行行為、預設設定和<a href="https://docs.zilliz.com/docs/release-notes-2605">遷</a>移路徑應遵循相關的 Milvus 和<a href="https://docs.zilliz.com/docs/release-notes-2605">Zilliz Cloud 發行說明</a>。然而，儲存方向是明確的：向量資料庫需要服務層之下的版本化、湖原生基礎。</p>
 <h2 id="Try-Loon-under-Zilliz-Vector-Lakebase" class="common-anchor-header">在 Zilliz Vector Lakebase 下嘗試 Loon<button data-href="#Try-Loon-under-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">

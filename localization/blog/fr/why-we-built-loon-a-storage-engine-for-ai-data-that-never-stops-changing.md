@@ -5,9 +5,9 @@ title: >-
   qui ne cessent d'évoluer.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: 'Milvus, vector database'
 meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex'
@@ -151,7 +151,7 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>Si l'équipe ajoute une ou deux colonnes vectorielles par mois, telles que <code translate="no">embedding_v2</code>, <code translate="no">sparse_vector</code>, ou les fonctions rerank, l'évolution du schéma devient un travail récurrent d'ingénierie daAta mesuré en centaines de gigaoctets ou en téraoctets.</p>
+<p>Si l'équipe ajoute une ou deux colonnes vectorielles par mois, telles que <code translate="no">embedding_v2</code>, <code translate="no">sparse_vector</code>, ou les fonctions rerank, l'évolution du schéma devient un travail d'ingénierie daAta récurrent mesuré en centaines de gigaoctets ou en téraoctets.</p>
 <h3 id="Small-logical-updates-can-trigger-large-physical-rewrites" class="common-anchor-header">De petites mises à jour logiques peuvent déclencher d'importantes réécritures physiques</h3><p>Les mises à jour sont tout aussi importantes.</p>
 <p>Dans les systèmes en colonnes, les anciennes données ne sont généralement pas mises à jour sur place. Un journal de suppression enregistre ce qui a changé, et le compactage réécrit ensuite les lignes vivantes dans de nouveaux fichiers. Ce modèle est gérable lorsque les lignes sont petites.</p>
 <p>Avec des données vectorielles, une petite mise à jour logique peut déclencher une réécriture physique importante.</p>
@@ -202,7 +202,7 @@ metadata
 <h3 id="One-layout-cannot-optimize-for-both-paths" class="common-anchor-header">Une disposition ne peut pas être optimisée pour les deux chemins</h3><p>Il s'agit là du principal conflit. Le filtrage scalaire et l'analytique nécessitent des présentations larges, compressées et faciles à analyser. Les recherches vectorielles veulent des présentations étroites, précises et adressables par ligne.</p>
 <p>Un format de fichier unique peut prendre en charge les deux dans une certaine mesure, mais il ne peut pas être optimal pour les deux simultanément.</p>
 <p>Si toutes les colonnes vivent dans Parquet, les balayages scalaires sont confortables. Mais la recherche ANN après rappel devient plus difficile. Le système peut n'avoir besoin que de quelques centaines de vecteurs, de légendes ou d'enregistrements de métadonnées, tandis que la couche de stockage peut avoir à lire de grands groupes de lignes qui contiennent principalement des lignes non pertinentes.</p>
-<p>Sur un disque SSD local, le cache et le mmap peuvent masquer une partie de ce coût. Une fois que les données sont stockées dans un système de stockage d'objets, le coût devient plus visible. Chaque absence de cache peut devenir une lecture à distance. Si les lignes candidates sont dispersées dans de nombreux groupes de lignes, une seule requête peut déclencher plusieurs lectures, chacune extrayant plus de données que la requête n'en a besoin. Dans une disposition mal conçue, la recherche de 1 000 lignes candidates peut facilement entraîner des dizaines ou des centaines de mégaoctets d'E/S inutiles, voire beaucoup plus dans les cas extrêmes.</p>
+<p>Sur un disque SSD local, le cache et le mmap peuvent masquer une partie de ce coût. Une fois que les données sont stockées dans un système de stockage d'objets, le coût devient plus visible. Chaque absence de cache peut devenir une lecture à distance. Si les lignes candidates sont dispersées dans de nombreux groupes de lignes, une seule requête peut déclencher plusieurs lectures, chacune extrayant plus de données que la requête n'en a besoin. Dans une disposition mal agencée, la recherche de 1 000 lignes candidates peut facilement entraîner des dizaines ou des centaines de mégaoctets d'E/S inutiles, voire beaucoup plus dans les cas extrêmes.</p>
 <p>La réduction de la taille des groupes de lignes facilite la recherche de points, mais nuit aux balayages. Un trop grand nombre de petits fragments réduit l'efficacité de la compression, augmente la charge de travail des métadonnées et rompt les longues lectures séquentielles dont dépendent les moteurs d'analyse.</p>
 <p><strong>Le problème n'est donc pas de trouver une taille de groupe de lignes magique. Le problème est que l'on demande au même ensemble de données de se comporter comme deux systèmes de stockage différents.</strong></p>
 <h3 id="Hybrid-search-forces-both-paths-into-one-query" class="common-anchor-header">La recherche hybride force les deux chemins en une seule requête</h3><p>La recherche hybride rend le conflit plus difficile à ignorer. Une requête unique peut d'abord appliquer des filtres scalaires :</p>
@@ -234,7 +234,7 @@ metadata
     <span></span>
   </span>
 </p>
-<h3 id="AI-data-pipelines-span-many-systems" class="common-anchor-header">Les pipelines de données d'IA couvrent de nombreux systèmes</h3><p>Dans le flux de travail vidéo, il se passe très peu de choses dans la base de données vectorielle elle-même.</p>
+<h3 id="AI-data-pipelines-span-many-systems" class="common-anchor-header">Les pipelines de données d'IA s'étendent sur de nombreux systèmes</h3><p>Dans le flux de travail vidéo, il se passe très peu de choses dans la base de données vectorielle elle-même.</p>
 <p>Les vidéos brutes se trouvent dans le stockage d'objets. La génération de clips peut être exécutée dans Spark ou Ray. La notation esthétique peut être exécutée dans un service GPU. Le sous-titrage peut être exécuté dans un pipeline d'inférence LLM. Les embeddings peuvent être générés par une autre tâche GPU. Les vecteurs épars peuvent provenir d'un service SPLADE. L'évaluation hors ligne, le filtrage des données d'entraînement, l'examen humain et les tâches de gouvernance peuvent tous être exécutés ailleurs.</p>
 <p>La base de données vectorielle sert à la recherche en ligne, mais l'ensemble de données est produit, corrigé, évalué et étendu par de nombreux systèmes.</p>
 <h3 id="Private-storage-formats-create-multiple-copies-of-the-truth" class="common-anchor-header">Les formats de stockage privés créent plusieurs copies de la vérité</h3><p>Si la base de données utilise un format physique privé qu'elle est la seule à pouvoir lire et écrire, chaque tâche externe nécessite une exportation, une conversion, une copie et une importation. La même collection peut exister dans la base de données, dans un répertoire temporaire Spark, dans une sortie d'évaluation et dans un répertoire local de remplissage. La vraie question devient alors :</p>
@@ -269,11 +269,11 @@ metadata
       </svg>
     </button></h2><p>Il est tentant de traiter ces problèmes comme trois problèmes d'ingénierie distincts.</p>
 <ul>
-<li>Amplification de l'écriture ? Ajoutez la mise en lots.</li>
+<li>Amplification de l'écriture ? Ajouter la mise en lots.</li>
 <li>Lecture ponctuelle ? Ajouter un cache.</li>
 <li>Systèmes externes ? Ajoutez des outils d'exportation et d'importation.</li>
 </ul>
-<p>Ces correctifs peuvent aider, mais ils ne règlent pas le problème sous-jacent : un jeu de données vectorielles est physiquement hétérogène.</p>
+<p>Ces correctifs peuvent aider, mais ils ne règlent pas le problème sous-jacent : un ensemble de données vectorielles est physiquement hétérogène.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_6_0744ff4445.png" alt="" class="doc-image" id="" />
@@ -498,7 +498,7 @@ _delta/
 _stats/
 _index/
 <button class="copy-code-btn"></button></code></pre>
-<p>Mais la structure des répertoires n'est pas la source de la vérité. Le Manifeste l'est. Les lecteurs ne doivent pas énumérer les répertoires et déduire l'état des fichiers qui s'y trouvent. Ils doivent lire le Manifeste actuel et suivre la vue versionnée qu'il déclare.</p>
+<p>Mais la structure des répertoires n'est pas la source de la vérité. Le Manifeste l'est. Les lecteurs ne doivent pas énumérer les répertoires et déduire l'état des fichiers existants. Ils doivent lire le Manifeste actuel et suivre la vue versionnée qu'il déclare.</p>
 <h3 id="The-Manifest-defines-one-versioned-view-of-the-dataset" class="common-anchor-header">Le Manifeste définit une vue versionnée de l'ensemble de données</h3><p>Le Manifest définit le jeu de données dans une version donnée. Il enregistre</p>
 <ul>
 <li>les ColumnGroups existants</li>
@@ -511,7 +511,7 @@ _index/
 <li>les blobs externes référencés</li>
 <li>les colonnes et les lignes couvertes par les statistiques ou les index.</li>
 </ul>
-<p>Chaque mise à jour écrit une nouvelle version du manifeste. Un lecteur qui ouvre la version N voit une vue stable de l'ensemble de données à la version N. Un rédacteur peut préparer la version N+1 sans perturber les lecteurs qui utilisent toujours la version N.</p>
+<p>Chaque mise à jour écrit une nouvelle version du manifeste. Un lecteur qui ouvre la version N voit une vue stable de l'ensemble de données à la version N. Un rédacteur peut préparer la version N+1 sans perturber les lecteurs qui utilisent encore la version N.</p>
 <h3 id="The-Manifest-tracks-more-than-table-files" class="common-anchor-header">Le Manifest ne suit pas que les fichiers de table</h3><p>Dans Loon, le corps du manifeste est encodé avec Apache Avro et organisé autour de quatre sections principales.</p>
 <ul>
 <li>ColumnGroups décrit les colonnes, les formats, les fichiers et les plages d'ID de ligne.</li>
@@ -558,7 +558,7 @@ _index/
 <p>Avec un modèle de stockage basé sur les manifestes, les moteurs d'analyse peuvent lire la même vue versionnée du jeu de données que le système de distribution. Ils peuvent projeter uniquement les colonnes dont ils ont besoin, analyser uniquement les plages de lignes pertinentes et travailler sur une version déclarée du jeu de données au lieu d'un instantané exporté manuellement.</p>
 <h3 id="Deletes-and-corrections-should-touch-only-what-changed" class="common-anchor-header">Les suppressions et les corrections ne doivent concerner que ce qui a été modifié</h3><p>Les suppressions, les corrections de légendes, les corrections d'étiquettes et les mises à jour de gouvernance sont monnaie courante dans les ensembles de données d'IA. Elles ne doivent pas contraindre chaque longue colonne vectorielle à suivre le même chemin de réécriture.</p>
 <p>Avec Loon, la suppression des journaux peut d'abord être traitée comme une suppression logique. Le compactage ultérieur peut nettoyer les groupes de colonnes concernés sans réécrire les données non liées. Si un champ de texte court est modifié, la couche de stockage ne devrait pas avoir à réécrire des centaines de gigaoctets de vecteurs denses simplement parce qu'ils partagent la même ligne logique.</p>
-<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">Les moteurs externes font partie du flux de travail et ne sont plus une échappatoire</h3><p>Le changement le plus important est que les moteurs externes ne sont plus traités comme des systèmes extérieurs à la base de données vectorielles.</p>
+<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">Les moteurs externes font partie du flux de travail et ne sont plus une échappatoire</h3><p>Le changement le plus important est que les moteurs externes ne sont plus traités comme des systèmes extérieurs à la base de données vectorielle.</p>
 <p>Spark, Ray, les tâches d'évaluation, les systèmes d'étiquetage et les pipelines de gouvernance produisent et modifient déjà une grande partie des données. La couche de stockage devrait leur permettre de collaborer autour d'une source unique de vérité plutôt que d'exporter, de copier et de réimporter en permanence.</p>
 <p>C'est ce que permet une version de Manifest. Elle donne au service en ligne, à l'analyse hors ligne, aux tâches de remplissage et au compactage une vue partagée de l'ensemble de données.</p>
 <p>Cela peut sembler être des détails de stockage interne, mais ils affectent la rapidité avec laquelle les équipes peuvent itérer sur les ensembles de données d'IA. Chaque modification de modèle, remplissage de fonctionnalités, correction de légende, filtre de qualité et reconstruction d'index dépend de la même question : &quot;<strong>Le système peut-il mettre à jour l'ensemble de données sans déplacer des données qu'il n'a pas besoin de déplacer ? &quot;</strong></p>
@@ -610,7 +610,7 @@ _index/
 <p>Vous pouvez également suivre la <a href="https://milvus.io/docs/release_notes.md">sortie de Milvus 3.0</a> pour voir comment Loon évolue dans le moteur open-source.</p>
 <p><strong>Zilliz Vector Lakebase réunit :</strong></p>
 <ul>
-<li>Un service hiérarchisé pour différents compromis en termes de performances et de coûts en temps réel</li>
+<li>Un service hiérarchisé pour différents compromis de performance et de coût en temps réel</li>
 <li>Recherche à la demande pour les charges de travail à grande échelle ou exploratoires sans calcul permanent</li>
 <li>Recherche externe dans le lac de données, pour indexer et rechercher directement dans les données existantes du lac.</li>
 <li>Recherche à spectre complet sur des vecteurs, du texte, du JSON et des données géospatiales, avec extraction et reclassement hybrides.</li>
