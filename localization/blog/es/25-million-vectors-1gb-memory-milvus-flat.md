@@ -1,8 +1,7 @@
 ---
 id: 25-million-vectors-1gb-memory-milvus-flat.md
-title: >-
-  Cómo ejecutar 25 millones de vectores de imagen con menos de 1 GB de memoria
-  en Milvus
+title: |
+  How to Run 25 Million Image Vectors on Under 1GB of Memory in Milvus
 author: Jack Li
 date: 2026-6-3
 cover: >-
@@ -16,33 +15,32 @@ meta_keywords: >-
   quantization, image search
 meta_title: |
   How to Run 25 Million Image Vectors on Under 1GB of Memory in Milvus
-desc: >-
-  Cómo un usuario de la comunidad ejecutó una búsqueda de imágenes de 25M de
-  vectores en &lt;1GB de memoria en Milvus utilizando FLAT, FP16 y mmap - en
-  lugar de la estimación de 139GB de la Herramienta de Dimensionamiento.
+desc: >
+  How a community user ran 25M-vector image search on <1GB of memory in Milvus
+  using FLAT, FP16, and mmap — instead of the Sizing Tool's 139GB estimate.
 origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
 ---
-<p>Un usuario de Milvus nos planteó recientemente un problema muy práctico de búsqueda de imágenes.</p>
-<p>"Necesitamos realizar búsquedas imagen a imagen en 25 millones de imágenes, codificadas como vectores de 1280 dimensiones. Una sola máquina se encargará de la carga de trabajo. Tiene 64 GB de RAM, y como máximo 32 GB pueden ir a la base de datos de vectores. Pero <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> dice que necesitamos 139 GB. ¿Estamos listos?"</p>
+<p>A Milvus user recently came to us with a very practical image search problem.</p>
+<p>“We need to do image-to-image search on 25 million images, encoded as 1280-dimensional vectors. A single machine will serve the workload. It has 64GB of RAM, and at most 32GB can go to the vector database. But the <a href="https://milvus.io/tools/sizing"><strong>Milvus Sizing Tool</strong></a> says we need 139GB. Are we cooked?”</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/25_million_vectors_1gb_memory_milvus_flat_md_2_06e0f8be39.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Resultados de la estimación de la herramienta de dimensionamiento: 25M × 1280 vectores dimensionales, tamaño de datos brutos 119,2 GB, memoria de carga 139,4 GB</p>
-<p>No del todo.</p>
-<p>Al principio, la respuesta obvia parecía ser un índice más avanzado. Si el conjunto de datos es grande y la memoria es escasa, seguramente un índice RNA más inteligente debería ayudar. En este caso, no fue así. El índice que finalmente funcionó fue la opción más sencilla de Milvus: <a href="https://milvus.io/docs/flat.md"><strong>FLAT</strong></a>.</p>
-<p>El resultado fue mejor de lo esperado: la memoria en estado estacionario se mantuvo por debajo de 1 GB, la memoria residente del contenedor rondó los 600 MB y la latencia de consulta en caliente se mantuvo por debajo de los 100 ms. El arranque alcanzó brevemente un máximo de 12,5 GB, y la primera consulta tardó unos 30 segundos mientras el sistema se calentaba.</p>
+<p>Sizing Tool estimation results: 25M × 1280-dimensional vectors, Raw Data Size 119.2 GB, Loading Memory 139.4 GB</p>
+<p>Not quite.</p>
+<p>At first, the obvious answer seemed to be a more advanced index. If the dataset is large and memory is tight, surely a smarter ANN index should help. In this case, it did not. The index that finally worked was Milvus’s simplest option: <a href="https://milvus.io/docs/flat.md"><strong>FLAT</strong></a>.</p>
+<p>The result was better than expected: steady-state memory stayed under 1GB, the container’s resident memory was around 600MB, and warm-query latency stayed under 100ms. Startup briefly peaked at about 12.5GB, and the first query took about 30 seconds while the system warmed up.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/25_million_vectors_1gb_memory_milvus_flat_md_3_272794fc9b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Lo importante no es que FLAT abaratara mágicamente 25 millones de comparaciones de fuerza bruta. No es así. Lo importante es que esta carga de trabajo casi nunca buscó los 25 millones de vectores. Los filtros escalares redujeron primero cada consulta, y FLAT sólo comparó vectores dentro de ese conjunto de candidatos mucho más pequeño.</p>
-<p>Este artículo explica qué falló, por qué funcionó FLAT y cuándo merece la pena probar el mismo patrón en su propia carga de trabajo.</p>
-<h2 id="Why-AISAQ-and-IVFFLAT-Did-Not-Work-Here" class="common-anchor-header">Por qué AISAQ e IVF_FLAT no funcionaron aquí<button data-href="#Why-AISAQ-and-IVFFLAT-Did-Not-Work-Here" class="anchor-icon" translate="no">
+<p>The important part is not that FLAT magically made 25 million brute-force comparisons cheap. It did not. The important part is that this workload almost never searched all 25 million vectors. Scalar filters narrowed each query first, and FLAT only compared vectors inside that much smaller candidate set.</p>
+<p>This post walks through what failed, why FLAT worked, and when the same pattern is worth trying in your own workload.</p>
+<h2 id="Why-AISAQ-and-IVFFLAT-Did-Not-Work-Here" class="common-anchor-header">Why AISAQ and IVF_FLAT Did Not Work Here<button data-href="#Why-AISAQ-and-IVFFLAT-Did-Not-Work-Here" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,22 +55,22 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Antes de FLAT, el usuario probó dos índices que parecían más naturales para una máquina con restricciones.</p>
-<p><strong>Primer intento:</strong> <a href="https://milvus.io/docs/aisaq.md"><strong>AISAQ</strong></a><strong>.</strong> AISAQ es un índice orientado al disco diseñado para mantener bajo el uso de memoria. El problema de esta carga de trabajo era la ruta de creación y carga. En una prueba anterior con 55 millones de vectores, una carga de recopilación escribió 249 GB de datos temporales en el disco y tardó demasiado tiempo para ser práctica.</p>
-<p><strong>Segundo intento: IVF_FLAT.</strong> IVF_FLAT también parecía razonable porque es un índice ANN estándar. El índice se construyó con éxito, pero la carga de la colección se estancó en el 14% y nunca se recuperó.</p>
-<p>Tras estos dos callejones sin salida, el usuario probó la opción más aburrida: FLAT. Se cargó limpiamente. También ofrecía el mejor comportamiento en tiempo de ejecución para este patrón de consulta específico.</p>
+    </button></h2><p>Before FLAT, the user tried two indexes that looked more natural for a constrained machine.</p>
+<p><strong>First attempt:</strong> <a href="https://milvus.io/docs/aisaq.md"><strong>AISAQ</strong></a><strong>.</strong> AISAQ is a disk-oriented index designed to keep memory usage low. The catch in this workload was the build and load path. In an earlier test with 55 million vectors, one collection load wrote 249GB of temporary data to disk and took too long to be practical.</p>
+<p><strong>Second attempt: IVF_FLAT.</strong> IVF_FLAT also looked reasonable because it is a standard ANN index. The index built successfully, but the collection load stalled at 14% and never recovered.</p>
+<p>After those two dead ends, the user tried the boring option: FLAT. It loaded cleanly. It also gave the best runtime behavior for this specific query pattern.</p>
 <table>
 <thead>
-<tr><th><strong>Índice</strong></th><th><strong>Por qué parecía prometedor</strong></th><th><strong>Qué ocurrió en esta carga de trabajo</strong></th></tr>
+<tr><th><strong>Index</strong></th><th><strong>Why it looked promising</strong></th><th><strong>What happened in this workload</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>AISAQ</td><td>Índice orientado a disco con bajo uso de memoria en teoría</td><td>La ruta de creación/carga generó grandes archivos temporales. En una prueba de 55M de vectores, una carga de recopilación escribió 249GB de datos temporales y fue lenta.</td></tr>
-<tr><td>IVF_FLAT</td><td>Índice RNA estándar con menor coste de búsqueda que un escaneo completo</td><td>El índice se creó, pero la carga de recopilación se estancó en el 14% y no se recuperó.</td></tr>
-<tr><td>FLAT</td><td>Sin estructura RNA adicional ni complejidad de creación de índices</td><td>La memoria en estado estacionario se mantuvo por debajo de 1 GB. La memoria residente del contenedor rondaba los 600 MB. El arranque alcanzó un máximo de 12,5 GB. La primera consulta tardó unos 30 segundos, y las consultas en caliente se mantuvieron por debajo de los 100 ms.</td></tr>
+<tr><td>AISAQ</td><td>Disk-oriented index with low memory usage in theory</td><td>The build/load path generated large temporary files. In a 55M-vector test, one collection load wrote 249GB of temporary data and was slow.</td></tr>
+<tr><td>IVF_FLAT</td><td>Standard ANN index with lower search cost than a full scan</td><td>The index built, but collection load stalled at 14% and did not recover.</td></tr>
+<tr><td>FLAT</td><td>No extra ANN structure and no index build complexity</td><td>Steady-state memory stayed under 1GB. Container resident memory was around 600MB. Startup peaked near 12.5GB. First query took about 30s, then warm queries stayed under 100ms.</td></tr>
 </tbody>
 </table>
-<p>La lección es sencilla: un índice que es eficiente en teoría puede ser inadecuado para un equipo, una forma de datos y un patrón de consulta concretos.</p>
-<h2 id="Why-FLAT-Worked" class="common-anchor-header">Por qué funcionó FLAT<button data-href="#Why-FLAT-Worked" class="anchor-icon" translate="no">
+<p>The lesson is simple: an index that is efficient in theory may still be the wrong fit for a specific machine, data shape, and query pattern.</p>
+<h2 id="Why-FLAT-Worked" class="common-anchor-header">Why FLAT Worked<button data-href="#Why-FLAT-Worked" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -87,11 +85,11 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>FLAT es el índice más simple que admite Milvus. Sin gráfico. Sin árbol. Sin agrupación. Compara el vector de consulta directamente con los vectores candidatos.</p>
-<p>Parece la herramienta equivocada para 25 millones de vectores. Sería la herramienta equivocada si cada consulta buscara en toda la colección.</p>
-<p>Pero esta carga de trabajo tenía un filtro fuerte delante de la búsqueda de vectores. Cada consulta acotaba primero el espacio de búsqueda con campos escalares como <code translate="no">dataid</code> y <code translate="no">classid</code>. Sólo entonces Milvus ejecutaba la búsqueda de similitud vectorial. Eso cambió el problema de "buscar 25 millones de vectores" a "buscar entre unos cientos y decenas de miles de vectores después de filtrar".</p>
-<p>Tres piezas hicieron que la configuración funcionara: Almacenamiento de vectores FP16, mmap para datos vectoriales sin procesar y filtrado escalar antes del pase FLAT.</p>
-<h2 id="Optimization-1-FP16-Cuts-Vector-Data-in-Half" class="common-anchor-header">Optimización 1: FP16 reduce los datos vectoriales a la mitad<button data-href="#Optimization-1-FP16-Cuts-Vector-Data-in-Half" class="anchor-icon" translate="no">
+    </button></h2><p>FLAT is the simplest index Milvus supports. No graph. No tree. No clustering. It compares the query vector directly with candidate vectors.</p>
+<p>That sounds like the wrong tool for 25 million vectors. It would be the wrong tool if every query searched the whole collection.</p>
+<p>But this workload had a strong filter in front of vector search. Every query first narrowed the search space with scalar fields such as <code translate="no">dataid</code> and <code translate="no">classid</code>. Only then did Milvus run vector similarity search. That changed the problem from “search 25 million vectors” to “search a few hundred to tens of thousands of vectors after filtering.”</p>
+<p>Three pieces made the setup work: FP16 vector storage, mmap for raw vector data, and scalar filtering before the FLAT pass.</p>
+<h2 id="Optimization-1-FP16-Cuts-Vector-Data-in-Half" class="common-anchor-header">Optimization 1: FP16 Cuts Vector Data in Half<button data-href="#Optimization-1-FP16-Cuts-Vector-Data-in-Half" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -106,13 +104,13 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Los vectores tenían 1.280 dimensiones. Almacenados como FP32, cada vector necesita 5.120 bytes:</p>
+    </button></h2><p>The vectors had 1280 dimensions. Stored as FP32, each vector needs 5120 bytes:</p>
 <p><code translate="no">1280 dimensions x 4 bytes = 5120 bytes</code></p>
-<p>En 25 millones de vectores, esto supone unos 119,2 GB de datos vectoriales sin procesar. FP16 reduce cada dimensión de 4 a 2 bytes:</p>
+<p>Across 25 million vectors, that is about 119.2GB of raw vector data. FP16 cuts each dimension from 4 bytes to 2 bytes:</p>
 <p><code translate="no">1280 dimensions x 2 bytes = 2560 bytes</code></p>
-<p>Así que los datos vectoriales en bruto se reducen a unos 59,6 GB.</p>
-<p>Esto sigue sin encajar perfectamente en la RAM disponible, pero reduce a la mitad la cantidad de datos vectoriales que Milvus y el sistema operativo tienen que manejar. En muchas cargas de trabajo de recuperación de imágenes, FP16 tiene un pequeño impacto en la recuperación, pero no es una regla gratuita. Pruebe la recuperación con sus propias incrustaciones, métrica y barra de calidad antes de hacerla por defecto.</p>
-<h2 id="Optimization-2-mmap-Keeps-Raw-Vectors-Off-the-Process-Heap" class="common-anchor-header">Optimización 2: mmap mantiene los vectores sin procesar fuera de la pila del proceso<button data-href="#Optimization-2-mmap-Keeps-Raw-Vectors-Off-the-Process-Heap" class="anchor-icon" translate="no">
+<p>So the raw vector data drops to about 59.6GB.</p>
+<p>This still does not fit neatly into the available RAM, but it halves the amount of vector data Milvus and the operating system need to handle. In many image retrieval workloads, FP16 has a small recall impact, but it is not a free rule. Test recall with your own embeddings, metric, and quality bar before making it the default.</p>
+<h2 id="Optimization-2-mmap-Keeps-Raw-Vectors-Off-the-Process-Heap" class="common-anchor-header">Optimization 2: mmap Keeps Raw Vectors Off the Process Heap<button data-href="#Optimization-2-mmap-Keeps-Raw-Vectors-Off-the-Process-Heap" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,12 +125,12 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Incluso después de FP16, alrededor de 60 GB de vectores sigue siendo demasiado para el presupuesto de memoria. Ahí es donde <a href="https://milvus.io/docs/mmap.md"><strong>mmap</strong></a> se vuelve útil.</p>
-<p>Con mmap, Milvus puede acceder a los datos vectoriales a través de archivos mapeados en memoria en lugar de cargar todo el campo de vectores sin procesar en la memoria del proceso. El sistema operativo pagina los datos a medida que las consultas los tocan y puede mantener las páginas calientes en su caché de páginas.</p>
-<p>En el entorno Milvus 2.6.14 de este usuario, la configuración mmap a nivel de clúster ya cubría los datos vectoriales sin procesar, por lo que el usuario no necesitaba configurar mmap manualmente.</p>
-<p>Un detalle causó confusión durante la depuración: Attu muestra la configuración mmap a nivel de esquema, no la predeterminada a nivel de clúster. Así que <a href="https://zilliz.com/attu"><strong>Attu</strong></a> puede mostrar mmap como deshabilitado incluso cuando la configuración a nivel de cluster está efectivamente habilitando mmap para la ruta de datos.</p>
-<p>mmap ahorra RAM, pero utiliza más el disco y la caché de páginas del sistema operativo. Sigue necesitando capacidad SSD para los archivos vectoriales, y la primera consulta puede ser más lenta mientras se leen del disco las páginas relevantes.</p>
-<h2 id="Optimization-3-Scalar-Filtering-Is-the-Real-Performance-Multiplier" class="common-anchor-header">Optimización 3: El filtrado escalar es el verdadero multiplicador del rendimiento<button data-href="#Optimization-3-Scalar-Filtering-Is-the-Real-Performance-Multiplier" class="anchor-icon" translate="no">
+    </button></h2><p>Even after FP16, about 60GB of vectors is still too much for the memory budget. That is where <a href="https://milvus.io/docs/mmap.md"><strong>mmap</strong></a> becomes useful.</p>
+<p>With mmap, Milvus can access vector data through memory-mapped files instead of loading the entire raw vector field into process memory. The operating system pages data in as queries touch it and can keep hot pages in its page cache.</p>
+<p>In this user’s Milvus 2.6.14 environment, the cluster-level mmap configuration already covered raw vector data, so the user did not need to set mmap manually.</p>
+<p>One detail caused confusion during debugging: Attu shows the schema-level mmap setting, not the cluster-level default. So <a href="https://zilliz.com/attu"><strong>Attu</strong></a> may show mmap as disabled even when the cluster-level configuration is effectively enabling mmap for the data path.</p>
+<p>The trade-off is straightforward. mmap saves RAM, but it uses disk and the OS page cache more heavily. You still need SSD capacity for the vector files, and the first query can be slower while relevant pages are read from disk.</p>
+<h2 id="Optimization-3-Scalar-Filtering-Is-the-Real-Performance-Multiplier" class="common-anchor-header">Optimization 3: Scalar Filtering Is the Real Performance Multiplier<button data-href="#Optimization-3-Scalar-Filtering-Is-the-Real-Performance-Multiplier" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -147,25 +145,25 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>FP16 y mmap explican el número de memoria. El filtrado escalar explica el número de latencia.</p>
-<p>Cada consulta de esta carga de trabajo incluía una expresión de filtro como ésta:</p>
+    </button></h2><p>FP16 and mmap explain the memory number. Scalar filtering explains the latency number.</p>
+<p>Every query in this workload included a filter expression like this:</p>
 <pre><code translate="no" class="language-sql">dataid in [123] AND classid in [0, 2, 3]
 <button class="copy-code-btn"></button></code></pre>
-<p>Ese filtro se ejecutaba antes del paso de comparación de vectores. En lugar de comparar con 25 millones de vectores, FLAT comparó con el conjunto de candidatos filtrados, que oscilaba entre unos cientos y decenas de miles de vectores.</p>
-<p>Por eso, las consultas en caliente se mantuvieron por debajo de los 100 ms. Decenas de miles de comparaciones de vectores son prácticas en una CPU moderna. Veinticinco millones de comparaciones por consulta sería una historia muy diferente.</p>
-<p>Esto también explica por qué IVF_FLAT y HNSW no resultaron útiles en este caso. Una vez que el filtrado escalar ha reducido el conjunto de candidatos lo suficiente, una estructura ANN adicional puede convertirse en peso muerto. Añade memoria, tiempo de construcción y complejidad de carga, pero puede que no mejore mucho la latencia.</p>
-<p>Hay una advertencia. Los filtros de esta carga de trabajo eran sencillos. Si sus filtros utilizan grandes listas <code translate="no">IN</code>, patrones <code translate="no">LIKE</code>, predicados de rango o condiciones JSON anidadas, añada índices escalares en los campos relevantes y mida la etapa de filtrado directamente.</p>
+<p>That filter ran before the vector comparison step. Instead of comparing against 25 million vectors, FLAT compared against the filtered candidate set, which ranged from a few hundred to tens of thousands of vectors.</p>
+<p>That is why warm queries stayed under 100ms. Tens of thousands of vector comparisons are practical on a modern CPU. Twenty-five million comparisons per query would be a very different story.</p>
+<p>This also explains why IVF_FLAT and HNSW were not useful here. Once scalar filtering has reduced the candidate set enough, an extra ANN structure can become dead weight. It adds memory, build time, and load complexity, but it may not improve latency much.</p>
+<p>There is one caveat. The filters in this workload were simple. If your filters use large <code translate="no">IN</code> lists, <code translate="no">LIKE</code> patterns, range predicates, or nested JSON conditions, add scalar indexes on the relevant fields and measure the filter stage directly.</p>
 <table>
 <thead>
-<tr><th>Optimización</th><th>Para qué sirve</th><th>Por qué es importante aquí</th><th>Contrapartida</th></tr>
+<tr><th>Optimization</th><th>What it does</th><th>Why it mattered here</th><th>Trade-off</th></tr>
 </thead>
 <tbody>
-<tr><td>Almacenamiento de vectores FP16</td><td>Almacena cada dimensión vectorial con 2 bytes en lugar de 4 bytes</td><td>Reducción de los datos vectoriales brutos de 119,2 GB a 59,6 GB.</td><td>El impacto en la recuperación depende de las incrustaciones y de la métrica. Pruébelo.</td></tr>
-<tr><td>mmap en vectores sin procesar</td><td>Asigna archivos vectoriales desde el disco en lugar de cargar todo el campo de vectores sin procesar en la memoria del proceso.</td><td>Mantiene baja la memoria de proceso mientras permite que el sistema operativo pagine los datos según sea necesario.</td><td>Requiere capacidad SSD y puede hacer que las consultas en frío sean más lentas.</td></tr>
-<tr><td>Filtrado escalar primero</td><td>Filtra por campos escalares antes de comparar vectores.</td><td>Reduce cada consulta de 25 millones de candidatos a cientos o decenas de miles.</td><td>Los filtros complejos pueden necesitar índices escalares.</td></tr>
+<tr><td>FP16 vector storage</td><td>Stores each vector dimension with 2 bytes instead of 4 bytes</td><td>Reduced raw vector data from about 119.2GB to about 59.6GB</td><td>Recall impact depends on your embeddings and metric. Test it.</td></tr>
+<tr><td>mmap on raw vectors</td><td>Maps vector files from disk instead of loading the full raw vector field into process memory</td><td>Kept process memory low while letting the OS page in data as needed</td><td>Requires SSD capacity and can make cold queries slower.</td></tr>
+<tr><td>Scalar filtering first</td><td>Filters by scalar fields before vector comparison</td><td>Reduced each query from 25M candidates to hundreds or tens of thousands</td><td>Complex filters may need scalar indexes.</td></tr>
 </tbody>
 </table>
-<h2 id="Where-This-Pattern-Applies" class="common-anchor-header">Dónde se aplica este patrón<button data-href="#Where-This-Pattern-Applies" class="anchor-icon" translate="no">
+<h2 id="Where-This-Pattern-Applies" class="common-anchor-header">Where This Pattern Applies<button data-href="#Where-This-Pattern-Applies" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -180,16 +178,16 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>El caso de la búsqueda de imágenes funcionó porque el espacio de búsqueda real era mucho menor que la colección total. Esa misma forma aparece en muchas cargas de trabajo de producción.</p>
+    </button></h2><p>The image search case worked because the real search space was much smaller than the total collection. That same shape appears in many production workloads.</p>
 <ol>
-<li><strong>RAG de varios inquilinos:</strong> filtre primero por <code translate="no">tenant_id</code>, <code translate="no">workspace_id</code> o <code translate="no">project_id</code>. Cada inquilino puede tener sólo miles o decenas de miles de chunks.</li>
-<li><strong>Búsqueda de productos de comercio electrónico:</strong> Filtre por categoría, marca, vendedor, región o disponibilidad antes de la búsqueda vectorial.</li>
-<li><strong>Recuperación de registros y documentos:</strong> Filtrado por intervalo de tiempo, fuente, servicio o tipo de documento antes de la búsqueda semántica.</li>
-<li><strong>Búsqueda de imágenes o medios con etiquetas:</strong> Filtre por conjunto de datos, clase, cliente o grupo de activos antes de comparar incrustaciones.</li>
+<li><strong>Multi-tenant RAG:</strong> Filter by <code translate="no">tenant_id</code>, <code translate="no">workspace_id</code>, or <code translate="no">project_id</code> first. Each tenant may only have thousands or tens of thousands of chunks.</li>
+<li><strong>E-commerce product search:</strong> Filter by category, brand, seller, region, or availability before vector search.</li>
+<li><strong>Log and document retrieval:</strong> Filter by time range, source, service, or document type before semantic search.</li>
+<li><strong>Image or media search with labels:</strong> Filter by dataset, class, customer, or asset group before comparing embeddings.</li>
 </ol>
-<p>Estos son buenos candidatos para FLAT + FP16 + mmap porque la colección completa puede ser grande mientras que cada consulta sigue afectando a un pequeño subconjunto.</p>
-<p>El patrón no se aplica cuando cada consulta busca en toda la colección. Si cada consulta realmente necesita escanear los 25 millones de vectores, FLAT no le dará la misma latencia. En ese caso, utilice un índice RNA como HNSW, IVF o un índice orientado a disco, y planifique las compensaciones de memoria, disco y tiempo de compilación.</p>
-<h2 id="How-to-Read-the-Sizing-Tool-Estimate" class="common-anchor-header">Cómo leer la estimación de la herramienta de dimensionamiento<button data-href="#How-to-Read-the-Sizing-Tool-Estimate" class="anchor-icon" translate="no">
+<p>These are good candidates for FLAT + FP16 + mmap because the full collection can be large while each query still touches a small subset.</p>
+<p>The pattern does not apply when every query searches the whole collection. If each query really needs to scan all 25 million vectors, FLAT will not give you the same latency. In that case, use an ANN index such as HNSW, IVF, or a disk-oriented index, and plan for the memory, disk, and build-time trade-offs.</p>
+<h2 id="How-to-Read-the-Sizing-Tool-Estimate" class="common-anchor-header">How to Read the Sizing Tool Estimate<button data-href="#How-to-Read-the-Sizing-Tool-Estimate" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -204,16 +202,16 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>La herramienta de dimensionamiento de Milvus es un punto de partida, no un veredicto final sobre su hardware.</p>
-<p>En este caso, la estimación de 139,4 GB de memoria de carga sirvió como punto de partida conservador para 25 millones de vectores FP32 de 1280 dimensiones. La carga de trabajo real cambió varios supuestos:</p>
+    </button></h2><p>The Milvus Sizing Tool is a starting point, not a final verdict on your hardware.</p>
+<p>In this case, the 139.4GB loading memory estimate served as a conservative baseline for 25 million 1280-dimensional FP32 vectors. The real workload changed several assumptions:</p>
 <ol>
-<li>FP16 redujo el tamaño de los vectores en bruto aproximadamente a la mitad.</li>
-<li>mmap evitó cargar todo el campo de vectores en bruto en la memoria de proceso.</li>
-<li>FLAT evitó estructuras de índice RNA adicionales.</li>
-<li>Los filtros escalares hacían que cada consulta buscara un conjunto de candidatos mucho más pequeño.</li>
+<li>FP16 cut raw vector size roughly in half.</li>
+<li>mmap avoided loading the full raw vector field into process memory.</li>
+<li>FLAT avoided extra ANN index structures.</li>
+<li>Scalar filters made each query search a much smaller candidate set.</li>
 </ol>
-<p>Por eso son tan importantes las pruebas con cargas de trabajo reales. Antes de rechazar una configuración de hardware basada únicamente en una estimación de tamaño, realice pruebas con su precisión de vector real, tipo de índice, configuración mmap, filtros escalares, comportamiento de consulta en frío y comportamiento de consulta en caliente.</p>
-<h2 id="Get-Started" class="common-anchor-header">Comenzar<button data-href="#Get-Started" class="anchor-icon" translate="no">
+<p>That is why real workload testing matters. Before rejecting a hardware setup based only on a sizing estimate, test with your actual vector precision, index type, mmap configuration, scalar filters, cold-query behavior, and warm-query behavior.</p>
+<h2 id="Get-Started" class="common-anchor-header">Get Started<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -228,15 +226,15 @@ origin: 'https://milvus.io/blog/25-million-vectors-1gb-memory-milvus-flat.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Si desea probar la misma receta, comience con el patrón de consulta, no con el nombre del índice.</p>
+    </button></h2><p>If you want to try the same recipe, start with the query pattern, not the index name.</p>
 <ol>
-<li>Compruebe si cada consulta tiene filtros escalares selectivos.</li>
-<li>Calcule cuántos vectores quedan después del filtrado.</li>
-<li>Almacene los vectores como FP16 si la prueba de recuperación parece buena.</li>
-<li>Utilizar FLAT cuando el conjunto de candidatos filtrados sea lo suficientemente pequeño para la comparación por fuerza bruta.</li>
-<li>Verificar el comportamiento de mmap para datos vectoriales sin procesar. Compruebe tanto la configuración a nivel de esquema como la configuración a nivel de clúster.</li>
-<li>Mida la memoria de arranque, la latencia de la primera consulta, la latencia de la consulta en caliente y la E/S de disco.</li>
-<li>Añada índices escalares si la evaluación de filtros se convierte en el cuello de botella.</li>
+<li>Check whether every query has selective scalar filters.</li>
+<li>Estimate how many vectors remain after filtering.</li>
+<li>Store vectors as FP16 if recall testing looks good.</li>
+<li>Use FLAT when the filtered candidate set is small enough for brute-force comparison.</li>
+<li>Verify mmap behavior for raw vector data. Check both schema-level settings and cluster-level configuration.</li>
+<li>Measure startup memory, first-query latency, warm-query latency, and disk I/O.</li>
+<li>Add scalar indexes if filter evaluation becomes the bottleneck.</li>
 </ol>
-<p>Para pruebas locales, comience con el <a href="https://milvus.io/docs/quickstart.md"><strong>inicio rápido de Milvus</strong></a> o el repositorio <a href="https://github.com/milvus-io/milvus"><strong>GitHub</strong></a> de Milvus. Utilice Attu para inspeccionar las colecciones, pero recuerde que Attu puede no mostrar los valores predeterminados mmap a nivel de clúster.</p>
-<p>Si no desea ejecutar la infraestructura usted mismo, <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a> es el servicio Milvus gestionado. Obtiene el mismo núcleo de Milvus con operaciones gestionadas, escalado y un nivel gratuito para pruebas. <a href="https://cloud.zilliz.com/signup"><strong>Regístrese</strong></a> para obtener 100 dólares de créditos gratuitos con una dirección de correo electrónico del trabajo, o <a href="https://cloud.zilliz.com/login"><strong>inicie sesión</strong></a> si ya tiene una cuenta.</p>
+<p>For local testing, start with the <a href="https://milvus.io/docs/quickstart.md"><strong>Milvus quickstart</strong></a> or the Milvus <a href="https://github.com/milvus-io/milvus"><strong>GitHub</strong></a> repository. Use Attu to inspect collections, but remember that Attu may not show cluster-level mmap defaults.</p>
+<p>If you do not want to run the infrastructure yourself, <a href="https://zilliz.com/cloud"><strong>Zilliz Cloud</strong></a> is the managed Milvus service. You get the same Milvus core with managed operations, scaling, and a free tier for testing. <a href="https://cloud.zilliz.com/signup"><strong>Sign up</strong></a> for $100 free credits with a work email, or <a href="https://cloud.zilliz.com/login"><strong>sign in</strong></a> if you already have an account.</p>
