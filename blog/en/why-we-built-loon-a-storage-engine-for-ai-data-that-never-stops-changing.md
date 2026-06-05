@@ -4,9 +4,9 @@ title: >
  Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_11_35_09_AM_82329865f6.jpg
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex
