@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2026-06-03T07:04:36.332Z",
+  "homepage/index.json": "2026-06-05T06:08:12.540Z",
   "blog/en/milvus-cdc-standby-cluster-high-availability.md": "2026-06-03T07:19:31.052Z",
   "blog/en/milvus-access-control-rbac-guide.md": "2026-06-03T07:19:18.752Z",
   "blog/en/choose-embedding-model-rag-2026.md": "2026-06-03T07:11:38.311Z",
@@ -285,5 +285,6 @@
   "blog/en/claude-context-reduce-claude-code-token-usage.md": "2026-06-03T07:12:06.086Z",
   "blog/en/how-robobrain-builds-longterm-robot-memory-with-milvus.md": "2026-06-03T07:15:43.552Z",
   "blog/en/claude-code-context-management-tools.md": "2026-06-03T07:11:51.541Z",
-  "blog/en/25-million-vectors-1gb-memory-milvus-flat.md": "2026-06-03T07:09:48.785Z"
+  "blog/en/25-million-vectors-1gb-memory-milvus-flat.md": "2026-06-03T07:09:48.785Z",
+  "blog/en/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md": "2026-06-05T06:10:30.076Z"
 }
