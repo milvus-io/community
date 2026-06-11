@@ -1,10 +1,10 @@
 {
-  "label": "我們邁向 35K+ GitHub Stars 的旅程：從零開始建立 Milvus 的真實故事",
+  "label": "邁向 35,000+ GitHub 星星的旅程：從零開始打造 Milvus 的真實故事",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
-      "label": "Webinar | What's New in Milvus 3.0 - Live Walkthrough & AMA with Core Maintainers",
-      "link": "https://zilliz.com/event/whats-new-in-milvus-3-0-beta"
+      "label": "Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.",
+      "link": "https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md"
     }
   ]
 }
