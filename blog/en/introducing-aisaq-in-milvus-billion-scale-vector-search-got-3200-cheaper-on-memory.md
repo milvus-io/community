@@ -241,6 +241,9 @@ All experiments were conducted on a single-node system to isolate index behavior
 
 - Disk: KIOXIA CM7 7.68 TB NVMe<sup>™</sup> SSD
 
+<small>AMD EPYC is a trademark of Advanced Micro Devices, Inc.</small>
+<small>NVMe is a registered or unregistered mark of NVM Express, Inc. in the United States and other countries.</small>
+
 **Index Build Parameters**
 
 ```
