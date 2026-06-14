@@ -235,11 +235,11 @@ All experiments were conducted on a single-node system to isolate index behavior
 
 **Hardware configuration:**
 
-- CPU: AMD® EPYC® 9454P CPU @ 2.70GHz
+- CPU: AMD® EPYC<sup>™</sup> 9454P CPU @ 2.70GHz
 
 - Memory: Speed: 3200 MT/s, Type: DDR4, Size: 384 GB
 
-- Disk: KIOXIA CM7 7.68 TB NVMe SSD
+- Disk: KIOXIA CM7 7.68 TB NVMe<sup>™</sup> SSD
 
 **Index Build Parameters**
 
@@ -247,7 +247,7 @@ All experiments were conducted on a single-node system to isolate index behavior
 {
   "max_degree": 48,
   "search_list_size": 100,
-  "inline_pq": 0/20/38/48,  // AiSAQ only
+  "inline_pq": 0/20/38/48,  // KIOXIA AiSAQ only
   "pq_code_budget_gb_ratio": 0.125/0.04167, //SIFT 128: 0.125 /Cohere 768: 0.04167
   "search_cache_budget_gb_ratio": 0.0,
   "build_dram_budget_gb": 32.0
