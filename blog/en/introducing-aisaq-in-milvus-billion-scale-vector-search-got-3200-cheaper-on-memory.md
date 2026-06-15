@@ -235,7 +235,7 @@ All experiments were conducted on a single-node system to isolate index behavior
 
 **Hardware configuration:**
 
-- CPU: AMD® EPYC<sup>™</sup> 9454P CPU @ 2.70GHz
+- CPU: AMD EPYC 9454P CPU @ 2.70GHz
 
 - Memory: Speed: 3200 MT/s, Type: DDR4, Size: 384 GB
 
@@ -262,7 +262,7 @@ All experiments were conducted on a single-node system to isolate index behavior
 ```
 {
   "k": 10,
-  "search_list_size": 13/15/16/18, // SIFT/Cohere:13/16 for DiskANN and AiSAQ with inline_pq=48; 15/18 for AiSAQ with inline_pq<48
+  "search_list_size": 13/15/16/18, // SIFT/Cohere:13/16 for DiskANN and KIOXIA AiSAQ with inline_pq=48; 15/18 for AiSAQ with inline_pq<48
   "beamwidth": 4
   "vectors_beamwidth": 2 // only for AiSAQ with inline_pq<48
   "num_search_threads": 12
