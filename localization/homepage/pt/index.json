@@ -1,10 +1,10 @@
 {
-  "label": "A nossa jornada até ultrapassar as 35 mil estrelas no GitHub: a verdadeira história da criação do Milvus a partir do zero",
+  "label": "A nossa jornada até às mais de 35 mil estrelas no GitHub: a verdadeira história da criação do Milvus a partir do zero",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
-      "label": "Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.",
-      "link": "https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md"
+      "label": "Webinar: From Vector Database to Vector Lakebase | Live on July 1",
+      "link": "https://zilliz.com/event/from-vector-database-to-vector-lakebase"
     }
   ]
 }
