@@ -4,7 +4,7 @@ title: >
  Attu 3.0 Beta: Multi-Cluster Management, AI Agent, and a Rebuilt Milvus Console
 author: Ray Jiang
 date: 2026-06-11
-cover: assets.zilliz.com/attu_3_0_beta_md_1_39fd0ca127.png
+cover: assets.zilliz.com/Attu_3_0_New_cover_1af4c44467.png
 tag: Engineering
 recommend: false
 publishToMedium: true
