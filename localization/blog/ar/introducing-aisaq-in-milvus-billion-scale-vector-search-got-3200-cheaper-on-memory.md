@@ -2,8 +2,8 @@
 id: >-
   introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md
 title: >
-  Introducing AISAQ in Milvus: Billion-Scale Vector Search Just Got 3,200×
-  Cheaper on Memory
+  تقديم AISAQ في Milvus: أصبح البحث المتجهي على نطاق المليارات أرخص بـ 3,200 مرة
+  من حيث استهلاك الذاكرة
 author: Martin Li
 date: 2025-12-10T00:00:00.000Z
 cover: assets.zilliz.com/AISAQ_Cover_66b628b762.png
@@ -15,16 +15,17 @@ meta_keywords: 'Milvus2.6, AISAQ, DISKANN, vector search'
 meta_title: |
   AISAQ in Milvus Cuts Memory 3,200× for Billion-Scale Search
 desc: >-
-  Discover how Milvus reduces memory costs by 3200× with AISAQ, enabling
-  scalable billion-vector search without DRAM overhead.
+  اكتشف كيف يقلل Milvus تكاليف الذاكرة بمقدار 3200× باستخدام AISAQ، مما يتيح
+  إجراء عمليات بحث قابلة للتوسع تشمل مليارات المتجهات دون أي عبء إضافي على ذاكرة
+  DRAM.
 origin: >-
   https://milvus.io/blog/introducing-aisaq-in-milvus-billion-scale-vector-search-got-3200-cheaper-on-memory.md
 ---
-<p>Vector databases have become core infrastructure for mission-critical AI systems, and their data volumes are growing exponentially—often reaching billions of vectors. At that scale, everything becomes harder: maintaining low latency, preserving accuracy, ensuring reliability, and operating across replicas and regions. But one challenge tends to surface early and dominate architectural decisions—<strong>COST.</strong></p>
-<p>To deliver fast search, most vector databases keep key indexing structures in DRAM (Dynamic Random Access Memory), the fastest and most expensive tier of memory. This design is effective for performance, but it scales poorly. DRAM usage scales with data size rather than query traffic, and even with compression or partial SSD offloading, large portions of the index must remain in memory. As datasets grow, memory costs quickly become a limiting factor.</p>
-<p>Milvus already supports <strong>DISKANN</strong>, a disk-based ANN approach that reduces memory pressure by moving much of the index onto SSD. However, DISKANN still relies on DRAM for compressed representations used during search. <a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> takes this further with <a href="https://milvus.io/docs/aisaq.md">AISAQ</a>, a disk-based vector index inspired by <a href="https://milvus.io/docs/diskann.md">DISKANN</a>. Developed by KIOXIA, AiSAQ’s architecture was designed with a “Zero-DRAM-Footprint Architecture”, which stores all search-critical data on disk and optimizes data placement to minimize I/O operations. In a billion-vector workload, this reduces memory usage from <strong>32 GB to about 10 MB</strong>—a <strong>3,200× reduction</strong>—while maintaining practical performance.</p>
-<p>In the sections that follow, we explain how graph-based vector search works, where memory costs come from, and how AISAQ reshapes the cost curve for billion-scale vector search.</p>
-<h2 id="How-Conventional-Graph-Based-Vector-Search-Works" class="common-anchor-header">How Conventional Graph-Based Vector Search Works<button data-href="#How-Conventional-Graph-Based-Vector-Search-Works" class="anchor-icon" translate="no">
+<p>أصبحت قواعد البيانات المتجهة بنية تحتية أساسية لأنظمة الذكاء الاصطناعي ذات المهام الحيوية، وتزداد أحجام بياناتها بشكل أسي — حيث تصل غالبًا إلى مليارات المتجهات. وعلى هذا النطاق، تصبح كل الأمور أكثر صعوبة: الحفاظ على زمن انتقال منخفض، والحفاظ على الدقة، وضمان الموثوقية، والتشغيل عبر النسخ المتماثلة والمناطق المختلفة. لكن هناك تحدٍ واحد يميل إلى الظهور مبكرًا ويهيمن على القرارات المتعلقة بالبنية —<strong>وهو التكلفة.</strong></p>
+<p>لتوفير بحث سريع، تحتفظ معظم قواعد بيانات المتجهات بهياكل الفهرسة الرئيسية في ذاكرة DRAM (ذاكرة الوصول العشوائي الديناميكية)، وهي أسرع مستويات الذاكرة وأغلاها ثمناً. هذا التصميم فعال من حيث الأداء، لكنه لا يتكيف جيداً مع التوسع. يتناسب استخدام ذاكرة DRAM مع حجم البيانات بدلاً من حجم حركة الاستعلامات، وحتى مع الضغط أو التفريغ الجزئي على محركات الأقراص SSD، يجب أن تظل أجزاء كبيرة من الفهرس في الذاكرة. ومع نمو مجموعات البيانات، سرعان ما تصبح تكاليف الذاكرة عاملاً مقيداً.</p>
+<p>يدعم Milvus بالفعل <strong>DISKANN،</strong> وهو نهج شبكات عصبية اصطناعية (ANN) قائم على الأقراص يقلل من الضغط على الذاكرة عن طريق نقل جزء كبير من الفهرس إلى محركات الأقراص الصلبة (SSD). ومع ذلك، لا يزال DISKANN يعتمد على ذاكرة DRAM للتمثيلات المضغوطة المستخدمة أثناء البحث. ويأخذ <a href="https://milvus.io/docs/release_notes.md#v264">Milvus 2.6</a> هذا الأمر إلى أبعد من ذلك مع <a href="https://milvus.io/docs/aisaq.md">AISAQ</a>، وهو فهرس متجه قائم على الأقراص مستوحى من <a href="https://milvus.io/docs/diskann.md">DISKANN</a>. تم تطوير AiSAQ بواسطة KIOXIA، وصُممت بنيته على أساس «بنية بصمة DRAM صفرية»، والتي تخزن جميع البيانات الحيوية للبحث على القرص وتُحسّن توزيع البيانات لتقليل عمليات الإدخال/الإخراج (I/O) إلى أدنى حد. في حمل عمل يضم مليار متجه، يقلل هذا من استخدام الذاكرة من <strong>32 جيجابايت إلى حوالي 10 ميجابايت</strong>— أي <strong>انخفاض بمقدار 3,200 ضعف</strong>— مع الحفاظ على الأداء العملي.</p>
+<p>في الأقسام التالية، نوضح كيفية عمل البحث المتجه القائم على الرسوم البيانية، ومن أين تأتي تكاليف الذاكرة، وكيف يعيد AISAQ تشكيل منحنى التكلفة للبحث المتجه على نطاق المليارات.</p>
+<h2 id="How-Conventional-Graph-Based-Vector-Search-Works" class="common-anchor-header">كيفية عمل البحث المتجه التقليدي القائم على الرسوم البيانية<button data-href="#How-Conventional-Graph-Based-Vector-Search-Works" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -39,33 +40,33 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Vector search</strong> is the process of finding data points whose numerical representations are closest to a query in a high-dimensional space. “Closest” simply means the smallest distance according to a distance function, such as cosine distance or L2 distance. At a small scale, this is straightforward: compute the distance between the query and every vector, then return the nearest ones. At a large scale, say billion-scale, however, this approach quickly becomes too slow to be practical.</p>
-<p>To avoid exhaustive comparisons, modern approximate nearest neighbor search (ANNS) systems rely on <strong>graph-based indices</strong>. Instead of comparing a query against every vector, the index organizes vectors into a <strong>graph</strong>. Each node represents a vector, and edges connect vectors that are numerically close. This structure allows the system to narrow the search space dramatically.</p>
-<p>The graph is built in advance, based solely on relationships between vectors. It does not depend on queries. When a query arrives, the system’s task is to <strong>navigate the graph efficiently</strong> and identify the vectors with the smallest distance to the query—without scanning the entire dataset.</p>
-<p>The search begins from a predefined <strong>entry point</strong> in the graph. This starting point may be far from the query, but the algorithm improves its position step by step by moving toward vectors that appear closer to the query. During this process, the search maintains two internal data structures that work together: a <strong>candidate list</strong> and a <strong>result list</strong>.</p>
-<p>And the two most important steps during this process are expanding the candidate list and updating the result list.</p>
+    </button></h2><p><strong>البحث المتجه</strong> هو عملية العثور على نقاط البيانات التي تكون تمثيلاتها العددية الأقرب إلى استعلام ما في فضاء عالي الأبعاد. وتعني كلمة «الأقرب» ببساطة «أصغر مسافة» وفقًا لدالة المسافة، مثل مسافة جيب التمام أو مسافة L2. وعلى نطاق صغير، يكون الأمر بسيطًا: حساب المسافة بين الاستعلام وكل متجه، ثم إرجاع الأقرب منها. أما على نطاق واسع، على سبيل المثال بمليارات المتجهات، فإن هذه الطريقة سرعان ما تصبح بطيئة للغاية بحيث لا تكون عملية.</p>
+<p>لتجنب المقارنات الشاملة، تعتمد أنظمة البحث التقريبي عن أقرب الجيران (ANNS) الحديثة على <strong>فهارس قائمة على الرسوم البيانية</strong>. بدلاً من مقارنة الاستعلام بكل متجه، ينظم الفهرس المتجهات في <strong>رسم بياني</strong>. تمثل كل عقدة متجهاً، وتربط الحواف المتجهات القريبة عدديًا. تسمح هذه البنية للنظام بتضييق نطاق البحث بشكل كبير.</p>
+<p>يتم إنشاء الرسم البياني مسبقًا، استنادًا إلى العلاقات بين المتجهات فقط. ولا يعتمد على الاستعلامات. وعند وصول استعلام، تتمثل مهمة النظام في <strong>التنقل عبر الرسم البياني بكفاءة</strong> وتحديد المتجهات الأقرب إلى الاستعلام — دون مسح مجموعة البيانات بأكملها.</p>
+<p>يبدأ البحث من <strong>نقطة دخول</strong> محددة مسبقًا في الرسم البياني. قد تكون نقطة البداية هذه بعيدة عن الاستعلام، لكن الخوارزمية تحسن موقعها خطوة بخطوة من خلال التحرك نحو المتجهات التي تبدو أقرب إلى الاستعلام. خلال هذه العملية، يحافظ البحث على هيكلين داخليين للبيانات يعملان معًا: <strong>قائمة المرشحين</strong> <strong>وقائمة النتائج</strong>.</p>
+<p>وأهم خطوتين خلال هذه العملية هما توسيع قائمة المرشحين وتحديث قائمة النتائج.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/whiteboard_exported_image_84f8324275.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Expanding-the-Candidate-List" class="common-anchor-header">Expanding the Candidate List</h3><p>The <strong>candidate list</strong> represents where the search can go next. It is a prioritized set of graph nodes that appear promising based on their distance to the query.</p>
-<p>At each iteration, the algorithm:</p>
+<h3 id="Expanding-the-Candidate-List" class="common-anchor-header">توسيع قائمة المرشحين</h3><p>تمثل <strong>قائمة المرشحين</strong> الوجهة التالية التي يمكن أن يتجه إليها البحث. وهي عبارة عن مجموعة مرتبة حسب الأولوية من عقد الرسم البياني التي تبدو واعدة بناءً على بعدها عن الاستعلام.</p>
+<p>في كل تكرار، تقوم الخوارزمية بما يلي:</p>
 <ul>
-<li><p><strong>Selects the closest candidate discovered so far.</strong> From the candidate list, it chooses the vector with the smallest distance to the query.</p></li>
-<li><p><strong>Retrieves that vector’s neighbors from the graph.</strong> These neighbors are vectors that were identified during index construction as being close to the current vector.</p></li>
-<li><p><strong>Evaluates unvisited neighbors and adds them to the candidate list.</strong> For each neighbor that has not already been explored, the algorithm computes its distance to the query. Previously visited neighbors are skipped, while new neighbors are inserted into the candidate list if they appear promising.</p></li>
+<li><p><strong>تختار المرشح الأقرب الذي تم اكتشافه حتى الآن.</strong> ومن قائمة المرشحين، تختار المتجه الذي يبعد أقل مسافة عن الاستعلام.</p></li>
+<li><p><strong>تسترد جيران ذلك المتجه من الرسم البياني.</strong> هؤلاء الجيران هم متجهات تم تحديدها أثناء إنشاء الفهرس على أنها قريبة من المتجه الحالي.</p></li>
+<li><p><strong>تقييم الجيران الذين لم تتم زيارتهم وإضافتهم إلى قائمة المرشحين.</strong> لكل جار لم يتم استكشافه بعد، تحسب الخوارزمية المسافة بينه وبين الاستعلام. يتم تخطي الجيران الذين تمت زيارتهم سابقًا، بينما يتم إدراج الجيران الجدد في قائمة المرشحين إذا بدوا واعدين.</p></li>
 </ul>
-<p>By repeatedly expanding the candidate list, the search explores increasingly relevant regions of the graph. This allows the algorithm to move steadily toward better answers while examining only a small fraction of all vectors.</p>
-<h3 id="Updating-the-Result-List" class="common-anchor-header">Updating the Result List</h3><p>At the same time, the algorithm maintains a <strong>result list</strong>, which records the best candidates found so far for the final output. As the search progresses, it:</p>
+<p>من خلال توسيع قائمة المرشحين بشكل متكرر، يستكشف البحث مناطق ذات صلة متزايدة من الرسم البياني. وهذا يسمح للخوارزمية بالتقدم بثبات نحو إجابات أفضل مع فحص جزء صغير فقط من جميع المتجهات.</p>
+<h3 id="Updating-the-Result-List" class="common-anchor-header">تحديث قائمة النتائج</h3><p>في الوقت نفسه، تحتفظ الخوارزمية <strong>بقائمة نتائج</strong>، تسجل أفضل المرشحين الذين تم العثور عليهم حتى الآن للناتج النهائي. مع تقدم عملية البحث، تقوم الخوارزمية بما يلي:</p>
 <ul>
-<li><p><strong>Tracks the closest vectors encountered during traversal.</strong> These include vectors selected for expansion as well as others evaluated along the way.</p></li>
-<li><p><strong>Stores their distances to the query.</strong> This makes it possible to rank candidates and maintain the current top-K nearest neighbors.</p></li>
+<li><p><strong>تتبع أقرب المتجهات التي تمت مواجهتها أثناء عملية الاستعراض.</strong> وتشمل هذه المتجهات تلك التي تم اختيارها للتوسيع بالإضافة إلى المتجهات الأخرى التي تم تقييمها على طول الطريق.</p></li>
+<li><p><strong>تخزين المسافات التي تفصلها عن الاستعلام.</strong> وهذا يجعل من الممكن ترتيب المرشحين والاحتفاظ بأقرب K جيران حاليًا.</p></li>
 </ul>
-<p>Over time, as more candidates are evaluated and fewer improvements are found, the result list stabilizes. Once further graph exploration is unlikely to produce closer vectors, the search terminates and returns the result list as the final answer.</p>
-<p>In simple terms, the <strong>candidate list controls exploration</strong>, while the <strong>result list captures the best answers discovered so far</strong>.</p>
-<h2 id="The-Trade-Off-in-Graph-Based-Vector-Search" class="common-anchor-header">The Trade-Off in Graph-Based Vector Search<button data-href="#The-Trade-Off-in-Graph-Based-Vector-Search" class="anchor-icon" translate="no">
+<p>بمرور الوقت، ومع تقييم المزيد من المرشحين وظهور تحسينات أقل، تستقر قائمة النتائج. وبمجرد أن يصبح من غير المرجح أن يؤدي استكشاف الرسم البياني إلى ظهور متجهات أقرب، ينتهي البحث ويعرض قائمة النتائج كإجابة نهائية.</p>
+<p>بعبارات بسيطة، <strong>تتحكم قائمة المرشحين في عملية الاستكشاف</strong>، بينما <strong>تسجل قائمة النتائج أفضل الإجابات التي تم اكتشافها حتى الآن</strong>.</p>
+<h2 id="The-Trade-Off-in-Graph-Based-Vector-Search" class="common-anchor-header">المفاضلة في البحث المتجه القائم على الرسم البياني<button data-href="#The-Trade-Off-in-Graph-Based-Vector-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -80,15 +81,15 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>This graph-based approach is what makes large-scale vector search practical in the first place. By navigating the graph instead of scanning every vector, the system can find high-quality results while touching only a small fraction of the dataset.</p>
-<p>However, this efficiency does not come for free. Graph-based search exposes a fundamental trade-off between <strong>accuracy and cost.</strong></p>
+    </button></h2><p>هذا النهج القائم على الرسم البياني هو ما يجعل البحث المتجهي واسع النطاق عمليًّا في المقام الأول. من خلال التنقل في الرسم البياني بدلاً من مسح كل متجه، يمكن للنظام العثور على نتائج عالية الجودة مع لمس جزء صغير فقط من مجموعة البيانات.</p>
+<p>ومع ذلك، فإن هذه الكفاءة لا تأتي مجانًا. فالبحث القائم على الرسم البياني يكشف عن مفاضلة أساسية بين <strong>الدقة والتكلفة.</strong></p>
 <ul>
-<li><p>Exploring more neighbors improves accuracy by covering a larger portion of the graph and reducing the chance of missing true nearest neighbors.</p></li>
-<li><p>At the same time, every additional expansion adds work: more distance calculations, more accesses to the graph structure, and more reads of vector data. As the search explores deeper or wider, these costs accumulate. Depending on how the index is designed, they show up as higher CPU usage, increased memory pressure, or additional disk I/O.</p></li>
+<li><p>يؤدي استكشاف المزيد من الجيران إلى تحسين الدقة من خلال تغطية جزء أكبر من الرسم البياني وتقليل احتمال تفويت أقرب الجيران الحقيقيين.</p></li>
+<li><p>وفي الوقت نفسه، يضيف كل توسع إضافي مزيدًا من العمل: المزيد من حسابات المسافة، والمزيد من عمليات الوصول إلى بنية الرسم البياني، والمزيد من عمليات قراءة بيانات المتجهات. ومع تعمق البحث أو اتساع نطاقه، تتراكم هذه التكاليف. واعتمادًا على كيفية تصميم الفهرس، تظهر هذه التكاليف في شكل زيادة في استخدام وحدة المعالجة المركزية (CPU)، أو زيادة الضغط على الذاكرة، أو عمليات إدخال/إخراج إضافية للقرص.</p></li>
 </ul>
-<p>Balancing these opposing forces—high recall versus efficient resource usage—is central to graph-based search design.</p>
-<p>Both <a href="https://milvus.io/blog/diskann-explained.md"><strong>DISKANN</strong></a> and <strong>AISAQ</strong> are built around this same tension, but they make different architectural choices about how and where these costs are paid.</p>
-<h2 id="How-DISKANN-Optimizes-Disk-Based-Vector-Search" class="common-anchor-header">How DISKANN Optimizes Disk-Based Vector Search<button data-href="#How-DISKANN-Optimizes-Disk-Based-Vector-Search" class="anchor-icon" translate="no">
+<p>يعد تحقيق التوازن بين هذه القوى المتعارضة — الاسترجاع العالي مقابل الاستخدام الفعال للموارد — أمرًا أساسيًّا في تصميم البحث القائم على المخططات.</p>
+<p>تم بناء كل من <a href="https://milvus.io/blog/diskann-explained.md"><strong>DISKANN</strong></a> <strong>وAISAQ</strong> حول هذا التوتر نفسه، لكنهما يتخذان خيارات معمارية مختلفة حول كيفية ومكان تحمل هذه التكاليف.</p>
+<h2 id="How-DISKANN-Optimizes-Disk-Based-Vector-Search" class="common-anchor-header">كيف يعمل DISKANN على تحسين البحث المتجه القائم على القرص<button data-href="#How-DISKANN-Optimizes-Disk-Based-Vector-Search" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -109,26 +110,26 @@ origin: >-
     <span></span>
   </span>
 </p>
-<p>DISKANN is the most influential disk-based ANN solution to date and serves as the official baseline for the NeurIPS Big ANN competition, a global benchmark for billion-scale vector search. Its significance lies not just in performance, but in what it proved: <strong>graph-based ANN search does not have to live entirely in memory to be fast</strong>.</p>
-<p>By combining SSD-based storage with carefully chosen in-memory structures, DISKANN demonstrated that large-scale vector search could achieve strong accuracy and low latency on commodity hardware—without requiring massive DRAM footprints. It does this by rethinking <em>which parts of the search must be fast</em> and <em>which parts can tolerate slower access</em>.</p>
-<p><strong>At a high level, DISKANN keeps the most frequently accessed data in memory, while moving larger, less frequently accessed structures to disk.</strong> This balance is achieved through several key design choices.</p>
-<h3 id="1-Using-PQ-Distances-to-Expand-the-Candidate-List" class="common-anchor-header">1. Using PQ Distances to Expand the Candidate List</h3><p>Expanding the candidate list is the most frequent operation in graph-based search. Each expansion requires estimating the distance between the query vector and the neighbors of a candidate node. Performing these calculations using full, high-dimensional vectors would require frequent random reads from disk—an expensive operation both computationally and in terms of I/O.</p>
-<p>DISKANN avoids this cost by compressing vectors into <strong>Product Quantization (PQ) codes</strong> and keeping them in memory. PQ codes are much smaller than full vectors, but still preserve enough information to estimate distance approximately.</p>
-<p>During candidate expansion, DISKANN computes distances using these in-memory PQ codes instead of reading full vectors from SSD. This dramatically reduces disk I/O during graph traversal, allowing the search to quickly and efficiently expand candidates while keeping most SSD traffic out of the critical path.</p>
-<h3 id="2-Co-Locating-Full-Vectors-and-Neighbor-Lists-on-Disk" class="common-anchor-header">2. Co-Locating Full Vectors and Neighbor Lists on Disk</h3><p>Not all data can be compressed or accessed approximately. Once promising candidates have been identified, the search still needs access to two types of data for accurate results:</p>
+<p>يُعد DISKANN الحل الأكثر تأثيرًا للشبكات العصبية الاصطناعية (ANN) القائمة على الأقراص حتى الآن، ويُستخدم كخط أساس رسمي لمسابقة NeurIPS Big ANN، وهي معيار عالمي للبحث المتجه على نطاق المليارات. ولا تكمن أهميته في الأداء فحسب، بل في ما أثبته: <strong>فالبحث القائم على الشبكات العصبية الاصطناعية (ANN) لا يحتاج إلى أن يعيش بالكامل في الذاكرة ليكون سريعًا</strong>.</p>
+<p>من خلال الجمع بين التخزين القائم على محركات الأقراص الصلبة (SSD) والبنى المختارة بعناية داخل الذاكرة، أثبتت DISKANN أن البحث المتجهي واسع النطاق يمكن أن يحقق دقة عالية وزمن انتقال منخفض على الأجهزة العادية — دون الحاجة إلى مساحة كبيرة من ذاكرة DRAM. وهي تقوم بذلك من خلال إعادة النظر <em>في أجزاء البحث التي يجب أن تكون سريعة</em> <em>والأجزاء التي يمكن أن تتحمل الوصول الأبطأ</em>.</p>
+<p><strong>بشكل عام، يحتفظ DISKANN بالبيانات التي يتم الوصول إليها بشكل متكرر في الذاكرة، بينما ينقل الهياكل الأكبر حجمًا والأقل تكرارًا في الوصول إليها إلى القرص.</strong> ويتحقق هذا التوازن من خلال عدة خيارات تصميمية رئيسية.</p>
+<h3 id="1-Using-PQ-Distances-to-Expand-the-Candidate-List" class="common-anchor-header">1. استخدام مسافات PQ لتوسيع قائمة المرشحين</h3><p>يُعد توسيع قائمة المرشحين العملية الأكثر تكرارًا في البحث القائم على الرسوم البيانية. يتطلب كل توسيع تقدير المسافة بين متجه الاستعلام وجيران العقدة المرشحة. إن إجراء هذه الحسابات باستخدام متجهات كاملة عالية الأبعاد سيتطلب قراءات عشوائية متكررة من القرص — وهي عملية مكلفة من الناحية الحسابية ومن حيث عمليات الإدخال/الإخراج.</p>
+<p>يتجنب DISKANN هذه التكلفة عن طريق ضغط المتجهات إلى <strong>رموز تكمية المنتج (PQ)</strong> والاحتفاظ بها في الذاكرة. رموز PQ أصغر بكثير من المتجهات الكاملة، لكنها لا تزال تحتفظ بمعلومات كافية لتقدير المسافة تقريبًا.</p>
+<p>أثناء توسيع المرشحين، يحسب DISKANN المسافات باستخدام رموز PQ الموجودة في الذاكرة بدلاً من قراءة المتجهات الكاملة من SSD. وهذا يقلل بشكل كبير من عمليات الإدخال/الإخراج للقرص أثناء اجتياز الرسم البياني، مما يسمح للبحث بتوسيع المرشحين بسرعة وكفاءة مع إبقاء معظم حركة مرور SSD خارج المسار الحرج.</p>
+<h3 id="2-Co-Locating-Full-Vectors-and-Neighbor-Lists-on-Disk" class="common-anchor-header">2. تجميع المتجهات الكاملة وقوائم الجيران على القرص</h3><p>لا يمكن ضغط جميع البيانات أو الوصول إليها بشكل تقريبي. بمجرد تحديد المرشحين الواعدين، لا يزال البحث بحاجة إلى الوصول إلى نوعين من البيانات للحصول على نتائج دقيقة:</p>
 <ul>
-<li><p><strong>Neighbor lists</strong>, to continue graph traversal</p></li>
-<li><p><strong>Full (uncompressed) vectors</strong>, for final reranking</p></li>
+<li><p><strong>قوائم الجيران</strong>، لمواصلة اجتياز الرسم البياني</p></li>
+<li><p><strong>المتجهات الكاملة (غير المضغوطة)</strong>، لإعادة الترتيب النهائي</p></li>
 </ul>
-<p>These structures are accessed less frequently than PQ codes, so DISKANN stores them on SSD. To minimize disk overhead, DISKANN places each node’s neighbor list and its full vector in the same physical region on disk. This ensures that a single SSD read can retrieve both.</p>
-<p>By co-locating related data, DISKANN reduces the number of random disk accesses required during search. This optimization improves both expansion and reranking efficiency, especially at a large scale.</p>
-<h3 id="3-Parallel-Node-Expansion-for-Better-SSD-Utilization" class="common-anchor-header">3. Parallel Node Expansion for Better SSD Utilization</h3><p>Graph-based ANN search is an iterative process. If each iteration expands only one candidate node, the system issues just a single disk read at a time, leaving most of the SSD’s parallel bandwidth unused. To avoid this inefficiency, DISKANN expands multiple candidates in each iteration and sends parallel read requests to the SSD. This approach makes much better use of available bandwidth and reduces the total number of iterations required.</p>
-<p>The <strong>beam_width_ratio</strong> parameter controls how many candidates are expanded in parallel: <strong>Beam width = number of CPU cores × beam_width_ratio.</strong> A higher ratio widens the search—potentially improving accuracy—but also increases computation and disk I/O.</p>
-<p>To offset this, DISKANN introduces a <code translate="no">search_cache_budget_gb_ratio</code> that reserves memory to cache frequently accessed data, reducing repeated SSD reads. Together, these mechanisms help DISKANN balance accuracy, latency, and I/O efficiency.</p>
-<h3 id="Why-This-Matters--and-Where-the-Limits-Appear" class="common-anchor-header">Why This Matters — and Where the Limits Appear</h3><p>DISKANN’s design is a major step forward for disk-based vector search. By keeping PQ codes in memory and pushing larger structures to SSD, it significantly reduces the memory footprint compared to fully in-memory graph indexes.</p>
-<p>At the same time, this architecture still depends on <strong>always-on DRAM</strong> for search-critical data. PQ codes, caches, and control structures must remain resident in memory to keep traversal efficient. As datasets grow to billions of vectors and deployments add replicas or regions, that memory requirement can still become a limiting factor.</p>
-<p>This is the gap that <strong>AISAQ</strong> is designed to address.</p>
-<h2 id="How-AISAQ-Works-and-Why-It-Matters" class="common-anchor-header">How AISAQ Works and Why It Matters<button data-href="#How-AISAQ-Works-and-Why-It-Matters" class="anchor-icon" translate="no">
+<p>يتم الوصول إلى هذه الهياكل بتكرار أقل مقارنة برموز PQ، لذا يقوم DISKANN بتخزينها على محرك SSD. لتقليل الحمل الإضافي على القرص إلى أدنى حد، يضع DISKANN قائمة الجيران لكل عقدة ومتجهها الكامل في نفس المنطقة المادية على القرص. وهذا يضمن أن عملية قراءة واحدة من محرك SSD يمكنها استرداد كليهما.</p>
+<p>من خلال وضع البيانات ذات الصلة في مكان واحد، يقلل DISKANN من عدد عمليات الوصول العشوائية إلى القرص المطلوبة أثناء البحث. يعمل هذا التحسين على تحسين كفاءة كل من التوسيع وإعادة الترتيب، خاصةً على نطاق واسع.</p>
+<h3 id="3-Parallel-Node-Expansion-for-Better-SSD-Utilization" class="common-anchor-header">3. التوسيع المتوازي للعقد لتحسين استخدام محركات الأقراص الصلبة (SSD)</h3><p>يُعد البحث في الشبكات العصبية الاصطناعية (ANN) القائم على الرسوم البيانية عملية تكرارية. إذا كان كل تكرار يوسع عقدة مرشحة واحدة فقط، فإن النظام يصدر طلب قراءة واحدًا فقط من القرص في كل مرة، مما يترك معظم النطاق التوازي لـ SSD غير مستخدم. لتجنب هذا القصور، يقوم DISKANN بتوسيع عدة مرشحات في كل تكرار وإرسال طلبات قراءة متوازية إلى SSD. يتيح هذا النهج استغلالًا أفضل بكثير للنطاق الترددي المتاح ويقلل من العدد الإجمالي للتكرارات المطلوبة.</p>
+<p>يتحكم المعامل <strong>beam_width_ratio</strong> في عدد العقد المرشحة <strong>التي</strong> يتم توسيعها بشكل متوازٍ: <strong>عرض الحزمة = عدد نوى وحدة المعالجة المركزية (CPU) × beam_width_ratio.</strong> تؤدي النسبة الأعلى إلى توسيع نطاق البحث — مما قد يحسّن الدقة — ولكنها تزيد أيضًا من الحساب وعمليات الإدخال/الإخراج للقرص.</p>
+<p>لتعويض ذلك، يقدم DISKANN آلية التخزين المؤقت للبيانات ( <code translate="no">search_cache_budget_gb_ratio</code> ) التي تخصص ذاكرة لتخزين البيانات التي يتم الوصول إليها بشكل متكرر مؤقتًا، مما يقلل من عمليات القراءة المتكررة من محرك الأقراص SSD. تساعد هذه الآليات مجتمعةً DISKANN على تحقيق التوازن بين الدقة وزمن الاستجابة وكفاءة عمليات الإدخال/الإخراج.</p>
+<h3 id="Why-This-Matters--and-Where-the-Limits-Appear" class="common-anchor-header">أهمية ذلك — وأين تظهر الحدود</h3><p>يُعد تصميم DISKANN خطوة كبيرة إلى الأمام في مجال البحث المتجه القائم على الأقراص. من خلال الاحتفاظ برموز PQ في الذاكرة ونقل الهياكل الأكبر حجمًا إلى محركات الأقراص الصلبة (SSD)، فإنه يقلل بشكل كبير من حجم الذاكرة المستخدمة مقارنةً بفهارس الرسوم البيانية الموجودة بالكامل في الذاكرة.</p>
+<p>وفي الوقت نفسه، لا تزال هذه البنية تعتمد على <strong>ذاكرة DRAM التي تعمل دائمًا</strong> للبيانات الحاسمة للبحث. يجب أن تظل رموز PQ وذاكرات التخزين المؤقت وهياكل التحكم موجودة في الذاكرة للحفاظ على كفاءة عملية التصفح. ومع نمو مجموعات البيانات إلى مليارات المتجهات وإضافة النسخ المتماثلة أو المناطق إلى عمليات النشر، قد تظل متطلبات الذاكرة هذه عاملاً مقيدًا.</p>
+<p>هذه هي الفجوة التي صُمم <strong>AISAQ</strong> لمعالجتها.</p>
+<h2 id="How-AISAQ-Works-and-Why-It-Matters" class="common-anchor-header">كيف يعمل AISAQ ولماذا هو مهم<button data-href="#How-AISAQ-Works-and-Why-It-Matters" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -143,66 +144,66 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AISAQ builds directly on the core ideas behind DISKANN but introduces a critical shift: it eliminates <strong>the need to keep PQ data in DRAM</strong>. Instead of treating compressed vectors as search-critical, always-in-memory structures, AISAQ moves them to SSD and redesigns how graph data is laid out on disk to preserve efficient traversal.</p>
-<p>To make this work, AISAQ reorganizes node storage so that data needed during graph search—full vectors, neighbor lists, and PQ information—is arranged on disk in patterns optimized for access locality. The goal is not just to push more data to the more economical disk, but to do so <strong>without breaking the search process described earlier</strong>.</p>
+    </button></h2><p>يعتمد AISAQ بشكل مباشر على الأفكار الأساسية وراء DISKANN ولكنه يُدخل تغييرًا جوهريًّا: فهو يلغي <strong>الحاجة إلى الاحتفاظ ببيانات PQ في ذاكرة DRAM</strong>. بدلاً من التعامل مع المتجهات المضغوطة على أنها هياكل حاسمة للبحث وموجودة دائمًا في الذاكرة، ينقلها AISAQ إلى محركات الأقراص الصلبة (SSD) ويعيد تصميم طريقة ترتيب بيانات الرسم البياني على القرص للحفاظ على كفاءة عملية التصفح.</p>
+<p>ولتحقيق ذلك، يعيد AISAQ تنظيم تخزين العقد بحيث يتم ترتيب البيانات المطلوبة أثناء البحث في الرسم البياني —المتجهات الكاملة وقوائم الجيران ومعلومات PQ— على القرص وفق أنماط مُحسَّنة لموقع الوصول. والهدف ليس مجرد نقل المزيد من البيانات إلى القرص الأكثر اقتصادية، بل القيام بذلك <strong>دون تعطيل عملية البحث الموضحة سابقًا</strong>.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/AISAQ_244e661794.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>To address different application requirements, AISAQ provides two disk-based storage modes: Performance and Scale. From a technical perspective, these modes differ primarily in how PQ-compressed data is stored and accessed during search. From an application perspective, these modes address two distinct types of requirements: low-latency requirements, typical of online semantic search and recommendation systems, and ultra-high-scale requirements, typical of RAG.</p>
+<p>لتلبية متطلبات التطبيقات المختلفة، يوفر AISAQ وضعين للتخزين القائم على القرص: الأداء والتوسع. من الناحية التقنية، تختلف هذان الوضعان بشكل أساسي في كيفية تخزين البيانات المضغوطة بواسطة PQ والوصول إليها أثناء البحث. من منظور التطبيق، يلبي هذان الوضعان نوعين متميزين من المتطلبات: متطلبات زمن الاستجابة المنخفض، التي تتميز بها عادةً أنظمة البحث الدلالي والتوصيات عبر الإنترنت، ومتطلبات التوسع الفائق، التي تتميز بها عادةً RAG.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/aisaq_vs_diskann_35ebee3c64.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">AISAQ-performance: Optimized for Speed</h3><p>AISAQ-performance keeps all data on disk while maintaining low I/O overhead through data colocation.</p>
-<p>In this mode:</p>
+<h3 id="AISAQ-performance-Optimized-for-Speed" class="common-anchor-header">AISAQ-performance: مُحسَّن من أجل السرعة</h3><p>يحتفظ AISAQ-performance بجميع البيانات على القرص مع الحفاظ على انخفاض عبء الإدخال/الإخراج (I/O) من خلال تجميع البيانات في مكان واحد.</p>
+<p>في هذا الوضع:</p>
 <ul>
-<li><p>Each node’s full vector, edge list, and its neighbors’ PQ codes are stored together on disk.</p></li>
-<li><p>Visiting a node still requires only a <strong>single SSD read</strong>, because all data needed for candidate expansion and evaluation is colocated.</p></li>
+<li><p>يتم تخزين المتجه الكامل لكل عقدة وقائمة الحواف ورموز PQ لجيرانها معًا على القرص.</p></li>
+<li><p>لا يزال الوصول إلى العقدة يتطلب <strong>قراءة واحدة</strong> فقط <strong>من SSD،</strong> لأن جميع البيانات اللازمة لتوسيع المرشحين وتقييمهم موجودة في نفس المكان.</p></li>
 </ul>
-<p>From the perspective of the search algorithm, this closely mirrors DISKANN’s access pattern. Candidate expansion remains efficient, and runtime performance is comparable, even though all search-critical data now lives on disk.</p>
-<p>The trade-off is storage overhead. Because a neighbor’s PQ data may appear in multiple nodes’ disk pages, this layout introduces redundancy and significantly increases the overall index size.</p>
-<p>Therefore, the AISAQ-Performance mode prioritizes low I/O latency over disk efficiency. From an application perspective, AiSAQ-Performance mode can deliver latency in the 10 mSec range, as required for online semantic search.</p>
-<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">AISAQ-scale: Optimized for Storage Efficiency</h3><p>AISAQ-Scale takes the opposite approach. It is designed to <strong>minimize disk usage</strong> while still keeping all data on SSD.</p>
-<p>In this mode:</p>
+<p>من منظور خوارزمية البحث، يعكس هذا بشكل وثيق نمط الوصول في DISKANN. يظل توسيع المرشحين فعالاً، وأداء وقت التشغيل قابل للمقارنة، على الرغم من أن جميع البيانات الحاسمة للبحث موجودة الآن على القرص.</p>
+<p>المقابل هو العبء الإضافي على التخزين. نظرًا لأن بيانات PQ الخاصة بالجارة قد تظهر في صفحات القرص الخاصة بعدة عقد، فإن هذا التخطيط يؤدي إلى التكرار ويزيد بشكل كبير من الحجم الإجمالي للفهرس.</p>
+<p>لذلك، يعطي وضع AISAQ-Performance الأولوية لزمن انتقال منخفض لعمليات الإدخال/الإخراج (I/O) على حساب كفاءة القرص. من منظور التطبيق، يمكن لوضع AISAQ-Performance توفير زمن انتقال في نطاق 10 ميلي ثانية، كما هو مطلوب للبحث الدلالي عبر الإنترنت.</p>
+<h3 id="AISAQ-scale-Optimized-for-Storage-Efficiency" class="common-anchor-header">AISAQ-Scale: مُحسّن لكفاءة التخزين</h3><p>يتبع وضع AISAQ-Scale النهج المعاكس. فهو مصمم <strong>لتقليل استخدام القرص</strong> إلى الحد الأدنى مع الاحتفاظ بجميع البيانات على محركات الأقراص الصلبة (SSD).</p>
+<p>في هذا الوضع:</p>
 <ul>
-<li><p>PQ data is stored on disk separately, without redundancy.</p></li>
-<li><p>This eliminates redundancy and dramatically reduces index size.</p></li>
+<li><p>يتم تخزين بيانات PQ على القرص بشكل منفصل، دون تكرار.</p></li>
+<li><p>وهذا يزيل التكرار ويقلل حجم الفهرس بشكل كبير.</p></li>
 </ul>
-<p>The trade-off is that accessing a node and its neighbors’ PQ codes may require <strong>multiple SSD reads</strong>, increasing I/O operations during candidate expansion. Left unoptimized, this would significantly slow down search.</p>
-<p>To control this overhead, the AISAQ-Scale mode introduces two additional optimizations:</p>
+<p>المقابل هو أن الوصول إلى عقدة ورموز PQ الخاصة بجيرانها قد يتطلب <strong>قراءات متعددة من محركات الأقراص SSD</strong>، مما يزيد من عمليات الإدخال/الإخراج أثناء توسيع قائمة المرشحين. إذا لم يتم تحسين ذلك، فسيؤدي ذلك إلى إبطاء عملية البحث بشكل كبير.</p>
+<p>للتحكم في هذه الأعباء الإضافية، يقدم وضع AISAQ-Scale تحسينين إضافيين:</p>
 <ul>
-<li><p><strong>PQ data rearrangement</strong>, which orders PQ vectors by access priority to improve locality and reduce random reads.</p></li>
-<li><p>A <strong>PQ cache in DRAM</strong> (<code translate="no">pq_read_page_cache_size</code>), which stores frequently accessed PQ data and avoids repeated disk reads for hot entries.</p></li>
+<li><p><strong>إعادة ترتيب بيانات PQ</strong>، والتي ترتب متجهات PQ حسب أولوية الوصول لتحسين التوطين وتقليل عمليات القراءة العشوائية.</p></li>
+<li><p><strong>ذاكرة تخزين مؤقت لـ PQ في ذاكرة الوصول العشوائي (DRAM)</strong> (<code translate="no">pq_read_page_cache_size</code>)، والتي تخزن بيانات PQ التي يتم الوصول إليها بشكل متكرر وتتجنب عمليات القراءة المتكررة من القرص للمدخلات الشائعة الاستخدام.</p></li>
 </ul>
-<p>With these optimizations, the AISAQ-Scale mode achieves much better storage efficiency than AISAQ-Performance, while maintaining practical search performance. That performance remains lower than DISKANN, but there is no storage overhead (index size is similar to DISKANN) and the memory footprint is dramatically smaller. From an application perspective, AiSAQ provides the means to meet RAG requirements at ultra-high scale.</p>
-<h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">Key Advantages of AISAQ</h3><p>By moving all search-critical data to disk and redesigning how that data is accessed, AISAQ fundamentally changes the cost and scalability profile of graph-based vector search. Its design delivers three significant advantages.</p>
-<p><strong>1. Up to 3,200× Lower DRAM Usage</strong></p>
-<p>Product Quantization significantly reduces the size of high-dimensional vectors, but at billion scale, the memory footprint is still substantial. Even after compression, PQ codes must be kept in memory during search in conventional designs.</p>
-<p>For example, on <strong>SIFT1B</strong>, a benchmark with one billion 128-dimensional vectors, PQ codes alone require roughly <strong>30–120 GB of DRAM</strong>, depending on configuration. Storing the full, uncompressed vectors would require an additional <strong>~480 GB</strong>. While PQ reduces memory usage by 4–16×, the remaining footprint is still large enough to dominate infrastructure cost.</p>
-<p>AISAQ removes this requirement entirely. By storing PQ codes on SSD instead of DRAM, memory is no longer consumed by persistent index data. DRAM is used only for lightweight, transient structures such as candidate lists and control metadata. In practice, this reduces memory usage from tens of gigabytes to <strong>around 10 MB</strong>. In a representative billion-scale configuration, DRAM drops from <strong>32 GB to 10 MB</strong>, a <strong>3,200× reduction</strong>.</p>
-<p>Given that SSD storage costs roughly <strong>1/30 the price per unit of capacity</strong> compared to DRAM, this shift has a direct and dramatic impact on total system cost.</p>
-<p><strong>2. No Additional I/O Overhead</strong></p>
-<p>Moving PQ codes from memory to disk would normally increase the number of I/O operations during search. AISAQ avoids this by carefully controlling <strong>data layout and access patterns</strong>. Rather than scattering related data across the disk, AISAQ co-locates PQ codes, full vectors, and neighbor lists so they can be retrieved together. This ensures that candidate expansion does not introduce additional random reads.</p>
-<p>To give users control over the trade-off between index size and I/O efficiency, AISAQ introduces the <code translate="no">inline_pq</code> parameter, which determines how much PQ data is stored inline with each node:</p>
+<p>بفضل هذه التحسينات، يحقق وضع AISAQ-Scale كفاءة تخزين أفضل بكثير من وضع AISAQ-Performance، مع الحفاظ على أداء بحث عملي. ويظل هذا الأداء أقل من أداء DISKANN، ولكن لا توجد أعباء تخزينية (حجم الفهرس مشابه لـ DISKANN) كما أن حجم الذاكرة المستخدمة أصغر بكثير. من منظور التطبيق، يوفر AiSAQ الوسائل اللازمة لتلبية متطلبات RAG على نطاق واسع للغاية.</p>
+<h3 id="Key-Advantages-of-AISAQ" class="common-anchor-header">المزايا الرئيسية لـ AISAQ</h3><p>من خلال نقل جميع البيانات الحيوية للبحث إلى القرص وإعادة تصميم طريقة الوصول إلى تلك البيانات، يُحدث AISAQ تغييرًا جذريًّا في التكلفة وقابلية التوسع للبحث المتجه القائم على الرسوم البيانية. ويوفر تصميمه ثلاث مزايا مهمة.</p>
+<p><strong>1. انخفاض استخدام ذاكرة DRAM بما يصل إلى 3,200×</strong></p>
+<p>تعمل «تكمية المنتج» (Product Quantization) على تقليل حجم المتجهات عالية الأبعاد بشكل كبير، ولكن عند نطاق المليارات، لا يزال حجم الذاكرة المستخدم كبيرًا. حتى بعد الضغط، يجب الاحتفاظ برموز PQ في الذاكرة أثناء البحث في التصميمات التقليدية.</p>
+<p>على سبيل المثال، في <strong>SIFT1B،</strong> وهو معيار أداء يحتوي على مليار متجه ذي 128 بُعدًا، تتطلب رموز PQ وحدها ما يقارب <strong>30–120 جيجابايت من ذاكرة DRAM</strong>، اعتمادًا على التكوين. سيتطلب تخزين المتجهات الكاملة غير المضغوطة <strong> حوالي 480 جيجابايت</strong> إضافية. في حين أن تقنية PQ تقلل من استخدام الذاكرة بمقدار 4–16×، إلا أن الحجم المتبقي لا يزال كبيرًا بما يكفي ليشكل الجزء الأكبر من تكلفة البنية التحتية.</p>
+<p>تزيل AISAQ هذا المطلب تمامًا. من خلال تخزين رموز PQ على محركات الأقراص الصلبة (SSD) بدلاً من ذاكرة DRAM، لم تعد بيانات الفهرس الدائمة تستهلك الذاكرة. تُستخدم ذاكرة DRAM فقط للهياكل الخفيفة والعابرة مثل قوائم المرشحين وبيانات التعريف التحكمية. في الممارسة العملية، يقلل هذا من استخدام الذاكرة من عشرات الجيجابايت إلى <strong>حوالي 10 ميغابايت</strong>. في تكوين تمثيلي بمقياس المليار، تنخفض ذاكرة DRAM من <strong>32 جيجابايت إلى 10 ميغابايت،</strong> وهو <strong>انخفاض</strong> بمقدار <strong>3,200×</strong>.</p>
+<p>ونظرًا لأن تكلفة تخزين SSD تبلغ تقريبًا <strong>1/30 من سعر الوحدة من السعة</strong> مقارنةً بذاكرة DRAM، فإن هذا التحول له تأثير مباشر وهائل على التكلفة الإجمالية للنظام.</p>
+<p><strong>2. عدم وجود عبء إضافي على عمليات الإدخال/الإخراج</strong></p>
+<p>عادةً ما يؤدي نقل رموز PQ من الذاكرة إلى القرص إلى زيادة عدد عمليات الإدخال/الإخراج أثناء البحث. يتجنب AISAQ ذلك من خلال التحكم الدقيق <strong>في تخطيط البيانات وأنماط الوصول</strong>. بدلاً من تشتيت البيانات ذات الصلة عبر القرص، يقوم AISAQ بتجميع رموز PQ والمتجهات الكاملة وقوائم الجيران في مكان واحد بحيث يمكن استرجاعها معًا. وهذا يضمن ألا يؤدي توسيع المرشحين إلى عمليات قراءة عشوائية إضافية.</p>
+<p>لمنح المستخدمين التحكم في التوازن بين حجم الفهرس وكفاءة عمليات الإدخال/الإخراج، يقدم AISAQ المعلمة <code translate="no">inline_pq</code> ، التي تحدد مقدار بيانات PQ التي يتم تخزينها بشكل مضمن مع كل عقدة:</p>
 <ul>
-<li><p><strong>Lower inline_pq:</strong> smaller index size, but may require extra I/O</p></li>
-<li><p><strong>Higher inline_pq:</strong> larger index size, but preserves single-read access</p></li>
+<li><p><strong>قيمة أقل لـ inline_pq:</strong> حجم فهرس أصغر، ولكن قد يتطلب عمليات إدخال/إخراج إضافية</p></li>
+<li><p><strong>قيمة أعلى لـ inline_pq:</strong> حجم فهرس أكبر، ولكنه يحافظ على الوصول بقراءة واحدة</p></li>
 </ul>
-<p>When configured with <strong>inline_pq = max_degree</strong>, AISAQ reads a node’s full vector, neighbor list, and all PQ codes in one disk operation, matching DISKANN’s I/O pattern while keeping all data on SSD.</p>
-<p><strong>3. Sequential PQ Access Improves Computation Efficiency</strong></p>
-<p>In DISKANN, expanding a candidate node requires R random memory accesses to fetch the PQ codes of its R neighbors. AISAQ eliminates this randomness by retrieving all PQ codes in a single I/O and storing them sequentially on disk.</p>
-<p>Sequential layout provides two important benefits:</p>
+<p>عند التهيئة باستخدام <strong>inline_pq = max_degree،</strong> يقرأ AISAQ المتجه الكامل للعقدة وقائمة الجيران وجميع رموز PQ في عملية قرصية واحدة، مما يتوافق مع نمط الإدخال/الإخراج (I/O) لـ DISKANN مع الاحتفاظ بجميع البيانات على SSD.</p>
+<p><strong>3. الوصول التسلسلي إلى PQ يحسّن كفاءة الحساب</strong></p>
+<p>في DISKANN، يتطلب توسيع العقدة المرشحة R عمليات وصول عشوائية إلى الذاكرة لجلب رموز PQ لـ R من جيرانها. يزيل AISAQ هذه العشوائية عن طريق استرداد جميع رموز PQ في عملية إدخال/إخراج واحدة وتخزينها بالتسلسل على القرص.</p>
+<p>يوفر الترتيب التسلسلي ميزتين مهمتين:</p>
 <ul>
-<li><p><strong>Sequential SSD reads are much faster</strong> than scattered random reads.</p></li>
-<li><p><strong>Contiguous data is more cache-friendly</strong>, enabling CPUs to compute PQ distances more efficiently.</p></li>
+<li><p><strong>تعد عمليات القراءة التسلسلية على محرك الأقراص SSD أسرع بكثير</strong> من عمليات القراءة العشوائية المتفرقة.</p></li>
+<li><p><strong>البيانات المتجاورة أكثر ملاءمةً لذاكرة التخزين المؤقت</strong>، مما يمكّن وحدات المعالجة المركزية (CPU) من حساب مسافات PQ بكفاءة أكبر.</p></li>
 </ul>
-<p>This improves both speed and predictability of PQ distance calculations and helps offset the performance cost of storing PQ codes on SSD rather than DRAM.</p>
-<h2 id="AISAQ-vs-DISKANN-Performance-Evaluation" class="common-anchor-header">AISAQ vs. DISKANN: Performance Evaluation<button data-href="#AISAQ-vs-DISKANN-Performance-Evaluation" class="anchor-icon" translate="no">
+<p>وهذا يحسّن كل من سرعة قابلية التنبؤ بحسابات مسافات PQ ويساعد في تعويض تكلفة الأداء الناتجة عن تخزين رموز PQ على SSD بدلاً من DRAM.</p>
+<h2 id="AISAQ-vs-DISKANN-Performance-Evaluation" class="common-anchor-header">AISAQ مقابل DISKANN: تقييم الأداء<button data-href="#AISAQ-vs-DISKANN-Performance-Evaluation" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -217,75 +218,79 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>After understanding how AISAQ differs architecturally from DISKANN, the next question is straightforward: <strong>how do these design choices affect performance and resource usage in practice?</strong> This evaluation compares AISAQ and DISKANN across three dimensions that matter most at a billion scale: <strong>search performance, memory consumption, and disk usage</strong>.</p>
-<p>In particular, we examine how AISAQ behaves as the amount of inlined PQ data (<code translate="no">INLINE_PQ</code>) changes. This parameter directly controls the trade-off between index size, disk I/O, and runtime efficiency. We also evaluate both approaches on <strong>low- and high-dimensional vector workloads, since dimensionality strongly influences the cost of distance computation and</strong> storage requirements.</p>
-<h3 id="Setup" class="common-anchor-header">Setup</h3><p>All experiments were conducted on a single-node system to isolate index behavior and avoid interference from network or distributed-system effects.</p>
-<p><strong>Hardware configuration:</strong></p>
+    </button></h2><p>بعد فهم كيفية اختلاف AISAQ من الناحية المعمارية عن DISKANN، فإن السؤال التالي واضح ومباشر: <strong>كيف تؤثر خيارات التصميم هذه على الأداء واستخدام الموارد في الممارسة العملية؟</strong> يقارن هذا التقييم بين AISAQ وDISKANN عبر ثلاثة أبعاد ذات أهمية قصوى عند نطاق المليار: <strong>أداء البحث، واستهلاك الذاكرة، واستخدام القرص</strong>.</p>
+<p>وعلى وجه الخصوص، ندرس كيف يتصرف AISAQ مع تغير كمية بيانات PQ المضمنة (<code translate="no">INLINE_PQ</code>). تتحكم هذه المعلمة بشكل مباشر في التوازن بين حجم الفهرس، وعمليات الإدخال/الإخراج للقرص، وكفاءة وقت التشغيل. كما نقوم بتقييم كلا النهجين على <strong>أحمال عمل متجهة منخفضة وعالية الأبعاد، نظرًا لأن الأبعاد تؤثر بشدة على تكلفة حساب المسافة</strong> ومتطلبات التخزين.</p>
+<h3 id="Setup" class="common-anchor-header">الإعداد</h3><p>أُجريت جميع التجارب على نظام ذي عقدة واحدة لعزل سلوك الفهرس وتجنب التداخل الناتج عن تأثيرات الشبكة أو النظام الموزع.</p>
+<p><strong>تكوين الأجهزة:</strong></p>
 <ul>
-<li><p>CPU: Intel® Xeon® Platinum 8375C CPU @ 2.90GHz</p></li>
-<li><p>Memory: Speed: 3200 MT/s, Type: DDR4, Size: 32 GB</p></li>
-<li><p>Disk: 500 GB NVMe SSD</p></li>
+<li><p>وحدة المعالجة المركزية (CPU): AMD EPYC 9454P بسرعة 2.70 جيجاهرتز</p></li>
+<li><p>الذاكرة: السرعة: 3200 MT/s، النوع: DDR4، السعة: 384 جيجابايت</p></li>
+<li><p>القرص: KIOXIA CM7 7.68 تيرابايت<sup>NVMe™</sup> SSD</p></li>
 </ul>
-<p><strong>Index Build Parameters</strong></p>
+<p><h6><em>AMD EPYC هي علامة تجارية مملوكة لشركة Advanced Micro Devices, Inc.</em></h6>
+<h6><em>NVMe هي علامة مسجلة أو غير مسجلة لشركة NVM Express, Inc. في الولايات المتحدة ودول أخرى.</em></h6></p>
+<p><strong>معلمات إنشاء الفهرس</strong></p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;max_degree&quot;</span>: <span class="hljs-number">48</span>,
   <span class="hljs-string">&quot;search_list_size&quot;</span>: <span class="hljs-number">100</span>,
-  <span class="hljs-string">&quot;inline_pq&quot;</span>: <span class="hljs-number">0</span>/<span class="hljs-number">12</span>/<span class="hljs-number">24</span>/<span class="hljs-number">48</span>,  <span class="hljs-comment">// AiSAQ only</span>
-  <span class="hljs-string">&quot;pq_code_budget_gb_ratio&quot;</span>: <span class="hljs-number">0.125</span>,
+  <span class="hljs-string">&quot;inline_pq&quot;</span>: <span class="hljs-number">0</span>/<span class="hljs-number">20</span>/<span class="hljs-number">38</span>/<span class="hljs-number">48</span>,  <span class="hljs-comment">// KIOXIA AiSAQ only</span>
+  <span class="hljs-string">&quot;pq_code_budget_gb_ratio&quot;</span>: <span class="hljs-number">0.125</span>/<span class="hljs-number">0.04167</span>, <span class="hljs-comment">//SIFT 128: 0.125 /Cohere 768: 0.04167</span>
   <span class="hljs-string">&quot;search_cache_budget_gb_ratio&quot;</span>: <span class="hljs-number">0.0</span>,
   <span class="hljs-string">&quot;build_dram_budget_gb&quot;</span>: <span class="hljs-number">32.0</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<p><strong>Query Parameters</strong></p>
+<p><strong>معلمات الاستعلام</strong></p>
 <pre><code translate="no">{
-  <span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-number">100</span>,
-  <span class="hljs-string">&quot;search_list_size&quot;</span>: <span class="hljs-number">100</span>,
-  <span class="hljs-string">&quot;beamwidth&quot;</span>: <span class="hljs-number">8</span>
+  <span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-number">10</span>,
+  <span class="hljs-string">&quot;search_list_size&quot;</span>: <span class="hljs-number">13</span>/<span class="hljs-number">15</span>/<span class="hljs-number">16</span>/<span class="hljs-number">18</span>, // SIFT/Cohere:<span class="hljs-number">13</span>/<span class="hljs-number">16</span> <span class="hljs-keyword">for</span> DiskANN <span class="hljs-keyword">and</span> KIOXIA AiSAQ <span class="hljs-keyword">with</span> inline_pq=<span class="hljs-number">48</span>; <span class="hljs-number">15</span>/<span class="hljs-number">18</span> <span class="hljs-keyword">for</span> AiSAQ <span class="hljs-keyword">with</span> inline_pq&lt;<span class="hljs-number">48</span>
+  <span class="hljs-string">&quot;beamwidth&quot;</span>: <span class="hljs-number">4</span>
+  <span class="hljs-string">&quot;vectors_beamwidth&quot;</span>: <span class="hljs-number">2</span> // only <span class="hljs-keyword">for</span> AiSAQ <span class="hljs-keyword">with</span> inline_pq&lt;<span class="hljs-number">48</span>
+  <span class="hljs-string">&quot;num_search_threads&quot;</span>: <span class="hljs-number">12</span>
 }
 <button class="copy-code-btn"></button></code></pre>
-<h3 id="Benchmark-Method" class="common-anchor-header">Benchmark Method</h3><p>Both DISKANN and AISAQ were tested using <a href="https://milvus.io/docs/knowhere.md">Knowhere</a>, the open-source vector search engine used in Milvus. Two datasets were used in this evaluation:</p>
+<h3 id="Benchmark-Method" class="common-anchor-header">طريقة الاختبار</h3><p>تم اختبار كل من DISKANN و AISAQ باستخدام <a href="https://milvus.io/docs/knowhere.md">Knowhere،</a> محرك البحث المتجه مفتوح المصدر المستخدم في Milvus. تم استخدام مجموعتين من البيانات في هذا التقييم:</p>
 <ul>
-<li><p><strong>SIFT128D (1M vectors):</strong> a well-known 128-dimensional benchmark commonly used for image descriptor search. <em>(Raw dataset size ≈ 488 MB)</em></p></li>
-<li><p><strong>Cohere768D (1M vectors):</strong> a 768-dimensional embedding set typical of transformer-based semantic search. <em>(Raw dataset size ≈ 2930 MB)</em></p></li>
+<li><p><strong>SIFT128D (1M vectors):</strong> معيار معروف ذو 128 بُعدًا يُستخدم عادةً للبحث عن واصفات الصور. <em>(حجم مجموعة البيانات الأولية ≈ 488 ميغابايت)</em></p></li>
+<li><p><strong>Cohere768D (1M vectors):</strong> مجموعة تضمين ذات 768 بُعدًا نموذجية للبحث الدلالي القائم على المحولات. <em>(حجم مجموعة البيانات الأولية ≈ 2930 ميغابايت)</em></p></li>
 </ul>
-<p>These datasets reflect two distinct real-world scenarios: compact vision features and large semantic embeddings.</p>
-<h3 id="Results" class="common-anchor-header">Results</h3><p><strong>Sift128D1M (Full Vector ~488MB)</strong></p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/aisaq_53da7b566a.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
-<p><strong>Cohere768D1M (Full Vector ~2930MB)</strong></p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Cohere768_D1_M_8dfa3dffb7.png" alt="" class="doc-image" id="" />
-    <span></span>
-  </span>
-</p>
-<h3 id="Analysis" class="common-anchor-header">Analysis</h3><p><strong>SIFT128D Dataset</strong></p>
-<p>On the SIFT128D dataset, AISAQ can match DISKANN’s performance when all PQ data is inlined so that each node’s required data fits entirely into a single 4 KB SSD page (INLINE_PQ = 48). Under this configuration, every piece of information needed during search is colocated:</p>
+<p>تعكس مجموعات البيانات هذه سيناريوهين متميزين من الواقع: السمات البصرية المدمجة والتضمينات الدلالية الكبيرة.</p>
+<h3 id="Results" class="common-anchor-header">النتائج</h3><p><strong>Sift128D1M (المتجه الكامل ~488 ميغابايت)</strong></p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="/blogs/assets/sift.png" alt="SIFT recall vs latency chart" class="doc-image" id="sift-recall-vs-latency-chart" /> 
+   <span>مخطط مقارنة معدل الاسترجاع (Recall) لـ SIFT مقابل زمن الاستجابة (Latency</span> </span>) <span class="img-wrapper">
+  
+ </span></p>
+<p><strong>Cohere768D1M (المتجه الكامل ~2930 ميغابايت)</strong></p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="/blogs/assets/cohere.png" alt="Choere recall vs latency chart" class="doc-image" id="choere-recall-vs-latency-chart" /> 
+   <span>مخطط مقارنة معدل الاسترجاع بزمن الاستجابة لـ Cohere</span>
+  
+ </span></p>
+<h3 id="Analysis" class="common-anchor-header">التحليل</h3><p><strong>مجموعة بيانات SIFT128D</strong></p>
+<p>في مجموعة بيانات SIFT128D، يمكن لـ AISAQ أن يضاهي أداء DISKANN عندما تكون جميع بيانات PQ مدمجة بحيث تتناسب البيانات المطلوبة لكل عقدة بالكامل مع صفحة SSD واحدة سعة 4 كيلوبايت (INLINE_PQ = 48). في ظل هذا التكوين، يتم تجميع كل جزء من المعلومات المطلوبة أثناء البحث في مكان واحد:</p>
 <ul>
-<li><p>Full vector: 512B</p></li>
-<li><p>Neighbor list: 48 × 4 + 4 = 196B</p></li>
-<li><p>PQ codes of neighbors: 48 × (512B × 0.125) ≈ 3072B</p></li>
-<li><p>Total: 3780B</p></li>
+<li><p>المتجه الكامل: 512 بايت</p></li>
+<li><p>قائمة الجيران: 48 × 4 + 4 = 196 بايت</p></li>
+<li><p>رموز PQ للجيران: 48 × (512 بايت × 0.125) ≈ 3072 بايت</p></li>
+<li><p>الإجمالي: 3780 بايت</p></li>
 </ul>
-<p>Because the entire node fits within one page, only one I/O is needed per access, and AISAQ avoids random reads of external PQ data.</p>
-<p>However, when only part of the PQ data is inlined, the remaining PQ codes must be fetched from elsewhere on disk. This introduces additional random I/O operations, which sharply increase IOPS demand and lead to significant performance drops.</p>
-<p><strong>Cohere768D Dataset</strong></p>
-<p>ON the Cohere768D dataset, AISAQ performs worse than DISKANN. The reason is that a 768-dimensional vector simply does not fit into one 4 KB SSD page:</p>
+<p>نظرًا لأن العقدة بأكملها تتسع داخل صفحة واحدة، فلا يلزم سوى عملية إدخال/إخراج واحدة لكل وصول، كما يتجنب AISAQ القراءات العشوائية لبيانات PQ الخارجية.</p>
+<p>ومع ذلك، عندما يتم تضمين جزء فقط من بيانات PQ، يجب جلب رموز PQ المتبقية من مكان آخر على القرص (تم تعيين المعلمة inline_pq لتحسين استخدام صفحات SSD، على سبيل المثال، تتيح المعلمة inline_pq = 20 استيعاب عقدتين ضمن صفحة واحدة بحجم 4 كيلوبايت). وهذا يؤدي إلى عمليات إدخال/إخراج عشوائية إضافية، مما يزيد بشكل حاد من الطلب على IOPS ويؤدي إلى انخفاض الأداء.</p>
+<p><strong>مجموعة بيانات Cohere768D</strong></p>
+<p>في مجموعة بيانات Cohere768D، يكون أداء AISAQ أقل بنسبة ~8% من DISKANN. والسبب هو أن المتجه ذي الأبعاد الـ 768 لا يتسع ببساطة في صفحة SSD واحدة سعة 4 كيلوبايت:</p>
 <ul>
-<li><p>Full vector: 3072B</p></li>
-<li><p>Neighbor list: 48 × 4 + 4 = 196B</p></li>
-<li><p>PQ codes of neighbors: 48 × (3072B × 0.125) ≈ 18432B</p></li>
-<li><p>Total: 21,700 B (≈ 6 pages)</p></li>
+<li><p>المتجه الكامل: 3072 بايت</p></li>
+<li><p>قائمة الجيران: 48 × 4 + 4 = 196 بايت</p></li>
+<li><p>رموز PQ للجيران: 48 × (3072 بايت × 0.04167) ≈ 6,144 بايت</p></li>
+<li><p>الإجمالي: 9,412 بايت (≈ 3 صفحات)</p></li>
 </ul>
-<p>In this case, even if all PQ codes are inlined, each node spans multiple pages. While the number of I/O operations stays consistent, each I/O must transfer far more data, consuming SSD bandwidth much faster. Once bandwidth becomes the limiting factor, AISAQ cannot keep pace with DISKANN—especially on high-dimensional workloads where per-node data footprints grow quickly.</p>
-<p><strong>Note:</strong></p>
-<p>AISAQ’s storage layout typically increases the on-disk index size by <strong>4× to 6×</strong>. This is a deliberate trade-off: full vectors, neighbor lists, and PQ codes are colocated on disk to enable efficient single-page access during search. While this increases SSD usage, disk capacity is significantly cheaper than DRAM and scales more easily at large data volumes.</p>
-<p>In practice, users can tune this trade-off by adjusting <code translate="no">INLINE_PQ</code> and PQ compression ratios. These parameters make it possible to balance search performance, disk footprint, and overall system cost based on workload requirements, rather than being constrained by fixed memory limits.</p>
-<h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
+<p>في هذه الحالة، حتى لو تم تضمين جميع رموز PQ، فإن كل عقدة تمتد عبر عدة صفحات. وبينما يظل عدد عمليات الإدخال/الإخراج ثابتًا، فإن كل عملية إدخال/إخراج يجب أن تنقل بيانات أكثر بكثير، مما يستهلك عرض النطاق الترددي لـ SSD بشكل أسرع بكثير. وبمجرد أن يصبح النطاق الترددي هو العامل المحدد، لا تستطيع AISAQ مواكبة DISKANN — خاصةً في أحمال العمل عالية الأبعاد حيث تنمو البصمة البياناتية لكل عقدة بسرعة.</p>
+<p><strong>ملاحظة:</strong></p>
+<p>عادةً ما يؤدي تخطيط التخزين في AISAQ إلى زيادة حجم الفهرس على القرص بمقدار <strong>3 إلى 5 أضعاف</strong>. وهذه مقايضة متعمدة: حيث يتم وضع المتجهات الكاملة وقوائم الجيران ورموز PQ في مكان واحد على القرص لتمكين الوصول الفعال لصفحة واحدة أثناء البحث. ورغم أن هذا يزيد من استخدام محركات الأقراص الصلبة (SSD)، إلا أن سعة القرص أرخص بكثير من ذاكرة الوصول العشوائي (DRAM) وتتكيف بسهولة أكبر مع أحجام البيانات الكبيرة.</p>
+<p>في الممارسة العملية، يمكن للمستخدمين ضبط هذه المقايضة عن طريق تعديل معدل الضغط في « <code translate="no">INLINE_PQ</code> » ونسب ضغط PQ. تتيح هذه المعلمات تحقيق التوازن بين أداء البحث، وحجم البيانات على القرص، والتكلفة الإجمالية للنظام بناءً على متطلبات أحمال العمل، بدلاً من التقيد بحدود الذاكرة الثابتة.</p>
+<h2 id="Conclusion" class="common-anchor-header">الخلاصة<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -300,16 +305,16 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The economics of modern hardware are changing. DRAM prices remain high, while SSD performance has advanced rapidly—PCIe 5.0 drives now deliver bandwidth exceeding <strong>14 GB/s</strong>. As a result, architectures that shift search-critical data from expensive DRAM to far more affordable SSD storage are becoming increasingly compelling. With SSD capacity costing <strong>less than 30 times as much per gigabyte as</strong> DRAM, these differences are no longer marginal—they meaningfully influence system design.</p>
-<p>AISAQ reflects this shift. By eliminating the need for large, always-on memory allocations, it enables vector search systems to scale based on data size and workload requirements rather than DRAM limits. This approach aligns with a broader trend toward “all-in-storage” architectures, where fast SSDs play a central role not just in persistence, but in active computation and search. By offering two operating modes – Performance and Scale – AiSAQ meets the requirements of both semantic search (which requires the lowest latency) and RAG (which requires very high scale, but moderate latency).</p>
-<p>This shift is unlikely to be confined to vector databases. Similar design patterns are already emerging in graph processing, time-series analytics, and even parts of traditional relational systems, as developers rethink long-standing assumptions about where data must reside to achieve acceptable performance. As hardware economics continue to evolve, system architectures will follow.</p>
-<p>For more details on the designs discussed here, see the documentation:</p>
+    </button></h2><p>تتغير الجوانب الاقتصادية للأجهزة الحديثة. تظل أسعار ذاكرة DRAM مرتفعة، في حين أن أداء محركات الأقراص الصلبة (SSD) قد تطور بسرعة — حيث توفر محركات PCIe 5.0 الآن عرض نطاق ترددي يتجاوز <strong>14 جيجابايت/ثانية</strong>. ونتيجة لذلك، أصبحت البنى التي تنقل البيانات الحيوية للبحث من ذاكرة DRAM باهظة الثمن إلى تخزين SSD الأكثر تكلفة بكثير خيارًا جذابًا بشكل متزايد. ونظرًا لأن تكلفة سعة محركات الأقراص SSD <strong>تقل عن 30 ضعفًا لكل جيجابايت مقارنةً بذاكرة DRAM،</strong> فإن هذه الاختلافات لم تعد هامشية — بل تؤثر بشكل ملموس على تصميم النظام.</p>
+<p>يعكس AISAQ هذا التحول. من خلال التخلص من الحاجة إلى تخصيصات ذاكرة كبيرة تعمل بشكل مستمر، فإنه يمكّن أنظمة البحث المتجهي من التوسع بناءً على حجم البيانات ومتطلبات عبء العمل بدلاً من حدود ذاكرة DRAM. يتماشى هذا النهج مع اتجاه أوسع نطاقًا نحو بنى «التخزين الشامل»، حيث تلعب محركات أقراص SSD السريعة دورًا محوريًا ليس فقط في الاستمرارية، بل أيضًا في الحوسبة النشطة والبحث. من خلال تقديم وضعين للتشغيل – الأداء والتوسع – يلبي AiSAQ متطلبات كل من البحث الدلالي (الذي يتطلب أدنى زمن انتقال) و RAG (الذي يتطلب نطاقًا واسعًا جدًّا، ولكن زمن انتقال معتدل).</p>
+<p>من غير المرجح أن يقتصر هذا التحول على قواعد البيانات المتجهة. فقد بدأت أنماط تصميم مماثلة في الظهور بالفعل في معالجة الرسوم البيانية، وتحليلات السلاسل الزمنية، وحتى في أجزاء من الأنظمة العلائقية التقليدية، حيث يعيد المطورون النظر في الافتراضات الراسخة حول المكان الذي يجب أن توجد فيه البيانات لتحقيق أداء مقبول. ومع استمرار تطور اقتصاديات الأجهزة، ستتبعها بنى الأنظمة.</p>
+<p>لمزيد من التفاصيل حول التصميمات التي تمت مناقشتها هنا، راجع الوثائق:</p>
 <ul>
-<li><p><a href="https://milvus.io/docs/aisaq.md">AISAQ | Milvus Documentation</a></p></li>
-<li><p><a href="https://milvus.io/docs/diskann.md">DISKANN | Milvus Documentation</a></p></li>
+<li><p><a href="https://milvus.io/docs/aisaq.md">AISAQ | وثائق Milvus</a></p></li>
+<li><p><a href="https://milvus.io/docs/diskann.md">DISKANN | وثائق Milvus</a></p></li>
 </ul>
-<p>Have questions or want a deep dive on any feature of the latest Milvus? Join our<a href="https://discord.com/invite/8uyFbECzPX"> Discord channel</a> or file issues on<a href="https://github.com/milvus-io/milvus"> GitHub</a>. You can also book a 20-minute one-on-one session to get insights, guidance, and answers to your questions through<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
-<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">Learn More about Milvus 2.6 Features<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
+<p>هل لديك أسئلة أو ترغب في التعمق في أي ميزة من ميزات أحدث إصدار من Milvus؟ انضم<a href="https://discord.com/invite/8uyFbECzPX"> إلى قناتنا على Discord</a> أو أبلغ عن المشكلات على<a href="https://github.com/milvus-io/milvus"> GitHub</a>. يمكنك أيضًا حجز جلسة فردية مدتها 20 دقيقة للحصول على رؤى وإرشادات وإجابات على أسئلتك من خلال<a href="https://milvus.io/blog/join-milvus-office-hours-to-get-support-from-vectordb-experts.md"> Milvus Office Hours</a>.</p>
+<h2 id="Learn-More-about-Milvus-26-Features" class="common-anchor-header">تعرف على المزيد حول ميزات Milvus 2.6<button data-href="#Learn-More-about-Milvus-26-Features" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -325,13 +330,13 @@ origin: >-
         ></path>
       </svg>
     </button></h2><ul>
-<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">Introducing Milvus 2.6: Affordable Vector Search at Billion Scale</a></p></li>
-<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">Introducing the Embedding Function: How Milvus 2.6 Streamlines Vectorization and Semantic Search</a></p></li>
-<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">JSON Shredding in Milvus: 88.9x Faster JSON Filtering with Flexibility</a></p></li>
-<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">Unlocking True Entity-Level Retrieval: New Array-of-Structs and MAX_SIM Capabilities in Milvus</a></p></li>
-<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH in Milvus: The Secret Weapon for Fighting Duplicates in LLM Training Data </a></p></li>
-<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">Bring Vector Compression to the Extreme: How Milvus Serves 3× More Queries with RaBitQ</a></p></li>
-<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">Benchmarks Lie — Vector DBs Deserve a Real Test </a></p></li>
-<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">We Replaced Kafka/Pulsar with a Woodpecker for Milvus </a></p></li>
-<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">Vector Search in the Real World: How to Filter Efficiently Without Killing Recall</a></p></li>
+<li><p><a href="https://milvus.io/blog/introduce-milvus-2-6-built-for-scale-designed-to-reduce-costs.md">تقديم Milvus 2.6: بحث متجه ميسور التكلفة على نطاق المليارات</a></p></li>
+<li><p><a href="https://milvus.io/blog/data-in-and-data-out-in-milvus-2-6.md">تقديم وظيفة التضمين: كيف يعمل Milvus 2.6 على تبسيط عملية التحويل إلى متجهات والبحث الدلالي</a></p></li>
+<li><p><a href="https://milvus.io/blog/json-shredding-in-milvus-faster-json-filtering-with-flexibility.md">تجزئة JSON في Milvus: تصفية JSON أسرع بـ 88.9x مع مرونة أكبر</a></p></li>
+<li><p><a href="https://milvus.io/blog/unlocking-true-entity-level-retrieval-new-array-of-structs-and-max-sim-capabilities-in-milvus.md">فتح الباب أمام الاسترجاع الحقيقي على مستوى الكيانات: إمكانيات جديدة لـ «مصفوفة الهياكل» و«MAX_SIM» في Milvus</a></p></li>
+<li><p><a href="https://milvus.io/blog/minhash-lsh-in-milvus-the-secret-weapon-for-fighting-duplicates-in-llm-training-data.md">MinHash LSH في Milvus: السلاح السري لمكافحة التكرارات في بيانات تدريب نماذج اللغة الكبيرة (LLM) </a></p></li>
+<li><p><a href="https://milvus.io/blog/bring-vector-compression-to-the-extreme-how-milvus-serves-3%C3%97-more-queries-with-rabitq.md">الوصول بضغط المتجهات إلى أقصى حد: كيف يخدم Milvus 3× عدد أكبر من الاستعلامات باستخدام RaBitQ</a></p></li>
+<li><p><a href="https://milvus.io/blog/benchmarks-lie-vector-dbs-deserve-a-real-test.md">المعايير القياسية كاذبة — قواعد بيانات المتجهات تستحق اختبارًا حقيقيًا </a></p></li>
+<li><p><a href="https://milvus.io/blog/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md">استبدلنا Kafka/Pulsar بـ Woodpecker في Milvus </a></p></li>
+<li><p><a href="https://milvus.io/blog/how-to-filter-efficiently-without-killing-recall.md">البحث المتجهي في العالم الواقعي: كيفية التصفية بكفاءة دون الإضرار بمعدل الاسترجاع</a></p></li>
 </ul>
