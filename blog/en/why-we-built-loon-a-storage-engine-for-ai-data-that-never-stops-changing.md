@@ -4,7 +4,7 @@ title: >
  Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
+cover: assets.zilliz.com/Loon_New_Cover_8270435335.png
 tag: Engineering
 recommend: true
 publishToMedium: true
