@@ -1,10 +1,10 @@
 {
-  "label": "Perjalanan Kami Menuju 35K+ Bintang GitHub: Kisah Nyata Membangun Milvus dari Awal",
+  "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
-      "label": "Webinar | What's New in Milvus 3.0 - Live Walkthrough & AMA with Core Maintainers",
-      "link": "https://zilliz.com/event/whats-new-in-milvus-3-0-beta"
+      "label": "Webinar: From Vector Database to Vector Lakebase | Live on July 1",
+      "link": "https://zilliz.com/event/from-vector-database-to-vector-lakebase"
     }
   ]
 }

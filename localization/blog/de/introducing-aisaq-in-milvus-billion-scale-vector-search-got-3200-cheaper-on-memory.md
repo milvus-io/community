@@ -222,25 +222,29 @@ origin: >-
 <h3 id="Setup" class="common-anchor-header">Setup</h3><p>All experiments were conducted on a single-node system to isolate index behavior and avoid interference from network or distributed-system effects.</p>
 <p><strong>Hardware configuration:</strong></p>
 <ul>
-<li><p>CPU: Intel® Xeon® Platinum 8375C CPU @ 2.90GHz</p></li>
-<li><p>Memory: Speed: 3200 MT/s, Type: DDR4, Size: 32 GB</p></li>
-<li><p>Disk: 500 GB NVMe SSD</p></li>
+<li><p>CPU: AMD EPYC 9454P CPU @ 2.70GHz</p></li>
+<li><p>Memory: Speed: 3200 MT/s, Type: DDR4, Size: 384 GB</p></li>
+<li><p>Disk: KIOXIA CM7 7.68 TB NVMe<sup>™</sup> SSD</p></li>
 </ul>
+<p><h6><em>AMD EPYC is a trademark of Advanced Micro Devices, Inc.</em></h6>
+<h6><em>NVMe is a registered or unregistered mark of NVM Express, Inc. in the United States and other countries.</em></h6></p>
 <p><strong>Index Build Parameters</strong></p>
 <pre><code translate="no">{
   <span class="hljs-string">&quot;max_degree&quot;</span>: <span class="hljs-number">48</span>,
   <span class="hljs-string">&quot;search_list_size&quot;</span>: <span class="hljs-number">100</span>,
-  <span class="hljs-string">&quot;inline_pq&quot;</span>: <span class="hljs-number">0</span>/<span class="hljs-number">12</span>/<span class="hljs-number">24</span>/<span class="hljs-number">48</span>,  <span class="hljs-comment">// AiSAQ only</span>
-  <span class="hljs-string">&quot;pq_code_budget_gb_ratio&quot;</span>: <span class="hljs-number">0.125</span>,
+  <span class="hljs-string">&quot;inline_pq&quot;</span>: <span class="hljs-number">0</span>/<span class="hljs-number">20</span>/<span class="hljs-number">38</span>/<span class="hljs-number">48</span>,  <span class="hljs-comment">// KIOXIA AiSAQ only</span>
+  <span class="hljs-string">&quot;pq_code_budget_gb_ratio&quot;</span>: <span class="hljs-number">0.125</span>/<span class="hljs-number">0.04167</span>, <span class="hljs-comment">//SIFT 128: 0.125 /Cohere 768: 0.04167</span>
   <span class="hljs-string">&quot;search_cache_budget_gb_ratio&quot;</span>: <span class="hljs-number">0.0</span>,
   <span class="hljs-string">&quot;build_dram_budget_gb&quot;</span>: <span class="hljs-number">32.0</span>
 }
 <button class="copy-code-btn"></button></code></pre>
 <p><strong>Query Parameters</strong></p>
 <pre><code translate="no">{
-  <span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-number">100</span>,
-  <span class="hljs-string">&quot;search_list_size&quot;</span>: <span class="hljs-number">100</span>,
-  <span class="hljs-string">&quot;beamwidth&quot;</span>: <span class="hljs-number">8</span>
+  <span class="hljs-string">&quot;k&quot;</span>: <span class="hljs-number">10</span>,
+  <span class="hljs-string">&quot;search_list_size&quot;</span>: <span class="hljs-number">13</span>/<span class="hljs-number">15</span>/<span class="hljs-number">16</span>/<span class="hljs-number">18</span>, // SIFT/Cohere:<span class="hljs-number">13</span>/<span class="hljs-number">16</span> <span class="hljs-keyword">for</span> DiskANN <span class="hljs-keyword">and</span> KIOXIA AiSAQ <span class="hljs-keyword">with</span> inline_pq=<span class="hljs-number">48</span>; <span class="hljs-number">15</span>/<span class="hljs-number">18</span> <span class="hljs-keyword">for</span> AiSAQ <span class="hljs-keyword">with</span> inline_pq&lt;<span class="hljs-number">48</span>
+  <span class="hljs-string">&quot;beamwidth&quot;</span>: <span class="hljs-number">4</span>
+  <span class="hljs-string">&quot;vectors_beamwidth&quot;</span>: <span class="hljs-number">2</span> // only <span class="hljs-keyword">for</span> AiSAQ <span class="hljs-keyword">with</span> inline_pq&lt;<span class="hljs-number">48</span>
+  <span class="hljs-string">&quot;num_search_threads&quot;</span>: <span class="hljs-number">12</span>
 }
 <button class="copy-code-btn"></button></code></pre>
 <h3 id="Benchmark-Method" class="common-anchor-header">Benchmark Method</h3><p>Both DISKANN and AISAQ were tested using <a href="https://milvus.io/docs/knowhere.md">Knowhere</a>, the open-source vector search engine used in Milvus. Two datasets were used in this evaluation:</p>
@@ -252,15 +256,15 @@ origin: >-
 <h3 id="Results" class="common-anchor-header">Results</h3><p><strong>Sift128D1M (Full Vector ~488MB)</strong></p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/aisaq_53da7b566a.png" alt="" class="doc-image" id="" />
-    <span></span>
+    <img translate="no" src="/blogs/assets/sift.png" alt="SIFT recall vs latency chart" class="doc-image" id="sift-recall-vs-latency-chart" />
+    <span>SIFT recall vs latency chart</span>
   </span>
 </p>
 <p><strong>Cohere768D1M (Full Vector ~2930MB)</strong></p>
 <p>
   <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/Cohere768_D1_M_8dfa3dffb7.png" alt="" class="doc-image" id="" />
-    <span></span>
+    <img translate="no" src="/blogs/assets/cohere.png" alt="Choere recall vs latency chart" class="doc-image" id="choere-recall-vs-latency-chart" />
+    <span>Choere recall vs latency chart</span>
   </span>
 </p>
 <h3 id="Analysis" class="common-anchor-header">Analysis</h3><p><strong>SIFT128D Dataset</strong></p>
@@ -272,18 +276,18 @@ origin: >-
 <li><p>Total: 3780B</p></li>
 </ul>
 <p>Because the entire node fits within one page, only one I/O is needed per access, and AISAQ avoids random reads of external PQ data.</p>
-<p>However, when only part of the PQ data is inlined, the remaining PQ codes must be fetched from elsewhere on disk. This introduces additional random I/O operations, which sharply increase IOPS demand and lead to significant performance drops.</p>
+<p>However, when only part of the PQ data is inlined, the remaining PQ codes must be fetched from elsewhere on disk (the inline_pq parameter was set to optimize SSD page utilization, for example, inline_pq = 20 enables fitting two nodes within a single 4KB page). This introduces additional random I/O operations, which sharply increase IOPS demand and lead to performance drop.</p>
 <p><strong>Cohere768D Dataset</strong></p>
-<p>ON the Cohere768D dataset, AISAQ performs worse than DISKANN. The reason is that a 768-dimensional vector simply does not fit into one 4 KB SSD page:</p>
+<p>ON the Cohere768D dataset, AISAQ performs ~8% lower than DISKANN. The reason is that a 768-dimensional vector simply does not fit into one 4 KB SSD page:</p>
 <ul>
 <li><p>Full vector: 3072B</p></li>
 <li><p>Neighbor list: 48 × 4 + 4 = 196B</p></li>
-<li><p>PQ codes of neighbors: 48 × (3072B × 0.125) ≈ 18432B</p></li>
-<li><p>Total: 21,700 B (≈ 6 pages)</p></li>
+<li><p>PQ codes of neighbors: 48 × (3072B × 0.04167) ≈ 6,144B</p></li>
+<li><p>Total: 9,412B (≈ 3 pages)</p></li>
 </ul>
 <p>In this case, even if all PQ codes are inlined, each node spans multiple pages. While the number of I/O operations stays consistent, each I/O must transfer far more data, consuming SSD bandwidth much faster. Once bandwidth becomes the limiting factor, AISAQ cannot keep pace with DISKANN—especially on high-dimensional workloads where per-node data footprints grow quickly.</p>
 <p><strong>Note:</strong></p>
-<p>AISAQ’s storage layout typically increases the on-disk index size by <strong>4× to 6×</strong>. This is a deliberate trade-off: full vectors, neighbor lists, and PQ codes are colocated on disk to enable efficient single-page access during search. While this increases SSD usage, disk capacity is significantly cheaper than DRAM and scales more easily at large data volumes.</p>
+<p>AISAQ’s storage layout typically increases the on-disk index size by <strong>3× to 5×</strong>. This is a deliberate trade-off: full vectors, neighbor lists, and PQ codes are colocated on disk to enable efficient single-page access during search. While this increases SSD usage, disk capacity is significantly cheaper than DRAM and scales more easily at large data volumes.</p>
 <p>In practice, users can tune this trade-off by adjusting <code translate="no">INLINE_PQ</code> and PQ compression ratios. These parameters make it possible to balance search performance, disk footprint, and overall system cost based on workload requirements, rather than being constrained by fixed memory limits.</p>
 <h2 id="Conclusion" class="common-anchor-header">Conclusion<button data-href="#Conclusion" class="anchor-icon" translate="no">
       <svg translate="no"
