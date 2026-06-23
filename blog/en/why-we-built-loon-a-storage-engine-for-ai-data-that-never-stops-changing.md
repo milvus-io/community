@@ -6,7 +6,7 @@ author: Ted Xu
 date: 2026-6-10
 cover: assets.zilliz.com/Loon_New_Cover_8270435335.png
 tag: Engineering
-recommend: false
+recommend: true
 publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Loon storage engine, Milvus 3.0, vector storage, AI datasets, Zilliz Vector Lakebase
