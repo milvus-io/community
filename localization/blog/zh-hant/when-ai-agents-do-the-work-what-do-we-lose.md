@@ -1,10 +1,10 @@
 ---
 id: when-ai-agents-do-the-work-what-do-we-lose.md
 title: |
-  When AI Agents Do the Work, What Do We Lose?
+  當人工智慧代理負責工作時，我們會失去什麼？
 author: Bill Chen
 date: 2026-06-18T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_21_2026_10_34_48_PM_d223e44fc5.png
+cover: assets.zilliz.com/AI_Agents_Work_blog_cover_1536x1024_565f1739a0.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -12,25 +12,24 @@ tags: 'Milvus, vector database'
 meta_keywords: 'AI agents, agentic AI, AI coding agents, agent memory, LLM agents'
 meta_title: |
   When AI Agents Do the Work, What Do We Lose?
-desc: >
-  AI agents are getting better at execution, memory, and standards. But if they
-  remove the learning loop behind work, human judgment may stop improving.
+desc: |
+  人工智慧代理在執行能力、記憶力和標準方面正日益精進。但如果它們剔除了工作背後的學習循環，人類的判斷力可能會停止進步。
 origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
 ---
-<p>Agent products are getting very good at doing the work.</p>
-<p>Claude Code can write and refactor large chunks of code. Cursor can help developers move through codebases faster. Devin and other task-oriented agents try to take over longer workflows. Outside of coding, agents draft emails, process documents, summarize data, update tickets, and automate repetitive tasks that used to require direct human effort.</p>
-<p>Most of these products make the same promise: give the agent enough context, and it will handle more of the execution for you. That promise is useful, but it also creates a question agent products have not fully answered: <strong>when the agent does more of the work, what do we lose?</strong></p>
-<p>The answer is not simply “manual effort.” The task may be completed, but the human may have skipped part of the process that used to build judgment: reading, tracing, debugging, comparing options, making mistakes, and learning why one solution is better than another.</p>
-<p>This does not mean agents are bad for learning. It means agent products need to be designed with learning in mind. If they only optimize for output, they may remove the very experience that helps humans improve the standards agents depend on.</p>
-<p>A useful way to think about this problem is to borrow the autonomy ladder from self-driving systems. The analogy is not perfect, but it helps separate different kinds of progress in agent products:</p>
+<p>代理程式產品在處理工作方面已變得非常出色。</p>
+<p>Claude Code 能夠編寫並重構大段程式碼；Cursor 則能協助開發者更快速地瀏覽程式碼庫；Devin 及其他以任務為導向的代理程式，則試圖接管更長的工作流程。除了編碼之外，這些代理程式還能起草電子郵件、處理文件、彙整數據、更新工單，並將過去需要人工直接介入的重複性任務自動化。</p>
+<p>這些產品大多都做出相同的承諾：只要提供足夠的背景資訊，代理程式就會為您處理更多執行工作。這項承諾固然有用，但也引發了一個代理程式產品尚未完全解答的問題：<strong>當代理程式承擔更多工作時，我們會失去什麼？</strong></p>
+<p>答案並非單純地「人工投入」。任務或許完成了，但人類可能跳過了過去用來培養判斷力的部分流程：閱讀、追蹤、除錯、比較選項、犯錯，以及學習為何某個解決方案比另一個更優。</p>
+<p>這並非意味著代理程式不利於學習，而是表示代理產品在設計時必須將學習納入考量。若僅以輸出結果為優化目標，它們可能會剝奪人類那段有助於提升代理程式所依賴標準的寶貴經驗。</p>
+<p>思考這個問題的一個有用方法，是借鑒自動駕駛系統中的「自主性階梯」。雖然這個類比並非完美，但有助於區分代理產品中不同類型的進展：</p>
 <ul>
-<li><strong>L1 agents execute tasks.</strong> The human gives instructions, and the agent carries them out.</li>
-<li><strong>L2 agents remember.</strong> They learn across sessions by storing preferences, corrections, and project context.</li>
-<li><strong>L3 agents apply standards.</strong> The human defines rules, constraints, and decision criteria instead of guiding every step.</li>
-<li><strong>L4 agents improve the human.</strong> The agent does not just do the work. It helps the human preserve and deepen judgment.</li>
+<li><strong>L1 代理僅執行任務。</strong>人類下達指令，代理則予以執行。</li>
+<li><strong>L2 代理具備記憶能力。</strong>它們透過儲存偏好、修正與專案背景，在不同使用情境間進行學習。</li>
+<li><strong>L3 級代理會應用標準。</strong>人類定義規則、限制條件與決策準則，而非指導每個步驟。</li>
+<li><strong>L4 級代理能提升人類能力。</strong>代理不僅僅是執行工作，更協助人類維持並深化判斷力。</li>
 </ul>
-<p>Most of the industry is still focused on the first three levels. That makes sense. Execution, memory, and standards are immediate product problems. But L4 is where the long-term risk appears. If humans stop improving, the standards guiding agents stop improving too.</p>
-<h2 id="L1-Agents-execute" class="common-anchor-header">L1: Agents execute<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
+<p>業界目前仍主要聚焦於前三個層級。這合乎情理，因為執行、記憶與標準都是當前亟待解決的產品問題。但長期風險正出現在 L4 層級。若人類停止進步，引導代理者的標準也將隨之停滯。</p>
+<h2 id="L1-Agents-execute" class="common-anchor-header">L1：代理執行<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,19 +44,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AI application development has moved through several layers of abstraction:</p>
+    </button></h2><p>AI 應用程式開發歷經了數個抽象層級的演進：</p>
 <ul>
-<li>At first, developers called a model through an API: send text, get text back.</li>
-<li>Then came <strong>prompt engineering</strong>, where the main skill was learning how to ask better questions.</li>
-<li>After that came <strong>context engineering</strong>, where the task became giving the model enough examples, constraints, and background to behave usefully in a specific situation.</li>
-<li>Then came <strong>harness engineering</strong>: connecting models to tools, workflows, files, databases, browsers, terminals, and production systems.</li>
-<li><strong>Agent engineering</strong> builds on top of that. Instead of asking the model to answer one prompt, we ask it to plan steps, choose tools, inspect results, recover from errors, and complete multi-step tasks with less supervision.</li>
+<li>起初，開發者透過 API 調用模型：傳送文字，獲取文字回傳。</li>
+<li>隨後出現了<strong>提示工程（prompt engineering</strong>），其核心技能在於學習如何提出更好的問題。</li>
+<li>隨後是<strong>情境工程，</strong>其任務在於為模型提供足夠的範例、限制條件和背景資訊，使其能在特定情境下發揮實用功能。</li>
+<li>接著是<strong>「框架工程</strong>」：將模型與工具、工作流程、檔案、資料庫、瀏覽器、終端機及生產系統進行整合。</li>
+<li><strong>代理工程則</strong>在此基礎上進一步發展。我們不再只是要求模型回答單一提示，而是讓它規劃步驟、選擇工具、檢視結果、從錯誤中恢復，並在較少監督的情況下完成多步驟任務。</li>
 </ul>
-<p>The technical surface keeps changing, but the basic relationship at L1 stays the same: <strong>the human defines the task, and the agent carries it out.</strong> Each interaction is still mostly self-contained. The task is done, the session ends, and the next task starts from scratch.</p>
-<p>This level already works well enough to change behavior. Agents can handle more execution with less manual effort. As they become cheaper, faster, and more reliable, output rises while cost drops.</p>
-<p>But easier execution creates a new bottleneck. Every parallel session still needs a human to explain the task, provide context, review the output, judge quality, and decide what to do next. The agent may be doing the work, but the human is still responsible for knowing whether the work is good.</p>
-<p><strong>Execution becomes cheaper. Judgment becomes more important.</strong></p>
-<h2 id="L2-Agents-remember" class="common-anchor-header">L2: Agents remember<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
+<p>技術層面雖不斷變化，但 L1 層級的基本關係始終如一：<strong>人類定義任務，代理則負責執行。</strong>每次互動仍大多自成一體。任務完成後，會話即告結束，下一項任務則從頭開始。</p>
+<p>此層級的運作已足夠完善，足以改變行為模式。代理程式能以更少的 manual effort 處理更多執行工作。隨著它們變得更便宜、更快且更可靠，產出隨之增加，成本則隨之降低。</p>
+<p>然而，更輕鬆的執行卻造就了新的瓶頸。每個並行會話仍需人類來闡明任務、提供背景資訊、審查輸出結果、評估品質，並決定後續行動。代理程式或許在執行工作，但人類仍須負責判斷工作成果是否合格。</p>
+<p><strong>執行成本降低。判斷的重要性則隨之提升。</strong></p>
+<h2 id="L2-Agents-remember" class="common-anchor-header">L2：代理程式會記住<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,14 +71,14 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L1 solves the task in front of it. L2 asks a different question: <strong>can the agent learn from this interaction so the next one goes better?</strong></p>
-<p>A pure L1 agent is stateless. Once the session ends, the context disappears. The next task starts from scratch. L2 agents break that pattern by accumulating experience across sessions. They remember user preferences, project conventions, recurring feedback, previous decisions, and patterns in how the user works. <strong>The goal is to turn the experience generated through human-agent interaction into a reusable asset.</strong></p>
-<p>This is also why agent memory should not be treated as a longer prompt or a folder of saved transcripts. Useful memory needs infrastructure: durable storage, semantic retrieval, deduplication, updates, and a way to separate stale context from still-useful knowledge. This is where our work at <a href="https://zilliz.com/">Zilliz</a> connects to the problem. <a href="https://milvus.io/">Milvus</a>, and its managed services Zilliz Cloud built around it, are often used as the retrieval layer for agent memory because they make past context searchable instead of merely archived.</p>
-<p><strong>But L2 memory has a structural limit.</strong> Most of what agents learn at this stage comes from observable behavior: what the user said, changed, accepted, rejected, or corrected. An agent may remember that you rewrote a paragraph, rejected an implementation, or changed a function signature. It may not understand why.</p>
-<p>Was the issue accuracy, tone, maintainability, security risk, performance, product positioning, or something else? Behavior is the visible surface of judgment. The reasoning underneath often remains hidden.</p>
-<p>That makes L2 better at capturing explicit knowledge than tacit knowledge. It can remember rules you stated directly and store examples of past decisions. But examples do not automatically become principles. The agent may remember what happened without understanding the standard behind it.</p>
-<p>That gap leads to L3.</p>
-<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3: Agents apply standards<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
+    </button></h2><p>L1 專注於解決眼前的任務。L2 則提出不同的問題：<strong>代理能否從這次互動中學習，讓下一次表現得更好？</strong></p>
+<p>純粹的 L1 代理是無狀態的。一旦會話結束，上下文便不復存在。下一項任務將從頭開始。L2 代理則透過跨會話累積經驗，打破了這種模式。它們會記住用戶偏好、專案慣例、反覆出現的回饋、先前的決策，以及用戶的工作模式。<strong>目標是將人機互動所產生的經驗轉化為可重複使用的資產。</strong></p>
+<p>這也是為何不應將代理記憶體視為較長的提示詞或儲存對話紀錄的資料夾。有用的記憶體需要基礎架構：持久儲存、語義檢索、去重、更新，以及區分過時情境與仍具實用價值知識的方法。這正是<a href="https://zilliz.com/">Zilliz</a>的工作與此問題的關聯之處。<a href="https://milvus.io/">Milvus</a> 及其基於該平台建構的託管服務 Zilliz Cloud，常被用作代理記憶體的檢索層，因為它們能讓過往的上下文可被檢索，而非僅僅被歸檔。</p>
+<p><strong>但 L2 記憶存在結構性限制。</strong>代理程式在此階段所學習的內容，大多來自可觀察的行為：使用者所說的話、所做的變更、所接受或拒絕的內容，以及所修正之處。代理程式可能會記住您重寫了一段文字、拒絕某個實作方案，或是更改了函式簽名，但未必能理解箇中原因。</p>
+<p>問題出在準確性、語氣、可維護性、安全風險、效能、產品定位，還是其他因素？行為是判斷的可見表象，而其背後的推理往往隱而不顯。</p>
+<p>這使得 L2 在捕捉顯性知識方面比隱性知識更為擅長。它能記住你直接闡述的規則，並儲存過往決策的範例。但範例並不會自動轉化為原則。代理程式或許記得發生了什麼事，卻未必理解背後所依據的標準。</p>
+<p>這道鴻溝便引出了 L3。</p>
+<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3：代理應用標準<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,19 +93,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Once L1 and L2 start working, the obvious next step is parallelism.</p>
-<p>If one agent can complete a task, why not run ten? If an agent can learn from one session, why not open many sessions and let them all produce work at once? This is the “10x engineer” or “100x engineer” logic: use agents to multiply output.</p>
-<p>In practice, parallelism creates its own cost. Every session still requires the human to switch context, understand the problem, review the work, give feedback, and decide whether the result is good enough. Past a certain point, more agents stop feeling like leverage and start feeling like overhead.</p>
-<p>This is not just a workflow problem. It is a cognitive wall. Humans do not handle parallel tasks the way machines do. Task switching burns attention. Working memory is limited. Each switch increases the chance of missing details, applying the wrong standard, or approving work too quickly.</p>
-<p><strong>A good product should not fight this limit. It should be designed around it.</strong></p>
-<p>At L3, the input changes from “solve this specific problem in this specific way” to “here are the standards you should apply.” The human stops being the operator who guides every step and becomes the person who defines rules, constraints, preferences, quality bars, and decision criteria.</p>
-<p>A user may still guide an agent through a specific task, but the value of that guidance should not die with the session. The interaction should leave behind a reusable standard, not just a transcript. Next time a similar task appears, the agent should apply the standard without asking the human to reconstruct the full context and remake the same judgment.</p>
-<p>The industry is already moving in this direction. Many agent products let users define rules, instructions, memories, project conventions, and behavior preferences. The direction is right, but most implementations are still early. Rules are often static text: manually updated, fragmented, and only loosely connected to the reasoning behind a user’s decisions.</p>
-<p>The stronger pattern is a continuously updated personal cognition model: a machine-readable representation of how a person judges, decides, and makes trade-offs. It should encode preferences, values, constraints, exceptions, standards, and decision style as context that agents can retrieve and apply.</p>
-<p>Instead of merely storing past conversations, it should make the user’s thinking legible to machines.</p>
-<p>The user’s job changes accordingly. Instead of explaining every task from scratch, the user maintains the model by refining standards, updating preferences, correcting assumptions, and making implicit judgment explicit. In a sense, the user is continuously tokenizing themselves: converting more of their thinking into a form agents can use.</p>
-<p>When execution is cheap, the human does not need to decide every implementation detail before a task starts. The human needs to define what good looks like, what is unacceptable, and how trade-offs should be handled.</p>
-<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4: Agents preserve human learning<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
+    </button></h2><p>一旦 L1 和 L2 開始運作，顯而易見的下一步便是並行處理。</p>
+<p>如果一個代理能完成一項任務，為何不運行十個？如果一個代理能從一次會話中學習，為何不開啟多個會話，讓它們同時產出成果？這就是「10x 工程師」或「100x 工程師」的邏輯：利用代理來倍增產出。</p>
+<p>實際上，並行處理會產生其自身的成本。每個工作階段仍需要人類切換上下文、理解問題、審查成果、給予回饋，並決定結果是否足夠理想。一旦超過某個臨界點，更多的代理就不再感覺像是槓桿，反而開始感覺像是額外負擔。</p>
+<p>這不僅僅是工作流程的問題，更是一道認知壁壘。人類處理並行任務的方式與機器截然不同。任務切換會消耗注意力，工作記憶更是有限。每次切換都會增加忽略細節、套用錯誤標準，或是過早批准成果的風險。</p>
+<p><strong>一款優秀的產品不應與此限制對抗，而應以此為基礎進行設計。</strong></p>
+<p>在 L3 層級，輸入內容從「以這種特定方式解決這個特定問題」轉變為「以下是你應遵循的標準」。人類不再是指導每個步驟的操作者，而是成為定義規則、限制條件、偏好、品質門檻及決策標準的人。</p>
+<p>使用者或許仍會引導代理程式完成特定任務，但這份指導的價值不應隨著當次會話而消失。互動應留下可重複使用的標準，而不僅是對話紀錄。下次出現類似任務時，代理程式應直接套用該標準，無需要求人類重新建構完整脈絡並再次做出相同判斷。</p>
+<p>業界已經朝這個方向發展。許多代理產品允許使用者定義規則、指示、記憶、專案慣例以及行為偏好。方向是正確的，但大多數的實作仍處於早期階段。規則往往是靜態的文字：需手動更新、零散分散，且與使用者決策背後的推理僅有鬆散的連結。</p>
+<p>更強大的模式是一種持續更新的個人認知模型：這是對一個人如何判斷、決策及權衡取捨的機器可讀表示。它應將偏好、價值觀、限制條件、例外情況、標準及決策風格編碼為情境，供代理程式檢索並應用。</p>
+<p>它不應僅是儲存過往對話，更應讓使用者的思考過程對機器而言清晰可讀。</p>
+<p>用戶的任務也隨之改變。用戶無需從頭開始解釋每項任務，而是透過精煉標準、更新偏好、修正假設，以及將隱含的判斷顯性化，來維護該模型。某種程度上，用戶正在持續將自身「標記化」：將更多思考內容轉化為代理程式可用的形式。</p>
+<p>當執行成本低廉時，人類無需在任務開始前就決定每個實作細節。人類需要定義何謂「理想結果」、何謂「不可接受」，以及應如何處理權衡取捨。</p>
+<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4：代理程式保存人類的學習成果<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,16 +120,16 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The first three levels focus on making agents serve humans better. L4 reverses the question: how can agents help humans get better?</strong></p>
-<p>This is the part most agent products have not fully confronted. When agents do more of the work for us, what exactly disappears from the human side of the loop?</p>
-<p>On the surface, we lose manual effort. That is the obvious benefit. But we may also lose three less visible things: situated memory of the work, practice in making trade-offs, and the pattern recognition that comes from repeated exposure to messy details.</p>
-<p><strong>I have felt this directly in coding.</strong> When I wrote code myself, I remembered where each line lived and how the system worked because I had spent time reading, debugging, tracing, and fixing it by hand. That process did not just produce code. It trained my brain to recognize structure.</p>
-<p>With Claude Code, the code still gets produced, often faster. But after a while, my memory of the system is not as deep. I may know what the system does, but I do not always remember how each part came together. The experience of building gets compressed, and some of the learning disappears with it.</p>
-<p>That is not an argument against coding agents. It is an argument that agent products need to preserve the parts of work that build human judgment.</p>
-<p>The same pattern appears outside coding. If an agent drafts every strategy memo, the human may lose practice structuring an argument. If an agent summarizes every paper, the human may lose the habit of noticing what the summary left out. If an agent handles every operational decision, the human may stop developing the intuition that comes from dealing with messy exceptions.</p>
-<p>The work disappears. The output remains. But the learning loop may weaken.</p>
-<p>That is the L4 problem.</p>
-<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">Human judgment is the ceiling<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
+    </button></h2><p><strong>前三個層級著重於讓代理更好地服務人類。L4 則顛倒了這個問題：代理如何幫助人類變得更好？</strong></p>
+<p>這是多數代理產品尚未充分面對的部分。當代理為我們承擔更多工作時，人類這端的迴路中究竟會消失什麼？</p>
+<p>表面上，我們省去了手動操作的勞力，這是顯而易見的好處。但我們可能還會失去三項較不顯眼的事物：對工作的情境記憶、權衡取捨的實務經驗，以及透過反覆接觸雜亂細節所培養出的模式辨識能力。</p>
+<p><strong>我在編碼時曾親身感受到這一點。</strong>當我親自撰寫程式碼時，我會記住每一行程式的所在位置以及系統的運作方式，因為我曾花時間閱讀、除錯、追蹤並親手修正它。這個過程不僅僅是產出程式碼，更訓練了我的大腦去辨識結構。</p>
+<p>使用 Claude Code 時，程式碼依然會被產出，而且往往更快。但過了一段時間後，我對系統的記憶就沒那麼深刻了。我或許知道系統的功能，卻不總能記得每個部分是如何組合在一起的。建構的經驗被壓縮了，而部分學習成果也隨之消失。</p>
+<p>這並非反對編碼代理的論點，而是主張代理產品必須保留那些能培養人類判斷力的工作環節。</p>
+<p>這種模式在編碼之外同樣存在。如果由智能代理起草每份策略備忘錄，人類可能會失去組織論點的練習機會；如果由智能代理彙整每篇論文，人類可能會失去察覺摘要遺漏之處的習慣；如果由智能代理處理每項營運決策，人類可能會停止培養那種來自處理混亂例外情況所衍生的直覺。</p>
+<p>工作過程消失了，產出卻依然存在。但學習迴路可能會因此弱化。</p>
+<p>這就是 L4 問題。</p>
+<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">人類判斷力是上限<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -145,19 +144,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The loss matters because agents do not operate in a vacuum. An agent is a multiplier, not a replacement. The same tool produces very different results in the hands of an expert and a beginner. A senior engineer with an agent may become dramatically more effective. A beginner may simply produce more output without developing better judgment.</p>
-<p>Agents amplify the user’s existing cognitive level.</p>
-<p>That matters because L3 depends on humans defining the standards agents should follow. But the quality of those standards depends on the quality of human judgment. If the human stops improving, the standards eventually go stale. They become incomplete, shallow, or misaligned with the current reality of the work.</p>
-<p>The system works best as a loop:</p>
+    </button></h2><p>這種損失之所以重要，是因為代理程式並非在真空中運作。代理程式是倍增器，而非替代品。同一項工具在專家與初學者手中，所產生的結果截然不同。一位使用代理程式的資深工程師，效率可能會大幅提升；而初學者則可能只是產出更多成果，卻未能培養出更好的判斷力。</p>
+<p>代理系統會放大使用者現有的認知水平。</p>
+<p>這點至關重要，因為 L3 層級仰賴人類來定義代理程式應遵循的標準。但這些標準的品質，取決於人類判斷力的品質。若人類停止進步，這些標準終將過時。它們會變得不完整、膚淺，或與當前工作的實際狀況脫節。</p>
+<p>該系統的最佳運作模式是形成一個循環：</p>
 <ul>
-<li>Human judgment defines the standards.</li>
-<li>Agents execute within those standards.</li>
-<li>Execution results feed back into human learning.</li>
-<li>Human learning improves the standards.</li>
+<li>人類判斷定義標準。</li>
+<li>代理程式在這些標準下執行任務。</li>
+<li>執行結果反饋至人類學習。</li>
+<li>人類的學習則能改進這些標準。</li>
 </ul>
-<p>If the loop works, both sides get better. The agent executes more effectively, and the human becomes better at defining what effective means. If the loop breaks, the system degrades. Human judgment stagnates. Standards become outdated. Agents keep optimizing, but they optimize inside a framework that is slowly falling behind.</p>
-<p>This is why human judgment is the ceiling. Stronger agents do not remove the need for stronger humans. They make the quality of human judgment more important, because that judgment becomes the framework inside which the agent operates.</p>
-<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">Why agents cannot solve the whole problem alone<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
+<p>若此循環運作良好，雙方皆能進步：代理程式能更有效地執行任務，而人類則更擅長定義何謂「有效」。若循環中斷，系統效能便會退化。人類判斷力將停滯不前，標準亦會過時。代理程式雖持續優化，卻是在一個逐漸落後的框架內進行優化。</p>
+<p>這就是為什麼人類判斷是上限。更強大的代理並不會消除對更強大人類的需求。它們反而使人類判斷的品質更加重要，因為這種判斷將成為代理運作的框架。</p>
+<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">為何代理程式無法單憑一己之力解決整個問題<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,21 +171,21 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>One response is obvious: agents will keep getting stronger, so perhaps they will eventually generate better knowledge, better rules, and better standards on their own.</p>
-<p>There is truth in that. Agents are already strong at combining ideas, exploring solution spaces, and surfacing paths humans may not have considered. A model can produce sentences, designs, and solutions that never appeared in its training data. It can recombine patterns across domains and generate useful alternatives.</p>
-<p>That is real value. But L4 is concerned with a different kind of creation. The question is not only who can find a better answer. It is who can ask a new question, rewrite the standard, or expand the problem space.</p>
-<p>Agents are strong at generalizing, combining, and searching within an existing distribution. They can find better paths through known terrain, sometimes paths humans have not tried. But deciding whether the terrain itself should be redrawn is different.</p>
-<p>That kind of decision often comes from human context: lived constraints, personal stakes, curiosity, dissatisfaction, and the cost of being wrong. A person can form a hypothesis that violates the current framework and test it against reality. More importantly, a person can have a reason to keep testing when the idea looks wrong, risky, or useless at first.</p>
-<p>Non-Euclidean geometry is a useful example. The important step was not merely asking, “What if parallel lines intersect?” An agent could generate that sentence. The important step was treating the strange assumption as worth investigating, then following its consequences until it became a new theoretical space. That required persistence, stakes, and a reason to care about the outcome.</p>
-<p>Margaret Boden’s creativity framework is useful here. She distinguishes between three kinds of creativity:</p>
+    </button></h2><p>其中一個答案顯而易見：代理會持續變強，因此或許終有一天，它們能自行產生更優質的知識、更完善的規則，以及更精準的標準。</p>
+<p>這話不無道理。代理系統在整合想法、探索解空間，以及發掘人類可能未曾考慮過的路徑方面，已經相當強大。一個模型可以產出從未出現在其訓練資料中的句子、設計與解決方案。它能跨領域重新組合模式，並產生有用的替代方案。</p>
+<p>這確實是真正的價值。但 L4 關注的卻是另一種創造。問題不僅在於誰能找到更好的答案，更在於誰能提出新問題、重寫標準，或是擴展問題空間。</p>
+<p>智能代理在現有分佈中擅長概括、整合與搜尋。牠們能在已知領域中找到更好的路徑，有時甚至是人類未曾嘗試過的路徑。但決定是否應重新劃定該領域本身，則是另一回事。</p>
+<p>這類決策往往源自人類的處境：生活中的限制、個人利害關係、好奇心、不滿，以及犯錯的代價。一個人可以提出違反現行框架的假設，並用現實來驗證它。更重要的是，當一個想法起初看起來是錯誤的、冒險的或無用的時，人仍能有理由持續進行驗證。</p>
+<p>非歐幾里得幾何便是一個有用的例子。 關鍵的一步並非僅僅提出「如果平行線相交會怎樣？」這樣的疑問——任何智能體都能生成這句話。關鍵的一步在於將這個奇怪的假設視為值得探究的對象，進而追溯其推論，直到它成為一個嶄新的理論空間。這需要堅持不懈、利害關係，以及關心結果的理由。</p>
+<p>瑪格麗特·博登（Margaret Boden）的創造力框架在此頗具參考價值。她將創造力區分為三種類型：</p>
 <ul>
-<li><strong>Combinational creativity:</strong> combining familiar ideas in new ways.</li>
-<li><strong>Exploratory creativity:</strong> searching within an existing conceptual space.</li>
-<li><strong>Transformational creativity:</strong> changing the rules of the conceptual space itself.</li>
+<li><strong>組合式創造力：</strong>以嶄新方式組合熟悉的觀念。</li>
+<li><strong>探索性創造力：</strong>在現有的概念空間內進行探索。</li>
+<li><strong>轉化式創造力：</strong>改變概念空間本身的規則。</li>
 </ul>
-<p>Agents are already strong in the first two modes. They combine existing ideas and explore within existing conceptual spaces. The third mode is harder. Transformational creativity depends on more than faster search. It depends on why someone chooses to reject an old rule, accept the cost of failure, and keep testing an idea that does not yet fit.</p>
-<p><strong>The more precise claim is this: agents are strongest at combining and exploring within existing spaces. New foundational knowledge, new problem spaces, and new value frameworks still depend heavily on humans.</strong></p>
-<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">Design for the loop, not just the output<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
+<p>智能體在前兩種模式上已相當強大。它們能組合現有想法，並在現有的概念空間內進行探索。第三種模式則更具挑戰性。轉化型創造力不僅取決於更快的搜尋速度，更取決於某人為何選擇拒絕舊規則、承擔失敗的代價，並持續測試一個尚未契合的構想。</p>
+<p><strong>更精確的論點是：智能體最擅長在現有空間中進行組合與探索。新的基礎知識、新的問題空間以及新的價值框架，仍高度依賴人類。</strong></p>
+<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">設計應著眼於「迴圈」，而不僅是「輸出」<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,20 +200,20 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Not every agent product needs to solve L4. Some products only need to help users get tasks done faster. That is fine. Others need memory, standards, and better workflow integration.</p>
-<p>But at the ecosystem level, some products need to preserve the learning loop. If every agent product helps people do less of the work, and none helps people keep learning after they stop doing the work directly, human capacity weakens over time. The optimization space for agents stops expanding. The whole system remains bounded by today’s level of human judgment.</p>
-<p>This is where product design matters. L4 is not just asking the agent to summarize what it did. A useful L4 product preserves the parts of work that build human judgment, even when the agent handles most of the execution.</p>
-<p>A few product patterns matter here:</p>
+    </button></h2><p>並非每款智能代理產品都需要解決 L4 級別的任務。有些產品只需協助使用者更快完成任務，這已足夠；另一些則需要記憶功能、標準規範，以及更完善的流程整合。</p>
+<p>但在生態系統層面上，某些產品需要維持學習迴圈。如果每款智能代理產品都讓人們減少工作量，卻沒有任何一款能幫助人們在停止直接執行工作後持續學習，人類的能力將隨時間推移而衰退。智能代理的優化空間將停止擴展。整個系統仍將受限於當今人類判斷力的水平。</p>
+<p>這正是產品設計至關重要的地方。L4 並非僅要求代理程式總結其執行過的事項。一款有用的 L4 產品，即使代理程式處理了大部分的執行工作，仍會保留那些能培養人類判斷力的工作環節。</p>
+<p>在此有幾個關鍵的產品設計模式：</p>
 <ul>
-<li><strong>Preserve key judgment points.</strong> Some decisions should stay visible to the human, not because the agent cannot make them, but because those decisions train judgment. The product should identify which moments matter and keep them deliberate.</li>
-<li><strong>Reconstruct the process, not just the result.</strong> A finished artifact is not enough. The system should surface key decision branches, trade-offs, alternative paths, and failed attempts. A user who only sees the output can approve or reject it. A user who sees the reasoning path can update their mental model.</li>
-<li><strong>Support collaborative exploration.</strong> When the user is uncertain, the agent should not jump straight to an answer. It should help expand the problem space: what dimensions matter, what assumptions are missing, what information is still needed, and what costs each option carries.</li>
-<li><strong>Challenge human assumptions.</strong> This does not mean pushing back for the sake of disagreement. It means recognizing gaps or tensions in the user’s thinking and asking targeted questions that make those tensions visible.</li>
+<li><strong>保留關鍵判斷點。</strong>某些決策應保持對人類可見，並非因為代理無法做出這些決策，而是因為這些決策能鍛鍊判斷力。產品應識別哪些時刻至關重要，並確保這些時刻仍需經由人類刻意思考。</li>
+<li><strong>重構過程，而不僅是結果。僅有</strong>最終產出物是不夠的。系統應呈現關鍵的決策分支、權衡取捨、替代路徑以及失敗的嘗試。僅看到輸出結果的使用者只能批准或拒絕；而能看到推理路徑的使用者，則能更新其心智模型。</li>
+<li><strong>支持協作式探索。</strong>當使用者感到不確定時，代理程式不應直接跳到答案，而應協助擴展問題空間：哪些維度重要、哪些假設尚缺、還需要哪些資訊，以及每個選項會帶來哪些成本。</li>
+<li><strong>挑戰人類的假設。</strong>這並非為了反對而反對，而是指察覺使用者思考中的缺口或矛盾，並提出針對性的問題，使這些矛盾顯現出來。</li>
 </ul>
-<p>The goal is not to force humans back into every manual step. That would defeat the purpose of agents. The goal is to preserve the parts of work that turn experience into judgment.</p>
-<p>Agent products should not only optimize for output. They should optimize for the feedback loop: better human judgment, better standards, better agent execution, and better human learning from the results.</p>
-<p><strong>When AI agents do the work, we should not lose the loop that made humans better at the work in the first place.</strong></p>
-<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">We’d love to hear your thoughts<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
+<p>目標並非強迫人類回歸每個手動步驟，那將背離代理系統的初衷。真正的目標是保留那些能將經驗轉化為判斷的工作環節。</p>
+<p>代理產品不應僅以輸出結果為優化目標，更應優化反饋迴路：提升人類判斷力、完善標準、優化代理執行效能，並促進人類從結果中學習。</p>
+<p><strong>當 AI 代理執行工作時，我們不應失去那個原本使人類在該工作上更臻完美的反饋迴路。</strong></p>
+<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">我們很樂意聽取您的想法<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -229,4 +228,4 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>If you are building agents, I would love to hear how you think about this: what parts of the work should agents fully take over, and what parts should remain visible because they help humans keep getting better?</p>
+    </button></h2><p>如果您正在開發代理程式，我很想聽聽您的看法：工作的哪些部分應該由代理程式完全接管，而哪些部分應該保持可見，因為它們有助於人類持續進步？</p>

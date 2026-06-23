@@ -1,11 +1,10 @@
 ---
 id: attu-3-0-beta.md
-title: >
-  Attu 3.0 Beta: Multi-Cluster Management, AI Agent, and a Rebuilt Milvus
-  Console
+title: |
+  Attu 3.0 ベータ版：マルチクラスター管理、AIエージェント、そして一新されたMilvusコンソール
 author: Ray Jiang
 date: 2026-06-11T00:00:00.000Z
-cover: assets.zilliz.com/attu_3_0_beta_md_1_39fd0ca127.png
+cover: assets.zilliz.com/Attu_3_0_New_cover_1af4c44467.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -17,18 +16,17 @@ meta_title: >
   Attu 3.0 Beta: Multi-Cluster Management, AI Agent, and a Rebuilt Milvus
   Console
 desc: >
-  Attu 3.0 beta rebuilds the Milvus management console with multi-cluster
-  management, persistent state, a built-in AI Agent, expert diagnostics, live
-  metrics, API debugging, backup and restore, and simplified RBAC workflows.
+  Attu 3.0 ベータ版では、Milvus 管理コンソールが再構築され、マルチクラスタ管理、永続的な状態、組み込みの AI
+  エージェント、高度な診断機能、リアルタイムメトリクス、API デバッグ、バックアップと復元、および簡素化された RBAC ワークフローが搭載されています。
 origin: 'https://milvus.io/blog/attu-3-0-beta.md'
 ---
-<p>Attu 3.0 Beta is now available.</p>
-<p><a href="https://github.com/zilliztech/attu"><strong>Attu</strong></a> is the open-source management console for <a href="https://milvus.io"><strong>Milvus</strong></a>. If you have used Milvus locally or in production, you have probably used Attu to inspect collections, browse data, manage schemas, or check what is happening inside a cluster.</p>
-<p>Attu 2.x worked well for basic single-cluster management. But as Milvus deployments grew, its limits became more visible. It could only connect to one Milvus instance at a time. Connection state was lost after a container restart. Data browsing was mostly collection-centric. Diagnostics, monitoring, API debugging, backup and restore, and permission management often required separate tools or manual steps.</p>
-<p><strong>Attu 3.0 Beta is a full rebuild of the Milvus management experience.</strong></p>
-<p>This release adds multi-cluster management, persistent local state, a built-in AI Agent with 50+ Milvus tools, expert diagnostic skills, a redesigned data browser, built-in Prometheus metrics, an API Playground, GUI-based backup and restore, and simplified RBAC workflows.</p>
-<p>In short, Attu is no longer just a lightweight viewer for one Milvus instance. It is becoming a practical operations console for developers and teams managing Milvus across local, staging, and production environments.</p>
-<h2 id="What-Changed-in-Attu-30-Beta" class="common-anchor-header">What Changed in Attu 3.0 Beta<button data-href="#What-Changed-in-Attu-30-Beta" class="anchor-icon" translate="no">
+<p>Attu 3.0 ベータ版が公開されました。</p>
+<p><a href="https://github.com/zilliztech/attu"><strong>Attuは</strong></a>、<a href="https://milvus.io"><strong>Milvus用のオープンソース管理</strong></a>コンソールです。ローカル環境や本番環境でMilvusをご利用になったことがある方なら、コレクションの確認、データの閲覧、スキーマの管理、あるいはクラスター内部の状況確認などにAttuをご利用になったことがあるでしょう。</p>
+<p>Attu 2.xは、基本的な単一クラスターの管理には十分に機能していました。しかし、Milvusの導入規模が拡大するにつれ、その限界が顕著になってきました。一度に接続できるMilvusインスタンスは1つに限られていました。また、コンテナを再起動すると接続状態が失われていました。 データの閲覧は、主にコレクション中心でした。診断、監視、APIのデバッグ、バックアップと復元、権限管理には、多くの場合、別のツールや手動での操作が必要でした。</p>
+<p><strong>Attu 3.0 Betaは、Milvusの管理体験を全面的に再構築したものです。</strong></p>
+<p>このリリースでは、マルチクラスタ管理、永続的なローカル状態、50以上のMilvusツールを備えた組み込みAIエージェント、高度な診断機能、再設計されたデータブラウザ、組み込みのPrometheusメトリクス、API Playground、GUIベースのバックアップおよび復元、そして簡素化されたRBACワークフローが追加されています。</p>
+<p>要するに、Attuはもはや単一のMilvusインスタンス向けの軽量ビューアにとどまりません。ローカル、ステージング、本番環境を横断してMilvusを管理する開発者やチームにとって、実用的な運用コンソールへと進化しつつあります。</p>
+<h2 id="What-Changed-in-Attu-30-Beta" class="common-anchor-header">Attu 3.0 ベータ版での変更点<button data-href="#What-Changed-in-Attu-30-Beta" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,25 +41,25 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Here is the high-level comparison between Attu 2.x and Attu 3.0 Beta.</p>
+    </button></h2><p>以下に、Attu 2.x と Attu 3.0 ベータ版の概要比較を示します。</p>
 <table>
 <thead>
-<tr><th>Feature</th><th>Attu 2.x</th><th>Attu 3.0 Beta</th></tr>
+<tr><th>機能</th><th>Attu 2.x</th><th>Attu 3.0 ベータ版</th></tr>
 </thead>
 <tbody>
-<tr><td>Cluster connections</td><td>Single instance only</td><td>Multiple clusters with one-click switching</td></tr>
-<tr><td>State persistence</td><td>Stateless; lost on container restart</td><td>Local database; survives restarts</td></tr>
-<tr><td>AI assistance</td><td>None</td><td>Built-in Agent with 50+ Milvus tools</td></tr>
-<tr><td>Diagnostics</td><td>Manual investigation</td><td>4 built-in expert-level diagnostic skills</td></tr>
-<tr><td>RBAC management</td><td>Separate pages, multi-step flow</td><td>In-context, one-click user creation</td></tr>
-<tr><td>Data navigation</td><td>Flat collection list</td><td>Hierarchical tree: database → collection → partition</td></tr>
-<tr><td>Monitoring</td><td>External Grafana required</td><td>Built-in Prometheus metrics dashboard</td></tr>
-<tr><td>API debugging</td><td>External tools such as curl or Postman</td><td>Built-in REST API Playground</td></tr>
-<tr><td>Backup and restore</td><td>CLI only</td><td>GUI with S3, MinIO, GCS, and Azure support</td></tr>
-<tr><td>LLM integration</td><td>None</td><td>BYOL: OpenAI, Anthropic, DeepSeek, Gemini, and more</td></tr>
+<tr><td>クラスタ接続</td><td>単一インスタンスのみ</td><td>ワンクリックで切り替え可能な複数のクラスター</td></tr>
+<tr><td>状態の永続化</td><td>ステートレス；コンテナの再起動時に失われる</td><td>ローカルデータベース；再起動後も状態が保持される</td></tr>
+<tr><td>AIアシスタント</td><td>なし</td><td>50以上のMilvusツールを備えた組み込みエージェント</td></tr>
+<tr><td>診断</td><td>手動による調査</td><td>4つの組み込みエキスパートレベルの診断スキル</td></tr>
+<tr><td>RBAC管理</td><td>独立したページ、多段階のフロー</td><td>コンテキストに応じたワンクリックでのユーザー作成</td></tr>
+<tr><td>データナビゲーション</td><td>フラットなコレクション一覧</td><td>階層ツリー：データベース → コレクション → パーティション</td></tr>
+<tr><td>監視</td><td>外部の Grafana が必要</td><td>組み込みのPrometheusメトリクスダッシュボード</td></tr>
+<tr><td>APIデバッグ</td><td>curl や Postman などの外部ツール</td><td>組み込みのREST APIプレイグラウンド</td></tr>
+<tr><td>バックアップと復元</td><td>CLIのみ</td><td>S3、MinIO、GCS、Azureに対応したGUI</td></tr>
+<tr><td>LLMの統合</td><td>なし</td><td>BYOL：OpenAI、Anthropic、DeepSeek、Geminiなど</td></tr>
 </tbody>
 </table>
-<h2 id="Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="common-anchor-header">Manage Multiple Milvus Clusters From One Sidebar<button data-href="#Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="anchor-icon" translate="no">
+<h2 id="Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="common-anchor-header">1つのサイドバーから複数のMilvusクラスターを管理<button data-href="#Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,21 +74,21 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The biggest day-to-day change is multi-cluster management.</strong> Attu 3.0 can connect to every Milvus instance you run and list them in a single sidebar.</p>
+    </button></h2><p><strong>日々の運用における最大の変更点は、マルチクラスター管理機能です。</strong>Attu 3.0 では、実行中のすべての Milvus インスタンスに接続し、それらを単一のサイドバーに一覧表示できます。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_2_aaf3fddf83.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 sidebar showing multiple Milvus connections with health indicators</p>
-<p>In Attu 2.x, switching from one Milvus cluster to another meant disconnecting, reconnecting, and waiting. If you had separate clusters for development, staging, production, or different business lines, you often ended up with one browser tab per cluster.</p>
-<p>Attu 3.0 replaces that flow with a persistent left sidebar. Every Milvus connection is listed in one place, with a live health indicator beside it. A green dot means the cluster is reachable. A red dot means the cluster is down or unavailable.</p>
-<p>Switching clusters takes one click. Attu keeps the context for each connection, so you do not need to reconnect every time you move between environments.</p>
-<h3 id="Connection-Setup-Is-Less-Fragile" class="common-anchor-header">Connection Setup Is Less Fragile</h3><p>New connections support TLS/SSL encryption, token authentication, and username/password authentication. You can test a connection before saving it, keep connection details locally, and bulk-clear dead connections when old environments are no longer needed.</p>
-<p><strong>Each cluster gets its own workspace.</strong> Overview, data browser, user management, metrics, and operations are all scoped to the currently selected cluster. That makes it much harder to confuse staging and production or run an operation in the wrong place.</p>
-<p>For anyone managing more than one Milvus instance, this is one of the most important changes in Attu 3.0. It sounds basic, but it removes a large amount of tab switching and reconnect friction from daily Milvus work.</p>
-<h2 id="Local-State-Now-Survives-Restarts" class="common-anchor-header">Local State Now Survives Restarts<button data-href="#Local-State-Now-Survives-Restarts" class="anchor-icon" translate="no">
+<p>画像：ヘルス状態インジケーター付きの複数のMilvus接続を表示するAttu 3.0のサイドバー</p>
+<p>Attu 2.xでは、あるMilvusクラスターから別のクラスターに切り替えるには、接続を切断し、再接続し、待機する必要がありました。開発、ステージング、本番環境、あるいは異なる事業部門ごとに別々のクラスターを用意している場合、クラスターごとに1つのブラウザタブを開くことになることがよくありました。</p>
+<p>Attu 3.0では、この流れが常時表示される左サイドバーに置き換えられました。すべてのMilvus接続が一箇所に一覧表示され、その横にはリアルタイムのヘルスインジケーターが表示されます。緑色のドットはクラスターに接続可能であることを示し、赤色のドットはクラスターがダウンしているか利用できない状態であることを示します。</p>
+<p>クラスターの切り替えはワンクリックで完了します。Attuは各接続のコンテキストを保持するため、環境間を移動するたびに再接続する必要はありません。</p>
+<h3 id="Connection-Setup-Is-Less-Fragile" class="common-anchor-header">接続設定の安定性が向上</h3><p>新しい接続では、TLS/SSL暗号化、トークン認証、およびユーザー名/パスワード認証がサポートされています。接続を保存する前にテストを行ったり、接続詳細をローカルに保存したり、古い環境が不要になった際に切断された接続を一括で削除したりすることができます。</p>
+<p><strong>各クラスターには独自のワークスペースが割り当てられます。</strong>概要、データブラウザ、ユーザー管理、メトリクス、および操作はすべて、現在選択されているクラスターの範囲内に限定されます。これにより、ステージング環境と本番環境を混同したり、誤った場所で操作を実行したりするリスクが大幅に低減されます。</p>
+<p>複数のMilvusインスタンスを管理しているユーザーにとって、これはAttu 3.0における最も重要な変更点の1つです。基本的な機能のように思えるかもしれませんが、これにより、日々のMilvus作業におけるタブの切り替えや再接続に伴う煩わしさが大幅に軽減されます。</p>
+<h2 id="Local-State-Now-Survives-Restarts" class="common-anchor-header">ローカル状態が再起動後も保持されるようになりました<button data-href="#Local-State-Now-Survives-Restarts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,14 +103,14 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attu 2.x was stateless. If the container restarted, your saved connection information disappeared and you had to rebuild your workspace.</p>
-<p><strong>Attu 3.0 adds a local database that persists cluster configs, agent conversation history, custom skills, LLM configuration, and user preferences.</strong></p>
-<p>When running Attu with Docker, mount a volume to keep that state:</p>
+    </button></h2><p>Attu 2.xはステートレスでした。コンテナが再起動すると、保存されていた接続情報が失われ、ワークスペースを再構築する必要がありました。</p>
+<p><strong>Attu 3.0では、クラスタ設定、エージェントとの会話履歴、カスタムスキル、LLM設定、ユーザー設定を永続化するローカルデータベースが追加されました。</strong></p>
+<p>DockerでAttuを実行する際は、ボリュームをマウントしてその状態を保持してください：</p>
 <pre><code translate="no" class="language-bash">docker run -d --name attu -p 3000:3000 -v attu-data:/data zilliz/attu:v3.0.0-beta.6
 <button class="copy-code-btn"></button></code></pre>
-<p>With the volume mounted, restarting the container no longer means starting from zero.</p>
-<p>This also matters for the new AI Agent. Conversation history, custom skills, and LLM configuration can persist locally, so Attu becomes a console you can keep using over time rather than a temporary UI that resets after each restart.</p>
-<h2 id="Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="common-anchor-header">Use the Built-in AI Agent to Operate Milvus in Natural Language<button data-href="#Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="anchor-icon" translate="no">
+<p>ボリュームをマウントしておけば、コンテナを再起動しても、ゼロからの再スタートになることはありません。</p>
+<p>これは新しいAIエージェントにとっても重要です。会話履歴、カスタムスキル、LLMの設定をローカルに永続化できるため、Attuは再起動のたびにリセットされる一時的なUIではなく、長期にわたって使い続けられるコンソールとなります。</p>
+<h2 id="Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="common-anchor-header">組み込みのAIエージェントを使用して、自然言語でMilvusを操作する<button data-href="#Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,37 +125,37 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attu 3.0 includes a built-in AI Agent for Milvus management. This is not a documentation chatbot. <strong>The agent is connected to 50+ Milvus tools, so it can inspect cluster state and execute real operations through Attu.</strong></p>
+    </button></h2><p>Attu 3.0 には、Milvus 管理用の組み込み AI エージェントが含まれています。これは単なるドキュメント用チャットボットではありません。<strong>このエージェントは 50 以上の Milvus ツールと連携しているため、クラスタの状態を確認し、Attu を通じて実際の操作を実行することができます。</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_3_92689d4337.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: The Attu 3.0 AI Agent can call Milvus tools from natural-language requests</p>
-<h3 id="50+-Built-in-Tools-Across-Common-Milvus-Workflows" class="common-anchor-header">50+ Built-in Tools Across Common Milvus Workflows</h3><p>The Agent covers everyday operations, diagnostics, permissions, and cluster management. You can ask questions or issue instructions such as:</p>
+<p>画像：Attu 3.0のAIエージェントは、自然言語によるリクエストからMilvusツールを呼び出すことができます</p>
+<h3 id="50+-Built-in-Tools-Across-Common-Milvus-Workflows" class="common-anchor-header">一般的なMilvusワークフローを網羅する50以上の組み込みツール</h3><p>このエージェントは、日常的な運用、診断、権限管理、クラスタ管理を網羅しています。以下のような質問や指示を出すことができます：</p>
 <table>
 <thead>
-<tr><th>Scenario</th><th>Example prompts</th></tr>
+<tr><th>シナリオ</th><th>プロンプト例</th></tr>
 </thead>
 <tbody>
-<tr><td>Everyday operations</td><td>“List all my collections.”<br>“Create a collection with id, title, and embedding fields. Use dimension 768 for the embedding field.”<br>“Insert some test data into my_collection.”<br>“Search my_collection for the 10 records most similar to 'artificial intelligence’.”</td></tr>
-<tr><td>Ops and diagnostics</td><td>“Is my cluster healthy?”<br>“Why is search so slow?”<br>“Which collections use the most memory?”<br>“Any slow queries recently?”</td></tr>
-<tr><td>Permissions</td><td>“Create a read-only user called analyst.”<br>“Grant all privileges to the admin role.”<br>“Check which privileges user zhangsan has.”</td></tr>
-<tr><td>Cluster management</td><td>“Show the current Milvus version and config.”<br>“List resource-group usage.”<br>“Compact my_collection for me.”</td></tr>
+<tr><td>日常的な運用</td><td>「自分のコレクションをすべて一覧表示してください。」<br>「id、title、embeddingというフィールドを持つコレクションを作成してください。embeddingフィールドにはディメンション768を使用してください。」<br>「my_collectionにテストデータをいくつか挿入してください。」<br>「my_collection から、『artificial intelligence』に最も類似したレコードを10件検索してください。」</td></tr>
+<tr><td>運用と診断</td><td>「クラスタの状態は正常ですか？」<br>「検索がなぜこんなに遅いのですか？」<br>「どのコレクションが最も多くのメモリを使用していますか？」<br>「最近、処理が遅いクエリはありますか？」</td></tr>
+<tr><td>権限</td><td>「analyst という名前の読み取り専用ユーザーを作成してください。」<br>「adminロールにすべての権限を付与してください。」<br>「ユーザー zhangsan がどの権限を持っているか確認してください。」</td></tr>
+<tr><td>クラスタ管理</td><td>「現在のMilvusのバージョンと設定を表示してください。」<br>「リソースグループの使用状況を一覧表示してください。」<br>「my_collection を自動的に圧縮してください。」</td></tr>
 </tbody>
 </table>
-<h3 id="Destructive-Actions-Require-Approval" class="common-anchor-header">Destructive Actions Require Approval</h3><p>
+<h3 id="Destructive-Actions-Require-Approval" class="common-anchor-header">破壊的な操作には承認が必要</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_4_130d227620.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Destructive or sensitive operations show a confirmation dialog before execution</p>
-<p><strong>The agent is designed to be transparent and controllable.</strong> Non-destructive operations, such as listing collections or reading metrics, return results directly.</p>
-<p>Destructive or sensitive operations, such as dropping a collection, clearing data, or changing privileges, trigger a confirmation dialog. The dialog lists the exact parameters and waits for approval before the operation runs.</p>
-<p>You can also see which tools the agent called, how many tokens it used, and whether any tool call failed. That matters for a database management agent. Users should be able to understand what the agent did, not just see the final answer.</p>
-<h2 id="Run-Expert-Diagnostic-Skills-From-the-Console" class="common-anchor-header">Run Expert Diagnostic Skills From the Console<button data-href="#Run-Expert-Diagnostic-Skills-From-the-Console" class="anchor-icon" translate="no">
+<p>画像：破壊的または機密性の高い操作では、実行前に確認ダイアログが表示されます</p>
+<p><strong>エージェントは、透過的で制御しやすいように設計されています。</strong>コレクションの一覧表示やメトリクスの読み取りなど、非破壊的な操作では、結果が直接返されます。</p>
+<p>コレクションの削除、データの消去、権限の変更など、破壊的または機密性の高い操作を実行すると、確認ダイアログが表示されます。このダイアログには正確なパラメータが一覧表示され、操作の実行前に承認を待ちます。</p>
+<p>また、エージェントがどのツールを呼び出したか、いくつのトークンを使用したか、ツール呼び出しに失敗したかどうかを確認することもできます。これはデータベース管理エージェントにとって重要な点です。ユーザーは、最終的な結果を見るだけでなく、エージェントが何を行ったのかを理解できる必要があります。</p>
+<h2 id="Run-Expert-Diagnostic-Skills-From-the-Console" class="common-anchor-header">コンソールからエキスパート診断スキルを実行する<button data-href="#Run-Expert-Diagnostic-Skills-From-the-Console" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,16 +170,16 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The AI Agent ships with four built-in diagnostic skills.</strong> These are guided workflows for common Milvus troubleshooting scenarios, not generic prompts.</p>
+    </button></h2><p><strong>AIエージェントには、4つの組み込み診断スキルが付属しています。</strong>これらは、一般的なMilvusのトラブルシューティングシナリオに対応したガイド付きワークフローであり、汎用的なプロンプトではありません。</p>
 <table>
 <thead>
-<tr><th>Diagnostic skill</th><th>What it checks</th></tr>
+<tr><th>診断スキル</th><th>チェック項目</th></tr>
 </thead>
 <tbody>
-<tr><td>Cluster health diagnosis</td><td>Version, node status, per-component health, and key metrics.</td></tr>
-<tr><td>Search performance diagnosis</td><td>Index sanity, segment fragmentation, replica balance, and related search-performance signals.</td></tr>
-<tr><td>Data write diagnosis</td><td>Slow inserts, lost data checks, flush anomalies, and write-path symptoms.</td></tr>
-<tr><td>Configuration audit</td><td>Risky or incorrect settings that may affect stability, performance, or expected behavior.</td></tr>
+<tr><td>クラスタの健全性診断</td><td>バージョン、ノードの状態、コンポーネントごとの健全性、および主要なメトリクス。</td></tr>
+<tr><td>検索パフォーマンスの診断</td><td>インデックスの整合性、セグメントの断片化、レプリカのバランス、および関連する検索パフォーマンスのシグナル。</td></tr>
+<tr><td>データ書き込みの診断</td><td>挿入の遅延、データチェックの欠落、フラッシュの異常、および書き込みパスの症状。</td></tr>
+<tr><td>構成監査</td><td>安定性、パフォーマンス、または期待される動作に影響を与える可能性のある、リスクのある設定や誤った設定。</td></tr>
 </tbody>
 </table>
 <p>
@@ -190,10 +188,10 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 includes built-in diagnostic skills and supports custom skills</p>
-<p>You can also create custom skills in natural language. A skill can encode a pre-launch checklist, a data-quality check for a specific collection, or a diagnostic flow your team runs for a known workload.</p>
-<p>A custom skill is essentially domain knowledge plus a procedure. Once saved, the agent can reuse it instead of relying on a one-off prompt every time.</p>
-<h2 id="Bring-Your-Own-LLM-Provider" class="common-anchor-header">Bring Your Own LLM Provider<button data-href="#Bring-Your-Own-LLM-Provider" class="anchor-icon" translate="no">
+<p>画像：Attu 3.0 には組み込みの診断スキルが含まれており、カスタムスキルもサポートしています</p>
+<p>また、自然言語でカスタムスキルを作成することも可能です。スキルには、リリース前のチェックリスト、特定のコレクションに対するデータ品質チェック、あるいは既知のワークロードに対してチームが実行する診断フローなどを組み込むことができます。</p>
+<p>カスタムスキルとは、本質的にドメイン知識と手順の組み合わせです。一度保存すれば、エージェントは毎回その場限りのプロンプトに頼るのではなく、それを再利用できます。</p>
+<h2 id="Bring-Your-Own-LLM-Provider" class="common-anchor-header">独自のLLMプロバイダーの活用<button data-href="#Bring-Your-Own-LLM-Provider" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -208,24 +206,24 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu does not bundle or proxy an LLM service.</strong> You configure your own provider and keep control of the model path.</p>
-<p>The supported provider options include OpenAI, Anthropic, DeepSeek, Google Gemini, OpenRouter, and custom OpenAI-compatible endpoints.</p>
+    </button></h2><p><strong>AttuはLLMサービスをバンドルしたり、プロキシとして提供したりしません。</strong>ユーザー自身がプロバイダーを設定し、モデルのパスを管理します。</p>
+<p>サポートされているプロバイダーには、OpenAI、Anthropic、DeepSeek、Google Gemini、OpenRouter、およびOpenAI互換のカスタムエンドポイントが含まれます。</p>
 <table>
 <thead>
-<tr><th>Provider</th><th>Example models</th></tr>
+<tr><th>プロバイダー</th><th>モデル例</th></tr>
 </thead>
 <tbody>
 <tr><td>OpenAI</td><td>GPT-5.5</td></tr>
-<tr><td>Anthropic</td><td>Claude Opus 4.8</td></tr>
+<tr><td>Anthropic</td><td>ClaudeOpus 4.8</td></tr>
 <tr><td>DeepSeek</td><td>DeepSeek-V4</td></tr>
 <tr><td>Google Gemini</td><td>Gemini 3.5</td></tr>
-<tr><td>OpenRouter</td><td>Any routed model</td></tr>
-<tr><td>Custom endpoint</td><td>Any OpenAI-compatible API</td></tr>
+<tr><td>OpenRouter</td><td>任意のルーティングモデル</td></tr>
+<tr><td>カスタムエンドポイント</td><td>OpenAI互換のAPIならどれでも</td></tr>
 </tbody>
 </table>
-<p>Your API key is encrypted locally and is not uploaded to an Attu-managed service. That design is important for teams that want AI assistance but still need to control credentials, data flow, and provider choice.</p>
-<p>In practice, BYOL makes the agent usable across different environments. One team might use OpenAI. Another might use an Anthropic model. A third might route through an OpenAI-compatible endpoint. Attu does not force a single model provider.</p>
-<h2 id="Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="common-anchor-header">Browse Milvus Data With a Database → Collection → Partition Tree<button data-href="#Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="anchor-icon" translate="no">
+<p>APIキーはローカルで暗号化され、Attuが管理するサービスにはアップロードされません。この設計は、AIによる支援を望みつつも、認証情報、データフロー、プロバイダーの選択を管理し続けたいチームにとって重要です。</p>
+<p>実際には、BYOL（Bring Your Own Model）により、エージェントをさまざまな環境で利用できるようになります。あるチームはOpenAIを使用し、別のチームはAnthropicのモデルを使用し、さらに別のチームはOpenAI互換のエンドポイントを経由してルーティングを行うといったことが可能です。Attuは特定のモデルプロバイダーを強制しません。</p>
+<h2 id="Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="common-anchor-header">データベース → コレクション → パーティションツリーでMilvusデータを閲覧<button data-href="#Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -240,24 +238,24 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attu 3.0 also redesigns the data browser. Attu 2.x mainly presented a flat collection list. That becomes hard to use once a cluster has multiple databases, dozens of collections, and partitioned data.</p>
-<p><strong>The new browser uses a hierarchy that matches how Milvus organizes data: database → collection → partition.</strong></p>
+    </button></h2><p>Attu 3.0では、データブラウザも再設計されています。Attu 2.xでは、主にフラットなコレクションリストが表示されていました。しかし、クラスターに複数のデータベース、数十のコレクション、パーティション化されたデータが存在するようになると、その表示形式では使いにくくなってしまいます。</p>
+<p><strong>新しいブラウザでは、Milvusがデータを整理する方法に合わせた階層構造（データベース → コレクション → パーティション）を採用しています。</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_7_3fe672c16d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: The redesigned data browser uses hierarchical navigation for databases, collections, and partitions</p>
-<h3 id="Data-Operations-Are-Closer-to-Where-You-Browse" class="common-anchor-header">Data Operations Are Closer to Where You Browse</h3><p>The data browser keeps the operations users already expect and adds more actions directly in the UI:</p>
+<p>画像：再設計されたデータブラウザでは、データベース、コレクション、パーティションに対して階層的なナビゲーションを採用しています</p>
+<h3 id="Data-Operations-Are-Closer-to-Where-You-Browse" class="common-anchor-header">データ操作が閲覧場所のすぐ近くで実行可能に</h3><p>データブラウザは、ユーザーがすでに期待している操作を維持しつつ、UI上で直接実行できるアクションをさらに追加しています：</p>
 <ul>
-<li>Drag and drop a collection into another database.</li>
-<li>Run vector search by typing text directly, when an embedding model is configured.</li>
-<li>Inspect similarity scores and narrow results with facets.</li>
-<li>Import and export data in CSV, JSON, and Parquet.</li>
-<li>View and edit a collection schema visually, including dynamic-field support.</li>
-<li>Create, delete, and inspect partitions and partition stats.</li>
-<li>Manage the full collection lifecycle: create, load, release, copy, rename, move across databases, and drop.</li>
+<li>コレクションを別のデータベースにドラッグ＆ドロップする。</li>
+<li>埋め込みモデルが設定されている場合、テキストを直接入力してベクトル検索を実行できます。</li>
+<li>類似度スコアを確認し、ファセットを使用して結果を絞り込むことができます。</li>
+<li>CSV、JSON、Parquet形式でのデータのインポートおよびエクスポート。</li>
+<li>動的フィールドのサポートを含め、コレクションのスキーマを視覚的に表示・編集できます。</li>
+<li>パーティションおよびパーティション統計情報の作成、削除、確認を行います。</li>
+<li>コレクションのライフサイクル全体（作成、読み込み、リリース、コピー、名前変更、データベース間の移動、削除）を管理します。</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -265,10 +263,10 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 data browser with vector search and result inspection</p>
-<p>Most of these actions are available through right-click menus or operation panels. For common collection work, you no longer need to jump between UI browsing and command-line operations.</p>
-<p>Attu 3.0 is also the product line where UI support for new <a href="https://milvus.io/docs/release_notes.md">Milvus 3.0</a> capabilities, such as snapshots and nullable vectors, will continue to appear as those features mature.</p>
-<h2 id="Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="common-anchor-header">Check Operations, Metrics, Slow Queries, Topology, and Backups in One Place<button data-href="#Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="anchor-icon" translate="no">
+<p>画像：ベクトル検索と結果確認機能を備えた Attu 3.0 データブラウザ</p>
+<p>これらの操作のほとんどは、右クリックメニューまたは操作パネルから実行できます。一般的なコレクション作業において、UI での閲覧とコマンドライン操作の間を行き来する必要はもうありません。</p>
+<p>また、Attu 3.0 は、スナップショットや null 許容ベクトルなど、<a href="https://milvus.io/docs/release_notes.md">Milvus 3.0</a>の新機能に対する UI サポートが、それらの機能が成熟するにつれて引き続き追加されていく製品ラインでもあります。</p>
+<h2 id="Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="common-anchor-header">操作、メトリクス、低速クエリ、トポロジー、バックアップを一元的に確認<button data-href="#Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -283,29 +281,29 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 puts more operational information into the console.</strong> The Ops and Monitoring area includes cluster overview, live metrics, slow-query analysis, topology, and backup and restore.</p>
+    </button></h2><p><strong>Attu 3.0 では、コンソールに表示される運用情報がさらに充実しました。</strong>「Ops and Monitoring」エリアには、クラスタの概要、リアルタイムメトリクス、低速クエリの分析、トポロジー、バックアップおよび復元が含まれています。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_9_4085e60553.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 Ops and Monitoring page</p>
-<p>The goal is not to replace every observability system a production team already uses. Teams can still use Prometheus, Grafana, logs, alerts, and their existing monitoring stack. The goal is to make common Milvus questions answerable from inside Attu.</p>
+<p>画像：Attu 3.0の「Ops and Monitoring」ページ</p>
+<p>その目的は、本番運用チームがすでに使用しているすべての可観測性システムを置き換えることではありません。チームは引き続き、Prometheus、Grafana、ログ、アラート、および既存のモニタリングスタックを使用できます。目的は、Milvusに関する一般的な質問に、Attu内から回答できるようにすることです。</p>
 <table>
 <thead>
-<tr><th>Area</th><th>What you can do</th></tr>
+<tr><th>エリア</th><th>利用できる機能</th></tr>
 </thead>
 <tbody>
-<tr><td>Visual cluster overview</td><td>View Milvus version, deployment mode, node count, database count, collection count, load status, and quota entities at a glance.</td></tr>
-<tr><td>Real-time metrics</td><td>Inspect QPS, insert/delete rates, query latency, cache hit rate, and related Prometheus-backed metrics.</td></tr>
-<tr><td>Slow-query analysis</td><td>Inspect slow queries by type, duration, collection, timestamp, source, and related troubleshooting context.</td></tr>
-<tr><td>Topology view</td><td>Understand the node topology and the connections between components such as RootCoord, DataCoord, IndexCoord, QueryCoord, and Proxy.</td></tr>
-<tr><td>Backup and restore</td><td>Create full or incremental backups against S3, MinIO, GCS, or Azure, and download backup metadata as a ZIP or upload one to restore.</td></tr>
+<tr><td>クラスタの概要表示</td><td>Milvusのバージョン、デプロイモード、ノード数、データベース数、コレクション数、負荷状況、およびクォータエンティティを一目で確認できます。</td></tr>
+<tr><td>リアルタイムメトリクス</td><td>QPS、挿入/削除レート、クエリのレイテンシ、キャッシュヒット率、およびPrometheusに基づく関連メトリクスを確認できます。</td></tr>
+<tr><td>低速クエリの分析</td><td>タイプ、実行時間、コレクション、タイムスタンプ、ソース、および関連するトラブルシューティングのコンテキストごとに、遅延クエリを分析します。</td></tr>
+<tr><td>トポロジービュー</td><td>ノードのトポロジーや、RootCoord、DataCoord、IndexCoord、QueryCoord、Proxy などのコンポーネント間の接続関係を把握できます。</td></tr>
+<tr><td>バックアップと復元</td><td>S3、MinIO、GCS、またはAzureに対してフルバックアップまたは増分バックアップを作成し、バックアップメタデータをZIP形式でダウンロードしたり、復元用にアップロードしたりできます。</td></tr>
 </tbody>
 </table>
-<p>Backup and restore are especially important because they move a workflow that previously depended on CLI usage into the GUI. That is useful for local testing, staging validation, and teams that want a more visible recovery path.</p>
-<h2 id="Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="common-anchor-header">Debug Milvus REST APIs With the Built-in API Playground<button data-href="#Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="anchor-icon" translate="no">
+<p>バックアップと復元は、これまで CLI の使用に依存していたワークフローを GUI に移行させるため、特に重要です。これは、ローカルでのテスト、ステージング環境での検証、およびより可視性の高いリカバリパスを求めるチームにとって有用です。</p>
+<h2 id="Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="common-anchor-header">組み込みのAPI Playgroundを使用したMilvus REST APIのデバッグ<button data-href="#Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -320,18 +318,18 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 adds a REST API Playground for Milvus API development and debugging.</strong></p>
+    </button></h2><p><strong>Attu 3.0 では、Milvus API の開発およびデバッグのための REST API プレイグラウンドが追加されました。</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_10_7630afab16.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 API Playground</p>
-<p>The Playground catalogs Milvus REST endpoints by category. Select a database and collection, and Attu fills in the run context automatically. From there, you can send a request in one click and inspect the response in real time.</p>
-<p>This is useful when you want to test an API call without setting up curl commands or a Postman collection. It is also useful for learning how a Milvus feature maps to the REST API, because you can move between the UI context and the request body directly.</p>
-<p>For application developers, the API Playground is a debugging surface. For new Milvus users, it is a learning surface. For platform teams, it is a quick way to validate operations before turning them into scripts or application code.</p>
-<h2 id="Manage-RBAC-Beside-the-Database-or-Collection" class="common-anchor-header">Manage RBAC Beside the Database or Collection<button data-href="#Manage-RBAC-Beside-the-Database-or-Collection" class="anchor-icon" translate="no">
+<p>画像：Attu 3.0 API Playground</p>
+<p>このプレイグラウンドでは、MilvusのRESTエンドポイントがカテゴリ別に一覧表示されます。データベースとコレクションを選択すると、Attuが実行コンテキストを自動的に設定します。そこからワンクリックでリクエストを送信し、レスポンスをリアルタイムで確認できます。</p>
+<p>これは、curl コマンドや Postman コレクションを設定せずに API 呼び出しをテストしたい場合に便利です。また、UI コンテキストとリクエスト本文の間を直接行き来できるため、Milvus の機能が REST API にどのように対応しているかを学ぶのにも役立ちます。</p>
+<p>アプリケーション開発者にとって、API Playgroundはデバッグの場となります。Milvusの新規ユーザーにとっては、学習の場となります。プラットフォームチームにとっては、操作をスクリプトやアプリケーションコード化する前に、その動作を迅速に検証する手段となります。</p>
+<h2 id="Manage-RBAC-Beside-the-Database-or-Collection" class="common-anchor-header">データベースやコレクションの横でRBACを管理<button data-href="#Manage-RBAC-Beside-the-Database-or-Collection" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -346,20 +344,20 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 changes how permission workflows feel in the UI.</strong> Instead of treating <a href="https://milvus.io/docs/rbac.md">RBAC</a> as a separate admin task, it brings access control closer to the database and collection tabs where users are already working.</p>
-<p>The underlying model is still Milvus RBAC: users, roles, <a href="https://milvus.io/docs/grant_privileges.md">privileges</a>, grants, and revokes. Attu 3.0 simplifies the operating path around that model.</p>
+    </button></h2><p><strong>Attu 3.0 では、UI における権限ワークフローの操作感が一新されました。</strong> <a href="https://milvus.io/docs/rbac.md">RBAC を</a>独立した管理タスクとして扱うのではなく、ユーザーがすでに作業を行っているデータベースやコレクションのタブに、アクセス制御機能をより密接に統合しました。</p>
+<p>基盤となるモデルは依然としてMilvus RBAC（ユーザー、ロール、<a href="https://milvus.io/docs/grant_privileges.md">権限</a>、付与、取り消し）です。Attu 3.0では、このモデルを巡る操作手順が簡素化されています。</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_11_8b431e168c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: In-context user and permission management in Attu 3.0</p>
-<h3 id="One-Click-User-Creation-for-Common-Scopes" class="common-anchor-header">One-Click User Creation for Common Scopes</h3><p>In Attu 2.x, opening read-only access to a collection usually involved several steps: create the user, create a role, configure privileges, assign the role to the user, and make sure the scope was correct.</p>
-<p><strong>In Attu 3.0, you can open a collection, go to the Users tab, click Create User, choose ReadOnly or ReadWrite, and let Attu complete the workflow.</strong> It creates the user, generates a secure password, creates the matching scoped role, and applies the grant.</p>
-<p>The same pattern works at the database level. You can also authorize an existing user to the current collection or revoke access in one click.</p>
-<p>This keeps permission management close to the resource being protected. You do not have to jump through several admin pages or remember a role naming convention just to give a teammate scoped access.</p>
-<h2 id="What-This-Beta-Means-for-Attu-Users" class="common-anchor-header">What This Beta Means for Attu Users<button data-href="#What-This-Beta-Means-for-Attu-Users" class="anchor-icon" translate="no">
+<p>画像：Attu 3.0におけるコンテキスト内でのユーザーおよび権限管理</p>
+<h3 id="One-Click-User-Creation-for-Common-Scopes" class="common-anchor-header">一般的なスコープ向けのワンクリックユーザー作成</h3><p>Attu 2.x では、コレクションへの読み取り専用アクセス権を開放するには、通常、ユーザー作成、ロールの作成、権限の設定、ユーザーへのロールの割り当て、スコープが正しいことの確認など、いくつかの手順が必要でした。</p>
+<p><strong>Attu 3.0では、コレクションを開き、「ユーザー」タブに移動して「ユーザーの作成」をクリックし、「ReadOnly」または「ReadWrite」を選択するだけで、Attuがワークフローを完了させます。これにより</strong>、ユーザーの作成、安全なパスワードの生成、対応するスコープ付きロールの作成、およびアクセス権の付与が行われます。</p>
+<p>データベースレベルでも同様のパターンが機能します。また、ワンクリックで既存のユーザーに現在のコレクションへのアクセス権を付与したり、アクセス権を取り消したりすることも可能です。</p>
+<p>これにより、権限管理は保護対象のリソースに密接に結びつけられます。チームメイトにスコープ限定のアクセス権を付与するためだけに、複数の管理ページを行き来したり、ロールの命名規則を覚えたりする必要はありません。</p>
+<h2 id="What-This-Beta-Means-for-Attu-Users" class="common-anchor-header">このベータ版がAttuユーザーにもたらすもの<button data-href="#What-This-Beta-Means-for-Attu-Users" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -374,21 +372,21 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 Beta is the biggest update to the Milvus management console since Attu first shipped.</strong> It is not just a visual refresh. It changes the scope of what Attu can handle.</p>
-<p>The main upgrade is that Attu now fits the way many Milvus users actually work: multiple clusters, persistent local settings, more data movement, more access control, more troubleshooting, and more need to understand cluster behavior without switching between tools.</p>
-<p>The highlights are:</p>
+    </button></h2><p><strong>Attu 3.0 ベータ版は、Attuのリリース以来、Milvus管理コンソールにとって最大のアップデートです。</strong>これは単なるビジュアルのリニューアルにとどまりません<strong>。</strong>Attuが対応できる範囲そのものを変えるものです。</p>
+<p>主なアップグレード点は、Attuが多くのMilvusユーザーの実際の作業スタイルに適合するようになったことです。具体的には、複数のクラスター、永続的なローカル設定、データ移動の増加、アクセス制御の強化、トラブルシューティングの増加、そしてツールを切り替えることなくクラスターの挙動を理解する必要性の高まりなどに対応しています。</p>
+<p>主な特長は以下の通りです：</p>
 <ul>
-<li>Multi-cluster management with health indicators and one-click switching.</li>
-<li>Persistent local state for cluster configs, preferences, LLM config, agent history, and custom skills.</li>
-<li>A built-in AI Agent with 50+ Milvus tools and confirmation gates for destructive actions.</li>
-<li>Four built-in expert diagnostic skills for cluster health, search performance, data writes, and configuration review.</li>
-<li>A redesigned data browser with database → collection → partition navigation and richer collection operations.</li>
-<li>Built-in Prometheus metrics, slow-query analysis, topology, and backup and restore.</li>
-<li>A REST API Playground for debugging and learning Milvus APIs.</li>
-<li>RBAC workflows that happen beside the database or collection, not only in a separate admin flow.</li>
+<li>ヘルスインジケーターとワンクリック切り替え機能を備えたマルチクラスター管理。</li>
+<li>クラスタ設定、プリファレンス、LLM設定、エージェント履歴、カスタムスキルに対する永続的なローカル状態。</li>
+<li>50以上のMilvusツールと、破壊的な操作に対する確認ゲートを備えた組み込みAIエージェント。</li>
+<li>クラスタの健全性、検索パフォーマンス、データ書き込み、および設定レビューのための4つの組み込みエキスパート診断スキル。</li>
+<li>データベース → コレクション → パーティションのナビゲーションと、より充実したコレクション操作を備えた、再設計されたデータブラウザ。</li>
+<li>Prometheus メトリクス、スロークエリ分析、トポロジー、バックアップおよび復元機能が組み込まれています。</li>
+<li>Milvus APIのデバッグおよび学習のためのREST API Playground。</li>
+<li>RBACワークフローは、独立した管理フローだけでなく、データベースやコレクションの横で実行されます。</li>
 </ul>
-<p>If you use Attu only for local Milvus development, 3.0 gives you a more capable console. If you manage several Milvus environments, the multi-cluster and persistent-state changes alone are worth trying. If you often debug performance or permission issues, the Agent, diagnostics, metrics, and in-context RBAC workflows should save time immediately.</p>
-<h2 id="Get-Started" class="common-anchor-header">Get Started<button data-href="#Get-Started" class="anchor-icon" translate="no">
+<p>AttuをローカルでのMilvus開発にのみ使用する場合でも、バージョン3.0ではより機能的なコンソールが利用可能です。複数のMilvus環境を管理している場合は、マルチクラスタ機能と永続状態の変更だけでも試す価値があります。 パフォーマンスや権限の問題を頻繁にデバッグする場合は、エージェント、診断機能、メトリクス、およびコンテキスト内RBACワークフローによって、すぐに時間の節約につながるはずです。</p>
+<h2 id="Get-Started" class="common-anchor-header">はじめに<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,13 +401,13 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Try Attu 3.0 Beta with Docker:</p>
+    </button></h2><p>Docker を使って Attu 3.0 ベータ版を試す:</p>
 <pre><code translate="no" class="language-bash">docker run -d --name attu -p 3000:3000 -v attu-data:/data zilliz/attu:v3.0.0-beta.6
 <button class="copy-code-btn"></button></code></pre>
-<p>Then open:</p>
+<p>次に、以下を開いてください：</p>
 <pre><code translate="no"><span class="hljs-attr">http</span>:<span class="hljs-comment">//localhost:3000</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Add your Milvus connection from the sidebar and start exploring the new console.</p>
-<p>Prefer a desktop app? Download the build for your platform from <a href="https://github.com/zilliztech/attu/releases"><strong>GitHub Releases</strong></a>. Attu 3.0 Beta provides desktop packages for macOS, Linux, and Windows. Recent releases also include a standalone Linux server package for running Attu without Docker or Electron.</p>
-<p><strong>Have questions?</strong> Bring your multi-cluster setup, custom agent skills, or diagnostic scenario to the <a href="https://discord.gg/milvus"><strong>Milvus Discord</strong></a>, or book <a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting?uuid=8d218acf-a841-4869-8330-91daff5e8a02"><strong>Milvus Office Hours</strong></a> to work through it with the community.</p>
-<p><strong>Don’t want to operate Milvus infrastructure yourself?</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a> is the fully managed platform from the creators of Milvus. It keeps the Milvus API and adds managed infrastructure for real-time vector search, large-scale discovery, and AI data operations. For teams with data-sovereignty requirements, Zilliz Cloud <strong>BYOC</strong> runs inside your own cloud account so data stays in your VPC while Zilliz handles operations.</p>
+<p>サイドバーからMilvus接続を追加し、新しいコンソールを試してみてください。</p>
+<p>デスクトップアプリをご希望ですか？<a href="https://github.com/zilliztech/attu/releases"><strong>GitHub Releases</strong></a> から、お使いのプラットフォーム用のビルドをダウンロードしてください。Attu 3.0 Beta では、macOS、Linux、Windows 用のデスクトップパッケージを提供しています。最近のリリースには、Docker や Electron を使用せずに Attu を実行するためのスタンドアロン Linux サーバーパッケージも含まれています。</p>
+<p><strong>ご質問はありますか？</strong>マルチクラスター構成、カスタムエージェントスキル、または診断シナリオについて、<a href="https://discord.gg/milvus"><strong>Milvus Discordで</strong></a>相談するか、<a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting?uuid=8d218acf-a841-4869-8330-91daff5e8a02"><strong>Milvus Office Hoursを</strong></a>予約してコミュニティと一緒に解決しましょう。</p>
+<p><strong>Milvusのインフラを自分で運用したくないですか？</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloudは</strong></a>、Milvusの開発チームが提供するフルマネージドプラットフォームです。Milvus APIを維持しつつ、リアルタイムベクトル検索、大規模ディスカバリー、AIデータオペレーションのためのマネージドインフラストラクチャを追加しています。 データ主権の要件があるチーム向けに、Zilliz Cloud<strong>BYOCは</strong>お客様のクラウドアカウント内で動作するため、Zillizが運用を担当する間もデータはお客様のVPC内に留まります。</p>

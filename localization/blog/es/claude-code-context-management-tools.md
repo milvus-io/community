@@ -1,10 +1,11 @@
 ---
 id: claude-code-context-management-tools.md
-title: |
-  7 Best Open-Source Tools for Claude Code Context Management
+title: >
+  Las 7 mejores herramientas de código abierto para la gestión del contexto del
+  código de Claude
 author: Cheney Zhang
 date: 2026-5-7
-cover: assets.zilliz.com/cccm_11zon_848f7f1c6b.png
+cover: assets.zilliz.com/Chat_GPT_Image_Jun_22_2026_07_49_53_PM_11zon_d1a8de60bd.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -15,22 +16,23 @@ meta_keywords: >-
 meta_title: |
   7 Best Open-Source Tools for Claude Code Context Management
 desc: >
-  Long Claude Code sessions lose signal fast. Learn 7 tools for trimming
-  terminal noise, code retrieval, tool output, memory, and token usage.
+  Las sesiones prolongadas de Claude Code pierden la señal rápidamente. Descubre
+  siete herramientas para reducir el ruido del terminal, la recuperación de
+  código, la salida de herramientas, el uso de la memoria y el uso de tokens.
 origin: 'https://milvus.io/blog/claude-code-context-management-tools.md'
 ---
-<p>You can give Claude Code a 1M-token context window and still get worse answers over time. The issue is not only context size. It is context quality.</p>
-<p>Claude Code sessions degrade when terminal logs, raw tool output, repeated file reads, verbose responses, and forgotten project history all compete for attention. In long-running agent workflows, that noise turns into a loop: the model loses the thread, you add more turns to fix the answer, and those extra turns add even more noise.</p>
-<p>This is <strong>context defocus</strong>: the model has enough room to hold information, but the important information is buried under low-signal context. Bigger windows can make this easier to ignore because developers stop thinking carefully about what enters the prompt.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_13_3e7a004cd6.png" alt="Prompt caching diagram showing how reused prefixes can still add billed context across turns" class="doc-image" id="prompt-caching-diagram-showing-how-reused-prefixes-can-still-add-billed-context-across-turns" />
-    <span>Prompt caching diagram showing how reused prefixes can still add billed context across turns</span>
-  </span>
-</p>
-<p>Prompt caching can reduce repeated-prefix cost, but it does not turn the context window into a junk drawer. You still pay for new tokens, and you still need the model to reason over the right information.</p>
-<p>This article reviews seven open-source tools that attack context defocus from different layers: terminal output, tool output, codebase navigation, file reading, model verbosity, semantic code retrieval, and cross-session memory. It also explains how these ideas map to <a href="https://zilliz.com/learn/what-is-vector-database">vector database</a> design, <a href="https://zilliz.com/learn/vector-similarity-search">vector similarity search</a>, and retrieval systems such as Milvus.</p>
-<h2 id="What-causes-Claude-Code-context-defocus" class="common-anchor-header">What causes Claude Code context defocus?<button data-href="#What-causes-Claude-Code-context-defocus" class="anchor-icon" translate="no">
+<p>Puedes proporcionar a Claude Code una ventana de contexto de 1 millón de tokens y, aun así, obtener respuestas cada vez peores con el paso del tiempo. El problema no es solo el tamaño del contexto, sino también su calidad.</p>
+<p>Las sesiones de Claude Code se deterioran cuando los registros de la terminal, la salida sin procesar de las herramientas, las lecturas repetidas de archivos, las respuestas prolijas y el historial del proyecto olvidado compiten por la atención. En flujos de trabajo de agentes de larga duración, ese ruido se convierte en un bucle: el modelo pierde el hilo, añades más turnos para corregir la respuesta y esos turnos adicionales añaden aún más ruido.</p>
+<p>Esto es lo que se conoce como <strong>«desenfoque del contexto</strong>»: el modelo tiene espacio suficiente para almacenar información, pero la información importante queda sepultada bajo un contexto de baja relevancia. Las ventanas más amplias pueden hacer que esto sea más fácil de ignorar, ya que los desarrolladores dejan de pensar detenidamente en lo que introducen en la solicitud.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_13_3e7a004cd6.png" alt="Prompt caching diagram showing how reused prefixes can still add billed context across turns" class="doc-image" id="prompt-caching-diagram-showing-how-reused-prefixes-can-still-add-billed-context-across-turns" /> 
+   <span>Diagrama de almacenamiento en caché de prompts que muestra cómo los prefijos reutilizados pueden seguir añadiendo contexto facturable a lo largo de los turnos</span>
+  
+ </span></p>
+<p>El almacenamiento en caché de las indicaciones puede reducir el coste de los prefijos repetidos, pero no convierte la ventana de contexto en un cajón de sastre. Sigues pagando por los nuevos tokens y sigues necesitando que el modelo razone sobre la información correcta.</p>
+<p>Este artículo repasa siete herramientas de código abierto que abordan la pérdida de enfoque del contexto desde diferentes niveles: salida de terminal, salida de herramientas, navegación por el código fuente, lectura de archivos, verbosidad del modelo, recuperación semántica de código y memoria entre sesiones. También explica cómo estas ideas se aplican al diseño <a href="https://zilliz.com/learn/what-is-vector-database">de bases de datos vectoriales</a>, <a href="https://zilliz.com/learn/vector-similarity-search">la búsqueda de similitud vectorial</a> y los sistemas de recuperación como Milvus.</p>
+<h2 id="What-causes-Claude-Code-context-defocus" class="common-anchor-header">¿Qué provoca la pérdida de contexto en Claude Code?<button data-href="#What-causes-Claude-Code-context-defocus" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,28 +47,28 @@ origin: 'https://milvus.io/blog/claude-code-context-management-tools.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Claude Code context defocus usually comes from five failure modes: too much raw instruction text, noisy tool output, repeated codebase exploration, long model responses, and memory gaps across sessions or agents.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_15_56a2da172a.png" alt="Five causes of Claude Code context loss: redundant instructions, messy tool output, repeated codebase retrieval, long responses, and memory gaps" class="doc-image" id="five-causes-of-claude-code-context-loss:-redundant-instructions,-messy-tool-output,-repeated-codebase-retrieval,-long-responses,-and-memory-gaps" />
-    <span>Five causes of Claude Code context loss: redundant instructions, messy tool output, repeated codebase retrieval, long responses, and memory gaps</span>
-  </span>
-</p>
+    </button></h2><p>La pérdida de contexto en Claude Code suele deberse a cinco modos de fallo: exceso de texto de instrucciones sin procesar, salida ruidosa de las herramientas, exploración repetida del código fuente, respuestas largas del modelo y lagunas de memoria entre sesiones o agentes.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_15_56a2da172a.png" alt="Five causes of Claude Code context loss: redundant instructions, messy tool output, repeated codebase retrieval, long responses, and memory gaps" class="doc-image" id="five-causes-of-claude-code-context-loss:-redundant-instructions,-messy-tool-output,-repeated-codebase-retrieval,-long-responses,-and-memory-gaps" /> 
+   <span>Cinco causas de la pérdida de contexto en Claude Code: instrucciones redundantes, salida desordenada de las herramientas, recuperación repetida del código fuente, respuestas largas y lagunas de memoria</span>
+  
+ </span></p>
 <table>
 <thead>
-<tr><th>Context failure mode</th><th>What it looks like in Claude Code</th><th>Tool category that helps</th></tr>
+<tr><th>Modo de fallo del contexto</th><th>Cómo se manifiesta en Claude Code</th><th>Categoría de herramientas que puede ayudar</th></tr>
 </thead>
 <tbody>
-<tr><td>Terminal logs are noisy</td><td><code translate="no">git</code>, <code translate="no">pytest</code>, <code translate="no">gh</code>, and cloud CLIs dump more text than the model needs.</td><td>CLI output compression</td></tr>
-<tr><td>Tool outputs flood the window</td><td>Test logs, DOM dumps, and MCP outputs enter the chat as giant raw blocks.</td><td>Tool-output sandboxing</td></tr>
-<tr><td>Codebase navigation repeats</td><td>Claude lists directories, greps, reads files, and repeats the same exploration every session.</td><td>Code graph or semantic retrieval</td></tr>
-<tr><td>File reads are too broad</td><td>The model reads a whole file when it only needed one symbol or summary.</td><td>Progressive code reading</td></tr>
-<tr><td>Claude talks too much</td><td>The answer itself adds unnecessary context for future turns.</td><td>Response compression</td></tr>
-<tr><td>Memory does not persist</td><td>You re-explain project decisions every time you start a new session.</td><td>Markdown-first memory</td></tr>
+<tr><td>Los registros de la terminal son ruidosos</td><td><code translate="no">git</code>, <code translate="no">pytest</code>, <code translate="no">gh</code>, y las CLI en la nube generan más texto del que el modelo necesita.</td><td>Compresión de la salida de la CLI</td></tr>
+<tr><td>Las salidas de las herramientas inundan la ventana</td><td>Los registros de pruebas, los volcados de DOM y las salidas de MCP aparecen en el chat como enormes bloques sin procesar.</td><td>Aislamiento de la salida de las herramientas</td></tr>
+<tr><td>La navegación por el código base se repite</td><td>Claude enumera directorios, realiza búsquedas con grep, lee archivos y repite la misma exploración en cada sesión.</td><td>Grafo de código o recuperación semántica</td></tr>
+<tr><td>La lectura de archivos es demasiado amplia</td><td>El modelo lee un archivo completo cuando solo necesitaba un símbolo o un resumen.</td><td>Lectura progresiva del código</td></tr>
+<tr><td>Claude habla demasiado</td><td>La propia respuesta añade contexto innecesario para los turnos posteriores.</td><td>Compresión de la respuesta</td></tr>
+<tr><td>La memoria no se conserva</td><td>Vuelves a explicar las decisiones del proyecto cada vez que empiezas una nueva sesión.</td><td>Memoria basada en Markdown</td></tr>
 </tbody>
 </table>
-<p>A good context-management stack should do three things: keep junk out, retrieve the right project knowledge on demand, and preserve durable decisions across sessions.</p>
-<h2 id="Which-Claude-Code-context-tool-should-you-use-first" class="common-anchor-header">Which Claude Code context tool should you use first?<button data-href="#Which-Claude-Code-context-tool-should-you-use-first" class="anchor-icon" translate="no">
+<p>Una buena pila de gestión del contexto debería hacer tres cosas: mantener a raya la información innecesaria, recuperar el conocimiento adecuado del proyecto cuando se necesite y conservar las decisiones duraderas entre sesiones.</p>
+<h2 id="Which-Claude-Code-context-tool-should-you-use-first" class="common-anchor-header">¿Qué herramienta de contexto de Claude Code deberías usar primero?<button data-href="#Which-Claude-Code-context-tool-should-you-use-first" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -81,23 +83,23 @@ origin: 'https://milvus.io/blog/claude-code-context-management-tools.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Start with the layer that creates the most noise in your workflow. If your terminal output is the problem, start with RTK. If Claude keeps wandering through a large repository, start with claude-context or code-review-graph. If your real pain is re-explaining the same decisions every day, start with memsearch.</p>
+    </button></h2><p>Empieza por la capa que genere más ruido en tu flujo de trabajo. Si el problema es la salida de tu terminal, empieza por RTK. Si Claude no deja de deambular por un repositorio grande, empieza por claude-context o code-review-graph. Si lo que realmente te molesta es tener que volver a explicar las mismas decisiones cada día, empieza por memsearch.</p>
 <table>
 <thead>
-<tr><th>Tool</th><th>Main problem it solves</th><th>Best fit</th></tr>
+<tr><th>Herramienta</th><th>Principal problema que resuelve</th><th>La mejor opción</th></tr>
 </thead>
 <tbody>
-<tr><td><a href="https://github.com/rtk-ai/rtk">RTK</a></td><td>Noisy terminal output from common developer commands.</td><td>Developers who run many CLI commands inside Claude Code.</td></tr>
-<tr><td><a href="https://github.com/mksglu/context-mode">Context Mode</a></td><td>Massive raw tool outputs entering the main conversation.</td><td>Heavy Playwright, GitHub, log, or MCP-tool users.</td></tr>
-<tr><td><a href="https://github.com/tirth8205/code-review-graph">code-review-graph</a></td><td>Blind codebase exploration in large repos.</td><td>Reviews, dependency analysis, and blast-radius questions.</td></tr>
-<tr><td><a href="https://github.com/Mibayy/token-savior">Token Savior</a></td><td>Full file reads when a symbol summary would be enough.</td><td>Large files, repeated symbol lookups, and incremental code reading.</td></tr>
-<tr><td><a href="https://github.com/JuliusBrussee/caveman">Caveman</a></td><td>Claude’s own verbose response habits.</td><td>Users who want terse output and smaller future context.</td></tr>
-<tr><td><a href="https://github.com/zilliztech/claude-context">claude-context</a></td><td>Re-exploring the codebase every session.</td><td>Semantic code search through MCP.</td></tr>
-<tr><td><a href="https://github.com/zilliztech/memsearch">memsearch</a></td><td>Losing project memory across sessions, agents, and model switches.</td><td>Long-running projects with durable decisions and lessons.</td></tr>
+<tr><td><a href="https://github.com/rtk-ai/rtk">RTK</a></td><td>Salida de terminal con mucho ruido procedente de comandos habituales de los desarrolladores.</td><td>Desarrolladores que ejecutan muchos comandos de la interfaz de línea de comandos (CLI) dentro de Claude Code.</td></tr>
+<tr><td><a href="https://github.com/mksglu/context-mode">Modo de contexto</a></td><td>Gran cantidad de salidas sin procesar de herramientas que se introducen en la conversación principal.</td><td>Usuarios intensivos de Playwright, GitHub, registros o herramientas MCP.</td></tr>
+<tr><td><a href="https://github.com/tirth8205/code-review-graph">code-review-graph</a></td><td>Exploración a ciegas del código fuente en repositorios de gran tamaño.</td><td>Revisiones, análisis de dependencias y preguntas sobre el alcance de los efectos.</td></tr>
+<tr><td><a href="https://github.com/Mibayy/token-savior">Token Savior</a></td><td>Lectura completa de archivos cuando bastaría con un resumen de símbolos.</td><td>Archivos grandes, búsquedas repetidas de símbolos y lectura incremental del código.</td></tr>
+<tr><td><a href="https://github.com/JuliusBrussee/caveman">Caveman</a></td><td>Los propios hábitos de Claude de dar respuestas prolijas.</td><td>Usuarios que desean una salida concisa y un contexto futuro más reducido.</td></tr>
+<tr><td><a href="https://github.com/zilliztech/claude-context">claude-context</a></td><td>Volver a explorar el código en cada sesión.</td><td>Búsqueda semántica de código a través de MCP.</td></tr>
+<tr><td><a href="https://github.com/zilliztech/memsearch">memsearch</a></td><td>Pérdida de memoria del proyecto entre sesiones, agentes y cambios de modelo.</td><td>Proyectos de larga duración con decisiones y lecciones duraderas.</td></tr>
 </tbody>
 </table>
-<p>The first five tools reduce what enters or remains in context. The last two make useful context easier to recall.</p>
-<h2 id="RTK-compresses-raw-command-output-before-Claude-sees-it" class="common-anchor-header">RTK compresses raw command output before Claude sees it<button data-href="#RTK-compresses-raw-command-output-before-Claude-sees-it" class="anchor-icon" translate="no">
+<p>Las cinco primeras herramientas reducen lo que entra o permanece en el contexto. Las dos últimas facilitan la recuperación del contexto útil.</p>
+<h2 id="RTK-compresses-raw-command-output-before-Claude-sees-it" class="common-anchor-header">RTK comprime la salida sin procesar de los comandos antes de que Claude la vea<button data-href="#RTK-compresses-raw-command-output-before-Claude-sees-it" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -118,10 +120,10 @@ origin: 'https://milvus.io/blog/claude-code-context-management-tools.md'
     <span></span>
   </span>
 </p>
-<p>RTK is a CLI proxy for reducing token usage from common developer commands. Its GitHub description says it reduces LLM token consumption by 60-90% on common dev commands, and it ships as a single Rust binary.</p>
-<p>In everyday Claude Code use, commands like <code translate="no">git status</code>, <code translate="no">pytest</code>, and directory listings often dump full environment info and status descriptions into the context window. The model usually needs only a smaller answer: which files changed, which test failed, where the PR is stuck, or what key files exist in the directory.</p>
-<p>RTK sits between the shell and Claude. It can rewrite commands through Claude Code hooks and pass back compressed output.</p>
-<p>Raw <code translate="no">git status</code> output:</p>
+<p>RTK es un proxy de CLI que reduce el uso de tokens en los comandos habituales de los desarrolladores. Según su descripción en GitHub, reduce el consumo de tokens de los modelos de lenguaje grande (LLM) entre un 60 % y un 90 % en los comandos habituales de desarrollo, y se distribuye como un único binario en Rust.</p>
+<p>En el uso diario de Claude Code, comandos como <code translate="no">git status</code>, <code translate="no">pytest</code> y los listados de directorios suelen volcar toda la información del entorno y las descripciones de estado en la ventana de contexto. El modelo normalmente solo necesita una respuesta más breve: qué archivos han cambiado, qué prueba ha fallado, dónde se ha atascado la solicitud de incorporación de cambios (PR) o qué archivos clave existen en el directorio.</p>
+<p>RTK actúa como intermediario entre el shell y Claude. Puede reescribir comandos a través de los hooks de Claude Code y devolver una salida comprimida.</p>
+<p>Salida sin procesar de « <code translate="no">git status</code> »:</p>
 <pre><code translate="no" class="language-bash">On branch feat/payment-retry
 Your branch is up to <span class="hljs-built_in">date</span> with <span class="hljs-string">&#x27;origin/feat/payment-retry&#x27;</span>.
 
@@ -135,13 +137,13 @@ Untracked files:
 
 no changes added to commit
 <button class="copy-code-btn"></button></code></pre>
-<p>What actually matters:</p>
+<p>Lo que realmente importa:</p>
 <pre><code translate="no" class="language-bash">3 modified, 1 untracked
 - src/webhook/handler.ts
 - src/queue/dlq.ts
 - tests/webhook.test.ts
 <button class="copy-code-btn"></button></code></pre>
-<p>Same story with <code translate="no">pytest</code>. The raw output is full of passing cases and environment noise:</p>
+<p>Lo mismo ocurre con ` <code translate="no">pytest</code>`. La salida sin procesar está llena de casos que han pasado y ruido del entorno:</p>
 <pre><code translate="no" class="language-markdown">============================= <span class="hljs-built_in">test</span> session starts =============================
 platform darwin -- Python 3.12.4, pytest-8.4.1
 collected 128 items
@@ -154,13 +156,13 @@ tests/test_queue.py ...................................
 ________________ test_retry_to_dlq __________________
 E   AssertionError: expected status code 202, got 500
 <button class="copy-code-btn"></button></code></pre>
-<p>Compressed, the signal is immediate:</p>
+<p>Una vez comprimida, la señal es inmediata:</p>
 <pre><code translate="no" class="language-apache">128 tests collected, 1 failed
 FAIL tests/test_webhook.py::test_retry_to_dlq
 AssertionError: expected status code 202, got 500
 <button class="copy-code-btn"></button></code></pre>
-<p>RTK is the easiest starting point when your context bloat comes from shell commands rather than code retrieval.</p>
-<h2 id="Context-Mode-sandboxes-giant-tool-outputs-outside-the-main-chat" class="common-anchor-header">Context Mode sandboxes giant tool outputs outside the main chat<button data-href="#Context-Mode-sandboxes-giant-tool-outputs-outside-the-main-chat" class="anchor-icon" translate="no">
+<p>RTK es el punto de partida más sencillo cuando la sobrecarga de contexto proviene de comandos de shell en lugar de la recuperación de código.</p>
+<h2 id="Context-Mode-sandboxes-giant-tool-outputs-outside-the-main-chat" class="common-anchor-header">El Modo Contexto aísla en un entorno aislado las salidas de herramientas gigantescas fuera del chat principal<button data-href="#Context-Mode-sandboxes-giant-tool-outputs-outside-the-main-chat" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -175,23 +177,23 @@ AssertionError: expected status code 202, got 500
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Context Mode is built for the raw blocks that tools return: test logs, browser DOM snapshots, GitHub payloads, MCP tool output, and scraped pages. Its GitHub description highlights context-window optimization for AI coding agents and reports 98% tool-output reduction.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_5_f00e17ea6f.png" alt="Context Mode GitHub repository card showing sandboxed tool output and context optimization positioning" class="doc-image" id="context-mode-github-repository-card-showing-sandboxed-tool-output-and-context-optimization-positioning" />
-    <span>Context Mode GitHub repository card showing sandboxed tool output and context optimization positioning</span>
-  </span>
-</p>
-<p>Its approach is to isolate large tool outputs into a local sandbox and index, then pass only summaries and retrieval handles into the Claude conversation.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_12_32e50fec44.png" alt="Context Mode flow showing large tool output moving through sandbox execution, SQLite or FTS indexes, summaries, and retrieval results" class="doc-image" id="context-mode-flow-showing-large-tool-output-moving-through-sandbox-execution,-sqlite-or-fts-indexes,-summaries,-and-retrieval-results" />
-    <span>Context Mode flow showing large tool output moving through sandbox execution, SQLite or FTS indexes, summaries, and retrieval results</span>
-  </span>
-</p>
-<p>The flow is useful because a coding agent often needs the failing node, broken selector, or relevant stack trace, not the entire DOM or every passing test line. Context Mode keeps the full output available locally while preventing it from dominating the main conversation.</p>
-<p>This is similar to how production <a href="https://zilliz.com/blog/hybrid-search-with-milvus">hybrid search</a> systems separate storage from retrieval. You keep the raw data somewhere durable, then retrieve only the slice that matters.</p>
-<h2 id="code-review-graph-maps-code-structure-before-Claude-navigates-it" class="common-anchor-header">code-review-graph maps code structure before Claude navigates it<button data-href="#code-review-graph-maps-code-structure-before-Claude-navigates-it" class="anchor-icon" translate="no">
+    </button></h2><p>El Modo Contexto está diseñado para los bloques sin procesar que devuelven las herramientas: registros de pruebas, instantáneas del DOM del navegador, cargas útiles de GitHub, resultados de herramientas MCP y páginas extraídas. Su descripción en GitHub destaca la optimización de la ventana de contexto para agentes de programación con IA e informa de una reducción del 98 % en la salida de las herramientas.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_5_f00e17ea6f.png" alt="Context Mode GitHub repository card showing sandboxed tool output and context optimization positioning" class="doc-image" id="context-mode-github-repository-card-showing-sandboxed-tool-output-and-context-optimization-positioning" /> 
+   <span>Ficha del repositorio de GitHub del Modo Contexto que muestra la salida de las herramientas aislada en un entorno de pruebas y el posicionamiento de la optimización del contexto</span>
+  
+ </span></p>
+<p>Su enfoque consiste en aislar las salidas voluminosas de las herramientas en un entorno aislado local y un índice, para luego pasar únicamente resúmenes y identificadores de recuperación a la conversación de Claude.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_12_32e50fec44.png" alt="Context Mode flow showing large tool output moving through sandbox execution, SQLite or FTS indexes, summaries, and retrieval results" class="doc-image" id="context-mode-flow-showing-large-tool-output-moving-through-sandbox-execution,-sqlite-or-fts-indexes,-summaries,-and-retrieval-results" /> 
+   <span>Flujo de Context Mode que muestra cómo la salida voluminosa de las herramientas pasa por la ejecución en el entorno aislado, los índices SQLite o FTS, los resúmenes y los resultados de la recuperación</span>
+  
+ </span></p>
+<p>Este flujo resulta útil porque un agente de programación suele necesitar el nodo que falla, el selector defectuoso o el rastreo de pila relevante, y no todo el DOM ni cada línea de prueba superada. «Context Mode» mantiene la salida completa disponible localmente, al tiempo que evita que domine la conversación principal.</p>
+<p>Esto es similar a cómo los sistemas <a href="https://zilliz.com/blog/hybrid-search-with-milvus">de búsqueda híbridos</a> en producción separan el almacenamiento de la recuperación. Se guardan los datos sin procesar en un lugar duradero y, a continuación, solo se recupera la parte que importa.</p>
+<h2 id="code-review-graph-maps-code-structure-before-Claude-navigates-it" class="common-anchor-header">code-review-graph mapea la estructura del código antes de que Claude la explore<button data-href="#code-review-graph-maps-code-structure-before-Claude-navigates-it" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -206,28 +208,28 @@ AssertionError: expected status code 202, got 500
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>code-review-graph addresses a different problem: Claude does not always need more text; it needs a better map.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_8_6d4632f3c9.png" alt="code-review-graph logo image used in the original article" class="doc-image" id="code-review-graph-logo-image-used-in-the-original-article" />
-    <span>code-review-graph logo image used in the original article</span>
-  </span>
-</p>
-<p>In a large repository, a simple question can trigger expensive exploration:</p>
+    </button></h2><p>code-review-graph aborda un problema diferente: Claude no siempre necesita más texto; necesita un mapa mejor.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_8_6d4632f3c9.png" alt="code-review-graph logo image used in the original article" class="doc-image" id="code-review-graph-logo-image-used-in-the-original-article" /> 
+   <span>Imagen del logotipo de code-review-graph utilizada en el artículo original</span>
+  
+ </span></p>
+<p>En un repositorio grande, una simple pregunta puede desencadenar una exploración costosa:</p>
 <blockquote>
-<p>After changing this login logic, which files and tests are affected?</p>
+<p>Tras cambiar esta lógica de inicio de sesión, ¿qué archivos y pruebas se ven afectados?</p>
 </blockquote>
-<p>Without a code graph, Claude’s typical move is:</p>
+<p>Sin un gráfico de código, la estrategia habitual de Claude es:</p>
 <pre><code translate="no" class="language-perl"><span class="hljs-built_in">read</span> auth.ts
 grep login
 <span class="hljs-built_in">read</span> middleware
 <span class="hljs-built_in">read</span> tests
 keep guessing
 <button class="copy-code-btn"></button></code></pre>
-<p>code-review-graph pre-builds a structural map of the codebase. It uses Tree-sitter to parse functions, classes, imports, call relationships, inheritance, and test dependencies, then writes the graph into SQLite.</p>
-<p>That makes it useful for code review and blast-radius analysis. Instead of asking Claude to rediscover the dependency graph through repeated reads, you let it query structure first.</p>
-<p>This is adjacent to <a href="https://zilliz.com/blog/semantic-search-vs-lexical-search-vs-full-text-search">semantic search</a>, but not identical. A structural graph answers “what depends on what?” Semantic retrieval answers “what code is conceptually related to this question?” In real code-assistant workflows, you often want both.</p>
-<h2 id="Token-Savior-gives-Claude-symbol-summaries-before-full-files" class="common-anchor-header">Token Savior gives Claude symbol summaries before full files<button data-href="#Token-Savior-gives-Claude-symbol-summaries-before-full-files" class="anchor-icon" translate="no">
+<p>code-review-graph genera previamente un mapa estructural del código base. Utiliza Tree-sitter para analizar funciones, clases, importaciones, relaciones de llamada, herencia y dependencias de pruebas, y luego escribe el gráfico en SQLite.</p>
+<p>Esto lo hace útil para la revisión de código y el análisis del «radio de impacto». En lugar de pedirle a Claude que vuelva a descubrir el grafo de dependencias mediante lecturas repetidas, se le permite consultar primero la estructura.</p>
+<p>Esto es similar a <a href="https://zilliz.com/blog/semantic-search-vs-lexical-search-vs-full-text-search">la búsqueda semántica</a>, pero no es lo mismo. Un grafo estructural responde a la pregunta «¿qué depende de qué?», mientras que la recuperación semántica responde a «¿qué código está conceptualmente relacionado con esta pregunta?». En los flujos de trabajo reales de los asistentes de código, a menudo se necesitan ambas cosas.</p>
+<h2 id="Token-Savior-gives-Claude-symbol-summaries-before-full-files" class="common-anchor-header">Token Savior proporciona a Claude resúmenes de símbolos antes que los archivos completos<button data-href="#Token-Savior-gives-Claude-symbol-summaries-before-full-files" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -242,27 +244,27 @@ keep guessing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Token Savior’s core idea is simple: do not send the full file by default. Send an index or symbol summary first, then expand only when the task needs more detail.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_10_5f63ad36d1.png" alt="Token Savior GitHub repository card showing its MCP server description and project statistics" class="doc-image" id="token-savior-github-repository-card-showing-its-mcp-server-description-and-project-statistics" />
-    <span>Token Savior GitHub repository card showing its MCP server description and project statistics</span>
-  </span>
-</p>
-<p>If you ask where a payment webhook is handled, the model often does not need every line of every related file. It first needs to know whether a file or symbol is relevant.</p>
-<p>Token Savior serves code in layers:</p>
+    </button></h2><p>La idea central de Token Savior es sencilla: no enviar el archivo completo por defecto. Enviar primero un índice o un resumen de símbolos y, a continuación, ampliarlo solo cuando la tarea requiera más detalles.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_10_5f63ad36d1.png" alt="Token Savior GitHub repository card showing its MCP server description and project statistics" class="doc-image" id="token-savior-github-repository-card-showing-its-mcp-server-description-and-project-statistics" /> 
+   <span>Ficha del repositorio de GitHub de Token Savior que muestra la descripción de su servidor MCP y las estadísticas del proyecto</span>
+  
+ </span></p>
+<p>Si preguntas dónde se gestiona un webhook de pago, el modelo a menudo no necesita todas las líneas de todos los archivos relacionados. Primero necesita saber si un archivo o un símbolo es relevante.</p>
+<p>Token Savior sirve el código por capas:</p>
 <table>
 <thead>
-<tr><th>Layer</th><th>What Claude receives</th><th>When it expands</th></tr>
+<tr><th>Capa</th><th>Lo que recibe Claude</th><th>Cuando se expande</th></tr>
 </thead>
 <tbody>
-<tr><td>Summary</td><td>Index, symbol names, and short descriptions.</td><td>Default first response.</td></tr>
-<tr><td>Snippet</td><td>A smaller code section around the relevant symbol.</td><td>When the summary is likely relevant.</td></tr>
-<tr><td>Full file</td><td>The complete file content.</td><td>Only when editing or deep reasoning requires it.</td></tr>
+<tr><td>Resumen</td><td>Índice, nombres de símbolos y descripciones breves.</td><td>Primera respuesta por defecto.</td></tr>
+<tr><td>Fragmento</td><td>Una sección de código más breve en torno al símbolo relevante.</td><td>Cuando es probable que el resumen sea relevante.</td></tr>
+<tr><td>Archivo completo</td><td>El contenido completo del archivo.</td><td>Solo cuando la edición o el razonamiento en profundidad lo requieran.</td></tr>
 </tbody>
 </table>
-<p>This mirrors how developers actually read code. You scan, confirm relevance, then open the full file only when necessary. It also resembles the progressive retrieval pattern used in <a href="https://zilliz.com/blog/metadata-filtering-hybrid-search-or-agent-in-rag-applications">RAG applications</a>: retrieve broadly enough to orient, then narrow the context before generation.</p>
-<h2 id="Caveman-reduces-Claudes-own-response-bloat" class="common-anchor-header">Caveman reduces Claude’s own response bloat<button data-href="#Caveman-reduces-Claudes-own-response-bloat" class="anchor-icon" translate="no">
+<p>Esto refleja la forma en que los desarrolladores leen realmente el código. Se echa un vistazo rápido, se confirma la relevancia y, a continuación, se abre el archivo completo solo cuando es necesario. También se asemeja al patrón de recuperación progresiva utilizado en <a href="https://zilliz.com/blog/metadata-filtering-hybrid-search-or-agent-in-rag-applications">las aplicaciones RAG</a>: recuperar información de forma lo suficientemente amplia como para orientarse y, a continuación, acotar el contexto antes de la generación.</p>
+<h2 id="Caveman-reduces-Claudes-own-response-bloat" class="common-anchor-header">Caveman reduce el exceso de respuestas de Claude<button data-href="#Caveman-reduces-Claudes-own-response-bloat" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -277,19 +279,19 @@ keep guessing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Most context tools focus on what enters the model. Caveman targets what Claude outputs.</p>
-<p>Caveman is a Claude Code skill/plugin that strips filler, pleasantries, wrapper sentences, over-explanation, and repetitive structures. The goal is not to remove knowledge; it is to make the answer denser.</p>
-<p>Without Caveman:</p>
+    </button></h2><p>La mayoría de las herramientas de contexto se centran en lo que entra en el modelo. Caveman se centra en lo que genera Claude.</p>
+<p>Caveman es una habilidad o complemento de Claude Code que elimina el relleno, las fórmulas de cortesía, las frases de relleno, las explicaciones excesivas y las estructuras repetitivas. El objetivo no es eliminar conocimiento, sino hacer que la respuesta sea más concisa.</p>
+<p>Sin Caveman:</p>
 <blockquote>
-<p>The reason your React component is re-rendering is likely because…</p>
+<p>La razón por la que tu componente de React se está volviendo a renderizar es probablemente porque…</p>
 </blockquote>
-<p>With Caveman:</p>
+<p>Con Caveman:</p>
 <blockquote>
-<p>New object ref each render. Inline object prop = new ref = re-render. Wrap in useMemo.</p>
+<p>Nueva referencia de objeto en cada renderizado. Prop de objeto en línea = nueva referencia = nuevo renderizado. Envuélvelo en useMemo.</p>
 </blockquote>
-<p>This matters because Claude’s own answers become future context. If every answer includes a long explanation, the next turn starts with more text than it needs. Shorter answers can improve the next turn as much as they improve the current one.</p>
-<p>For teams thinking about <a href="https://zilliz.com/blog/context-engineering-for-ai-agents">context engineering for AI agents</a>, Caveman is a reminder that output policy is part of context policy.</p>
-<h2 id="claude-context-adds-semantic-code-search-through-MCP" class="common-anchor-header">claude-context adds semantic code search through MCP<button data-href="#claude-context-adds-semantic-code-search-through-MCP" class="anchor-icon" translate="no">
+<p>Esto es importante porque las propias respuestas de Claude se convierten en contexto futuro. Si cada respuesta incluye una explicación larga, el siguiente turno comienza con más texto del necesario. Las respuestas más breves pueden mejorar el siguiente turno tanto como mejoran el actual.</p>
+<p>Para los equipos que estén pensando en <a href="https://zilliz.com/blog/context-engineering-for-ai-agents">la ingeniería de contexto para agentes de IA</a>, Caveman es un recordatorio de que la política de salida forma parte de la política de contexto.</p>
+<h2 id="claude-context-adds-semantic-code-search-through-MCP" class="common-anchor-header">claude-context añade búsqueda semántica de código a través del MCP<button data-href="#claude-context-adds-semantic-code-search-through-MCP" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -304,32 +306,32 @@ keep guessing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>claude-context solves the repeated-codebase-exploration problem with semantic retrieval. It indexes a repository, stores code chunks in a vector database, and exposes search through the <a href="https://zilliz.com/glossary/model-context-protocol-%28mcp%29">Model Context Protocol</a>.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_2_a0cc547fe3.png" alt="Claude Context repository shown on GitHub Trending in the original article" class="doc-image" id="claude-context-repository-shown-on-github-trending-in-the-original-article" />
-    <span>Claude Context repository shown on GitHub Trending in the original article</span>
-  </span>
-</p>
-<p>In a big codebase, you constantly ask Claude questions like:</p>
+    </button></h2><p>claude-context resuelve el problema de la exploración repetida del código fuente mediante la recuperación semántica. Indexa un repositorio, almacena fragmentos de código en una base de datos vectorial y permite la búsqueda a través del <a href="https://zilliz.com/glossary/model-context-protocol-%28mcp%29">Model Context Protocol</a>.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_2_a0cc547fe3.png" alt="Claude Context repository shown on GitHub Trending in the original article" class="doc-image" id="claude-context-repository-shown-on-github-trending-in-the-original-article" /> 
+   <span>Repositorio de Claude Context mostrado en GitHub Tendencias en el artículo original</span>
+  
+ </span></p>
+<p>En una base de código grande, constantemente le haces preguntas a Claude como:</p>
 <blockquote>
-<p>Help me figure out which parts of the code might be related to this bug.</p>
+<p>Ayúdame a averiguar qué partes del código podrían estar relacionadas con este error.</p>
 </blockquote>
-<p>Without a retrieval layer, Claude’s default approach is often:</p>
+<p>Sin una capa de recuperación, el enfoque predeterminado de Claude suele ser:</p>
 <pre><code translate="no" class="language-perl">list the directory
 grep around
 <span class="hljs-built_in">read</span> a bunch of files
 keep guessing
 <button class="copy-code-btn"></button></code></pre>
-<p>claude-context moves that work into a retrieval layer. It chunks the repository, generates embeddings, stores them in a <a href="https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md">Milvus-backed code index</a>, and retrieves relevant code chunks before the model starts reading files blindly.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_11_f9d952830d.png" alt="claude-context flow showing codebase chunking, embeddings, vector database and hybrid search, relevant code retrieval, and Claude context injection" class="doc-image" id="claude-context-flow-showing-codebase-chunking,-embeddings,-vector-database-and-hybrid-search,-relevant-code-retrieval,-and-claude-context-injection" />
-    <span>claude-context flow showing codebase chunking, embeddings, vector database and hybrid search, relevant code retrieval, and Claude context injection</span>
-  </span>
-</p>
-<p>This is where AI coding tools start to look like search systems. You need chunking, embeddings, metadata, lexical matching, ranking, and freshness. Those are the same building blocks behind <a href="https://zilliz.com/blog/top-10-context-engineering-techniques-you-should-know-for-production-rag">production RAG retrieval</a>, <a href="https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md">hybrid retrieval routing</a>, and <a href="https://milvus.io/blog/choose-embedding-model-rag-2026.md">embedding model selection</a>.</p>
-<h2 id="memsearch-keeps-useful-memory-across-sessions-and-agents" class="common-anchor-header">memsearch keeps useful memory across sessions and agents<button data-href="#memsearch-keeps-useful-memory-across-sessions-and-agents" class="anchor-icon" translate="no">
+<p>claude-context traslada ese trabajo a una capa de recuperación. Divide el repositorio en fragmentos, genera representaciones, las almacena en un <a href="https://milvus.io/blog/claude-context-reduce-claude-code-token-usage.md">índice de código basado en Milvus</a> y recupera los fragmentos de código relevantes antes de que el modelo empiece a leer los archivos a ciegas.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_11_f9d952830d.png" alt="claude-context flow showing codebase chunking, embeddings, vector database and hybrid search, relevant code retrieval, and Claude context injection" class="doc-image" id="claude-context-flow-showing-codebase-chunking,-embeddings,-vector-database-and-hybrid-search,-relevant-code-retrieval,-and-claude-context-injection" /> 
+   <span>Flujo de claude-context que muestra la segmentación de la base de código, las representaciones, la base de datos vectorial y la búsqueda híbrida, la recuperación de código relevante y la inyección de contexto en Claude</span>
+  
+ </span></p>
+<p>Aquí es donde las herramientas de programación basadas en IA empiezan a parecerse a los sistemas de búsqueda. Se necesitan fragmentación, representaciones, metadatos, coincidencia léxica, clasificación y actualidad. Esos son los mismos componentes básicos que subyacen a <a href="https://zilliz.com/blog/top-10-context-engineering-techniques-you-should-know-for-production-rag">la recuperación RAG en producción</a>, <a href="https://milvus.io/blog/build-smarter-rag-routing-hybrid-retrieval.md">el enrutamiento de recuperación híbrida</a> y <a href="https://milvus.io/blog/choose-embedding-model-rag-2026.md">la selección de modelos de representación</a>.</p>
+<h2 id="memsearch-keeps-useful-memory-across-sessions-and-agents" class="common-anchor-header">memsearch conserva la memoria útil entre sesiones y agentes<button data-href="#memsearch-keeps-useful-memory-across-sessions-and-agents" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -344,32 +346,32 @@ keep guessing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>memsearch tackles the opposite side of the problem: not what to forget, but how to recall what matters.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_7_d39c2f200e.png" alt="memsearch logo image from the original article" class="doc-image" id="memsearch-logo-image-from-the-original-article" />
-    <span>memsearch logo image from the original article</span>
-  </span>
-</p>
-<p>Imagine you tell Claude on Monday:</p>
+    </button></h2><p>memsearch aborda el lado opuesto del problema: no qué olvidar, sino cómo recordar lo que importa.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/claude_code_context_management_tools_7_d39c2f200e.png" alt="memsearch logo image from the original article" class="doc-image" id="memsearch-logo-image-from-the-original-article" /> 
+   <span>Imagen del logotipo de memsearch del artículo original</span>
+  
+ </span></p>
+<p>Imagina que el lunes le dices a Claude:</p>
 <blockquote>
-<p>Our webhook can’t retry on failure — failed events need to go into a dead letter queue.</p>
+<p>Nuestro webhook no puede volver a intentarlo en caso de fallo; los eventos fallidos deben ir a una cola de mensajes perdidos.</p>
 </blockquote>
-<p>On Wednesday, you open a new session and ask:</p>
+<p>El miércoles, abres una nueva sesión y preguntas:</p>
 <blockquote>
-<p>What else can we optimize in the webhook layer?</p>
+<p>¿Qué más podemos optimizar en la capa del webhook?</p>
 </blockquote>
-<p>Without durable memory, Claude treats Monday’s decision as if it never happened. You explain it again.</p>
-<p>memsearch stores memory as local, human-readable Markdown files and uses Milvus as a rebuildable retrieval index. That design keeps memory editable by humans while still making it searchable for agents.</p>
-<p>At retrieval time, memsearch uses progressive recall: search first, expand if needed, then drill down to the original transcript only when necessary.</p>
-<p>
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/20260507_210137_73d4b0b8ea.png" alt="memsearch progressive retrieval flow showing search, expand, transcript, and summarized return to the main conversation" class="doc-image" id="memsearch-progressive-retrieval-flow-showing-search,-expand,-transcript,-and-summarized-return-to-the-main-conversation" />
-    <span>memsearch progressive retrieval flow showing search, expand, transcript, and summarized return to the main conversation</span>
-  </span>
-</p>
-<p>This Markdown-first pattern is useful for teams working across sessions, models, and agents. It also pairs naturally with <a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">long-term AI agent memory</a>, <a href="https://milvus.io/blog/openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md">shared multi-agent memory</a>, and the broader problem of preventing <a href="https://zilliz.com/ai-faq/can-context-engineering-help-reduce-context-rot">context rot in agent systems</a>.</p>
-<h2 id="How-do-these-tools-work-together" class="common-anchor-header">How do these tools work together?<button data-href="#How-do-these-tools-work-together" class="anchor-icon" translate="no">
+<p>Sin memoria persistente, Claude trata la decisión del lunes como si nunca hubiera ocurrido. Se lo vuelves a explicar.</p>
+<p>memsearch almacena la memoria como archivos Markdown locales y legibles por humanos, y utiliza Milvus como índice de recuperación reconstruible. Ese diseño permite que la memoria sea editable por humanos, al tiempo que sigue siendo consultable para los agentes.</p>
+<p>En el momento de la recuperación, memsearch utiliza la recuperación progresiva: primero busca, luego amplía si es necesario y, por último, profundiza en la transcripción original solo cuando es imprescindible.</p>
+<p><span class="img-wrapper">
+  
+   <img translate="no" src="https://assets.zilliz.com/20260507_210137_73d4b0b8ea.png" alt="memsearch progressive retrieval flow showing search, expand, transcript, and summarized return to the main conversation" class="doc-image" id="memsearch-progressive-retrieval-flow-showing-search,-expand,-transcript,-and-summarized-return-to-the-main-conversation" /> 
+   <span>Flujo de recuperación progresiva de memsearch que muestra la búsqueda, la expansión, la transcripción y el resumen, para volver a la conversación principal</span>
+  
+ </span></p>
+<p>Este patrón que da prioridad al Markdown resulta útil para equipos que trabajan con diferentes sesiones, modelos y agentes. Además, se combina de forma natural con <a href="https://milvus.io/blog/adding-persistent-memory-to-claude-code-with-the-lightweight-memsearch-plugin.md">la memoria a largo plazo de los agentes de IA</a>, <a href="https://milvus.io/blog/openagents-milvus-how-to-build-smarter-multi-agent-systems-that-share-memory.md">la memoria compartida entre múltiples agentes</a> y el problema más amplio de evitar <a href="https://zilliz.com/ai-faq/can-context-engineering-help-reduce-context-rot">la pérdida de contexto en los sistemas de agentes</a>.</p>
+<h2 id="How-do-these-tools-work-together" class="common-anchor-header">¿Cómo funcionan estas herramientas juntas?<button data-href="#How-do-these-tools-work-together" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -384,29 +386,29 @@ keep guessing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The seven tools are complementary, not interchangeable. Use them as layers.</p>
+    </button></h2><p>Las siete herramientas son complementarias, no intercambiables. Úsalas como capas.</p>
 <table>
 <thead>
-<tr><th>Layer</th><th>Use these tools</th><th>Why</th></tr>
+<tr><th>Capa</th><th>Utiliza estas herramientas</th><th>Por qué</th></tr>
 </thead>
 <tbody>
-<tr><td>Remove command noise</td><td>RTK</td><td>Compress high-volume terminal output before it reaches Claude.</td></tr>
-<tr><td>Sandbox raw tool output</td><td>Context Mode</td><td>Keep large logs, DOMs, and tool payloads outside the main conversation.</td></tr>
-<tr><td>Map code structure</td><td>code-review-graph</td><td>Answer dependency and blast-radius questions without blind file reads.</td></tr>
-<tr><td>Read code progressively</td><td>Token Savior</td><td>Start with symbol summaries, then expand only as needed.</td></tr>
-<tr><td>Compress Claude’s answers</td><td>Caveman</td><td>Prevent the model’s own output from becoming future context bloat.</td></tr>
-<tr><td>Retrieve relevant code</td><td>claude-context</td><td>Use semantic and hybrid code search instead of repeated grep loops.</td></tr>
-<tr><td>Reuse durable decisions</td><td>memsearch</td><td>Recall project history across sessions, agents, and model switches.</td></tr>
+<tr><td>Eliminar el ruido de los comandos</td><td>RTK</td><td>Comprimir la salida del terminal de gran volumen antes de que llegue a Claude.</td></tr>
+<tr><td>Aislar la salida sin procesar de la herramienta</td><td>Modo de contexto</td><td>Mantener los registros de gran tamaño, los DOM y las cargas útiles de las herramientas fuera de la conversación principal.</td></tr>
+<tr><td>Mapeo de la estructura del código</td><td>gráfico-de-revisión-de-código</td><td>Responde a preguntas sobre dependencias y alcance de impacto sin necesidad de leer archivos a ciegas.</td></tr>
+<tr><td>Lee el código de forma progresiva</td><td>Token Savior</td><td>Empieza con resúmenes de símbolos y amplía solo cuando sea necesario.</td></tr>
+<tr><td>Comprimir las respuestas de Claude</td><td>Caveman</td><td>Evita que la propia salida del modelo se convierta en una sobrecarga del contexto futuro.</td></tr>
+<tr><td>Recupera el código relevante</td><td>claude-context</td><td>Utilizar la búsqueda semántica e híbrida de código en lugar de bucles repetitivos de grep.</td></tr>
+<tr><td>Reutiliza las decisiones duraderas</td><td>memsearch</td><td>Recupera el historial del proyecto a lo largo de sesiones, agentes y cambios de modelo.</td></tr>
 </tbody>
 </table>
-<p>A practical rollout order is:</p>
+<p>Un orden de implementación práctico es:</p>
 <ol>
-<li><strong>Kill obvious noise first.</strong> Add RTK or Context Mode if shell output and tool payloads dominate your context.</li>
-<li><strong>Fix repository navigation.</strong> Add code-review-graph for structure or claude-context for semantic code retrieval.</li>
-<li><strong>Control what remains.</strong> Use Token Savior and Caveman to keep file reads and model responses compact.</li>
-<li><strong>Preserve durable knowledge.</strong> Use memsearch when repeated explanations become the bottleneck.</li>
+<li><strong>Elimina primero el ruido evidente.</strong> Añade RTK o el modo de contexto si la salida del shell y las cargas útiles de las herramientas dominan tu contexto.</li>
+<li><strong>Mejora la navegación por el repositorio.</strong> Añade «code-review-graph» para la estructura o «claude-context» para la recuperación semántica de código.</li>
+<li><strong>Controla lo que queda.</strong> Utiliza «Token Savior» y «Caveman» para mantener compactas las lecturas de archivos y las respuestas del modelo.</li>
+<li><strong>Conserva el conocimiento duradero.</strong> Utiliza memsearch cuando las explicaciones repetidas se conviertan en un cuello de botella.</li>
 </ol>
-<h2 id="Keep-in-touch" class="common-anchor-header">Keep in touch<button data-href="#Keep-in-touch" class="anchor-icon" translate="no">
+<h2 id="Keep-in-touch" class="common-anchor-header">Mantente en contacto<button data-href="#Keep-in-touch" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -422,11 +424,11 @@ keep guessing
         ></path>
       </svg>
     </button></h2><ul>
-<li>Join the <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord community</a> to ask questions and compare context-management patterns with other developers.</li>
-<li><a href="https://milvus.io/office-hours">Book a free Milvus Office Hours session</a> if you want help designing a retrieval layer for code, memory, or RAG workloads.</li>
-<li>If you’d rather skip the infrastructure setup, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (managed Milvus) offers a free tier to get started.</li>
+<li>Únete a la <a href="https://discord.com/invite/8uyFbECzPX">comunidad de Milvus en Discord</a> para hacer preguntas y comparar patrones de gestión de contexto con otros desarrolladores.</li>
+<li><a href="https://milvus.io/office-hours">Reserva una sesión gratuita de «Office Hours» de Milvus</a> si necesitas ayuda para diseñar una capa de recuperación para código, memoria o cargas de trabajo RAG.</li>
+<li>Si prefieres saltarte la configuración de la infraestructura, <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a> (Milvus gestionado) ofrece un plan gratuito para empezar.</li>
 </ul>
-<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Frequently Asked Questions<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
+<h2 id="Frequently-Asked-Questions" class="common-anchor-header">Preguntas frecuentes<button data-href="#Frequently-Asked-Questions" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -441,17 +443,17 @@ keep guessing
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>How do I reduce Claude Code token usage without losing useful context?</strong></p>
-<p>Start by compressing the noisiest inputs: terminal output, raw tool payloads, and repeated code reads. Then add retrieval tools such as claude-context or code-review-graph so Claude can pull relevant code instead of exploring the repository from scratch.</p>
-<p><strong>Should I use claude-context or code-review-graph for a large repo?</strong></p>
-<p>Use claude-context when you need semantic code search, especially when you do not know the exact file or symbol name. Use code-review-graph when you need structural answers such as call relationships, imports, test dependencies, and review blast radius.</p>
-<p><strong>Is memory different from code retrieval in Claude Code?</strong></p>
-<p>Yes. Code retrieval finds relevant project files or symbols. Memory retrieval recalls durable decisions, user preferences, debugging history, and cross-session lessons. memsearch focuses on memory; claude-context focuses on code retrieval.</p>
-<p><strong>Do these tools replace prompt caching or a larger context window?</strong></p>
-<p>No. Prompt caching and large context windows help with capacity and cost, but they do not decide what information deserves attention. Context-management tools improve the quality and density of what enters the model in the first place.
+    </button></h2><p><strong>¿Cómo puedo reducir el uso de tokens de Claude Code sin perder contexto útil?</strong></p>
+<p>Empieza por comprimir las entradas con más ruido: la salida de la terminal, las cargas útiles sin procesar de las herramientas y las lecturas repetidas de código. A continuación, añade herramientas de recuperación como claude-context o code-review-graph para que Claude pueda extraer el código relevante en lugar de explorar el repositorio desde cero.</p>
+<p><strong>¿Debería utilizar claude-context o code-review-graph para un repositorio grande?</strong></p>
+<p>Utiliza claude-context cuando necesites una búsqueda semántica de código, especialmente cuando no conozcas el nombre exacto del archivo o del símbolo. Utiliza code-review-graph cuando necesites respuestas estructurales, como relaciones de llamada, importaciones, dependencias de pruebas y el alcance de la revisión.</p>
+<p><strong>¿La recuperación de memoria es diferente de la recuperación de código en Claude Code?</strong></p>
+<p>Sí. La recuperación de código busca archivos o símbolos relevantes del proyecto. La recuperación de memoria recupera decisiones duraderas, preferencias de usuario, historial de depuración y lecciones entre sesiones. «memsearch» se centra en la memoria; «claude-context» se centra en la recuperación de código.</p>
+<p><strong>¿Sustituyen estas herramientas al almacenamiento en caché de las indicaciones o a una ventana de contexto más amplia?</strong></p>
+<p>No. El almacenamiento en caché de las indicaciones y las ventanas de contexto amplias ayudan en cuanto a capacidad y coste, pero no determinan qué información merece atención. Las herramientas de gestión del contexto mejoran, ante todo, la calidad y la densidad de lo que se introduce en el modelo. <span class="img-wrapper">
 
-  <span class="img-wrapper">
-    <img translate="no" src="https://assets.zilliz.com/cccm_11zon_848f7f1c6b.png" alt="cccm 11zon" class="doc-image" id="cccm-11zon" />
-    <span>cccm 11zon</span>
-  </span>
-</p>
+  
+   <img translate="no" src="https://assets.zilliz.com/Chat_GPT_Image_Jun_22_2026_07_49_53_PM_11zon_d1a8de60bd.png" alt="cccm 11zon" class="doc-image" id="cccm-11zon" /> 
+ <span>   cccm 11zon</span>
+  
+ </span></p>

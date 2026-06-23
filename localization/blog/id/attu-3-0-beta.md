@@ -1,11 +1,11 @@
 ---
 id: attu-3-0-beta.md
 title: >
-  Attu 3.0 Beta: Multi-Cluster Management, AI Agent, and a Rebuilt Milvus
-  Console
+  Attu 3.0 Beta: Manajemen Multi-Cluster, Agen AI, dan Konsol Milvus yang Telah
+  Dirancang Ulang
 author: Ray Jiang
 date: 2026-06-11T00:00:00.000Z
-cover: assets.zilliz.com/attu_3_0_beta_md_1_39fd0ca127.png
+cover: assets.zilliz.com/Attu_3_0_New_cover_1af4c44467.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -17,18 +17,19 @@ meta_title: >
   Attu 3.0 Beta: Multi-Cluster Management, AI Agent, and a Rebuilt Milvus
   Console
 desc: >
-  Attu 3.0 beta rebuilds the Milvus management console with multi-cluster
-  management, persistent state, a built-in AI Agent, expert diagnostics, live
-  metrics, API debugging, backup and restore, and simplified RBAC workflows.
+  Attu 3.0 beta menghadirkan versi baru dari konsol manajemen Milvus yang
+  dilengkapi dengan fitur manajemen multi-kluster, status persisten, Agen AI
+  bawaan, diagnostik ahli, metrik real-time, debugging API, pencadangan dan
+  pemulihan, serta alur kerja RBAC yang disederhanakan.
 origin: 'https://milvus.io/blog/attu-3-0-beta.md'
 ---
-<p>Attu 3.0 Beta is now available.</p>
-<p><a href="https://github.com/zilliztech/attu"><strong>Attu</strong></a> is the open-source management console for <a href="https://milvus.io"><strong>Milvus</strong></a>. If you have used Milvus locally or in production, you have probably used Attu to inspect collections, browse data, manage schemas, or check what is happening inside a cluster.</p>
-<p>Attu 2.x worked well for basic single-cluster management. But as Milvus deployments grew, its limits became more visible. It could only connect to one Milvus instance at a time. Connection state was lost after a container restart. Data browsing was mostly collection-centric. Diagnostics, monitoring, API debugging, backup and restore, and permission management often required separate tools or manual steps.</p>
-<p><strong>Attu 3.0 Beta is a full rebuild of the Milvus management experience.</strong></p>
-<p>This release adds multi-cluster management, persistent local state, a built-in AI Agent with 50+ Milvus tools, expert diagnostic skills, a redesigned data browser, built-in Prometheus metrics, an API Playground, GUI-based backup and restore, and simplified RBAC workflows.</p>
-<p>In short, Attu is no longer just a lightweight viewer for one Milvus instance. It is becoming a practical operations console for developers and teams managing Milvus across local, staging, and production environments.</p>
-<h2 id="What-Changed-in-Attu-30-Beta" class="common-anchor-header">What Changed in Attu 3.0 Beta<button data-href="#What-Changed-in-Attu-30-Beta" class="anchor-icon" translate="no">
+<p>Attu 3.0 Beta kini telah tersedia.</p>
+<p><a href="https://github.com/zilliztech/attu"><strong>Attu</strong></a> adalah konsol manajemen sumber terbuka untuk <a href="https://milvus.io"><strong>Milvus</strong></a>. Jika Anda pernah menggunakan Milvus secara lokal atau dalam lingkungan produksi, kemungkinan besar Anda pernah menggunakan Attu untuk memeriksa koleksi, menelusuri data, mengelola skema, atau memantau aktivitas di dalam kluster.</p>
+<p>Attu 2.x berfungsi dengan baik untuk manajemen kluster tunggal dasar. Namun, seiring berkembangnya penerapan Milvus, keterbatasannya menjadi semakin terlihat. Attu hanya dapat terhubung ke satu instance Milvus dalam satu waktu. Status koneksi akan hilang setelah kontainer dimulai ulang. Penjelajahan data sebagian besar berfokus pada koleksi. Diagnostik, pemantauan, debugging API, pencadangan dan pemulihan, serta pengelolaan izin sering kali memerlukan alat terpisah atau langkah-langkah manual.</p>
+<p><strong>Attu 3.0 Beta merupakan pembangunan ulang menyeluruh dari pengalaman pengelolaan Milvus.</strong></p>
+<p>Rilis ini menambahkan pengelolaan multi-kluster, status lokal yang persisten, Agen AI bawaan dengan lebih dari 50 alat Milvus, kemampuan diagnostik tingkat ahli, penjelajah data yang didesain ulang, metrik Prometheus bawaan, API Playground, pencadangan dan pemulihan berbasis GUI, serta alur kerja RBAC yang disederhanakan.</p>
+<p>Singkatnya, Attu tidak lagi sekadar penampil ringan untuk satu instance Milvus. Attu kini menjadi konsol operasi praktis bagi pengembang dan tim yang mengelola Milvus di lingkungan lokal, staging, dan produksi.</p>
+<h2 id="What-Changed-in-Attu-30-Beta" class="common-anchor-header">Apa yang Berubah di Attu 3.0 Beta<button data-href="#What-Changed-in-Attu-30-Beta" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -43,25 +44,25 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Here is the high-level comparison between Attu 2.x and Attu 3.0 Beta.</p>
+    </button></h2><p>Berikut adalah perbandingan tingkat tinggi antara Attu 2.x dan Attu 3.0 Beta.</p>
 <table>
 <thead>
-<tr><th>Feature</th><th>Attu 2.x</th><th>Attu 3.0 Beta</th></tr>
+<tr><th>Fitur</th><th>Attu 2.x</th><th>Attu 3.0 Beta</th></tr>
 </thead>
 <tbody>
-<tr><td>Cluster connections</td><td>Single instance only</td><td>Multiple clusters with one-click switching</td></tr>
-<tr><td>State persistence</td><td>Stateless; lost on container restart</td><td>Local database; survives restarts</td></tr>
-<tr><td>AI assistance</td><td>None</td><td>Built-in Agent with 50+ Milvus tools</td></tr>
-<tr><td>Diagnostics</td><td>Manual investigation</td><td>4 built-in expert-level diagnostic skills</td></tr>
-<tr><td>RBAC management</td><td>Separate pages, multi-step flow</td><td>In-context, one-click user creation</td></tr>
-<tr><td>Data navigation</td><td>Flat collection list</td><td>Hierarchical tree: database → collection → partition</td></tr>
-<tr><td>Monitoring</td><td>External Grafana required</td><td>Built-in Prometheus metrics dashboard</td></tr>
-<tr><td>API debugging</td><td>External tools such as curl or Postman</td><td>Built-in REST API Playground</td></tr>
-<tr><td>Backup and restore</td><td>CLI only</td><td>GUI with S3, MinIO, GCS, and Azure support</td></tr>
-<tr><td>LLM integration</td><td>None</td><td>BYOL: OpenAI, Anthropic, DeepSeek, Gemini, and more</td></tr>
+<tr><td>Koneksi kluster</td><td>Hanya satu instance</td><td>Beberapa kluster dengan peralihan satu klik</td></tr>
+<tr><td>Persistensi status</td><td>Tanpa status; hilang saat kontainer dimulai ulang</td><td>Database lokal; tetap ada setelah restart</td></tr>
+<tr><td>Bantuan AI</td><td>Tidak ada</td><td>Agen bawaan dengan lebih dari 50 alat Milvus</td></tr>
+<tr><td>Diagnostik</td><td>Pemeriksaan manual</td><td>4 keterampilan diagnostik tingkat ahli bawaan</td></tr>
+<tr><td>Manajemen RBAC</td><td>Halaman terpisah, alur multi-langkah</td><td>Pembuatan pengguna dalam konteks, satu klik</td></tr>
+<tr><td>Navigasi data</td><td>Daftar koleksi datar</td><td>Pohon hierarki: basis data → koleksi → partisi</td></tr>
+<tr><td>Pemantauan</td><td>Diperlukan Grafana eksternal</td><td>Dasbor metrik Prometheus bawaan</td></tr>
+<tr><td>Debugging API</td><td>Alat eksternal seperti curl atau Postman</td><td>Ruang Uji Coba REST API bawaan</td></tr>
+<tr><td>Cadangan dan pemulihan</td><td>Hanya CLI</td><td>GUI dengan dukungan S3, MinIO, GCS, dan Azure</td></tr>
+<tr><td>Integrasi LLM</td><td>Tidak ada</td><td>BYOL: OpenAI, Anthropic, DeepSeek, Gemini, dan lainnya</td></tr>
 </tbody>
 </table>
-<h2 id="Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="common-anchor-header">Manage Multiple Milvus Clusters From One Sidebar<button data-href="#Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="anchor-icon" translate="no">
+<h2 id="Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="common-anchor-header">Kelola Beberapa Kluster Milvus dari Satu Bilah Samping<button data-href="#Manage-Multiple-Milvus-Clusters-From-One-Sidebar" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -76,21 +77,21 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The biggest day-to-day change is multi-cluster management.</strong> Attu 3.0 can connect to every Milvus instance you run and list them in a single sidebar.</p>
+    </button></h2><p><strong>Perubahan terbesar dalam penggunaan sehari-hari adalah pengelolaan multi-kluster.</strong> Attu 3.0 dapat terhubung ke setiap instance Milvus yang Anda jalankan dan menampilkannya dalam satu bilah samping.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_2_aaf3fddf83.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 sidebar showing multiple Milvus connections with health indicators</p>
-<p>In Attu 2.x, switching from one Milvus cluster to another meant disconnecting, reconnecting, and waiting. If you had separate clusters for development, staging, production, or different business lines, you often ended up with one browser tab per cluster.</p>
-<p>Attu 3.0 replaces that flow with a persistent left sidebar. Every Milvus connection is listed in one place, with a live health indicator beside it. A green dot means the cluster is reachable. A red dot means the cluster is down or unavailable.</p>
-<p>Switching clusters takes one click. Attu keeps the context for each connection, so you do not need to reconnect every time you move between environments.</p>
-<h3 id="Connection-Setup-Is-Less-Fragile" class="common-anchor-header">Connection Setup Is Less Fragile</h3><p>New connections support TLS/SSL encryption, token authentication, and username/password authentication. You can test a connection before saving it, keep connection details locally, and bulk-clear dead connections when old environments are no longer needed.</p>
-<p><strong>Each cluster gets its own workspace.</strong> Overview, data browser, user management, metrics, and operations are all scoped to the currently selected cluster. That makes it much harder to confuse staging and production or run an operation in the wrong place.</p>
-<p>For anyone managing more than one Milvus instance, this is one of the most important changes in Attu 3.0. It sounds basic, but it removes a large amount of tab switching and reconnect friction from daily Milvus work.</p>
-<h2 id="Local-State-Now-Survives-Restarts" class="common-anchor-header">Local State Now Survives Restarts<button data-href="#Local-State-Now-Survives-Restarts" class="anchor-icon" translate="no">
+<p>Gambar: Bilah samping Attu 3.0 yang menampilkan beberapa koneksi Milvus dengan indikator kesehatan</p>
+<p>Di Attu 2.x, berpindah dari satu kluster Milvus ke kluster lainnya berarti harus memutuskan koneksi, menghubungkan kembali, dan menunggu. Jika Anda memiliki kluster terpisah untuk pengembangan, staging, produksi, atau lini bisnis yang berbeda, Anda sering kali harus membuka satu tab browser per kluster.</p>
+<p>Attu 3.0 menggantikan alur tersebut dengan bilah samping kiri yang tetap. Setiap koneksi Milvus terdaftar di satu tempat, dengan indikator kesehatan real-time di sampingnya. Titik hijau berarti kluster dapat diakses. Titik merah berarti kluster sedang down atau tidak tersedia.</p>
+<p>Beralih antar kluster hanya membutuhkan satu klik. Attu menyimpan konteks untuk setiap koneksi, sehingga Anda tidak perlu terhubung ulang setiap kali berpindah antar lingkungan.</p>
+<h3 id="Connection-Setup-Is-Less-Fragile" class="common-anchor-header">Pengaturan Koneksi Lebih Tahan Gangguan</h3><p>Koneksi baru mendukung enkripsi TLS/SSL, otentikasi token, dan otentikasi nama pengguna/kata sandi. Anda dapat menguji koneksi sebelum menyimpannya, menyimpan detail koneksi secara lokal, dan menghapus koneksi yang tidak aktif secara massal ketika lingkungan lama tidak lagi diperlukan.</p>
+<p><strong>Setiap kluster memiliki ruang kerja tersendiri.</strong> Ikhtisar, penjelajah data, pengelolaan pengguna, metrik, dan operasi semuanya terbatas pada kluster yang sedang dipilih. Hal ini membuat Anda jauh lebih sulit untuk salah mengartikan lingkungan staging dan produksi atau menjalankan operasi di tempat yang salah.</p>
+<p>Bagi siapa pun yang mengelola lebih dari satu instance Milvus, ini adalah salah satu perubahan terpenting di Attu 3.0. Meskipun terdengar sederhana, hal ini menghilangkan banyak peralihan tab dan hambatan koneksi ulang dari pekerjaan harian Milvus.</p>
+<h2 id="Local-State-Now-Survives-Restarts" class="common-anchor-header">Status Lokal Kini Tetap Ada Setelah Restart<button data-href="#Local-State-Now-Survives-Restarts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -105,14 +106,14 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attu 2.x was stateless. If the container restarted, your saved connection information disappeared and you had to rebuild your workspace.</p>
-<p><strong>Attu 3.0 adds a local database that persists cluster configs, agent conversation history, custom skills, LLM configuration, and user preferences.</strong></p>
-<p>When running Attu with Docker, mount a volume to keep that state:</p>
+    </button></h2><p>Attu 2.x tidak memiliki status. Jika kontainer dimulai ulang, informasi koneksi yang Anda simpan akan hilang dan Anda harus membangun kembali ruang kerja Anda.</p>
+<p><strong>Attu 3.0 menambahkan basis data lokal yang menyimpan konfigurasi kluster, riwayat percakapan agen, keterampilan khusus, konfigurasi LLM, dan preferensi pengguna.</strong></p>
+<p>Saat menjalankan Attu dengan Docker, pasang volume untuk mempertahankan status tersebut:</p>
 <pre><code translate="no" class="language-bash">docker run -d --name attu -p 3000:3000 -v attu-data:/data zilliz/attu:v3.0.0-beta.6
 <button class="copy-code-btn"></button></code></pre>
-<p>With the volume mounted, restarting the container no longer means starting from zero.</p>
-<p>This also matters for the new AI Agent. Conversation history, custom skills, and LLM configuration can persist locally, so Attu becomes a console you can keep using over time rather than a temporary UI that resets after each restart.</p>
-<h2 id="Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="common-anchor-header">Use the Built-in AI Agent to Operate Milvus in Natural Language<button data-href="#Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="anchor-icon" translate="no">
+<p>Dengan volume yang telah dipasang, me-restart kontainer tidak lagi berarti harus memulai dari awal.</p>
+<p>Hal ini juga penting bagi Agen AI baru. Riwayat percakapan, keterampilan khusus, dan konfigurasi LLM dapat disimpan secara lokal, sehingga Attu menjadi konsol yang dapat Anda gunakan dalam jangka panjang, bukan UI sementara yang diatur ulang setelah setiap restart.</p>
+<h2 id="Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="common-anchor-header">Gunakan Agen AI Bawaan untuk Mengoperasikan Milvus dalam Bahasa Alami<button data-href="#Use-the-Built-in-AI-Agent-to-Operate-Milvus-in-Natural-Language" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -127,37 +128,37 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attu 3.0 includes a built-in AI Agent for Milvus management. This is not a documentation chatbot. <strong>The agent is connected to 50+ Milvus tools, so it can inspect cluster state and execute real operations through Attu.</strong></p>
+    </button></h2><p>Attu 3.0 menyertakan Agen AI bawaan untuk pengelolaan Milvus. Ini bukanlah chatbot dokumentasi. <strong>Agen ini terhubung ke lebih dari 50 alat Milvus, sehingga dapat memeriksa status kluster dan menjalankan operasi nyata melalui Attu.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_3_92689d4337.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: The Attu 3.0 AI Agent can call Milvus tools from natural-language requests</p>
-<h3 id="50+-Built-in-Tools-Across-Common-Milvus-Workflows" class="common-anchor-header">50+ Built-in Tools Across Common Milvus Workflows</h3><p>The Agent covers everyday operations, diagnostics, permissions, and cluster management. You can ask questions or issue instructions such as:</p>
+<p>Gambar: Agen AI Attu 3.0 dapat memanggil alat-alat Milvus dari permintaan berbahasa alami</p>
+<h3 id="50+-Built-in-Tools-Across-Common-Milvus-Workflows" class="common-anchor-header">Lebih dari 50 Alat Bawaan di Seluruh Alur Kerja Milvus yang Umum</h3><p>Agen ini mencakup operasi sehari-hari, diagnostik, izin, dan pengelolaan kluster. Anda dapat mengajukan pertanyaan atau memberikan instruksi seperti:</p>
 <table>
 <thead>
-<tr><th>Scenario</th><th>Example prompts</th></tr>
+<tr><th>Skenario</th><th>Contoh perintah</th></tr>
 </thead>
 <tbody>
-<tr><td>Everyday operations</td><td>“List all my collections.”<br>“Create a collection with id, title, and embedding fields. Use dimension 768 for the embedding field.”<br>“Insert some test data into my_collection.”<br>“Search my_collection for the 10 records most similar to 'artificial intelligence’.”</td></tr>
-<tr><td>Ops and diagnostics</td><td>“Is my cluster healthy?”<br>“Why is search so slow?”<br>“Which collections use the most memory?”<br>“Any slow queries recently?”</td></tr>
-<tr><td>Permissions</td><td>“Create a read-only user called analyst.”<br>“Grant all privileges to the admin role.”<br>“Check which privileges user zhangsan has.”</td></tr>
-<tr><td>Cluster management</td><td>“Show the current Milvus version and config.”<br>“List resource-group usage.”<br>“Compact my_collection for me.”</td></tr>
+<tr><td>Operasi sehari-hari</td><td>“Tampilkan daftar semua koleksi saya.”<br>“Buat koleksi dengan bidang id, judul, dan embedding. Gunakan dimensi 768 untuk bidang embedding.”<br>“Masukkan beberapa data uji ke dalam my_collection.”<br>“Cari di my_collection 10 catatan yang paling mirip dengan 'kecerdasan buatan'.”</td></tr>
+<tr><td>Operasi dan diagnostik</td><td>“Apakah kluster saya dalam kondisi baik?”<br>“Mengapa pencarian begitu lambat?”<br>“Koleksi mana yang menggunakan memori paling banyak?”<br>“Apakah ada kueri yang lambat belakangan ini?”</td></tr>
+<tr><td>Izin</td><td>“Buat pengguna read-only bernama analyst.”<br>“Berikan semua hak akses kepada peran admin.”<br>“Periksa hak akses apa saja yang dimiliki pengguna zhangsan.”</td></tr>
+<tr><td>Manajemen kluster</td><td>“Tampilkan versi dan konfigurasi Milvus saat ini.”<br>“Tampilkan penggunaan grup sumber daya.”<br>“Kompres my_collection untuk saya.”</td></tr>
 </tbody>
 </table>
-<h3 id="Destructive-Actions-Require-Approval" class="common-anchor-header">Destructive Actions Require Approval</h3><p>
+<h3 id="Destructive-Actions-Require-Approval" class="common-anchor-header">Tindakan yang Merusak Memerlukan Persetujuan</h3><p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_4_130d227620.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Destructive or sensitive operations show a confirmation dialog before execution</p>
-<p><strong>The agent is designed to be transparent and controllable.</strong> Non-destructive operations, such as listing collections or reading metrics, return results directly.</p>
-<p>Destructive or sensitive operations, such as dropping a collection, clearing data, or changing privileges, trigger a confirmation dialog. The dialog lists the exact parameters and waits for approval before the operation runs.</p>
-<p>You can also see which tools the agent called, how many tokens it used, and whether any tool call failed. That matters for a database management agent. Users should be able to understand what the agent did, not just see the final answer.</p>
-<h2 id="Run-Expert-Diagnostic-Skills-From-the-Console" class="common-anchor-header">Run Expert Diagnostic Skills From the Console<button data-href="#Run-Expert-Diagnostic-Skills-From-the-Console" class="anchor-icon" translate="no">
+<p>Gambar: Operasi yang merusak atau sensitif menampilkan kotak dialog konfirmasi sebelum dieksekusi</p>
+<p><strong>Agen ini dirancang agar transparan dan dapat dikendalikan.</strong> Operasi non-destruktif, seperti menampilkan daftar koleksi atau membaca metrik, langsung menampilkan hasilnya.</p>
+<p>Operasi yang merusak atau sensitif, seperti menghapus koleksi, membersihkan data, atau mengubah hak akses, akan memicu munculnya dialog konfirmasi. Dialog tersebut mencantumkan parameter yang tepat dan menunggu persetujuan sebelum operasi dijalankan.</p>
+<p>Anda juga dapat melihat alat apa saja yang dipanggil agen, berapa banyak token yang digunakan, dan apakah ada panggilan alat yang gagal. Hal ini penting bagi agen manajemen basis data. Pengguna harus dapat memahami apa yang dilakukan agen, bukan hanya melihat hasil akhirnya.</p>
+<h2 id="Run-Expert-Diagnostic-Skills-From-the-Console" class="common-anchor-header">Jalankan Keterampilan Diagnostik Ahli dari Konsol<button data-href="#Run-Expert-Diagnostic-Skills-From-the-Console" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,16 +173,16 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The AI Agent ships with four built-in diagnostic skills.</strong> These are guided workflows for common Milvus troubleshooting scenarios, not generic prompts.</p>
+    </button></h2><p><strong>AI Agent dilengkapi dengan empat keterampilan diagnostik bawaan.</strong> Ini adalah alur kerja terpandu untuk skenario pemecahan masalah Milvus yang umum, bukan petunjuk umum.</p>
 <table>
 <thead>
-<tr><th>Diagnostic skill</th><th>What it checks</th></tr>
+<tr><th>Keterampilan diagnostik</th><th>Apa yang diperiksa</th></tr>
 </thead>
 <tbody>
-<tr><td>Cluster health diagnosis</td><td>Version, node status, per-component health, and key metrics.</td></tr>
-<tr><td>Search performance diagnosis</td><td>Index sanity, segment fragmentation, replica balance, and related search-performance signals.</td></tr>
-<tr><td>Data write diagnosis</td><td>Slow inserts, lost data checks, flush anomalies, and write-path symptoms.</td></tr>
-<tr><td>Configuration audit</td><td>Risky or incorrect settings that may affect stability, performance, or expected behavior.</td></tr>
+<tr><td>Diagnosis kesehatan kluster</td><td>Versi, status node, kesehatan per komponen, dan metrik utama.</td></tr>
+<tr><td>Diagnosis kinerja pencarian</td><td>Keselamatan indeks, fragmentasi segmen, keseimbangan replika, dan sinyal terkait kinerja pencarian.</td></tr>
+<tr><td>Diagnosis penulisan data</td><td>Penyisipan yang lambat, pemeriksaan data yang hilang, anomali pembersihan, dan gejala jalur penulisan.</td></tr>
+<tr><td>Audit konfigurasi</td><td>Pengaturan berisiko atau salah yang dapat memengaruhi stabilitas, kinerja, atau perilaku yang diharapkan.</td></tr>
 </tbody>
 </table>
 <p>
@@ -190,10 +191,10 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 includes built-in diagnostic skills and supports custom skills</p>
-<p>You can also create custom skills in natural language. A skill can encode a pre-launch checklist, a data-quality check for a specific collection, or a diagnostic flow your team runs for a known workload.</p>
-<p>A custom skill is essentially domain knowledge plus a procedure. Once saved, the agent can reuse it instead of relying on a one-off prompt every time.</p>
-<h2 id="Bring-Your-Own-LLM-Provider" class="common-anchor-header">Bring Your Own LLM Provider<button data-href="#Bring-Your-Own-LLM-Provider" class="anchor-icon" translate="no">
+<p>Gambar: Attu 3.0 dilengkapi dengan keterampilan diagnostik bawaan dan mendukung keterampilan kustom</p>
+<p>Anda juga dapat membuat keterampilan khusus dalam bahasa alami. Sebuah keterampilan dapat mengkodekan daftar periksa pra-peluncuran, pemeriksaan kualitas data untuk koleksi tertentu, atau alur diagnostik yang dijalankan tim Anda untuk beban kerja yang sudah diketahui.</p>
+<p>Keterampilan khusus pada dasarnya adalah pengetahuan domain ditambah sebuah prosedur. Setelah disimpan, agen dapat menggunakannya kembali alih-alih mengandalkan prompt satu kali setiap saat.</p>
+<h2 id="Bring-Your-Own-LLM-Provider" class="common-anchor-header">Gunakan Penyedia LLM Anda Sendiri<button data-href="#Bring-Your-Own-LLM-Provider" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -208,24 +209,24 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu does not bundle or proxy an LLM service.</strong> You configure your own provider and keep control of the model path.</p>
-<p>The supported provider options include OpenAI, Anthropic, DeepSeek, Google Gemini, OpenRouter, and custom OpenAI-compatible endpoints.</p>
+    </button></h2><p><strong>Attu tidak menyertakan atau bertindak sebagai perantara layanan LLM.</strong> Anda mengonfigurasi penyedia Anda sendiri dan tetap mengontrol jalur model.</p>
+<p>Opsi penyedia yang didukung meliputi OpenAI, Anthropic, DeepSeek, Google Gemini, OpenRouter, dan titik akhir khusus yang kompatibel dengan OpenAI.</p>
 <table>
 <thead>
-<tr><th>Provider</th><th>Example models</th></tr>
+<tr><th>Penyedia</th><th>Contoh model</th></tr>
 </thead>
 <tbody>
 <tr><td>OpenAI</td><td>GPT-5.5</td></tr>
 <tr><td>Anthropic</td><td>Claude Opus 4.8</td></tr>
 <tr><td>DeepSeek</td><td>DeepSeek-V4</td></tr>
 <tr><td>Google Gemini</td><td>Gemini 3.5</td></tr>
-<tr><td>OpenRouter</td><td>Any routed model</td></tr>
-<tr><td>Custom endpoint</td><td>Any OpenAI-compatible API</td></tr>
+<tr><td>OpenRouter</td><td>Model yang di-routing apa pun</td></tr>
+<tr><td>Titik akhir kustom</td><td>API apa pun yang kompatibel dengan OpenAI</td></tr>
 </tbody>
 </table>
-<p>Your API key is encrypted locally and is not uploaded to an Attu-managed service. That design is important for teams that want AI assistance but still need to control credentials, data flow, and provider choice.</p>
-<p>In practice, BYOL makes the agent usable across different environments. One team might use OpenAI. Another might use an Anthropic model. A third might route through an OpenAI-compatible endpoint. Attu does not force a single model provider.</p>
-<h2 id="Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="common-anchor-header">Browse Milvus Data With a Database → Collection → Partition Tree<button data-href="#Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="anchor-icon" translate="no">
+<p>Kunci API Anda dienkripsi secara lokal dan tidak diunggah ke layanan yang dikelola Attu. Desain ini penting bagi tim yang menginginkan bantuan AI namun tetap perlu mengontrol kredensial, aliran data, dan pilihan penyedia.</p>
+<p>Dalam praktiknya, BYOL (Bring Your Own Model) memungkinkan agen digunakan di berbagai lingkungan. Satu tim mungkin menggunakan OpenAI. Tim lain mungkin menggunakan model Anthropic. Tim ketiga mungkin mengarahkan melalui titik akhir yang kompatibel dengan OpenAI. Attu tidak memaksakan penyedia model tertentu.</p>
+<h2 id="Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="common-anchor-header">Jelajahi Data Milvus dengan Pohon Database → Koleksi → Partisi<button data-href="#Browse-Milvus-Data-With-a-Database-→-Collection-→-Partition-Tree" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -240,24 +241,24 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Attu 3.0 also redesigns the data browser. Attu 2.x mainly presented a flat collection list. That becomes hard to use once a cluster has multiple databases, dozens of collections, and partitioned data.</p>
-<p><strong>The new browser uses a hierarchy that matches how Milvus organizes data: database → collection → partition.</strong></p>
+    </button></h2><p>Attu 3.0 juga mendesain ulang penjelajah data. Attu 2.x terutama menampilkan daftar koleksi datar. Hal itu menjadi sulit digunakan begitu sebuah kluster memiliki banyak database, puluhan koleksi, dan data yang dipartisi.</p>
+<p><strong>Penjelajah baru ini menggunakan hierarki yang sesuai dengan cara Milvus mengatur data: database → koleksi → partisi.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_7_3fe672c16d.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: The redesigned data browser uses hierarchical navigation for databases, collections, and partitions</p>
-<h3 id="Data-Operations-Are-Closer-to-Where-You-Browse" class="common-anchor-header">Data Operations Are Closer to Where You Browse</h3><p>The data browser keeps the operations users already expect and adds more actions directly in the UI:</p>
+<p>Gambar: Penjelajah data yang didesain ulang menggunakan navigasi hierarkis untuk database, koleksi, dan partisi</p>
+<h3 id="Data-Operations-Are-Closer-to-Where-You-Browse" class="common-anchor-header">Operasi Data Lebih Dekat dengan Tempat Anda Menjelajah</h3><p>Penjelajah data mempertahankan operasi yang sudah diharapkan pengguna dan menambahkan lebih banyak tindakan langsung di antarmuka pengguna:</p>
 <ul>
-<li>Drag and drop a collection into another database.</li>
-<li>Run vector search by typing text directly, when an embedding model is configured.</li>
-<li>Inspect similarity scores and narrow results with facets.</li>
-<li>Import and export data in CSV, JSON, and Parquet.</li>
-<li>View and edit a collection schema visually, including dynamic-field support.</li>
-<li>Create, delete, and inspect partitions and partition stats.</li>
-<li>Manage the full collection lifecycle: create, load, release, copy, rename, move across databases, and drop.</li>
+<li>Seret dan lepas koleksi ke basis data lain.</li>
+<li>Jalankan pencarian vektor dengan mengetik teks secara langsung, saat model embedding telah dikonfigurasi.</li>
+<li>Periksa skor kemiripan dan persempit hasil dengan facet.</li>
+<li>Impor dan ekspor data dalam format CSV, JSON, dan Parquet.</li>
+<li>Melihat dan mengedit skema koleksi secara visual, termasuk dukungan bidang dinamis.</li>
+<li>Buat, hapus, dan periksa partisi serta statistik partisi.</li>
+<li>Kelola seluruh siklus hidup koleksi: buat, muat, lepaskan, salin, ganti nama, pindahkan antar basis data, dan hapus.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -265,10 +266,10 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 data browser with vector search and result inspection</p>
-<p>Most of these actions are available through right-click menus or operation panels. For common collection work, you no longer need to jump between UI browsing and command-line operations.</p>
-<p>Attu 3.0 is also the product line where UI support for new <a href="https://milvus.io/docs/release_notes.md">Milvus 3.0</a> capabilities, such as snapshots and nullable vectors, will continue to appear as those features mature.</p>
-<h2 id="Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="common-anchor-header">Check Operations, Metrics, Slow Queries, Topology, and Backups in One Place<button data-href="#Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="anchor-icon" translate="no">
+<p>Gambar: Penjelajah data Attu 3.0 dengan pencarian vektor dan pemeriksaan hasil</p>
+<p>Sebagian besar tindakan ini tersedia melalui menu klik kanan atau panel operasi. Untuk pekerjaan koleksi umum, Anda tidak perlu lagi berpindah-pindah antara penjelajahan antarmuka pengguna (UI) dan operasi baris perintah.</p>
+<p>Attu 3.0 juga merupakan lini produk di mana dukungan antarmuka pengguna (UI) untuk fitur-fitur baru <a href="https://milvus.io/docs/release_notes.md">Milvus 3.0</a>, seperti snapshot dan vektor nullable, akan terus ditambahkan seiring dengan perkembangan fitur-fitur tersebut.</p>
+<h2 id="Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="common-anchor-header">Periksa Operasi, Metrik, Kueri Lambat, Topologi, dan Pencadangan di Satu Tempat<button data-href="#Check-Operations-Metrics-Slow-Queries-Topology-and-Backups-in-One-Place" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -283,29 +284,29 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 puts more operational information into the console.</strong> The Ops and Monitoring area includes cluster overview, live metrics, slow-query analysis, topology, and backup and restore.</p>
+    </button></h2><p><strong>Attu 3.0 menampilkan lebih banyak informasi operasional di konsol.</strong> Area Operasi dan Pemantauan mencakup ikhtisar klaster, metrik real-time, analisis kueri lambat, topologi, serta pencadangan dan pemulihan.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_9_4085e60553.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 Ops and Monitoring page</p>
-<p>The goal is not to replace every observability system a production team already uses. Teams can still use Prometheus, Grafana, logs, alerts, and their existing monitoring stack. The goal is to make common Milvus questions answerable from inside Attu.</p>
+<p>Gambar: Halaman Operasi dan Pemantauan Attu 3.0</p>
+<p>Tujuannya bukanlah untuk menggantikan setiap sistem observabilitas yang sudah digunakan oleh tim produksi. Tim masih dapat menggunakan Prometheus, Grafana, log, peringatan, dan tumpukan pemantauan yang sudah ada. Tujuannya adalah agar pertanyaan umum tentang Milvus dapat dijawab dari dalam Attu.</p>
 <table>
 <thead>
-<tr><th>Area</th><th>What you can do</th></tr>
+<tr><th>Area</th><th>Apa yang dapat Anda lakukan</th></tr>
 </thead>
 <tbody>
-<tr><td>Visual cluster overview</td><td>View Milvus version, deployment mode, node count, database count, collection count, load status, and quota entities at a glance.</td></tr>
-<tr><td>Real-time metrics</td><td>Inspect QPS, insert/delete rates, query latency, cache hit rate, and related Prometheus-backed metrics.</td></tr>
-<tr><td>Slow-query analysis</td><td>Inspect slow queries by type, duration, collection, timestamp, source, and related troubleshooting context.</td></tr>
-<tr><td>Topology view</td><td>Understand the node topology and the connections between components such as RootCoord, DataCoord, IndexCoord, QueryCoord, and Proxy.</td></tr>
-<tr><td>Backup and restore</td><td>Create full or incremental backups against S3, MinIO, GCS, or Azure, and download backup metadata as a ZIP or upload one to restore.</td></tr>
+<tr><td>Tinjauan umum klaster secara visual</td><td>Lihat versi Milvus, mode penyebaran, jumlah node, jumlah database, jumlah koleksi, status beban, dan entitas kuota secara sekilas.</td></tr>
+<tr><td>Metrik waktu nyata</td><td>Periksa QPS, tingkat penyisipan/penghapusan, latensi kueri, tingkat keberhasilan cache, dan metrik terkait yang didukung oleh Prometheus.</td></tr>
+<tr><td>Analisis kueri lambat</td><td>Periksa kueri lambat berdasarkan jenis, durasi, koleksi, cap waktu, sumber, dan konteks pemecahan masalah terkait.</td></tr>
+<tr><td>Tampilan topologi</td><td>Pahami topologi node dan koneksi antar komponen seperti RootCoord, DataCoord, IndexCoord, QueryCoord, dan Proxy.</td></tr>
+<tr><td>Pencadangan dan pemulihan</td><td>Buat cadangan penuh atau tambahan ke S3, MinIO, GCS, atau Azure, serta unduh metadata cadangan dalam format ZIP atau unggah metadata tersebut untuk memulihkan data.</td></tr>
 </tbody>
 </table>
-<p>Backup and restore are especially important because they move a workflow that previously depended on CLI usage into the GUI. That is useful for local testing, staging validation, and teams that want a more visible recovery path.</p>
-<h2 id="Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="common-anchor-header">Debug Milvus REST APIs With the Built-in API Playground<button data-href="#Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="anchor-icon" translate="no">
+<p>Pencadangan dan pemulihan sangat penting karena memindahkan alur kerja yang sebelumnya bergantung pada penggunaan CLI ke dalam GUI. Hal ini berguna untuk pengujian lokal, validasi staging, dan tim yang menginginkan jalur pemulihan yang lebih jelas.</p>
+<h2 id="Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="common-anchor-header">Debug API REST Milvus dengan API Playground Bawaan<button data-href="#Debug-Milvus-REST-APIs-With-the-Built-in-API-Playground" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -320,18 +321,18 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 adds a REST API Playground for Milvus API development and debugging.</strong></p>
+    </button></h2><p><strong>Attu 3.0 menambahkan API Playground REST untuk pengembangan dan debugging API Milvus.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_10_7630afab16.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: Attu 3.0 API Playground</p>
-<p>The Playground catalogs Milvus REST endpoints by category. Select a database and collection, and Attu fills in the run context automatically. From there, you can send a request in one click and inspect the response in real time.</p>
-<p>This is useful when you want to test an API call without setting up curl commands or a Postman collection. It is also useful for learning how a Milvus feature maps to the REST API, because you can move between the UI context and the request body directly.</p>
-<p>For application developers, the API Playground is a debugging surface. For new Milvus users, it is a learning surface. For platform teams, it is a quick way to validate operations before turning them into scripts or application code.</p>
-<h2 id="Manage-RBAC-Beside-the-Database-or-Collection" class="common-anchor-header">Manage RBAC Beside the Database or Collection<button data-href="#Manage-RBAC-Beside-the-Database-or-Collection" class="anchor-icon" translate="no">
+<p>Gambar: API Playground Attu 3.0</p>
+<p>Playground ini mengelompokkan titik akhir REST Milvus berdasarkan kategori. Pilih database dan koleksi, lalu Attu akan mengisi konteks eksekusi secara otomatis. Dari sana, Anda dapat mengirim permintaan dengan satu klik dan memeriksa respons secara real-time.</p>
+<p>Fitur ini berguna saat Anda ingin menguji panggilan API tanpa perlu menyiapkan perintah curl atau koleksi Postman. Fitur ini juga berguna untuk mempelajari bagaimana fitur Milvus dipetakan ke API REST, karena Anda dapat berpindah langsung antara konteks antarmuka pengguna (UI) dan isi permintaan.</p>
+<p>Bagi pengembang aplikasi, API Playground berfungsi sebagai antarmuka debugging. Bagi pengguna baru Milvus, ini merupakan sarana pembelajaran. Bagi tim platform, ini adalah cara cepat untuk memvalidasi operasi sebelum mengubahnya menjadi skrip atau kode aplikasi.</p>
+<h2 id="Manage-RBAC-Beside-the-Database-or-Collection" class="common-anchor-header">Kelola RBAC di Samping Database atau Koleksi<button data-href="#Manage-RBAC-Beside-the-Database-or-Collection" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -346,20 +347,20 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 changes how permission workflows feel in the UI.</strong> Instead of treating <a href="https://milvus.io/docs/rbac.md">RBAC</a> as a separate admin task, it brings access control closer to the database and collection tabs where users are already working.</p>
-<p>The underlying model is still Milvus RBAC: users, roles, <a href="https://milvus.io/docs/grant_privileges.md">privileges</a>, grants, and revokes. Attu 3.0 simplifies the operating path around that model.</p>
+    </button></h2><p><strong>Attu 3.0 mengubah cara kerja alur izin di antarmuka pengguna.</strong> Alih-alih memperlakukan <a href="https://milvus.io/docs/rbac.md">RBAC</a> sebagai tugas administrasi terpisah, Attu 3.0 mendekatkan kontrol akses ke tab database dan koleksi tempat pengguna sudah bekerja.</p>
+<p>Model dasarnya tetap menggunakan RBAC Milvus: pengguna, peran, <a href="https://milvus.io/docs/grant_privileges.md">hak istimewa</a>, pemberian izin, dan pencabutan izin. Attu 3.0 menyederhanakan alur operasi seputar model tersebut.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/attu_3_0_beta_md_11_8b431e168c.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>Image: In-context user and permission management in Attu 3.0</p>
-<h3 id="One-Click-User-Creation-for-Common-Scopes" class="common-anchor-header">One-Click User Creation for Common Scopes</h3><p>In Attu 2.x, opening read-only access to a collection usually involved several steps: create the user, create a role, configure privileges, assign the role to the user, and make sure the scope was correct.</p>
-<p><strong>In Attu 3.0, you can open a collection, go to the Users tab, click Create User, choose ReadOnly or ReadWrite, and let Attu complete the workflow.</strong> It creates the user, generates a secure password, creates the matching scoped role, and applies the grant.</p>
-<p>The same pattern works at the database level. You can also authorize an existing user to the current collection or revoke access in one click.</p>
-<p>This keeps permission management close to the resource being protected. You do not have to jump through several admin pages or remember a role naming convention just to give a teammate scoped access.</p>
-<h2 id="What-This-Beta-Means-for-Attu-Users" class="common-anchor-header">What This Beta Means for Attu Users<button data-href="#What-This-Beta-Means-for-Attu-Users" class="anchor-icon" translate="no">
+<p>Gambar: Manajemen pengguna dan izin dalam konteks di Attu 3.0</p>
+<h3 id="One-Click-User-Creation-for-Common-Scopes" class="common-anchor-header">Pembuatan Pengguna dengan Satu Klik untuk Cakupan Umum</h3><p>Di Attu 2.x, membuka akses baca-saja ke suatu koleksi biasanya melibatkan beberapa langkah: membuat pengguna, membuat peran, mengonfigurasi hak akses, menugaskan peran kepada pengguna, dan memastikan cakupan yang benar.</p>
+<p><strong>Di Attu 3.0, Anda dapat membuka koleksi, beralih ke tab Pengguna, mengklik Buat Pengguna, memilih ReadOnly atau ReadWrite, dan membiarkan Attu menyelesaikan alur kerjanya.</strong> Attu akan membuat pengguna, menghasilkan kata sandi yang aman, membuat peran dengan cakupan yang sesuai, dan menerapkan pemberian izin.</p>
+<p>Pola yang sama berlaku di tingkat basis data. Anda juga dapat memberikan otorisasi kepada pengguna yang sudah ada ke koleksi saat ini atau mencabut aksesnya hanya dengan satu klik.</p>
+<p>Hal ini membuat pengelolaan izin tetap dekat dengan sumber daya yang dilindungi. Anda tidak perlu berpindah-pindah melalui beberapa halaman admin atau mengingat konvensi penamaan peran hanya untuk memberikan akses dengan cakupan tertentu kepada rekan tim.</p>
+<h2 id="What-This-Beta-Means-for-Attu-Users" class="common-anchor-header">Apa Artinya Beta Ini bagi Pengguna Attu<button data-href="#What-This-Beta-Means-for-Attu-Users" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -374,21 +375,21 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>Attu 3.0 Beta is the biggest update to the Milvus management console since Attu first shipped.</strong> It is not just a visual refresh. It changes the scope of what Attu can handle.</p>
-<p>The main upgrade is that Attu now fits the way many Milvus users actually work: multiple clusters, persistent local settings, more data movement, more access control, more troubleshooting, and more need to understand cluster behavior without switching between tools.</p>
-<p>The highlights are:</p>
+    </button></h2><p><strong>Attu 3.0 Beta adalah pembaruan terbesar pada konsol manajemen Milvus sejak Attu pertama kali diluncurkan.</strong> Ini bukan sekadar penyegaran tampilan. Pembaruan ini mengubah cakupan hal-hal yang dapat ditangani oleh Attu.</p>
+<p>Peningkatan utamanya adalah Attu kini lebih sesuai dengan cara kerja banyak pengguna Milvus: beberapa kluster, pengaturan lokal yang tetap, lebih banyak perpindahan data, kontrol akses yang lebih ketat, pemecahan masalah yang lebih sering, serta kebutuhan yang lebih besar untuk memahami perilaku kluster tanpa perlu berpindah antar alat.</p>
+<p>Fitur-fitur utamanya adalah:</p>
 <ul>
-<li>Multi-cluster management with health indicators and one-click switching.</li>
-<li>Persistent local state for cluster configs, preferences, LLM config, agent history, and custom skills.</li>
-<li>A built-in AI Agent with 50+ Milvus tools and confirmation gates for destructive actions.</li>
-<li>Four built-in expert diagnostic skills for cluster health, search performance, data writes, and configuration review.</li>
-<li>A redesigned data browser with database → collection → partition navigation and richer collection operations.</li>
-<li>Built-in Prometheus metrics, slow-query analysis, topology, and backup and restore.</li>
-<li>A REST API Playground for debugging and learning Milvus APIs.</li>
-<li>RBAC workflows that happen beside the database or collection, not only in a separate admin flow.</li>
+<li>Manajemen multi-kluster dengan indikator kesehatan dan peralihan satu klik.</li>
+<li>Status lokal yang tetap untuk konfigurasi kluster, preferensi, konfigurasi LLM, riwayat agen, dan keterampilan khusus.</li>
+<li>Agen AI bawaan dengan lebih dari 50 alat Milvus dan gerbang konfirmasi untuk tindakan yang berisiko.</li>
+<li>Empat keterampilan diagnostik ahli bawaan untuk kesehatan kluster, kinerja pencarian, penulisan data, dan tinjauan konfigurasi.</li>
+<li>Penjelajah data yang didesain ulang dengan navigasi database → koleksi → partisi serta operasi koleksi yang lebih kaya.</li>
+<li>Metrik Prometheus bawaan, analisis kueri lambat, topologi, serta pencadangan dan pemulihan.</li>
+<li>Ruang uji coba (Playground) REST API untuk debugging dan mempelajari API Milvus.</li>
+<li>Alur kerja RBAC yang berjalan di samping database atau koleksi, bukan hanya dalam alur admin terpisah.</li>
 </ul>
-<p>If you use Attu only for local Milvus development, 3.0 gives you a more capable console. If you manage several Milvus environments, the multi-cluster and persistent-state changes alone are worth trying. If you often debug performance or permission issues, the Agent, diagnostics, metrics, and in-context RBAC workflows should save time immediately.</p>
-<h2 id="Get-Started" class="common-anchor-header">Get Started<button data-href="#Get-Started" class="anchor-icon" translate="no">
+<p>Jika Anda menggunakan Attu hanya untuk pengembangan Milvus lokal, versi 3.0 menawarkan konsol yang lebih mumpuni. Jika Anda mengelola beberapa lingkungan Milvus, perubahan pada fitur multi-kluster dan status persisten saja sudah layak untuk dicoba. Jika Anda sering men-debug masalah kinerja atau izin, Agent, diagnostik, metrik, dan alur kerja RBAC dalam konteks seharusnya langsung menghemat waktu Anda.</p>
+<h2 id="Get-Started" class="common-anchor-header">Memulai<button data-href="#Get-Started" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -403,13 +404,13 @@ origin: 'https://milvus.io/blog/attu-3-0-beta.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Try Attu 3.0 Beta with Docker:</p>
+    </button></h2><p>Coba Attu 3.0 Beta dengan Docker:</p>
 <pre><code translate="no" class="language-bash">docker run -d --name attu -p 3000:3000 -v attu-data:/data zilliz/attu:v3.0.0-beta.6
 <button class="copy-code-btn"></button></code></pre>
-<p>Then open:</p>
+<p>Kemudian buka:</p>
 <pre><code translate="no"><span class="hljs-attr">http</span>:<span class="hljs-comment">//localhost:3000</span>
 <button class="copy-code-btn"></button></code></pre>
-<p>Add your Milvus connection from the sidebar and start exploring the new console.</p>
-<p>Prefer a desktop app? Download the build for your platform from <a href="https://github.com/zilliztech/attu/releases"><strong>GitHub Releases</strong></a>. Attu 3.0 Beta provides desktop packages for macOS, Linux, and Windows. Recent releases also include a standalone Linux server package for running Attu without Docker or Electron.</p>
-<p><strong>Have questions?</strong> Bring your multi-cluster setup, custom agent skills, or diagnostic scenario to the <a href="https://discord.gg/milvus"><strong>Milvus Discord</strong></a>, or book <a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting?uuid=8d218acf-a841-4869-8330-91daff5e8a02"><strong>Milvus Office Hours</strong></a> to work through it with the community.</p>
-<p><strong>Don’t want to operate Milvus infrastructure yourself?</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a> is the fully managed platform from the creators of Milvus. It keeps the Milvus API and adds managed infrastructure for real-time vector search, large-scale discovery, and AI data operations. For teams with data-sovereignty requirements, Zilliz Cloud <strong>BYOC</strong> runs inside your own cloud account so data stays in your VPC while Zilliz handles operations.</p>
+<p>Tambahkan koneksi Milvus Anda dari bilah samping dan mulailah menjelajahi konsol baru ini.</p>
+<p>Lebih suka aplikasi desktop? Unduh build untuk platform Anda dari <a href="https://github.com/zilliztech/attu/releases"><strong>GitHub Releases</strong></a>. Attu 3.0 Beta menyediakan paket desktop untuk macOS, Linux, dan Windows. Rilis terbaru juga mencakup paket server Linux mandiri untuk menjalankan Attu tanpa Docker atau Electron.</p>
+<p><strong>Ada pertanyaan?</strong> Bawa konfigurasi multi-cluster, keterampilan agen kustom, atau skenario diagnostik Anda ke <a href="https://discord.gg/milvus"><strong>Milvus Discord</strong></a>, atau jadwalkan <a href="https://meetings.hubspot.com/chloe-williams1/milvus-meeting?uuid=8d218acf-a841-4869-8330-91daff5e8a02"><strong>Milvus Office Hours</strong></a> untuk membahasnya bersama komunitas.</p>
+<p><strong>Tidak ingin mengelola infrastruktur Milvus sendiri?</strong> <a href="https://cloud.zilliz.com/signup"><strong>Zilliz Cloud</strong></a> adalah platform yang dikelola sepenuhnya dari pencipta Milvus. Platform ini mempertahankan API Milvus dan menambahkan infrastruktur yang dikelola untuk pencarian vektor real-time, penemuan skala besar, dan operasi data AI. Bagi tim yang memiliki persyaratan kedaulatan data, Zilliz Cloud <strong>BYOC</strong> berjalan di dalam akun cloud Anda sendiri sehingga data tetap berada di VPC Anda sementara Zilliz menangani operasinya.</p>

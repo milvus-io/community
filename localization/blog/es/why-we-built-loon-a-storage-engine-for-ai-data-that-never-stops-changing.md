@@ -1,10 +1,11 @@
 ---
 id: why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
-title: |
-  Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.
+title: >
+  Por qué creamos Loon: un motor de almacenamiento para datos de IA que nunca
+  deja de cambiar.
 author: Ted Xu
 date: 2026-6-5
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_5_2026_04_23_58_PM_716fe391b5.png
+cover: assets.zilliz.com/Loon_New_Cover_8270435335.png
 tag: Engineering
 recommend: true
 publishToMedium: true
@@ -13,14 +14,15 @@ meta_keywords: 'Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets,
 meta_title: |
   AI Datasets Are Never Done. So We Built Loon.
 desc: >
-  Loon is a new storage engine for Milvus 3.0 and Zilliz Vector Lakebase, built
-  to manage evolving vector datasets with ColumnGroups, row ID alignment, and
-  Manifests.
+  Loon es un nuevo motor de almacenamiento para Milvus 3.0 y Zilliz Vector
+  Lakebase, diseñado para gestionar conjuntos de datos vectoriales en constante
+  evolución mediante ColumnGroups, alineación de identificadores de fila y
+  manifiestos.
 origin: >-
   https://zilliz.com/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing
 ---
-<p><em>This blog was originally published on zilliz.com and has been republished with permission.</em></p>
-<h2 id="Key-takeaways" class="common-anchor-header">Key takeaways<button data-href="#Key-takeaways" class="anchor-icon" translate="no">
+<p><em>Este blog se publicó originalmente en zilliz.com y se ha vuelto a publicar con permiso.</em></p>
+<h2 id="Key-takeaways" class="common-anchor-header">Puntos clave<button data-href="#Key-takeaways" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -35,14 +37,14 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>This is a long, in-depth engineering dive, so here are the key points before we get into the details.</p>
+    </button></h2><p>Se trata de un análisis técnico extenso y en profundidad, así que aquí tienes los puntos clave antes de entrar en detalles.</p>
 <ul>
-<li>AI datasets are not static tables. The same rows keep changing as teams replace embedding models, add sparse vectors, revise captions, backfill labels, rebuild indexes, and run offline analysis.</li>
-<li>Traditional storage layouts break down in three ways: long vector columns make backfills expensive, a single file format cannot serve both scans and point reads well, and private database storage forces external pipelines to create extra copies of the truth.</li>
-<li>Loon is the new storage engine for Milvus and Zilliz Vector Lakebase. It is built around hybrid file formats, row ID alignment, and a Manifest that defines the dataset’s versioned state.</li>
-<li>The goal is to enable a single vector dataset to support online search, offline analysis, backfills, compaction, and external compute without constantly copying, rewriting, or reimporting data.</li>
+<li>Los conjuntos de datos de IA no son tablas estáticas. Las mismas filas cambian constantemente a medida que los equipos sustituyen modelos de incrustación, añaden vectores dispersos, revisan leyendas, rellenan etiquetas, reconstruyen índices y ejecutan análisis fuera de línea.</li>
+<li>Los diseños de almacenamiento tradicionales presentan tres limitaciones: las columnas de vectores largos encarecen el rellenado de datos, un único formato de archivo no puede dar un buen servicio tanto para escaneos como para lecturas puntuales, y el almacenamiento en bases de datos privadas obliga a los flujos de trabajo externos a crear copias adicionales de los datos originales.</li>
+<li>Loon es el nuevo motor de almacenamiento para Milvus y Zilliz Vector Lakebase. Se basa en formatos de archivo híbridos, la alineación de ID de filas y un «Manifest» que define el estado versionado del conjunto de datos.</li>
+<li>El objetivo es permitir que un único conjunto de datos vectoriales admita búsquedas en línea, análisis fuera de línea, rellenos, compactación y computación externa sin tener que copiar, reescribir o reimportar datos constantemente.</li>
 </ul>
-<h2 id="Introduction" class="common-anchor-header">Introduction<button data-href="#Introduction" class="anchor-icon" translate="no">
+<h2 id="Introduction" class="common-anchor-header">Introducción<button data-href="#Introduction" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -57,21 +59,21 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>For a while, there was one argument against vector databases that sounded reasonable.</p>
-<p><em>Traditional databases already store integers, strings, JSON, blobs, and indexes. Why not add a</em> <code translate="no">_vector_</code> <em>type, build an ANN index beside it, and call it a day?</em></p>
-<p>For early semantic search, that works well enough. A vector column plus an index can support a demo, a small RAG application, or an internal search feature. The problem shows up later, when the dataset starts behaving less like a table and more like an AI data system.</p>
-<p>A production vector dataset has rows, primary keys, scalar fields, and queryable columns. In that sense, it looks like a database table. But it also has the scale and workflow shape of a data lake. It may contain hundreds of millions of records. It is repeatedly read and rewritten by Spark, Ray, DuckDB, training pipelines, evaluation jobs, and data quality systems.</p>
-<p>It also depends on object storage. The source objects are often videos, images, PDFs, audio files, or web documents that remain in S3, GCS, OSS, or another object store. The database stores references, metadata, derived features, and indexes. Then it adds things traditional storage models were not built to manage as first-class objects: dense embeddings, sparse vectors, captions, vector indexes, text indexes, delete logs, statistics, model versions, parser versions, external blob references, and the version relationships between all of them.</p>
-<p><strong>That is where “just add a vector column” starts to break down.</strong> The issue is not whether a database can store vector bytes. Many systems can. The harder question is <strong>whether the storage model can handle how vector data changes, how it is queried, and how it is shared across the AI data stack.</strong></p>
-<p><strong>This is why we built Loon, the new storage engine for Milvus and</strong> <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> <strong>(the next evolution of Zilliz Cloud).</strong></p>
-<p>Loon is designed with three ideas:</p>
+    </button></h2><p>Durante un tiempo, hubo un argumento en contra de las bases de datos vectoriales que parecía razonable.</p>
+<p><em>Las bases de datos tradicionales ya almacenan enteros, cadenas de caracteres, JSON, blobs e índices. ¿Por qué no añadir un</em> <em>tipo</em> « <code translate="no">_vector_</code> <em>», crear un índice ANN junto a él y dar el tema por zanjado?</em></p>
+<p>Para las primeras etapas de la búsqueda semántica, eso funciona bastante bien. Una columna vectorial más un índice pueden servir para una demostración, una pequeña aplicación RAG o una función de búsqueda interna. El problema surge más adelante, cuando el conjunto de datos empieza a comportarse menos como una tabla y más como un sistema de datos de IA.</p>
+<p>Un conjunto de datos vectorial en producción tiene filas, claves primarias, campos escalares y columnas consultables. En ese sentido, se parece a una tabla de base de datos. Pero también tiene la escala y la estructura de flujo de trabajo de un lago de datos. Puede contener cientos de millones de registros. Es leído y reescrito repetidamente por Spark, Ray, DuckDB, pipelines de entrenamiento, trabajos de evaluación y sistemas de calidad de datos.</p>
+<p>También depende del almacenamiento de objetos. Los objetos de origen suelen ser vídeos, imágenes, archivos PDF, archivos de audio o documentos web que permanecen en S3, GCS, OSS u otro almacén de objetos. La base de datos almacena referencias, metadatos, características derivadas e índices. A continuación, añade elementos que los modelos de almacenamiento tradicionales no estaban diseñados para gestionar como objetos de primera clase: incrustaciones densas, vectores dispersos, leyendas, índices vectoriales, índices de texto, registros de eliminación, estadísticas, versiones de modelos, versiones de analizadores sintácticos, referencias a blobs externos y las relaciones de versión entre todos ellos.</p>
+<p><strong>Ahí es donde la idea de «basta con añadir una columna vectorial» empieza a fallar.</strong> La cuestión no es si una base de datos puede almacenar bytes vectoriales. Muchos sistemas pueden hacerlo. La pregunta más difícil es <strong>si el modelo de almacenamiento puede gestionar cómo cambian los datos vectoriales, cómo se consultan y cómo se comparten a lo largo de la pila de datos de IA.</strong></p>
+<p><strong>Por eso hemos creado Loon, el nuevo motor de almacenamiento para Milvus y</strong> <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> <strong>(la próxima evolución de Zilliz Cloud).</strong></p>
+<p>Loon se ha diseñado en torno a tres ideas:</p>
 <ol>
-<li>Use different physical formats for different kinds of columns.</li>
-<li>Align those columns through a shared row ID space.</li>
-<li>Use a Manifest to define the dataset’s versioned state.</li>
+<li>Utilizar diferentes formatos físicos para los distintos tipos de columnas.</li>
+<li>Alinear esas columnas mediante un espacio compartido de identificadores de fila.</li>
+<li>Utilizar un manifiesto para definir el estado versionado del conjunto de datos.</li>
 </ol>
-<p>To see why those pieces matter, let’s start with a common multimodal workflow.</p>
-<h2 id="A-vector-dataset-is-never-really-finished" class="common-anchor-header">A vector dataset is never really finished.<button data-href="#A-vector-dataset-is-never-really-finished" class="anchor-icon" translate="no">
+<p>Para entender por qué estos elementos son importantes, empecemos con un flujo de trabajo multimodal habitual.</p>
+<h2 id="A-vector-dataset-is-never-really-finished" class="common-anchor-header">Un conjunto de datos vectoriales nunca está realmente terminado.<button data-href="#A-vector-dataset-is-never-really-finished" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -86,9 +88,9 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Imagine an AI team building a video dataset for multimodal training.</p>
-<p>A long video is uploaded to object storage. A pipeline cuts it into clips based on scene changes, shot boundaries, or time windows. Clips that are too long or too short, blurry, duplicated, or low-quality are filtered out. The remaining clips are scored by an aesthetic model, captioned by another model, embedded by a vision-language model, and stored in a vector database for search, deduplication, and training-data filtering.</p>
-<p>At a high level, the workflow looks simple:</p>
+    </button></h2><p>Imagina un equipo de IA que crea un conjunto de datos de vídeo para el entrenamiento multimodal.</p>
+<p>Se sube un vídeo largo a un almacenamiento de objetos. Un proceso lo divide en clips basándose en los cambios de escena, los límites de las tomas o las ventanas de tiempo. Se filtran los clips que son demasiado largos o cortos, borrosos, duplicados o de baja calidad. Los clips restantes son puntuados por un modelo estético, subtitulados por otro modelo, integrados por un modelo de visión-lenguaje y almacenados en una base de datos vectorial para su búsqueda, deduplicación y filtrado de datos de entrenamiento.</p>
+<p>A grandes rasgos, el flujo de trabajo parece sencillo:</p>
 <pre><code translate="no">video
 → clips
 → metadata
@@ -97,19 +99,19 @@ origin: >-
 → embedding
 → search / dedup / training data filtering
 <button class="copy-code-btn"></button></code></pre>
-<p>But the dataset does not arrive fully formed.</p>
+<p>Pero el conjunto de datos no llega ya completamente formado.</p>
 <ul>
-<li>In the first week, the table may only contain <code translate="no">clip_id</code>, <code translate="no">video_id</code>, <code translate="no">start_offset</code>, and <code translate="no">duration</code>.</li>
-<li>In the second week, the team adds <code translate="no">aesthetic_score</code>.</li>
-<li>In the third week, a captioning model runs, and each clip gets a <code translate="no">caption</code>.</li>
-<li>In the fourth week, the first embedding model goes online, and each clip gets a 768-dimensional CLIP embedding.</li>
-<li>A month later, the team switches models and backfills <code translate="no">embedding_v2</code>, now with 1024 dimensions.</li>
-<li>Two months later, hybrid search becomes a requirement, so the team adds a sparse vector column.</li>
-<li>Three months later, captions undergo human review and must be corrected in place.</li>
+<li>En la primera semana, la tabla puede contener únicamente <code translate="no">clip_id</code>, <code translate="no">video_id</code>, <code translate="no">start_offset</code> y <code translate="no">duration</code>.</li>
+<li>En la segunda semana, el equipo añade <code translate="no">aesthetic_score</code>.</li>
+<li>En la tercera semana, se ejecuta un modelo de subtitulación y cada clip obtiene un <code translate="no">caption</code>.</li>
+<li>En la cuarta semana, se pone en marcha el primer modelo de incrustación, y cada clip obtiene una incrustación CLIP de 768 dimensiones.</li>
+<li>Un mes después, el equipo cambia de modelo y retroactiva l <code translate="no">embedding_v2</code>, ahora con 1024 dimensiones.</li>
+<li>Dos meses después, la búsqueda híbrida se convierte en un requisito, por lo que el equipo añade una columna de vectores dispersos.</li>
+<li>Tres meses después, los subtítulos se someten a revisión humana y deben corregirse in situ.</li>
 </ul>
-<p>The dataset was never completed. It kept accumulating new interpretations of the same underlying rows.</p>
-<p>That is one of the core differences between vector data and traditional business data. The same row gets reprocessed again and again. And scale turns this from an inconvenience into a storage problem: multimodal datasets are often not millions of records but hundreds of millions or billions. LAION-5B is a useful reference for the shape — billions of image-text pairs, each with metadata, captions, and embeddings. So the hard part is not the first insert. The hard part is everything that happens after the dataset starts evolving. <strong>That evolution exposes three problems.</strong></p>
-<h2 id="The-first-problem-long-columns-make-write-amplification-expensive" class="common-anchor-header">The first problem: long columns make write amplification expensive<button data-href="#The-first-problem-long-columns-make-write-amplification-expensive" class="anchor-icon" translate="no">
+<p>El conjunto de datos nunca se completó. No dejaba de acumular nuevas interpretaciones de las mismas filas subyacentes.</p>
+<p>Esa es una de las diferencias fundamentales entre los datos vectoriales y los datos empresariales tradicionales. La misma fila se vuelve a procesar una y otra vez. Y la escala convierte esto de un inconveniente en un problema de almacenamiento: los conjuntos de datos multimodales a menudo no contienen millones de registros, sino cientos de millones o miles de millones. LAION-5B es una referencia útil en cuanto a su estructura: miles de millones de pares de imagen y texto, cada uno con metadatos, leyendas y representaciones vectoriales. Así pues, lo difícil no es la primera inserción. Lo difícil es todo lo que ocurre una vez que el conjunto de datos empieza a evolucionar. <strong>Esa evolución pone de manifiesto tres problemas.</strong></p>
+<h2 id="The-first-problem-long-columns-make-write-amplification-expensive" class="common-anchor-header">El primer problema: las columnas largas encarecen la amplificación de escritura<button data-href="#The-first-problem-long-columns-make-write-amplification-expensive" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -124,42 +126,42 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Columnar formats such as Parquet are excellent for many analytical workloads. They work well when schemas are fairly stable, data is read more often than rewritten, scans only touch a subset of columns, and compression matters. That is the world for which many analytical formats were optimized.</p>
-<h3 id="Vector-rows-are-much-wider-than-analytical-rows" class="common-anchor-header">Vector rows are much wider than analytical rows</h3><p>TPC-H <code translate="no">lineitem</code> is a good baseline. It has 16 columns: integer keys, decimal values, dates, short strings, and a small comment field. One uncompressed row is roughly 150 bytes. After compression, it may be much smaller. With a 64 MB row group, a storage system can pack hundreds of thousands of rows into one group.</p>
-<p><strong>Vector datasets do not look like that.</strong></p>
-<p>A LAION-style image-text dataset is much closer to what many AI pipelines produce today. Each row still has ordinary metadata: a URL, a caption, width, height, quality scores, labels, and so on. But once the embedding is added, the row’s physical shape changes.</p>
-<p>A 768-dimensional CLIP vector takes about 1.5 KB in fp16 or 3 KB in fp32. That one column can be much larger than an entire TPC-H <code translate="no">lineitem</code> row.</p>
-<p>And 768 dimensions are not unusual or large by today’s standards. A 1024- or 2048-dimensional embedding is common in multimodal pipelines. OpenAI’s <code translate="no">text-embedding-3-large</code> goes up to 3072 dimensions, which is about 12 KB per vector in fp32.</p>
-<p>The comparison is stark:</p>
+    </button></h2><p>Los formatos columnares, como Parquet, son excelentes para muchas cargas de trabajo analíticas. Funcionan bien cuando los esquemas son bastante estables, los datos se leen con más frecuencia de lo que se reescriben, los escaneos solo afectan a un subconjunto de columnas y la compresión es importante. Ese es el entorno para el que se optimizaron muchos formatos analíticos.</p>
+<h3 id="Vector-rows-are-much-wider-than-analytical-rows" class="common-anchor-header">Las filas vectoriales son mucho más anchas que las filas analíticas</h3><p>El TPC-H <code translate="no">lineitem</code> es una buena referencia. Tiene 16 columnas: claves enteras, valores decimales, fechas, cadenas cortas y un pequeño campo de comentarios. Una fila sin comprimir ocupa aproximadamente 150 bytes. Tras la compresión, puede ser mucho más pequeña. Con un grupo de filas de 64 MB, un sistema de almacenamiento puede agrupar cientos de miles de filas en un solo grupo.</p>
+<p><strong>Los conjuntos de datos vectoriales no tienen ese aspecto.</strong></p>
+<p>Un conjunto de datos de imagen y texto al estilo LAION se acerca mucho más a lo que producen hoy en día muchos flujos de trabajo de IA. Cada fila sigue teniendo metadatos habituales: una URL, un pie de foto, anchura, altura, puntuaciones de calidad, etiquetas, etcétera. Pero una vez que se añade la incrustación, la forma física de la fila cambia.</p>
+<p>Un vector CLIP de 768 dimensiones ocupa aproximadamente 1,5 KB en fp16 o 3 KB en fp32. Esa única columna puede ser mucho más grande que toda una fila de TPC-H <code translate="no">lineitem</code>.</p>
+<p>Y 768 dimensiones no son inusuales ni excesivas según los estándares actuales. Una incrustación de 1024 o 2048 dimensiones es habitual en los flujos de trabajo multimodales. El modelo « <code translate="no">text-embedding-3-large</code> » de OpenAI alcanza las 3072 dimensiones, lo que supone unos 12 KB por vector en fp32.</p>
+<p>La comparación es contundente:</p>
 <table>
 <thead>
-<tr><th>Dataset shape</th><th>Approximate row size</th><th>What dominates the row</th></tr>
+<tr><th>Forma del conjunto de datos</th><th>Tamaño aproximado de las filas</th><th>Qué predomina en la fila</th></tr>
 </thead>
 <tbody>
-<tr><td>TPC-H lineitem</td><td>~150 bytes uncompressed</td><td>scalar and short string fields</td></tr>
-<tr><td>LAION-style row with 768-dim fp16 vector</td><td>~1.5 KB+</td><td>embedding</td></tr>
-<tr><td>LAION-style row with 768-dim fp32 vector</td><td>~3 KB+</td><td>embedding</td></tr>
-<tr><td>Row with 3072-dim fp32 vector</td><td>~12 KB+ for the vector alone</td><td>embedding</td></tr>
+<tr><td>TPC-H lineitem</td><td>~150 bytes sin comprimir</td><td>campos escalares y de cadena corta</td></tr>
+<tr><td>Fila de tipo LAION con un vector de 768 dimensiones en fp16</td><td>~1,5 KB+</td><td>incrustación</td></tr>
+<tr><td>Fila de estilo LAION con un vector de 768 dimensiones en fp32</td><td>~3 KB+</td><td>incrustación</td></tr>
+<tr><td>Fila con un vector de 3072 dimensiones en fp32</td><td>~12 KB+ solo para el vector</td><td>incrustación</td></tr>
 </tbody>
 </table>
-<p>In many AI datasets, the vector column is not just another field. Physically, it is most of the row. That changes the cost of schema evolution.</p>
-<h3 id="Adding-one-vector-column-can-mean-hundreds-of-gigabytes" class="common-anchor-header">Adding one vector column can mean hundreds of gigabytes</h3><p>Suppose a dataset has 100 million video clips. Adding a new 1024-dimensional fp32 embedding column means writing roughly 400 GB of raw vector data. That does not include statistics, indexes, metadata updates, object storage overhead, validation, or serving-path integration.</p>
+<p>En muchos conjuntos de datos de IA, la columna del vector no es simplemente un campo más. Físicamente, ocupa la mayor parte de la fila. Esto modifica el coste de la evolución del esquema.</p>
+<h3 id="Adding-one-vector-column-can-mean-hundreds-of-gigabytes" class="common-anchor-header">Añadir una columna de vectores puede suponer cientos de gigabytes</h3><p>Supongamos que un conjunto de datos contiene 100 millones de clips de vídeo. Añadir una nueva columna de incrustación de 1024 dimensiones en fp32 supone escribir aproximadamente 400 GB de datos vectoriales sin procesar. Eso no incluye las estadísticas, los índices, las actualizaciones de metadatos, la sobrecarga del almacenamiento de objetos, la validación ni la integración de la ruta de servicio.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_3_ca3c616b9e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>If the team adds one or two vector-like columns every month, such as <code translate="no">embedding_v2</code>, <code translate="no">sparse_vector</code>, or rerank features, schema evolution becomes a recurring daAta engineering job measured in hundreds of gigabytes or terabytes.</p>
-<h3 id="Small-logical-updates-can-trigger-large-physical-rewrites" class="common-anchor-header">Small logical updates can trigger large physical rewrites</h3><p>Updates are just as important.</p>
-<p>In columnar systems, old data is usually not updated in place. A delete log records what changed, and compaction later rewrites live rows into new files. That model is manageable when rows are small.</p>
-<p>With vector data, a small logical update can trigger a large physical rewrite.</p>
-<p>A human review job may only correct a few hundred bytes in a caption. But if the caption, dense vector, sparse vector, and other derived features share the same physical file lifecycle, the system may end up rewriting the vectors too. The logical change is small. The physical I/O can be huge.</p>
-<p>This is the write amplification problem in vector storage. The expensive part is not only that vectors are large. It is that large derived fields and small mutable fields often get tied together by a storage layout that treats them as one unit.</p>
-<h3 id="For-AI-datasets-backfill-is-a-routine-workload" class="common-anchor-header">For AI datasets, backfill is a routine workload</h3><p>For traditional analytical tables, schema evolution may occur only occasionally. For AI datasets, it is routine. Caption models are upgraded. Embedding models are replaced. Sparse vectors are added later. Rerank features appear. Human labels are corrected. Governance tags are backfilled. Indexes are rebuilt.</p>
-<p>These operations are not simple appends. They frequently modify or extend existing rows.</p>
-<p>That is why vector storage cannot only optimize for scan throughput. It also has to make backfills and partial updates cheaper.</p>
-<h2 id="The-second-problem-the-same-data-must-support-scans-and-point-reads" class="common-anchor-header">The second problem: the same data must support scans and point reads<button data-href="#The-second-problem-the-same-data-must-support-scans-and-point-reads" class="anchor-icon" translate="no">
+<p>Si el equipo añade una o dos columnas de tipo vectorial cada mes, como las características de « <code translate="no">embedding_v2</code> », « <code translate="no">sparse_vector</code> » o «rerank», la evolución del esquema se convierte en una tarea recurrente de ingeniería de datos que se mide en cientos de gigabytes o terabytes.</p>
+<h3 id="Small-logical-updates-can-trigger-large-physical-rewrites" class="common-anchor-header">Pequeñas actualizaciones lógicas pueden desencadenar grandes reescrituras físicas</h3><p>Las actualizaciones son igual de importantes.</p>
+<p>En los sistemas columnares, los datos antiguos no suelen actualizarse in situ. Un registro de eliminaciones anota lo que ha cambiado y, posteriormente, la compactación reescribe las filas activas en nuevos archivos. Ese modelo es manejable cuando las filas son pequeñas.</p>
+<p>Con datos vectoriales, una pequeña actualización lógica puede desencadenar una reescritura física de gran envergadura.</p>
+<p>Una tarea de revisión manual puede corregir solo unos pocos cientos de bytes en un título. Pero si el título, el vector denso, el vector disperso y otras características derivadas comparten el mismo ciclo de vida del archivo físico, el sistema puede acabar reescribiendo también los vectores. El cambio lógico es pequeño. La E/S física puede ser enorme.</p>
+<p>Este es el problema de la amplificación de escritura en el almacenamiento de vectores. Lo costoso no es solo que los vectores sean grandes, sino que los campos derivados grandes y los campos mutables pequeños suelen quedar vinculados entre sí por una estructura de almacenamiento que los trata como una sola unidad.</p>
+<h3 id="For-AI-datasets-backfill-is-a-routine-workload" class="common-anchor-header">En el caso de los conjuntos de datos de IA, el rellenado es una carga de trabajo habitual</h3><p>En el caso de las tablas analíticas tradicionales, la evolución del esquema puede producirse solo de forma ocasional. En los conjuntos de datos de IA, es algo habitual. Se actualizan los modelos de subtítulos. Se sustituyen los modelos de incrustación. Se añaden vectores dispersos posteriormente. Aparecen características de reordenación. Se corrigen las etiquetas humanas. Se completan las etiquetas de gobernanza. Se reconstruyen los índices.</p>
+<p>Estas operaciones no son simples añadidos. Con frecuencia modifican o amplían las filas existentes.</p>
+<p>Por eso, el almacenamiento vectorial no solo debe optimizarse para el rendimiento de escaneo. También debe abaratar los rellenos y las actualizaciones parciales.</p>
+<h2 id="The-second-problem-the-same-data-must-support-scans-and-point-reads" class="common-anchor-header">El segundo problema: los mismos datos deben admitir escaneos y lecturas puntuales<button data-href="#The-second-problem-the-same-data-must-support-scans-and-point-reads" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -174,44 +176,44 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>After the data is written, the read path splits. The same vector dataset typically has two distinct access patterns: <strong>analytical scanning and point reads.</strong></p>
+    </button></h2><p>Una vez escritos los datos, la ruta de lectura se bifurca. El mismo conjunto de datos vectoriales suele tener dos patrones de acceso distintos: <strong>el escaneo analítico y las lecturas puntuales.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_4_cef8d0e3ea.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Analytical-workloads-want-wide-compressed-scans" class="common-anchor-header">Analytical workloads want wide, compressed scans</h3><p>A pipeline may run filters such as:</p>
+<h3 id="Analytical-workloads-want-wide-compressed-scans" class="common-anchor-header">Las cargas de trabajo analíticas requieren escaneos amplios y comprimidos</h3><p>Un proceso puede ejecutar filtros como:</p>
 <pre><code translate="no" class="language-sql">WHERE aesthetic_score &gt; 0.8 AND duration &gt; 5
 <button class="copy-code-btn"></button></code></pre>
-<p>Or it may run offline analysis, full embedding evaluation, BM25 statistics, bitmap construction, data quality checks, counts, and group-bys.</p>
-<p>This pattern reads many rows but only a few columns. It likes sequential I/O, larger row groups, compression, column pruning, batch decoding, and vectorized execution.</p>
-<p>Large row groups help here. They let a single I/O request pull a large amount of useful data, improve compression efficiency, and provide the execution engine with enough contiguous data to amortize overhead. When multiple columns are read together, keeping them organized for scan throughput also helps reduce cache misses during vectorized execution.</p>
-<p>Parquet is strong on this path.</p>
-<h3 id="ANN-results-need-narrow-row-level-lookups" class="common-anchor-header">ANN results need narrow, row-level lookups</h3><p>After the ANN search returns candidate row IDs, the system often needs to fetch fields such as:</p>
+<p>O bien puede realizar análisis fuera de línea, evaluación completa de incrustaciones, estadísticas BM25, construcción de mapas de bits, comprobaciones de calidad de datos, recuentos y agrupaciones.</p>
+<p>Este patrón lee muchas filas, pero solo unas pocas columnas. Se beneficia de la E/S secuencial, los grupos de filas más grandes, la compresión, la poda de columnas, la decodificación por lotes y la ejecución vectorizada.</p>
+<p>Los grupos de filas grandes resultan útiles en este caso. Permiten que una sola solicitud de E/S extraiga una gran cantidad de datos útiles, mejoran la eficiencia de la compresión y proporcionan al motor de ejecución datos contiguos suficientes para amortizar la sobrecarga. Cuando se leen varias columnas a la vez, mantenerlas organizadas para el rendimiento del escaneo también ayuda a reducir las faltas de acierto en la caché durante la ejecución vectorizada.</p>
+<p>Parquet destaca en este aspecto.</p>
+<h3 id="ANN-results-need-narrow-row-level-lookups" class="common-anchor-header">Los resultados de la búsqueda ANN requieren búsquedas específicas a nivel de fila</h3><p>Una vez que la búsqueda de la red neuronal artificial (ANN) devuelve los ID de las filas candidatas, el sistema a menudo necesita recuperar campos como:</p>
 <pre><code translate="no">caption
 embedding
 rerank feature
 video_uri
 metadata
 <button class="copy-code-btn"></button></code></pre>
-<p>This pattern reads fewer rows, often hundreds or thousands, but it needs precise access by row ID. It wants to locate a specific row and column, fetch only the required byte range, and avoid pulling an entire row group just to retrieve a few records.</p>
-<p>Point lookup has almost the opposite preference for scanning. It wants a smaller read granularity. Ideally, the storage layer can find the relevant segment or byte range by row ID, read only that range, and decode only the data needed for the result.</p>
-<p>Compression also has a different tradeoff. For scans, heavier compression is often worth it because the system reads a lot of data and saves I/O. For point lookup, compression can become a liability if retrieving one row requires decoding a much larger compressed block.</p>
-<h3 id="One-layout-cannot-optimize-for-both-paths" class="common-anchor-header">One layout cannot optimize for both paths</h3><p>This is the core conflict. Scalar filtering and analytics want wide, compressed, scan-friendly layouts. Vector lookup wants narrow, precise, row-addressable layouts.</p>
-<p>A single file format can support both to some degree, but it cannot be optimal for both simultaneously.</p>
-<p>If all columns live in Parquet, scalar scans are comfortable. But ANN lookup after recall becomes harder. The system may only need a few hundred vectors, captions, or metadata records, while the storage layer may have to read large row groups that contain mostly irrelevant rows.</p>
-<p>On a local SSD, cache and mmap can hide part of this cost. Once the data is stored in object storage, the cost becomes more visible. Every cache miss can become a remote range read. If candidate rows are scattered across many row groups, a single query can trigger multiple reads, each pulling more data than the query needs. In a poorly laid out layout, fetching 1,000 candidate rows can easily result in tens or hundreds of megabytes of unnecessary I/O, and in extreme cases, much more.</p>
-<p>Making row groups smaller helps point lookup, but it hurts scans. Too many small fragments reduce compression efficiency, increase metadata overhead, and break the long sequential reads that analytical engines depend on.</p>
-<p><strong>So the problem is not about finding a single magic row group size. The problem is that the same dataset is being asked to behave like two different storage systems.</strong></p>
-<h3 id="Hybrid-search-forces-both-paths-into-one-query" class="common-anchor-header">Hybrid search forces both paths into one query</h3><p>Hybrid search makes the conflict harder to ignore. A single query may first apply scalar filters:</p>
+<p>Este patrón lee menos filas, a menudo cientos o miles, pero requiere un acceso preciso por ID de fila. Busca localizar una fila y una columna específicas, recuperar solo el rango de bytes necesario y evitar extraer un grupo de filas completo solo para recuperar unos pocos registros.</p>
+<p>La búsqueda puntual tiene una preferencia casi opuesta en cuanto al escaneo. Requiere una granularidad de lectura menor. Lo ideal es que la capa de almacenamiento pueda encontrar el segmento o rango de bytes relevante mediante el ID de fila, lea solo ese rango y decodifique únicamente los datos necesarios para el resultado.</p>
+<p>La compresión también presenta una disyuntiva diferente. Para los escaneos, suele merecer la pena una compresión más intensa, ya que el sistema lee una gran cantidad de datos y ahorra operaciones de E/S. Para la búsqueda puntual, la compresión puede convertirse en un lastre si recuperar una sola fila requiere decodificar un bloque comprimido mucho mayor.</p>
+<h3 id="One-layout-cannot-optimize-for-both-paths" class="common-anchor-header">Un único diseño no puede optimizarse para ambas vías</h3><p>Este es el conflicto fundamental. El filtrado escalar y el análisis requieren diseños amplios, comprimidos y aptos para escaneos. La búsqueda vectorial requiere diseños estrechos, precisos y direccionables por fila.</p>
+<p>Un único formato de archivo puede admitir ambos hasta cierto punto, pero no puede ser óptimo para ambos simultáneamente.</p>
+<p>Si todas las columnas residen en Parquet, los escaneos escalares funcionan bien. Pero la búsqueda en redes neuronales (ANN) tras la recuperación se complica. Es posible que el sistema solo necesite unos pocos cientos de vectores, leyendas o registros de metadatos, mientras que la capa de almacenamiento podría tener que leer grandes grupos de filas que contienen en su mayoría filas irrelevantes.</p>
+<p>En un SSD local, la caché y mmap pueden ocultar parte de este coste. Una vez que los datos se almacenan en un almacenamiento de objetos, el coste se hace más evidente. Cada fallo de caché puede convertirse en una lectura de rango remoto. Si las filas candidatas están dispersas por muchos grupos de filas, una sola consulta puede desencadenar múltiples lecturas, cada una de las cuales extrae más datos de los que la consulta necesita. En una estructura mal diseñada, recuperar 1.000 filas candidatas puede traducirse fácilmente en decenas o cientos de megabytes de E/S innecesaria y, en casos extremos, en mucho más.</p>
+<p>Reducir el tamaño de los grupos de filas facilita la búsqueda por referencia, pero perjudica los escaneos. Un número excesivo de fragmentos pequeños reduce la eficiencia de la compresión, aumenta la sobrecarga de metadatos y rompe las lecturas secuenciales largas de las que dependen los motores analíticos.</p>
+<p><strong>Así pues, el problema no consiste en encontrar un único tamaño «mágico» para los grupos de filas. El problema es que se le pide al mismo conjunto de datos que se comporte como dos sistemas de almacenamiento diferentes.</strong></p>
+<h3 id="Hybrid-search-forces-both-paths-into-one-query" class="common-anchor-header">La búsqueda híbrida obliga a combinar ambas vías en una sola consulta</h3><p>La búsqueda híbrida hace que el conflicto sea más difícil de ignorar. Una misma consulta puede aplicar primero filtros escalares:</p>
 <pre><code translate="no" class="language-sql">aesthetic_score &gt; 0.8 AND duration &gt; 5
 <button class="copy-code-btn"></button></code></pre>
-<p>Then it runs ANN search.</p>
-<p>Then it fetches caption, vector, and metadata by row ID.</p>
-<p>To the user, this is one search request. To the storage layer, it is both an analytical scan and a low-latency random lookup.</p>
-<p>That is why vector storage needs more than a better Parquet setting. It needs a way to place different columns according to how they are actually read.</p>
-<h2 id="The-third-problem-the-dataset-does-not-live-inside-one-engine" class="common-anchor-header">The third problem: the dataset does not live inside one engine<button data-href="#The-third-problem-the-dataset-does-not-live-inside-one-engine" class="anchor-icon" translate="no">
+<p>A continuación, ejecuta una búsqueda ANN.</p>
+<p>A continuación, recupera el título, el vector y los metadatos por ID de fila.</p>
+<p>Para el usuario, se trata de una única solicitud de búsqueda. Para la capa de almacenamiento, es tanto un escaneo analítico como una consulta aleatoria de baja latencia.</p>
+<p>Por eso el almacenamiento vectorial necesita algo más que una mejor configuración de Parquet. Necesita una forma de colocar las diferentes columnas según cómo se leen realmente.</p>
+<h2 id="The-third-problem-the-dataset-does-not-live-inside-one-engine" class="common-anchor-header">El tercer problema: el conjunto de datos no reside en un único motor<button data-href="#The-third-problem-the-dataset-does-not-live-inside-one-engine" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -226,32 +228,32 @@ metadata
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The first two problems happen inside the database. The third happens at the boundary between systems.</p>
+    </button></h2><p>Los dos primeros problemas se producen dentro de la base de datos. El tercero se produce en el límite entre sistemas.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_5_802e6d92c3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="AI-data-pipelines-span-many-systems" class="common-anchor-header">AI data pipelines span many systems</h3><p>In the video workflow, very little happens within the vector database itself.</p>
-<p>The raw videos live in object storage. Clip generation may run in Spark or Ray. Aesthetic scoring may run in a GPU service. Captioning may run in an LLM inference pipeline. Embeddings may be generated by another GPU job. Sparse vectors may come from a SPLADE service. Offline evaluation, training data filtering, human review, and governance jobs may all run elsewhere.</p>
-<p>The vector database serves online search, but the dataset is produced, corrected, evaluated, and extended by many systems.</p>
-<h3 id="Private-storage-formats-create-multiple-copies-of-the-truth" class="common-anchor-header">Private storage formats create multiple copies of the truth</h3><p>If the database uses a private physical format that only it can read and write, every external job needs an export, a conversion, a copy, and an import. The same collection may exist in the database, in a Spark temporary directory, in an evaluation output, and in a local backfill directory. Then the real question becomes:</p>
+<h3 id="AI-data-pipelines-span-many-systems" class="common-anchor-header">Los flujos de datos de IA abarcan muchos sistemas</h3><p>En el flujo de trabajo de vídeo, ocurre muy poco dentro de la propia base de datos vectorial.</p>
+<p>Los vídeos sin procesar se almacenan en un sistema de almacenamiento de objetos. La generación de clips puede ejecutarse en Spark o Ray. La puntuación estética puede ejecutarse en un servicio de GPU. La generación de subtítulos puede ejecutarse en un flujo de trabajo de inferencia de un modelo de lenguaje grande (LLM). Las representaciones vectoriales pueden generarse mediante otro proceso de GPU. Los vectores dispersos pueden proceder de un servicio SPLADE. La evaluación fuera de línea, el filtrado de datos de entrenamiento, la revisión humana y las tareas de gobernanza pueden ejecutarse en otros lugares.</p>
+<p>La base de datos vectorial se encarga de la búsqueda en línea, pero el conjunto de datos es producido, corregido, evaluado y ampliado por numerosos sistemas.</p>
+<h3 id="Private-storage-formats-create-multiple-copies-of-the-truth" class="common-anchor-header">Los formatos de almacenamiento privados crean múltiples copias de la «verdad»</h3><p>Si la base de datos utiliza un formato físico propio que solo ella puede leer y escribir, cada tarea externa necesita una exportación, una conversión, una copia y una importación. La misma colección puede existir en la base de datos, en un directorio temporal de Spark, en un resultado de evaluación y en un directorio local de rellenado. Entonces, la verdadera pregunta es:</p>
 <ul>
-<li>Which copy is the source of truth?</li>
-<li>Which one contains the caption model from last month?</li>
-<li>Which rows have already been corrected by human review?</li>
-<li>Which sparse vector column was generated by which model?</li>
-<li>Which vector index is still valid after the backfill?</li>
-<li>Which original video object does this row refer to?</li>
+<li>¿Qué copia es la fuente de la verdad?</li>
+<li>¿Cuál contiene el modelo de subtítulos del mes pasado?</li>
+<li>¿Qué filas ya han sido corregidas mediante revisión humana?</li>
+<li>¿Qué columna de vectores dispersos fue generada por qué modelo?</li>
+<li>¿Qué índice vectorial sigue siendo válido tras el rellenado?</li>
+<li>¿A qué objeto de vídeo original hace referencia esta fila?</li>
 </ul>
-<p>On a small scale, teams can sometimes survive with naming conventions and manual checks. With hundreds of millions of rows and terabytes of embeddings, this becomes a consistency problem.</p>
-<h3 id="Vector-datasets-need-a-shared-versioned-state" class="common-anchor-header">Vector datasets need a shared versioned state</h3><p>Lakehouse systems addressed a version of this problem for structured data. Iceberg, Delta Lake, and Hudi are not just about storing files. Their core contribution is letting multiple engines coordinate around the same table state.</p>
-<p>Vector databases now need a similar capability, but the state is more complex. It must include not only table files and partitions, but also vector indexes, text indexes, sparse features, delete logs, statistics, row ID ranges, and references to external blobs.</p>
-<p>The question is not simply, “Can Spark read Milvus files?”</p>
-<p>The question is, after Spark backfills a sparse vector column, how does Milvus know which version that column belongs to, which rows it covers, which model produced it, and when can online queries safely use it?</p>
-<p>The answer has to live in the storage model.</p>
-<h2 id="Why-patches-are-not-enough" class="common-anchor-header">Why patches are not enough<button data-href="#Why-patches-are-not-enough" class="anchor-icon" translate="no">
+<p>A pequeña escala, los equipos a veces pueden arreglárselas con convenciones de nomenclatura y comprobaciones manuales. Con cientos de millones de filas y terabytes de representaciones, esto se convierte en un problema de coherencia.</p>
+<h3 id="Vector-datasets-need-a-shared-versioned-state" class="common-anchor-header">Los conjuntos de datos vectoriales necesitan un estado compartido y versionado</h3><p>Los sistemas «lakehouse» abordaron una variante de este problema para los datos estructurados. Iceberg, Delta Lake y Hudi no se limitan a almacenar archivos. Su principal aportación es permitir que múltiples motores se coordinen en torno al mismo estado de la tabla.</p>
+<p>Las bases de datos vectoriales necesitan ahora una capacidad similar, pero el estado es más complejo. Debe incluir no solo archivos de tabla y particiones, sino también índices vectoriales, índices de texto, características dispersas, registros de eliminación, estadísticas, rangos de ID de filas y referencias a blobs externos.</p>
+<p>La pregunta no es simplemente: «¿Puede Spark leer archivos de Milvus?».</p>
+<p>La pregunta es: después de que Spark rellene una columna vectorial dispersa, ¿cómo sabe Milvus a qué versión pertenece esa columna, qué filas abarca, qué modelo la generó y cuándo pueden las consultas en línea utilizarla de forma segura?</p>
+<p>La respuesta debe residir en el modelo de almacenamiento.</p>
+<h2 id="Why-patches-are-not-enough" class="common-anchor-header">Por qué los parches no son suficientes<button data-href="#Why-patches-are-not-enough" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -266,43 +268,43 @@ metadata
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>It is tempting to treat these as three separate engineering problems.</p>
+    </button></h2><p>Resulta tentador tratar estos aspectos como tres problemas de ingeniería independientes.</p>
 <ul>
-<li>Write amplification? Add batching.</li>
-<li>Point reads? Add a cache.</li>
-<li>External systems? Add export and import tools.</li>
+<li>¿Amplificación de escritura? Añade el procesamiento por lotes.</li>
+<li>¿Lecturas puntuales? Añade una caché.</li>
+<li>¿Sistemas externos? Añade herramientas de exportación e importación.</li>
 </ul>
-<p>Those patches can help, but they do not address the underlying issue: a vector dataset is physically heterogeneous.</p>
+<p>Esos parches pueden ayudar, pero no abordan el problema subyacente: un conjunto de datos vectoriales es físicamente heterogéneo.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_6_0744ff4445.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>In the video example, <code translate="no">clip_id</code>, <code translate="no">video_id</code>, <code translate="no">duration</code>, and <code translate="no">aesthetic_score</code> are short scalar fields. They are useful for filtering and analysis.</p>
+<p>En el ejemplo del vídeo, <code translate="no">clip_id</code>, <code translate="no">video_id</code>, <code translate="no">duration</code> y <code translate="no">aesthetic_score</code> son campos escalares cortos. Son útiles para el filtrado y el análisis.</p>
 <ul>
-<li><code translate="no">caption</code> is text. It may be used for BM25, review, correction, and backfill.</li>
-<li><code translate="no">embedding</code> is a long, dense vector. It is used for ANN recall and later for row-level lookup or reranking.</li>
-<li><code translate="no">embedding_v2</code> is a new model output, often backfilled long after the original data was inserted.</li>
-<li><code translate="no">sparse_vector</code> supports hybrid search and has its own access pattern.</li>
-<li>The raw video should stay in object storage. The database should store a reference, a checksum, a MIME type, a parser version, and a row-level relationship.</li>
-<li>Vector indexes, text indexes, statistics, and delete logs are derived objects with their own version semantics.</li>
+<li><code translate="no">caption</code> es texto. Se puede utilizar para BM25, revisión, corrección y rellenado.</li>
+<li><code translate="no">embedding</code> es un vector largo y denso. Se utiliza para la recuperación de la red neuronal artificial (ANN) y, posteriormente, para la búsqueda a nivel de fila o la reordenación.</li>
+<li><code translate="no">embedding_v2</code> es una nueva salida del modelo, que a menudo se rellena mucho tiempo después de que se hayan insertado los datos originales.</li>
+<li><code translate="no">sparse_vector</code> Admite la búsqueda híbrida y tiene su propio patrón de acceso.</li>
+<li>El vídeo sin procesar debe permanecer en el almacenamiento de objetos. La base de datos debe almacenar una referencia, una suma de comprobación, un tipo MIME, una versión del analizador sintáctico y una relación a nivel de fila.</li>
+<li>Los índices vectoriales, los índices de texto, las estadísticas y los registros de eliminación son objetos derivados con su propia semántica de versiones.</li>
 </ul>
-<p>These objects share a logical row, but they should not all share the same physical layout or lifecycle.</p>
+<p>Estos objetos comparten una fila lógica, pero no deben compartir todos el mismo diseño físico ni el mismo ciclo de vida.</p>
 <ul>
-<li>If they are forced into one ordinary table layout, updates become expensive.</li>
-<li>If they are forced into one columnar file format, point reads become expensive.</li>
-<li>If they are treated as unrelated object files, version management becomes fragile.</li>
+<li>Si se les obliga a adoptar una estructura de tabla ordinaria, las actualizaciones resultan costosas.</li>
+<li>Si se les obliga a adoptar un único formato de archivo columnar, las lecturas puntuales se vuelven costosas.</li>
+<li>Si se tratan como archivos de objetos independientes, la gestión de versiones se vuelve frágil.</li>
 </ul>
-<p>So the storage model has to start from the fact that the dataset is heterogeneous.</p>
-<p><strong>That leads to three design requirements:</strong></p>
+<p>Por lo tanto, el modelo de almacenamiento debe partir del hecho de que el conjunto de datos es heterogéneo.</p>
+<p><strong>Esto da lugar a tres requisitos de diseño:</strong></p>
 <ul>
-<li>First, different column groups should be stored in different physical formats.</li>
-<li>Second, those column groups need a shared row ID space, so they can still behave as a single logical table.</li>
-<li>Third, the dataset needs a versioned Manifest that declares which files, indexes, logs, statistics, and object references belong to the current view.</li>
+<li>En primer lugar, los distintos grupos de columnas deben almacenarse en formatos físicos diferentes.</li>
+<li>En segundo lugar, esos grupos de columnas necesitan un espacio compartido de identificadores de fila, para que puedan seguir comportándose como una única tabla lógica.</li>
+<li>En tercer lugar, el conjunto de datos necesita un manifiesto versionado que declare qué archivos, índices, registros, estadísticas y referencias a objetos pertenecen a la vista actual.</li>
 </ul>
-<p><strong>This is the design behind Loon, our new storage engine behind Milvus and Zilliz Cloud.</strong></p>
-<h2 id="Loon-a-storage-engine-behind-Milvus-and-Zilliz-Cloud-for-evolving-vector-datasets" class="common-anchor-header">Loon: a storage engine behind Milvus and Zilliz Cloud for evolving vector datasets<button data-href="#Loon-a-storage-engine-behind-Milvus-and-Zilliz-Cloud-for-evolving-vector-datasets" class="anchor-icon" translate="no">
+<p><strong>Este es el diseño en el que se basa Loon, nuestro nuevo motor de almacenamiento detrás de Milvus y Zilliz Cloud.</strong></p>
+<h2 id="Loon-a-storage-engine-behind-Milvus-and-Zilliz-Cloud-for-evolving-vector-datasets" class="common-anchor-header">Loon: un motor de almacenamiento para Milvus y Zilliz Cloud destinado a conjuntos de datos vectoriales en evolución<button data-href="#Loon-a-storage-engine-behind-Milvus-and-Zilliz-Cloud-for-evolving-vector-datasets" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -317,25 +319,25 @@ metadata
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>To solve all the above problems, we built <strong>Loon</strong>, the new storage engine for Milvus and <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> (the next evolution of Zilliz Cloud), designed for evolving vector datasets.</p>
-<p>The name follows Zilliz’s bird-naming tradition. A loon is a diving bird that lives on lakes, which maps well to the goal of the system: a vector database should not have to move, scan, or rewrite an entire lake of data every time it runs a query, backfills a column, or builds an index. It should first understand the current dataset version, including its columns, indexes, statistics, delete logs, and object references, then read only the part it actually needs.</p>
-<p>Hybrid file formats, row ID alignment, and Manifest are not three separate features. They stem from the same design assumption: a vector dataset is inherently heterogeneous.</p>
-<h3 id="Three-pieces-one-storage-model" class="common-anchor-header">Three pieces, one storage model</h3><p>Hybrid file formats acknowledge that different columns have different access patterns. Scalar fields are good for scans and filters. Vector fields need efficient row-level lookup. Raw objects such as videos, PDFs, images, and audio files belong in object storage, not inside database data files.</p>
-<p>Row ID alignment acknowledges that these columns may be physically separated, but they still describe the same logical rows. A caption, an embedding, a sparse vector, and a video URI may reside in different files and formats, but they still need to be brought back together as a single result.</p>
-<p>The Manifest acknowledges that the dataset is not written once and left alone. It will be modified by multiple systems, across multiple versions, for multiple tasks. Indexes, statistics, delete logs, external object references, and column groups must all appear in the same versioned view.</p>
-<p><strong>This is why Loon is not just a faster vector file format.</strong> A faster format helps point lookup, but it does not solve schema evolution or multi-engine coordination. Row ID alignment lets split columns behave as a single table, but it does not specify which files belong to the current version. A Manifest can describe a dataset state, but without column groups and row ID alignment, it cannot cleanly represent different physical layouts inside one logical collection.</p>
-<p>The storage model needs all three: different formats for different column groups, a shared row ID space to reconstruct rows, and a versioned Manifest that tells every reader and writer what the dataset currently is.</p>
-<h3 id="Where-Loon-fits-in-Milvus-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Where Loon fits in Milvus and Zilliz Vector Lakebase</h3><p>In Milvus, it replaces the old segment binlog storage layer with a model built around Manifest, ColumnGroup, file format, and filesystem abstractions. In <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> (the next evolution of Zilliz Cloud)<strong>,</strong> the same direction applies to Vector Lakebase architecture: keep the vector database serving path fast while making the underlying data easier to evolve, analyze, and coordinate with external systems.</p>
-<p>The upper-level Milvus components still keep their familiar roles. Proxy handles routing. QueryCoord and DataCoord handle scheduling. IndexNode builds indexes. The application-facing APIs for collections, inserts, searches, and hybrid searches do not need to expose Manifest files or ColumnGroups.</p>
+    </button></h2><p>Para resolver todos los problemas anteriores, hemos creado <strong>Loon</strong>, el nuevo motor de almacenamiento para Milvus y <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> (la próxima evolución de Zilliz Cloud), diseñado para conjuntos de datos vectoriales en evolución.</p>
+<p>El nombre sigue la tradición de Zilliz de dar nombres de aves a sus productos. Un «loon» es un ave zambullidora que vive en los lagos, lo que encaja perfectamente con el objetivo del sistema: una base de datos vectorial no debería tener que mover, escanear o reescribir todo un «lago» de datos cada vez que ejecuta una consulta, rellena una columna o crea un índice. En primer lugar, debe comprender la versión actual del conjunto de datos, incluidas sus columnas, índices, estadísticas, registros de eliminación y referencias a objetos, para luego leer únicamente la parte que realmente necesita.</p>
+<p>Los formatos de archivo híbridos, la alineación de ID de filas y Manifest no son tres características independientes. Todas ellas se derivan de la misma premisa de diseño: un conjunto de datos vectorial es intrínsecamente heterogéneo.</p>
+<h3 id="Three-pieces-one-storage-model" class="common-anchor-header">Tres elementos, un único modelo de almacenamiento</h3><p>Los formatos de archivo híbridos reconocen que las diferentes columnas tienen distintos patrones de acceso. Los campos escalares son adecuados para exploraciones y filtros. Los campos vectoriales requieren una búsqueda eficiente a nivel de fila. Los objetos sin procesar, como vídeos, PDF, imágenes y archivos de audio, deben almacenarse en un sistema de almacenamiento de objetos, no dentro de los archivos de datos de la base de datos.</p>
+<p>La alineación de los ID de fila reconoce que estas columnas pueden estar físicamente separadas, pero siguen describiendo las mismas filas lógicas. Un pie de foto, una incrustación, un vector disperso y un URI de vídeo pueden residir en diferentes archivos y formatos, pero aún así deben reunirse como un único resultado.</p>
+<p>El Manifiesto reconoce que el conjunto de datos no se escribe una vez y se deja tal cual. Será modificado por múltiples sistemas, a lo largo de múltiples versiones, para múltiples tareas. Los índices, las estadísticas, los registros de eliminación, las referencias a objetos externos y los grupos de columnas deben aparecer todos en la misma vista versionada.</p>
+<p><strong>Por eso Loon no es solo un formato de archivo vectorial más rápido.</strong> Un formato más rápido facilita la búsqueda por índice, pero no resuelve la evolución del esquema ni la coordinación entre múltiples motores. La alineación de los ID de fila permite que las columnas divididas se comporten como una única tabla, pero no especifica qué archivos pertenecen a la versión actual. Un «Manifest» puede describir el estado de un conjunto de datos, pero sin grupos de columnas ni alineación de identificadores de fila, no puede representar de forma clara los diferentes diseños físicos dentro de una misma colección lógica.</p>
+<p>El modelo de almacenamiento necesita estos tres elementos: diferentes formatos para los distintos grupos de columnas, un espacio compartido de identificadores de fila para reconstruir las filas y un «Manifest» versionado que indique a todos los lectores y escritores cuál es el estado actual del conjunto de datos.</p>
+<h3 id="Where-Loon-fits-in-Milvus-and-Zilliz-Vector-Lakebase" class="common-anchor-header">El papel de Loon en Milvus y Zilliz Vector Lakebase</h3><p>En Milvus, sustituye la antigua capa de almacenamiento de binlog por segmentos por un modelo construido en torno a Manifest, ColumnGroup, el formato de archivo y las abstracciones del sistema de archivos. En <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase"><strong>Zilliz Vector Lakebase</strong></a> (la próxima evolución de Zilliz Cloud)<strong>,</strong> se aplica la misma orientación a la arquitectura de Vector Lakebase: mantener rápida la ruta de servicio de la base de datos vectorial, al tiempo que se facilita la evolución, el análisis y la coordinación de los datos subyacentes con sistemas externos.</p>
+<p>Los componentes de nivel superior de Milvus siguen desempeñando sus funciones habituales. Proxy se encarga del enrutamiento. QueryCoord y DataCoord se encargan de la programación. IndexNode crea los índices. Las API orientadas a las aplicaciones para colecciones, inserciones, búsquedas y búsquedas híbridas no necesitan exponer archivos Manifest ni ColumnGroups.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_7_d4d1a34604.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>The change is underneath.</p>
-<p>DataNode, QueryNode, segcore, compaction, and external connectors can operate through the same storage abstraction. That matters because the dataset is no longer written and read only by the database. It may be extended by external computing systems and consumed by online search simultaneously.</p>
-<p>At a high level, the layers look like this:</p>
+<p>El cambio se produce en el fondo.</p>
+<p>DataNode, QueryNode, segcore, la compactación y los conectores externos pueden funcionar a través de la misma abstracción de almacenamiento. Esto es importante porque el conjunto de datos ya no es escrito y leído únicamente por la base de datos. Puede ser ampliado por sistemas informáticos externos y consumido por búsquedas en línea de forma simultánea.</p>
+<p>A grandes rasgos, las capas tienen este aspecto:</p>
 <pre><code translate="no">Manifest
 → ColumnGroup
 → file <span class="hljs-built_in">format</span> layer
@@ -347,10 +349,10 @@ metadata
     <span></span>
   </span>
 </p>
-<p>The Manifest describes the versioned state of the dataset. ColumnGroups map a logical collection into physical groups of columns. The file format layer lets each ColumnGroup choose an appropriate format. The filesystem abstraction works across object storage and local storage.</p>
-<p>The important point is that hybrid file formats, row ID alignment, and Manifest are not separate features. Together, they define the storage model.</p>
-<p>With that model in place, we can look at the three design choices one by one: how Loon stores different ColumnGroups, how it aligns them back into rows, and how the Manifest turns those files into a versioned dataset.</p>
-<h2 id="Design-1-use-the-right-file-format-for-the-right-column-group" class="common-anchor-header">Design 1: use the right file format for the right column group<button data-href="#Design-1-use-the-right-file-format-for-the-right-column-group" class="anchor-icon" translate="no">
+<p>El «Manifest» describe el estado versionado del conjunto de datos. Los «ColumnGroups» asignan una colección lógica a grupos físicos de columnas. La capa de formato de archivo permite que cada «ColumnGroup» elija un formato adecuado. La abstracción del sistema de archivos funciona tanto en el almacenamiento de objetos como en el almacenamiento local.</p>
+<p>Lo importante es que los formatos de archivo híbridos, la alineación de los ID de fila y el «Manifest» no son características independientes. Juntas, definen el modelo de almacenamiento.</p>
+<p>Con ese modelo establecido, podemos analizar una por una las tres opciones de diseño: cómo almacena Loon los diferentes ColumnGroups, cómo los realinea en filas y cómo el Manifest convierte esos archivos en un conjunto de datos versionado.</p>
+<h2 id="Design-1-use-the-right-file-format-for-the-right-column-group" class="common-anchor-header">Diseño 1: utilizar el formato de archivo adecuado para cada grupo de columnas<button data-href="#Design-1-use-the-right-file-format-for-the-right-column-group" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -365,19 +367,19 @@ metadata
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Different columns have different access patterns. They should not be forced into the same file format.</p>
+    </button></h2><p>Las diferentes columnas tienen distintos patrones de acceso. No se les debe obligar a utilizar el mismo formato de archivo.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_9_c262865944.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Loon-separates-a-logical-collection-into-ColumnGroups" class="common-anchor-header">Loon separates a logical collection into ColumnGroups.</h3><ul>
-<li>Scalar fields, filter fields, business keys, and statistical fields are often scanned, filtered, aggregated, or used for query planning. They benefit from compression, column pruning, and ecosystem compatibility. Parquet is a good fit for these columns.</li>
-<li>Dense vectors, sparse vectors, and rerank features are often read after ANN recall by row ID. They need low-latency random access, precise byte-range reads, and selective decoding. A segment-oriented layout is a better fit. Loon uses Vortex in this direction.</li>
-<li>Raw objects such as videos, PDFs, images, and audio files should not be embedded into the vector database’s data files. They should remain in object storage. The database records references, checksums, MIME types, parser versions, and row-level relationships.</li>
+<h3 id="Loon-separates-a-logical-collection-into-ColumnGroups" class="common-anchor-header">Loon divide una colección lógica en grupos de columnas.</h3><ul>
+<li>Los campos escalares, los campos de filtro, las claves de negocio y los campos estadísticos suelen ser objeto de escaneo, filtrado, agregación o utilizarse para la planificación de consultas. Se benefician de la compresión, la poda de columnas y la compatibilidad con el ecosistema. Parquet es una buena opción para estas columnas.</li>
+<li>Los vectores densos, los vectores dispersos y las características de reordenación suelen leerse tras la recuperación de la red neuronal artificial (ANN) por ID de fila. Necesitan un acceso aleatorio de baja latencia, lecturas precisas de rangos de bytes y decodificación selectiva. Un diseño orientado a segmentos se adapta mejor. Loon utiliza Vortex en este sentido.</li>
+<li>Los objetos sin procesar, como vídeos, archivos PDF, imágenes y archivos de audio, no deben integrarse en los archivos de datos de la base de datos vectorial. Deben permanecer en el almacenamiento de objetos. La base de datos registra referencias, sumas de comprobación, tipos MIME, versiones de analizadores sintácticos y relaciones a nivel de fila.</li>
 </ul>
-<p>For the video example, a physical layout might look like this:</p>
+<p>En el ejemplo del vídeo, un diseño físico podría tener este aspecto:</p>
 <pre><code translate="no"><span class="hljs-title class_">Parquet</span> <span class="hljs-title class_">ColumnGroup</span>:
 clip_id / video_id / start_offset / duration / aesthetic_score / caption
 
@@ -389,33 +391,33 @@ sparse_vector
 <span class="hljs-title class_">Object</span> <span class="hljs-attr">storage</span>:
 raw video objects
 <button class="copy-code-btn"></button></code></pre>
-<p>For the application, this is still one collection. To the storage layer, different parts of that collection use different physical formats. This directly reduces unnecessary rewrites. Adding <code translate="no">embedding_v2</code> can become a new vector ColumnGroup plus a Manifest commit. It does not require rewriting the caption column, scalar metadata, or the existing embedding column.</p>
-<p>The same idea applies to sparse vectors, rerank features, or other derived fields. If a new column can be physically independent and aligned by row ID, it does not have to drag unrelated columns through the same rewrite path.</p>
-<h3 id="Loon-also-adapts-the-use-of-file-formats" class="common-anchor-header">Loon also adapts the use of file formats.</h3><p><strong>For Parquet, default settings are not always ideal for vector-heavy data.</strong> A 64 MB row group can be too large for point lookup because a small random read may pull far more data than needed. Loon tightens row groups to 1 MB in relevant paths and disables encodings, such as dictionary encoding on vector columns, when they do not help random-looking vector data.</p>
-<p><strong>For Vortex, the more important work is layout.</strong> Loon uses a layout that balances scan efficiency and point lookup. Within a row group, segments from related columns can be placed close together to support scanning. To perform operations, sub-segment reads allow the system to fetch only the relevant bytes rather than pulling an entire segment.</p>
-<p><strong>Loon also supports read-only Lance integration</strong>, so existing Lance datasets can be mounted as ColumnGroups when compatibility matters.</p>
-<h3 id="What-the-benchmark-shows" class="common-anchor-header">What the benchmark shows</h3><p>In one local test, using a single file with 40,000 rows and the schema <code translate="no">{id: int64, name: utf8, value: float64, vector: list&lt;float32&gt;[128]}</code>, Vortex showed these results against Parquet with 1 MB row groups:</p>
+<p>Para la aplicación, sigue tratándose de una única colección. Para la capa de almacenamiento, las diferentes partes de esa colección utilizan formatos físicos distintos. Esto reduce directamente las reescrituras innecesarias. Añadir un « <code translate="no">embedding_v2</code> » puede traducirse en un nuevo ColumnGroup vectorial más una confirmación del manifiesto. No requiere reescribir la columna de subtítulos, los metadatos escalares ni la columna de incrustación existente.</p>
+<p>La misma idea se aplica a los vectores dispersos, las características de reordenación u otros campos derivados. Si una nueva columna puede ser físicamente independiente y alinearse por ID de fila, no es necesario arrastrar columnas no relacionadas por la misma ruta de reescritura.</p>
+<h3 id="Loon-also-adapts-the-use-of-file-formats" class="common-anchor-header">Loon también adapta el uso de los formatos de archivo.</h3><p><strong>En el caso de Parquet, la configuración predeterminada no siempre es ideal para datos con gran cantidad de vectores.</strong> Un grupo de filas de 64 MB puede resultar demasiado grande para la búsqueda puntual, ya que una pequeña lectura aleatoria puede extraer muchos más datos de los necesarios. Loon reduce los grupos de filas a 1 MB en las rutas relevantes y desactiva codificaciones, como la codificación de diccionario en columnas vectoriales, cuando estas no benefician a los datos vectoriales de búsqueda aleatoria.</p>
+<p><strong>En el caso de Vortex, el aspecto más importante es el diseño.</strong> Loon utiliza un diseño que equilibra la eficiencia del escaneo y la búsqueda puntual. Dentro de un grupo de filas, los segmentos de columnas relacionadas pueden colocarse cerca unos de otros para facilitar el escaneo. Para realizar operaciones, las lecturas de subsegmentos permiten al sistema recuperar solo los bytes relevantes en lugar de extraer un segmento completo.</p>
+<p><strong>Loon también admite la integración de Lance en modo de solo lectura</strong>, por lo que los conjuntos de datos existentes de Lance pueden montarse como ColumnGroups cuando la compatibilidad sea importante.</p>
+<h3 id="What-the-benchmark-shows" class="common-anchor-header">Lo que muestra la prueba de rendimiento</h3><p>En una prueba local, utilizando un único archivo con 40 000 filas y el esquema <code translate="no">{id: int64, name: utf8, value: float64, vector: list&lt;float32&gt;[128]}</code>, Vortex mostró estos resultados frente a Parquet con grupos de filas de 1 MB:</p>
 <table>
 <thead>
-<tr><th>Operation</th><th>Vortex</th><th>Parquet</th><th>Difference</th></tr>
+<tr><th>Operación</th><th>Vortex</th><th>Parquet</th><th>Diferencia</th></tr>
 </thead>
 <tbody>
-<tr><td>Take, K=1000 random rows</td><td>5.8 ms</td><td>144 ms</td><td>25x faster</td></tr>
-<tr><td>Full vector-column scan</td><td>21 ms</td><td>142 ms</td><td>6.76x faster</td></tr>
-<tr><td>File size, ~21 MB raw data</td><td>6.62 MB</td><td>7.16 MB</td><td>7% smaller</td></tr>
+<tr><td>Extracción, K = 1.000 filas aleatorias</td><td>5,8 ms</td><td>144 ms</td><td>25 veces más rápido</td></tr>
+<tr><td>Escaneo completo de vectores por columnas</td><td>21 ms</td><td>142 ms</td><td>6,76 veces más rápido</td></tr>
+<tr><td>Tamaño del archivo: ~21 MB de datos sin procesar</td><td>6,62 MB</td><td>7,16 MB</td><td>Un 7 % más pequeño</td></tr>
 </tbody>
 </table>
-<p>The <code translate="no">take</code> result comes from reducing the amount of irrelevant data that must be read and decoded. The scan result comes from compression and implementation choices.</p>
-<p>These numbers should stay attached to their setup: 8 vCPU Ubuntu 22.04 KVM, local filesystem, one file, 40,000 rows, 1 MB row groups, and the schema above. On object storage, network I/O can dominate, so reducing read amplification can matter even more. Actual results depend on dataset shape, object storage behavior, cache state, and query pattern.</p>
-<p>The broader point is not that every column should use Vortex.</p>
-<p>The point is that vector datasets need a file format choice at the ColumnGroup level.</p>
+<p>El resultado de « <code translate="no">take</code> » se debe a la reducción de la cantidad de datos irrelevantes que deben leerse y descodificarse. El resultado del escaneo se debe a la compresión y a las opciones de implementación.</p>
+<p>Estas cifras deben considerarse en el contexto de su configuración: 8 vCPU, Ubuntu 22.04 KVM, sistema de archivos local, un archivo, 40 000 filas, grupos de filas de 1 MB y el esquema anterior. En el almacenamiento de objetos, la E/S de red puede ser predominante, por lo que reducir la amplificación de lectura puede ser aún más importante. Los resultados reales dependen de la forma del conjunto de datos, el comportamiento del almacenamiento de objetos, el estado de la caché y el patrón de consulta.</p>
+<p>La cuestión general no es que todas las columnas deban utilizar Vortex.</p>
+<p>La cuestión es que los conjuntos de datos vectoriales necesitan una elección de formato de archivo a nivel de ColumnGroup.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_11_127c1953e6.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h2 id="Design-2-align-physical-files-through-row-IDs" class="common-anchor-header">Design 2: align physical files through row IDs<button data-href="#Design-2-align-physical-files-through-row-IDs" class="anchor-icon" translate="no">
+<h2 id="Design-2-align-physical-files-through-row-IDs" class="common-anchor-header">Diseño 2: alinear los archivos físicos mediante los ID de fila<button data-href="#Design-2-align-physical-files-through-row-IDs" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -430,44 +432,44 @@ raw video objects
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hybrid file formats solve one problem: different columns can now live in the formats that fit them best.</p>
-<p>But that creates a second problem. If scalar fields live in Parquet, vectors live in Vortex, and raw objects live in object storage, how does the system still treat them as one collection?</p>
-<p><strong>Loon solves this with row ID alignment.</strong></p>
-<h3 id="Row-ID-is-the-storage-layer-coordinate-system" class="common-anchor-header">Row ID is the storage-layer coordinate system</h3><p>Each physical ColumnGroupFile records the file path and the row ID range it covers:</p>
+    </button></h2><p>Los formatos de archivo híbridos resuelven un problema: ahora las diferentes columnas pueden residir en los formatos que mejor se adapten a ellas.</p>
+<p>Pero eso genera un segundo problema. Si los campos escalares residen en Parquet, los vectores en Vortex y los objetos sin procesar en el almacenamiento de objetos, ¿cómo puede el sistema seguir tratándolos como una única colección?</p>
+<p><strong>Loon resuelve esto mediante la alineación de los ID de fila.</strong></p>
+<h3 id="Row-ID-is-the-storage-layer-coordinate-system" class="common-anchor-header">El identificador de fila es el sistema de coordenadas de la capa de almacenamiento</h3><p>Cada ColumnGroupFile físico registra la ruta del archivo y el rango de identificadores de fila que abarca:</p>
 <pre><code translate="no">path
 start_index
 end_index
 <button class="copy-code-btn"></button></code></pre>
-<p>Different ColumnGroups can cover the same row ID space even if they live in different files and formats.</p>
-<p>For row ID <code translate="no">12345</code>, the scalar metadata may be in a Parquet ColumnGroup, the embedding may be in a Vortex ColumnGroup, and the raw video may be represented by an object storage reference. Logically, they are still one row. This gives the storage layer a stable coordinate system.</p>
-<p>Row ID is not the business primary key. It is the storage-layer coordinate system that lets Loon split a collection physically without losing the ability to reconstruct it logically.</p>
+<p>Diferentes ColumnGroups pueden abarcar el mismo espacio de ID de fila, incluso si se encuentran en archivos y formatos distintos.</p>
+<p>Para el ID de fila <code translate="no">12345</code>, los metadatos escalares pueden estar en un ColumnGroup de Parquet, la incrustación puede estar en un ColumnGroup de Vortex y el vídeo sin procesar puede estar representado por una referencia de almacenamiento de objetos. Lógicamente, siguen siendo una sola fila. Esto proporciona a la capa de almacenamiento un sistema de coordenadas estable.</p>
+<p>El ID de fila no es la clave primaria del negocio. Es el sistema de coordenadas de la capa de almacenamiento lo que permite a Loon dividir físicamente una colección sin perder la capacidad de reconstruirla lógicamente.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_12_3da04acdec.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="New-columns-do-not-have-to-rewrite-old-columns" class="common-anchor-header">New columns do not have to rewrite old columns</h3><p>Adding <code translate="no">embedding_v2</code> does not require rewriting the original caption, metadata, or <code translate="no">embedding_v1</code> ColumnGroups. Loon can write a new vector ColumnGroup, record the row ID range it covers, and commit that change through the Manifest.</p>
-<p>The same applies to sparse vectors, rerank features, or other derived fields that arrive later.</p>
-<p>As long as the new ColumnGroup covers the right row ID range, it can join the same logical collection without forcing unrelated data to move.</p>
-<h3 id="Deletes-and-compaction-can-be-more-targeted" class="common-anchor-header">Deletes and compaction can be more targeted</h3><p>Row ID alignment also helps with deletes.</p>
-<p>A delete can first be expressed through a delete log. The row becomes invisible at the logical level, while physical cleanup is delayed until compaction. When compaction eventually runs, it does not always need to rewrite every ColumnGroup tied to the affected rows. It can focus on the ColumnGroups that need cleanup.</p>
-<p>This matters because not every column has the same cost profile. Rewriting a short scalar ColumnGroup is very different from rewriting hundreds of gigabytes of dense vectors.</p>
-<h3 id="Hybrid-search-can-fetch-only-the-columns-it-needs" class="common-anchor-header">Hybrid search can fetch only the columns it needs</h3><p>Row ID alignment is also what makes hybrid search practical on top of hybrid file formats.</p>
-<p>After ANN search returns candidate row IDs, the system can fetch only the fields needed for the final result: captions, metadata, vectors, rerank features, or object references.</p>
-<p>For example, a query may need:</p>
+<h3 id="New-columns-do-not-have-to-rewrite-old-columns" class="common-anchor-header">Las nuevas columnas no requieren reescribir las antiguas</h3><p>Añadir un « <code translate="no">embedding_v2</code> » no requiere reescribir la leyenda original, los metadatos ni los ColumnGroups de « <code translate="no">embedding_v1</code> ». Loon puede escribir un nuevo ColumnGroup vectorial, registrar el rango de ID de fila que abarca y confirmar ese cambio a través del manifiesto.</p>
+<p>Lo mismo se aplica a los vectores dispersos, las características reordenadas u otros campos derivados que se incorporen posteriormente.</p>
+<p>Siempre que el nuevo ColumnGroup cubra el rango de ID de fila correcto, puede incorporarse a la misma colección lógica sin obligar a mover datos no relacionados.</p>
+<h3 id="Deletes-and-compaction-can-be-more-targeted" class="common-anchor-header">Las eliminaciones y la compactación pueden ser más específicas</h3><p>La alineación de los ID de fila también facilita las eliminaciones.</p>
+<p>Una eliminación puede expresarse primero a través de un registro de eliminación. La fila se vuelve invisible a nivel lógico, mientras que la limpieza física se retrasa hasta la compactación. Cuando finalmente se ejecuta la compactación, no siempre es necesario reescribir todos los ColumnGroup vinculados a las filas afectadas. Puede centrarse en los ColumnGroups que necesitan limpieza.</p>
+<p>Esto es importante porque no todas las columnas tienen el mismo perfil de coste. Reescribir un ColumnGroup escalar corto es muy diferente a reescribir cientos de gigabytes de vectores densos.</p>
+<h3 id="Hybrid-search-can-fetch-only-the-columns-it-needs" class="common-anchor-header">La búsqueda híbrida puede recuperar solo las columnas que necesita</h3><p>La alineación de los ID de fila es también lo que hace que la búsqueda híbrida resulte práctica sobre los formatos de archivo híbridos.</p>
+<p>Una vez que la búsqueda ANN devuelve los ID de fila candidatos, el sistema puede recuperar únicamente los campos necesarios para el resultado final: leyendas, metadatos, vectores, características de reordenación o referencias a objetos.</p>
+<p>Por ejemplo, una consulta puede necesitar:</p>
 <pre><code translate="no">caption
 embedding
 video_uri
 <button class="copy-code-btn"></button></code></pre>
-<p>Those fields may live in different ColumnGroups. Loon can locate the relevant files by row ID range, read the necessary byte ranges, and assemble the result.</p>
-<p>Without row ID alignment, hybrid formats would just be separate files sitting side by side. With row ID alignment, they behave as a single logical collection.</p>
-<h3 id="Packed-Reader-hides-the-split-from-the-upper-layer" class="common-anchor-header">Packed Reader hides the split from the upper layer</h3><p>The runtime component that makes this usable is the Packed Reader.</p>
-<p>The upper layer sees a unified Arrow RecordBatch stream. Underneath, data may come from multiple ColumnGroups in different file formats. The Packed Reader hides those differences, aligns data by row-ID ranges, and schedules multi-file I/O with controlled memory usage.</p>
-<p>It also supports direct <code translate="no">take</code> by row ID. Given a set of row IDs, it locates the relevant ColumnGroupFiles, issues range reads, and returns the requested fields.</p>
-<p>For the video workflow, an ANN query may need <code translate="no">caption</code>, <code translate="no">embedding</code>, and <code translate="no">video_uri</code>. The Packed Reader can fetch the scalar ColumnGroup and the vector ColumnGroup without touching unrelated columns.</p>
-<p>That is the difference between “separate files” and “a table with multiple physical layouts.”</p>
-<h2 id="Design-3-make-the-Manifest-the-source-of-truth" class="common-anchor-header">Design 3: make the Manifest the source of truth<button data-href="#Design-3-make-the-Manifest-the-source-of-truth" class="anchor-icon" translate="no">
+<p>Esos campos pueden encontrarse en diferentes ColumnGroups. Loon puede localizar los archivos relevantes por rango de ID de fila, leer los rangos de bytes necesarios y ensamblar el resultado.</p>
+<p>Sin la alineación de los ID de fila, los formatos híbridos no serían más que archivos separados situados uno al lado del otro. Con la alineación de los ID de fila, se comportan como una única colección lógica.</p>
+<h3 id="Packed-Reader-hides-the-split-from-the-upper-layer" class="common-anchor-header">Packed Reader oculta la división a la capa superior</h3><p>El componente de tiempo de ejecución que hace que esto sea utilizable es el Packed Reader.</p>
+<p>La capa superior ve un flujo unificado de Arrow RecordBatch. En el fondo, los datos pueden proceder de múltiples ColumnGroups en diferentes formatos de archivo. El Packed Reader oculta esas diferencias, alinea los datos por rangos de ID de fila y programa la E/S de múltiples archivos con un uso controlado de la memoria.</p>
+<p>También admite la consulta directa « <code translate="no">take</code> » por ID de fila. A partir de un conjunto de ID de fila, localiza los ColumnGroupFiles pertinentes, realiza lecturas por rango y devuelve los campos solicitados.</p>
+<p>Para el flujo de trabajo de vídeo, una consulta ANN puede necesitar <code translate="no">caption</code>, <code translate="no">embedding</code> y <code translate="no">video_uri</code>. El Packed Reader puede recuperar el ColumnGroup escalar y el ColumnGroup vectorial sin tocar columnas no relacionadas.</p>
+<p>Esa es la diferencia entre «archivos separados» y «una tabla con múltiples diseños físicos».</p>
+<h2 id="Design-3-make-the-Manifest-the-source-of-truth" class="common-anchor-header">Diseño 3: convertir el manifiesto en la fuente de verdad<button data-href="#Design-3-make-the-Manifest-the-source-of-truth" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -482,55 +484,55 @@ video_uri
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Hybrid file formats define how data is physically stored. Row ID alignment determines how separated ColumnGroups still form a single logical table. But the system still needs to answer a larger question: <strong>which files, logs, statistics, indexes, and object references belong to the current version of the dataset? That is the job of the Manifest.</strong></p>
+    </button></h2><p>Los formatos de archivo híbridos definen cómo se almacenan físicamente los datos. La alineación de los ID de fila determina cómo los ColumnGroups separados siguen formando una única tabla lógica. Pero el sistema aún debe responder a una pregunta más amplia: <strong>¿qué archivos, registros, estadísticas, índices y referencias a objetos pertenecen a la versión actual del conjunto de datos? Esa es la función del Manifest.</strong></p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_13_cd18b2da18.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="Object-storage-directories-are-not-enough" class="common-anchor-header">Object storage directories are not enough</h3><p>Object storage is not a database catalog. A directory may contain old files, new files, failed job outputs, temporary files, delete logs, files still referenced by older snapshots, and files waiting for cleanup. The fact that a file exists does not mean it belongs to the current dataset version.</p>
-<p>A Loon dataset may be organized into directories such as:</p>
+<h3 id="Object-storage-directories-are-not-enough" class="common-anchor-header">Los directorios de almacenamiento de objetos no son suficientes</h3><p>El almacenamiento de objetos no es un catálogo de bases de datos. Un directorio puede contener archivos antiguos, archivos nuevos, resultados de tareas fallidas, archivos temporales, registros de eliminación, archivos a los que aún hacen referencia instantáneas anteriores y archivos a la espera de ser eliminados. El hecho de que un archivo exista no significa que pertenezca a la versión actual del conjunto de datos.</p>
+<p>Un conjunto de datos de Loon puede estar organizado en directorios como:</p>
 <pre><code translate="no">_metadata/
 _data/
 _delta/
 _stats/
 _index/
 <button class="copy-code-btn"></button></code></pre>
-<p>But the directory structure is not the source of truth. The Manifest is. Readers should not list directories and infer state from whatever files happen to exist. They should read the current Manifest and follow the versioned view it declares.</p>
-<h3 id="The-Manifest-defines-one-versioned-view-of-the-dataset" class="common-anchor-header">The Manifest defines one versioned view of the dataset</h3><p>The Manifest defines the dataset in a given version. It records:</p>
+<p>Pero la estructura de directorios no es la fuente de verdad. El Manifiesto sí lo es. Los lectores no deben enumerar directorios e inferir el estado a partir de los archivos que casualmente existan. Deben leer el Manifiesto actual y seguir la vista versionada que este declara.</p>
+<h3 id="The-Manifest-defines-one-versioned-view-of-the-dataset" class="common-anchor-header">El Manifiesto define una vista versionada del conjunto de datos</h3><p>El Manifiesto define el conjunto de datos en una versión determinada. En él se registran:</p>
 <ul>
-<li>which ColumnGroups exist</li>
-<li>which row ID ranges they cover</li>
-<li>which physical format each ColumnGroup uses</li>
-<li>where the files live</li>
-<li>which delete logs are active</li>
-<li>which statistics are available</li>
-<li>which indexes exist</li>
-<li>which external blobs are referenced</li>
-<li>which columns and row ranges those stats or indexes cover</li>
+<li>qué ColumnGroups existen</li>
+<li>qué rangos de ID de fila abarcan</li>
+<li>qué formato físico utiliza cada ColumnGroup</li>
+<li>dónde se encuentran los archivos</li>
+<li>qué registros de eliminación están activos</li>
+<li>qué estadísticas están disponibles</li>
+<li>qué índices existen</li>
+<li>a qué blobs externos se hace referencia</li>
+<li>qué columnas y rangos de filas abarcan esas estadísticas o índices</li>
 </ul>
-<p>Each update writes a new Manifest version. A reader who opens version N sees a stable view of the dataset at version N. A writer can prepare version N+1 without disrupting readers who are still using version N.</p>
-<h3 id="The-Manifest-tracks-more-than-table-files" class="common-anchor-header">The Manifest tracks more than table files</h3><p>In Loon, the Manifest body is encoded with Apache Avro and organized around four major sections.</p>
+<p>Cada actualización escribe una nueva versión del manifiesto. Un lector que abra la versión N verá una vista estable del conjunto de datos en la versión N. Un escritor puede preparar la versión N+1 sin interrumpir a los lectores que aún estén utilizando la versión N.</p>
+<h3 id="The-Manifest-tracks-more-than-table-files" class="common-anchor-header">El «Manifest» hace un seguimiento de más elementos que los archivos de tabla</h3><p>En Loon, el cuerpo del Manifiesto está codificado con Apache Avro y organizado en torno a cuatro secciones principales.</p>
 <ul>
-<li>ColumnGroups describe the columns, formats, files, and row ID ranges.</li>
-<li>DeltaLogs describe deletes. Different delete types cover different sources of change, such as primary-key deletes from clients, positional deletes from internal compaction, or equality deletes from external engines.</li>
-<li>Stats include planning metadata such as bloom filters, BM25 statistics, and min/max values.</li>
-<li>Indexes describe index type, parameters, covered columns, and row ID ranges. This can include vector indexes such as HNSW or IVF, text indexes, inverted indexes, bitmap indexes, and related structures.</li>
+<li>Los ColumnGroups describen las columnas, los formatos, los archivos y los rangos de ID de filas.</li>
+<li>Los «DeltaLogs» describen las eliminaciones. Los diferentes tipos de eliminación abarcan distintas fuentes de cambio, como las eliminaciones de claves primarias por parte de los clientes, las eliminaciones posicionales debidas a la compactación interna o las eliminaciones por igualdad procedentes de motores externos.</li>
+<li>Las «Stats» incluyen metadatos de planificación, como filtros Bloom, estadísticas BM25 y valores mínimos y máximos.</li>
+<li>Los «Indexes» describen el tipo de índice, los parámetros, las columnas cubiertas y los rangos de ID de fila. Esto puede incluir índices vectoriales como HNSW o IVF, índices de texto, índices invertidos, índices de mapa de bits y estructuras relacionadas.</li>
 </ul>
-<p>This is where Loon differs from a traditional table manifest.</p>
-<p>A vector dataset needs to track not only data files and partitions. It also needs to track vector indexes, text indexes, sparse features, delete logs, statistics, external object references, and the row ID ranges that connect them.</p>
-<h3 id="The-Manifest-must-be-writable-by-more-than-the-database" class="common-anchor-header">The Manifest must be writable by more than the database</h3><p>The most important part is not only what the Manifest contains. It is who can write it.</p>
+<p>Aquí es donde Loon se diferencia de un manifiesto de tabla tradicional.</p>
+<p>Un conjunto de datos vectorial no solo debe realizar un seguimiento de los archivos de datos y las particiones, sino también de los índices vectoriales, los índices de texto, las características dispersas, los registros de eliminación, las estadísticas, las referencias a objetos externos y los rangos de ID de fila que los conectan.</p>
+<h3 id="The-Manifest-must-be-writable-by-more-than-the-database" class="common-anchor-header">El manifiesto debe ser modificable por más entidades además de la base de datos</h3><p>Lo más importante no es solo lo que contiene el manifiesto, sino quién puede escribir en él.</p>
 <ul>
-<li>If only the database can write the Manifest, it remains internal metadata. Cleaner metadata, but still private to one engine.</li>
-<li>If external engines can generate new ColumnGroups, stats, and Manifest entries, the Manifest becomes a coordination interface.</li>
-<li>A Spark job, for example, can backfill a sparse vector column. It writes a new ColumnGroup, records row coverage and statistics, and commits a new Manifest. Online queries can keep reading the old version during the job. Once the commit succeeds, the new version becomes visible.</li>
+<li>Si solo la base de datos puede escribir en el manifiesto, este sigue siendo metadatos internos. Metadatos más limpios, pero que siguen siendo privados de un único motor.</li>
+<li>Si los motores externos pueden generar nuevos ColumnGroups, estadísticas y entradas del «Manifest», este se convierte en una interfaz de coordinación.</li>
+<li>Un trabajo de Spark, por ejemplo, puede rellenar una columna de vectores dispersos. Escribe un nuevo ColumnGroup, registra la cobertura de filas y las estadísticas, y confirma un nuevo Manifiesto. Las consultas en línea pueden seguir leyendo la versión antigua mientras se ejecuta el trabajo. Una vez que la confirmación se realiza con éxito, la nueva versión se hace visible.</li>
 </ul>
-<p>This is similar in spirit to Iceberg and Delta Lake, but the object model is broader. A vector dataset needs to track vector indexes, text indexes, sparse features, delete logs, stats, blob references, and row ID ranges, not just table files and partitions.</p>
-<h3 id="Optimistic-commits-keep-version-updates-simple" class="common-anchor-header">Optimistic commits keep version updates simple</h3><p>Each commit writes a new Manifest version. A writer can build new content based on version N, then attempt to write <code translate="no">manifest-{N+1}.avro</code>. Object storage conditional write or generation-match semantics can make the commit fail if that version already exists. The writer can then retry against the newer version.</p>
-<p>This gives Loon optimistic concurrency without forcing every update through a heavy, strongly consistent coordination path. Without a Manifest, multi-format and multi-engine storage eventually turns into naming conventions and manual reconciliation. That may work for small datasets. It does not work for TB-scale vector data.</p>
-<p>The Manifest is what turns heterogeneous files into a dataset that multiple systems can safely read and update.</p>
-<h2 id="What-changes-for-users-when-storage-becomes-versioned" class="common-anchor-header">What changes for users when storage becomes versioned<button data-href="#What-changes-for-users-when-storage-becomes-versioned" class="anchor-icon" translate="no">
+<p>Esto es similar en esencia a Iceberg y Delta Lake, pero el modelo de objetos es más amplio. Un conjunto de datos vectorial necesita realizar un seguimiento de índices vectoriales, índices de texto, características dispersas, registros de eliminación, estadísticas, referencias a blobs y rangos de ID de filas, no solo de archivos de tabla y particiones.</p>
+<h3 id="Optimistic-commits-keep-version-updates-simple" class="common-anchor-header">Las confirmaciones optimistas simplifican las actualizaciones de versión</h3><p>Cada confirmación escribe una nueva versión del «Manifest». Un escritor puede crear nuevo contenido basado en la versión N y, a continuación, intentar escribir un « <code translate="no">manifest-{N+1}.avro</code> ». La semántica de escritura condicional o de coincidencia de generación del almacenamiento de objetos puede hacer que la confirmación falle si esa versión ya existe. El escritor puede entonces volver a intentarlo con la versión más reciente.</p>
+<p>Esto proporciona a Loon concurrencia optimista sin obligar a que cada actualización pase por una ruta de coordinación pesada y fuertemente consistente. Sin un «Manifest», el almacenamiento multiformato y multimotor acaba convirtiéndose en convenciones de nomenclatura y reconciliación manual. Eso puede funcionar para conjuntos de datos pequeños, pero no para datos vectoriales a escala de terabytes.</p>
+<p>El «Manifest» es lo que convierte los archivos heterogéneos en un conjunto de datos que múltiples sistemas pueden leer y actualizar de forma segura.</p>
+<h2 id="What-changes-for-users-when-storage-becomes-versioned" class="common-anchor-header">¿Qué cambia para los usuarios cuando el almacenamiento pasa a estar versionado?<button data-href="#What-changes-for-users-when-storage-becomes-versioned" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -545,24 +547,24 @@ _index/
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>For application developers, Loon should not become a new API burden.</p>
-<p>Users should still work with familiar Milvus concepts: collections, inserts, search, and hybrid search. They should not need to think about Manifest files, ColumnGroups, row ID ranges, or file layout during normal application development.</p>
-<p>The change is underneath. Storage becomes more aware of how AI datasets actually evolve.</p>
-<h3 id="Adding-a-new-embedding-should-not-move-the-old-data" class="common-anchor-header">Adding a new embedding should not move the old data</h3><p>Previously, adding <code translate="no">embedding_v2</code> to an existing collection often required exporting data, training a new model, generating vectors, and then reimporting or bulk-updating the collection via the SDK. That path creates a lot of operational work: version tracking, failed job retries, index rebuilds, serving impact, and consistency checks.</p>
-<p><strong>With Loon, this can become a schema evolution plus a new ColumnGroup commit.</strong> The new embedding column can be written as its own physical ColumnGroup, aligned by row ID, and made visible through the Manifest. The old caption column, scalar metadata column, and original embedding column do not need to be moved.</p>
-<h3 id="Backfills-should-not-require-a-client-side-update-loop" class="common-anchor-header">Backfills should not require a client-side update loop</h3><p>Many AI data updates are backfills. A team may add sparse vectors after hybrid search becomes important. It may add rerank features after a new model is trained. It may correct captions after human review. It may add governance tags after a policy update.</p>
-<p>In a traditional layout, these changes often occur via client SDK updates or database-only write paths, even when the data is produced by Spark, Ray, or another external engine.</p>
-<p>With Loon, external compute systems can produce new ColumnGroups and commit them through the Manifest. The database no longer has to be the only entry point for every rewrite.</p>
-<h3 id="Offline-analysis-should-not-require-another-copy-of-the-truth" class="common-anchor-header">Offline analysis should not require another copy of the truth</h3><p>Previously, teams often dumped an online collection into Parquet for offline evaluation or analysis. That creates two versions of the same dataset: the online collection and the analysis copy. Once captions are corrected, embeddings are regenerated, delete logs are applied, or indexes are rebuilt, the team has to ask which copy is current.</p>
-<p>With a Manifest-based storage model, analysis engines can read the same versioned dataset view as the serving system. They can project only the columns they need, scan only the relevant row ranges, and work against a declared dataset version instead of a manually exported snapshot.</p>
-<h3 id="Deletes-and-corrections-should-touch-only-what-changed" class="common-anchor-header">Deletes and corrections should touch only what changed</h3><p>Deletes, caption corrections, label fixes, and governance updates are routine in AI datasets. They should not force every long vector column through the same rewrite path.</p>
-<p>With Loon, deleting logs can first be treated as logical deletion. Later compaction can clean up the affected ColumnGroups without rewriting unrelated data. If a short text field changes, the storage layer should not have to rewrite hundreds of gigabytes of dense vectors just because they share the same logical row.</p>
-<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">External engines become part of the workflow, not an escape hatch</h3><p>The larger shift is that external engines are no longer treated as systems outside the vector database.</p>
-<p>Spark, Ray, evaluation jobs, labeling systems, and governance pipelines already produce and modify much of the data. The storage layer should enable them to collaborate around a single source of truth rather than constantly exporting, copying, and reimporting.</p>
-<p>That is what a version of Manifest makes possible. It gives online serving, offline analysis, backfill jobs, and compaction a shared view of the dataset.</p>
-<p>These may sound like internal storage details, but they affect how quickly teams can iterate on AI datasets. Every model change, feature backfill, caption correction, quality filter, and index rebuild depends on the same question: &quot;<strong>Can the system update the dataset without moving data it does not need to move? &quot;</strong></p>
-<p>That is the practical value of the storage model.</p>
-<h2 id="Loon-is-available-in-Milvus-30-beta-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Loon is available in Milvus 3.0 beta and Zilliz Vector Lakebase<button data-href="#Loon-is-available-in-Milvus-30-beta-and-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
+    </button></h2><p>Para los desarrolladores de aplicaciones, Loon no debería suponer una nueva carga en forma de API.</p>
+<p>Los usuarios deberían seguir trabajando con los conceptos habituales de Milvus: colecciones, inserciones, búsquedas y búsquedas híbridas. No deberían tener que pensar en archivos de manifiesto, ColumnGroups, rangos de ID de filas o el diseño de los archivos durante el desarrollo normal de las aplicaciones.</p>
+<p>El cambio se produce en segundo plano. El almacenamiento tiene más en cuenta cómo evolucionan realmente los conjuntos de datos de IA.</p>
+<h3 id="Adding-a-new-embedding-should-not-move-the-old-data" class="common-anchor-header">Añadir una nueva incrustación no debería desplazar los datos antiguos</h3><p>Anteriormente, añadir un <code translate="no">embedding_v2</code> o a una colección existente solía requerir exportar datos, entrenar un nuevo modelo, generar vectores y, a continuación, reimportar o actualizar de forma masiva la colección a través del SDK. Ese proceso genera mucho trabajo operativo: seguimiento de versiones, reintentos de tareas fallidas, reconstrucciones de índices, impacto en el servicio y comprobaciones de consistencia.</p>
+<p><strong>Con Loon, esto puede reducirse a una evolución del esquema más una nueva confirmación de ColumnGroup.</strong> La nueva columna de incrustación puede escribirse como su propio ColumnGroup físico, alineada por ID de fila, y hacerse visible a través del Manifest. No es necesario mover la antigua columna de leyenda, la columna de metadatos escalares ni la columna de incrustación original.</p>
+<h3 id="Backfills-should-not-require-a-client-side-update-loop" class="common-anchor-header">Las actualizaciones retrospectivas no deberían requerir un ciclo de actualización del lado del cliente</h3><p>Muchas actualizaciones de datos de IA son rellenos retrospectivos. Un equipo puede añadir vectores dispersos cuando la búsqueda híbrida cobra importancia. Puede añadir características de reordenación tras el entrenamiento de un nuevo modelo. Puede corregir los pies de foto tras una revisión humana. Puede añadir etiquetas de gobernanza tras una actualización de la política.</p>
+<p>En una estructura tradicional, estos cambios suelen producirse mediante actualizaciones del SDK del cliente o rutas de escritura exclusivas de la base de datos, incluso cuando los datos son generados por Spark, Ray u otro motor externo.</p>
+<p>Con Loon, los sistemas de computación externos pueden generar nuevos ColumnGroups y confirmarlos a través del Manifest. La base de datos ya no tiene por qué ser el único punto de entrada para cada reescritura.</p>
+<h3 id="Offline-analysis-should-not-require-another-copy-of-the-truth" class="common-anchor-header">El análisis fuera de línea no debería requerir otra copia de los datos originales</h3><p>Anteriormente, los equipos solían volcar una colección en línea a Parquet para su evaluación o análisis sin conexión. Esto crea dos versiones del mismo conjunto de datos: la colección en línea y la copia de análisis. Una vez que se corrigen las leyendas, se regeneran las incrustaciones, se aplican los registros de eliminación o se reconstruyen los índices, el equipo tiene que preguntarse qué copia está actualizada.</p>
+<p>Con un modelo de almacenamiento basado en el Manifest, los motores de análisis pueden leer la misma vista versionada del conjunto de datos que el sistema de servicio. Pueden proyectar solo las columnas que necesitan, escanear solo los rangos de filas relevantes y trabajar con una versión declarada del conjunto de datos en lugar de una instantánea exportada manualmente.</p>
+<h3 id="Deletes-and-corrections-should-touch-only-what-changed" class="common-anchor-header">Las eliminaciones y correcciones solo deben afectar a lo que ha cambiado</h3><p>Las eliminaciones, las correcciones de leyendas, las correcciones de etiquetas y las actualizaciones de gobernanza son habituales en los conjuntos de datos de IA. No deberían obligar a que todas las columnas de vectores largos sigan la misma ruta de reescritura.</p>
+<p>Con Loon, la eliminación de registros puede tratarse en un primer momento como una eliminación lógica. Posteriormente, la compactación puede limpiar los ColumnGroups afectados sin reescribir datos no relacionados. Si cambia un campo de texto corto, la capa de almacenamiento no debería tener que reescribir cientos de gigabytes de vectores densos solo porque compartan la misma fila lógica.</p>
+<h3 id="External-engines-become-part-of-the-workflow-not-an-escape-hatch" class="common-anchor-header">Los motores externos pasan a formar parte del flujo de trabajo, no son una vía de escape</h3><p>El cambio más significativo es que los motores externos ya no se tratan como sistemas ajenos a la base de datos vectorial.</p>
+<p>Spark, Ray, los trabajos de evaluación, los sistemas de etiquetado y los flujos de trabajo de gobernanza ya producen y modifican gran parte de los datos. La capa de almacenamiento debería permitirles colaborar en torno a una única fuente de verdad, en lugar de tener que exportar, copiar y reimportar constantemente.</p>
+<p>Eso es lo que hace posible una versión de Manifest. Proporciona a la prestación de servicios en línea, el análisis fuera de línea, los trabajos de retroalimentación y la compactación una visión compartida del conjunto de datos.</p>
+<p>Puede que esto suene a detalles de almacenamiento interno, pero afecta a la rapidez con la que los equipos pueden iterar sobre los conjuntos de datos de IA. Cada cambio de modelo, relleno de características, corrección de etiquetas, filtro de calidad y reconstrucción de índices depende de la misma pregunta:<strong>«¿Puede el sistema actualizar el conjunto de datos sin mover los datos que no es necesario mover?».</strong></p>
+<p>Ese es el valor práctico del modelo de almacenamiento.</p>
+<h2 id="Loon-is-available-in-Milvus-30-beta-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Loon está disponible en la versión beta de Milvus 3.0 y en Zilliz Vector Lakebase<button data-href="#Loon-is-available-in-Milvus-30-beta-and-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -577,20 +579,20 @@ _index/
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Loon is available in <a href="https://milvus.io/docs/release_notes.md">Milvus 3.0 beta</a> and is also part of the storage layer in <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Zilliz Vector Lakebase</a>, the next evolution of Zilliz Cloud. And this release focuses on three core areas:</p>
+    </button></h2><p>Loon está disponible en <a href="https://milvus.io/docs/release_notes.md">la versión beta de Milvus 3.0</a> y también forma parte de la capa de almacenamiento de <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Zilliz Vector Lakebase</a>, la próxima evolución de Zilliz Cloud. Además, esta versión se centra en tres áreas fundamentales:</p>
 <ul>
-<li><strong>The Manifest.</strong> The goal is for writes, backfills, deletes, statistics, and index updates to produce versioned dataset views that readers can open consistently. For readers, this means a query can open a specific Manifest version and see a stable view of the dataset. For writers, this means that new data files, delete logs, statistics, or index files can be prepared first and then made visible through a versioned commit.</li>
-<li><strong>The ColumnGroup and format support.</strong> Parquet supports scalar and ecosystem-friendly columns. Vortex supports vector-heavy access patterns. Lance can be integrated in read-only mode for compatibility with existing Lance datasets.</li>
-<li><strong>The Index on Lake.</strong> Scalar stats, filtering indexes, and text inverted indexes can participate in Manifest-based planning by row range. Lake-native vector indexes are more involved. HNSW and IVF have different behavior on object storage, and HNSW in particular is sensitive to random access and cache locality. It cannot simply reuse a layout designed for a local SSD and expect the same result.</li>
+<li><strong>El Manifest.</strong> El objetivo es que las operaciones de escritura, relleno retrospectivo, eliminación, estadísticas y actualizaciones de índices generen vistas versionadas del conjunto de datos que los lectores puedan abrir de forma coherente. Para los lectores, esto significa que una consulta puede abrir una versión específica del «Manifest» y ver una vista estable del conjunto de datos. Para los escritores, esto significa que los nuevos archivos de datos, los registros de eliminación, las estadísticas o los archivos de índice pueden prepararse primero y luego hacerse visibles a través de una confirmación versionada.</li>
+<li><strong>Compatibilidad con ColumnGroup y formatos.</strong> Parquet admite columnas escalares y compatibles con el ecosistema. Vortex admite patrones de acceso con gran volumen de vectores. Lance se puede integrar en modo de solo lectura para garantizar la compatibilidad con los conjuntos de datos de Lance existentes.</li>
+<li><strong>El índice en Lake.</strong> Las estadísticas escalares, los índices de filtrado y los índices invertidos de texto pueden participar en la planificación basada en el manifiesto por rango de filas. Los índices vectoriales nativos de Lake tienen un papel más complejo. HNSW e IVF tienen un comportamiento diferente en el almacenamiento de objetos y, en particular, HNSW es sensible al acceso aleatorio y a la localidad de la caché. No se puede simplemente reutilizar una estructura diseñada para un SSD local y esperar el mismo resultado.</li>
 </ul>
-<h3 id="There-is-still-work-ahead" class="common-anchor-header">There is still work ahead</h3><ul>
-<li><strong>External write paths</strong> matter because Spark and Ray should be able to produce ColumnGroups and Manifest commits without forcing every backfill through a client SDK loop.</li>
-<li><strong>Lakehouse interoperability</strong> matters because many teams already use catalogs and query engines such as <strong>Iceberg, Delta Lake, Trino, DuckDB, and Athena.</strong> Vector data should be able to participate in that ecosystem without losing vector search performance.</li>
-<li><strong>Index layout</strong> matters because graph indexes and inverted structures have different access patterns on object storage.</li>
-<li><strong>Large-object semantics</strong> matter because raw videos, PDFs, images, and audio files require reference management, versioning, and deletion behavior that align with the derived vector dataset.</li>
+<h3 id="There-is-still-work-ahead" class="common-anchor-header">Aún queda trabajo por delante</h3><ul>
+<li><strong>Las rutas de escritura externas</strong> son importantes porque Spark y Ray deberían poder generar ColumnGroups y confirmaciones de Manifest sin obligar a que cada relleno se realice a través de un bucle del SDK del cliente.</li>
+<li><strong>La interoperabilidad de Lakehouse</strong> es importante porque muchos equipos ya utilizan catálogos y motores de consulta como <strong>Iceberg, Delta Lake, Trino, DuckDB y Athena.</strong> Los datos vectoriales deberían poder integrarse en ese ecosistema sin perder rendimiento en la búsqueda vectorial.</li>
+<li><strong>El diseño de los índices</strong> es importante porque los índices de grafos y las estructuras invertidas tienen patrones de acceso diferentes en el almacenamiento de objetos.</li>
+<li><strong>La semántica de los objetos de gran tamaño</strong> es importante porque los vídeos sin editar, los PDF, las imágenes y los archivos de audio requieren una gestión de referencias, un control de versiones y un comportamiento de eliminación que se ajusten al conjunto de datos vectoriales derivado.</li>
 </ul>
-<p>The exact release behavior, default settings, and migration path should follow the relevant Milvus and <a href="https://docs.zilliz.com/docs/release-notes-2605">Zilliz Cloud release notes</a>. The storage direction, however, is clear: vector databases need a versioned, lake-native foundation underneath the serving layer.</p>
-<h2 id="Try-Loon-under-Zilliz-Vector-Lakebase" class="common-anchor-header">Try Loon under Zilliz Vector Lakebase<button data-href="#Try-Loon-under-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
+<p>El comportamiento exacto de la versión, la configuración predeterminada y la ruta de migración deben seguir <a href="https://docs.zilliz.com/docs/release-notes-2605">las notas de la versión</a> pertinentes de Milvus y <a href="https://docs.zilliz.com/docs/release-notes-2605">Zilliz Cloud</a>. Sin embargo, la dirección en materia de almacenamiento está clara: las bases de datos vectoriales necesitan una base versionada y nativa del lago de datos bajo la capa de servicio.</p>
+<h2 id="Try-Loon-under-Zilliz-Vector-Lakebase" class="common-anchor-header">Prueba Loon con Zilliz Vector Lakebase<button data-href="#Try-Loon-under-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -605,13 +607,13 @@ _index/
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>If your current stack separates online serving, offline analysis, backfills, and external data lake workflows into different systems, Zilliz Vector Lakebase is worth a look. You can try it in <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>. New work email signups get $100 free credits. You are also welcome to <a href="https://zilliz.com/contact-sales">talk to us</a> about your use case.</p>
-<p>You can also follow the <a href="https://milvus.io/docs/release_notes.md">Milvus 3.0 release</a> to see how Loon evolves in the open-source engine.</p>
-<p><strong>Zilliz Vector Lakebase brings together:</strong></p>
+    </button></h2><p>Si tu pila actual separa el servicio en línea, el análisis fuera de línea, los rellenos retrospectivos y los flujos de trabajo de lagos de datos externos en diferentes sistemas, merece la pena echar un vistazo a Zilliz Vector Lakebase. Puedes probarlo en <a href="https://cloud.zilliz.com/signup">Zilliz Cloud</a>. Los nuevos registros con correo electrónico profesional obtienen 100 $ en créditos gratuitos. También te invitamos a <a href="https://zilliz.com/contact-sales">hablar con nosotros</a> sobre tu caso de uso.</p>
+<p>También puedes seguir el <a href="https://milvus.io/docs/release_notes.md">lanzamiento de Milvus 3.0</a> para ver cómo evoluciona Loon en el motor de código abierto.</p>
+<p><strong>Zilliz Vector Lakebase reúne:</strong></p>
 <ul>
-<li>Tiered serving for different real-time performance and cost trade-offs</li>
-<li>On-demand search for large-scale or exploratory workloads without always-on compute</li>
-<li>External data lake search, so you can index and search directly over existing lake data</li>
-<li>Full-spectrum search across vectors, text, JSON, and geospatial data, with hybrid retrieval and reranking</li>
-<li>Unified lake-native storage built on Vortex, an open format designed for faster, lower-cost random reads over vector-heavy data</li>
+<li>Servicio por niveles para diferentes equilibrios entre rendimiento en tiempo real y costes</li>
+<li>Búsqueda bajo demanda para cargas de trabajo a gran escala o exploratorias sin necesidad de recursos de computación siempre activos</li>
+<li>Búsqueda en lagos de datos externos, para que puedas indexar y buscar directamente en los datos existentes del lago</li>
+<li>Búsqueda de espectro completo en vectores, texto, JSON y datos geoespaciales, con recuperación híbrida y reordenación de resultados</li>
+<li>Almacenamiento unificado nativo de lago de datos basado en Vortex, un formato abierto diseñado para lecturas aleatorias más rápidas y de menor coste en datos con gran cantidad de vectores</li>
 </ul>

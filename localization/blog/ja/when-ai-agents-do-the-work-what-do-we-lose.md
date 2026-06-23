@@ -1,10 +1,10 @@
 ---
 id: when-ai-agents-do-the-work-what-do-we-lose.md
 title: |
-  When AI Agents Do the Work, What Do We Lose?
+  AIエージェントが仕事を担うとき、私たちは何を失うのか？
 author: Bill Chen
 date: 2026-06-18T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_21_2026_10_34_48_PM_d223e44fc5.png
+cover: assets.zilliz.com/AI_Agents_Work_blog_cover_1536x1024_565f1739a0.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -13,24 +13,23 @@ meta_keywords: 'AI agents, agentic AI, AI coding agents, agent memory, LLM agent
 meta_title: |
   When AI Agents Do the Work, What Do We Lose?
 desc: >
-  AI agents are getting better at execution, memory, and standards. But if they
-  remove the learning loop behind work, human judgment may stop improving.
+  AIエージェントは、実行能力、記憶力、基準の面においてますます向上している。しかし、もし仕事における学習のループが失われてしまえば、人間の判断力は向上しなくなるかもしれない。
 origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
 ---
-<p>Agent products are getting very good at doing the work.</p>
-<p>Claude Code can write and refactor large chunks of code. Cursor can help developers move through codebases faster. Devin and other task-oriented agents try to take over longer workflows. Outside of coding, agents draft emails, process documents, summarize data, update tickets, and automate repetitive tasks that used to require direct human effort.</p>
-<p>Most of these products make the same promise: give the agent enough context, and it will handle more of the execution for you. That promise is useful, but it also creates a question agent products have not fully answered: <strong>when the agent does more of the work, what do we lose?</strong></p>
-<p>The answer is not simply “manual effort.” The task may be completed, but the human may have skipped part of the process that used to build judgment: reading, tracing, debugging, comparing options, making mistakes, and learning why one solution is better than another.</p>
-<p>This does not mean agents are bad for learning. It means agent products need to be designed with learning in mind. If they only optimize for output, they may remove the very experience that helps humans improve the standards agents depend on.</p>
-<p>A useful way to think about this problem is to borrow the autonomy ladder from self-driving systems. The analogy is not perfect, but it helps separate different kinds of progress in agent products:</p>
+<p>エージェント製品は、作業をこなす能力が飛躍的に向上しています。</p>
+<p>Claude Codeは、大量のコードを記述したりリファクタリングしたりできます。Cursorは、開発者がコードベースをより迅速に処理できるよう支援します。Devinをはじめとするタスク指向のエージェントは、より長いワークフローを引き受けるよう努めています。コーディング以外にも、エージェントはメールの下書き作成、文書の処理、データの要約、チケットの更新を行い、かつては人間の直接的な労力を必要としていた反復的なタスクを自動化しています。</p>
+<p>こうした製品のほとんどは、同じ約束をしています。「エージェントに十分なコンテキストを与えれば、実行作業のより多くの部分を代行してくれる」というものです。この約束は有用ですが、同時に、エージェント製品がまだ完全には答えを出せていない疑問も生み出しています。それは、「<strong>エージェントがより多くの作業を行うようになったとき、私たちは何を失うのか」という</strong>疑問<strong>です。</strong></p>
+<p>その答えは、単に「手作業」というだけではありません。タスクは完了するかもしれませんが、人間はかつて判断力を養うために必要だったプロセスの一部――読み込み、追跡、デバッグ、選択肢の比較、失敗、そしてある解決策が別の解決策より優れている理由の学習――を省略してしまう可能性があるのです。</p>
+<p>これは、エージェントが学習にとって悪いという意味ではありません。エージェント製品は、学習を念頭に置いて設計される必要があるということです。もし出力のみを最適化してしまうと、エージェントが依存する基準を人間が向上させるのに役立つ、まさにその経験そのものが失われてしまう可能性があります。</p>
+<p>この問題を考える上で有用な方法は、自動運転システムから「自律性の段階」という概念を借用することです。この類推は完璧ではありませんが、エージェント製品におけるさまざまな種類の進歩を区別するのに役立ちます：</p>
 <ul>
-<li><strong>L1 agents execute tasks.</strong> The human gives instructions, and the agent carries them out.</li>
-<li><strong>L2 agents remember.</strong> They learn across sessions by storing preferences, corrections, and project context.</li>
-<li><strong>L3 agents apply standards.</strong> The human defines rules, constraints, and decision criteria instead of guiding every step.</li>
-<li><strong>L4 agents improve the human.</strong> The agent does not just do the work. It helps the human preserve and deepen judgment.</li>
+<li><strong>L1エージェントはタスクを実行します。</strong>人間が指示を出し、エージェントがそれを実行します。</li>
+<li><strong>L2エージェントは記憶する。</strong>好み、修正、プロジェクトの文脈を保存することで、セッションを超えて学習する。</li>
+<li><strong>L3エージェントは基準を適用します。</strong>人間は、すべてのステップを指示する代わりに、ルール、制約、意思決定基準を定義します。</li>
+<li><strong>L4レベルのエージェントは、人間を向上させます。</strong>エージェントは単に作業を行うだけでなく、人間が判断力を維持し、深めるのを支援します。</li>
 </ul>
-<p>Most of the industry is still focused on the first three levels. That makes sense. Execution, memory, and standards are immediate product problems. But L4 is where the long-term risk appears. If humans stop improving, the standards guiding agents stop improving too.</p>
-<h2 id="L1-Agents-execute" class="common-anchor-header">L1: Agents execute<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
+<p>業界の大部分は依然として最初の3つのレベルに焦点を当てています。それは理にかなっています。実行、記憶、基準は、製品にとって差し迫った課題だからです。しかし、長期的なリスクが現れるのはL4の領域です。もし人間が成長を止めてしまえば、エージェントを導く基準もまた、成長を止めてしまうからです。</p>
+<h2 id="L1-Agents-execute" class="common-anchor-header">L1：エージェントが実行する<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,19 +44,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AI application development has moved through several layers of abstraction:</p>
+    </button></h2><p>AIアプリケーション開発は、いくつかの抽象化レイヤーを経て進化してきました：</p>
 <ul>
-<li>At first, developers called a model through an API: send text, get text back.</li>
-<li>Then came <strong>prompt engineering</strong>, where the main skill was learning how to ask better questions.</li>
-<li>After that came <strong>context engineering</strong>, where the task became giving the model enough examples, constraints, and background to behave usefully in a specific situation.</li>
-<li>Then came <strong>harness engineering</strong>: connecting models to tools, workflows, files, databases, browsers, terminals, and production systems.</li>
-<li><strong>Agent engineering</strong> builds on top of that. Instead of asking the model to answer one prompt, we ask it to plan steps, choose tools, inspect results, recover from errors, and complete multi-step tasks with less supervision.</li>
+<li>当初、開発者はAPIを通じてモデルを呼び出していました。テキストを送信し、テキストを受け取るという仕組みです。</li>
+<li>次に<strong>プロンプトエンジニアリング</strong>が登場し、そこでの主なスキルは、より良い質問の仕方を学ぶことでした。</li>
+<li>その後、<strong>コンテキスト・エンジニアリング</strong>が登場し、特定の状況でモデルが有用に振る舞えるよう、十分な例や制約、背景情報をモデルに与えることが課題となりました。</li>
+<li>さらにその後、「<strong>ハーネス・エンジニアリング</strong>」が登場しました。これは、モデルをツール、ワークフロー、ファイル、データベース、ブラウザ、ターミナル、本番システムに接続するものです。</li>
+<li><strong>エージェント・エンジニアリングは</strong>、その上に構築されます。モデルに単一のプロンプトへの回答を求めるのではなく、手順の計画、ツールの選択、結果の検証、エラーからの回復、そしてより少ない監督のもとで多段階のタスクを完了するよう求めます。</li>
 </ul>
-<p>The technical surface keeps changing, but the basic relationship at L1 stays the same: <strong>the human defines the task, and the agent carries it out.</strong> Each interaction is still mostly self-contained. The task is done, the session ends, and the next task starts from scratch.</p>
-<p>This level already works well enough to change behavior. Agents can handle more execution with less manual effort. As they become cheaper, faster, and more reliable, output rises while cost drops.</p>
-<p>But easier execution creates a new bottleneck. Every parallel session still needs a human to explain the task, provide context, review the output, judge quality, and decide what to do next. The agent may be doing the work, but the human is still responsible for knowing whether the work is good.</p>
-<p><strong>Execution becomes cheaper. Judgment becomes more important.</strong></p>
-<h2 id="L2-Agents-remember" class="common-anchor-header">L2: Agents remember<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
+<p>技術的な側面は変化し続けていますが、L1における基本的な関係性は変わりません。<strong>つまり、人間がタスクを定義し、エージェントがそれを実行するということです。</strong>各インタラクションは依然として、ほぼ独立したものです。タスクが完了するとセッションは終了し、次のタスクはゼロから始まります。</p>
+<p>このレベルでは、行動を変えるのに十分な効果がすでに得られています。エージェントは、手動による労力を減らしながら、より多くの実行処理をこなせるようになります。エージェントがより安価で、高速で、信頼性が高くなるにつれて、出力は増加し、コストは低下します。</p>
+<p>しかし、実行が容易になることで新たなボトルネックが生じます。並行して行われる各セッションにおいて、依然として人間がタスクの説明、文脈の提供、出力の確認、品質の評価、そして次の行動の決定を行う必要があります。作業自体はエージェントが行っているかもしれませんが、その作業が適切かどうかを判断する責任は依然として人間にあります。</p>
+<p><strong>実行コストは低下する。判断の重要性は高まる。</strong></p>
+<h2 id="L2-Agents-remember" class="common-anchor-header">L2：エージェントは記憶する<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,14 +71,14 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L1 solves the task in front of it. L2 asks a different question: <strong>can the agent learn from this interaction so the next one goes better?</strong></p>
-<p>A pure L1 agent is stateless. Once the session ends, the context disappears. The next task starts from scratch. L2 agents break that pattern by accumulating experience across sessions. They remember user preferences, project conventions, recurring feedback, previous decisions, and patterns in how the user works. <strong>The goal is to turn the experience generated through human-agent interaction into a reusable asset.</strong></p>
-<p>This is also why agent memory should not be treated as a longer prompt or a folder of saved transcripts. Useful memory needs infrastructure: durable storage, semantic retrieval, deduplication, updates, and a way to separate stale context from still-useful knowledge. This is where our work at <a href="https://zilliz.com/">Zilliz</a> connects to the problem. <a href="https://milvus.io/">Milvus</a>, and its managed services Zilliz Cloud built around it, are often used as the retrieval layer for agent memory because they make past context searchable instead of merely archived.</p>
-<p><strong>But L2 memory has a structural limit.</strong> Most of what agents learn at this stage comes from observable behavior: what the user said, changed, accepted, rejected, or corrected. An agent may remember that you rewrote a paragraph, rejected an implementation, or changed a function signature. It may not understand why.</p>
-<p>Was the issue accuracy, tone, maintainability, security risk, performance, product positioning, or something else? Behavior is the visible surface of judgment. The reasoning underneath often remains hidden.</p>
-<p>That makes L2 better at capturing explicit knowledge than tacit knowledge. It can remember rules you stated directly and store examples of past decisions. But examples do not automatically become principles. The agent may remember what happened without understanding the standard behind it.</p>
-<p>That gap leads to L3.</p>
-<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3: Agents apply standards<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
+    </button></h2><p>L1は目の前のタスクを解決します。L2は別の問いを投げかけます。「<strong>エージェントはこのやり取りから学び、次回のやり取りをより良いものにできるか？」</strong></p>
+<p>純粋なL1エージェントはステートレスです。セッションが終了すると、コンテキストは消滅します。次のタスクはゼロから始まります。L2エージェントは、セッションをまたいで経験を蓄積することで、このパターンを打破します。彼らは、ユーザーの好み、プロジェクトの慣例、繰り返し寄せられるフィードバック、過去の決定、そしてユーザーの作業パターンを記憶します。<strong>その目的は、人間とエージェントの相互作用を通じて生み出された経験を、再利用可能な資産に変えることです。</strong></p>
+<p>また、これがエージェントの記憶を、単なる長いプロンプトや保存されたトランスクリプトのフォルダとして扱うべきではない理由でもあります。有用な記憶には、耐久性のあるストレージ、意味論的検索、重複排除、更新、そして古くなったコンテキストと依然として有用な知識を区別する方法といったインフラストラクチャが必要です。ここが、<a href="https://zilliz.com/">Zilliz</a>での私たちの取り組みがこの問題と結びつく点です。<a href="https://milvus.io/">Milvus</a>、およびそれを基盤として構築されたマネージドサービス「Zilliz Cloud」は、過去のコンテキストを単にアーカイブするだけでなく検索可能にするため、エージェントのメモリの検索レイヤーとして頻繁に利用されています。</p>
+<p><strong>しかし、L2メモリには構造的な限界があります。</strong>この段階でエージェントが学習する内容のほとんどは、観察可能な行動、つまりユーザーが何を言ったか、変更したか、受け入れたか、拒否したか、あるいは修正したかといったことから得られます。エージェントは、あなたが段落を書き直したり、実装を拒否したり、関数のシグネチャを変更したりしたことを記憶しているかもしれません。しかし、その理由までは理解していない可能性があります。</p>
+<p>問題は、正確性、口調、保守性、セキュリティリスク、パフォーマンス、製品のポジショニング、それとも他の何かだったのでしょうか？ 行動とは、判断の表層に現れたものに過ぎません。その背後にある推論は、往々にして隠されたままです。</p>
+<p>そのため、L2は暗黙知よりも明示的な知識を捉えるのに優れています。ユーザーが直接述べたルールを記憶し、過去の決定事例を保存することはできます。しかし、事例が自動的に原則になるわけではありません。エージェントは、その背後にある基準を理解せずに、単に何が起きたかを記憶しているだけかもしれません。</p>
+<p>そのギャップがL3へとつながります。</p>
+<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3：エージェントが基準を適用する<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,19 +93,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Once L1 and L2 start working, the obvious next step is parallelism.</p>
-<p>If one agent can complete a task, why not run ten? If an agent can learn from one session, why not open many sessions and let them all produce work at once? This is the “10x engineer” or “100x engineer” logic: use agents to multiply output.</p>
-<p>In practice, parallelism creates its own cost. Every session still requires the human to switch context, understand the problem, review the work, give feedback, and decide whether the result is good enough. Past a certain point, more agents stop feeling like leverage and start feeling like overhead.</p>
-<p>This is not just a workflow problem. It is a cognitive wall. Humans do not handle parallel tasks the way machines do. Task switching burns attention. Working memory is limited. Each switch increases the chance of missing details, applying the wrong standard, or approving work too quickly.</p>
-<p><strong>A good product should not fight this limit. It should be designed around it.</strong></p>
-<p>At L3, the input changes from “solve this specific problem in this specific way” to “here are the standards you should apply.” The human stops being the operator who guides every step and becomes the person who defines rules, constraints, preferences, quality bars, and decision criteria.</p>
-<p>A user may still guide an agent through a specific task, but the value of that guidance should not die with the session. The interaction should leave behind a reusable standard, not just a transcript. Next time a similar task appears, the agent should apply the standard without asking the human to reconstruct the full context and remake the same judgment.</p>
-<p>The industry is already moving in this direction. Many agent products let users define rules, instructions, memories, project conventions, and behavior preferences. The direction is right, but most implementations are still early. Rules are often static text: manually updated, fragmented, and only loosely connected to the reasoning behind a user’s decisions.</p>
-<p>The stronger pattern is a continuously updated personal cognition model: a machine-readable representation of how a person judges, decides, and makes trade-offs. It should encode preferences, values, constraints, exceptions, standards, and decision style as context that agents can retrieve and apply.</p>
-<p>Instead of merely storing past conversations, it should make the user’s thinking legible to machines.</p>
-<p>The user’s job changes accordingly. Instead of explaining every task from scratch, the user maintains the model by refining standards, updating preferences, correcting assumptions, and making implicit judgment explicit. In a sense, the user is continuously tokenizing themselves: converting more of their thinking into a form agents can use.</p>
-<p>When execution is cheap, the human does not need to decide every implementation detail before a task starts. The human needs to define what good looks like, what is unacceptable, and how trade-offs should be handled.</p>
-<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4: Agents preserve human learning<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
+    </button></h2><p>L1とL2が稼働し始めると、次の明らかなステップは並列処理です。</p>
+<p>1つのエージェントがタスクを完了できるなら、10個実行してみてもいいのではないか？ エージェントが1回のセッションから学習できるなら、多くのセッションを開いて、それらすべてに同時に作業を行わせてもいいのではないか？ これが「10倍エンジニア」あるいは「100倍エンジニア」の論理であり、エージェントを使って出力を倍増させるという考え方だ。</p>
+<p>実際には、並列処理にはそれ自体のコストが伴います。どのセッションにおいても、人間は依然としてコンテキストを切り替え、問題を理解し、作業内容を確認し、フィードバックを与え、結果が十分かどうかを判断する必要があります。ある一定点を過ぎると、エージェントの数はもはや「レバレッジ」とは感じられなくなり、「オーバーヘッド」として感じられるようになります。</p>
+<p>これは単なるワークフローの問題ではありません。認知的な壁なのです。人間は機械のように並列タスクを処理することはできません。タスクの切り替えは注意力を消耗させます。作業記憶には限界があります。切り替えを行うたびに、細部を見落とす、誤った基準を適用する、あるいは作業を早々に承認してしまう可能性が高まります。</p>
+<p><strong>優れた製品は、この限界と戦ってはなりません。その限界を前提として設計されるべきです。</strong></p>
+<p>L3レベルでは、入力内容が「この特定の問題をこの特定の方法で解決せよ」から「適用すべき基準はこれだ」へと変化します。人間は、すべてのステップを指導するオペレーターではなく、ルール、制約、好み、品質基準、意思決定基準を定義する役割へと変わります。</p>
+<p>ユーザーが特定のタスクについてエージェントを指導することは依然としてあるでしょうが、その指導の価値はセッションが終わった時点で失われてはなりません。そのやり取りは、単なる記録ではなく、再利用可能な基準として残されるべきです。次回、同様のタスクが発生した際、エージェントは、人間に文脈の全体像を再構築させたり、同じ判断を改めて下させたりすることなく、その基準を適用すべきです。</p>
+<p>業界はすでにこの方向へと動き出している。多くのエージェント製品では、ユーザーがルール、指示、記憶、プロジェクトの慣例、行動の好みを定義できるようになっている。方向性は正しいが、ほとんどの実装はまだ初期段階にある。ルールは往々にして静的なテキストであり、手動で更新され、断片的で、ユーザーの意思決定の背後にある推論とは緩やかにしか結びついていない。</p>
+<p>より強力なパターンは、継続的に更新される個人の認知モデルです。これは、人がどのように判断し、決定し、トレードオフを行うかを機械が読み取れる形で表現したものです。そこには、好み、価値観、制約、例外、基準、意思決定スタイルが、エージェントが取得して適用できる文脈として組み込まれるべきです。</p>
+<p>単に過去の会話を保存するのではなく、ユーザーの思考を機械が理解できる形にするべきだ。</p>
+<p>それに応じて、ユーザーの役割も変化します。タスクごとに一から説明する代わりに、ユーザーは基準を洗練させ、選好を更新し、仮定を修正し、暗黙の判断を明示化することで、モデルを維持管理します。ある意味で、ユーザーは自分自身を継続的に「トークン化」しているのです。つまり、自分の思考のより多くの部分を、エージェントが利用できる形式に変換しているのです。</p>
+<p>実行コストが低い場合、人間はタスク開始前に実装の細部をすべて決定する必要はない。人間が定義すべきなのは、何が「良い」結果か、何が「許容できない」か、そしてトレードオフをどのように扱うべきかである。</p>
+<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4：エージェントは人間の学習を保全する<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,16 +120,16 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The first three levels focus on making agents serve humans better. L4 reverses the question: how can agents help humans get better?</strong></p>
-<p>This is the part most agent products have not fully confronted. When agents do more of the work for us, what exactly disappears from the human side of the loop?</p>
-<p>On the surface, we lose manual effort. That is the obvious benefit. But we may also lose three less visible things: situated memory of the work, practice in making trade-offs, and the pattern recognition that comes from repeated exposure to messy details.</p>
-<p><strong>I have felt this directly in coding.</strong> When I wrote code myself, I remembered where each line lived and how the system worked because I had spent time reading, debugging, tracing, and fixing it by hand. That process did not just produce code. It trained my brain to recognize structure.</p>
-<p>With Claude Code, the code still gets produced, often faster. But after a while, my memory of the system is not as deep. I may know what the system does, but I do not always remember how each part came together. The experience of building gets compressed, and some of the learning disappears with it.</p>
-<p>That is not an argument against coding agents. It is an argument that agent products need to preserve the parts of work that build human judgment.</p>
-<p>The same pattern appears outside coding. If an agent drafts every strategy memo, the human may lose practice structuring an argument. If an agent summarizes every paper, the human may lose the habit of noticing what the summary left out. If an agent handles every operational decision, the human may stop developing the intuition that comes from dealing with messy exceptions.</p>
-<p>The work disappears. The output remains. But the learning loop may weaken.</p>
-<p>That is the L4 problem.</p>
-<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">Human judgment is the ceiling<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
+    </button></h2><p><strong>最初の3つのレベルは、エージェントが人間により良く奉仕することに焦点を当てています。L4は問いを逆転させます。つまり、「エージェントは、人間がより良くなるためにどのように役立つことができるか」ということです。</strong></p>
+<p>これは、ほとんどのエージェント製品がまだ完全には向き合っていない部分です。エージェントが私たちのためにより多くの仕事をこなすようになると、ループの人間側からは具体的に何が失われるのでしょうか？</p>
+<p>表面的には、手作業の労力が削減されます。それが明らかなメリットです。しかし、それ以外にも、3つの目に見えにくいものを失う可能性があります。それは、仕事に関する状況に即した記憶、トレードオフを行う練習、そして煩雑な詳細に繰り返し触れることで得られるパターン認識です。</p>
+<p><strong>私はコーディングを通じて、これを身をもって実感してきました。</strong>自分でコードを書いていた頃は、時間をかけて読み込み、デバッグし、トレースし、手作業で修正していたため、各行がどこにあるか、システムがどのように機能するかを覚えていました<strong>。</strong>そのプロセスは単にコードを生み出すだけではありませんでした。それは私の脳に構造を認識する能力を鍛えてくれたのです。</p>
+<p>Claude Codeを使えば、コードは依然として生成され、多くの場合、より速く生成されます。しかし、しばらくすると、システムに対する私の記憶はそれほど深くならなくなります。システムが何をするかは分かっていても、各部分がどのように組み合わさったかを常に覚えているとは限りません。構築する経験が圧縮され、それに伴って学習の一部も失われてしまうのです。</p>
+<p>これは、エージェントによるコーディングを否定する議論ではない。エージェントによる成果物には、人間の判断力を養う作業の要素を保持する必要があるという主張である。</p>
+<p>同様のパターンはコーディング以外の分野でも見られます。エージェントがすべての戦略メモの草案を作成すれば、人間は議論を構成する練習の機会を失うかもしれません。エージェントがすべての論文を要約すれば、人間は要約から何が抜け落ちているかに気づく習慣を失うかもしれません。エージェントがすべての業務上の意思決定を処理すれば、人間は厄介な例外に対処することから得られる直感を養うことをやめてしまうかもしれません。</p>
+<p>仕事そのものは消え去り、成果物だけが残る。しかし、学習のループは弱まってしまうかもしれない。</p>
+<p>これこそがL4の問題である。</p>
+<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">人間の判断こそが上限である<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -145,19 +144,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The loss matters because agents do not operate in a vacuum. An agent is a multiplier, not a replacement. The same tool produces very different results in the hands of an expert and a beginner. A senior engineer with an agent may become dramatically more effective. A beginner may simply produce more output without developing better judgment.</p>
-<p>Agents amplify the user’s existing cognitive level.</p>
-<p>That matters because L3 depends on humans defining the standards agents should follow. But the quality of those standards depends on the quality of human judgment. If the human stops improving, the standards eventually go stale. They become incomplete, shallow, or misaligned with the current reality of the work.</p>
-<p>The system works best as a loop:</p>
+    </button></h2><p>この損失が問題となるのは、エージェントが真空状態で動作するわけではないからだ。エージェントは「代替」ではなく「増幅器」である。同じツールでも、専門家の手と初心者の手では、まったく異なる結果を生み出す。エージェントを駆使するベテランエンジニアは、劇的に効率を高めるかもしれない。一方、初心者は、より良い判断力を養うことなく、単にアウトプットの量を増やすだけにとどまるかもしれない。</p>
+<p>エージェントは、ユーザーの既存の認知レベルを増幅させる。</p>
+<p>これが重要なのは、L3が、エージェントが従うべき基準を人間が定義することに依存しているからです。しかし、それらの基準の質は、人間の判断の質に依存しています。もし人間が成長を止めてしまえば、基準は最終的に陳腐化してしまいます。それらは不完全になったり、浅薄になったり、あるいは現在の業務の実情と乖離したりするのです。</p>
+<p>このシステムは、次のようなループとして最も効果的に機能します：</p>
 <ul>
-<li>Human judgment defines the standards.</li>
-<li>Agents execute within those standards.</li>
-<li>Execution results feed back into human learning.</li>
-<li>Human learning improves the standards.</li>
+<li>人間の判断が基準を定義する。</li>
+<li>エージェントはそれらの基準の範囲内で実行を行う。</li>
+<li>実行結果は、人間の学習にフィードバックされる。</li>
+<li>人間の学習によって基準が改善される。</li>
 </ul>
-<p>If the loop works, both sides get better. The agent executes more effectively, and the human becomes better at defining what effective means. If the loop breaks, the system degrades. Human judgment stagnates. Standards become outdated. Agents keep optimizing, but they optimize inside a framework that is slowly falling behind.</p>
-<p>This is why human judgment is the ceiling. Stronger agents do not remove the need for stronger humans. They make the quality of human judgment more important, because that judgment becomes the framework inside which the agent operates.</p>
-<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">Why agents cannot solve the whole problem alone<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
+<p>このループが機能すれば、双方とも向上します。エージェントはより効果的に実行し、人間は「効果的」とは何かを定義する能力を高めます。ループが途切れると、システムの性能は低下します。人間の判断は停滞し、基準は時代遅れになります。エージェントは最適化を続けますが、徐々に時代遅れになりつつある枠組みの中で最適化を行っているに過ぎません。</p>
+<p>だからこそ、人間の判断こそが上限となるのです。より強力なエージェントが存在しても、より優れた人間が必要なくなるわけではありません。むしろ、人間の判断の質がより重要になるのです。なぜなら、その判断こそが、エージェントが動作する枠組みとなるからです。</p>
+<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">なぜエージェントだけでは問題を完全に解決できないのか<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,21 +171,21 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>One response is obvious: agents will keep getting stronger, so perhaps they will eventually generate better knowledge, better rules, and better standards on their own.</p>
-<p>There is truth in that. Agents are already strong at combining ideas, exploring solution spaces, and surfacing paths humans may not have considered. A model can produce sentences, designs, and solutions that never appeared in its training data. It can recombine patterns across domains and generate useful alternatives.</p>
-<p>That is real value. But L4 is concerned with a different kind of creation. The question is not only who can find a better answer. It is who can ask a new question, rewrite the standard, or expand the problem space.</p>
-<p>Agents are strong at generalizing, combining, and searching within an existing distribution. They can find better paths through known terrain, sometimes paths humans have not tried. But deciding whether the terrain itself should be redrawn is different.</p>
-<p>That kind of decision often comes from human context: lived constraints, personal stakes, curiosity, dissatisfaction, and the cost of being wrong. A person can form a hypothesis that violates the current framework and test it against reality. More importantly, a person can have a reason to keep testing when the idea looks wrong, risky, or useless at first.</p>
-<p>Non-Euclidean geometry is a useful example. The important step was not merely asking, “What if parallel lines intersect?” An agent could generate that sentence. The important step was treating the strange assumption as worth investigating, then following its consequences until it became a new theoretical space. That required persistence, stakes, and a reason to care about the outcome.</p>
-<p>Margaret Boden’s creativity framework is useful here. She distinguishes between three kinds of creativity:</p>
+    </button></h2><p>一つの答えは明らかだ。エージェントはますます強力になっていくのだから、最終的には自らより優れた知識、ルール、基準を生み出せるようになるかもしれない。</p>
+<p>そこには一理ある。エージェントはすでに、アイデアを組み合わせたり、解の空間を探索したり、人間が考えもしなかった道筋を提示したりすることに長けている。モデルは、学習データには一度も登場しなかった文章やデザイン、解決策を生み出すことができる。ドメインを越えてパターンを再結合し、有用な代替案を生成することも可能だ。</p>
+<p>これこそが真の価値です。しかし、L4が注目しているのは、これとは異なる種類の創造です。問題は、誰がより良い答えを見つけられるかということだけではありません。誰が新しい問いを投げかけ、基準を書き換え、あるいは問題空間を広げることができるか、ということです。</p>
+<p>エージェントは、既存の分布内での一般化、組み合わせ、探索に長けている。既知の領域において、時には人間が試したことのないような、より良い道筋を見つけることができる。しかし、その領域そのものを再定義すべきかどうかを判断することは別問題だ。</p>
+<p>そのような決定は、多くの場合、人間の文脈――経験に基づく制約、個人的な利害、好奇心、不満、そして間違った場合の代償――から生まれる。人間は、現在の枠組みに反する仮説を立て、それを現実と照らし合わせて検証することができる。さらに重要なのは、そのアイデアが当初、間違っているように見えたり、リスクが高かったり、役に立たないように思えたりしても、人間には検証を続ける理由があるということだ。</p>
+<p>非ユークリッド幾何学は、その有用な例だ。 重要なステップは、単に「平行線が交わったらどうなるか？」と問うことだけではなかった。エージェントでもその文を生成できたはずだ。重要なステップは、その奇妙な仮定を調査する価値があると見なし、それが新しい理論的空間となるまで、その帰結を突き詰めていったことだった。それには、粘り強さ、利害関係、そして結果に関心を寄せる理由が必要だった。</p>
+<p>ここで、マーガレット・ボーデンの創造性フレームワークが参考になります。彼女は創造性を次の3種類に区別しています：</p>
 <ul>
-<li><strong>Combinational creativity:</strong> combining familiar ideas in new ways.</li>
-<li><strong>Exploratory creativity:</strong> searching within an existing conceptual space.</li>
-<li><strong>Transformational creativity:</strong> changing the rules of the conceptual space itself.</li>
+<li><strong>組み合わせ的創造性：</strong>既知のアイデアを新しい方法で組み合わせること。</li>
+<li><strong>探索的創造性：</strong>既存の概念空間内を探索すること。</li>
+<li><strong>変革的創造性：</strong>概念空間そのもののルールを変えること。</li>
 </ul>
-<p>Agents are already strong in the first two modes. They combine existing ideas and explore within existing conceptual spaces. The third mode is harder. Transformational creativity depends on more than faster search. It depends on why someone chooses to reject an old rule, accept the cost of failure, and keep testing an idea that does not yet fit.</p>
-<p><strong>The more precise claim is this: agents are strongest at combining and exploring within existing spaces. New foundational knowledge, new problem spaces, and new value frameworks still depend heavily on humans.</strong></p>
-<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">Design for the loop, not just the output<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
+<p>エージェントは、すでに最初の2つのモードにおいて高い能力を発揮している。彼らは既存のアイデアを組み合わせ、既存の概念空間内で探索を行う。3つ目のモードはより困難だ。変革的創造性は、単に検索を高速化するだけでは実現できない。それは、なぜ誰かが古いルールを拒否し、失敗の代償を受け入れ、まだ適合していないアイデアを試し続けるのか、という理由に依存している。</p>
+<p><strong>より正確に言えば、エージェントが最も得意とするのは、既存の空間内での組み合わせと探索である。新しい基礎知識、新しい問題空間、そして新しい価値体系は、依然として人間に大きく依存している。</strong></p>
+<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">出力だけでなく、「ループ」を念頭に置いて設計する<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,20 +200,20 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Not every agent product needs to solve L4. Some products only need to help users get tasks done faster. That is fine. Others need memory, standards, and better workflow integration.</p>
-<p>But at the ecosystem level, some products need to preserve the learning loop. If every agent product helps people do less of the work, and none helps people keep learning after they stop doing the work directly, human capacity weakens over time. The optimization space for agents stops expanding. The whole system remains bounded by today’s level of human judgment.</p>
-<p>This is where product design matters. L4 is not just asking the agent to summarize what it did. A useful L4 product preserves the parts of work that build human judgment, even when the agent handles most of the execution.</p>
-<p>A few product patterns matter here:</p>
+    </button></h2><p>すべてのエージェント製品がL4を解決する必要はありません。ユーザーがタスクをより速く完了できるよう支援するだけでよい製品もあります。それは問題ありません。また、記憶機能や標準化、ワークフローとのより良い統合を必要とする製品もあります。</p>
+<p>しかし、エコシステムレベルでは、学習ループを維持する必要がある製品もあります。もしすべてのエージェント製品が、人々の作業量を減らすだけであり、直接作業をやめた後も学び続けられるよう支援する製品が一つもなければ、人間の能力は時間の経過とともに弱体化します。エージェントの最適化空間は拡大しなくなります。システム全体が、今日の人間の判断力のレベルに縛られたままになってしまうのです。</p>
+<p>ここで製品設計が重要になります。L4とは、単にエージェントに「何をしたか」を要約させることではありません。有用なL4製品とは、たとえ実行の大部分をエージェントが担っていたとしても、人間の判断力を養う業務の要素を保持するものです。</p>
+<p>ここで重要な製品設計のパターンがいくつかあります：</p>
 <ul>
-<li><strong>Preserve key judgment points.</strong> Some decisions should stay visible to the human, not because the agent cannot make them, but because those decisions train judgment. The product should identify which moments matter and keep them deliberate.</li>
-<li><strong>Reconstruct the process, not just the result.</strong> A finished artifact is not enough. The system should surface key decision branches, trade-offs, alternative paths, and failed attempts. A user who only sees the output can approve or reject it. A user who sees the reasoning path can update their mental model.</li>
-<li><strong>Support collaborative exploration.</strong> When the user is uncertain, the agent should not jump straight to an answer. It should help expand the problem space: what dimensions matter, what assumptions are missing, what information is still needed, and what costs each option carries.</li>
-<li><strong>Challenge human assumptions.</strong> This does not mean pushing back for the sake of disagreement. It means recognizing gaps or tensions in the user’s thinking and asking targeted questions that make those tensions visible.</li>
+<li><strong>重要な判断ポイントを維持する。</strong>一部の決定は、エージェントが下せないからではなく、それらの決定が判断力を鍛えるため、人間には可視化されたままにしておくべきです<strong>。</strong>製品は、どの瞬間が重要かを特定し、それらを意図的な判断の場として維持する必要があります。</li>
+<li><strong>結果だけでなく、プロセスも再現する。</strong>完成した成果物<strong>だけでは</strong>不十分です<strong>。</strong>システムは、重要な意思決定の分岐点、トレードオフ、代替経路、そして失敗した試みを可視化すべきです<strong>。</strong>出力結果しか見られないユーザーは、それを承認するか却下するかしかできません。しかし、推論の過程を見ることができるユーザーは、自身のメンタルモデルを更新することができます。</li>
+<li><strong>共同での探求を支援する。</strong>ユーザーが不確実な状況にあるとき、エージェントはすぐに答えに飛びつくべきではない。問題空間を広げる手助けをするべきである。つまり、どの側面が重要か、どのような仮定が欠けているか、まだどのような情報が必要か、そして各選択肢にはどのようなコストが伴うか、といった点を明らかにする。</li>
+<li><strong>人間の仮定に疑問を投げかける。</strong>これは、単に異議を唱えるためだけに反論することを意味するのではない。ユーザーの思考におけるギャップや矛盾を認識し、それらの矛盾を可視化するような的を絞った質問を投げかけることを意味する。</li>
 </ul>
-<p>The goal is not to force humans back into every manual step. That would defeat the purpose of agents. The goal is to preserve the parts of work that turn experience into judgment.</p>
-<p>Agent products should not only optimize for output. They should optimize for the feedback loop: better human judgment, better standards, better agent execution, and better human learning from the results.</p>
-<p><strong>When AI agents do the work, we should not lose the loop that made humans better at the work in the first place.</strong></p>
-<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">We’d love to hear your thoughts<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
+<p>目標は、人間にすべての手作業のステップを再び強いることではありません。それではエージェントの存在意義が失われてしまいます。目標は、経験を判断へと昇華させる業務の要素を維持することです。</p>
+<p>エージェント製品は、単にアウトプットを最適化するだけではいけません。フィードバックループ全体を最適化すべきです。つまり、人間の判断の向上、基準の改善、エージェントの実行能力の向上、そして結果から得られる人間の学習の向上です。</p>
+<p><strong>AIエージェントが業務を行う際、そもそも人間がその業務に熟達するきっかけとなったこのフィードバックループを失ってはなりません。</strong></p>
+<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">皆さんのご意見をお聞かせください<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -229,4 +228,4 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>If you are building agents, I would love to hear how you think about this: what parts of the work should agents fully take over, and what parts should remain visible because they help humans keep getting better?</p>
+    </button></h2><p>エージェントを開発されている方、この点についてどのようにお考えかぜひお聞かせください。業務のどの部分をエージェントが完全に引き継ぐべきか、また、人間が上達し続けるために役立つため、どの部分は可視化されたままにしておくべきか、という観点からご意見をお聞かせください。</p>

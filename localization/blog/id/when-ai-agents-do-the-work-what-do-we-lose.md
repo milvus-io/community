@@ -1,10 +1,10 @@
 ---
 id: when-ai-agents-do-the-work-what-do-we-lose.md
 title: |
-  When AI Agents Do the Work, What Do We Lose?
+  Ketika Agen AI yang Melakukan Pekerjaan, Apa yang Kita Kehilangan?
 author: Bill Chen
 date: 2026-06-18T00:00:00.000Z
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_21_2026_10_34_48_PM_d223e44fc5.png
+cover: assets.zilliz.com/AI_Agents_Work_blog_cover_1536x1024_565f1739a0.png
 tag: Engineering
 recommend: false
 publishToMedium: true
@@ -13,24 +13,25 @@ meta_keywords: 'AI agents, agentic AI, AI coding agents, agent memory, LLM agent
 meta_title: |
   When AI Agents Do the Work, What Do We Lose?
 desc: >
-  AI agents are getting better at execution, memory, and standards. But if they
-  remove the learning loop behind work, human judgment may stop improving.
+  Agen AI semakin mahir dalam hal pelaksanaan, daya ingat, dan standar. Namun,
+  jika mereka menghilangkan siklus pembelajaran di balik pekerjaan tersebut,
+  kemampuan penilaian manusia mungkin akan berhenti berkembang.
 origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
 ---
-<p>Agent products are getting very good at doing the work.</p>
-<p>Claude Code can write and refactor large chunks of code. Cursor can help developers move through codebases faster. Devin and other task-oriented agents try to take over longer workflows. Outside of coding, agents draft emails, process documents, summarize data, update tickets, and automate repetitive tasks that used to require direct human effort.</p>
-<p>Most of these products make the same promise: give the agent enough context, and it will handle more of the execution for you. That promise is useful, but it also creates a question agent products have not fully answered: <strong>when the agent does more of the work, what do we lose?</strong></p>
-<p>The answer is not simply “manual effort.” The task may be completed, but the human may have skipped part of the process that used to build judgment: reading, tracing, debugging, comparing options, making mistakes, and learning why one solution is better than another.</p>
-<p>This does not mean agents are bad for learning. It means agent products need to be designed with learning in mind. If they only optimize for output, they may remove the very experience that helps humans improve the standards agents depend on.</p>
-<p>A useful way to think about this problem is to borrow the autonomy ladder from self-driving systems. The analogy is not perfect, but it helps separate different kinds of progress in agent products:</p>
+<p>Produk-produk agen kini semakin mahir dalam mengerjakan tugas-tugas tersebut.</p>
+<p>Claude Code dapat menulis dan merestrukturisasi potongan kode yang besar. Cursor dapat membantu pengembang menavigasi basis kode dengan lebih cepat. Devin dan agen-agen berorientasi tugas lainnya berusaha mengambil alih alur kerja yang lebih panjang. Di luar pemrograman, agen-agen ini menyusun draf email, memproses dokumen, merangkum data, memperbarui tiket, dan mengotomatisasi tugas-tugas berulang yang sebelumnya memerlukan upaya manusia secara langsung.</p>
+<p>Sebagian besar produk ini menjanjikan hal yang sama: berikan konteks yang cukup kepada agen, dan ia akan menangani lebih banyak eksekusi untuk Anda. Janji tersebut memang berguna, tetapi juga menimbulkan pertanyaan yang belum sepenuhnya dijawab oleh produk-produk agen: <strong>ketika agen melakukan lebih banyak pekerjaan, apa yang kita hilangkan?</strong></p>
+<p>Jawabannya bukan sekadar “upaya manual.” Tugas mungkin telah diselesaikan, tetapi manusia mungkin telah melewatkan bagian dari proses yang dulu membangun penilaian: membaca, menelusuri, men-debug, membandingkan opsi, membuat kesalahan, dan belajar mengapa satu solusi lebih baik daripada yang lain.</p>
+<p>Ini tidak berarti agen buruk untuk pembelajaran. Artinya, produk agen perlu dirancang dengan mempertimbangkan pembelajaran. Jika mereka hanya mengoptimalkan hasil, mereka mungkin menghilangkan pengalaman yang justru membantu manusia meningkatkan standar yang menjadi dasar kerja agen.</p>
+<p>Cara yang berguna untuk memikirkan masalah ini adalah dengan meminjam konsep “tangga otonomi” dari sistem kendaraan otonom. Analogi ini memang tidak sempurna, tetapi membantu membedakan berbagai jenis kemajuan dalam produk agen:</p>
 <ul>
-<li><strong>L1 agents execute tasks.</strong> The human gives instructions, and the agent carries them out.</li>
-<li><strong>L2 agents remember.</strong> They learn across sessions by storing preferences, corrections, and project context.</li>
-<li><strong>L3 agents apply standards.</strong> The human defines rules, constraints, and decision criteria instead of guiding every step.</li>
-<li><strong>L4 agents improve the human.</strong> The agent does not just do the work. It helps the human preserve and deepen judgment.</li>
+<li><strong>Agen L1 menjalankan tugas.</strong> Manusia memberikan instruksi, dan agen melaksanakannya.</li>
+<li><strong>Agen L2 memiliki kemampuan mengingat.</strong> Mereka belajar dari sesi ke sesi dengan menyimpan preferensi, koreksi, dan konteks proyek.</li>
+<li><strong>Agen L3 menerapkan standar.</strong> Manusia mendefinisikan aturan, batasan, dan kriteria pengambilan keputusan, alih-alih memandu setiap langkah.</li>
+<li><strong>Agen L4 meningkatkan kemampuan manusia.</strong> Agen tidak hanya sekadar melakukan pekerjaan. Ia membantu manusia mempertahankan dan memperdalam penilaiannya.</li>
 </ul>
-<p>Most of the industry is still focused on the first three levels. That makes sense. Execution, memory, and standards are immediate product problems. But L4 is where the long-term risk appears. If humans stop improving, the standards guiding agents stop improving too.</p>
-<h2 id="L1-Agents-execute" class="common-anchor-header">L1: Agents execute<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
+<p>Sebagian besar industri masih berfokus pada tiga tingkat pertama. Hal ini masuk akal. Eksekusi, memori, dan standar merupakan masalah produk yang mendesak. Namun, L4 adalah tempat munculnya risiko jangka panjang. Jika manusia berhenti berkembang, standar yang memandu agen juga akan berhenti berkembang.</p>
+<h2 id="L1-Agents-execute" class="common-anchor-header">L1: Agen mengeksekusi<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,19 +46,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>AI application development has moved through several layers of abstraction:</p>
+    </button></h2><p>Pengembangan aplikasi AI telah melewati beberapa lapisan abstraksi:</p>
 <ul>
-<li>At first, developers called a model through an API: send text, get text back.</li>
-<li>Then came <strong>prompt engineering</strong>, where the main skill was learning how to ask better questions.</li>
-<li>After that came <strong>context engineering</strong>, where the task became giving the model enough examples, constraints, and background to behave usefully in a specific situation.</li>
-<li>Then came <strong>harness engineering</strong>: connecting models to tools, workflows, files, databases, browsers, terminals, and production systems.</li>
-<li><strong>Agent engineering</strong> builds on top of that. Instead of asking the model to answer one prompt, we ask it to plan steps, choose tools, inspect results, recover from errors, and complete multi-step tasks with less supervision.</li>
+<li>Awalnya, pengembang memanggil model melalui API: mengirim teks, mendapatkan teks kembali.</li>
+<li>Kemudian muncul <strong>rekayasa prompt</strong>, di mana keterampilan utamanya adalah belajar cara mengajukan pertanyaan yang lebih baik.</li>
+<li>Setelah itu muncul <strong>rekayasa konteks</strong>, di mana tugasnya adalah memberikan model contoh, batasan, dan latar belakang yang cukup agar model dapat berperilaku secara berguna dalam situasi tertentu.</li>
+<li>Kemudian muncul <strong>rekayasa harness</strong>: menghubungkan model ke alat, alur kerja, file, basis data, peramban, terminal, dan sistem produksi.</li>
+<li><strong>Rekayasa agen</strong> dibangun di atas dasar tersebut. Alih-alih meminta model untuk menjawab satu prompt, kita memintanya untuk merencanakan langkah-langkah, memilih alat, memeriksa hasil, memulihkan diri dari kesalahan, dan menyelesaikan tugas multi-langkah dengan pengawasan yang lebih sedikit.</li>
 </ul>
-<p>The technical surface keeps changing, but the basic relationship at L1 stays the same: <strong>the human defines the task, and the agent carries it out.</strong> Each interaction is still mostly self-contained. The task is done, the session ends, and the next task starts from scratch.</p>
-<p>This level already works well enough to change behavior. Agents can handle more execution with less manual effort. As they become cheaper, faster, and more reliable, output rises while cost drops.</p>
-<p>But easier execution creates a new bottleneck. Every parallel session still needs a human to explain the task, provide context, review the output, judge quality, and decide what to do next. The agent may be doing the work, but the human is still responsible for knowing whether the work is good.</p>
-<p><strong>Execution becomes cheaper. Judgment becomes more important.</strong></p>
-<h2 id="L2-Agents-remember" class="common-anchor-header">L2: Agents remember<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
+<p>Permukaan teknis terus berubah, tetapi hubungan dasar di L1 tetap sama: <strong>manusia mendefinisikan tugas, dan agen melaksanakannya.</strong> Setiap interaksi masih sebagian besar berdiri sendiri. Tugas selesai, sesi berakhir, dan tugas berikutnya dimulai dari awal.</p>
+<p>Tingkat ini sudah cukup efektif untuk mengubah perilaku. Agen dapat menangani lebih banyak eksekusi dengan usaha manual yang lebih sedikit. Seiring agen menjadi lebih murah, lebih cepat, dan lebih andal, hasil meningkat sementara biaya menurun.</p>
+<p>Namun, pelaksanaan yang lebih mudah menciptakan hambatan baru. Setiap sesi paralel masih membutuhkan manusia untuk menjelaskan tugas, memberikan konteks, meninjau hasil, menilai kualitas, dan memutuskan apa yang harus dilakukan selanjutnya. Agen mungkin yang melakukan pekerjaan, tetapi manusia tetap bertanggung jawab untuk mengetahui apakah pekerjaan tersebut baik.</p>
+<p><strong>Eksekusi menjadi lebih murah. Penilaian menjadi lebih penting.</strong></p>
+<h2 id="L2-Agents-remember" class="common-anchor-header">L2: Agen mengingat<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,14 +73,14 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>L1 solves the task in front of it. L2 asks a different question: <strong>can the agent learn from this interaction so the next one goes better?</strong></p>
-<p>A pure L1 agent is stateless. Once the session ends, the context disappears. The next task starts from scratch. L2 agents break that pattern by accumulating experience across sessions. They remember user preferences, project conventions, recurring feedback, previous decisions, and patterns in how the user works. <strong>The goal is to turn the experience generated through human-agent interaction into a reusable asset.</strong></p>
-<p>This is also why agent memory should not be treated as a longer prompt or a folder of saved transcripts. Useful memory needs infrastructure: durable storage, semantic retrieval, deduplication, updates, and a way to separate stale context from still-useful knowledge. This is where our work at <a href="https://zilliz.com/">Zilliz</a> connects to the problem. <a href="https://milvus.io/">Milvus</a>, and its managed services Zilliz Cloud built around it, are often used as the retrieval layer for agent memory because they make past context searchable instead of merely archived.</p>
-<p><strong>But L2 memory has a structural limit.</strong> Most of what agents learn at this stage comes from observable behavior: what the user said, changed, accepted, rejected, or corrected. An agent may remember that you rewrote a paragraph, rejected an implementation, or changed a function signature. It may not understand why.</p>
-<p>Was the issue accuracy, tone, maintainability, security risk, performance, product positioning, or something else? Behavior is the visible surface of judgment. The reasoning underneath often remains hidden.</p>
-<p>That makes L2 better at capturing explicit knowledge than tacit knowledge. It can remember rules you stated directly and store examples of past decisions. But examples do not automatically become principles. The agent may remember what happened without understanding the standard behind it.</p>
-<p>That gap leads to L3.</p>
-<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3: Agents apply standards<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
+    </button></h2><p>L1 menyelesaikan tugas yang ada di depannya. L2 mengajukan pertanyaan yang berbeda: <strong>dapatkah agen belajar dari interaksi ini sehingga interaksi berikutnya berjalan lebih baik?</strong></p>
+<p>Agen L1 murni bersifat stateless. Begitu sesi berakhir, konteksnya pun hilang. Tugas berikutnya dimulai dari awal. Agen L2 mematahkan pola tersebut dengan mengumpulkan pengalaman dari berbagai sesi. Mereka mengingat preferensi pengguna, konvensi proyek, umpan balik yang berulang, keputusan sebelumnya, dan pola kerja pengguna. <strong>Tujuannya adalah mengubah pengalaman yang dihasilkan melalui interaksi manusia-agen menjadi aset yang dapat digunakan kembali.</strong></p>
+<p>Inilah juga alasan mengapa memori agen tidak boleh diperlakukan sebagai prompt yang lebih panjang atau sekadar folder berisi transkrip yang disimpan. Memori yang berguna membutuhkan infrastruktur: penyimpanan yang tahan lama, pencarian semantik, deduplikasi, pembaruan, serta cara untuk memisahkan konteks yang sudah usang dari pengetahuan yang masih berguna. Di sinilah pekerjaan kami di <a href="https://zilliz.com/">Zilliz</a> terkait dengan masalah ini. <a href="https://milvus.io/">Milvus</a>, beserta layanan terkelola Zilliz Cloud yang dibangun di atasnya, sering digunakan sebagai lapisan pencarian untuk memori agen karena memungkinkan konteks masa lalu dapat dicari, bukan sekadar diarsipkan.</p>
+<p><strong>Namun, memori L2 memiliki batasan struktural.</strong> Sebagian besar hal yang dipelajari agen pada tahap ini berasal dari perilaku yang dapat diamati: apa yang dikatakan, diubah, diterima, ditolak, atau dikoreksi oleh pengguna. Seorang agen mungkin mengingat bahwa Anda menulis ulang sebuah paragraf, menolak suatu implementasi, atau mengubah tanda tangan fungsi. Namun, agen tersebut mungkin tidak memahami alasannya.</p>
+<p>Apakah masalahnya terkait akurasi, nada, kemudahan pemeliharaan, risiko keamanan, kinerja, posisi produk, atau hal lain? Perilaku hanyalah permukaan yang terlihat dari penilaian. Alasan di baliknya sering kali tetap tersembunyi.</p>
+<p>Hal itu membuat L2 lebih baik dalam menangkap pengetahuan eksplisit daripada pengetahuan tacit. Ia dapat mengingat aturan yang Anda nyatakan secara langsung dan menyimpan contoh keputusan masa lalu. Namun, contoh-contoh tersebut tidak secara otomatis menjadi prinsip. Agen mungkin mengingat apa yang terjadi tanpa memahami standar di baliknya.</p>
+<p>Kesenjangan itulah yang mengarah ke L3.</p>
+<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3: Agen menerapkan standar<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,19 +95,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Once L1 and L2 start working, the obvious next step is parallelism.</p>
-<p>If one agent can complete a task, why not run ten? If an agent can learn from one session, why not open many sessions and let them all produce work at once? This is the “10x engineer” or “100x engineer” logic: use agents to multiply output.</p>
-<p>In practice, parallelism creates its own cost. Every session still requires the human to switch context, understand the problem, review the work, give feedback, and decide whether the result is good enough. Past a certain point, more agents stop feeling like leverage and start feeling like overhead.</p>
-<p>This is not just a workflow problem. It is a cognitive wall. Humans do not handle parallel tasks the way machines do. Task switching burns attention. Working memory is limited. Each switch increases the chance of missing details, applying the wrong standard, or approving work too quickly.</p>
-<p><strong>A good product should not fight this limit. It should be designed around it.</strong></p>
-<p>At L3, the input changes from “solve this specific problem in this specific way” to “here are the standards you should apply.” The human stops being the operator who guides every step and becomes the person who defines rules, constraints, preferences, quality bars, and decision criteria.</p>
-<p>A user may still guide an agent through a specific task, but the value of that guidance should not die with the session. The interaction should leave behind a reusable standard, not just a transcript. Next time a similar task appears, the agent should apply the standard without asking the human to reconstruct the full context and remake the same judgment.</p>
-<p>The industry is already moving in this direction. Many agent products let users define rules, instructions, memories, project conventions, and behavior preferences. The direction is right, but most implementations are still early. Rules are often static text: manually updated, fragmented, and only loosely connected to the reasoning behind a user’s decisions.</p>
-<p>The stronger pattern is a continuously updated personal cognition model: a machine-readable representation of how a person judges, decides, and makes trade-offs. It should encode preferences, values, constraints, exceptions, standards, and decision style as context that agents can retrieve and apply.</p>
-<p>Instead of merely storing past conversations, it should make the user’s thinking legible to machines.</p>
-<p>The user’s job changes accordingly. Instead of explaining every task from scratch, the user maintains the model by refining standards, updating preferences, correcting assumptions, and making implicit judgment explicit. In a sense, the user is continuously tokenizing themselves: converting more of their thinking into a form agents can use.</p>
-<p>When execution is cheap, the human does not need to decide every implementation detail before a task starts. The human needs to define what good looks like, what is unacceptable, and how trade-offs should be handled.</p>
-<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4: Agents preserve human learning<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
+    </button></h2><p>Setelah L1 dan L2 mulai beroperasi, langkah selanjutnya yang jelas adalah paralelisme.</p>
+<p>Jika satu agen dapat menyelesaikan suatu tugas, mengapa tidak menjalankan sepuluh agen? Jika seorang agen dapat belajar dari satu sesi, mengapa tidak membuka banyak sesi dan membiarkan semuanya menghasilkan pekerjaan sekaligus? Inilah logika “insinyur 10x” atau “insinyur 100x”: gunakan agen untuk melipatgandakan hasil.</p>
+<p>Dalam praktiknya, paralelisme menimbulkan biayanya sendiri. Setiap sesi tetap mengharuskan manusia untuk beralih konteks, memahami masalah, meninjau hasil kerja, memberikan umpan balik, dan memutuskan apakah hasilnya cukup baik. Setelah melewati titik tertentu, penambahan agen tidak lagi terasa sebagai pengungkit, melainkan sebagai beban tambahan.</p>
+<p>Ini bukan sekadar masalah alur kerja. Ini adalah hambatan kognitif. Manusia tidak menangani tugas paralel seperti yang dilakukan mesin. Pergantian tugas menguras perhatian. Memori kerja terbatas. Setiap pergantian meningkatkan kemungkinan terlewatnya detail, penerapan standar yang salah, atau menyetujui hasil kerja terlalu cepat.</p>
+<p><strong>Produk yang baik seharusnya tidak melawan batasan ini. Produk tersebut harus dirancang dengan mempertimbangkan batasan tersebut.</strong></p>
+<p>Di L3, masukan berubah dari “selesaikan masalah spesifik ini dengan cara spesifik ini” menjadi “inilah standar yang harus Anda terapkan.” Manusia berhenti menjadi operator yang memandu setiap langkah dan menjadi orang yang mendefinisikan aturan, batasan, preferensi, ambang batas kualitas, dan kriteria keputusan.</p>
+<p>Seorang pengguna mungkin masih membimbing agen melalui tugas tertentu, tetapi nilai dari bimbingan tersebut tidak boleh hilang begitu saja setelah sesi berakhir. Interaksi tersebut seharusnya meninggalkan standar yang dapat digunakan kembali, bukan sekadar transkrip. Saat tugas serupa muncul lagi, agen seharusnya menerapkan standar tersebut tanpa meminta manusia untuk merekonstruksi konteks lengkap dan membuat penilaian yang sama.</p>
+<p>Industri ini sudah bergerak ke arah ini. Banyak produk agen memungkinkan pengguna mendefinisikan aturan, instruksi, memori, konvensi proyek, dan preferensi perilaku. Arahnya sudah benar, tetapi sebagian besar implementasinya masih dalam tahap awal. Aturan sering kali berupa teks statis: diperbarui secara manual, terfragmentasi, dan hanya terhubung secara longgar dengan alasan di balik keputusan pengguna.</p>
+<p>Pola yang lebih kuat adalah model kognisi pribadi yang terus diperbarui: representasi yang dapat dibaca mesin tentang bagaimana seseorang menilai, memutuskan, dan membuat kompromi. Model ini harus mengkodekan preferensi, nilai, batasan, pengecualian, standar, dan gaya pengambilan keputusan sebagai konteks yang dapat diambil dan diterapkan oleh agen.</p>
+<p>Alih-alih sekadar menyimpan percakapan masa lalu, model ini seharusnya membuat pemikiran pengguna dapat dipahami oleh mesin.</p>
+<p>Tugas pengguna pun berubah seiring dengan itu. Alih-alih menjelaskan setiap tugas dari awal, pengguna memelihara model tersebut dengan menyempurnakan standar, memperbarui preferensi, mengoreksi asumsi, dan menjadikan penilaian implisit menjadi eksplisit. Dalam arti tertentu, pengguna terus-menerus “menokenisasi” diri mereka sendiri: mengubah lebih banyak pemikiran mereka ke dalam bentuk yang dapat digunakan oleh agen.</p>
+<p>Ketika eksekusi tidak memerlukan biaya besar, manusia tidak perlu memutuskan setiap detail implementasi sebelum suatu tugas dimulai. Manusia perlu mendefinisikan seperti apa hasil yang baik, apa yang tidak dapat diterima, dan bagaimana kompromi harus ditangani.</p>
+<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4: Agen melestarikan pembelajaran manusia<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,16 +122,16 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>The first three levels focus on making agents serve humans better. L4 reverses the question: how can agents help humans get better?</strong></p>
-<p>This is the part most agent products have not fully confronted. When agents do more of the work for us, what exactly disappears from the human side of the loop?</p>
-<p>On the surface, we lose manual effort. That is the obvious benefit. But we may also lose three less visible things: situated memory of the work, practice in making trade-offs, and the pattern recognition that comes from repeated exposure to messy details.</p>
-<p><strong>I have felt this directly in coding.</strong> When I wrote code myself, I remembered where each line lived and how the system worked because I had spent time reading, debugging, tracing, and fixing it by hand. That process did not just produce code. It trained my brain to recognize structure.</p>
-<p>With Claude Code, the code still gets produced, often faster. But after a while, my memory of the system is not as deep. I may know what the system does, but I do not always remember how each part came together. The experience of building gets compressed, and some of the learning disappears with it.</p>
-<p>That is not an argument against coding agents. It is an argument that agent products need to preserve the parts of work that build human judgment.</p>
-<p>The same pattern appears outside coding. If an agent drafts every strategy memo, the human may lose practice structuring an argument. If an agent summarizes every paper, the human may lose the habit of noticing what the summary left out. If an agent handles every operational decision, the human may stop developing the intuition that comes from dealing with messy exceptions.</p>
-<p>The work disappears. The output remains. But the learning loop may weaken.</p>
-<p>That is the L4 problem.</p>
-<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">Human judgment is the ceiling<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
+    </button></h2><p><strong>Tiga tingkat pertama berfokus pada upaya agar agen dapat melayani manusia dengan lebih baik. L4 membalikkan pertanyaannya: bagaimana agen dapat membantu manusia menjadi lebih baik?</strong></p>
+<p>Inilah bagian yang belum sepenuhnya dihadapi oleh sebagian besar produk agen. Ketika agen melakukan lebih banyak pekerjaan untuk kita, apa sebenarnya yang hilang dari sisi manusia dalam siklus tersebut?</p>
+<p>Secara kasat mata, kita kehilangan upaya manual. Itulah manfaat yang jelas. Namun, kita mungkin juga kehilangan tiga hal yang kurang terlihat: ingatan kontekstual tentang pekerjaan, latihan dalam membuat kompromi, dan kemampuan mengenali pola yang muncul dari paparan berulang terhadap detail-detail yang rumit.</p>
+<p><strong>Saya merasakannya secara langsung saat menulis kode.</strong> Ketika saya menulis kode sendiri, saya mengingat di mana setiap baris berada dan bagaimana sistem itu bekerja karena saya telah menghabiskan waktu untuk membaca, men-debug, menelusuri, dan memperbaikinya secara manual. Proses itu tidak hanya menghasilkan kode. Proses itu melatih otak saya untuk mengenali struktur.</p>
+<p>Dengan Claude Code, kode tetap dihasilkan, seringkali lebih cepat. Namun setelah beberapa waktu, ingatan saya tentang sistem tersebut tidak sedalam sebelumnya. Saya mungkin tahu apa yang dilakukan sistem tersebut, tetapi saya tidak selalu mengingat bagaimana setiap bagiannya saling terhubung. Pengalaman membangun menjadi terkompresi, dan sebagian pembelajaran pun ikut menghilang bersamanya.</p>
+<p>Itu bukanlah argumen yang menentang penggunaan agen pemrograman. Itu adalah argumen bahwa produk-produk agen perlu mempertahankan bagian-bagian pekerjaan yang membangun penilaian manusia.</p>
+<p>Pola yang sama muncul di luar pemrograman. Jika agen menyusun setiap memo strategi, manusia mungkin kehilangan latihan dalam menyusun argumen. Jika agen merangkum setiap makalah, manusia mungkin kehilangan kebiasaan memperhatikan apa yang terlewatkan dalam ringkasan tersebut. Jika agen menangani setiap keputusan operasional, manusia mungkin berhenti mengembangkan intuisi yang berasal dari menangani pengecualian yang rumit.</p>
+<p>Pekerjaannya menghilang. Hasilnya tetap ada. Namun, siklus pembelajaran mungkin melemah.</p>
+<p>Itulah masalah L4.</p>
+<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">Penilaian manusia adalah batas atasnya<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -145,19 +146,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>The loss matters because agents do not operate in a vacuum. An agent is a multiplier, not a replacement. The same tool produces very different results in the hands of an expert and a beginner. A senior engineer with an agent may become dramatically more effective. A beginner may simply produce more output without developing better judgment.</p>
-<p>Agents amplify the user’s existing cognitive level.</p>
-<p>That matters because L3 depends on humans defining the standards agents should follow. But the quality of those standards depends on the quality of human judgment. If the human stops improving, the standards eventually go stale. They become incomplete, shallow, or misaligned with the current reality of the work.</p>
-<p>The system works best as a loop:</p>
+    </button></h2><p>Kehilangan ini penting karena agen tidak beroperasi dalam ruang hampa. Agen adalah pengganda, bukan pengganti. Alat yang sama menghasilkan hasil yang sangat berbeda di tangan seorang ahli dan seorang pemula. Seorang insinyur senior yang menggunakan agen mungkin menjadi jauh lebih efektif. Seorang pemula mungkin hanya menghasilkan lebih banyak hasil tanpa mengembangkan penilaian yang lebih baik.</p>
+<p>Agen memperkuat tingkat kognitif pengguna yang sudah ada.</p>
+<p>Hal ini penting karena L3 bergantung pada manusia yang menentukan standar yang harus diikuti agen. Namun, kualitas standar tersebut bergantung pada kualitas penilaian manusia. Jika manusia berhenti berkembang, standar tersebut pada akhirnya akan menjadi usang. Standar tersebut menjadi tidak lengkap, dangkal, atau tidak selaras dengan realitas pekerjaan saat ini.</p>
+<p>Sistem ini bekerja paling baik sebagai siklus:</p>
 <ul>
-<li>Human judgment defines the standards.</li>
-<li>Agents execute within those standards.</li>
-<li>Execution results feed back into human learning.</li>
-<li>Human learning improves the standards.</li>
+<li>Penilaian manusia menentukan standar-standar tersebut.</li>
+<li>Agen melaksanakan tugas sesuai standar tersebut.</li>
+<li>Hasil pelaksanaan tersebut menjadi masukan bagi pembelajaran manusia.</li>
+<li>Pembelajaran manusia meningkatkan standar tersebut.</li>
 </ul>
-<p>If the loop works, both sides get better. The agent executes more effectively, and the human becomes better at defining what effective means. If the loop breaks, the system degrades. Human judgment stagnates. Standards become outdated. Agents keep optimizing, but they optimize inside a framework that is slowly falling behind.</p>
-<p>This is why human judgment is the ceiling. Stronger agents do not remove the need for stronger humans. They make the quality of human judgment more important, because that judgment becomes the framework inside which the agent operates.</p>
-<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">Why agents cannot solve the whole problem alone<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
+<p>Jika siklus ini berjalan lancar, kedua belah pihak akan menjadi lebih baik. Agen akan bekerja lebih efektif, dan manusia akan semakin mahir dalam mendefinisikan arti dari "efektif". Jika siklus ini terputus, sistem akan menurun kinerjanya. Penilaian manusia akan mandek. Standar menjadi usang. Agen terus melakukan optimasi, tetapi mereka melakukannya dalam kerangka kerja yang perlahan-lahan tertinggal.</p>
+<p>Inilah mengapa penilaian manusia menjadi batas atasnya. Agen yang lebih kuat tidak menghilangkan kebutuhan akan manusia yang lebih kuat. Mereka justru membuat kualitas penilaian manusia menjadi lebih penting, karena penilaian tersebut menjadi kerangka kerja di mana agen beroperasi.</p>
+<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">Mengapa agen tidak dapat menyelesaikan seluruh masalah sendirian<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,21 +173,21 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>One response is obvious: agents will keep getting stronger, so perhaps they will eventually generate better knowledge, better rules, and better standards on their own.</p>
-<p>There is truth in that. Agents are already strong at combining ideas, exploring solution spaces, and surfacing paths humans may not have considered. A model can produce sentences, designs, and solutions that never appeared in its training data. It can recombine patterns across domains and generate useful alternatives.</p>
-<p>That is real value. But L4 is concerned with a different kind of creation. The question is not only who can find a better answer. It is who can ask a new question, rewrite the standard, or expand the problem space.</p>
-<p>Agents are strong at generalizing, combining, and searching within an existing distribution. They can find better paths through known terrain, sometimes paths humans have not tried. But deciding whether the terrain itself should be redrawn is different.</p>
-<p>That kind of decision often comes from human context: lived constraints, personal stakes, curiosity, dissatisfaction, and the cost of being wrong. A person can form a hypothesis that violates the current framework and test it against reality. More importantly, a person can have a reason to keep testing when the idea looks wrong, risky, or useless at first.</p>
-<p>Non-Euclidean geometry is a useful example. The important step was not merely asking, “What if parallel lines intersect?” An agent could generate that sentence. The important step was treating the strange assumption as worth investigating, then following its consequences until it became a new theoretical space. That required persistence, stakes, and a reason to care about the outcome.</p>
-<p>Margaret Boden’s creativity framework is useful here. She distinguishes between three kinds of creativity:</p>
+    </button></h2><p>Satu jawaban sudah jelas: agen akan terus menjadi lebih kuat, sehingga mungkin pada akhirnya mereka akan menghasilkan pengetahuan, aturan, dan standar yang lebih baik secara mandiri.</p>
+<p>Ada kebenaran di dalamnya. Agen-agen sudah mahir dalam menggabungkan ide, menjelajahi ruang solusi, dan mengungkap jalur yang mungkin belum pernah dipertimbangkan manusia. Sebuah model dapat menghasilkan kalimat, desain, dan solusi yang tidak pernah muncul dalam data pelatihannya. Model tersebut dapat menggabungkan kembali pola-pola lintas bidang dan menghasilkan alternatif yang berguna.</p>
+<p>Itulah nilai sesungguhnya. Namun, L4 berfokus pada jenis penciptaan yang berbeda. Pertanyaannya bukan hanya siapa yang bisa menemukan jawaban yang lebih baik. Melainkan siapa yang bisa mengajukan pertanyaan baru, menulis ulang standar, atau memperluas ruang masalah.</p>
+<p>Agen-agen unggul dalam menggeneralisasi, menggabungkan, dan mencari di dalam distribusi yang sudah ada. Mereka dapat menemukan jalur yang lebih baik melalui medan yang sudah dikenal, terkadang jalur yang belum pernah dicoba oleh manusia. Namun, memutuskan apakah medan itu sendiri perlu digambar ulang adalah hal yang berbeda.</p>
+<p>Keputusan semacam itu sering kali berasal dari konteks manusia: kendala yang dialami, kepentingan pribadi, rasa ingin tahu, ketidakpuasan, dan konsekuensi jika salah. Seseorang dapat membentuk hipotesis yang melanggar kerangka kerja saat ini dan mengujinya terhadap kenyataan. Yang lebih penting, seseorang dapat memiliki alasan untuk terus menguji ketika ide tersebut tampak salah, berisiko, atau tidak berguna pada awalnya.</p>
+<p>Geometri non-Euklides adalah contoh yang berguna. Langkah pentingnya bukan sekadar bertanya, “Bagaimana jika garis-garis sejajar berpotongan?” Seorang agen bisa saja menghasilkan kalimat itu. Langkah pentingnya adalah memperlakukan asumsi aneh tersebut sebagai sesuatu yang layak diselidiki, lalu menelusuri konsekuensinya hingga menjadi ruang teoretis baru. Hal itu membutuhkan ketekunan, kepentingan, dan alasan untuk peduli terhadap hasilnya.</p>
+<p>Kerangka kerja kreativitas Margaret Boden berguna di sini. Ia membedakan tiga jenis kreativitas:</p>
 <ul>
-<li><strong>Combinational creativity:</strong> combining familiar ideas in new ways.</li>
-<li><strong>Exploratory creativity:</strong> searching within an existing conceptual space.</li>
-<li><strong>Transformational creativity:</strong> changing the rules of the conceptual space itself.</li>
+<li><strong>Kreativitas kombinatorial:</strong> menggabungkan ide-ide yang sudah dikenal dengan cara baru.</li>
+<li><strong>Kreativitas eksploratif:</strong> mencari di dalam ruang konseptual yang sudah ada.</li>
+<li><strong>Kreativitas transformasional:</strong> mengubah aturan ruang konseptual itu sendiri.</li>
 </ul>
-<p>Agents are already strong in the first two modes. They combine existing ideas and explore within existing conceptual spaces. The third mode is harder. Transformational creativity depends on more than faster search. It depends on why someone chooses to reject an old rule, accept the cost of failure, and keep testing an idea that does not yet fit.</p>
-<p><strong>The more precise claim is this: agents are strongest at combining and exploring within existing spaces. New foundational knowledge, new problem spaces, and new value frameworks still depend heavily on humans.</strong></p>
-<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">Design for the loop, not just the output<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
+<p>Agen-agen sudah unggul dalam dua mode pertama. Mereka menggabungkan ide-ide yang sudah ada dan mengeksplorasi di dalam ruang konseptual yang sudah ada. Mode ketiga lebih sulit. Kreativitas transformasional bergantung pada lebih dari sekadar pencarian yang lebih cepat. Kreativitas ini bergantung pada alasan mengapa seseorang memilih untuk menolak aturan lama, menerima risiko kegagalan, dan terus menguji ide yang belum sesuai.</p>
+<p><strong>Pernyataan yang lebih tepat adalah sebagai berikut: agen paling unggul dalam menggabungkan dan mengeksplorasi ruang yang sudah ada. Pengetahuan dasar baru, ruang masalah baru, dan kerangka nilai baru masih sangat bergantung pada manusia.</strong></p>
+<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">Desain untuk siklus, bukan hanya hasilnya<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,20 +202,20 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>Not every agent product needs to solve L4. Some products only need to help users get tasks done faster. That is fine. Others need memory, standards, and better workflow integration.</p>
-<p>But at the ecosystem level, some products need to preserve the learning loop. If every agent product helps people do less of the work, and none helps people keep learning after they stop doing the work directly, human capacity weakens over time. The optimization space for agents stops expanding. The whole system remains bounded by today’s level of human judgment.</p>
-<p>This is where product design matters. L4 is not just asking the agent to summarize what it did. A useful L4 product preserves the parts of work that build human judgment, even when the agent handles most of the execution.</p>
-<p>A few product patterns matter here:</p>
+    </button></h2><p>Tidak setiap produk agen perlu menyelesaikan L4. Beberapa produk hanya perlu membantu pengguna menyelesaikan tugas lebih cepat. Itu sudah cukup. Yang lain membutuhkan memori, standar, dan integrasi alur kerja yang lebih baik.</p>
+<p>Namun, pada tingkat ekosistem, beberapa produk perlu mempertahankan siklus pembelajaran. Jika setiap produk agen membantu orang mengurangi beban kerja, dan tidak ada yang membantu orang terus belajar setelah mereka berhenti melakukan pekerjaan secara langsung, kapasitas manusia akan melemah seiring waktu. Ruang optimasi untuk agen berhenti berkembang. Seluruh sistem tetap dibatasi oleh tingkat penilaian manusia saat ini.</p>
+<p>Di sinilah desain produk menjadi penting. L4 bukan sekadar meminta agen untuk merangkum apa yang telah dilakukannya. Produk L4 yang bermanfaat mempertahankan bagian-bagian pekerjaan yang membangun penilaian manusia, bahkan ketika agen menangani sebagian besar pelaksanaannya.</p>
+<p>Beberapa pola produk yang penting di sini:</p>
 <ul>
-<li><strong>Preserve key judgment points.</strong> Some decisions should stay visible to the human, not because the agent cannot make them, but because those decisions train judgment. The product should identify which moments matter and keep them deliberate.</li>
-<li><strong>Reconstruct the process, not just the result.</strong> A finished artifact is not enough. The system should surface key decision branches, trade-offs, alternative paths, and failed attempts. A user who only sees the output can approve or reject it. A user who sees the reasoning path can update their mental model.</li>
-<li><strong>Support collaborative exploration.</strong> When the user is uncertain, the agent should not jump straight to an answer. It should help expand the problem space: what dimensions matter, what assumptions are missing, what information is still needed, and what costs each option carries.</li>
-<li><strong>Challenge human assumptions.</strong> This does not mean pushing back for the sake of disagreement. It means recognizing gaps or tensions in the user’s thinking and asking targeted questions that make those tensions visible.</li>
+<li><strong>Pertahankan titik-titik penilaian kunci.</strong> Beberapa keputusan harus tetap terlihat oleh manusia, bukan karena agen tidak dapat membuatnya, tetapi karena keputusan tersebut melatih penilaian. Produk harus mengidentifikasi momen-momen yang penting dan menjadikannya sebagai proses yang disengaja.</li>
+<li><strong>Rekonstruksi proses, bukan hanya hasilnya.</strong> Sebuah hasil akhir saja tidak cukup. Sistem harus menampilkan cabang-cabang keputusan kunci, trade-off, jalur alternatif, dan upaya yang gagal. Pengguna yang hanya melihat output dapat menyetujui atau menolaknya. Pengguna yang melihat jalur penalaran dapat memperbarui model mentalnya.</li>
+<li><strong>Dukung eksplorasi kolaboratif.</strong> Ketika pengguna merasa ragu, agen tidak boleh langsung melompat ke jawaban. Agen harus membantu memperluas ruang masalah: dimensi apa yang penting, asumsi apa yang hilang, informasi apa yang masih dibutuhkan, dan biaya apa yang ditanggung oleh setiap opsi.</li>
+<li><strong>Tantang asumsi manusia.</strong> Ini bukan berarti menentang hanya demi perbedaan pendapat. Artinya, mengenali celah atau ketegangan dalam pemikiran pengguna dan mengajukan pertanyaan yang tepat sasaran untuk mengungkap ketegangan tersebut.</li>
 </ul>
-<p>The goal is not to force humans back into every manual step. That would defeat the purpose of agents. The goal is to preserve the parts of work that turn experience into judgment.</p>
-<p>Agent products should not only optimize for output. They should optimize for the feedback loop: better human judgment, better standards, better agent execution, and better human learning from the results.</p>
-<p><strong>When AI agents do the work, we should not lose the loop that made humans better at the work in the first place.</strong></p>
-<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">We’d love to hear your thoughts<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
+<p>Tujuannya bukanlah memaksa manusia kembali ke setiap langkah manual. Hal itu justru akan menghilangkan tujuan dari keberadaan agen. Tujuannya adalah mempertahankan bagian-bagian pekerjaan yang mengubah pengalaman menjadi penilaian.</p>
+<p>Produk agen tidak hanya harus dioptimalkan untuk hasil keluaran. Produk tersebut juga harus dioptimalkan untuk siklus umpan balik: penilaian manusia yang lebih baik, standar yang lebih baik, pelaksanaan agen yang lebih baik, dan pembelajaran manusia yang lebih baik dari hasilnya.</p>
+<p><strong>Ketika agen AI melakukan pekerjaan, kita tidak boleh kehilangan siklus yang pada awalnya membuat manusia menjadi lebih baik dalam pekerjaan tersebut.</strong></p>
+<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">Kami sangat ingin mendengar pendapat Anda<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -229,4 +230,4 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>If you are building agents, I would love to hear how you think about this: what parts of the work should agents fully take over, and what parts should remain visible because they help humans keep getting better?</p>
+    </button></h2><p>Jika Anda sedang mengembangkan agen, saya ingin mendengar pandangan Anda mengenai hal ini: bagian mana dari pekerjaan yang seharusnya sepenuhnya diambil alih oleh agen, dan bagian mana yang seharusnya tetap terlihat karena membantu manusia terus berkembang?</p>
