@@ -2,7 +2,7 @@
 id: why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
 title: >
  Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.
-author: Ted Xu 
+author: Ted Xu
 date: 2026-6-10
 cover: assets.zilliz.com/Loon_New_Cover_8270435335.png
 tag: Engineering
@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Loon storage engine, Milvus 3.0, vector storage, AI datasets, Zilliz Vector Lakebase
 meta_title: >
- AI Datasets Are Never Done. So We Built Loon.Meta description: Loon is a new storage engine for Milvus 3.0 and Zilliz Vector Lakebase, built to manage evolving vector datasets with ColumnGroups, row ID alignment, and Manifests.Meta keywords: Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex
+ AI Datasets Are Never Done. So We Built Loon.
 desc: >
  Loon powers Milvus 3.0 with versioned vector storage for evolving AI datasets, efficient backfills, hybrid search, and lake-native workflows.
 origin: https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
