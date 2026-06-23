@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Loon storage engine, Milvus 3.0, vector storage, AI datasets, Zilliz Vector Lakebase
 meta_title: >
- AI Datasets Are Never Done. So We Built Loon.
+ AI Datasets Are Never Done. So We Re-Built Our Storage Engine for Milvus
 desc: >
  Loon powers Milvus 3.0 with versioned vector storage for evolving AI datasets, efficient backfills, hybrid search, and lake-native workflows.
 origin: https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
