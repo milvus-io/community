@@ -1,7 +1,7 @@
 ---
 id: when-ai-agents-do-the-work-what-do-we-lose.md
 title: |
-  عندما يتولى وكلاء الذكاء الاصطناعي العمل، ما الذي نخسره؟
+  When AI Agents Do the Work, What Do We Lose?
 author: Bill Chen
 date: 2026-06-18T00:00:00.000Z
 cover: assets.zilliz.com/Chat_GPT_Image_Jun_21_2026_10_34_48_PM_d223e44fc5.png
@@ -13,24 +13,24 @@ meta_keywords: 'AI agents, agentic AI, AI coding agents, agent memory, LLM agent
 meta_title: |
   When AI Agents Do the Work, What Do We Lose?
 desc: >
-  تتحسن قدرات الوكلاء الذكاء الاصطناعي في مجالات التنفيذ والذاكرة والمعايير. لكن
-  إذا قضوا على حلقة التعلم الكامنة وراء العمل، فقد يتوقف التطور في الحكم البشري.
+  AI agents are getting better at execution, memory, and standards. But if they
+  remove the learning loop behind work, human judgment may stop improving.
 origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
 ---
-<p>أصبحت منتجات الوكلاء بارعة جدًّا في أداء المهام.</p>
-<p>يمكن لـ Claude Code كتابة وإعادة هيكلة أجزاء كبيرة من الكود. ويمكن لـ Cursor مساعدة المطورين على التنقل عبر قواعد الكود بشكل أسرع. ويحاول Devin والوكلاء الآخرون الموجهون نحو المهام تولي مهام سير العمل الأطول. وبعيدًا عن البرمجة، يقوم الوكلاء بصياغة رسائل البريد الإلكتروني، ومعالجة المستندات، وتلخيص البيانات، وتحديث التذاكر، وأتمتة المهام المتكررة التي كانت تتطلب جهدًا بشريًا مباشرًا في السابق.</p>
-<p>تقدم معظم هذه المنتجات نفس الوعد: زود الوكيل بسياق كافٍ، وسوف يتولى تنفيذ المزيد من المهام نيابة عنك. هذا الوعد مفيد، لكنه يثير أيضًا سؤالًا لم تجب عليه منتجات الوكلاء بشكل كامل: <strong>عندما يقوم الوكيل بمزيد من العمل، ما الذي نخسره؟</strong></p>
-<p>الإجابة ليست مجرد «الجهد اليدوي». قد تُنجز المهمة، لكن الإنسان ربما يكون قد تخطى جزءًا من العملية التي كانت تُساعد في تكوين الحكم: القراءة، والتتبع، وتصحيح الأخطاء، ومقارنة الخيارات، وارتكاب الأخطاء، وتعلم سبب كون حل ما أفضل من آخر.</p>
-<p>هذا لا يعني أن الوكلاء ضارون بالتعلم. بل يعني أن منتجات الوكلاء يجب تصميمها مع أخذ التعلم في الاعتبار. فإذا اكتفت هذه المنتجات بتحسين النتائج فقط، فقد تزيل بالضبط التجربة التي تساعد البشر على تحسين المعايير التي يعتمد عليها الوكلاء.</p>
-<p>من الطرق المفيدة للتفكير في هذه المشكلة استعارة «سلم الاستقلالية» من أنظمة القيادة الذاتية. هذه المقارنة ليست مثالية، لكنها تساعد في التمييز بين أنواع مختلفة من التقدم في منتجات الوكلاء:</p>
+<p>Agent products are getting very good at doing the work.</p>
+<p>Claude Code can write and refactor large chunks of code. Cursor can help developers move through codebases faster. Devin and other task-oriented agents try to take over longer workflows. Outside of coding, agents draft emails, process documents, summarize data, update tickets, and automate repetitive tasks that used to require direct human effort.</p>
+<p>Most of these products make the same promise: give the agent enough context, and it will handle more of the execution for you. That promise is useful, but it also creates a question agent products have not fully answered: <strong>when the agent does more of the work, what do we lose?</strong></p>
+<p>The answer is not simply “manual effort.” The task may be completed, but the human may have skipped part of the process that used to build judgment: reading, tracing, debugging, comparing options, making mistakes, and learning why one solution is better than another.</p>
+<p>This does not mean agents are bad for learning. It means agent products need to be designed with learning in mind. If they only optimize for output, they may remove the very experience that helps humans improve the standards agents depend on.</p>
+<p>A useful way to think about this problem is to borrow the autonomy ladder from self-driving systems. The analogy is not perfect, but it helps separate different kinds of progress in agent products:</p>
 <ul>
-<li><strong>تقوم الوكلاء من المستوى L1 بتنفيذ المهام.</strong> يعطي الإنسان التعليمات، ويقوم الوكيل بتنفيذها.</li>
-<li><strong>الوكلاء من المستوى L2 يتذكرون.</strong> يتعلمون عبر الجلسات من خلال تخزين التفضيلات والتصحيحات وسياق المشروع.</li>
-<li><strong>تطبق الوكالات من المستوى L3 المعايير.</strong> يحدد الإنسان القواعد والقيود ومعايير اتخاذ القرار بدلاً من توجيه كل خطوة.</li>
-<li><strong>الوكلاء من المستوى L4 يُحسّنون أداء الإنسان.</strong> لا يقتصر دور الوكيل على أداء العمل فحسب، بل يساعد الإنسان على الحفاظ على قدرته على الحكم وتعميقها.</li>
+<li><strong>L1 agents execute tasks.</strong> The human gives instructions, and the agent carries them out.</li>
+<li><strong>L2 agents remember.</strong> They learn across sessions by storing preferences, corrections, and project context.</li>
+<li><strong>L3 agents apply standards.</strong> The human defines rules, constraints, and decision criteria instead of guiding every step.</li>
+<li><strong>L4 agents improve the human.</strong> The agent does not just do the work. It helps the human preserve and deepen judgment.</li>
 </ul>
-<p>لا يزال معظم القطاع يركز على المستويات الثلاثة الأولى. وهذا أمر منطقي. فالتنفيذ والذاكرة والمعايير هي مشكلات فورية تتعلق بالمنتج. لكن المستوى L4 هو المكان الذي تظهر فيه المخاطر طويلة المدى. فإذا توقف البشر عن التحسن، فإن المعايير التي توجه الوكلاء تتوقف عن التحسن أيضًا.</p>
-<h2 id="L1-Agents-execute" class="common-anchor-header">المستوى L1: الوكلاء ينفذون<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
+<p>Most of the industry is still focused on the first three levels. That makes sense. Execution, memory, and standards are immediate product problems. But L4 is where the long-term risk appears. If humans stop improving, the standards guiding agents stop improving too.</p>
+<h2 id="L1-Agents-execute" class="common-anchor-header">L1: Agents execute<button data-href="#L1-Agents-execute" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,19 +45,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>مر تطوير تطبيقات الذكاء الاصطناعي بعدة مستويات من التجريد:</p>
+    </button></h2><p>AI application development has moved through several layers of abstraction:</p>
 <ul>
-<li>في البداية، كان المطورون يستدعون النموذج عبر واجهة برمجة التطبيقات (API): إرسال نص، واستلام نص في المقابل.</li>
-<li>ثم جاءت <strong>هندسة المطالبات،</strong> حيث كانت المهارة الرئيسية هي تعلم كيفية طرح أسئلة أفضل.</li>
-<li>بعد ذلك جاءت <strong>هندسة السياق،</strong> حيث أصبحت المهمة تتمثل في تزويد النموذج بأمثلة وقيود وخلفية كافية ليتصرف بشكل مفيد في موقف معين.</li>
-<li>ثم جاءت <strong>هندسة التسخير</strong>: ربط النماذج بالأدوات، وسير العمل، والملفات، وقواعد البيانات، والمتصفحات، والمحطات الطرفية، وأنظمة الإنتاج.</li>
-<li>وتستند<strong>هندسة الوكيل</strong> على ذلك. فبدلاً من مطالبة النموذج بالرد على موجه واحد، نطلب منه تخطيط الخطوات واختيار الأدوات وفحص النتائج والتعافي من الأخطاء وإكمال المهام متعددة الخطوات بإشراف أقل.</li>
+<li>At first, developers called a model through an API: send text, get text back.</li>
+<li>Then came <strong>prompt engineering</strong>, where the main skill was learning how to ask better questions.</li>
+<li>After that came <strong>context engineering</strong>, where the task became giving the model enough examples, constraints, and background to behave usefully in a specific situation.</li>
+<li>Then came <strong>harness engineering</strong>: connecting models to tools, workflows, files, databases, browsers, terminals, and production systems.</li>
+<li><strong>Agent engineering</strong> builds on top of that. Instead of asking the model to answer one prompt, we ask it to plan steps, choose tools, inspect results, recover from errors, and complete multi-step tasks with less supervision.</li>
 </ul>
-<p>تستمر السطح التقني في التغير، لكن العلاقة الأساسية في المستوى L1 تظل كما هي: <strong>الإنسان يحدد المهمة، والوكيل ينفذها.</strong> ولا تزال كل تفاعل قائمًا بذاته في الغالب. تُنجز المهمة، وتنتهي الجلسة، وتبدأ المهمة التالية من الصفر.</p>
-<p>يعمل هذا المستوى بالفعل بشكل جيد بما يكفي لتغيير السلوك. يمكن للوكلاء التعامل مع المزيد من التنفيذ بجهد يدوي أقل. ومع انخفاض تكلفتهم وزيادة سرعتهم وموثوقيتهم، ترتفع المخرجات بينما تنخفض التكلفة.</p>
-<p>لكن سهولة التنفيذ تخلق عنق زجاجة جديدًا. لا تزال كل جلسة متوازية تحتاج إلى إنسان لشرح المهمة، وتوفير السياق، ومراجعة النتائج، وتقييم الجودة، وتحديد الخطوة التالية. قد يكون الوكيل هو من يقوم بالعمل، لكن الإنسان لا يزال مسؤولاً عن تقييم جودة العمل.</p>
-<p><strong>يصبح التنفيذ أرخص. ويصبح التقييم أكثر أهمية.</strong></p>
-<h2 id="L2-Agents-remember" class="common-anchor-header">L2: الوكلاء يتذكرون<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
+<p>The technical surface keeps changing, but the basic relationship at L1 stays the same: <strong>the human defines the task, and the agent carries it out.</strong> Each interaction is still mostly self-contained. The task is done, the session ends, and the next task starts from scratch.</p>
+<p>This level already works well enough to change behavior. Agents can handle more execution with less manual effort. As they become cheaper, faster, and more reliable, output rises while cost drops.</p>
+<p>But easier execution creates a new bottleneck. Every parallel session still needs a human to explain the task, provide context, review the output, judge quality, and decide what to do next. The agent may be doing the work, but the human is still responsible for knowing whether the work is good.</p>
+<p><strong>Execution becomes cheaper. Judgment becomes more important.</strong></p>
+<h2 id="L2-Agents-remember" class="common-anchor-header">L2: Agents remember<button data-href="#L2-Agents-remember" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -72,14 +72,14 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يحل <strong>الوكيل</strong> من المستوى L1 المهمة المطروحة أمامه. أما <strong>الوكيل</strong> من المستوى L2 فيطرح سؤالًا مختلفًا: <strong>هل يمكن للوكيل أن يتعلم من هذا التفاعل حتى تسير الجلسة التالية بشكل أفضل؟</strong></p>
-<p>الوكيل من المستوى L1 البحت لا يحتفظ بحالة. بمجرد انتهاء الجلسة، يختفي السياق. وتبدأ المهمة التالية من الصفر. يكسر الوكلاء من المستوى L2 هذا النمط من خلال تراكم الخبرة عبر الجلسات. فهم يتذكرون تفضيلات المستخدم، وقواعد المشروع، والتعليقات المتكررة، والقرارات السابقة، وأنماط عمل المستخدم. <strong>الهدف هو تحويل التجربة الناتجة عن التفاعل بين الإنسان والوكيل إلى أصل قابل لإعادة الاستخدام.</strong></p>
-<p>وهذا أيضًا هو السبب في أنه لا ينبغي التعامل مع ذاكرة الوكيل على أنها موجه أطول أو مجلد من النصوص المحفوظة. فالذاكرة المفيدة تحتاج إلى بنية تحتية: تخزين دائم، واسترجاع دلالي، وإزالة التكرار، والتحديثات، وطريقة لفصل السياق القديم عن المعرفة التي لا تزال مفيدة. وهنا يكمن ارتباط عملنا في <a href="https://zilliz.com/">Zilliz</a> بهذه المشكلة. غالبًا ما تُستخدم <a href="https://milvus.io/">Milvus،</a> والخدمات المُدارة Zilliz Cloud المبنية حولها، كطبقة استرجاع لذاكرة الوكيل لأنها تجعل السياق الماضي قابلاً للبحث بدلاً من مجرد أرشفته.</p>
-<p><strong>لكن ذاكرة المستوى الثاني (L2) لها حدود هيكلية.</strong> فمعظم ما يتعلمه الوكلاء في هذه المرحلة يأتي من السلوك القابل للملاحظة: ما قاله المستخدم، أو غيّره، أو قبله، أو رفضه، أو صححه. قد يتذكر الوكيل أنك أعدت كتابة فقرة، أو رفضت تنفيذًا ما، أو غيرت توقيع دالة. لكنه قد لا يفهم السبب.</p>
-<p>هل كانت المشكلة تتعلق بالدقة، أو النبرة، أو قابلية الصيانة، أو المخاطر الأمنية، أو الأداء، أو وضع المنتج في السوق، أم شيئًا آخر؟ السلوك هو السطح المرئي للحكم. وغالبًا ما يظل المنطق الكامن وراءه مخفيًا.</p>
-<p>وهذا يجعل المستوى L2 أفضل في التقاط المعرفة الصريحة مقارنة بالمعرفة الضمنية. فهو قادر على تذكر القواعد التي ذكرتها بشكل مباشر وتخزين أمثلة على القرارات السابقة. لكن الأمثلة لا تتحول تلقائيًا إلى مبادئ. قد يتذكر الوكيل ما حدث دون فهم المعيار الكامن وراءه.</p>
-<p>تؤدي هذه الفجوة إلى المستوى L3.</p>
-<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3: الوكلاء يطبقون المعايير<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
+    </button></h2><p>L1 solves the task in front of it. L2 asks a different question: <strong>can the agent learn from this interaction so the next one goes better?</strong></p>
+<p>A pure L1 agent is stateless. Once the session ends, the context disappears. The next task starts from scratch. L2 agents break that pattern by accumulating experience across sessions. They remember user preferences, project conventions, recurring feedback, previous decisions, and patterns in how the user works. <strong>The goal is to turn the experience generated through human-agent interaction into a reusable asset.</strong></p>
+<p>This is also why agent memory should not be treated as a longer prompt or a folder of saved transcripts. Useful memory needs infrastructure: durable storage, semantic retrieval, deduplication, updates, and a way to separate stale context from still-useful knowledge. This is where our work at <a href="https://zilliz.com/">Zilliz</a> connects to the problem. <a href="https://milvus.io/">Milvus</a>, and its managed services Zilliz Cloud built around it, are often used as the retrieval layer for agent memory because they make past context searchable instead of merely archived.</p>
+<p><strong>But L2 memory has a structural limit.</strong> Most of what agents learn at this stage comes from observable behavior: what the user said, changed, accepted, rejected, or corrected. An agent may remember that you rewrote a paragraph, rejected an implementation, or changed a function signature. It may not understand why.</p>
+<p>Was the issue accuracy, tone, maintainability, security risk, performance, product positioning, or something else? Behavior is the visible surface of judgment. The reasoning underneath often remains hidden.</p>
+<p>That makes L2 better at capturing explicit knowledge than tacit knowledge. It can remember rules you stated directly and store examples of past decisions. But examples do not automatically become principles. The agent may remember what happened without understanding the standard behind it.</p>
+<p>That gap leads to L3.</p>
+<h2 id="L3-Agents-apply-standards" class="common-anchor-header">L3: Agents apply standards<button data-href="#L3-Agents-apply-standards" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -94,19 +94,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>بمجرد أن يبدأ المستوى الأول والمستوى الثاني في العمل، فإن الخطوة التالية الواضحة هي التوازي.</p>
-<p>إذا كان بإمكان وكيل واحد إكمال مهمة، فلماذا لا نشغل عشرة وكلاء؟ وإذا كان بإمكان الوكيل التعلم من جلسة واحدة، فلماذا لا نفتح العديد من الجلسات وندعهم جميعًا ينتجون العمل في آن واحد؟ هذا هو منطق «المهندس 10x» أو «المهندس 100x»: استخدام الوكلاء لمضاعفة الناتج.</p>
-<p>في الممارسة العملية، يخلق التوازي تكلفة خاصة به. فكل جلسة لا تزال تتطلب من الإنسان تغيير السياق، وفهم المشكلة، ومراجعة العمل، وتقديم الملاحظات، وتحديد ما إذا كانت النتيجة جيدة بما يكفي. وبعد تجاوز نقطة معينة، يتوقف المزيد من الوكلاء عن الشعور بأنهم يمثلون رافعة فعالة ويبدأون في الشعور بأنهم عبء إضافي.</p>
-<p>هذه ليست مجرد مشكلة في سير العمل. إنها حاجز معرفي. لا يتعامل البشر مع المهام المتوازية بالطريقة التي تتعامل بها الآلات. يؤدي التبديل بين المهام إلى استنزاف الانتباه. والذاكرة العاملة محدودة. كل عملية تبديل تزيد من احتمال إغفال التفاصيل، أو تطبيق معيار خاطئ، أو الموافقة على العمل بسرعة كبيرة.</p>
-<p><strong>لا ينبغي للمنتج الجيد أن يتعارض مع هذا القيد، بل يجب تصميمه بحيث يتكيف معه.</strong></p>
-<p>في المستوى L3، يتغير المدخل من «حل هذه المشكلة المحددة بهذه الطريقة المحددة» إلى «إليك المعايير التي يجب عليك تطبيقها». يتوقف الإنسان عن كونه المشغل الذي يوجه كل خطوة ويصبح الشخص الذي يحدد القواعد والقيود والتفضيلات ومعايير الجودة ومعايير اتخاذ القرار.</p>
-<p>قد يستمر المستخدم في توجيه الوكيل خلال مهمة محددة، لكن قيمة هذا التوجيه لا ينبغي أن تنتهي مع انتهاء الجلسة. يجب أن يترك التفاعل وراءه معيارًا قابلاً لإعادة الاستخدام، وليس مجرد نص محفوظ. في المرة التالية التي تظهر فيها مهمة مماثلة، يجب أن يطبق الوكيل المعيار دون أن يطلب من الإنسان إعادة بناء السياق الكامل وإعادة إصدار نفس الحكم.</p>
-<p>تتجه الصناعة بالفعل في هذا الاتجاه. تتيح العديد من منتجات الوكلاء للمستخدمين تحديد القواعد، والتعليمات، والذكريات، وقواعد المشاريع، وتفضيلات السلوك. الاتجاه صحيح، لكن معظم التطبيقات لا تزال في مراحلها المبكرة. غالبًا ما تكون القواعد نصوصًا ثابتة: تُحدَّث يدويًّا، ومجزأة، ولا ترتبط إلا بشكل فضفاض بالمنطق الكامن وراء قرارات المستخدم.</p>
-<p>والنمط الأقوى هو نموذج الإدراك الشخصي الذي يتم تحديثه باستمرار: وهو تمثيل قابل للقراءة آليًا لكيفية قيام الشخص بالحكم واتخاذ القرارات وإجراء المقايضات. وينبغي أن يشفر هذا النموذج التفضيلات والقيم والقيود والاستثناءات والمعايير وأسلوب اتخاذ القرار كسياق يمكن للوكلاء استرجاعه وتطبيقه.</p>
-<p>بدلاً من الاكتفاء بتخزين المحادثات السابقة، يجب أن يجعل تفكير المستخدم قابلاً للفهم من قبل الآلات.</p>
-<p>تتغير مهمة المستخدم وفقًا لذلك. فبدلاً من شرح كل مهمة من الصفر، يقوم المستخدم بصيانة النموذج عن طريق صقل المعايير، وتحديث التفضيلات، وتصحيح الافتراضات، وتحويل الأحكام الضمنية إلى أحكام صريحة. وبمعنى ما، يقوم المستخدم بتحويل نفسه باستمرار إلى رموز: حيث يحول المزيد من تفكيره إلى شكل يمكن للوكلاء استخدامه.</p>
-<p>عندما يكون التنفيذ غير مكلف، لا يحتاج الإنسان إلى تحديد كل تفاصيل التنفيذ قبل بدء المهمة. يحتاج الإنسان إلى تحديد ما هو الجيد، وما هو غير مقبول، وكيف يجب التعامل مع المفاضلات.</p>
-<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">المستوى 4: العوامل تحافظ على التعلم البشري<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
+    </button></h2><p>Once L1 and L2 start working, the obvious next step is parallelism.</p>
+<p>If one agent can complete a task, why not run ten? If an agent can learn from one session, why not open many sessions and let them all produce work at once? This is the “10x engineer” or “100x engineer” logic: use agents to multiply output.</p>
+<p>In practice, parallelism creates its own cost. Every session still requires the human to switch context, understand the problem, review the work, give feedback, and decide whether the result is good enough. Past a certain point, more agents stop feeling like leverage and start feeling like overhead.</p>
+<p>This is not just a workflow problem. It is a cognitive wall. Humans do not handle parallel tasks the way machines do. Task switching burns attention. Working memory is limited. Each switch increases the chance of missing details, applying the wrong standard, or approving work too quickly.</p>
+<p><strong>A good product should not fight this limit. It should be designed around it.</strong></p>
+<p>At L3, the input changes from “solve this specific problem in this specific way” to “here are the standards you should apply.” The human stops being the operator who guides every step and becomes the person who defines rules, constraints, preferences, quality bars, and decision criteria.</p>
+<p>A user may still guide an agent through a specific task, but the value of that guidance should not die with the session. The interaction should leave behind a reusable standard, not just a transcript. Next time a similar task appears, the agent should apply the standard without asking the human to reconstruct the full context and remake the same judgment.</p>
+<p>The industry is already moving in this direction. Many agent products let users define rules, instructions, memories, project conventions, and behavior preferences. The direction is right, but most implementations are still early. Rules are often static text: manually updated, fragmented, and only loosely connected to the reasoning behind a user’s decisions.</p>
+<p>The stronger pattern is a continuously updated personal cognition model: a machine-readable representation of how a person judges, decides, and makes trade-offs. It should encode preferences, values, constraints, exceptions, standards, and decision style as context that agents can retrieve and apply.</p>
+<p>Instead of merely storing past conversations, it should make the user’s thinking legible to machines.</p>
+<p>The user’s job changes accordingly. Instead of explaining every task from scratch, the user maintains the model by refining standards, updating preferences, correcting assumptions, and making implicit judgment explicit. In a sense, the user is continuously tokenizing themselves: converting more of their thinking into a form agents can use.</p>
+<p>When execution is cheap, the human does not need to decide every implementation detail before a task starts. The human needs to define what good looks like, what is unacceptable, and how trade-offs should be handled.</p>
+<h2 id="L4-Agents-preserve-human-learning" class="common-anchor-header">L4: Agents preserve human learning<button data-href="#L4-Agents-preserve-human-learning" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -121,16 +121,16 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p><strong>تركز المستويات الثلاثة الأولى على جعل الوكلاء يخدمون البشر بشكل أفضل. أما المستوى L4 فيقلب السؤال: كيف يمكن للوكلاء مساعدة البشر على التحسن؟</strong></p>
-<p>هذا هو الجزء الذي لم تتعامل معه معظم منتجات الوكلاء بشكل كامل. عندما يقوم الوكلاء بمزيد من العمل نيابة عنا، ما الذي يختفي بالضبط من الجانب البشري في الحلقة؟</p>
-<p>ظاهريًّا، نفقد الجهد اليدوي. هذه هي الفائدة الواضحة. لكننا قد نفقد أيضًا ثلاثة أمور أقل وضوحًا: الذاكرة المرتبطة بسياق العمل، والممارسة في إجراء المفاضلات، والتعرف على الأنماط الذي ينشأ من التعرض المتكرر للتفاصيل المعقدة.</p>
-<p><strong>لقد شعرت بذلك بشكل مباشر في البرمجة.</strong> عندما كنت أكتب الكود بنفسي، كنت أتذكر مكان كل سطر وكيف يعمل النظام لأنني قضيت وقتًا في قراءته وتصحيح أخطائه وتتبعه وإصلاحه يدويًّا. لم تنتج تلك العملية الكود فحسب، بل دربت عقلي على التعرف على البنية.</p>
-<p>مع «كلود كود»، لا يزال الكود يُنتج، وغالبًا ما يكون ذلك أسرع. لكن بعد فترة، لا تصبح ذاكرتي عن النظام عميقة بنفس القدر. قد أعرف ما يفعله النظام، لكنني لا أتذكر دائمًا كيف تضافرت كل الأجزاء معًا. تُختزل تجربة البناء، ويختفي معها جزء من التعلم.</p>
-<p>هذا ليس حجة ضد وكلاء البرمجة. بل هو حجة مفادها أن منتجات الوكلاء تحتاج إلى الحفاظ على أجزاء العمل التي تبني الحكم البشري.</p>
-<p>يظهر النمط نفسه خارج مجال البرمجة. إذا قام الوكيل بصياغة كل مذكرة استراتيجية، فقد يفقد الإنسان ممارسة تنظيم الحجة. إذا قام الوكيل بتلخيص كل ورقة بحثية، فقد يفقد الإنسان عادة ملاحظة ما أغفله الملخص. إذا تولى الوكيل كل قرار تشغيلي، فقد يتوقف الإنسان عن تطوير الحدس الذي ينشأ من التعامل مع الاستثناءات المعقدة.</p>
-<p>يختفي العمل. ويبقى الناتج. لكن حلقة التعلم قد تضعف.</p>
-<p>هذه هي مشكلة المستوى 4.</p>
-<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">الحكم البشري هو الحد الأقصى<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
+    </button></h2><p><strong>The first three levels focus on making agents serve humans better. L4 reverses the question: how can agents help humans get better?</strong></p>
+<p>This is the part most agent products have not fully confronted. When agents do more of the work for us, what exactly disappears from the human side of the loop?</p>
+<p>On the surface, we lose manual effort. That is the obvious benefit. But we may also lose three less visible things: situated memory of the work, practice in making trade-offs, and the pattern recognition that comes from repeated exposure to messy details.</p>
+<p><strong>I have felt this directly in coding.</strong> When I wrote code myself, I remembered where each line lived and how the system worked because I had spent time reading, debugging, tracing, and fixing it by hand. That process did not just produce code. It trained my brain to recognize structure.</p>
+<p>With Claude Code, the code still gets produced, often faster. But after a while, my memory of the system is not as deep. I may know what the system does, but I do not always remember how each part came together. The experience of building gets compressed, and some of the learning disappears with it.</p>
+<p>That is not an argument against coding agents. It is an argument that agent products need to preserve the parts of work that build human judgment.</p>
+<p>The same pattern appears outside coding. If an agent drafts every strategy memo, the human may lose practice structuring an argument. If an agent summarizes every paper, the human may lose the habit of noticing what the summary left out. If an agent handles every operational decision, the human may stop developing the intuition that comes from dealing with messy exceptions.</p>
+<p>The work disappears. The output remains. But the learning loop may weaken.</p>
+<p>That is the L4 problem.</p>
+<h2 id="Human-judgment-is-the-ceiling" class="common-anchor-header">Human judgment is the ceiling<button data-href="#Human-judgment-is-the-ceiling" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -145,19 +145,19 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>هذه الخسارة مهمة لأن الوكلاء لا يعملون في فراغ. الوكيل هو عامل مضاعف، وليس بديلاً. نفس الأداة تنتج نتائج مختلفة جدًا في يد الخبير والمبتدئ. قد يصبح المهندس المخضرم الذي يستخدم وكيلًا أكثر فعالية بشكل كبير. أما المبتدئ فقد ينتج ببساطة مخرجات أكثر دون أن يطور حكمًا أفضل.</p>
-<p>تعمل الوكالات على تعزيز المستوى المعرفي الحالي للمستخدم.</p>
-<p>وهذا أمر مهم لأن المستوى L3 يعتمد على قيام البشر بتحديد المعايير التي يجب أن تتبعها الوكالات. لكن جودة هذه المعايير تعتمد على جودة الحكم البشري. إذا توقف الإنسان عن التحسن، فإن المعايير ستصبح في النهاية قديمة. وتصبح غير مكتملة، أو سطحية، أو غير متوافقة مع الواقع الحالي للعمل.</p>
-<p>يعمل النظام بشكل أفضل كحلقة مفرغة:</p>
+    </button></h2><p>The loss matters because agents do not operate in a vacuum. An agent is a multiplier, not a replacement. The same tool produces very different results in the hands of an expert and a beginner. A senior engineer with an agent may become dramatically more effective. A beginner may simply produce more output without developing better judgment.</p>
+<p>Agents amplify the user’s existing cognitive level.</p>
+<p>That matters because L3 depends on humans defining the standards agents should follow. But the quality of those standards depends on the quality of human judgment. If the human stops improving, the standards eventually go stale. They become incomplete, shallow, or misaligned with the current reality of the work.</p>
+<p>The system works best as a loop:</p>
 <ul>
-<li>يحدد الحكم البشري المعايير.</li>
-<li>تنفذ الوكالات ضمن تلك المعايير.</li>
-<li>تُستخدم نتائج التنفيذ في تعزيز التعلم البشري.</li>
-<li>ويؤدي التعلم البشري إلى تحسين المعايير.</li>
+<li>Human judgment defines the standards.</li>
+<li>Agents execute within those standards.</li>
+<li>Execution results feed back into human learning.</li>
+<li>Human learning improves the standards.</li>
 </ul>
-<p>إذا نجحت الحلقة، يتحسن كلا الجانبين. ينفذ الوكيل المهام بفعالية أكبر، ويصبح الإنسان أكثر كفاءة في تحديد معنى الفعالية. إذا انقطعت الحلقة، يتدهور النظام. يتوقف الحكم البشري عن التطور. تصبح المعايير قديمة. يستمر الوكلاء في التحسين، لكنهم يفعلون ذلك ضمن إطار عمل يتخلف تدريجيًا عن الركب.</p>
-<p>لهذا السبب يُعد الحكم البشري هو الحد الأقصى. فالوكلاء الأقوى لا يلغون الحاجة إلى بشر أقوى. بل يجعلون جودة الحكم البشري أكثر أهمية، لأن هذا الحكم يصبح الإطار الذي يعمل الوكيل ضمنه.</p>
-<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">لماذا لا تستطيع الوكالات حل المشكلة بأكملها بمفردها<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
+<p>If the loop works, both sides get better. The agent executes more effectively, and the human becomes better at defining what effective means. If the loop breaks, the system degrades. Human judgment stagnates. Standards become outdated. Agents keep optimizing, but they optimize inside a framework that is slowly falling behind.</p>
+<p>This is why human judgment is the ceiling. Stronger agents do not remove the need for stronger humans. They make the quality of human judgment more important, because that judgment becomes the framework inside which the agent operates.</p>
+<h2 id="Why-agents-cannot-solve-the-whole-problem-alone" class="common-anchor-header">Why agents cannot solve the whole problem alone<button data-href="#Why-agents-cannot-solve-the-whole-problem-alone" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -172,21 +172,21 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إحدى الإجابات واضحة: ستستمر العوامل في الازدياد قوة، لذا ربما ستنتج في النهاية معرفة أفضل، وقواعد أفضل، ومعايير أفضل من تلقاء نفسها.</p>
-<p>وهناك حقيقة في ذلك. فالوكلاء قويون بالفعل في دمج الأفكار، واستكشاف مساحات الحلول، وإبراز مسارات قد لا يكون البشر قد فكروا فيها. يمكن للنموذج إنتاج جمل وتصميمات وحلول لم تظهر أبدًا في بيانات تدريبه. ويمكنه إعادة دمج الأنماط عبر المجالات وتوليد بدائل مفيدة.</p>
-<p>هذه هي القيمة الحقيقية. لكن المستوى L4 يهتم بنوع مختلف من الإبداع. السؤال ليس فقط من يمكنه إيجاد إجابة أفضل، بل من يمكنه طرح سؤال جديد، أو إعادة صياغة المعيار، أو توسيع نطاق المشكلة.</p>
-<p>تتميز العوامل بقدرتها على التعميم والدمج والبحث ضمن توزيع موجود. يمكنها إيجاد مسارات أفضل عبر تضاريس معروفة، وأحيانًا مسارات لم يجربها البشر من قبل. لكن تقرير ما إذا كان ينبغي إعادة رسم التضاريس نفسها أم لا هو أمر مختلف.</p>
-<p>غالبًا ما ينبع هذا النوع من القرارات من السياق البشري: القيود المعاشة، والمصالح الشخصية، والفضول، وعدم الرضا، وتكلفة الوقوع في الخطأ. يمكن لأي شخص أن يصوغ فرضية تتعارض مع الإطار الحالي ويختبرها في مواجهة الواقع. والأهم من ذلك، يمكن لأي شخص أن يكون لديه سبب لمواصلة الاختبار حتى لو بدت الفكرة خاطئة أو محفوفة بالمخاطر أو عديمة الفائدة في البداية.</p>
-<p>تعد الهندسة غير الإقليدية مثالاً مفيداً. لم تكن الخطوة المهمة مجرد السؤال: «ماذا لو تقاطعت الخطوط المتوازية؟» فقد يستطيع أي كائن أن يصوغ هذه الجملة. بل كانت الخطوة المهمة هي التعامل مع هذا الافتراض الغريب على أنه يستحق البحث، ثم تتبع نتائجه حتى أصبح فضاءً نظريًّا جديدًا. وقد تطلب ذلك المثابرة، والمصالح، وسببًا للاهتمام بالنتيجة.</p>
-<p>يُعد إطار عمل الإبداع الذي وضعته مارغريت بودن مفيدًا هنا. فهي تميز بين ثلاثة أنواع من الإبداع:</p>
+    </button></h2><p>One response is obvious: agents will keep getting stronger, so perhaps they will eventually generate better knowledge, better rules, and better standards on their own.</p>
+<p>There is truth in that. Agents are already strong at combining ideas, exploring solution spaces, and surfacing paths humans may not have considered. A model can produce sentences, designs, and solutions that never appeared in its training data. It can recombine patterns across domains and generate useful alternatives.</p>
+<p>That is real value. But L4 is concerned with a different kind of creation. The question is not only who can find a better answer. It is who can ask a new question, rewrite the standard, or expand the problem space.</p>
+<p>Agents are strong at generalizing, combining, and searching within an existing distribution. They can find better paths through known terrain, sometimes paths humans have not tried. But deciding whether the terrain itself should be redrawn is different.</p>
+<p>That kind of decision often comes from human context: lived constraints, personal stakes, curiosity, dissatisfaction, and the cost of being wrong. A person can form a hypothesis that violates the current framework and test it against reality. More importantly, a person can have a reason to keep testing when the idea looks wrong, risky, or useless at first.</p>
+<p>Non-Euclidean geometry is a useful example. The important step was not merely asking, “What if parallel lines intersect?” An agent could generate that sentence. The important step was treating the strange assumption as worth investigating, then following its consequences until it became a new theoretical space. That required persistence, stakes, and a reason to care about the outcome.</p>
+<p>Margaret Boden’s creativity framework is useful here. She distinguishes between three kinds of creativity:</p>
 <ul>
-<li><strong>الإبداع التجميعي:</strong> الجمع بين الأفكار المألوفة بطرق جديدة.</li>
-<li><strong>الإبداع الاستكشافي:</strong> البحث داخل فضاء مفاهيمي قائم.</li>
-<li><strong>الإبداع التحويلي:</strong> تغيير قواعد الفضاء المفاهيمي نفسه.</li>
+<li><strong>Combinational creativity:</strong> combining familiar ideas in new ways.</li>
+<li><strong>Exploratory creativity:</strong> searching within an existing conceptual space.</li>
+<li><strong>Transformational creativity:</strong> changing the rules of the conceptual space itself.</li>
 </ul>
-<p>يتمتع الفاعلون بالفعل بقوة في النمطين الأولين. فهم يجمعون بين الأفكار الموجودة ويستكشفون داخل الفضاءات المفاهيمية القائمة. أما النمط الثالث فهو أصعب. فالإبداع التحويلي لا يعتمد فقط على سرعة البحث. بل يعتمد على سبب اختيار شخص ما لرفض قاعدة قديمة، وتقبل تكلفة الفشل، ومواصلة اختبار فكرة لم تثبت ملاءمتها بعد.</p>
-<p><strong>والقول الأكثر دقة هو: يتمتع الوكلاء بأقصى قوة في الجمع والاستكشاف داخل المساحات القائمة. ولا تزال المعرفة التأسيسية الجديدة، ومساحات المشكلات الجديدة، وأطر القيم الجديدة تعتمد بشكل كبير على البشر.</strong></p>
-<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">التصميم من أجل الدورة، وليس فقط الناتج<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
+<p>Agents are already strong in the first two modes. They combine existing ideas and explore within existing conceptual spaces. The third mode is harder. Transformational creativity depends on more than faster search. It depends on why someone chooses to reject an old rule, accept the cost of failure, and keep testing an idea that does not yet fit.</p>
+<p><strong>The more precise claim is this: agents are strongest at combining and exploring within existing spaces. New foundational knowledge, new problem spaces, and new value frameworks still depend heavily on humans.</strong></p>
+<h2 id="Design-for-the-loop-not-just-the-output" class="common-anchor-header">Design for the loop, not just the output<button data-href="#Design-for-the-loop-not-just-the-output" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -201,20 +201,20 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>ليس كل منتج وكيل بحاجة إلى حل المستوى 4. بعض المنتجات تحتاج فقط إلى مساعدة المستخدمين على إنجاز المهام بشكل أسرع. وهذا جيد. بينما تحتاج منتجات أخرى إلى الذاكرة والمعايير وتكامل أفضل لسير العمل.</p>
-<p>ولكن على مستوى النظام البيئي، تحتاج بعض المنتجات إلى الحفاظ على حلقة التعلم. فإذا ساعد كل منتج وكيل الناس على القيام بقدر أقل من العمل، ولم يساعد أي منها الناس على مواصلة التعلم بعد توقفهم عن القيام بالعمل مباشرةً، فإن القدرات البشرية تضعف بمرور الوقت. ويتوقف مجال التحسين للوكلاء عن التوسع. ويظل النظام بأكمله مقيدًا بمستوى الحكم البشري الحالي.</p>
-<p>وهنا تكمن أهمية تصميم المنتج. لا يقتصر المستوى L4 على مطالبة الوكيل بتلخيص ما قام به فحسب. فالمنتج المفيد من المستوى L4 يحافظ على أجزاء العمل التي تبني الحكم البشري، حتى عندما يتولى الوكيل معظم التنفيذ.</p>
-<p>هناك بعض أنماط المنتجات المهمة هنا:</p>
+    </button></h2><p>Not every agent product needs to solve L4. Some products only need to help users get tasks done faster. That is fine. Others need memory, standards, and better workflow integration.</p>
+<p>But at the ecosystem level, some products need to preserve the learning loop. If every agent product helps people do less of the work, and none helps people keep learning after they stop doing the work directly, human capacity weakens over time. The optimization space for agents stops expanding. The whole system remains bounded by today’s level of human judgment.</p>
+<p>This is where product design matters. L4 is not just asking the agent to summarize what it did. A useful L4 product preserves the parts of work that build human judgment, even when the agent handles most of the execution.</p>
+<p>A few product patterns matter here:</p>
 <ul>
-<li><strong>الحفاظ على نقاط التقدير الرئيسية.</strong> يجب أن تظل بعض القرارات مرئية للإنسان، ليس لأن الوكيل لا يستطيع اتخاذها، بل لأن تلك القرارات تدرب على التقدير. يجب أن يحدد المنتج اللحظات المهمة ويبقيها قيد النظر.</li>
-<li><strong>إعادة بناء العملية، وليس النتيجة فحسب.</strong> لا يكفي وجود منتج نهائي. يجب أن يبرز النظام فروع القرار الرئيسية، والمفاضلات، والمسارات البديلة، والمحاولات الفاشلة. يمكن للمستخدم الذي يرى النتيجة فقط الموافقة عليها أو رفضها. أما المستخدم الذي يرى مسار الاستدلال فيمكنه تحديث نموذجه الذهني.</li>
-<li><strong>دعم الاستكشاف التعاوني.</strong> عندما يكون المستخدم مترددًا، يجب ألا يقفز الوكيل مباشرةً إلى إجابة. بل يجب أن يساعد في توسيع نطاق المشكلة: ما هي الأبعاد المهمة، وما هي الافتراضات المفقودة، وما هي المعلومات التي لا تزال مطلوبة، وما هي التكاليف التي ينطوي عليها كل خيار.</li>
-<li><strong>تحدي الافتراضات البشرية.</strong> هذا لا يعني المعارضة لمجرد الاختلاف في الرأي. بل يعني التعرف على الثغرات أو التوترات في تفكير المستخدم وطرح أسئلة محددة الهدف تجعل تلك التوترات واضحة.</li>
+<li><strong>Preserve key judgment points.</strong> Some decisions should stay visible to the human, not because the agent cannot make them, but because those decisions train judgment. The product should identify which moments matter and keep them deliberate.</li>
+<li><strong>Reconstruct the process, not just the result.</strong> A finished artifact is not enough. The system should surface key decision branches, trade-offs, alternative paths, and failed attempts. A user who only sees the output can approve or reject it. A user who sees the reasoning path can update their mental model.</li>
+<li><strong>Support collaborative exploration.</strong> When the user is uncertain, the agent should not jump straight to an answer. It should help expand the problem space: what dimensions matter, what assumptions are missing, what information is still needed, and what costs each option carries.</li>
+<li><strong>Challenge human assumptions.</strong> This does not mean pushing back for the sake of disagreement. It means recognizing gaps or tensions in the user’s thinking and asking targeted questions that make those tensions visible.</li>
 </ul>
-<p>الهدف ليس إجبار البشر على العودة إلى كل خطوة يدوية. فذلك من شأنه أن يخل بالغرض من الوكلاء. الهدف هو الحفاظ على أجزاء العمل التي تحول التجربة إلى حكم.</p>
-<p>لا ينبغي أن تقتصر منتجات الوكلاء على تحسين المخرجات فحسب. بل يجب أن تعمل على تحسين حلقة التغذية الراجعة: تحسين الحكم البشري، وتحسين المعايير، وتحسين أداء الوكلاء، وتحسين التعلم البشري من النتائج.</p>
-<p><strong>عندما تقوم الوكلاء الذكية بالعمل، يجب ألا نفقد حلقة التغذية الراجعة التي جعلت البشر أفضل في هذا العمل في المقام الأول.</strong></p>
-<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">نود أن نسمع آرائكم<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
+<p>The goal is not to force humans back into every manual step. That would defeat the purpose of agents. The goal is to preserve the parts of work that turn experience into judgment.</p>
+<p>Agent products should not only optimize for output. They should optimize for the feedback loop: better human judgment, better standards, better agent execution, and better human learning from the results.</p>
+<p><strong>When AI agents do the work, we should not lose the loop that made humans better at the work in the first place.</strong></p>
+<h2 id="We’d-love-to-hear-your-thoughts" class="common-anchor-header">We’d love to hear your thoughts<button data-href="#We’d-love-to-hear-your-thoughts" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -229,4 +229,4 @@ origin: 'https://milvus.io/blog/when-ai-agents-do-the-work-what-do-we-lose.md'
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>إذا كنتم تعملون على تطوير الوكلاء، فأود أن أعرف رأيكم في هذا الأمر: ما هي أجزاء العمل التي يجب أن يتولى الوكلاء مسؤوليتها بالكامل، وما هي الأجزاء التي يجب أن تظل مرئية لأنها تساعد البشر على الاستمرار في التحسن؟</p>
+    </button></h2><p>If you are building agents, I would love to hear how you think about this: what parts of the work should agents fully take over, and what parts should remain visible because they help humans keep getting better?</p>

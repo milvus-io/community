@@ -4,7 +4,7 @@ title: >
  When AI Agents Do the Work, What Do We Lose?
 author: Bill Chen
 date: 2026-06-18
-cover: assets.zilliz.com/Chat_GPT_Image_Jun_21_2026_10_34_48_PM_d223e44fc5.png
+cover: assets.zilliz.com/AI_Agents_Work_blog_cover_1536x1024_565f1739a0.png
 tag: Engineering
 recommend: false
 publishToMedium: true
