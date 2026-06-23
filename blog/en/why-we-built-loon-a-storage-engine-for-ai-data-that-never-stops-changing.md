@@ -14,7 +14,7 @@ meta_title: >
  AI Datasets Are Never Done. So We Re-Built Our Storage Engine for Milvus
 desc: >
  Loon powers Milvus 3.0 with versioned vector storage for evolving AI datasets, efficient backfills, hybrid search, and lake-native workflows.
-origin: https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
+origin: https://zilliz.com/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing
 ---
 
 ## Key takeaways
