@@ -178,7 +178,7 @@ export const getFileUpdatedTime = async (path) => {
   try {
     const apiUrl = `https://api.github.com/repos/milvus-io/community/commits?path=${path}`;
     const headers = {
-      Authorization: `token ${process.env.GITHUB_TOKEN}`,
+      Authorization: `token ${process.env.GH_TOKEN}`,
     };
     const { data } = await axios.get(apiUrl, { headers });
     return data.length > 0

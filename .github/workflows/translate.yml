@@ -33,7 +33,7 @@ jobs:
           echo CHATGPT_API_URL=${{secrets.CHATGPT_API_URL}} >> .env
           echo CHATGPT_API_KEY=${{secrets.CHATGPT_API_KEY}} >> .env
           echo CHATGPT_MODEL=${{secrets.CHATGPT_MODEL}} >> .env
-          echo GITHUB_TOKEN=${{secrets.GH_TOKEN}} >> .env
+          echo GH_TOKEN=${{secrets.GH_TOKEN}} >> .env
           yarn translate
 
       - name: Commit and push
