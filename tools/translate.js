@@ -71,6 +71,42 @@ const translateHomepage = async () => {
   console.log("--> Cache updated successfully");
 };
 
+const cleanupDeletedBlogs = (mdFiles, cache) => {
+  const localizedBlogDir = "localization/blog";
+  if (!fs.existsSync(localizedBlogDir)) return;
+
+  // Build the set of localized .md paths expected from the current source files,
+  // mirroring exactly how translateBlogs derives each targetFilePath below.
+  const expectedFiles = new Set();
+  for (let path of mdFiles) {
+    for (let targetLang of targetLangs) {
+      expectedFiles.add("localization/" + path.replace(sourceLang, targetLang));
+    }
+  }
+
+  // Any localized markdown whose source no longer exists is an orphan:
+  // remove it together with its .json sibling.
+  const localizedFiles = traverseDirectory(localizedBlogDir);
+  let removed = 0;
+  for (let localizedPath of localizedFiles) {
+    if (expectedFiles.has(localizedPath)) continue;
+    fs.rmSync(localizedPath, { force: true });
+    fs.rmSync(localizedPath.replace(/\.md$/, ".json"), { force: true });
+    removed++;
+    console.info(`-> Removed orphaned localization: ${localizedPath}`);
+  }
+
+  // Prune cache entries whose source blog file no longer exists.
+  const sourceSet = new Set(mdFiles);
+  for (let key of Object.keys(cache)) {
+    if (key.startsWith(BLOG_DIR) && !sourceSet.has(key)) {
+      delete cache[key];
+    }
+  }
+
+  console.log(`--> Cleanup done: removed ${removed} orphaned localization files`);
+};
+
 const translateBlogs = async () => {
   const cache = fs.existsSync(CACHE_FILE)
     ? JSON.parse(fs.readFileSync(CACHE_FILE, "utf8") || "{}")
@@ -78,6 +114,8 @@ const translateBlogs = async () => {
   const sourceDirectory = BLOG_DIR;
   const mdFiles = traverseDirectory(sourceDirectory);
   console.log(`--> Found ${mdFiles.length} files...`);
+
+  cleanupDeletedBlogs(mdFiles, cache);
 
   let updatedFiles = [];
   for (let index = 0; index < mdFiles.length; index++) {
