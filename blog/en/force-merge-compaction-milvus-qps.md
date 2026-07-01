@@ -62,11 +62,11 @@ Consolidating helps because of how graph indexes behave: **for HNSW, making one 
 
 **The deeper difference is who decides, and why.** Standard compaction asks whether the system can tidy up within its own rules. Force Merge is the operator saying the data is stable and the segments should be reshaped for the queries that follow: collection-wide consolidation for faster search, with tighter storage along the way.
 
-**How far it goes depends on the** `**target_size**` **you pass**, which has three modes:
+**How far it goes depends on the `target_size` you pass**, which has three modes:
 
--   **Omitted or** `**0**`**:** behaves like standard compaction, using the configured `maxSize`.
+-   **Omitted or `0`:** behaves like standard compaction, using the configured `maxSize`.
 -   **An explicit size in MB:** segments merge toward it. It must be at least `maxSize`; a smaller value is rejected with an error.
--   `**max_int64**`**:** Milvus sizes the target itself, from the current segment layout and each node's memory, so the merged segments stay small enough for QueryNodes to load. **This auto mode is the recommended default** unless you have a specific size in mind.
+-   **`max_int64`:** Milvus sizes the target itself, from the current segment layout and each node's memory, so the merged segments stay small enough for QueryNodes to load. **This auto mode is the recommended default** unless you have a specific size in mind.
 
 | **Note:** This feature is in public preview. Do not use in production environments. |
 | --- |
