@@ -15,8 +15,8 @@ meta_title: |
   Force Merge Compaction: Nearly 2x Milvus Search QPS
 desc: >-
   Force Merge consolida los pequeños segmentos sellados de Milvus en menos
-  segmentos y de mayor tamaño. Con 1 millón de vectores y un índice HNSW, el QPS
-  de búsqueda aumentó de ~3000 a ~5600–6000.
+  segmentos, pero más grandes. Con 1M de vectores y un índice HNSW, el QPS de
+  búsqueda aumentó de ~3,000 a ~5,600–6,000.
 origin: 'https://milvus.io/blog/force-merge-compaction-milvus-qps.md'
 ---
 <p><a href="https://milvus.io/docs/force-merge.md"><strong>Force Merge Compaction</strong></a> is a Milvus compaction option that consolidates a collection’s small sealed segments into fewer, larger ones. <strong>Under the right conditions — a collection that has</strong> become static and read-heavy, with many small, sealed segments — it can meaningfully increase <strong>search QPS</strong>.</p>
@@ -89,11 +89,11 @@ origin: 'https://milvus.io/blog/force-merge-compaction-milvus-qps.md'
 </p>
 <p>Consolidating helps because of how graph indexes behave: <strong>for HNSW, making one segment larger doesn’t raise its search cost proportionally</strong>, so fewer segments means less fan-out overhead without a matching rise in per-segment work. That’s why going from three segments to one is a net win, not just moving the cost around.</p>
 <p><strong>The deeper difference is who decides, and why.</strong> Standard compaction asks whether the system can tidy up within its own rules. Force Merge is the operator saying the data is stable and the segments should be reshaped for the queries that follow: collection-wide consolidation for faster search, with tighter storage along the way.</p>
-<p><strong>How far it goes depends on the</strong> <code translate="no">**target_size**</code> <strong>you pass</strong>, which has three modes:</p>
+<p><strong>How far it goes depends on the <code translate="no">target_size</code> you pass</strong>, which has three modes:</p>
 <ul>
-<li><strong>Omitted or</strong> <code translate="no">**0**</code><strong>:</strong> behaves like standard compaction, using the configured <code translate="no">maxSize</code>.</li>
+<li><strong>Omitted or <code translate="no">0</code>:</strong> behaves like standard compaction, using the configured <code translate="no">maxSize</code>.</li>
 <li><strong>An explicit size in MB:</strong> segments merge toward it. It must be at least <code translate="no">maxSize</code>; a smaller value is rejected with an error.</li>
-<li><code translate="no">**max_int64**</code><strong>:</strong> Milvus sizes the target itself, from the current segment layout and each node’s memory, so the merged segments stay small enough for QueryNodes to load. <strong>This auto mode is the recommended default</strong> unless you have a specific size in mind.</li>
+<li><strong><code translate="no">max_int64</code>:</strong> Milvus sizes the target itself, from the current segment layout and each node’s memory, so the merged segments stay small enough for QueryNodes to load. <strong>This auto mode is the recommended default</strong> unless you have a specific size in mind.</li>
 </ul>
 <table>
 <thead>
