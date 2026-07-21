@@ -2,5 +2,10 @@
 {
   "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
-  "headlines": []
+  "headlines": [
+    {
+      "label": "🌐 Webinar | Zilliz Cloud BYOC, same managed experience within your VPC",
+      "link": "https://zilliz.com/event/bring-your-own-cloud-byoc-with-zilliz-cloud"
+    }
+  ]
 }
