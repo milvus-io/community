@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2026-06-22T10:00:36.870Z",
+  "homepage/index.json": "2026-07-22T10:17:51.930Z",
   "blog/en/milvus-cdc-standby-cluster-high-availability.md": "2026-06-22T10:18:02.817Z",
   "blog/en/milvus-access-control-rbac-guide.md": "2026-06-22T10:17:49.040Z",
   "blog/en/choose-embedding-model-rag-2026.md": "2026-06-22T10:09:06.470Z",
@@ -289,5 +289,6 @@
   "blog/en/attu-3-0-beta.md": "2026-06-23T13:16:10.699Z",
   "blog/en/when-ai-agents-do-the-work-what-do-we-lose.md": "2026-06-23T13:17:01.075Z",
   "blog/en/force-merge-compaction-milvus-qps.md": "2026-07-02T07:29:56.793Z",
-  "blog/en/open-source-claude-tag-mfs.md": "2026-07-02T14:05:16.951Z"
+  "blog/en/open-source-claude-tag-mfs.md": "2026-07-02T14:05:16.951Z",
+  "blog/en/recover-milvus-data-after-etcd-corruption.md": "2026-07-22T11:07:58.781Z"
 }
