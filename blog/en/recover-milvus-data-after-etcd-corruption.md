@@ -30,9 +30,7 @@ When etcd is corrupted and no Milvus Backup exists, Milvus data can sometimes be
 
 We recovered the data, though not before hitting a problem: two readable segments that represented the same logical rows. To document the exact commands, we reproduced the failure in a lab environment rather than operating further on the user's data; every command, ID, and screenshot below comes from that reproduction.
 
-```
-Important: This is not a standard backup or recovery procedure. It is a last-resort salvage path for cases where etcd is unavailable, the original data is gone, and no Milvus Backup exists.MinIO is not the source of truth for Milvus metadata. It can show that object files exist, but it cannot reliably tell you which segments are still live. A recovery process must therefore validate candidate segments rather than importing every readable directory, in particular to avoid re-importing historical or pre-compaction segments as duplicates.
-```
+> Important: This is not a standard backup or recovery procedure. It is a last-resort salvage path for cases where etcd is unavailable, the original data is gone, and no Milvus Backup exists.MinIO is not the source of truth for Milvus metadata. It can show that object files exist, but it cannot reliably tell you which segments are still live. A recovery process must therefore validate candidate segments rather than importing every readable directory, in particular to avoid re-importing historical or pre-compaction segments as duplicates.
 
 ## The Incident: etcd Was Lost and the Collection Disappeared
 
