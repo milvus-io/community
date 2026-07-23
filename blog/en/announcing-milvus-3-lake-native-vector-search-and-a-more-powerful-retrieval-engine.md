@@ -255,7 +255,11 @@ Milvus 3.0 is available today under the Apache 2.0 license and remains an LF AI 
 
 ## Milvus 3.0 and Zilliz Vector Lakebase
 
-Milvus 3.0 also serves as the core indexing and retrieval engine within [Zilliz Cloud](https://zilliz.com/), a Vector Lakebase platform for production AI, created by the same team behind Milvus. Zilliz Cloud extends the Milvus core with advanced enterprise capabilities, including on-demand compute, AI-powered and learn-based AutoIndex, proprietary Cardinal index engine, enterprise security, governance, and compliance to support a diverse set of workloads on a unified AI data foundation.
+
+Milvus 3.0 lays the open-source foundation for production AI retrieval and the emerging [Vector Lakebase](https://zilliz.com/blog/from-vector-database-to-vector-lakebase) architecture, which combines lake-native storage with high-performance vector retrieval on a single source of truth, each at the right cost.
+
+[Zilliz Cloud](https://zilliz.com/) is a fully managed Vector Lakebase built by the team behind Milvus. It shares the same distributed, lake-native architecture as Milvus and is fully compatible with the Milvus API. Powered by its proprietary Cardinal indexing engine, Zilliz Cloud delivers up to 10× better price-performance than standard open-source indexing approaches while eliminating the operational complexity of managing infrastructure. Enterprise capabilities include scale-to-zero compute, cross-region disaster recovery, BYOC deployment, enterprise-grade security and compliance (SOC 2, HIPAA, ISO 27001, and GDPR), and up to a 99.99% SLA.
+
 
 ![](https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_12_08d1c21d25.png)
 
