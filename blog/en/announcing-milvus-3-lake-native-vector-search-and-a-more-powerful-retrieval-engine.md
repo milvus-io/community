@@ -3,10 +3,10 @@ id: announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-
 title: >
  Announcing Milvus 3.0: Lake-Native Vector Search and a More Powerful Retrieval Engine
 author: Fendy Feng and Li Liu
-date: 2026-7-16
+date: 2026-7-27
 cover: assets.zilliz.com/cover_of_milvus_3_0_6fab4ba929.jpg
 tag: Announcements
-recommend: false
+recommend: true
 publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Milvus 3.0, lake-native vector search, vector database, External Collections, AI retrieval engine
