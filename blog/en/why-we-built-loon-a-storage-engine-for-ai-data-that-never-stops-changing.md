@@ -3,21 +3,19 @@ id: why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md
 title: >
  Why We Built Loon: a Storage Engine for AI Data That Never Stops Changing.
 author: Ted Xu
-date: 2026-6-5
+date: 2026-6-10
 cover: assets.zilliz.com/Loon_New_Cover_8270435335.png
 tag: Engineering
 recommend: true
 publishToMedium: true
 tags: Milvus, vector database
-meta_keywords: Milvus 3.0, Zilliz Vector Lakebase, vector storage, AI datasets, Vortex
+meta_keywords: Loon storage engine, Milvus 3.0, vector storage, AI datasets, Zilliz Vector Lakebase
 meta_title: >
- AI Datasets Are Never Done. So We Built Loon.
+ AI Datasets Are Never Done. So We Re-Built Our Storage Engine for Milvus
 desc: >
- Loon is a new storage engine for Milvus 3.0 and Zilliz Vector Lakebase, built to manage evolving vector datasets with ColumnGroups, row ID alignment, and Manifests.
+ Loon powers Milvus 3.0 with versioned vector storage for evolving AI datasets, efficient backfills, hybrid search, and lake-native workflows.
 origin: https://zilliz.com/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing
 ---
-
-_This blog was originally published on zilliz.com and has been republished with permission._
 
 ## Key takeaways
 
@@ -102,12 +100,14 @@ And 768 dimensions are not unusual or large by today’s standards. A 1024- or 2
 
 The comparison is stark:
 
-| Dataset shape | Approximate row size | What dominates the row |
+| Dataset shape | Approximate row size | Dominant field |
 | --- | --- | --- |
-| TPC-H lineitem | ~150 bytes uncompressed | scalar and short string fields |
+| TPC-H lineitem | ~150 bytes uncompressed | scalar and short strings |
 | LAION-style row with 768-dim fp16 vector | ~1.5 KB+ | embedding |
 | LAION-style row with 768-dim fp32 vector | ~3 KB+ | embedding |
 | Row with 3072-dim fp32 vector | ~12 KB+ for the vector alone | embedding |
+
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_3_5364dac84d.png)
 
 In many AI datasets, the vector column is not just another field. Physically, it is most of the row. That changes the cost of schema evolution.
 
@@ -115,9 +115,9 @@ In many AI datasets, the vector column is not just another field. Physically, it
 
 Suppose a dataset has 100 million video clips. Adding a new 1024-dimensional fp32 embedding column means writing roughly 400 GB of raw vector data. That does not include statistics, indexes, metadata updates, object storage overhead, validation, or serving-path integration.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_3_ca3c616b9e.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_4_c52692571d.png)
 
-If the team adds one or two vector-like columns every month, such as `embedding_v2`, `sparse_vector`, or rerank features, schema evolution becomes a recurring daAta engineering job measured in hundreds of gigabytes or terabytes.
+If the team adds one or two vector-like columns every month, such as `embedding_v2`, `sparse_vector`, or rerank features, schema evolution becomes a recurring data engineering job measured in hundreds of gigabytes or terabytes.
 
 ### Small logical updates can trigger large physical rewrites
 
@@ -143,7 +143,7 @@ That is why vector storage cannot only optimize for scan throughput. It also has
 
 After the data is written, the read path splits. The same vector dataset typically has two distinct access patterns: **analytical scanning and point reads.**
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_4_cef8d0e3ea.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_5_7ec257e0e0.png)
 
 ### Analytical workloads want wide, compressed scans
 
@@ -213,7 +213,7 @@ That is why vector storage needs more than a better Parquet setting. It needs a 
 
 The first two problems happen inside the database. The third happens at the boundary between systems.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_5_802e6d92c3.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_6_1058be8f2f.png)
 
 ### AI data pipelines span many systems
 
@@ -258,7 +258,7 @@ It is tempting to treat these as three separate engineering problems.
 
 Those patches can help, but they do not address the underlying issue: a vector dataset is physically heterogeneous.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_6_0744ff4445.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_7_203b6b9dbf.png)
 
 In the video example, `clip_id`, `video_id`, `duration`, and `aesthetic_score` are short scalar fields. They are useful for filtering and analysis.
 
@@ -311,7 +311,7 @@ In Milvus, it replaces the old segment binlog storage layer with a model built a
 
 The upper-level Milvus components still keep their familiar roles. Proxy handles routing. QueryCoord and DataCoord handle scheduling. IndexNode builds indexes. The application-facing APIs for collections, inserts, searches, and hybrid searches do not need to expose Manifest files or ColumnGroups.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_7_d4d1a34604.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_8_a2e50d05ad.png)
 
 The change is underneath.
 
@@ -326,7 +326,7 @@ Manifest
 → filesystem abstraction
 ```
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_8_70917bdfc7.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_9_490b33529c.png)
 
 The Manifest describes the versioned state of the dataset. ColumnGroups map a logical collection into physical groups of columns. The file format layer lets each ColumnGroup choose an appropriate format. The filesystem abstraction works across object storage and local storage.
 
@@ -338,7 +338,7 @@ With that model in place, we can look at the three design choices one by one: ho
 
 Different columns have different access patterns. They should not be forced into the same file format.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_9_c262865944.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_10_a11d6e20dc.png)
 
 ### Loon separates a logical collection into ColumnGroups.
 
@@ -383,7 +383,6 @@ In one local test, using a single file with 40,000 rows and the schema `{id: int
 | Full vector-column scan | 21 ms | 142 ms | 6.76x faster |
 | File size, ~21 MB raw data | 6.62 MB | 7.16 MB | 7% smaller |
 
-
 The `take` result comes from reducing the amount of irrelevant data that must be read and decoded. The scan result comes from compression and implementation choices.
 
 These numbers should stay attached to their setup: 8 vCPU Ubuntu 22.04 KVM, local filesystem, one file, 40,000 rows, 1 MB row groups, and the schema above. On object storage, network I/O can dominate, so reducing read amplification can matter even more. Actual results depend on dataset shape, object storage behavior, cache state, and query pattern.
@@ -392,7 +391,7 @@ The broader point is not that every column should use Vortex.
 
 The point is that vector datasets need a file format choice at the ColumnGroup level.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_11_127c1953e6.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_12_d5d751e0db.png)
 
 ## Design 2: align physical files through row IDs
 
@@ -418,7 +417,7 @@ For row ID `12345`, the scalar metadata may be in a Parquet ColumnGroup, the emb
 
 Row ID is not the business primary key. It is the storage-layer coordinate system that lets Loon split a collection physically without losing the ability to reconstruct it logically.
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_12_3da04acdec.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_13_382d619116.png)
 
 ### New columns do not have to rewrite old columns
 
@@ -470,7 +469,7 @@ That is the difference between “separate files” and “a table with multiple
 
 Hybrid file formats define how data is physically stored. Row ID alignment determines how separated ColumnGroups still form a single logical table. But the system still needs to answer a larger question: **which files, logs, statistics, indexes, and object references belong to the current version of the dataset? That is the job of the Manifest.**
 
-![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_13_cd18b2da18.png)
+![](https://assets.zilliz.com/why_we_built_loon_a_storage_engine_for_ai_data_that_never_stops_changing_md_14_74b7f2af8a.png)
 
 ### Object storage directories are not enough
 
