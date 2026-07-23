@@ -22,7 +22,9 @@ Today, we're releasing Milvus 3.0, a major architectural milestone for the proje
 -   Milvus 3.0 introduces **a lake-native path** for indexing vector data that lives in object storage and open table formats, including Parquet, Lance, Iceberg, and Vortex. Teams can make lake-resident data searchable without maintaining another copy in a vector database.
 -   **This release also expands Milvus beyond initial candidate retrieval.** Server-side sorting, aggregation, faceted search, StructArray for nested doc/chunk structure and ColBERT vectors, and a redesigned sparse index move more ranking, grouping, and result processing out of application code and into the retrieval engine.
 
-Together, these changes strengthen Milvus as the open-source foundation for production AI retrieval and as a core engine within [Zilliz Cloud](https://zilliz.com/), as it expands into a fully managed [Vector Lakebase](https://zilliz.com/blog/from-vector-database-to-vector-lakebase) platform. Milvus powers vector search and lake-native indexing and retrieval, while Zilliz Cloud adds advanced enterprise capabilities, including on-demand compute, learn-based AutoIndex, proprietary Cardinal index engine, enterprise security, governance, and compliance.
+
+Together, these advances make Milvus the open-source foundation for production AI retrieval and for [Vector Lakebase](https://zilliz.com/blog/from-vector-database-to-vector-lakebase) architectures that combine lake-native storage with high-performance vector retrieval.
+
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/SAm4YfrO1ok?si=xzgw5RjRTwaHWYxO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
