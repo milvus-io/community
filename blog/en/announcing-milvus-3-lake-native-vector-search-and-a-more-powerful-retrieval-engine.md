@@ -82,7 +82,7 @@ For governed environments, retrieval can run where the data is allowed to live. 
 
 External collections are an additive capability. Native Milvus collections remain the primary path for write-heavy, low-latency serving, while External Collections are designed for datasets whose system of record remains outside Milvus.
 
-For more details, see [[Create an External Collection]](https://milvus.io/docs/create-an-external-collection.md).
+For more details, see [Create an External Collection](https://milvus.io/docs/create-an-external-collection.md).
 
 ### 2. Loon (Storage v3): Efficient Point Reads for Lake-Native Retrieval
 
@@ -109,8 +109,6 @@ Offline jobs need a consistent view of data even while production collections co
 That makes snapshots inexpensive enough to create before risky operations such as a model swap, re-embedding job, or schema migration. Restoring a snapshot can reuse existing data and index files through server-side copy in object storage rather than reimporting every row and rebuilding every index. This feature is particularly useful for fast-moving workloads like AI agents, where data changes constantly, and you want frequent, cheap recovery points rather than occasional heavy backups.
 
 The same frozen view can support evaluation, deduplication, backfill validation, and isolated testing while the live collection continues to accept writes. The snapshot stabilizes the logical input, although the workloads may still share infrastructure such as object storage and network bandwidth.
-
-![](https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_2_f2a9f9e9da.png)
 
 Snapshots do not replace backups. A snapshot references files owned by the live collection and is best suited to logical recovery, cloning, and short-lived stable views. A backup creates an independent copy for long-term retention and disaster recovery.
 
@@ -200,7 +198,13 @@ Milvus supports two search granularities.
 
 Indexing every token vector can be expensive; so Milvus 3.0 adds multiple acceleration paths, including TokenANN, Muvera, and Lemur, which trade index size, training cost, and recall.
 
-![](https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_6_2064b9d975.png)
+| Strategy | Stage-one representation | Cost profile | Best for |
+| --- | --- | --- | --- |
+| TokenANN | Every token vector is indexed. | Highest, exact | High-discrimination models and short documents |
+| Muvera | One vector per document using random-projection FDE. | Medium, no training | Long documents |
+| Lemur | One vector per document using learned MLP compression | Lowest, requires training | Low-discrimination models and visual or patch vectors |
+
+
 
 In our benchmarks, Lemur matches or beats TokenANN recall on most datasets while collapsing each document to a single vector; the exception is corpora with high length variance, where TokenANN or another strategy is safer.
 
@@ -232,17 +236,15 @@ SINDI is the default for sparse inner-product search in Milvus 3.0.
 
 ## Other Enhancements
 
-| **Feature sets** | **Descriptions** |
-| --- | --- |
-| **TEXT LOB** | Stores long source text beside vectors. Text under 64 KB remains inline; larger values use a Vortex LOB reference. |
-| **Expanded dense index support** | Adds more index choices within the Faiss family, including SVS, Panorama, PQ, IVFPQ, and ScaNN, for different scale, memory, and recall requirements. |
-| **MinHash and near-duplicate search** | Generates MinHash signatures on the server side and retrieves near-duplicate candidates using MINHASH_LSH. |
-| **Nullable vectors and new types** | Allows vector fields to be NULL and adds TIMESTAMPTZ for time-aware filtering and retention policies. |
-| **Custom full-text dictionaries** | Registers dictionaries, synonyms, and stop-word resources on the cluster for multilingual and domain-specific tokenization. |
-| **Standalone Woodpecker** | Runs the Milvus write-ahead log as an independently scalable and observable service. |
-| **Entity TTL** | Expires individual records through a TIMESTAMPTZ field, with MVCC filtering followed by garbage collection during compaction. |
-| **ForceMerge** | Compacts small segments to a target size and rebuilds indexes to reduce read amplification before sustained read-heavy service. |
-| And more. |   |
+-   **TEXT LOB:** Stores long source text beside vectors. Text under 64 KB remains inline; larger values use a Vortex LOB reference.
+-   **Expanded dense index support:** Adds more index choices within the Faiss family, including SVS, Panorama, PQ, IVFPQ, and ScaNN, for different scale, memory, and recall requirements.
+-   **MinHash and near-duplicate search:** Generates MinHash signatures on the server side and retrieves near-duplicate candidates using MINHASH_LSH.
+-   **Nullable vectors and new types:** Allows vector fields to be NULL and adds TIMESTAMPTZ for time-aware filtering and retention policies.
+-   **Custom full-text dictionaries:** Registers dictionaries, synonyms, and stop-word resources on the cluster for multilingual and domain-specific tokenization.
+-   **Standalone Woodpecker:** Runs the Milvus write-ahead log as an independently scalable and observable service.
+-   **Entity** **TTL****:** Expires individual records through a TIMESTAMPTZ field, with MVCC filtering followed by garbage collection during compaction.
+-   **ForceMerge:** Compacts small segments to a target size and rebuilds indexes to reduce read amplification before sustained read-heavy service.
+-   And more
 
 ## Get started with Milvus 3.0
 
