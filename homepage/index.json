@@ -2,5 +2,10 @@
 {
   "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
-  "headlines": []
+  "headlines": [
+    {
+      "label": "Announcing Milvus 3.0: Lake-Native Vector Search and a More Powerful Retrieval Engine",
+      "link": "https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md"
+    }
+  ]
 }
