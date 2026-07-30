@@ -50,7 +50,7 @@ That makes a point-in-time version expressible without copying anything. If no f
 
 ## What you can do with Milvus snapshots
 
-Four capabilities sit on top of that one read-only version:
+In Milvus 3.0, we introduced four snapshot capabilities that sit on top of that one read-only version:
 
 | **Capability** | **Mechanism** | **What it changes** | **Availability** |
 | --- | --- | --- | --- |
