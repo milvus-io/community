@@ -61,7 +61,7 @@ In Milvus 3.0, we introduced four snapshot capabilities that sit on top of that 
 
 The four capabilities are options, not a sequence. Once a snapshot exists, you can restore it where it came from, hand it to a different cluster, or point External Collection and Spark at it — in any combination, or none. Every consumer resolves the same file references, so nobody has to prepare a separate input copy.
 
-![blog pic](blob:https://septemberfd.github.io/55828f4d-9380-4656-9661-eee71cb94593)
+![Milvus snapshot](https://assets.zilliz.com/milvus_snapshots_b21369bbcd.png)
 
 _Figure 1. A single snapshot supports multiple consumption paths. They are independent options, not sequential steps._
 
