@@ -1,10 +1,10 @@
 {
-  "label": "35,000以上のGitHubスターへの道のり：Milvusをゼロから構築した本当の物語",
+  "label": "35,000以上のGitHubスターへの道のり：Milvusをゼロから構築したリアルな物語",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
-      "label": "🌐 Webinar | Zilliz BYOC, same managed experience within your VPC",
-      "link": "https://zilliz.com/event/bring-your-own-cloud-byoc-with-zilliz-cloud"
+      "label": "Announcing Milvus 3.0: Lake-Native Vector Search, S3-based storage, and a More Powerful Retrieval Engine",
+      "link": "https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md"
     }
   ]
 }

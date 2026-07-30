@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2026-07-22T10:17:51.930Z",
+  "homepage/index.json": "2026-07-30T07:52:40.496Z",
   "blog/en/milvus-cdc-standby-cluster-high-availability.md": "2026-06-22T10:18:02.817Z",
   "blog/en/milvus-access-control-rbac-guide.md": "2026-06-22T10:17:49.040Z",
   "blog/en/choose-embedding-model-rag-2026.md": "2026-06-22T10:09:06.470Z",
@@ -291,5 +291,6 @@
   "blog/en/force-merge-compaction-milvus-qps.md": "2026-07-02T07:29:56.793Z",
   "blog/en/open-source-claude-tag-mfs.md": "2026-07-02T14:05:16.951Z",
   "blog/en/recover-milvus-data-after-etcd-corruption.md": "2026-07-22T11:07:58.781Z",
-  "blog/en/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md": "2026-07-29T13:19:53.523Z"
+  "blog/en/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md": "2026-07-29T13:19:53.523Z",
+  "blog/en/milvus-snapshots.md": "2026-07-30T08:43:16.890Z"
 }
