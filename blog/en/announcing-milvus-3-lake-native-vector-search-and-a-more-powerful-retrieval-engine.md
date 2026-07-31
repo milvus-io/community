@@ -55,27 +55,55 @@ Many teams already store embeddings in a data lake — Lance tables, Iceberg tab
 
 **External Collections are read-only and zero-copy**, which makes them useful when governance, ownership boundaries, or operating cost require the source dataset to remain in the lake.
 
-When the external dataset changes, Milvus reads its storage manifest and indexes newly added fragments instead of rebuilding the entire collection. A collection-level load mode also lets teams choose how much data to keep local:
-
-| **Load mode** | **Behavior** | **Best for** |
-| --- | --- | --- |
-| Take | Read from object storage on each query | Lowest storage cost; less latency-sensitive workloads |
-| LazyLoad | Cache data on first access | Mixed workloads where hot data emerges over time |
-| Load | Keep data resident | Lowest-latency serving |
+When the external dataset changes, Milvus reads its storage manifest and indexes newly added fragments instead of rebuilding the entire collection.
 
 ```python
-# register a lake table as a zero-copy Collection
-client.create_collection(
-  name="docs",
-  external_source={"format": "iceberg",  # iceberg|lance|parquet|vortex
-                   "uri": "s3://lake/docs"},
-  schema=[
-    Field("id",  INT64, primary=True, external_field="doc_id"),
-    Field("emb", FLOAT_VECTOR, dim=1024, external_field="embedding"),
-    Field("title", VARCHAR, external_field="title")])
+import json
+import os
+import time
 
-client.create_index("docs", "emb", {"index_type": "HNSW"})  # in place
-client.load("docs", mode="lazy")  # Take | LazyLoad | Load
+from pymilvus import DataType, MilvusClient
+
+client = MilvusClient(uri="")
+
+# Register an Iceberg table as a zero-copy collection.
+schema = client.create_schema(
+    external_source="s3://lake/docs/metadata/v1.metadata.json",
+    external_spec=json.dumps(
+        {
+            "format": "iceberg-table",
+            "snapshot_id": 123456789,
+            "extfs": {
+                "cloud_provider": "aws",
+                "region": "us-east-1",
+                "access_key_id": os.environ["AWS_ACCESS_KEY_ID"],
+                "access_key_value": os.environ["AWS_SECRET_ACCESS_KEY"],
+            },
+        }
+    ),
+)
+
+schema.add_field(field_name="id", datatype=DataType.INT64, external_field="doc_id")
+schema.add_field(field_name="emb", datatype=DataType.FLOAT_VECTOR, dim=1024, external_field="embedding")
+schema.add_field(field_name="title", datatype=DataType.VARCHAR, max_length=1024, external_field="title")
+
+client.create_collection(collection_name="docs", schema=schema)
+
+# Import the external table snapshot.
+job_id = client.refresh_external_collection(collection_name="docs")
+while True:
+    progress = client.get_refresh_external_collection_progress(job_id=job_id)
+    if progress.state == "RefreshCompleted":
+        break
+    if progress.state == "RefreshFailed":
+        raise RuntimeError(progress.reason)
+    time.sleep(1)
+
+index_params = client.prepare_index_params()
+index_params.add_index(field_name="emb", index_type="HNSW", metric_type="COSINE")
+client.create_index(collection_name="docs", index_params=index_params)
+
+client.load_collection(collection_name="docs")
 ```
 
 For governed environments, retrieval can run where the data is allowed to live. For large AI systems, a lake-resident dataset can support multiple retrieval deployments without a migration job between them.
