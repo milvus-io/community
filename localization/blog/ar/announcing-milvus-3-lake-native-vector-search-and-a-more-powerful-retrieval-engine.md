@@ -1,7 +1,7 @@
 ---
 id: >-
   announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md
-title: 'الإعلان عن Milvus 3.0: بحث متجهي أصيل لبحيرات البيانات ومحرك استرجاع أكثر قوة'
+title: 'الإعلان عن Milvus 3.0: بحث متجهات أصيل للبحيرات ومحرك استرجاع أكثر قوة'
 author: Fendy Feng and Li Liu
 date: 2026-7-27
 cover: assets.zilliz.com/cover_of_milvus_3_0_6fab4ba929.jpg
@@ -15,20 +15,20 @@ meta_keywords: >-
 meta_title: |
   Milvus 3.0: Lake-Native Vector Search & Retrieval Engine
 desc: >-
-  اكتشف البحث المتجهي الأصلي للبحيرات في Milvus 3.0، والمجموعات الخارجية بدون
-  نسخ، والاسترجاع المتناثر الأسرع، واللقطات، وتكامل Spark، وقدرات الترتيب
+  اكتشف البحث المتجهي الأصلي للبحيرات في Milvus 3.0، والمجموعات الخارجية دون
+  نسخ، والاسترجاع المتناثر الأسرع، واللقطات، والتكامل مع Spark، وقدرات الترتيب
   المتقدمة.
 origin: >-
   https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md
 ---
-<p>اليوم، نُصدر Milvus 3.0، وهي محطة معمارية رئيسية للمشروع. يغيّر هذا الإصدار كلاً من الأماكن التي يمكن لـ Milvus فيها بناء الفهارس وخدمتها، ومقدار عمل الاسترجاع الذي يمكن تنفيذه مباشرةً داخل المحرك.</p>
+<p>Today, we’re releasing Milvus 3.0, a major architectural milestone for the project. It changes both where Milvus can build and serve indexes and how much retrieval work can be done directly within the engine.</p>
 <ul>
-<li>يقدّم Milvus 3.0 <strong>مسارًا أصيلاً لبحيرات البيانات</strong> لفهرسة بيانات المتجهات الموجودة في تخزين الكائنات وتنسيقات الجداول المفتوحة، بما في ذلك Parquet وLance وIceberg وVortex. يمكن للفرق جعل البيانات المقيمة في البحيرة قابلة للبحث دون الحفاظ على نسخة أخرى في قاعدة بيانات متجهية.</li>
-<li><strong>يوسّع هذا الإصدار أيضًا Milvus إلى ما بعد استرجاع المرشحين الأولي.</strong> يتيح الفرز من جهة الخادم، والتجميع، والبحث متعدد الأوجه، وStructArray لبنية المستند/المقطع المتداخلة ومتجهات ColBERT، وفهرس sparse مُعاد تصميمه نقل مزيد من التصنيف والتجميع ومعالجة النتائج من كود التطبيق إلى محرك الاسترجاع.</li>
+<li>Milvus 3.0 introduces <strong>a lake-native path</strong> for indexing vector data that lives in object storage and open table formats, including Parquet, Lance, Iceberg, and Vortex. Teams can make lake-resident data searchable without maintaining another copy in a vector database.</li>
+<li><strong>This release also expands Milvus beyond initial candidate retrieval.</strong> Server-side sorting, aggregation, faceted search, StructArray for nested doc/chunk structure and ColBERT vectors, and a redesigned sparse index move more ranking, grouping, and result processing out of application code and into the retrieval engine.</li>
 </ul>
-<p>مجتمعةً، تجعل هذه التحسينات Milvus الأساس مفتوح المصدر لاسترجاع الذكاء الاصطناعي في الإنتاج، ولمعماريات <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Vector Lakebase</a> التي تجمع بين التخزين الأصيل لبحيرات البيانات والاسترجاع المتجهي عالي الأداء.</p>
+<p>Together, these advances make Milvus the open-source foundation for production AI retrieval and for <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Vector Lakebase</a> architectures that combine lake-native storage with high-performance vector retrieval.</p>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/SAm4YfrO1ok?si=xzgw5RjRTwaHWYxO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-<h2 id="A-quick-glance-at-the-Milvus-30-feature-set" class="common-anchor-header">نظرة سريعة على مجموعة ميزات Milvus 3.0<button data-href="#A-quick-glance-at-the-Milvus-30-feature-set" class="anchor-icon" translate="no">
+<h2 id="A-quick-glance-at-the-Milvus-30-feature-set" class="common-anchor-header">A quick glance at the Milvus 3.0 feature set<button data-href="#A-quick-glance-at-the-Milvus-30-feature-set" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -45,17 +45,17 @@ origin: >-
       </svg>
     </button></h2><table>
 <thead>
-<tr><th><strong>المجال</strong></th><th><strong>الميزات</strong></th><th><strong>سبب الأهمية</strong></th></tr>
+<tr><th><strong>Area</strong></th><th><strong>Features</strong></th><th><strong>Why it matters</strong></th></tr>
 </thead>
 <tbody>
-<tr><td>الاسترجاع الأصيل لبحيرات البيانات</td><td>مجموعات خارجية فوق Parquet وLance وIceberg وVortex</td><td>البحث في البيانات المقيمة في البحيرة دون الحفاظ على نسخة خدمة ثانية</td></tr>
-<tr><td>تخزين قائم على S3</td><td>Loon (Storage v3)</td><td>تقليل تضخيم القراءة النقطية للوصول بنمط الخدمة ودعم تطور المخطط</td></tr>
-<tr><td>سير عمل دون اتصال/دُفعي والاسترداد</td><td>اللقطات، وSpark DataSource V2، وتطور المخطط عبر الإنترنت</td><td>إدخال عروض مستقرة للمجموعات إلى خطوط التقييم، وإزالة التكرار، والعنقدة، والميزات</td></tr>
-<tr><td>محرك الاسترجاع</td><td>ORDER BY، والتجميع، والأوجه، وStructArray، وتحسين الاسترجاع sparse</td><td>نقل مزيد من معالجة النتائج والتسجيل متعدد المتجهات إلى Milvus</td></tr>
-<tr><td>نموذج البيانات والعمليات</td><td>المتجهات القابلة لأن تكون فارغة، وTEXT LOB، وTTL، وMinHash، وWoodpecker، وForceMerge</td><td>دعم نماذج بيانات أغنى وأنماط تشغيل إنتاجية</td></tr>
+<tr><td>Lake-native retrieval</td><td>External Collections over Parquet, Lance, Iceberg, and Vortex</td><td>Search lake-resident data without maintaining a second serving copy</td></tr>
+<tr><td>S3-based Storage</td><td>Loon (Storage v3)</td><td>Reduce point-read amplification for serving-style access and support schema evolution</td></tr>
+<tr><td>Offline/batch workflows and recovery</td><td>Snapshots, Spark DataSource V2, and online schema evolution</td><td>Bring stable collection views into evaluation, deduplication, clustering, and feature pipelines</td></tr>
+<tr><td>Retrieval engine</td><td>ORDER BY, aggregation, facets, StructArray, and improved sparse retrieval</td><td>Move more result processing and multi-vector scoring into Milvus</td></tr>
+<tr><td>Data Model &amp; Operations</td><td>Nullable vectors, TEXT LOB, TTL, MinHash, Woodpecker, and ForceMerge</td><td>Support richer data models and production operating patterns</td></tr>
 </tbody>
 </table>
-<h2 id="The-lake-native-infrastructure-index-and-serve-data-where-it-already-lives" class="common-anchor-header">البنية التحتية الأصيلة لبحيرات البيانات: فهرسة البيانات وخدمتها حيث توجد بالفعل<button data-href="#The-lake-native-infrastructure-index-and-serve-data-where-it-already-lives" class="anchor-icon" translate="no">
+<h2 id="The-lake-native-infrastructure-index-and-serve-data-where-it-already-lives" class="common-anchor-header">The lake-native infrastructure: index and serve data where it already lives<button data-href="#The-lake-native-infrastructure-index-and-serve-data-where-it-already-lives" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -70,84 +70,108 @@ origin: >-
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>أكبر تغيير معماري في Milvus 3.0 هو المكان الذي يمكن للنظام أن يبني فيه الفهارس ويخدمها. يمكن أن تبقى بيانات المتجهات في تنسيقات مفتوحة على تخزين الكائنات بينما يوفر Milvus فهرسة واسترجاعًا وواجهات API بمستوى إنتاجي.</p>
-<h3 id="1-External-Collections-indexing-directly-on-lake-resident-data" class="common-anchor-header">1. المجموعات الخارجية: الفهرسة مباشرةً على البيانات المقيمة في البحيرة</h3><p>تخزّن العديد من الفرق بالفعل التضمينات في بحيرة بيانات — جداول Lance، أو جداول Iceberg، أو ملفات Parquet، أو مجموعات بيانات أخرى بتنسيقات مفتوحة على S3 أو GCS أو Azure Blob Storage. قبل Milvus 3.0، كان هناك عادةً خياران للبحث في تلك البيانات.</p>
+    </button></h2><p>The biggest architectural change in Milvus 3.0 is where the system can build and serve indexes. Vector data can remain in open formats on object storage while Milvus provides production-grade indexing, retrieval, and APIs.</p>
+<h3 id="1-External-Collections-indexing-directly-on-lake-resident-data" class="common-anchor-header">1. External Collections: indexing directly on lake-resident data</h3><p>Many teams already store embeddings in a data lake — Lance tables, Iceberg tables, Parquet files, or other open-format datasets on S3, GCS, or Azure Blob Storage. Before Milvus 3.0, there were usually two options for searching that data.</p>
 <ul>
-<li>نسخ التضمينات إلى قاعدة بيانات متجهية. يوفر هذا بحثًا منخفض الكمون، لكنه ينشئ نسخة ثانية وخط ETL يجب أن يبقى متزامنًا.</li>
-<li>الاستعلام من البحيرة مباشرةً. يتجنب هذا التكرار، لكن من دون فهارس ANN يصبح البحث المتجهي مسحًا بالقوة الغاشمة لا يمكنه تلبية كمون الإنتاج.</li>
+<li>Copy the embeddings into a vector database. This provides low-latency search, but creates a second copy and an ETL pipeline that must remain synchronized.</li>
+<li>Query the lake directly. This avoids duplication, but without ANN indexes, vector search becomes a brute-force scan that cannot meet production latency.</li>
 </ul>
-<p><strong>تقدم المجموعات الخارجية مسارًا ثالثًا.</strong> يمكنك تعريف مجموعة Milvus فوق بيانات تبقى في تخزين الكائنات، وربط الحقول الخارجية بمخطط Milvus، واستخدام واجهات API نفسها للبحث والاستعلام كما في المجموعة الأصلية. لا تتحرك الملفات المصدرية؛ يبني Milvus ويخدم فهارس المتجهات، وBM25 المعكوسة، وJSON، والفهارس العددية فوق البيانات الخارجية.</p>
+<p><strong>External Collections introduce a third path.</strong> You define a Milvus collection over data that remains in object storage, map external fields into a Milvus schema, and use the same search and query APIs as a native collection. The source files do not move; Milvus builds and serves vector, BM25 inverted, JSON, and scalar indexes over the external data.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_1_c1fb7ab16e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p><strong>المجموعات الخارجية للقراءة فقط وبلا نسخ</strong>، ما يجعلها مفيدة عندما تتطلب الحوكمة أو حدود الملكية أو تكلفة التشغيل بقاء مجموعة البيانات المصدرية في البحيرة.</p>
-<p>عندما تتغير مجموعة البيانات الخارجية، يقرأ Milvus بيان التخزين الخاص بها ويفهرس الأجزاء المضافة حديثًا بدلاً من إعادة بناء المجموعة بأكملها. كما يتيح وضع تحميل على مستوى المجموعة للفرق اختيار مقدار البيانات المطلوب إبقاؤها محليًا:</p>
-<table>
-<thead>
-<tr><th><strong>وضع التحميل</strong></th><th><strong>السلوك</strong></th><th><strong>الأفضل لـ</strong></th></tr>
-</thead>
-<tbody>
-<tr><td>Take</td><td>القراءة من تخزين الكائنات عند كل استعلام</td><td>أقل تكلفة تخزين؛ أعباء عمل أقل حساسية للكمون</td></tr>
-<tr><td>LazyLoad</td><td>تخزين البيانات مؤقتًا عند أول وصول</td><td>أعباء عمل مختلطة تظهر فيها البيانات الساخنة بمرور الوقت</td></tr>
-<tr><td>Load</td><td>إبقاء البيانات مقيمة</td><td>أقل كمون للخدمة</td></tr>
-</tbody>
-</table>
-<pre><code translate="no" class="language-python"><span class="hljs-comment"># register a lake table as a zero-copy Collection</span>
-client.create_collection(
-  name=<span class="hljs-string">&quot;docs&quot;</span>,
-  external_source={<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;iceberg&quot;</span>,  <span class="hljs-comment"># iceberg|lance|parquet|vortex</span>
-                   <span class="hljs-string">&quot;uri&quot;</span>: <span class="hljs-string">&quot;s3://lake/docs&quot;</span>},
-  schema=[
-    Field(<span class="hljs-string">&quot;id&quot;</span>,  INT64, primary=<span class="hljs-literal">True</span>, external_field=<span class="hljs-string">&quot;doc_id&quot;</span>),
-    Field(<span class="hljs-string">&quot;emb&quot;</span>, FLOAT_VECTOR, dim=<span class="hljs-number">1024</span>, external_field=<span class="hljs-string">&quot;embedding&quot;</span>),
-    Field(<span class="hljs-string">&quot;title&quot;</span>, VARCHAR, external_field=<span class="hljs-string">&quot;title&quot;</span>)])
+<p><strong>External Collections are read-only and zero-copy</strong>, which makes them useful when governance, ownership boundaries, or operating cost require the source dataset to remain in the lake.</p>
+<p>When the external dataset changes, Milvus reads its storage manifest and indexes newly added fragments instead of rebuilding the entire collection.</p>
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> time
 
-client.create_index(<span class="hljs-string">&quot;docs&quot;</span>, <span class="hljs-string">&quot;emb&quot;</span>, {<span class="hljs-string">&quot;index_type&quot;</span>: <span class="hljs-string">&quot;HNSW&quot;</span>})  <span class="hljs-comment"># in place</span>
-client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class="hljs-string">&quot;lazy&quot;</span>)  <span class="hljs-comment"># Take | LazyLoad | Load</span>
+<span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> DataType, MilvusClient
+
+client = MilvusClient(uri=<span class="hljs-string">&quot;&quot;</span>)
+
+<span class="hljs-comment"># Register an Iceberg table as a zero-copy collection.</span>
+schema = client.create_schema(
+    external_source=<span class="hljs-string">&quot;s3://lake/docs/metadata/v1.metadata.json&quot;</span>,
+    external_spec=json.dumps(
+        {
+            <span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;iceberg-table&quot;</span>,
+            <span class="hljs-string">&quot;snapshot_id&quot;</span>: <span class="hljs-number">123456789</span>,
+            <span class="hljs-string">&quot;extfs&quot;</span>: {
+                <span class="hljs-string">&quot;cloud_provider&quot;</span>: <span class="hljs-string">&quot;aws&quot;</span>,
+                <span class="hljs-string">&quot;region&quot;</span>: <span class="hljs-string">&quot;us-east-1&quot;</span>,
+                <span class="hljs-string">&quot;access_key_id&quot;</span>: os.environ[<span class="hljs-string">&quot;AWS_ACCESS_KEY_ID&quot;</span>],
+                <span class="hljs-string">&quot;access_key_value&quot;</span>: os.environ[<span class="hljs-string">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>],
+            },
+        }
+    ),
+)
+
+schema.add_field(field_name=<span class="hljs-string">&quot;id&quot;</span>, datatype=DataType.INT64, external_field=<span class="hljs-string">&quot;doc_id&quot;</span>)
+schema.add_field(field_name=<span class="hljs-string">&quot;emb&quot;</span>, datatype=DataType.FLOAT_VECTOR, dim=<span class="hljs-number">1024</span>, external_field=<span class="hljs-string">&quot;embedding&quot;</span>)
+schema.add_field(field_name=<span class="hljs-string">&quot;title&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">1024</span>, external_field=<span class="hljs-string">&quot;title&quot;</span>)
+
+client.create_collection(collection_name=<span class="hljs-string">&quot;docs&quot;</span>, schema=schema)
+
+<span class="hljs-comment"># Import the external table snapshot.</span>
+job_id = client.refresh_external_collection(collection_name=<span class="hljs-string">&quot;docs&quot;</span>)
+<span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+    progress = client.get_refresh_external_collection_progress(job_id=job_id)
+    <span class="hljs-keyword">if</span> progress.state == <span class="hljs-string">&quot;RefreshCompleted&quot;</span>:
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">if</span> progress.state == <span class="hljs-string">&quot;RefreshFailed&quot;</span>:
+        <span class="hljs-keyword">raise</span> RuntimeError(progress.reason)
+    time.sleep(<span class="hljs-number">1</span>)
+
+index_params = client.prepare_index_params()
+index_params.add_index(field_name=<span class="hljs-string">&quot;emb&quot;</span>, index_type=<span class="hljs-string">&quot;HNSW&quot;</span>, metric_type=<span class="hljs-string">&quot;COSINE&quot;</span>)
+client.create_index(collection_name=<span class="hljs-string">&quot;docs&quot;</span>, index_params=index_params)
+
+client.load_collection(collection_name=<span class="hljs-string">&quot;docs&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
-<p>في البيئات المحكومة، يمكن أن يعمل الاسترجاع حيث يُسمح للبيانات بالوجود. وبالنسبة للأنظمة الكبيرة للذكاء الاصطناعي، يمكن لمجموعة بيانات مقيمة في البحيرة دعم عدة عمليات نشر للاسترجاع دون مهمة ترحيل بينها.</p>
-<p>المجموعات الخارجية قدرة إضافية. تظل مجموعات Milvus الأصلية هي المسار الأساسي للخدمة كثيفة الكتابة ومنخفضة الكمون، بينما صُممت المجموعات الخارجية لمجموعات البيانات التي يبقى نظام سجلها خارج Milvus.</p>
-<p>لمزيد من التفاصيل، راجع <a href="https://milvus.io/docs/create-an-external-collection.md">إنشاء مجموعة خارجية</a>.</p>
-<h3 id="2-Loon-Storage-v3-Efficient-Point-Reads-for-Lake-Native-Retrieval" class="common-anchor-header">2. Loon (Storage v3): قراءات نقطية فعّالة للاسترجاع الأصيل لبحيرات البيانات</h3><p>تطرح المجموعات الخارجية سؤالًا بديهيًا: صُمم تخزين الكائنات للتوسع والمتانة، لكن هل يمكنه دعم القراءات النقطية الضيقة التي تتبع بحث ANN؟</p>
-<p><strong>التحدي هو تضخيم القراءة.</strong> يعمل البحث المتجهي عادةً على مرحلتين: يعيد فهرس ANN معرفات المرشحين، ثم يجلب النظام الحقول المحددة لهؤلاء المرشحين. يمكن للتنسيقات المحسّنة للمسوح التحليلية أن تحوّل بحثًا منطقيًا ضيقًا إلى قراءة مادية أكبر بكثير.</p>
-<p><strong>يعالج Milvus 3.0 هذه المشكلة عبر Loon، المعروف أيضًا باسم Storage v3، وهو محرك تخزين عمودي قائم على البيانات الوصفية لتخزين الكائنات المتوافق مع S3.</strong> ينظم Loon الحقول في <code translate="no">ColumnGroups</code> بمعرفات صفوف متراصة، مما يسمح للحقول العددية بتفضيل التصفية والمسوح بينما تستخدم المتجهات والحقول كثيفة القراءات النقطية تخطيطات مصممة لعمليات بحث أضيق.</p>
-<p>يبقي Loon فهارس المتجهات والفهارس المعكوسة منفصلة عن تنسيق الملفات بدلاً من تضمينها داخله. يوصف كل إصدار من مجموعة البيانات ببيان غير قابل للتغيير يسجل <code translate="no">ColumnGroups</code> الخاصة به، مما يسمح لمحرك الفهرسة نفسه بالعمل عبر Lance وParquet وIceberg وVortex.</p>
-<p>يجعل تصميم البيان تطور المخطط أقل إرباكًا أيضًا. يمكن أن يحدّث إضافة حقل أو إسقاطه البيانات الوصفية دون إعادة كتابة الأعمدة الحالية. وملء حقل جديد يكتب <code translate="no">ColumnGroup</code> جديدًا مع ترك <code translate="no">ColumnGroups</code> الحالية من دون تغيير.</p>
-<p><a href="https://github.com/vortex-data/vortex"><strong>Vortex</strong></a> هو التنسيق الافتراضي لهذا المسار. إنه تنسيق عمودي مفتوح ومتوافق مع Arrow، مع تخطيطات مرنة وترميزات متداخلة تطابق على نحو أفضل بيانات الذكاء الاصطناعي كثيفة الاستعلامات النقطية. في معيار داخلي واحد باستخدام 3 ملايين صف، ومتجهات ذات 128 بُعدًا، وS3، و256 قارئًا متزامنًا، انخفضت كمية الإدخال/الإخراج المقاسة لكل قراءة نقطية من نحو 9.4 ميغابايت لخط الأساس Parquet إلى 0.07 ميغابايت لـ Vortex مع Loon، أي أقل بنحو 135 مرة.</p>
-<p>لا يجعل Milvus 3.0 تخزين الكائنات يتصرف مثل الذاكرة المحلية. بل يقلل تضخيم القراءة الذي يجعل تخزين الكائنات غير عملي لعمليات البحث النقطية بنمط الخدمة. دفع المسندات إلى داخل التنسيق ومتغير Vortex محلي هما التاليان على خارطة الطريق.</p>
-<p><em>لمزيد من التفاصيل، راجع مدونتنا:</em> <a href="https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md"><em>لماذا بنينا Loon</em></a> <em>ومشروع</em> <a href="https://github.com/vortex-data/vortex"><em>Vortex</em></a><em>.</em></p>
-<h3 id="3-Snapshots-point-in-time-view-without-data-copy" class="common-anchor-header">3. اللقطات: عرض عند نقطة زمنية دون نسخ البيانات</h3><p>تحتاج المهام غير المتصلة إلى عرض متسق للبيانات حتى بينما تستمر مجموعات الإنتاج في تلقي الكتابات. لقطة Milvus هي عرض للقراءة فقط عند نقطة زمنية يسجل مراجع إلى ملفات البيانات والفهارس والبيانات الوصفية الحالية بدلاً من نسخ مجموعة البيانات كاملةً.</p>
-<p>يجعل ذلك اللقطات منخفضة التكلفة بما يكفي لإنشائها قبل العمليات الخطرة مثل تبديل نموذج، أو مهمة إعادة تضمين، أو ترحيل مخطط. يمكن لاستعادة لقطة أن تعيد استخدام ملفات البيانات والفهارس الحالية من خلال نسخ من جهة الخادم في تخزين الكائنات بدلاً من إعادة استيراد كل صف وإعادة بناء كل فهرس. هذه الميزة مفيدة خصوصًا لأعباء العمل سريعة الحركة مثل وكلاء الذكاء الاصطناعي، حيث تتغير البيانات باستمرار، وتريد نقاط استرداد متكررة ورخيصة بدلاً من نسخ احتياطية ثقيلة من حين لآخر.</p>
-<p>يمكن للعرض المجمد نفسه دعم التقييم، وإزالة التكرار، والتحقق من الملء اللاحق، والاختبار المعزول بينما تستمر المجموعة الحية في قبول الكتابات. تثبّت اللقطة الإدخال المنطقي، رغم أن أعباء العمل قد تظل تتشارك البنية التحتية مثل تخزين الكائنات وعرض النطاق الترددي للشبكة.</p>
-<p>لا تستبدل اللقطات النسخ الاحتياطية. تشير اللقطة إلى ملفات تملكها المجموعة الحية، وهي الأنسب للاسترداد المنطقي، والاستنساخ، والعروض المستقرة قصيرة العمر. ينشئ النسخ الاحتياطي نسخة مستقلة للاحتفاظ طويل الأمد والتعافي من الكوارث.</p>
-<p>لمزيد من المعلومات، راجع <a href="https://milvus.io/docs/snapshots.md">اللقطات</a>، و<a href="https://milvus.io/docs/manage-snapshots.md">إدارة اللقطات</a>، و<a href="https://milvus.io/docs/snapshot-use-cases.md">حالات استخدام اللقطات</a>.</p>
-<h3 id="4-Spark-connector-connect-Milvus-to-batch-workflows" class="common-anchor-header">4. موصل Spark: ربط Milvus بسير العمل الدُفعي</h3><p>لا يكون العرض المستقر مفيدًا إلا إذا تمكنت محركات الدُفعات من قراءته. يعرّض Milvus 3.0 Milvus كـ Spark DataSource V2، مما يسمح لمهام Spark وDatabricks وEMR بالقراءة من Milvus والكتابة إليه كجزء من خطوط دُفعية قياسية.</p>
-<p>هذه الميزة مهمة لأن سير عمل بيانات الذكاء الاصطناعي تكراري: إزالة التكرار تغذي إعادة التضمين، والعنقدة تغذي التقييم، والتقييم ينتج مجموعات تدريب أو خدمة منقحة. توفر اللقطة المستقرة لتلك المهام إدخالًا متسقًا، بينما تواصل المجموعة الحية الخدمة. ومع موصل Spark، يصبح مصبّ مهمة ما مصدر المهمة التالية، دون تصدير مجموعة كاملة خارج Milvus في كل مرة.</p>
-<p>يقدم Milvus 3.0 أيضًا عوامل دُفعية أصلية للمتجهات لمهام مثل إزالة التكرار، واكتشاف الشذوذ، والعنقدة، ما يبقي العمل كثيف الحوسبة خارج مسار الاستعلام عبر الإنترنت بينما يعمل مباشرةً على البيانات المتجهية.</p>
+<p>For governed environments, retrieval can run where the data is allowed to live. For large AI systems, a lake-resident dataset can support multiple retrieval deployments without a migration job between them.</p>
+<p>External collections are an additive capability. Native Milvus collections remain the primary path for write-heavy, low-latency serving, while External Collections are designed for datasets whose system of record remains outside Milvus.</p>
+<p>For more details, see <a href="https://milvus.io/docs/create-an-external-collection.md">Create an External Collection</a>.</p>
+<h3 id="2-Loon-Storage-v3-Efficient-Point-Reads-for-Lake-Native-Retrieval" class="common-anchor-header">2. Loon (Storage v3): Efficient Point Reads for Lake-Native Retrieval</h3><p>External Collections raise an obvious question: object storage is designed for scale and durability, but can it support the narrow point reads that follow an ANN search?</p>
+<p><strong>The challenge is read amplification.</strong> Vector search commonly runs in two stages: an ANN index returns candidate IDs, and the system fetches selected fields for those candidates. Formats optimized for analytical scans can turn a narrow logical lookup into a much larger physical read.</p>
+<p><strong>Milvus 3.0 addresses this problem with Loon, also known as Storage v3, a manifest-based columnar storage engine for S3-compatible object storage.</strong> Loon organizes fields into <code translate="no">ColumnGroups</code> with aligned row IDs, allowing scalar fields to favor filtering and scans while vectors and point-read-heavy fields use layouts designed for narrower lookups.</p>
+<p>Loon keeps vector and inverted indexes separate from the file format rather than embedding them within it. Each dataset version is described by an immutable manifest that records its <code translate="no">ColumnGroups</code>, allowing the same indexing engine to work across Lance, Parquet, Iceberg, and Vortex.</p>
+<p>The manifest design also makes schema evolution less disruptive. Adding or dropping a field can update metadata without rewriting existing columns. Filling a new field writes a new <code translate="no">ColumnGroup</code> while leaving existing <code translate="no">ColumnGroups</code> unchanged.</p>
+<p><a href="https://github.com/vortex-data/vortex"><strong>Vortex</strong></a> is the default format for this path. It is an open, Arrow-compatible columnar format with flexible layouts and nested encodings that better match point-query-heavy AI data. In one internal benchmark using 3 million rows, 128-dimensional vectors, S3, and 256 concurrent readers, measured I/O per point read fell from about 9.4 MB for the Parquet baseline to 0.07 MB for Vortex with Loon, roughly 135 times less.</p>
+<p>Milvus 3.0 does not make object storage behave like local memory. It reduces the read amplification that otherwise makes object storage impractical for serving-style point lookups. Predicate pushdown into the format and a local Vortex variant are next on the roadmap.</p>
+<p><em>For more details, see our blog:</em> <a href="https://milvus.io/blog/why-we-built-loon-a-storage-engine-for-ai-data-that-never-stops-changing.md"><em>Why We Built Loon</em></a> <em>and the</em> <a href="https://github.com/vortex-data/vortex"><em>Vortex project</em></a><em>.</em></p>
+<h3 id="3-Snapshots-point-in-time-view-without-data-copy" class="common-anchor-header">3. Snapshots: point-in-time view without data copy</h3><p>Offline jobs need a consistent view of data even while production collections continue to receive writes. A Milvus snapshot is a point-in-time, read-only view that records references to existing data, index, and metadata files instead of copying the full dataset.</p>
+<p>That makes snapshots inexpensive enough to create before risky operations such as a model swap, re-embedding job, or schema migration. Restoring a snapshot can reuse existing data and index files through server-side copy in object storage rather than reimporting every row and rebuilding every index. This feature is particularly useful for fast-moving workloads like AI agents, where data changes constantly, and you want frequent, cheap recovery points rather than occasional heavy backups.</p>
+<p>The same frozen view can support evaluation, deduplication, backfill validation, and isolated testing while the live collection continues to accept writes. The snapshot stabilizes the logical input, although the workloads may still share infrastructure such as object storage and network bandwidth.</p>
+<p>Snapshots do not replace backups. A snapshot references files owned by the live collection and is best suited to logical recovery, cloning, and short-lived stable views. A backup creates an independent copy for long-term retention and disaster recovery.</p>
+<p>For more information, see <a href="https://milvus.io/docs/snapshots.md">Snapshots</a>, <a href="https://milvus.io/docs/manage-snapshots.md">Manage Snapshots</a>, and <a href="https://milvus.io/docs/snapshot-use-cases.md">Snapshot Use Cases</a>.</p>
+<h3 id="4-Spark-connector-connect-Milvus-to-batch-workflows" class="common-anchor-header">4. Spark connector: connect Milvus to batch workflows</h3><p>A stable snapshot is only useful if batch engines can read it. Milvus 3.0 exposes Milvus as a Spark DataSource V2, allowing Spark, Databricks, and EMR jobs to read from and write to Milvus as part of standard batch pipelines.</p>
+<p>This feature matters because AI data workflows are iterative: deduplication feeds re-embedding, clustering feeds evaluation, and evaluation produces curated training or serving sets. A stable snapshot provides those jobs with consistent input, while the live collection keeps serving. With the Spark connector, the sink of one job becomes the source of the next, without exporting a full collection out of Milvus each time.</p>
+<p>Milvus 3.0 also introduces vector-native batch operators for tasks such as deduplication, anomaly detection, and clustering, keeping compute-heavy work outside the online query path while operating directly on vector data.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_3_cd37cad0c3.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<h3 id="5-Online-schema-changes-and-backfill" class="common-anchor-header">5. تغييرات المخطط عبر الإنترنت والملء اللاحق</h3><p>نادرًا ما يبقى المخطط ثابتًا في الإنتاج — تضيف الفرق بمرور الوقت نماذج تضمين جديدة، ومتجهات sparse، وتسميات، وحقول بيانات وصفية، وسياسات احتفاظ. يتيح Milvus 3.0 لها إضافة الأعمدة وملأها وإسقاطها بينما تستمر الخدمة، بدلاً من عمليات إعادة البناء المعطِّلة التي كان ذلك يتطلبها سابقًا.</p>
+<h3 id="5-Online-schema-changes-and-backfill" class="common-anchor-header">5. Online schema changes and backfill</h3><p>A schema rarely stays static in production — teams add new embedding models, sparse vectors, labels, metadata fields, and retention policies over time. Milvus 3.0 lets them add, fill, and drop columns while serving continues, instead of the disruptive rebuilds this used to require.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_4_51c9b4e2c1.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>لا تتطلب إضافة عمود أو إسقاطه إعادة كتابة البيانات الحالية. ينشئ <code translate="no">client.add_collection_field(...)</code> عمودًا جديدًا قابلاً لأن يكون فارغًا دون إخراج المجموعة من الخدمة، ويزيل <code translate="no">client.drop_collection_field(...)</code> حقلًا متقادمًا أو تجريبيًا أثناء التشغيل. لا يعيد أي منهما كتابة البيانات الحالية — فكل منهما تغيير في بيان المجموعة لا في ملفات البيانات، ولهذا لا توجد إعادة بناء.</p>
-<p>يدعم Milvus 3.0 مسارين للملء اللاحق:</p>
+<p>Adding or dropping a column does not require rewriting existing data. <code translate="no">client.add_collection_field(...)</code> lands a new nullable column without taking the collection offline, and <code translate="no">client.drop_collection_field(...)</code> removes a deprecated or experimental field at runtime. Neither one rewrites the existing data — each is a change to the collection’s manifest rather than to the data files, which is why there is no rebuild.</p>
+<p>Milvus 3.0 supports two backfill paths:</p>
 <ul>
-<li><strong>الملء اللاحق الداخلي</strong> (في 3.0) مخصص للقيم المشتقة من الحقول الحالية. يمكن لـ Milvus توليد متجه BM25 sparse من عمود نصي داخل النواة، مما يلغي الحاجة إلى مُرمِّز من جهة العميل عند بناء استرجاع هجين كثيف-زائد-sparse.</li>
-<li><strong>الملء اللاحق الخارجي</strong>(على خارطة الطريق) سيكون مخصصًا للقيم المحسوبة خارج Milvus: خذ لقطة، شغّل Spark على العرض المتسق، احسب عمودًا جديدًا، اكتب القيم مرة أخرى، ودع Milvus يحدّث الفهرس تدريجيًا. هذا هو المسار المقصود لمهام إعادة التضمين الكبيرة — على سبيل المثال، إضافة عمود تضمين جديد عبر مئات الملايين من الصفوف بينما تستمر الكتابات.</li>
+<li><strong>Inner backfill</strong> (in 3.0) is for values derived from existing fields. Milvus can generate a BM25 sparse vector from a text column within the kernel, eliminating the need for a client-side encoder when building dense-plus-sparse hybrid retrieval.</li>
+<li><strong>External backfill</strong>(on the roadmap) will be for values computed outside Milvus: take a snapshot, run Spark against the consistent view, compute a new column, write the values back, and let Milvus update the index incrementally. This is the intended path for large re-embedding jobs — for example, adding a new embedding column across hundreds of millions of rows while writes continue.</li>
 </ul>
-<p>مجتمعةً، تجعل تغييرات المخطط عبر الإنترنت والملء اللاحق تطوير خطوط الاسترجاع أسهل دون إعادة بناء مجموعة كاملة في كل مرة يتغير فيها نموذج البيانات.</p>
-<h2 id="A-More-Powerful-Engine-for-End-to-End-Retrieval" class="common-anchor-header">محرك أقوى للاسترجاع من البداية إلى النهاية<button data-href="#A-More-Powerful-Engine-for-End-to-End-Retrieval" class="anchor-icon" translate="no">
+<p>Together, online schema changes and backfill make it easier to evolve retrieval pipelines without rebuilding an entire collection every time the data model changes.</p>
+<h2 id="A-More-Powerful-Engine-for-End-to-End-Retrieval" class="common-anchor-header">A More Powerful Engine for End-to-End Retrieval<button data-href="#A-More-Powerful-Engine-for-End-to-End-Retrieval" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -162,12 +186,12 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>لطالما دعم Milvus أكثر من بحث ANN الكثيف، بما في ذلك الاسترجاع sparse القائم على BM25 والبحث الهجين. يوسّع Milvus 3.0 المحرك على محور مختلف: فهو يجلب مزيدًا من خط الاسترجاع متعدد المراحل إلى Milvus نفسه، مما يقلل الإفراط في الجلب، ومنطق التطبيق المكرر، والاعتماد على خدمات معالجة لاحقة منفصلة.</p>
-<h3 id="1-Server-side-ORDER-BY-sort-inside-the-engine-per-segment" class="common-anchor-header">1. ORDER BY من جهة الخادم: الفرز داخل المحرك، لكل مقطع</h3><p>كان الفرز سابقًا يتطلب من التطبيقات الإفراط في جلب المرشحين، ونقلهم إلى العميل، وفرزهم هناك. كان ذلك يستهلك عرض النطاق الترددي ويجعل النتيجة النهائية تعتمد على مكان حدوث الاقتطاع من جهة العميل.</p>
-<p><strong>يضيف Milvus 3.0 ميزة ORDER BY من جهة الخادم</strong>، التي تتيح لأعباء عمل الاستعلام فرز الصفوف المصفّاة حسب حقول عددية مثل التقييم، والسعر، والحداثة، والمخزون، أو الطابع الزمني.</p>
+    </button></h2><p>Milvus has long supported more than dense ANN search, including BM25-based sparse retrieval and hybrid search. Milvus 3.0 extends the engine along a different axis: it brings more of the multi-stage retrieval pipeline into Milvus itself, reducing over-fetching, duplicated application logic, and reliance on separate post-processing services.</p>
+<h3 id="1-Server-side-ORDER-BY-sort-inside-the-engine-per-segment" class="common-anchor-header">1. Server-side ORDER BY: sort inside the engine, per segment</h3><p>Sorting previously required applications to over-fetch candidates, move them to the client, and sort them there. That consumed bandwidth and made the final result dependent on where client-side truncation occurred.</p>
+<p><strong>Milvus 3.0 adds server-side ORDER BY</strong>, which lets query workloads sort filtered rows by scalar fields such as rating, price, freshness, inventory, or timestamp.</p>
 <ul>
-<li>على مسار الاستعلام، يفرز كل مقطع مجموعة نتائجه المصفّاة، وتدمج عقد الاستعلام تلك التدفقات، ويعيد الوكيل الشريحة المطلوبة.</li>
-<li>على مسار البحث، تفرز ORDER BY مجموعة مرشحي ANN داخل Milvus، مما يقلل الإفراط في الجلب والمعالجة اللاحقة المكررة من جهة العميل. وهي لا تغيّر حد الاستدعاء الذي يحدده مرشحو ANN.</li>
+<li>On the query path, each segment sorts its filtered result set, query nodes merge those streams, and the proxy returns the requested slice.</li>
+<li>On the search path, ORDER BY sorts the ANN candidate set within Milvus, reducing client-side over-fetching and duplicate post-processing. It does not change the recall boundary established by the ANN candidates.</li>
 </ul>
 <pre><code translate="no" class="language-sql">client.query(
     collection_name=<span class="hljs-string">&quot;products&quot;</span>,
@@ -177,9 +201,9 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
     order_by=[<span class="hljs-string">&quot;rating:desc&quot;</span>, <span class="hljs-string">&quot;price:asc&quot;</span>],
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>هذا مفيد خصوصًا لعمليات البحث التي تجمع بين الصلة والقيود التجارية أو الموجهة للمستخدم مثل التقييم، والسعر، والحداثة، والمخزون، أو الطابع الزمني.</p>
-<p>لمزيد من المعلومات، راجع <a href="https://milvus.io/docs/single-vector-search.md#Sort-Search-Results-by-Scalar-Fields--Milvus-30x">فرز نتائج البحث حسب الحقول العددية</a> و<a href="https://milvus.io/docs/get-and-scalar-query.md#Sort-Query-Results--Milvus-30x">فرز نتائج الاستعلام</a>.</p>
-<h3 id="2-Aggregation-and-faceted-search" class="common-anchor-header">2. التجميع والبحث متعدد الأوجه</h3><p>يضيف Milvus 3.0 تجميعًا من جهة الاستعلام بعمليات مثل العد، والمجموع، والمتوسط، والحد الأدنى، والحد الأقصى، مجمعة حسب حقل عددي واحد أو أكثر. يزيل هذا نمطًا شائعًا حيث تسحب الفرق الصفوف المصفّاة إلى كود العميل لمجرد العد أو التجميع أو حساب إحصاءات بسيطة.</p>
+<p>This is especially useful for searches that combine relevance with business or user-facing constraints such as rating, price, freshness, inventory, or timestamp.</p>
+<p>For more information, refer to <a href="https://milvus.io/docs/single-vector-search.md#Sort-Search-Results-by-Scalar-Fields--Milvus-30x">Sort Search Results by Scalar Fields</a> and <a href="https://milvus.io/docs/get-and-scalar-query.md#Sort-Query-Results--Milvus-30x">Sort Query Results</a>.</p>
+<h3 id="2-Aggregation-and-faceted-search" class="common-anchor-header">2. Aggregation and faceted search</h3><p>Milvus 3.0 adds query-side aggregation with operations such as count, sum, average, minimum, and maximum, grouped by one or more scalar fields. This removes a common pattern where teams pull filtered rows into client code just to count, group, or compute simple statistics.</p>
 <pre><code translate="no" class="language-sql">client.query(
     collection_name=<span class="hljs-string">&quot;orders&quot;</span>,
     <span class="hljs-built_in">filter</span>=<span class="hljs-string">&quot;in_stock == true&quot;</span>,
@@ -187,66 +211,66 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
     output_fields=[<span class="hljs-string">&quot;category&quot;</span>, <span class="hljs-string">&quot;count(*)&quot;</span>, <span class="hljs-string">&quot;avg(price)&quot;</span>, <span class="hljs-string">&quot;max(rating)&quot;</span>],
 )
 <button class="copy-code-btn"></button></code></pre>
-<p>يضيف Milvus 3.0 أيضًا <strong>تجميع البحث</strong> للبحث متعدد الأوجه. بعد بحث ANN، يجمع Milvus النتائج المسترجعة حسب حقل ويعيد أعداد السلال، والإحصاءات التجميعية، وأفضل N من النتائج النموذجية لكل سلة — وهو النمط الكامن وراء التجميع حسب العلامة التجارية، أو نطاق السعر، أو اللون، أو المستأجر، أو نوع المستند. تنبيه واحد: يعمل تجميع البحث على مجموعة النتائج المسترجعة بواسطة ANN، وليس على المجموعة بأكملها، لذلك تكون أعداد الأوجه تقريبية. عندما تحتاج إلى أعداد دقيقة، استخدم التجميع من جهة الاستعلام.</p>
-<p>لمزيد من المعلومات، راجع <a href="https://milvus.io/docs/get-and-scalar-query.md#Aggregate-Query-Results--Milvus-30x">تجميع نتائج الاستعلام</a>.</p>
-<h3 id="3-StructArray-for-Nested-Vectors-and-Late-Interaction-Model" class="common-anchor-header">3. StructArray للمتجهات المتداخلة ونموذج التفاعل المتأخر</h3><p>تمثل العديد من الكيانات طبيعيًا بواسطة متجهات متعددة. المستند الطويل هو سلسلة من المقاطع؛ والفيديو تسلسل من الإطارات تفضّل إبقاءه معًا في صف واحد بدلًا من نشره عبر العديد؛ والمنتج له عدة صور أو زوايا. تدفع نماذج التفاعل المتأخر هذا إلى أبعد من ذلك — يصدر ColBERT متجهًا واحدًا لكل رمز، وColPali متجهًا واحدًا لكل رقعة بصرية. في كل حالة، الوحدة التي تريد تخزينها والبحث عنها فعليًا هي الكيان بأكمله، لا كل جزء بمفرده.</p>
+<p>Milvus 3.0 also adds <strong>search aggregation</strong> for faceted search. After an ANN search, Milvus groups the retrieved hits by a field and returns bucket counts, aggregate statistics, and top-N sample hits per bucket — the pattern behind grouping by brand, price range, color, tenant, or document type. One caveat: search aggregation operates over the ANN-retrieved result set, not the whole collection, so facet counts are approximate. When you need exact counts, use query-side aggregation.</p>
+<p>For more information, refer to <a href="https://milvus.io/docs/get-and-scalar-query.md#Aggregate-Query-Results--Milvus-30x">Aggregate Query Results</a>.</p>
+<h3 id="3-StructArray-for-Nested-Vectors-and-Late-Interaction-Model" class="common-anchor-header">3. StructArray for Nested Vectors and Late-Interaction Model</h3><p>Many entities are naturally represented by multiple vectors. A long document is a series of chunks; a video is a sequence of frames you would rather keep together in one row than scatter across many; a product has several images or angles. Late-interaction models push this even further — ColBERT emits one vector per token, ColPali one per visual patch. In every case, the unit you actually want to store and search for is the whole entity, not each fragment on its own.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_5_e15816e38b.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>تسمح <strong>StructArray</strong> لصف Milvus بأن يحتوي على مصفوفة متغيرة الطول من عناصر منظمة، بما في ذلك متجهات متعددة، مع الحفاظ على معرف كيان واحد ومجموعة بيانات وصفية واحدة. يتجنب ذلك تقسيم مستند إلى صفوف متعددة وتكرار التسميات أو الأذونات أو الحقول الأخرى عبر الأجزاء.</p>
-<p>يدعم Milvus دقتين للبحث.</p>
+<p><strong>StructArray</strong> allows a Milvus row to contain a variable-length array of structured elements, including multiple vectors, while preserving a single entity ID and a single set of metadata. That avoids splitting a document into multiple rows and duplicating labels, permissions, or other fields across fragments.</p>
+<p>Milvus supports two search granularities.</p>
 <ul>
-<li><strong>البحث على مستوى العنصر</strong> يطابق متجه استعلام واحدًا مع كل عنصر في القائمة ويعيد العنصر المطابق المحدد مع إزاحته. هذا مفيد عندما تريد معرفة أي مقطع أو رمز أو رقعة أو صورة تطابق. يمكن أن يظهر الصف أكثر من مرة إذا طابقت عدة عناصر.</li>
-<li><strong>البحث على مستوى الكيان</strong> يقارن قائمة المتجهات الكاملة للاستعلام مع قائمة متجهات الصف باستخدام <code translate="no">MAX_SIM</code>، مع مقياس <code translate="no">MAX_SIM_COSINE</code>. يأخذ كل رمز استعلام أفضل تطابق له في المستند، وتُجمع تلك أفضل الدرجات. يمنح هذا Milvus دعمًا أصليًا لأنماط الاسترجاع ذات التفاعل المتأخر مثل ColBERT وColPali مع الحفاظ على صف واحد لكل مستند.</li>
+<li><strong>Element-level search</strong> matches one query vector against each element in the list and returns the specific matching element with its offset. This is useful when you want to know which chunk, token, patch, or image matched. A row can appear more than once if multiple elements match.</li>
+<li><strong>Entity-level search</strong> compares a query’s full vector list against the row’s vector list using <code translate="no">MAX_SIM</code>, with the <code translate="no">MAX_SIM_COSINE</code> metric. Each query token takes its best match in the document, and those best scores are summed. This gives Milvus native support for late-interaction retrieval patterns such as ColBERT and ColPali while keeping one row per document.</li>
 </ul>
-<p>قد تكون فهرسة كل متجه رمز مكلفة؛ لذلك يضيف Milvus 3.0 عدة مسارات تسريع، بما في ذلك TokenANN وMuvera وLemur، التي توازن بين حجم الفهرس، وتكلفة التدريب، والاستدعاء.</p>
+<p>Indexing every token vector can be expensive; so Milvus 3.0 adds multiple acceleration paths, including TokenANN, Muvera, and Lemur, which trade index size, training cost, and recall.</p>
 <table>
 <thead>
-<tr><th>الاستراتيجية</th><th>تمثيل المرحلة الأولى</th><th>ملف التكلفة</th><th>الأفضل لـ</th></tr>
+<tr><th>Strategy</th><th>Stage-one representation</th><th>Cost profile</th><th>Best for</th></tr>
 </thead>
 <tbody>
-<tr><td>TokenANN</td><td>تتم فهرسة كل متجه رمز.</td><td>الأعلى، دقيق</td><td>النماذج عالية التمييز والمستندات القصيرة</td></tr>
-<tr><td>Muvera</td><td>متجه واحد لكل مستند باستخدام FDE بالإسقاط العشوائي.</td><td>متوسط، بلا تدريب</td><td>المستندات الطويلة</td></tr>
-<tr><td>Lemur</td><td>متجه واحد لكل مستند باستخدام ضغط MLP المتعلم</td><td>الأدنى، يتطلب تدريبًا</td><td>النماذج منخفضة التمييز ومتجهات الصور أو الرقع</td></tr>
+<tr><td>TokenANN</td><td>Every token vector is indexed.</td><td>Highest, exact</td><td>High-discrimination models and short documents</td></tr>
+<tr><td>Muvera</td><td>One vector per document using random-projection FDE.</td><td>Medium, no training</td><td>Long documents</td></tr>
+<tr><td>Lemur</td><td>One vector per document using learned MLP compression</td><td>Lowest, requires training</td><td>Low-discrimination models and visual or patch vectors</td></tr>
 </tbody>
 </table>
-<p>في معاييرنا، يطابق Lemur استدعاء TokenANN أو يتفوق عليه في معظم مجموعات البيانات بينما يختزل كل مستند إلى متجه واحد؛ والاستثناء هو المجموعات ذات تباين كبير في الأطوال، حيث يكون TokenANN أو استراتيجية أخرى أكثر أمانًا.</p>
+<p>In our benchmarks, Lemur matches or beats TokenANN recall on most datasets while collapsing each document to a single vector; the exception is corpora with high length variance, where TokenANN or another strategy is safer.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_7_8ff1ab957e.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>بالنسبة للمجموعات الأكبر من الذاكرة، يدعم Milvus أيضًا فهرس <code translate="no">DISKANN</code> الذي يبقي قوائم التضمين على القرص لتقليل ضغط RAM.</p>
-<p>وصل البحث على مستوى العنصر بالفعل في Milvus 2.6. أما التصفية لـ Muvera وLemur وStructList فهي جديدة في 3.0.</p>
-<h3 id="4-BM25-Index-Compression-and-SINDI" class="common-anchor-header">4. ضغط فهرس BM25 وSINDI</h3><p>دعم Milvus البحث المتجهي sparse في إصدارات سابقة. يقلل Milvus 3.0 بصمة الفهرس sparse من خلال قوائم نشر مضغوطة بالكتل (خوارزميات مرتبطة بـ VByte إضافة إلى فك ترميز SIMD) والتكميم (fp16 للجداءات الداخلية، وu16 لـ BM25).</p>
-<p>عبر مجموعة واحدة من معايير BM25 الداخلية، كان التنفيذ الجديد أصغر بنحو 3 مرات من فهرس Milvus 2.6 sparse عند استدعاء مماثل. يقلل الفهرس الأصغر ضغط الذاكرة وعرض النطاق الترددي ويمكن أن يحسّن السرعة في أعباء العمل المحدودة بحركة البيانات.</p>
+<p>For corpora larger than memory, Milvus also supports a <code translate="no">DISKANN</code> index that keeps embedding lists on disk to reduce RAM pressure.</p>
+<p>Element-level search has already arrived in Milvus 2.6. Filtering for Muvera, Lemur, and StructList is new in 3.0.</p>
+<h3 id="4-BM25-Index-Compression-and-SINDI" class="common-anchor-header">4. BM25 Index Compression and SINDI</h3><p>Milvus has supported sparse vector search in earlier releases. Milvus 3.0 reduces the sparse-index footprint through block-compressed postings (VByte-related algorithms plus SIMD decoding) and quantization (fp16 for inner products, u16 for BM25).</p>
+<p>Across one set of internal BM25 benchmarks, the new implementation was roughly 3 times smaller than the Milvus 2.6 sparse index at comparable recall. A smaller index reduces memory and bandwidth pressure and can improve speed in workloads limited by data movement.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_8_2e62fc9573.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>يقدم Milvus 3.0 أيضًا <a href="https://arxiv.org/abs/2509.08395">SINDI</a>، وهي خوارزمية استرجاع sparse جديدة محسّنة للتضمينات sparse المتعلمة مثل SPLADE. ولأن هذه التضمينات تنتج قوائم نشر أكثف من BM25، فقد تقضي خوارزميات البحث كثيفة التقليم وقتًا كبيرًا من CPU في تحديد ما يجب تخطيه. بدلًا من ذلك، تنظم SINDI قوائم النشر في نوافذ مدمجة وتستخدم تجميع درجات ملائمًا لـ SIMD لمعالجتها بكفاءة، مع الحفاظ على دقة الاسترجاع عبر تقليم بلا فقد.</p>
+<p>Milvus 3.0 also introduces <a href="https://arxiv.org/abs/2509.08395">SINDI</a>, a new sparse retrieval algorithm optimized for learned sparse embeddings such as SPLADE. Because these embeddings produce denser posting lists than BM25, pruning-heavy search algorithms can spend substantial CPU time deciding what to skip. SINDI instead organizes postings into compact windows and uses SIMD-friendly score accumulation to process them efficiently, while preserving retrieval accuracy through lossless pruning.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_9_c7de29a223.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>وسّعنا أيضًا SINDI إلى ما بعد تصميمه الأصلي ليشمل دعم BM25 الأصلي، مما يمكّن Milvus من استخدام مسار الاسترجاع sparse المحسّن نفسه لكل من التضمينات sparse المتعلمة والبحث النصي الكامل التقليدي.</p>
+<p>We also extended SINDI beyond its original design to include native BM25 support, enabling Milvus to use the same optimized sparse retrieval path for both learned sparse embeddings and traditional full-text search.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_10_e94a903bcd.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>في معاييرنا عبر 4 مجموعات بيانات متجهية sparse من SPLADE، تصل SINDI إلى ما يصل إلى نحو 10 أضعاف QPS لـ MaxScore على المتجهات المتعلمة-sparse، مع أسوأ حالة تقارب 5 أضعاف.</p>
-<p>SINDI هو الخيار الافتراضي لبحث الجداء الداخلي sparse في Milvus 3.0.</p>
-<h2 id="Other-Enhancements" class="common-anchor-header">تحسينات أخرى<button data-href="#Other-Enhancements" class="anchor-icon" translate="no">
+<p>In our benchmarks across 4 SPLADE sparse vector datasets, SINDI reaches up to about 10x the QPS of MaxScore on learned-sparse vectors, with a worst-case of around 5x.</p>
+<p>SINDI is the default for sparse inner-product search in Milvus 3.0.</p>
+<h2 id="Other-Enhancements" class="common-anchor-header">Other Enhancements<button data-href="#Other-Enhancements" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -262,17 +286,17 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
         ></path>
       </svg>
     </button></h2><ul>
-<li><strong>TEXT LOB:</strong> يخزن النص المصدري الطويل بجانب المتجهات. يبقى النص الذي يقل عن 64 كيلوبايت مضمّنًا؛ وتستخدم القيم الأكبر مرجع Vortex LOB.</li>
-<li><strong>دعم موسّع للفهرس الكثيف:</strong> يضيف مزيدًا من خيارات الفهارس ضمن عائلة Faiss، بما في ذلك SVS وPanorama وPQ وIVFPQ وScaNN، لمتطلبات مختلفة من حيث النطاق والذاكرة والاستدعاء.</li>
-<li><strong>MinHash والبحث عن شبه التكرارات:</strong> يولد تواقيع MinHash من جهة الخادم ويسترجع مرشحي شبه التكرارات باستخدام MINHASH_LSH.</li>
-<li><strong>المتجهات القابلة لأن تكون فارغة وأنواع جديدة:</strong> يسمح لحقول المتجهات بأن تكون NULL ويضيف TIMESTAMPTZ للتصفية الواعية بالوقت وسياسات الاحتفاظ.</li>
-<li><strong>قواميس نص كامل مخصصة:</strong> يسجل القواميس والمرادفات وموارد كلمات التوقف على العنقود للتجزئة متعددة اللغات والخاصة بالمجال.</li>
-<li><strong>Woodpecker مستقل:</strong> يشغّل سجل الكتابة المسبقة لـ Milvus كخدمة قابلة للتوسع والمراقبة بشكل مستقل.</li>
-<li><strong>TTL للكيان</strong> <strong>****:</strong> تنتهي صلاحية السجلات الفردية من خلال حقل TIMESTAMPTZ، مع تصفية MVCC تتبعها عملية جمع القمامة أثناء الضغط.</li>
-<li><strong>ForceMerge:</strong> يضغط المقاطع الصغيرة إلى حجم مستهدف ويعيد بناء الفهارس لتقليل تضخيم القراءة قبل خدمة مستدامة كثيفة القراءة.</li>
-<li>والمزيد</li>
+<li><strong>TEXT LOB:</strong> Stores long source text beside vectors. Text under 64 KB remains inline; larger values use a Vortex LOB reference.</li>
+<li><strong>Expanded dense index support:</strong> Adds more index choices within the Faiss family, including SVS, Panorama, PQ, IVFPQ, and ScaNN, for different scale, memory, and recall requirements.</li>
+<li><strong>MinHash and near-duplicate search:</strong> Generates MinHash signatures on the server side and retrieves near-duplicate candidates using MINHASH_LSH.</li>
+<li><strong>Nullable vectors and new types:</strong> Allows vector fields to be NULL and adds TIMESTAMPTZ for time-aware filtering and retention policies.</li>
+<li><strong>Custom full-text dictionaries:</strong> Registers dictionaries, synonyms, and stop-word resources on the cluster for multilingual and domain-specific tokenization.</li>
+<li><strong>Standalone Woodpecker:</strong> Runs the Milvus write-ahead log as an independently scalable and observable service.</li>
+<li><strong>Entity</strong> <strong>TTL****:</strong> Expires individual records through a TIMESTAMPTZ field, with MVCC filtering followed by garbage collection during compaction.</li>
+<li><strong>ForceMerge:</strong> Compacts small segments to a target size and rebuilds indexes to reduce read amplification before sustained read-heavy service.</li>
+<li>And more</li>
 </ul>
-<h2 id="Get-started-with-Milvus-30" class="common-anchor-header">ابدأ استخدام Milvus 3.0<button data-href="#Get-started-with-Milvus-30" class="anchor-icon" translate="no">
+<h2 id="Get-started-with-Milvus-30" class="common-anchor-header">Get started with Milvus 3.0<button data-href="#Get-started-with-Milvus-30" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -287,10 +311,10 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يتوفر Milvus 3.0 اليوم بموجب ترخيص Apache 2.0 ولا يزال مشروعًا ضمن LF AI &amp; Data. للبدء:</p>
+    </button></h2><p>Milvus 3.0 is available today under the Apache 2.0 license and remains an LF AI &amp; Data project. To get started:</p>
 <ul>
-<li>اقرأ <a href="https://milvus.io/docs/release_notes.md">ملاحظات الإصدار</a> و<a href="https://milvus.io/docs/quickstart.md">دليل البدء السريع</a>، واحصل على المصدر من <a href="https://github.com/milvus-io/milvus">github.com/milvus-io/milvus</a>.</li>
-<li>انضم إلى <a href="https://discord.com/invite/8uyFbECzPX">مجتمع Milvus على Discord</a> أو احجز جلسة <a href="https://milvus.io/office-hours">ساعات مكتبية لـ Milvus</a> لمناقشة حالة استخدامك مع المشرفين.</li>
+<li>Read the <a href="https://milvus.io/docs/release_notes.md">release notes</a> and the <a href="https://milvus.io/docs/quickstart.md">quickstart</a>, and get the source at <a href="https://github.com/milvus-io/milvus">github.com/milvus-io/milvus</a>.</li>
+<li>Join the <a href="https://discord.com/invite/8uyFbECzPX">Milvus Discord community</a> or book a <a href="https://milvus.io/office-hours">Milvus Office Hours</a> session to talk through your use case with the maintainers.</li>
 </ul>
 <p>
   <span class="img-wrapper">
@@ -298,7 +322,7 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
     <span></span>
   </span>
 </p>
-<h2 id="Milvus-30-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Milvus 3.0 وZilliz Vector Lakebase<button data-href="#Milvus-30-and-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
+<h2 id="Milvus-30-and-Zilliz-Vector-Lakebase" class="common-anchor-header">Milvus 3.0 and Zilliz Vector Lakebase<button data-href="#Milvus-30-and-Zilliz-Vector-Lakebase" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -313,16 +337,16 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>يرسي Milvus 3.0 الأساس مفتوح المصدر لاسترجاع الذكاء الاصطناعي في الإنتاج ومعمارية <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Vector Lakebase</a> الناشئة، التي تجمع بين التخزين الأصيل لبحيرات البيانات والاسترجاع المتجهي عالي الأداء على مصدر حقيقة واحد، كلٌ بالتكلفة المناسبة.</p>
-<p><a href="https://zilliz.com/">Zilliz Cloud</a> هو Vector Lakebase مُدار بالكامل بناه الفريق الواقف وراء Milvus. يشترك في المعمارية الموزعة والأصيلة لبحيرات البيانات نفسها مثل Milvus، وهو متوافق بالكامل مع واجهة Milvus API. مدعومًا بمحرك الفهرسة المملوك Cardinal، يوفر Zilliz Cloud أداءً سعريًا أفضل بما يصل إلى 10× من أساليب الفهرسة مفتوحة المصدر القياسية، مع إزالة التعقيد التشغيلي لإدارة البنية التحتية. تشمل قدرات المؤسسات الحوسبة القابلة للتوسع إلى الصفر، والتعافي من الكوارث عبر المناطق، ونشر BYOC، وأمانًا وامتثالًا بمستوى مؤسسي (SOC 2 وHIPAA وISO 27001 وGDPR)، واتفاقية مستوى خدمة تصل إلى 99.99%.</p>
+    </button></h2><p>Milvus 3.0 lays the open-source foundation for production AI retrieval and the emerging <a href="https://zilliz.com/blog/from-vector-database-to-vector-lakebase">Vector Lakebase</a> architecture, which combines lake-native storage with high-performance vector retrieval on a single source of truth, each at the right cost.</p>
+<p><a href="https://zilliz.com/">Zilliz Cloud</a> is a fully managed Vector Lakebase built by the team behind Milvus. It shares the same distributed, lake-native architecture as Milvus and is fully compatible with the Milvus API. Powered by its proprietary Cardinal indexing engine, Zilliz Cloud delivers up to 10× better price-performance than standard open-source indexing approaches while eliminating the operational complexity of managing infrastructure. Enterprise capabilities include scale-to-zero compute, cross-region disaster recovery, BYOC deployment, enterprise-grade security and compliance (SOC 2, HIPAA, ISO 27001, and GDPR), and up to a 99.99% SLA.</p>
 <p>
   <span class="img-wrapper">
     <img translate="no" src="https://assets.zilliz.com/announcing_milvus_30_lake_native_vector_search_and_a_more_powerful_retrieval_engine_md_12_08d1c21d25.png" alt="" class="doc-image" id="" />
     <span></span>
   </span>
 </p>
-<p>يمكن للمطورين نشر Milvus كقاعدة بيانات متجهية مفتوحة المصدر أو استخدام <a href="https://zilliz.com/">Zilliz Cloud</a> كمنصة مُدارة عبر أعباء عمل متعددة طوال دورة حياة بيانات الذكاء الاصطناعي.</p>
-<h2 id="What-comes-next" class="common-anchor-header">ما التالي<button data-href="#What-comes-next" class="anchor-icon" translate="no">
+<p>Developers can deploy Milvus as an open-source vector database or use <a href="https://zilliz.com/">Zilliz Cloud</a> for a managed platform across multiple workloads throughout the AI data lifecycle.</p>
+<h2 id="What-comes-next" class="common-anchor-header">What comes next<button data-href="#What-comes-next" class="anchor-icon" translate="no">
       <svg translate="no"
         aria-hidden="true"
         focusable="false"
@@ -337,5 +361,5 @@ client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class=
           d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"
         ></path>
       </svg>
-    </button></h2><p>تبني خارطة طريق Milvus على معمارية 3.0 من خلال دفع المسندات للمجموعات الخارجية، والملء اللاحق الخارجي، وعوامل Spark إضافية، ودعم المزيد من تنسيقات الجداول، بما في ذلك Delta Lake وApache Paimon.</p>
-<p>الاتجاه الأكبر واضح: تحتاج أنظمة بيانات الذكاء الاصطناعي إلى حلقة أكثر إحكامًا بين الاسترجاع عبر الإنترنت وتحسين البيانات دون اتصال. يجب ألا تُنسخ البيانات المتجهية إلى أنظمة منفصلة في كل مرة تريد فيها الفرق البحث عنها أو تحليلها أو تحسينها أو خدمتها.</p>
+    </button></h2><p>The Milvus roadmap builds on the 3.0 architecture with predicate pushdown for External Collections, external backfill, additional Spark operators, and support for more table formats, including Delta Lake and Apache Paimon.</p>
+<p>The larger direction is clear: AI data systems need a tighter loop between online retrieval and offline data improvement. Vector data should not have to be copied into separate systems every time teams want to search, analyze, improve, or serve it.</p>

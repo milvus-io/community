@@ -1,7 +1,7 @@
 ---
 id: >-
   announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md
-title: Milvus 3.0発表：レイクネイティブなベクトル検索と、より強力な検索エンジン
+title: Milvus 3.0 の発表：レイクネイティブなベクトル検索と、より強力な検索エンジン
 author: Fendy Feng and Li Liu
 date: 2026-7-27
 cover: assets.zilliz.com/cover_of_milvus_3_0_6fab4ba929.jpg
@@ -15,8 +15,8 @@ meta_keywords: >-
 meta_title: |
   Milvus 3.0: Lake-Native Vector Search & Retrieval Engine
 desc: >-
-  Milvus 3.0 のレイクネイティブなベクトル検索、ゼロコピー外部コレクション、より高速なスパース検索、スナップショット、Spark
-  統合、高度なランキング機能をご覧ください。
+  Milvus 3.0 のレイクネイティブなベクトル検索、ゼロコピーの外部コレクション、より高速なスパース検索、スナップショット、Spark
+  統合、高度なランキング機能をご確認ください。
 origin: >-
   https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md
 ---
@@ -83,29 +83,53 @@ origin: >-
   </span>
 </p>
 <p><strong>External Collections are read-only and zero-copy</strong>, which makes them useful when governance, ownership boundaries, or operating cost require the source dataset to remain in the lake.</p>
-<p>When the external dataset changes, Milvus reads its storage manifest and indexes newly added fragments instead of rebuilding the entire collection. A collection-level load mode also lets teams choose how much data to keep local:</p>
-<table>
-<thead>
-<tr><th><strong>Load mode</strong></th><th><strong>Behavior</strong></th><th><strong>Best for</strong></th></tr>
-</thead>
-<tbody>
-<tr><td>Take</td><td>Read from object storage on each query</td><td>Lowest storage cost; less latency-sensitive workloads</td></tr>
-<tr><td>LazyLoad</td><td>Cache data on first access</td><td>Mixed workloads where hot data emerges over time</td></tr>
-<tr><td>Load</td><td>Keep data resident</td><td>Lowest-latency serving</td></tr>
-</tbody>
-</table>
-<pre><code translate="no" class="language-python"><span class="hljs-comment"># register a lake table as a zero-copy Collection</span>
-client.create_collection(
-  name=<span class="hljs-string">&quot;docs&quot;</span>,
-  external_source={<span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;iceberg&quot;</span>,  <span class="hljs-comment"># iceberg|lance|parquet|vortex</span>
-                   <span class="hljs-string">&quot;uri&quot;</span>: <span class="hljs-string">&quot;s3://lake/docs&quot;</span>},
-  schema=[
-    Field(<span class="hljs-string">&quot;id&quot;</span>,  INT64, primary=<span class="hljs-literal">True</span>, external_field=<span class="hljs-string">&quot;doc_id&quot;</span>),
-    Field(<span class="hljs-string">&quot;emb&quot;</span>, FLOAT_VECTOR, dim=<span class="hljs-number">1024</span>, external_field=<span class="hljs-string">&quot;embedding&quot;</span>),
-    Field(<span class="hljs-string">&quot;title&quot;</span>, VARCHAR, external_field=<span class="hljs-string">&quot;title&quot;</span>)])
+<p>When the external dataset changes, Milvus reads its storage manifest and indexes newly added fragments instead of rebuilding the entire collection.</p>
+<pre><code translate="no" class="language-python"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> os
+<span class="hljs-keyword">import</span> time
 
-client.create_index(<span class="hljs-string">&quot;docs&quot;</span>, <span class="hljs-string">&quot;emb&quot;</span>, {<span class="hljs-string">&quot;index_type&quot;</span>: <span class="hljs-string">&quot;HNSW&quot;</span>})  <span class="hljs-comment"># in place</span>
-client.load(<span class="hljs-string">&quot;docs&quot;</span>, mode=<span class="hljs-string">&quot;lazy&quot;</span>)  <span class="hljs-comment"># Take | LazyLoad | Load</span>
+<span class="hljs-keyword">from</span> pymilvus <span class="hljs-keyword">import</span> DataType, MilvusClient
+
+client = MilvusClient(uri=<span class="hljs-string">&quot;&quot;</span>)
+
+<span class="hljs-comment"># Register an Iceberg table as a zero-copy collection.</span>
+schema = client.create_schema(
+    external_source=<span class="hljs-string">&quot;s3://lake/docs/metadata/v1.metadata.json&quot;</span>,
+    external_spec=json.dumps(
+        {
+            <span class="hljs-string">&quot;format&quot;</span>: <span class="hljs-string">&quot;iceberg-table&quot;</span>,
+            <span class="hljs-string">&quot;snapshot_id&quot;</span>: <span class="hljs-number">123456789</span>,
+            <span class="hljs-string">&quot;extfs&quot;</span>: {
+                <span class="hljs-string">&quot;cloud_provider&quot;</span>: <span class="hljs-string">&quot;aws&quot;</span>,
+                <span class="hljs-string">&quot;region&quot;</span>: <span class="hljs-string">&quot;us-east-1&quot;</span>,
+                <span class="hljs-string">&quot;access_key_id&quot;</span>: os.environ[<span class="hljs-string">&quot;AWS_ACCESS_KEY_ID&quot;</span>],
+                <span class="hljs-string">&quot;access_key_value&quot;</span>: os.environ[<span class="hljs-string">&quot;AWS_SECRET_ACCESS_KEY&quot;</span>],
+            },
+        }
+    ),
+)
+
+schema.add_field(field_name=<span class="hljs-string">&quot;id&quot;</span>, datatype=DataType.INT64, external_field=<span class="hljs-string">&quot;doc_id&quot;</span>)
+schema.add_field(field_name=<span class="hljs-string">&quot;emb&quot;</span>, datatype=DataType.FLOAT_VECTOR, dim=<span class="hljs-number">1024</span>, external_field=<span class="hljs-string">&quot;embedding&quot;</span>)
+schema.add_field(field_name=<span class="hljs-string">&quot;title&quot;</span>, datatype=DataType.VARCHAR, max_length=<span class="hljs-number">1024</span>, external_field=<span class="hljs-string">&quot;title&quot;</span>)
+
+client.create_collection(collection_name=<span class="hljs-string">&quot;docs&quot;</span>, schema=schema)
+
+<span class="hljs-comment"># Import the external table snapshot.</span>
+job_id = client.refresh_external_collection(collection_name=<span class="hljs-string">&quot;docs&quot;</span>)
+<span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:
+    progress = client.get_refresh_external_collection_progress(job_id=job_id)
+    <span class="hljs-keyword">if</span> progress.state == <span class="hljs-string">&quot;RefreshCompleted&quot;</span>:
+        <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">if</span> progress.state == <span class="hljs-string">&quot;RefreshFailed&quot;</span>:
+        <span class="hljs-keyword">raise</span> RuntimeError(progress.reason)
+    time.sleep(<span class="hljs-number">1</span>)
+
+index_params = client.prepare_index_params()
+index_params.add_index(field_name=<span class="hljs-string">&quot;emb&quot;</span>, index_type=<span class="hljs-string">&quot;HNSW&quot;</span>, metric_type=<span class="hljs-string">&quot;COSINE&quot;</span>)
+client.create_index(collection_name=<span class="hljs-string">&quot;docs&quot;</span>, index_params=index_params)
+
+client.load_collection(collection_name=<span class="hljs-string">&quot;docs&quot;</span>)
 <button class="copy-code-btn"></button></code></pre>
 <p>For governed environments, retrieval can run where the data is allowed to live. For large AI systems, a lake-resident dataset can support multiple retrieval deployments without a migration job between them.</p>
 <p>External collections are an additive capability. Native Milvus collections remain the primary path for write-heavy, low-latency serving, while External Collections are designed for datasets whose system of record remains outside Milvus.</p>
