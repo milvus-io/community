@@ -39,7 +39,7 @@ Milvus 3.0 adds the `=~` and `!~` operators for this type of filter. Supporting 
 
 With the latest release, Milvus 3.0 moves regex from application-side post-processing into the database query path, where it can be combined with vector search, full-text search, scalar filters, and indexed execution. This article discusses those design choices, from operator semantics and RE2 validation to raw execution, NGRAM candidate generation, and benchmark results.
 
-# Where regex fits in Milvus filtering
+## Where regex fits in Milvus filtering
 
 Before regex support, Milvus could already express simple string patterns with `LIKE`:
 
@@ -76,7 +76,7 @@ The clearest operator is usually the best one to use:
 
 A pattern such as `^ERROR` or `timeout$` is a valid regex, and the parser may rewrite it to a cheaper execution path. Even so, choosing the operator that states the intent most directly makes filters easier to read and maintain.
 
-# User-facing semantics: `=~`, `!~`, anchors, and raw strings
+## User-facing semantics: `=~`, `!~`, anchors, and raw strings
 
 Milvus 3.0 uses `=~` for a positive regex match and `!~` for a negative match:
 
@@ -92,7 +92,7 @@ Regex can target several kinds of string values. For arrays and StructArray fiel
 -   One element of an `ARRAY<VARCHAR>`: `tags[0] =~ r"release-v[0-9]+"`
 -   A `VARCHAR` subfield inside a StructArray expression: `MATCH_ANY(events, $[name] =~ r"error.*timeout")`
 
-# Raw strings keep escaping manageable
+## Raw strings keep escaping manageable
 
 Regex patterns frequently contain backslashes. Milvus 3.0 supports raw string literals in filter expressions. For example:
 
@@ -115,7 +115,7 @@ client.query(
 
 Passing the pattern as a template parameter is safer than concatenating an expression string and lets the same query template be reused.
 
-# Why Milvus uses RE2: database regex must have predictable cost
+## Why Milvus uses RE2: database regex must have predictable cost
 
 Many regex engines use backtracking. A carefully constructed pattern can force their execution time to grow exponentially with the input length, a failure mode commonly called catastrophic backtracking or regular expression denial of service (ReDoS).
 
@@ -129,13 +129,13 @@ Milvus uses RE2 because it guarantees matching time that is linear in the input 
 
 **Milvus favors predictable execution over the largest possible regex syntax. Before a filter reaches the scan path, the expression parser compiles and validates its pattern. An invalid regex returns an error before Milvus begins scanning the data.**
 
-# From syntax to execution: a layered path
+## From syntax to execution: a layered path
 
 The simplest implementation would compile a pattern and call RE2 once for every row. That would produce correct matches, but it would ignore structure the database already knows about the pattern, the rest of the filter, and available indexes.
 
 Milvus instead uses a layered execution path. Each layer applies only reductions that preserve correctness. When the engine cannot prove that a shortcut is safe, it falls back to full RE2 verification.
 
-## 1. Rewrite regex that is really a cheaper string operation
+### 1. Rewrite regex that is really a cheaper string operation
 
 Some regex patterns do not need the regex engine at all:
 
@@ -149,7 +149,7 @@ The parser recognizes these anchored literals and rewrites them to cheaper opera
 
 An unanchored literal such as `ERROR` has different semantics: it asks whether `ERROR` occurs anywhere in the string. In the current implementation, anchored simple patterns become equality, prefix, or suffix operations, while an ordinary unanchored literal remains a `RegexMatch` expression.
 
-## 2. Treat regex as a heavy predicate
+### 2. Treat regex as a heavy predicate
 
 Consider a compound filter:
 
@@ -162,7 +162,7 @@ A numeric equality check or an existing indexed filter is usually cheaper than r
 
 The benchmark later in this article intentionally excludes vector search and compound filters, so it does not mix approximate nearest neighbor (ANN), scalar-index, and regex costs. In production queries, predicate ordering remains part of the complete execution path.
 
-## 3. On the raw path, compile once and prefilter required literals
+### 3. On the raw path, compile once and prefilter required literals
 
 Without an NGRAM index, a sealed segment reads the original strings and evaluates the match. Milvus reuses a compiled RE2 pattern at segment scope instead of compiling it once per row.
 
@@ -177,7 +177,7 @@ Milvus can first use Volnitsky string search to find rows that may contain the r
 
 Volnitsky is a prefilter, not a substitute for regex. A string that contains both `ERROR` and `timeout` does not necessarily satisfy their order or the full pattern. The prefilter's job is only to reduce the number of more expensive RE2 calls.
 
-## 4. With NGRAM, generate candidates first and verify them with RE2
+### 4. With NGRAM, generate candidates first and verify them with RE2
 
 For large sealed datasets, a string field can carry an NGRAM index:
 
@@ -202,7 +202,7 @@ For `ERROR.*timeout`, suppose only 0.1% of 10 million rows contain the required 
 
 This separation also protects correctness. A condition that cannot be extracted safely is not allowed to eliminate rows, and RE2 still decides every final match. The NGRAM coarse filter therefore does not introduce false negatives.
 
-## 5. Fall back when candidate reduction is not provably safe
+### 5. Fall back when candidate reduction is not provably safe
 
 Not every pattern exposes useful fixed literals:
 
@@ -217,7 +217,7 @@ A character class may leave only a very short literal. Alternation requires reas
 
 That fallback is the correct boundary for an index optimization. If Milvus cannot prove that a candidate reduction is safe, it does not use it.
 
-# `!~` must preserve UNKNOWN, not just invert a bitmap
+## `!~` must preserve UNKNOWN, not just invert a bitmap
 
 Once regex enters a database expression language, the difficult cases are not limited to pattern syntax. Nullability matters too.
 
@@ -243,11 +243,11 @@ Implementing `!~` as ordinary Boolean inversion would be wrong. A missing path r
 
 This is the difference between attaching a string library to an executor and implementing regex as a database predicate.
 
-# Benchmark: NGRAM helps when literals shrink the candidate set
+## Benchmark: NGRAM helps when literals shrink the candidate set
 
 The benchmark isolates regex filtering over sealed segments so that the results reflect raw string scanning, NGRAM candidate generation, and RE2 verification. It excludes growing segments, vector search, and compound filters.
 
-## Dataset and controlled selectivity
+### Dataset and controlled selectivity
 
 The test uses the public [Loghub HDFS_v1](https://github.com/logpai/loghub/tree/master/HDFS) dataset:
 
@@ -265,7 +265,7 @@ level=ERROR code=E4821 operation=checkout result=request_timeout
 
 The injection targets are 0.01%, 1%, 10%, and 50%. Every dataset variant uses the same seeded row selection and transformation rules, making the marked HDFS_v1 data reproducible. A consistency test also runs on the original, unmodified log fields to confirm that the observed optimization trend is not an artifact of marker injection.
 
-## Test environment
+### Test environment
 
 | **Item** | **Measured configuration** |
 | --- | --- |
@@ -280,7 +280,7 @@ The injection targets are 0.01%, 1%, 10%, and 50%. Every dataset variant uses th
 
 The raw and NGRAM paths use the same data and query order. Results are measured after warm-up and cover warm-cache behavior only. The test does not support conclusions about cold starts or first-query latency.
 
-## Pattern matrix
+### Pattern matrix
 
 | Pattern | Main execution path | What the test isolates |
 | --- | --- | --- |
@@ -295,7 +295,7 @@ Each pattern is run over two sealed-segment paths:
 -   No scalar index: raw string scan
 -   NGRAM index: candidate generation plus RE2 verification, with automatic fallback when NGRAM cannot be used
 
-## Latency across selectivity levels
+### Latency across selectivity levels
 
 Each cell below reports `raw p50 ms / NGRAM p50 ms / speedup`. A value greater than `1x` means NGRAM is faster.
 
@@ -313,7 +313,7 @@ The literal-rich `ERROR.*timeout` pattern benefits most. As selectivity rises fr
 
 Weak-literal, alternation, and case-insensitive patterns remain approximately level with the raw scan. The anchored `^ERROR` pattern helps at low candidate rates but falls to 0.69x at 50%. In this dataset, the injected marker puts `ERROR` near the end of the row, so the final anchored match count remains zero. Phase 1 still produces a large candidate set, and the extra verification work makes the indexed path slower.
 
-## Candidate reduction explains the gain
+### Candidate reduction explains the gain
 
 The next table isolates `ERROR.*timeout` and places Phase 1 candidate count beside p50 latency:
 
@@ -333,7 +333,7 @@ Data sources and references:
 -   [Zenodo dataset record](https://doi.org/10.5281/zenodo.8196385)
 -   Jieming Zhu, Shilin He, Pinjia He, Jinyang Liu, and Michael R. Lyu. _Loghub: A Large Collection of System Log Datasets for AI-driven Log Analytics_. ISSRE 2023.
 
-# Current boundaries and likely next steps
+## Current boundaries and likely next steps
 
 Milvus 3.0 regex filtering has several explicit boundaries:
 
@@ -346,7 +346,7 @@ Milvus 3.0 regex filtering has several explicit boundaries:
 
 Those boundaries suggest natural extensions: case-folded NGRAM, branch splitting for alternation, and richer multi-pattern execution. Any such optimization must preserve the same contract as the current design: candidate generation may be conservative, but only exact matching can decide the final result.
 
-# Regex as a database capability
+## Regex as a database capability
 
 Adding `=~` to an expression grammar is the easy part. A database implementation must also answer harder questions:
 
@@ -360,7 +360,7 @@ Milvus 3.0 answers with a layered execution path. RE2 provides a predictable saf
 
 That makes regex filtering more than a call to a regular expression library inside a vector database. It makes structural patterns part of the same database execution model as vector search, scalar filters, JSON data, and indexed retrieval.
 
-# Try regex filtering on your own workload — and the rest of Milvus 3.0
+## Try regex filtering on your own workload — and the rest of Milvus 3.0
 
 Regex filtering is available in Milvus 3.0. The [Pattern Matching guide](https://milvus.io/docs/pattern-matching.md) covers operator syntax, supported targets, raw strings, and matching semantics, while the [NGRAM guide](https://milvus.io/docs/ngram.md) explains which patterns the index can accelerate and how to configure it.
 
@@ -371,7 +371,7 @@ If you are evaluating the broader release of Milvus 3.0, check out:
 -   Milvus 3.0 feature blog: [Milvus Snapshots: Point-in-Time Collection Views Without Copying Data](https://milvus.io/blog/milvus-snapshots.md)
 -   [Milvus GitHub repo](https://github.com/milvus-io/milvus)
 
-# Come talk to us
+## Come talk to us
 
 -   Join the [Milvus Discord community](https://discord.com/invite/8uyFbECzPX) — the fastest way to get an answer from the people who built this.
 -   Book a 20-minute [Milvus office hour](https://meetings.hubspot.com/chloe-williams1/milvus-meeting) if you want to walk through your own collection with an engineer.
