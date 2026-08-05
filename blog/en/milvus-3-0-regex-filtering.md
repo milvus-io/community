@@ -1,7 +1,7 @@
 ---
 id: milvus-3-0-regex-filtering.md
 title: >
- Beyond =~_ How Milvus 3.0 Turns Regex into a Native Database Filter.docx
+ Beyond =~: How Milvus 3.0 Turns Regex into a Native Database Filter
 author: Buqian Zheng
 date: 2026-8-5
 cover: assets.zilliz.com/regex_optimization_pipeline_with_milvus_57a9037801.jpg
@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Milvus 3.0, vector search, regex filtering, full-text search
 meta_title: >
- Milvus 3.0 Regex Filtering: Safe, Native, and Indexed
+ Beyond =~: How Milvus 3.0 Turns Regex into a Native Database Filter
 desc: >
  Milvus 3.0 moves regex from application-side post-processing into the database query path, where it can be combined with vector search, full-text search, scalar filters, and indexed execution.
 origin: https://milvus.io/blog/milvus-3-0-regex-filtering.md
