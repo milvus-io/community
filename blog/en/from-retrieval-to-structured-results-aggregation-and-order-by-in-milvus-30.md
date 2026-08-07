@@ -338,7 +338,3 @@ For the broader release, see the [Milvus 3.0 launch blog](https://milvus.io/blog
 If you want to evaluate the same APIs without operating the cluster yourself, try them on [Zilliz Cloud](https://cloud.zilliz.com). The current [Zilliz Cloud query reference](https://docs.zilliz.com/reference/python/python/Vector-query) and [search reference](https://docs.zilliz.com/reference/python/python/Vector-search) describe availability and parameters for managed cluster types.
 
 To discuss a workload or an edge case with the team, join the [Milvus Discord community](https://discord.com/invite/8uyFbECzPX) or book a [Milvus Office Hours session](https://meetings.hubspot.com/chloe-williams1/milvus-meeting).
-
-#
-
-##
