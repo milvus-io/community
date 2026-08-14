@@ -4,6 +4,10 @@
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
+      "label": "Webinar: Faster and More Powerful Full-Text Search with Milvus 3.0 | Live on August 19",
+      "link": "https://zilliz.com/event/faster-more-powerful-full-text-search-milvus-3-0"
+    },
+    {
       "label": "Announcing Milvus 3.0: Lake-Native Vector Search, S3-based storage, and a More Powerful Retrieval Engine",
       "link": "https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md"
     }
