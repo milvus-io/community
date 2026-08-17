@@ -1,7 +1,11 @@
 {
-  "label": "35,000개 이상의 GitHub 스타를 향한 여정: Milvus를 처음부터 구축한 진짜 이야기",
+  "label": "GitHub 스타 35K+ 달성까지의 우리 여정: Milvus를 처음부터 구축한 실제 이야기",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
+    {
+      "label": "Webinar: Faster and More Powerful Full-Text Search with Milvus 3.0 | Live on August 19",
+      "link": "https://zilliz.com/event/faster-more-powerful-full-text-search-milvus-3-0"
+    },
     {
       "label": "Announcing Milvus 3.0: Lake-Native Vector Search, S3-based storage, and a More Powerful Retrieval Engine",
       "link": "https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md"
