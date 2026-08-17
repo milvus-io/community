@@ -6,18 +6,12 @@ import { JSDOM } from "jsdom";
 
 const PATH = "/blog/";
 
-// ChatGPT-compatible translation API config. Endpoint, key and model are all
-// injected via environment variables (see .github/workflows/translate.yml).
-// CHATGPT_API_URL is a base URL (e.g. https://token.zasdas.com/v1); the
-// /chat/completions path is appended automatically when it's not already there.
-const CHATGPT_BASE_URL = (
-  process.env.CHATGPT_API_URL || "https://api.openai.com/v1"
-).replace(/\/+$/, "");
-const CHATGPT_API_URL = CHATGPT_BASE_URL.endsWith("/chat/completions")
-  ? CHATGPT_BASE_URL
-  : `${CHATGPT_BASE_URL}/chat/completions`;
+// OpenAI-compatible translation API config. Endpoint and model are fixed here;
+// only the key comes from the environment (see .github/workflows/translate.yml)
+// so it never lands in the repo.
+const CHATGPT_API_URL = "https://token.zasdas.com/v1/chat/completions";
+const CHATGPT_MODEL = "deepseek-chat";
 const CHATGPT_API_KEY = process.env.CHATGPT_API_KEY;
-const CHATGPT_MODEL = process.env.CHATGPT_MODEL || "gpt-4o-mini";
 
 const CHATGPT_HEADERS = {
   "Content-Type": "application/json",
@@ -93,8 +87,9 @@ export function mkdir(filePath) {
   }
 }
 
-// Translate a single string via the ChatGPT API. The content is HTML (produced
-// by md2html), so the model is told to preserve tags and only translate text.
+// Translate a single string via the chat completions API. The content is HTML
+// (produced by md2html), so the model is told to preserve tags and only
+// translate text.
 async function translateText(text, sourceLang, targetLang) {
   // Nothing to translate for empty / whitespace-only strings.
   if (!text || !text.trim()) return text;
