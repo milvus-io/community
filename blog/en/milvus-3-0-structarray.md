@@ -2,9 +2,9 @@
 id: milvus-3-0-structarray.md
 title: >
  One Entity, Many Vectors: Entity- and Element-Level Search with Milvus 3.0 StructArray
-author: @唐晨杰 (Chenjie Tang)
+author: Chenjie Tang
 date: 2026-8-19
-cover: 
+cover: assets.zilliz.com/milvus_3_0_entity_and_element_level_search_28bba6d843.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
