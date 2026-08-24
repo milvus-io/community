@@ -1,5 +1,5 @@
 {
-  "homepage/index.json": "2026-08-17T03:46:09.681Z",
+  "homepage/index.json": "2026-08-24T10:13:31.214Z",
   "blog/en/milvus-cdc-standby-cluster-high-availability.md": "2026-06-22T10:18:02.817Z",
   "blog/en/milvus-access-control-rbac-guide.md": "2026-06-22T10:17:49.040Z",
   "blog/en/choose-embedding-model-rag-2026.md": "2026-06-22T10:09:06.470Z",
@@ -263,7 +263,7 @@
   "blog/en/we-benchmarked-20-embedding-apis-with-milvus-7-insights-that-will-surprise-you.md": "2026-06-22T10:21:50.156Z",
   "blog/en/we-extracted-openclaws-memory-system-and-opensourced-it-memsearch.md": "2026-06-22T10:21:55.165Z",
   "blog/en/we-replaced-kafka-pulsar-with-a-woodpecker-for-milvus.md": "2026-06-22T10:21:59.954Z",
-  "blog/en/what-is-a-vector-database.md": "2026-06-22T10:22:06.898Z",
+  "blog/en/what-is-a-vector-database.md": "2026-08-24T10:42:01.386Z",
   "blog/en/what-milvus-taught-us-in-2024.md": "2026-06-22T10:22:11.130Z",
   "blog/en/what-milvus-version-to-start-with.md": "2026-06-22T10:22:15.256Z",
   "blog/en/when-context-engineering-is-done-right-hallucinations-can-spark-ai-creativity.md": "2026-06-22T10:22:24.098Z",
