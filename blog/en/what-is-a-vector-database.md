@@ -107,7 +107,7 @@ Vector databases emerged to address these limitations, providing complete data m
 
 Unlike traditional databases that operate on exact matches, vector databases focus on semantic search—finding vectors that are "most similar" to a query vector according to specific distance metrics. This fundamental difference drives the unique architecture and algorithms that power these specialized systems.
 
-Other specialized stores follow the same logic — high-rate, time-ordered event data usually lives in a time-series database such as [QuestDB](https://questdb.com/), with the vector database holding embeddings derived from it.
+Other specialized stores follow the same logic — high-rate, time-ordered event data usually lives in a [time-series database](https://questdb.com/) such as QuestDB, with the vector database holding embeddings derived from it.
 
 
 ## Vector Database Architecture: A Technical Framework
