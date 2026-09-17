@@ -7,9 +7,13 @@
       "label": "Announcing Milvus 3.0: Lake-Native Vector Search, S3-based storage, and a More Powerful Retrieval Engine",
       "link": "https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md"
     },
+       {
+      "label": "Milvus Meetup – Paris",
+      "link": "https://luma.com/bfo1andh"
+    },
     {
-      "label":"Milvus Meetup - Paris",
-      "link":"https://luma.com/bfo1andh"
+      "label": "Webinar: Upgrade to Milvus 3.0: What’s New and How to Get There | Live on September 23",
+      "link": "https://zilliz.com/event/upgrade-to-milvus-30"
     }
   ]
 }
