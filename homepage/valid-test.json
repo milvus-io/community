@@ -1,0 +1,6 @@
+{
+  "name": "valid test file",
+  "purpose": "testing the validate_json GitHub Action",
+  "valid": true,
+  "count": 1
+}
