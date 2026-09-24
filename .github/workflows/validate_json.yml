@@ -1,0 +1,34 @@
+name: Validate JSON files
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate all JSON files
+        run: |
+          set -euo pipefail
+          echo "Checking JSON files for valid syntax..."
+          failed=0
+          while IFS= read -r file; do
+            if ! python3 -c 'import json, sys; json.load(open(sys.argv[1], encoding="utf-8"))' "$file"; then
+              echo "::error file=${file}::Invalid JSON format"
+              failed=1
+            fi
+          done < <(
+            find . -type f -name '*.json' \
+              -not -path './node_modules/*' \
+              -not -path './.git/*' \
+              -not -name '*.lock.json' \
+              -not -name 'package-lock.json'
+          )
+          if [ "$failed" -ne 0 ]; then
+            echo "One or more JSON files are invalid."
+            exit 1
+          fi
+          echo "All JSON files are valid."
