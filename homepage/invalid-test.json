@@ -1,0 +1,7 @@
+{
+  "name": "invalid test file",
+  "purpose": "this one is broken",
+  "valid": true,
+  "missing": "comma"
+  "count": 2
+}
