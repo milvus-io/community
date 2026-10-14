@@ -4,7 +4,7 @@ title: >
  What Hyperbolic Geometry Does to Ranking
 author: Simon Hearne
 date: 2026-10-13
-cover: assets.zilliz.com/cover_what_hyperbolic_geometry_does_to_ranking_752050e4cb.png
+cover: assets.zilliz.com/cover_what_hyperbolic_geometry_does_to_ranking_63d328ae81.jpg
 tag: Engineering
 recommend: false
 publishToMedium: false
