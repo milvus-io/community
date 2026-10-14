@@ -17,10 +17,14 @@ desc: >
 origin: https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md
 ---
 
-*Part 2 of 4. [Part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md) covers why
-hyperbolic embeddings matter and why the trick works;
-[part 3](https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md) serves this on Zilliz Cloud;
-[part 4](https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md) asks what the geometry does to ranking.*
+*This is part 2 of a four-part series on hyperbolic embeddings in vector search: how to
+search them in Milvus and Zilliz Cloud with plain inner product, and when they're worth
+using. This post runs it on Milvus and measures recall index by index.
+[Part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md) explains
+why plain inner product works,
+[part 3](https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md) runs it on Zilliz
+Cloud, and [part 4](https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md)
+compares a hyperbolic model with CLIP.*
 
 Milvus has no hyperbolic distance metric, and it does not need one. As
 [part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md) shows, two small changes

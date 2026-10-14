@@ -17,9 +17,13 @@ desc: >
 origin: https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md
 ---
 
-*Part 1 of 4. [Part 2](https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md) runs this on Milvus;
-[part 3](https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md) serves it on Zilliz Cloud;
-[part 4](https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md) asks what the geometry does to ranking.*
+*This is part 1 of a four-part series on hyperbolic embeddings in vector search: how to
+search them in Milvus and Zilliz Cloud with plain inner product, and when they're worth
+using. This post explains what hyperbolic embeddings are and why plain inner product works.
+[Part 2](https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md) runs it on Milvus,
+[part 3](https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md) on Zilliz Cloud, and
+[part 4](https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md) compares a
+hyperbolic model with CLIP.*
 
 A lot of what people search is hierarchical: product catalogs, parts lists, species,
 brand families, file systems. A shopper who types "footwear" wants something broader than

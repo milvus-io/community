@@ -17,10 +17,14 @@ desc: >
 origin: https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md
 ---
 
-*Part 4 of 4. [Part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md) shows how to
-search hyperbolic vectors with a plain inner-product index;
+*This is part 4 of a four-part series on hyperbolic embeddings in vector search: how to
+search them in Milvus and Zilliz Cloud with plain inner product, and when they're worth
+using. This post compares a hyperbolic model with CLIP to see where it wins and where it
+loses. [Part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md)
+explains why plain inner product works, and
 [part 2](https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md) and
-[part 3](https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md) run it on Milvus and Zilliz Cloud.*
+[part 3](https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md) run it on Milvus and
+Zilliz Cloud.*
 
 Parts 1 to 3 show that a vector database can reproduce a hyperbolic model's ranking with a
 plain inner-product index. This post asks whether that ranking is worth having, using

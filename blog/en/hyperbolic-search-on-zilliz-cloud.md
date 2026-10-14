@@ -17,10 +17,14 @@ desc: >
 origin: https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md
 ---
 
-*Part 3 of 4. [Part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md) covers why
-hyperbolic embeddings matter and why the trick works;
-[part 2](https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md) implements it on Milvus;
-[part 4](https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md) asks what the geometry does to ranking.*
+*This is part 3 of a four-part series on hyperbolic embeddings in vector search: how to
+search them in Milvus and Zilliz Cloud with plain inner product, and when they're worth
+using. This post measures recall, capacity and latency on Zilliz Cloud.
+[Part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md) explains
+why plain inner product works,
+[part 2](https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md) runs it on Milvus, and
+[part 4](https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md) compares a
+hyperbolic model with CLIP.*
 
 A quick recap from [part 1](https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md). Each
 hyperbolic embedding is 513 numbers on a bowl-shaped surface, the *Lorentz hyperboloid*.
