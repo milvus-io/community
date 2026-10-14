@@ -1,17 +1,17 @@
 ---
 id: hyperbolic-embeddings-in-milvus.md
 title: >
- Hyperbolic embeddings in Milvus
+ Hyperbolic Embeddings in Milvus
 author: Simon Hearne
 date: 2026-10-13
-cover: raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/cover_hyperbolic-embeddings-in-milvus.png
+cover: assets.zilliz.com/cover_hyperbolic_embeddings_in_milvus_5af2ebebe9.png
 tag: Engineering
 recommend: false
-publishToMedium: true
+publishToMedium: false
 tags: Milvus, vector database
 meta_keywords: hyperbolic embeddings, Milvus, HNSW, IVF, recall, centering
 meta_title: >
- Hyperbolic embeddings in Milvus
+ Hyperbolic Embeddings in Milvus
 desc: >
  We benchmarked hyperbolic embedding search on Milvus index by index, so you don't have to: HNSW needs no rerank, and the one index to avoid is IVF_PQ.
 origin: https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md
@@ -43,7 +43,7 @@ surface, the *Lorentz hyperboloid*. The first number is the point's **height** u
 bowl,[^time] which rises with its *radius*, the distance from the center. The other 512
 say which direction the point lies in, and their overall size is the radius.
 
-![The curve is the bowl seen side-on: move away from the center in any direction (horizontal axis) and the height, the first number, rises (vertical axis). The vertical axis starts at 3.1, which exaggerates the curve; every point is at least 3.16 high, which is why raw heights all sit around 3.2.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/bowl_height.png)
+![The curve is the bowl seen side-on: move away from the center in any direction (horizontal axis) and the height, the first number, rises (vertical axis). The vertical axis starts at 3.1, which exaggerates the curve; every point is at least 3.16 high, which is why raw heights all sit around 3.2.](https://assets.zilliz.com/hyperbolic_bowl_height_985401d3d3.png)
 
 [^time]: Papers and code call this number the *time coordinate*. The Lorentz model
     borrows its math from special relativity, where one coordinate is time and the rest
@@ -52,7 +52,7 @@ say which direction the point lies in, and their overall size is the radius.
 
 ## Two ways to deploy
 
-![The two deployments side by side. A is one vector and one search; B adds two scalar fields and a rerank over a 200-candidate shortlist.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/strategies_a_b.png)
+![The two deployments side by side. A is one vector and one search; B adds two scalar fields and a rerank over a 200-candidate shortlist.](https://assets.zilliz.com/hyperbolic_strategies_a_b_49b3b2b100.png)
 
 **Strategy A: one vector, one search.** Store the 513-number vector, centered, and search
 with `metric_type="IP"` (inner product). One *round trip* (a single request to the
@@ -77,14 +77,14 @@ Keep $m$ with the collection, and center documents you add later with the same v
 Some implementations, such as HypRAG's,[^madhu2026] flip the sign on the stored documents instead of
 the query. If you do that, center before flipping: store $-(y_0 - m)$.
 
-**The score Milvus returns, and how to convert it**
-
-With documents stored as $(y_0 - m, \bar{y})$ and the query sent as $(-x_0, \bar{x})$,
-Milvus returns
-
-$$\text{score} = \langle x, y \rangle_L + x_0 m \qquad\Longrightarrow\qquad d(x, y) = \frac{\mathrm{arcosh}\left(-c\thinspace (\text{score} - x_0 m)\right)}{\sqrt{c}}$$
-
-where $x_0$ is the query's height before the sign flip and $c = 0.1$ for Hyper3-CLIP V1.
+> **The score Milvus returns, and how to convert it**
+>
+> With documents stored as $(y_0 - m, \bar{y})$ and the query sent as $(-x_0, \bar{x})$,
+> Milvus returns
+>
+> $$\text{score} = \langle x, y \rangle_L + x_0 m \qquad\Longrightarrow\qquad d(x, y) = \frac{\mathrm{arcosh}\left(-c\thinspace (\text{score} - x_0 m)\right)}{\sqrt{c}}$$
+>
+> where $x_0$ is the query's height before the sign flip and $c = 0.1$ for Hyper3-CLIP V1.
 
 **Strategy B: shortlist, then rerank.** Store the 512-number direction, normalized to
 length 1, plus two scalar fields: `h_time` (the height) and `h_radius` (the radius). Run
@@ -92,14 +92,14 @@ a cosine search to fetch a *shortlist* of candidates, then *rerank* them: comput
 candidate's exact Lorentz score in your application from the angle, the heights and the
 radii, and keep the best 10. hyper³labs' own reference integration uses this shape.
 
-**The rerank formula**
+> **The rerank formula**
+>
+> $$\langle x,y \rangle_L = -x_0 y_0 + \lVert \bar{x} \rVert \thinspace  \lVert \bar{y} \rVert \cos\theta$$
+>
+> where $x_0, y_0$ are the heights, $\lVert \bar{x} \rVert, \lVert \bar{y} \rVert$
+> the radii, and $\cos\theta$ the cosine similarity the search returns.
 
-$$\langle x,y \rangle_L = -x_0 y_0 + \lVert \bar{x} \rVert \thinspace  \lVert \bar{y} \rVert \cos\theta$$
-
-where $x_0, y_0$ are the heights, $\lVert \bar{x} \rVert, \lVert \bar{y} \rVert$
-the radii, and $\cos\theta$ the cosine similarity the search returns.
-
-**Or rerank inside Milvus.** In [Milvus 3.0.1](https://github.com/milvus-io/milvus/releases#release-v3.0.1) or later, a *function chain* can run that
+**Or rerank inside Milvus.** In [Milvus 3.0.1](https://github.com/milvus-io/milvus/releases/tag/v3.0.1) or later, a *function chain* can run that
 rerank in the database, so Strategy B also takes a single request, with no rerank code in your
 application. The chain multiplies each candidate's stored radius by its cosine score,
 then adds the stored height, weighting the two by the query's own radius and negated
@@ -151,7 +151,7 @@ index actually returned. We tested three index types:
 - **IVF_SQ8** is IVF with each number compressed to 8 bits (*scalar quantization*),
   cutting memory by about four times.
 
-![How the two index families take shortcuts: HNSW walks a graph, IVF searches only nearby clusters. Both are built from similarities between stored vectors, which is why the large shared height in raw vectors throws them off.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/ann_indexes.png)
+![How the two index families take shortcuts: HNSW walks a graph, IVF searches only nearby clusters. Both are built from similarities between stored vectors, which is why the large shared height in raw vectors throws them off.](https://assets.zilliz.com/hyperbolic_ann_indexes_0b5c14aff8.png)
 
 Each ± is a 95% confidence interval, from *bootstrap* resampling of the queries: roughly,
 how far the value could move with a different sample of queries.
@@ -163,7 +163,7 @@ how far the value could move with a different sample of queries.
 | IVF_FLAT, nprobe=32 | 0.900 ± 0.015 | 0.990 ± 0.004 | **+0.090** |
 | IVF_SQ8, nprobe=32 | 0.884 ± 0.015 | 0.969 ± 0.004 | **+0.085** |
 
-![Read it like the summary chart in part 1: orange is raw, blue is centered, further right is better, and the gray bar is the gain. The gap is widest on the IVF indexes; on IVF_SQ8 the gain comes from the clusters, not the 8-bit compression.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/recall_centring_milvus.png)
+![Read it like the summary chart in part 1: orange is raw, blue is centered, further right is better, and the gray bar is the gain. The gap is widest on the IVF indexes; on IVF_SQ8 the gain comes from the clusters, not the 8-bit compression.](https://assets.zilliz.com/hyperbolic_recall_centring_milvus_624875d51f.png)
 
 The correct answer is identical in both columns, so the whole difference comes from the
 index. HNSW's graph and IVF's clusters are both built from the stored vectors. Raw, those
@@ -198,7 +198,7 @@ already handles each number separately, and one index type fails either way.
 - **SCANN** refuses a 513-dimensional vector outright, because it needs an even number
   of dimensions.
 
-![Why IVF_SQ8 doesn't need centering. Milvus gives every number its own 8-bit range (right), so the large height can't crowd out the other 512. One range shared by all 513 numbers (left) would.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/sq8_ranges.png)
+![Why IVF_SQ8 doesn't need centering. Milvus gives every number its own 8-bit range (right), so the large height can't crowd out the other 512. One range shared by all 513 numbers (left) would.](https://assets.zilliz.com/hyperbolic_sq8_ranges_8529a40e87.png)
 
 ## What we are not claiming
 

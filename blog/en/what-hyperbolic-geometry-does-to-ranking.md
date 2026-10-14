@@ -1,17 +1,17 @@
 ---
 id: what-hyperbolic-geometry-does-to-ranking.md
 title: >
- What hyperbolic geometry does to ranking
+ What Hyperbolic Geometry Does to Ranking
 author: Simon Hearne
 date: 2026-10-13
-cover: raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/cover_what-hyperbolic-geometry-does-to-ranking.png
+cover: assets.zilliz.com/cover_what_hyperbolic_geometry_does_to_ranking_752050e4cb.png
 tag: Engineering
 recommend: false
-publishToMedium: true
+publishToMedium: false
 tags: Milvus, vector database
 meta_keywords: hyperbolic embeddings, Hyper3-CLIP, CLIP, ranking, ImageNet
 meta_title: >
- What hyperbolic geometry does to ranking
+ What Hyperbolic Geometry Does to Ranking
 desc: >
  When to try a hyperbolic embedding model, and when CLIP is enough: Hyper3-CLIP V1 wins on searching images by caption, CLIP on broad terms and classification.
 origin: https://milvus.io/blog/what-hyperbolic-geometry-does-to-ranking.md
@@ -56,7 +56,7 @@ where the more specific things under a broad concept sit; used to rerank a short
 compared it with OpenAI's CLIP ViT-B/16.[^radford2021] Our test harness reproduces both
 SugarCrepe[^hsieh2023] scores on V1's model card exactly (0.7954 for V1, 0.7306 for CLIP).
 
-![Each bar is one test. Bars to the right are Hyper3-CLIP V1 wins, bars to the left CLIP wins, and length is the margin in that test's own metric, so compare directions rather than lengths across rows.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/scorecard.png)
+![Each bar is one test. Bars to the right are Hyper3-CLIP V1 wins, bars to the left CLIP wins, and length is the margin in that test's own metric, so compare directions rather than lengths across rows.](https://assets.zilliz.com/hyperbolic_scorecard_7eabaf3f34.png)
 
 | Test | What it measures | V1 scorer compared |
 |---|---|---|
@@ -118,22 +118,22 @@ weights, same images, and the only difference is whether the distance from the c
 counts. Lorentz does better on accuracy and on the hierarchy metrics, and worse on
 broad-term search.
 
-![Each row compares Lorentz with cosine on one measure; right always means Lorentz is better, and each row has its own scale. An interval that clears zero is a real difference.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/tradeoff.png)
+![Each row compares Lorentz with cosine on one measure; right always means Lorentz is better, and each row has its own scale. An interval that clears zero is a real difference.](https://assets.zilliz.com/hyperbolic_tradeoff_917e0875b8.png)
 
 The Lorentz score combines how well the directions match, weighted by how far both points
 sit from the center, with a term that depends only on those distances. Cosine keeps only
 the direction match. The gaps below are measured on these ImageNet tasks; they don't
 explain why Lorentz ranks the way it does.
 
-**The math, for the curious**
-
-Writing the score with radius and angle:
-
-$$\langle x,y \rangle_L = -x_0 y_0 + \lVert \bar{x} \rVert \thinspace  \lVert \bar{y} \rVert \cos\theta, \qquad x_0 = \sqrt{1/c + \lVert \bar{x} \rVert^2}$$
-
-The first term depends only on the two radii, not the angle $\theta$, and grows more
-negative as the document's radius grows. The second is the
-direction match, weighted by both radii. The cosine scorer keeps only $\cos\theta$.
+> **The math, for the curious**
+>
+> Writing the score with radius and angle:
+>
+> $$\langle x,y \rangle_L = -x_0 y_0 + \lVert \bar{x} \rVert \thinspace  \lVert \bar{y} \rVert \cos\theta, \qquad x_0 = \sqrt{1/c + \lVert \bar{x} \rVert^2}$$
+>
+> The first term depends only on the two radii, not the angle $\theta$, and grows more
+> negative as the document's radius grows. The second is the
+> direction match, weighted by both radii. The cosine scorer keeps only $\cos\theta$.
 
 **Broad-term search.** On the 132 broad terms, Lorentz scores 2.2 AP points below cosine
 (95% confidence interval 1.7 to 2.8) and lower on 97 of them. The two scorers build their
@@ -144,25 +144,25 @@ moved its AP by only 0.01 points.[^prompts]
 from the right answer in the WordNet tree: calling a husky a malamute is a better mistake
 than calling it a teapot.
 
-![Not all wrong answers are equally wrong. A guess that lands close in the tree (malamute) is a better mistake than one far away (teapot).](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/mistake_tree.png)
+![Not all wrong answers are equally wrong. A guess that lands close in the tree (malamute) is a better mistake than one far away (teapot).](https://assets.zilliz.com/hyperbolic_mistake_tree_be39491bfb.png)
 
 We used the paper's five metrics, with the authors' definitions, on the 50,000 ImageNet
 validation images.
 
-**The five hierarchy metrics**
-
-Each compares the guess with the truth in WordNet's "is a kind of" tree.
-
-- **TIE** (tree-induced error): the number of steps through the tree from the guess to
-  the truth. Lower is better.
-- **LCA** (lowest common ancestor): how many of the guess's ancestors (the broader
-  categories above it) the truth does not share, plus one. Lower is better.
-- **J** (Jaccard): the overlap between the two sets of ancestors, as a share of all the
-  ancestors of either. Higher is better.
-- **H-P** (hierarchical precision): the share of the guess's ancestors that the truth
-  shares. Higher is better.
-- **H-R** (hierarchical recall): the share of the truth's ancestors that the guess
-  shares. Higher is better.
+> **The five hierarchy metrics**
+>
+> Each compares the guess with the truth in WordNet's "is a kind of" tree.
+>
+> - **TIE** (tree-induced error): the number of steps through the tree from the guess to
+>   the truth. Lower is better.
+> - **LCA** (lowest common ancestor): how many of the guess's ancestors (the broader
+>   categories above it) the truth does not share, plus one. Lower is better.
+> - **J** (Jaccard): the overlap between the two sets of ancestors, as a share of all the
+>   ancestors of either. Higher is better.
+> - **H-P** (hierarchical precision): the share of the guess's ancestors that the truth
+>   shares. Higher is better.
+> - **H-R** (hierarchical recall): the share of the truth's ancestors that the guess
+>   shares. Higher is better.
 
 | Hyper3-CLIP V1 scorer | top-1 accuracy (%) | TIE ↓ | LCA ↓ | J ↑ | H-P ↑ | H-R ↑ |
 |---|---|---|---|---|---|---|

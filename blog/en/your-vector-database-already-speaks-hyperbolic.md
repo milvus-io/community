@@ -1,17 +1,17 @@
 ---
 id: your-vector-database-already-speaks-hyperbolic.md
 title: >
- Your vector database already speaks hyperbolic
+ Your Vector Database Already Speaks Hyperbolic
 author: Simon Hearne
-date: 2026-10-13
-cover: raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/cover_your-vector-database-already-speaks-hyperbolic.png
+date: 2026-10-14
+cover: assets.zilliz.com/cover_your_vector_database_already_speaks_hyperbolic_d8b0cbe086.png
 tag: Engineering
 recommend: false
-publishToMedium: true
+publishToMedium: false
 tags: Milvus, vector database
 meta_keywords: hyperbolic embeddings, Lorentz model, inner product, Milvus, vector search
 meta_title: >
- Your vector database already speaks hyperbolic
+ Your Vector Database Already Speaks Hyperbolic
 desc: >
  Milvus can search hyperbolic embeddings today with plain inner product: flip one sign, center once at ingest, and skip the oversample-and-rerank step.
 origin: https://milvus.io/blog/your-vector-database-already-speaks-hyperbolic.md
@@ -26,7 +26,7 @@ brand families, file systems. A shopper who types "footwear" wants something bro
 one who types "black leather Chelsea boots", and a good search system should know the
 difference without someone maintaining a taxonomy by hand.
 
-![A product hierarchy, broad at the top and specific at the bottom. A good search should know which level a query is aiming at.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/shop_tree.png)
+![A product hierarchy, broad at the top and specific at the bottom. A good search should know which level a query is aiming at.](https://assets.zilliz.com/hyperbolic_shop_tree_198846c05e.png)
 
 **Hyperbolic embedding models** promise exactly that. An *embedding* is the list of
 numbers (a vector) that a model produces to represent a piece of text or an image, so that
@@ -37,7 +37,7 @@ tested produces 513 numbers where its flat counterpart, OpenAI's CLIP,[^radford2
 number works as a built-in specificity score: it rises from "vehicle" to "a red car" to
 "a red car on a city street". Below we'll see where it comes from.
 
-![One extra number up front, the height, acts as a built-in specificity score. The other 512 work as they do in a flat model.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/vector_anatomy.png)
+![One extra number up front, the height, acts as a built-in specificity score. The other 512 work as they do in a flat model.](https://assets.zilliz.com/hyperbolic_vector_anatomy_57861b4c5c.png)
 
 Vector databases build their indexes around a handful of metrics: straight-line
 distance, inner product, cosine, and a few others for special data types. None of the
@@ -74,7 +74,7 @@ For search, CLIP's vectors are normalized to length 1, so "animal" cannot be a s
 vector than "a dog". If you need to know how broad something is, you usually store a
 separate taxonomy or train a separate classifier.
 
-![In both spaces, direction says what an item is. Only in hyperbolic space does distance from the center also say how specific it is.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/flat_vs_hyperbolic.png)
+![In both spaces, direction says what an item is. Only in hyperbolic space does distance from the center also say how specific it is.](https://assets.zilliz.com/flat_vs_hyperbolic_d5be19be30.png)
 
 Flat space also runs out of room for trees. Every level of a hierarchy multiplies the
 number of items: one "animal", a handful of classes, hundreds of species, thousands of
@@ -83,7 +83,7 @@ flat model makes room for a big hierarchy by adding dimensions. In *hyperbolic* 
 a curved space where the room available grows exponentially with distance from the
 center, a tree fits naturally.
 
-![Read the right-hand panel left to right as going deeper into a tree. The vertical axis is logarithmic, so the doubling tree (black) is a straight line. Hyperbolic room (blue) stays above it at every depth; flat room (orange) falls below it around depth 5, which is why a flat model has to add dimensions to fit a big hierarchy.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/tree_room.png)
+![Read the right-hand panel left to right as going deeper into a tree. The vertical axis is logarithmic, so the doubling tree (black) is a straight line. Hyperbolic room (blue) stays above it at every depth; flat room (orange) falls below it around depth 5, which is why a flat model has to add dimensions to fit a big hierarchy.](https://assets.zilliz.com/hyperbolic_tree_room_5f40cd8b6f.png)
 
 The classic evidence comes from WordNet,[^miller1995] a large dictionary of English nouns arranged by
 "is a kind of" (a dog is a kind of animal). Nickel and Kiela (2017)[^nickel2017] embedded it in just 5
@@ -95,7 +95,7 @@ flat embedding of the same size, and still over 200 times higher than one with 4
 the dimensions.** hyper³labs summarize this in
 [The Geometry Mistake Behind Modern Embedding Models](https://hyper3labs.com/blog/the-geometry-mistake/).
 
-![Shorter bars are better: each is where the true parent landed in the ranking, on average. The axis is logarithmic, so each gridline is ten times the last. Five hyperbolic dimensions beat 200 flat ones by over 200 times.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/wordnet_rank.png)
+![Shorter bars are better: each is where the true parent landed in the ranking, on average. The axis is logarithmic, so each gridline is ten times the last. Five hyperbolic dimensions beat 200 flat ones by over 200 times.](https://assets.zilliz.com/hyperbolic_wordnet_rank_1ea9e0b0da.png)
 
 The same idea now reaches text search. HypRAG, from Madhu et al. (2026),[^madhu2026] trains hyperbolic
 text encoders for *retrieval-augmented generation* (RAG), where a language model answers
@@ -121,7 +121,7 @@ In this model, the more general a concept, the closer it sits to the center of t
 The distance from the center is called the *radius*, and we measured it for a range of
 phrases:
 
-![Each dot is one phrase's distance from the center; further right is further out. Broad words sit left and detailed phrases right, with no labels supplied. Images (right panel, on a broken axis) sit in a band of their own beyond any text, so compare text with text and images with images.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/radius_ruler.png)
+![Each dot is one phrase's distance from the center; further right is further out. Broad words sit left and detailed phrases right, with no labels supplied. Images (right panel, on a broken axis) sit in a band of their own beyond any text, so compare text with text and images with images.](https://assets.zilliz.com/hyperbolic_radius_ruler_7f3279476d.png)
 
 Nobody labeled these; the order comes directly from the vectors. For an application,
 the radius is a useful signal in its own right: a way to tell a broad query from a
@@ -129,7 +129,7 @@ specific one. hyper³labs' post also shows, on handwritten digits, that ambiguou
 tend to sit closer to the center than clear, typical ones, so the radius can flag those
 too.
 
-![Each row pairs two handwritten examples of the same digit: the orange box sits near the center, the blue one near the edge. The near-center digits are the scrawly, ambiguous ones. This is hyper³labs' figure, from their own handwritten-digit experiment, not from Hyper3-CLIP. Its ρ is a hyperbolic distance on a different scale, so don't compare it with our radii.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/mnist_radius.png)
+![Each row pairs two handwritten examples of the same digit: the orange box sits near the center, the blue one near the edge. The near-center digits are the scrawly, ambiguous ones. This is hyper³labs' figure, from their own handwritten-digit experiment, not from Hyper3-CLIP. Its ρ is a hyperbolic distance on a different scale, so don't compare it with our radii.](https://assets.zilliz.com/hyperbolic_mnist_radius_a78d05c65e.png)
 
 *Source: [hyper³labs](https://hyper3labs.com/blog/the-geometry-mistake/).*
 
@@ -157,20 +157,20 @@ sphere, which curves back on itself and has limited room, into a bowl that opens
 exponentially as you move from the center. In geometry, the sphere is *positively* curved
 and the bowl *negatively* curved; "hyperbolic" means negatively curved.
 
-![The curve is the bowl seen side-on: move away from the center in any direction (horizontal axis) and the height, the first number, rises (vertical axis). The vertical axis starts at 3.1, which exaggerates the curve; every point is at least 3.16 high, which is why raw heights all sit around 3.2.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/bowl_height.png)
+![The curve is the bowl seen side-on: move away from the center in any direction (horizontal axis) and the height, the first number, rises (vertical axis). The vertical axis starts at 3.1, which exaggerates the curve; every point is at least 3.16 high, which is why raw heights all sit around 3.2.](https://assets.zilliz.com/hyperbolic_bowl_height_985401d3d3.png)
 
-**The math: why the height follows from the other 512**
-
-A point is $x = (x_0, \bar{x})$: height $x_0$ and the 512 spatial coordinates
-$\bar{x}$. Every point on the hyperboloid of curvature $-c$ satisfies
-
-$$\langle x, x \rangle_L = -x_0^2 + \lVert \bar{x} \rVert^2 = -\frac{1}{c} \quad\Longrightarrow\quad x_0 = \sqrt{\tfrac{1}{c} + \lVert \bar{x} \rVert^2}$$
-
-so the height is fixed by the radius $\lVert \bar{x} \rVert$. For Hyper3-CLIP V1,
-$c = 0.1$, so the lowest possible height, at the center, is $\sqrt{10} \approx 3.162$.
-On real embeddings, $\langle x, x \rangle_L = -10.00000$ for text and images alike, and
-recomputing $x_0$ from the other 512 numbers matches the stored value to within
-$4.8 \times 10^{-7}$.
+> **The math: why the height follows from the other 512**
+>
+> A point is $x = (x_0, \bar{x})$: height $x_0$ and the 512 spatial coordinates
+> $\bar{x}$. Every point on the hyperboloid of curvature $-c$ satisfies
+>
+> $$\langle x, x \rangle_L = -x_0^2 + \lVert \bar{x} \rVert^2 = -\frac{1}{c} \quad\Longrightarrow\quad x_0 = \sqrt{\tfrac{1}{c} + \lVert \bar{x} \rVert^2}$$
+>
+> so the height is fixed by the radius $\lVert \bar{x} \rVert$. For Hyper3-CLIP V1,
+> $c = 0.1$, so the lowest possible height, at the center, is $\sqrt{10} \approx 3.162$.
+> On real embeddings, $\langle x, x \rangle_L = -10.00000$ for text and images alike, and
+> recomputing $x_0$ from the other 512 numbers matches the stored value to within
+> $4.8 \times 10^{-7}$.
 
 A hyperbolic model judges closeness with the Lorentz inner product, minus sign
 included. A vector database offers the ordinary inner product, cosine and straight-line
@@ -189,7 +189,7 @@ results up) and cosine (the angle between them). None of these is hyperbolic dis
 so at first glance it looks as if you must either search hyperbolic vectors with the wrong metric, or
 give up the geometry.
 
-![The three metrics vector databases offer. Lower is closer for L2; higher is closer for inner product and cosine. Inner product is the one the sign flip turns into the hyperbolic score.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/metrics.png)
+![The three metrics vector databases offer. Lower is closer for L2; higher is closer for inner product and cosine. Inner product is the one the sign flip turns into the hyperbolic score.](https://assets.zilliz.com/hyperbolic_metrics_53c8df8cde.png)
 
 Hyperbolic models score two points with the Lorentz inner
 product, the ordinary inner product with the height's contribution subtracted rather
@@ -205,7 +205,7 @@ That means you can:
 The inner product the database computes is then *exactly* the Lorentz score, and its
 top-k (the k best matches) matches the hyperbolic top-k.
 
-![Left: the only change is the sign of the query's first number; the database does an ordinary inner product. Right: hyperbolic distance falls whenever the Lorentz score rises, so sorting by highest score is the same as sorting by nearest.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/sign_flip.png)
+![Left: the only change is the sign of the query's first number; the database does an ordinary inner product. Right: hyperbolic distance falls whenever the Lorentz score rises, so sorting by highest score is the same as sorting by nearest.](https://assets.zilliz.com/hyperbolic_sign_flip_c1d0e724b0.png)
 
 ```python
 q = np.array(emb, dtype=np.float32, copy=True)   # the query vector from the model
@@ -228,16 +228,16 @@ reached a recall@10 of 0.906 with the sign flip alone. Their model, data and ind
 settings differ from ours, so that figure isn't comparable with the ones below. The next
 step, centering, is the novel part.
 
-**The math, for the curious**
-
-A point is $x = (x_0, \bar{x})$, with height $x_0$ and spatial coordinates
-$\bar{x}$. For curvature $-c$ (here $c = 0.1$):
-
-$$\langle x,y \rangle_L = -x_0 y_0 + \bar{x} \cdot \bar{y}, \qquad d(x,y) = \frac{\mathrm{arcosh}\left(-c \thinspace  \langle x,y \rangle_L\right)}{\sqrt{c}}$$
-
-$\mathrm{arcosh}$ always increases, and its argument carries a minus sign, so the
-distance $d$ always falls as $\langle x,y \rangle_L$ rises. Negating $x_0$ in the query
-turns a plain dot product into $\langle x,y \rangle_L$.
+> **The math, for the curious**
+>
+> A point is $x = (x_0, \bar{x})$, with height $x_0$ and spatial coordinates
+> $\bar{x}$. For curvature $-c$ (here $c = 0.1$):
+>
+> $$\langle x,y \rangle_L = -x_0 y_0 + \bar{x} \cdot \bar{y}, \qquad d(x,y) = \frac{\mathrm{arcosh}\left(-c \thinspace  \langle x,y \rangle_L\right)}{\sqrt{c}}$$
+>
+> $\mathrm{arcosh}$ always increases, and its argument carries a minus sign, so the
+> distance $d$ always falls as $\langle x,y \rangle_L$ rises. Negating $x_0$ in the query
+> turns a plain dot product into $\langle x,y \rangle_L$.
 
 ## Center the height
 
@@ -258,7 +258,7 @@ one ImageNet image, a miniature schnauzer. The chart labels the height $x_0$, an
 lower panel shows the fix we come to below, which subtracts the corpus average height
 $m$:
 
-![The same vector twice, on very different vertical scales. Top: on a scale set by the height (orange), the 512 numbers that tell images apart are invisible. Bottom: centered, the height drops to almost zero and the axis rescales to show them.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/vector_raw_vs_centred.png)
+![The same vector twice, on very different vertical scales. Top: on a scale set by the height (orange), the 512 numbers that tell images apart are invisible. Bottom: centered, the height drops to almost zero and the axis rescales to show them.](https://assets.zilliz.com/hyperbolic_vector_raw_vs_centred_6361f4cd02.png)
 
 As a result, almost every score is a large, nearly constant amount (about 10 in size)
 plus a tiny part that actually tells results apart. Across about 1.28 million images,
@@ -266,7 +266,7 @@ the typical gap between the first and second result is 0.0008: **under 0.01% of 
 score**. An index or compression scheme spends its accuracy on the large common part
 and loses the part that matters.
 
-![Top: a raw score drawn to scale. The gray part is shared by every result, so it says nothing about the order. Bottom: the blue tip blown up to its own scale; the gap between first and second place is all that decides the ranking. Indexes and compression spend their precision on the gray bar, not the tip.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/score_offset.png)
+![Top: a raw score drawn to scale. The gray part is shared by every result, so it says nothing about the order. Bottom: the blue tip blown up to its own scale; the gap between first and second place is all that decides the ranking. Indexes and compression spend their precision on the gray bar, not the tip.](https://assets.zilliz.com/hyperbolic_score_offset_1505590505.png)
 
 ### Why centering
 
@@ -302,15 +302,15 @@ score a query produces: the query's height times $m$. The ranking is still exact
 hyperbolic ranking. Any constant would keep the ranking exact; we use the mean because it
 leaves the stored heights as close to zero as possible (within about 0.003 of zero).
 
-**The math: why the ranking is unchanged**
-
-Store each document as $(y_0 - m, \bar{y})$ and send the query as $(-x_0, \bar{x})$. The
-inner product the database computes is
-
-$$-x_0 (y_0 - m) + \bar{x} \cdot \bar{y} = \langle x, y \rangle_L + x_0 m$$
-
-$x_0 m$ is the same for every document a query scores, so the ranking is exactly the
-Lorentz ranking; subtract $x_0 m$ from a returned score to recover the Lorentz score.
+> **The math: why the ranking is unchanged**
+>
+> Store each document as $(y_0 - m, \bar{y})$ and send the query as $(-x_0, \bar{x})$. The
+> inner product the database computes is
+>
+> $$-x_0 (y_0 - m) + \bar{x} \cdot \bar{y} = \langle x, y \rangle_L + x_0 m$$
+>
+> $x_0 m$ is the same for every document a query scores, so the ranking is exactly the
+> Lorentz ranking; subtract $x_0 m$ from a returned score to recover the Lorentz score.
 
 ### Why it should work
 
@@ -328,7 +328,7 @@ every one of them onto at most four values, so images with different heights end
 Centered, the same spread sits around zero, where fp16 has over 13,000 values to choose
 from and every image keeps its own height.
 
-![Follow each image down from its true height (top row) to the height fp16 stores. Raw (orange), the 14 images round onto 4 values and stack up, so images in the same pile tie and their order is lost. Centered (blue), every image keeps its own height. The heights are evenly spread across the measured image range; the rounding is computed.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/fp16_rounding.png)
+![Follow each image down from its true height (top row) to the height fp16 stores. Raw (orange), the 14 images round onto 4 values and stack up, so images in the same pile tie and their order is lost. Centered (blue), every image keeps its own height. The heights are evenly spread across the measured image range; the rounding is computed.](https://assets.zilliz.com/hyperbolic_fp16_rounding_405af08b3d.png)
 
 The same holds at full precision. In a brute-force search at 32-bit precision, with no
 approximation at all, the largest score error falls from $7.8 \times 10^{-6}$ to
@@ -373,7 +373,7 @@ query. Nothing re-scores or reorders the results afterwards. The only applicatio
   them exhaustively, raw vectors reach a recall@10 of
   0.607 and centered vectors 0.997.
 
-![Each row is one index or storage setting. Orange is raw, blue is centered, and further right means more of the true top 10 found; the gray bar is what centering gains. Centered is at or above raw in every row, and gains most where the approximation is coarsest: IVF clusters, the managed index and fp16.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/recall_centring_all.png)
+![Each row is one index or storage setting. Orange is raw, blue is centered, and further right means more of the true top 10 found; the gray bar is what centering gains. Centered is at or above raw in every row, and gains most where the approximation is coarsest: IVF clusters, the managed index and fp16.](https://assets.zilliz.com/hyperbolic_recall_centring_all_b22d1832e7.png)
 
 ## What we are not claiming
 

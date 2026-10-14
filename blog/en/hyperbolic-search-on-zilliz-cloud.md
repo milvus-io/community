@@ -1,19 +1,19 @@
 ---
 id: hyperbolic-search-on-zilliz-cloud.md
 title: >
- Hyperbolic search on Zilliz Cloud
+ Hyperbolic Search on Zilliz Cloud
 author: Simon Hearne
 date: 2026-10-13
-cover: raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/cover_hyperbolic-search-on-zilliz-cloud.png
+cover: assets.zilliz.com/cover_hyperbolic_search_on_zilliz_cloud_df2f495d15.png
 tag: Engineering
 recommend: false
-publishToMedium: true
+publishToMedium: false
 tags: Milvus, vector database
 meta_keywords: hyperbolic embeddings, Zilliz Cloud, AUTOINDEX, latency, capacity
 meta_title: >
- Hyperbolic search on Zilliz Cloud
+ Hyperbolic Search on Zilliz Cloud
 desc: >
- Zilliz Cloud searches hyperbolic embeddings out of the box at a recall@10 of about 0.98 in under 4 ms.
+ With one sign flip at query time and centering at ingest, Zilliz Cloud searches hyperbolic embeddings at a recall@10 of about 0.98 in about 4 ms.
 origin: https://milvus.io/blog/hyperbolic-search-on-zilliz-cloud.md
 ---
 
@@ -27,7 +27,7 @@ hyperbolic embedding is 513 numbers on a bowl-shaped surface, the *Lorentz hyper
 The first number is the point's **height** up the bowl,[^time] which rises with its
 *radius*, the distance from the center:
 
-![The curve is the bowl seen side-on: move away from the center in any direction (horizontal axis) and the height, the first number, rises (vertical axis). The vertical axis starts at 3.1, which exaggerates the curve; every point is at least 3.16 high, which is why raw heights all sit around 3.2.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/bowl_height.png)
+![The curve is the bowl seen side-on: move away from the center in any direction (horizontal axis) and the height, the first number, rises (vertical axis). The vertical axis starts at 3.1, which exaggerates the curve; every point is at least 3.16 high, which is why raw heights all sit around 3.2.](https://assets.zilliz.com/hyperbolic_bowl_height_985401d3d3.png)
 
 [^time]: Papers and code call this number the *time coordinate*. The Lorentz model
     borrows its math from special relativity, where one coordinate is time and the rest
@@ -74,7 +74,7 @@ step would work from. Each ± is a 95% confidence interval.
 | … in a 200-result shortlist | 0.923 ± 0.007 | 0.996 ± 0.002 | +0.072 |
 | … in a 1,000-result shortlist | 0.980 ± 0.004 | over 0.999 | +0.020 |
 
-![Further right is a bigger shortlist (log scale); higher means more of the true top 10 inside it. Centered (blue) starts near the top with a plain 10-result search; raw (orange) needs a 1,000-result shortlist, and a rerank, to come close.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/cloud_shortlist.png)
+![Further right is a bigger shortlist (log scale); higher means more of the true top 10 inside it. Centered (blue) starts near the top with a plain 10-result search; raw (orange) needs a 1,000-result shortlist, and a rerank, to come close.](https://assets.zilliz.com/hyperbolic_cloud_shortlist_9cd5562b84.png)
 
 Centering matters as much on a managed index as on self-hosted Milvus. Raw, the service
 misses 0.147 of the true top 10; centered, it misses 0.018. That is **88% fewer misses**,
@@ -96,7 +96,7 @@ background work), that gives at least 2.8 million embeddings per CU. The
 [pricing calculator](https://zilliz.com/pricing) turns that into a monthly cost for your
 region and corpus size.
 
-![One CU drawn as a bar from 0 to 100%. Gray is the empty cluster's overhead, dark blue our 1.28 million vectors, and pale blue the headroom left before the 80% watermark (orange line).](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/capacity.png)
+![One CU drawn as a bar from 0 to 100%. Gray is the empty cluster's overhead, dark blue our 1.28 million vectors, and pale blue the headroom left before the 80% watermark (orange line).](https://assets.zilliz.com/hyperbolic_capacity_9d716aad99.png)
 
 Larger data sets will benefit from optimization at scale, so treat this as a conservative minimum capacity. Additional fields and indexes will consume a small amount of capacity as well, so we always recommend deploying a proof-of-concept cluster to measure the real capacity for your requirements.
 
@@ -108,7 +108,7 @@ opening a connection takes 1.48 ms in-region (median), against 15.04 ms from a l
 the UK: **ten times longer before any search runs**. From the laptop, every configuration
 measured 16 to 17 ms and looked the same.
 
-![Shorter is better. From the laptop, opening a connection alone takes longer than any search we measured, enough to hide the differences between configurations, so we benchmarked in-region.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/connect_time.png)
+![Shorter is better. From the laptop, opening a connection alone takes longer than any search we measured, enough to hide the differences between configurations, so we benchmarked in-region.](https://assets.zilliz.com/hyperbolic_connect_time_80383ea734.png)
 
 We compared centered Strategy A with Strategy B from
 [part 2](https://milvus.io/blog/hyperbolic-embeddings-in-milvus.md), which stores the 512-number direction plus
@@ -179,7 +179,7 @@ million CLIP ViT-B/16[^radford2021] image vectors (512-dimensional, searched wit
 precision-first build) onto the same cluster. We timed them in the same run as centered Strategy A, using
 real CLIP text queries. Each model's recall is measured against its own exact top 10.
 
-![Each line follows one model as the search level rises (left to right); height is recall, and the label by each dot is its median latency. The latencies match at every level, so a search costs the same for both. The hyperbolic line starts lower and needs level 10 to approach CLIP.](https://raw.githubusercontent.com/milvus-io/community/master/blog/assets/hyperbolic-embeddings/cloud_level_recall.png)
+![Each line follows one model as the search level rises (left to right); height is recall, and the label by each dot is its median latency. The latencies match at every level, so a search costs the same for both. The hyperbolic line starts lower and needs level 10 to approach CLIP.](https://assets.zilliz.com/hyperbolic_cloud_level_recall_29a72d764a.png)
 
 | level | hyperbolic, A centered | p50 | CLIP, cosine | p50 |
 |---|---|---|---|---|
