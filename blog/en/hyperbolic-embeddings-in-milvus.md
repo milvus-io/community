@@ -4,7 +4,7 @@ title: >
  Hyperbolic Embeddings in Milvus
 author: Simon Hearne
 date: 2026-10-13
-cover: assets.zilliz.com/cover_hyperbolic_embeddings_in_milvus_5af2ebebe9.png
+cover: assets.zilliz.com/cover_hyperbolic_embeddings_in_milvus_9580087a87.jpg
 tag: Engineering
 recommend: false
 publishToMedium: false

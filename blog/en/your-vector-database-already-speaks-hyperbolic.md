@@ -4,7 +4,7 @@ title: >
  Your Vector Database Already Speaks Hyperbolic
 author: Simon Hearne
 date: 2026-10-14
-cover: assets.zilliz.com/cover_your_vector_database_already_speaks_hyperbolic_d8b0cbe086.png
+cover: assets.zilliz.com/cover_your_vector_database_already_speaks_hyperbolic_07e1bd06ba.jpg
 tag: Engineering
 recommend: false
 publishToMedium: false

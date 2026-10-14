@@ -4,7 +4,7 @@ title: >
  Jev’s Cheap Decisions Make Semantic Caching Worth Another Try
 author: James Luan, CTO of Zilliz
 date: 2026-10-12
-cover: assets.zilliz.com/Smart_checks_for_cached_answers_077d6a5b91.jpg
+cover: assets.zilliz.com/jevs_cheap_decisions_semantic_caching_cover_08494007d4.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true

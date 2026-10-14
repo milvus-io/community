@@ -4,7 +4,7 @@ title: >
  Hyperbolic Search on Zilliz Cloud
 author: Simon Hearne
 date: 2026-10-13
-cover: assets.zilliz.com/cover_hyperbolic_search_on_zilliz_cloud_df2f495d15.png
+cover: assets.zilliz.com/cover_hyperbolic_search_on_zilliz_cloud_8fe27353f2.jpg
 tag: Engineering
 recommend: false
 publishToMedium: false
