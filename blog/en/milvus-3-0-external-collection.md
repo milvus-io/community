@@ -4,7 +4,7 @@ title: >
  Milvus External Collection: Index and Retrieve Lake-Resident Data Without Moving It
 author: Leo Liu
 date: 2026-8-24
-cover: assets.zilliz.com/blog_cover_external_collection_3e4d7334de.jpg
+cover: assets.zilliz.com/milvus_external_collection_cover_9fd84bed69.jpg
 tag: Engineering
 recommend: false
 publishToMedium: true
