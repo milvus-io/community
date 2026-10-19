@@ -129,6 +129,8 @@ When the initial retrieval isn’t sufficient—e.g., when the user asks for som
 
 These calls typically take **3–5 seconds**, but they ensure the model always works with fresh, accurate, and relevant data—even for questions the system couldn’t anticipate beforehand.
 
+The same pattern extends beyond internal systems. When an agent needs fresh external facts, like a company's latest headcount or a person's current role, it can call a real-time data API such as [Crustdata](https://crustdata.com) at the moment of need, instead of relying on a stale snapshot baked into the prompt.
+
 This hybrid structure ensures context remains timely, correct, and task-specific, dramatically reducing the risk of context rot in long-running agent workflows.
 
 Milvus is especially effective in these hybrid scenarios because it supports:
