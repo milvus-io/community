@@ -101,7 +101,7 @@ res = MilvusClient.search(
 )
 ```
 
-See the [SVS Vamana index docs](https://milvus.io/docs/integrations/search_with_svs_vamana.md) for the full parameter reference — graph construction tuning, OOD, and the other storage kinds (FP32, FP16, SQ8 for uncompressed SVS Vamana; LVQ4x0/LVQ4x4/LVQ4x8 for LVQ quantization without dimensionality reduction).
+See the [SVS Vamana index docs](https://milvus.io/docs/search_with_svs_vamana.md) for the full parameter reference — graph construction tuning, OOD, and the other storage kinds (FP32, FP16, SQ8 for uncompressed SVS Vamana; LVQ4x0/LVQ4x4/LVQ4x8 for LVQ quantization without dimensionality reduction).
 
 **Enabling SVS.** SVS support is not enabled in the default Milvus images, so build Milvus from source with `make` `milvus USE_SVS=ON` to try it.
 
@@ -210,7 +210,7 @@ _QPS/GiB = (QPS at 99% recall, concurrency 100) ÷ (resident index memory in GiB
 
 ## Load Time
 
-One more practical dimension: **build and load time.** Because LeanVec builds a smaller, more compressed structure, SVS LeanVec also loads faster than HNSW — and its optional OOD mode lets you trade some of that build speed for better query performance, so we measured both settings. Check out the [SVS Vamana documentation](https://milvus.io/docs/integrations/search_with_svs_vamana.md) for details on disabling OOD mode to accelerate build performance when query throughput is less critical.
+One more practical dimension: **build and load time.** Because LeanVec builds a smaller, more compressed structure, SVS LeanVec also loads faster than HNSW — and its optional OOD mode lets you trade some of that build speed for better query performance, so we measured both settings. Check out the [SVS Vamana documentation](https://milvus.io/docs/search_with_svs_vamana.md) for details on disabling OOD mode to accelerate build performance when query throughput is less critical.
 
 | **Dataset** | **HNSW FP16** | **HNSW SQ8** | **SVS LeanVec (no OOD)** | **SVS LeanVec OOD** |
 | --- | --- | --- | --- | --- |
@@ -243,7 +243,7 @@ The upshot is a choice between the two LeanVec builds: **LeanVec ID builds much 
 
 The usual story with vector-index compression is "trade recall or latency for less memory — pick two." SVS LeanVec significantly shifts that across most of the workloads we tested: it beats HNSW SQ8 at 95% recall and pulls further ahead as you push to higher recall, where quantized HNSW's throughput falls off a cliff — and it stays faster than HNSW FP16, at a memory footprint near the cheap end of the scale, which is what governs how far and how affordably you can grow.
 
-If you're running HNSW today — quantized or not — and recall matters to you, SVS LeanVec is worth a side-by-side test on your own data. Grab the [SVS Vamana docs](https://milvus.io/docs/integrations/search_with_svs_vamana.md) to get started, and come tell us how it goes in the [Milvus community](https://milvus.io/community) — we read every benchmark you throw at us.
+If you're running HNSW today — quantized or not — and recall matters to you, SVS LeanVec is worth a side-by-side test on your own data. Grab the [SVS Vamana docs](https://milvus.io/docs/search_with_svs_vamana.md) to get started, and come tell us how it goes in the [Milvus community](https://milvus.io/community) — we read every benchmark you throw at us.
 
 ## Acknowledgements
 
