@@ -1,7 +1,7 @@
 ---
-id: try-woodpecker-on-your-write-workload.md
+id: How Woodpecker Keeps WAL Writes Fast and Retention Cheap in Milvus 3.0
 title: >
- Try Woodpecker on your write workload
+ How Woodpecker Keeps WAL Writes Fast and Retention Cheap in Milvus 3.0
 author: Zhenyuan Wei
 date: 2026-9-2
 cover: assets.zilliz.com/cms-cn/woodpecker_milvus_3_cover_17ea8f9006.png
