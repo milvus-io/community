@@ -2,7 +2,7 @@
 id: blog-svs-in-milvus-reshaping-the-recallmemoryspeed-trade-off.md
 title: >
  Blog | SVS in Milvus: Reshaping the Recall–Memory–Speed Trade-off
-author: default, LeanVec uses an **out-of-distribution (OOD)** mode that learns _two_ projections — one for the base vectors, one for the queries — rather than the single shared projection of the simpler in-distribution (ID) build. That extra flexibility shines when queries and indexed vectors follow different distributions (cross-modal text-to-image being the canonical case), and it helps in-distribution too. OOD costs some extra build time, so you can switch to the ID build when build speed matters more; we benchmark both.
+author: Cecilia Aguerrebere, Mihai Capota, Suleyman Sair, Alexandr Guzhva, Li Liu
 date: 2026-10-23
 cover: assets.zilliz.com/cms-cn/SVS_in_Milvus_cover_image_531edb574c.png
 tag: Engineering
@@ -85,10 +85,23 @@ index_params.add_index(
 At search time, `search_window_size` controls the recall/latency trade-off, exactly the way `ef` does for HNSW. Additionally, `search_buffer_capacity` must be at least `search_window_size`.
 
 ```
-search_params = {   "params": {       "search_window_size": 100,   # wider = higher recall, lower QPS       "search_buffer_capacity": 100,  # must be at least search_window_size   }}res = MilvusClient.search(   collection_name="your_collection_name",   anns_field="vector_field",   data=[[0.1, 0.2, 0.3, 0.4, 0.5]],   limit=10,   search_params=search_params,)
+search_params = {
+    "params": {
+        "search_window_size": 100,      # wider = higher recall, lower QPS
+        "search_buffer_capacity": 100,  # must be at least search_window_size
+    }
+}
+
+res = MilvusClient.search(
+    collection_name="your_collection_name",
+    anns_field="vector_field",
+    data=[[0.1, 0.2, 0.3, 0.4, 0.5]],
+    limit=10,
+    search_params=search_params,
+)
 ```
 
-See the [SVS Vamana index docs](https://milvus.io/docs/svs-vamana.md) for the full parameter reference — graph construction tuning, OOD, and the other storage kinds (FP32, FP16, SQ8 for uncompressed SVS Vamana; LVQ4x0/LVQ4x4/LVQ4x8 for LVQ quantization without dimensionality reduction).
+See the [SVS Vamana index docs](https://milvus.io/docs/integrations/search_with_svs_vamana.md) for the full parameter reference — graph construction tuning, OOD, and the other storage kinds (FP32, FP16, SQ8 for uncompressed SVS Vamana; LVQ4x0/LVQ4x4/LVQ4x8 for LVQ quantization without dimensionality reduction).
 
 **Enabling SVS.** SVS support is not enabled in the default Milvus images, so build Milvus from source with `make` `milvus USE_SVS=ON` to try it.
 
@@ -102,6 +115,13 @@ See the [SVS Vamana index docs](https://milvus.io/docs/svs-vamana.md) for the fu
 
 We benchmarked SVS LeanVec (`LeanVec4x8` storage — 4-bit primary, 8-bit secondary — both with and without OOD, at several search-window sizes) against Milvus's Faiss-backed `HNSW_SQ` index in both its `FP16` and `SQ8` scalar-quantization storage modes, across four dataset/scale combinations:
 
+| **Dataset** | **Dimensions** | **Vectors** |
+| ----------- | -------------- | ----------- |
+| Cohere      | 768            | 1M          |
+| Bioasq      | 1024           | 1M          |
+| OpenAI      | 1536           | 500K        |
+| OpenAI      | 1536           | 5M          |
+
 For each dataset, we swept every index's search parameters across a range of recall values — tracing the full recall-vs-QPS curves — at both **k=10 and k=100**. We measured **index load time**, **queries per second (QPS)**, and **P99 latency**, at a fixed concurrency of 100 client threads.
 
 We use HNSW's **16-bit FP16** mode as the heavyweight baseline rather than uncompressed 32-bit FP32. FP32 stores twice the bytes per vector (≈2× FP16's memory) with no search-throughput benefit and essentially identical recall, so FP16 is the stronger, more cost-competitive HNSW to compare against — SVS's memory lead over plain FP32 HNSW would only be wider.
@@ -112,6 +132,13 @@ We use HNSW's **16-bit FP16** mode as the heavyweight baseline rather than uncom
 
 The figure in the intro is Cohere; the same pattern holds across all four datasets and the whole recall range. The tables and figures that follow are at k=10; we also evaluated k=100, which tells the same story — SVS LeanVec on top across the recall range. The SVS numbers use LeanVec with OOD on. OOD improves query throughput over the faster-to-build in-distribution (ID) variant — a small edge at ~95% recall that widens at higher targets (and larger still on cross-modal data) — in exchange for extra build time (see Load Time). The overall comparison holds either way; the margins here are with OOD on. Start at a mainstream operating point — around 95% recall — where SVS LeanVec already beats HNSW SQ8, the cheapest HNSW configuration, on **every dataset**, on **both** QPS and P99 latency:
 
+| **Dataset** | **HNSW SQ8 QPS** | **HNSW SQ8 P99** | **SVS LeanVec QPS** | **SVS LeanVec P99** | **QPS gain** | **Latency cut** |
+| --- | --- | --- | --- | --- | --- | --- |
+| Cohere 1M (768D) | 8,723 | 21.15 ms | **12,233** | **16.08 ms** | ×1.40 | −24% |
+| Bioasq 1M (1024D) | 3,637 | 42.93 ms | **6,691** | **26.54 ms** | ×1.84 | −38% |
+| OpenAI 500K (1536D) | 7,367 | 23.95 ms | **10,828** | **17.83 ms** | ×1.47 | −26% |
+| OpenAI 5M (1536D) | 3,610 | 42.50 ms | **6,595** | **26.65 ms** | ×1.83 | −37% |
+
 _All recall values calibrated to 95% at k=10; concurrency = 100._
 
 **Key findings:**
@@ -121,6 +148,12 @@ _All recall values calibrated to 95% at k=10; concurrency = 100._
 -   SVS LeanVec also **outran HNSW FP16** on every dataset here — despite FP16 storing every dimension at 16 bits with no dimensionality reduction at all.
 
 But 95% is just one point on the curve — and **the SVS advantage grows as you demand higher recall.** As the intro figure shows, SVS LeanVec's throughput declines gently as recall rises while quantized HNSW SQ8's falls off a cliff. The Cohere-1M numbers make the divergence concrete:
+
+| **Recall target** | **HNSW SQ8 QPS** | **HNSW SQ8 P99** | **SVS LeanVec QPS** | **SVS LeanVec P99** |
+| --- | --- | --- | --- | --- |
+| 95% | 8,723 | 21.15 ms | **12,233** | **16.08 ms** |
+| 98% | 5,266 | 32.44 ms | **10,167** | **18.45 ms** |
+| 99% | 1,590 | 86.23 ms | **7,252** | **24.59 ms** |
 
 The SVS advantage **grows from ×1.4 at 95% recall to ×1.9 at 98% and ×4.6 at 99%.** By 99%, HNSW SQ8's throughput has collapsed to roughly a **fifth** of its 95% number and its P99 latency has more than **quadrupled** — the search window it needs on quantized vectors is that wide — while SVS LeanVec has given up far less.
 
@@ -148,6 +181,13 @@ Speed is half the story; the other half is what it costs to keep that speed onli
 
 Here's what we actually measured: the **resident memory of the loaded index while serving queries** — the number that sets your ongoing cost in Milvus, since it's what each QueryNode holds in RAM, deciding how many vectors fit per node and multiplying with every replica you load.
 
+| **Dataset** | **HNSW FP16** | **HNSW SQ8** | **SVS LeanVec (LeanVec4x8)** | **SVS vs. FP16** |
+| --- | --- | --- | --- | --- |
+| Cohere 1M (768D) | 1.7 GiB | 0.97 GiB | **1.1 GiB** | ×0.65 |
+| Bioasq 1M (1024D) | 2.2 GiB | 1.2 GiB | **1.5 GiB** | ×0.68 |
+| OpenAI 500K (1536D) | 1.6 GiB | 0.84 GiB | **0.91 GiB** | ×0.57 |
+| OpenAI 5M (1536D) | 15.6 GiB | 8.4 GiB | **9.0 GiB** | ×0.58 |
+
 _Resident memory of the vector index loaded and serving on the QueryNode (Milvus's reported_ `_vector_index_` _metric), measured on the benchmark host. SVS config:_ `_LeanVec4x8_`_, LeanVec dim = 256 (Cohere / OpenAI) and 512 (Bioasq)._
 
 One note on the transient: loading an index into a QueryNode briefly needs more than its resident footprint while the segment is brought into memory — but that overhead is proportionally similar across all three indexes, so the ranking is unchanged: SVS LeanVec's peak while loading stays well below HNSW FP16's, matching its steady-state footprint advantage.
@@ -158,13 +198,26 @@ Across every dataset, **SVS LeanVec's serving footprint is 57–68% of HNSW FP16
 
 What that footprint actually buys you is clearest when you divide throughput by it: **queries per second per GiB of index** — how much throughput each GiB of RAM buys you. Higher is cheaper. Here it is at 99% recall, where the memory and speed stories compound:
 
+| **Dataset** | **HNSW FP16 (QPS/GiB)** | **HNSW SQ8 (QPS/GiB)** | **SVS LeanVec (QPS/GiB)** | **SVS vs. FP16** |
+| --- | --- | --- | --- | --- |
+| Cohere 1M (768D) | 2,866 | 1,639 | **6,593** | ×2.3 |
+| OpenAI 500K (1536D) | 2,418 | _stalls below 99%_ | **4,970** | ×2.1 |
+| OpenAI 5M (1536D) | 76 | _stalls below 99%_ | **112** | ×1.5 |
+
 _QPS/GiB = (QPS at 99% recall, concurrency 100) ÷ (resident index memory in GiB). Bioasq is omitted here — no index reaches 99% recall on it (see the note above). SQ8 stalls below 99% on both OpenAI datasets._
 
 **SVS LeanVec delivers 1.5–2.3× more queries per second per GiB than HNSW FP16 at 99% recall.** The metric flatters SVS not through arithmetic but because SVS is the only index here that's simultaneously _fast_ (numerator) and _small_ (denominator) at high recall — FP16 is fast but memory-hungry; SQ8 is small but can't reach 99% on most datasets. The clearest illustration is OpenAI-5M: even though FP16 posts slightly _higher_ raw QPS there (1,186 vs 1,011), SVS still delivers ~1.5× more throughput per GiB, because it does it in 9.0 GiB instead of 15.6 GiB.
 
 ## Load Time
 
-One more practical dimension: **build and load time.** Because LeanVec builds a smaller, more compressed structure, SVS LeanVec also loads faster than HNSW — and its optional OOD mode lets you trade some of that build speed for better query performance, so we measured both settings. Check out the [SVS Vamana documentation](https://milvus.io/docs/svs-vamana.md) for details on disabling OOD mode to accelerate build performance when query throughput is less critical.
+One more practical dimension: **build and load time.** Because LeanVec builds a smaller, more compressed structure, SVS LeanVec also loads faster than HNSW — and its optional OOD mode lets you trade some of that build speed for better query performance, so we measured both settings. Check out the [SVS Vamana documentation](https://milvus.io/docs/integrations/search_with_svs_vamana.md) for details on disabling OOD mode to accelerate build performance when query throughput is less critical.
+
+| **Dataset** | **HNSW FP16** | **HNSW SQ8** | **SVS LeanVec (no OOD)** | **SVS LeanVec OOD** |
+| --- | --- | --- | --- | --- |
+| Cohere 1M (768D) | 740 s | 740 s | **521 s** (×0.70) | 716 s (×0.97) |
+| Bioasq 1M (1024D) | 791 s | 831 s | **620 s** (×0.78) | 1,532 s (×1.94) |
+| OpenAI 500K (1536D) | 621 s | 621 s | **390 s** (×0.63) | 658 s (×1.06) |
+| OpenAI 5M (1536D) | 6,270 s | 7,650 s | **3,811 s** (×0.61) | 6,326 s (×1.01) |
 
 _Total build/load time; × values are relative to HNSW FP16. The query results elsewhere in this post use the OOD build._
 
@@ -177,12 +230,21 @@ The upshot is a choice between the two LeanVec builds: **LeanVec ID builds much 
 
 ## Which Index Should You Actually Use?
 
+| **Your situation** | **Use this** | **Why** |
+| --- | --- | --- |
+| ~95% recall is enough, tightest memory budget | SVS LeanVec _or_ HNSW SQ8 | Both are cheap; SVS gives you more QPS and lower latency at the same recall and leaves you room to raise recall later without re-architecting. |
+| You need 98–99% recall | SVS LeanVec | HNSW SQ8 either collapses in throughput or can't calibrate to the target at all; SVS stays fast and gets there. |
+| You're on HNSW FP16 today for high recall | SVS LeanVec | Match or beat FP16 QPS/latency at a fraction of the memory — the clearest TCO win in our data. |
+| Cross-modal / distribution-shifted queries | SVS LeanVec (OOD, the default) | OOD's separate base/query projections help most when queries and indexed vectors follow different distributions. |
+| Fastest builds, or recall around ~95% | SVS LeanVec with OOD off (ID) | Builds faster than the default, with near-OOD query performance at mainstream recall. |
+| Very high recall at very large scale (multi-M, high-D) | SVS LeanVec, tune the LeanVec dim | A gentler dimensionality reduction trades a little memory back for throughput; the one place raw FP16 can still edge ahead. |
+
 ## Wrapping Up
 
 The usual story with vector-index compression is "trade recall or latency for less memory — pick two." SVS LeanVec significantly shifts that across most of the workloads we tested: it beats HNSW SQ8 at 95% recall and pulls further ahead as you push to higher recall, where quantized HNSW's throughput falls off a cliff — and it stays faster than HNSW FP16, at a memory footprint near the cheap end of the scale, which is what governs how far and how affordably you can grow.
 
-If you're running HNSW today — quantized or not — and recall matters to you, SVS LeanVec is worth a side-by-side test on your own data. Grab the [SVS Vamana docs](https://milvus.io/docs/svs-vamana.md) to get started, and come tell us how it goes in the [Milvus community](https://milvus.io/community) — we read every benchmark you throw at us.
+If you're running HNSW today — quantized or not — and recall matters to you, SVS LeanVec is worth a side-by-side test on your own data. Grab the [SVS Vamana docs](https://milvus.io/docs/integrations/search_with_svs_vamana.md) to get started, and come tell us how it goes in the [Milvus community](https://milvus.io/community) — we read every benchmark you throw at us.
 
-**Acknowledgements**
+## Acknowledgements
 
-We would like to thank everyone at Intel and Zilliz who worked together to bring the Intel SVS library into Milvus. From Intel, this includes Andreas Huber, Dmitry Razdoburdin, Ethan Glaser, Igor Konopko, Rafik Saliev, and Yue Jiao; from Zilliz, the Knowhere and Milvus teams, who integrated and validated SVS in Knowhere and Milvus.
+We would like to thank everyone at Intel and Zilliz who worked together to bring the Intel SVS library into Milvus. From Intel, this includes Andreas Huber, Dmitry Razdoburdin, Ethan Glaser, Igor Konopko, Rafik Saliev, and Yue Jiao; from Zilliz, Li Liu, Alexandr Guzhva, and the whole Knowhere and Milvus teams, who integrated and validated SVS in Knowhere and Milvus.
