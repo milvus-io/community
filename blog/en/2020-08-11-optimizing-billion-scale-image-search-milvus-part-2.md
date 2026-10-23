@@ -77,7 +77,7 @@ In practical terms, image content is often transmitted through the network. Ther
     import io
     from PIL import Image
 
-    # img_bytes: 图片内容 bytes
+    # img_bytes: image content as bytes
     img = Image.open(io.BytesIO(img_bytes))
     img = img.convert('RGB')
 
