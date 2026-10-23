@@ -1,7 +1,7 @@
 ---
 id: blog-svs-in-milvus-reshaping-the-recallmemoryspeed-trade-off.md
 title: >
- Blog | SVS in Milvus: Reshaping the Recall–Memory–Speed Trade-off
+ SVS in Milvus: Reshaping the Recall–Memory–Speed Trade-off
 author: Cecilia Aguerrebere, Mihai Capota, Suleyman Sair, Alexandr Guzhva, Li Liu
 date: 2026-10-23
 cover: assets.zilliz.com/cms-cn/SVS_in_Milvus_cover_image_531edb574c.png
@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database, SVS, LeanVec
 meta_keywords: Milvus SVS Vamana, LeanVec compression, vector search memory optimization, HNSW vs SVS, Vamana graph index, vector database TCO
 meta_title: >
- SVS in Milvus: Higher Recall, Smaller Memory Footprint, Faster Queries
+ SVS in Milvus: Reshaping the Recall–Memory–Speed Trade-off
 desc: >
  SVS Vamana with LeanVec compression beats HNSW SQ8 on QPS and latency at 95% recall, keeps climbing to 98% and 99% recall where HNSW SQ8 falls over, and gets there faster than HNSW FP16 — with a memory footprint that keeps your bill under control at scale.
 origin: https://milvus.io/blog/blog-svs-in-milvus-reshaping-the-recallmemoryspeed-trade-off.md
