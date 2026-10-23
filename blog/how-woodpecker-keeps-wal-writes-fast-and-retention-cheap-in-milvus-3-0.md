@@ -1,5 +1,5 @@
 ---
-id: How Woodpecker Keeps WAL Writes Fast and Retention Cheap in Milvus 3.0
+id: how-woodpecker-keeps-wal-writes-fast-and-retention-cheap-in-milvus-3-0.md
 title: >
  How Woodpecker Keeps WAL Writes Fast and Retention Cheap in Milvus 3.0
 author: Zhenyuan Wei
@@ -14,7 +14,7 @@ meta_title: >
  Milvus 3.0 Woodpecker Service Mode for Low Latency WAL
 desc: >
  Explore how Woodpecker Service mode in Milvus 3.0 separates fast WAL writes from log retention with direct replication, local reads, and object storage.
-origin: https://milvus.io/blog/try-woodpecker-on-your-write-workload.md
+origin: https://milvus.io/blog/how-woodpecker-keeps-wal-writes-fast-and-retention-cheap-in-milvus-3-0.md
 ---
 Write-ahead logging (WAL) has always been a balancing act between three goals: durability, latency, and cost.
 
