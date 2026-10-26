@@ -2,7 +2,7 @@
 id: blog-svs-in-milvus-reshaping-the-recallmemoryspeed-trade-off.md
 title: >
  SVS in Milvus: Reshaping the Recall–Memory–Speed Trade-off
-author: Cecilia Aguerrebere, Mihai Capota, Suleyman Sair, Alexandr Guzhva, Li Liu
+author: Cecilia Aguerrebere, Mihai Capotă, Suleyman Sair, Alexandr Guzhva, Li Liu
 date: 2026-10-23
 cover: assets.zilliz.com/cms-cn/SVS_in_Milvus_cover_image_531edb574c.png
 tag: Engineering
