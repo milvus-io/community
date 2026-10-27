@@ -3,7 +3,7 @@ id: milvus-3-0-embedding-model-migration.md
 title: >
  How to Switch Embedding Models in Milvus Without Rebuilding Your Collection
 author: Jack Li
-date: 2026-10-27
+date: 2026-10-22
 cover: assets.zilliz.com/cms-cn/How_to_Switch_Embedding_Models_cover_image_1f20d44e26.jpg
 tag: Engineering
 recommend: false
@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Milvus 3.0, embedding model migration, RAG retrieval, vector field updates, embedding model evaluation
 meta_title: >
- Embedding Model Migration with Milvus 3.0
+ How to Switch Embedding Models in Milvus Without Rebuilding Your Collection
 desc: >
  Learn how to upgrade embedding models in Milvus 3.0 while keeping search online, with vector backfill, retrieval evaluation, gradual rollout, and rollback.
 origin: https://milvus.io/blog/milvus-3-0-embedding-model-migration.md
