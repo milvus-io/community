@@ -24,7 +24,7 @@ Milvus 3.0 lets you add and remove vector fields online. You can keep the curren
 
 <p align="center">Figure 1. The six stages of an embedding model migration.</p>
 
-# Set up the experiment
+## Set up the experiment
 
 The example uses BEIR’s SciFact dataset: 5,183 scientific documents and 300 test queries with relevance judgments. Each document’s title and abstract form one text chunk, stored as one entity. Primary keys, chunking, and text preparation stay the same throughout the migration so the evaluation isolates the model change.
 
@@ -57,7 +57,7 @@ A successful run exits with status `0`. Check `artifacts/LATEST_SUCCESS` for the
 
 The snippets below explain the stages implemented by the script. You do not need to execute them again after running it. They share the same client, model instances, and collection name. The HTTP examples in Step 5 illustrate the script’s interface; the automated run controls those requests itself.
 
-# Step 1 Build retrieval with the current model
+## Step 1 Build retrieval with the current model
 
 | **Role** | **Model** | **Dimensions** |
 | --- | --- | --- |
@@ -68,7 +68,7 @@ Table 1. Embedding models and their output dimensions.
 
 Both models accept up to 512 tokens per input; longer inputs are truncated. The reported retrieval metrics use this limit and the text preparation described above.
 
-## Initialize the models and client
+### Initialize the models and client
 
 Load both models with `SentenceTransformerEmbeddingFunction`. The code pins their revisions through `MODEL_REVISIONS` in the repository. Throughout the tutorial, `model_a`, `vector_a`, and route `"A"` refer to BGE-small-en-v1.5; their B counterparts refer to BGE-base-en-v1.5.
 
@@ -111,7 +111,7 @@ model_b.model.max_seq_length = 512
 
 The query instruction is configured once through `query_instruction`. Use `encode_queries()` for query text and `encode_documents()` for document text; these methods apply the appropriate instruction settings.
 
-## Create the collection and insert documents
+### Create the collection and insert documents
 
 The initial collection stores the document ID, title, source text, and the current model’s vector:
 
@@ -183,7 +183,7 @@ client.load_collection(name)
 
 The collection is ready for searches that encode queries with BGE-small-en-v1.5 and target `vector_a`. Keep that pair serving requests while preparing the replacement model.
 
-# Step 2 Add the replacement vector field
+## Step 2 Add the replacement vector field
 
 BGE-small-en-v1.5 produces 384-dimensional vectors; BGE-base-en-v1.5 produces 768-dimensional vectors. The replacement model therefore needs its own field and index. Writing its vectors to `vector_a` would fail dimension validation. Even when dimensions match, different models’ embeddings generally should not share a retrieval space.
 
@@ -202,7 +202,7 @@ create_vector_index("vector_b")
 
 Added fields must use `nullable=True`. Existing records have no replacement-model vector yet, so Milvus represents that value as `NULL`. Adding the field does not run embedding inference; the application must compute and write the vectors. Queries still use the current model and `vector_a`.
 
-# Step 3 Backfill the replacement vectors
+## Step 3 Backfill the replacement vectors
 
 Read the source text in batches, encode it with BGE-base-en-v1.5, and write the vectors to `vector_b` using the existing primary keys. Set `partial_update=True` to preserve the title, source text, and `vector_a` values omitted from each upsert.
 
@@ -251,7 +251,7 @@ After the first batch, the example includes `vector_b` in the loaded fields and 
 
 The evaluation uses a fixed corpus. In a live application, you must also synchronize documents created or changed during backfill. Keep current-model vectors up to date throughout the rollback window, and confirm that replacement-model vectors have caught up before shifting traffic.
 
-# Step 4 Validate the backfill and compare retrieval
+## Step 4 Validate the backfill and compare retrieval
 
 Before sending traffic to the replacement model, confirm that all required vectors have been written, incremental synchronization is complete, the new index is ready, and `vector_b` is loaded. Search the new field to verify retrieval. The complete script also checks the stored text and vectors record by record. Continue using the current model if any check fails.
 
@@ -278,7 +278,7 @@ while True:
 
 An index-ready state does not by itself confirm that every document has a replacement vector. Complete the backfill checks before evaluating or switching traffic.
 
-## Evaluate both models on the same queries
+### Evaluate both models on the same queries
 
 The experiment compares two metrics across all 300 SciFact test queries:
 
@@ -310,7 +310,7 @@ For the baseline, encode the same queries with `model_a` and search `vector_a`. 
 
 In the source experiment, Recall@10 increased from 0.8362 to 0.8742, and nDCG@10 increased from 0.7127 to 0.7404. These results apply to this corpus, query set, and configuration. Evaluate the replacement model on your own workload before moving production traffic.
 
-# Step 5 Shift traffic and retain rollback
+## Step 5 Shift traffic and retain rollback
 
 Once validation passes, send a small share of requests to the replacement model. Monitor retrieval quality, latency, and error rates before increasing that share. During the observation period, keep the current model available for inference and its document vectors up to date.
 
@@ -366,7 +366,7 @@ curl http://localhost:8080/route \
 
 Retain both vector fields, address the issue, and repeat Step 4’s validation before trying the switch again.
 
-# Step 6 Remove the old vector field
+## Step 6 Remove the old vector field
 
 After the observation period, confirm that rollback is no longer needed. Route all requests to the replacement model, stop writing current-model vectors, and wait for all in-flight requests using the current model to finish. Then remove `vector_a`:
 
@@ -382,11 +382,11 @@ Dropping the field ends the simple rollback path: changing the route alone can n
 
 Physical space in object storage is reclaimed later by background processes. During migration, budget for both sets of vectors and indexes, along with the additional embedding inference cost.
 
-# Complete the migration
+## Complete the migration
 
 The migration is complete when searches use BGE-base-en-v1.5 with `vector_b`, new writes populate that field, and the unused field and index have been removed. Keeping both retrieval versions available through backfill, evaluation, and rollout gives you time to validate the replacement before committing to it. Use the same sequence with a representative corpus and query set when planning your own model upgrade.
 
-# References
+## References
 
 [Complete experiment and reproduction instructions](https://github.com/JackLCL/milvus-embedding-model-migration)
 
