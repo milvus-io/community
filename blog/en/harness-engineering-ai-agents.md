@@ -103,6 +103,8 @@ The solo agent produced a game that technically launched, but entity-to-runtime 
 
 The three-agent architecture cost roughly 20x more. The output crossed from unusable to usable. That's the core trade Harness Engineering makes: structural overhead in exchange for reliability.
 
+For a practical walkthrough of working with AI coding agents, see [DECODE’s guide](https://decode.agency/article/how-to-use-ai-coding-agents/).
+
 ## The Retrieval Problem Inside Every Agent Harness
 
 Both patterns — the structured `docs/` system and the Generator/Evaluator sprint cycle — share a silent dependency: the agent must find the right information from a live, evolving knowledge base when it needs it.
