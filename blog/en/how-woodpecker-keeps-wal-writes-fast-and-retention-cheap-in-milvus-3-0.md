@@ -35,7 +35,7 @@ This article starts with the embedded write path, then examines how Service mode
 
 The embedded path is deliberately small. A Woodpecker client inside Milvus collects writes in memory and flushes a batch to object storage. Etcd holds the log metadata. No dedicated log servers sit between the client and storage.
 
-![](./try-woodpecker-on-your-write-workload-1.png)
+![](./how-woodpecker-keeps-wal-writes-fast-and-retention-cheap-in-milvus-3-0-1.png)
 
 _Figure 1. Embedded mode buffers writes inside Milvus and sends batches directly to object storage._
 
@@ -47,7 +47,7 @@ The batching window sets the limit. A write cannot complete until its batch reac
 
 Service mode places LogStore replicas between the Woodpecker client and object storage. The client writes to the replicas, waits for a quorum, and can complete the append before the log has been uploaded to object storage. This keeps the object storage upload out of the write's acknowledgment path.
 
-![](./try-woodpecker-on-your-write-workload-2.png)
+![](./how-woodpecker-keeps-wal-writes-fast-and-retention-cheap-in-milvus-3-0-2.png)
 
 _Figure 2. LogStore replicas acknowledge new writes; rolled segments are uploaded to shared object storage._
 
