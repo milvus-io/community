@@ -22,7 +22,7 @@ Choosing between them starts with what your retrieval stage needs to deliver\. A
 
 To compare these choices, we benchmarked all four index types in **Milvus 2.6.17** on the **VectorDBBench Cohere 1M** dataset\. We measured recall, throughput, latency, memory, and build cost, then varied quantization precision, search breadth, and refinement\. The results show where each tested configuration worked well and which adjustments were worth making when recall fell short\.
 
-# How the four HNSW index types differ
+## How the four HNSW index types differ
 
 HNSW organizes vectors into a hierarchical proximity graph\. Search starts in the sparse upper layers, moves toward a promising region, and expands candidates in the bottom layer\. Milvus's HNSW variants share this search framework; the main difference is the vector representation used for graph construction and distance calculations\.
 
@@ -39,25 +39,25 @@ These are starting points for evaluation\. Within each quantized index type, the
 
 Figure 1. Milvus HNSW index variants share the same graph\-search framework while using different vector representations\. Optional refinement applies to the quantized variants; their graph connections need not match FP32 HNSW\.
 
-## HNSW keeps the full vector representation
+### HNSW keeps the full vector representation
 
 Our standard HNSW configuration uses FP32 vectors, with no vector quantization\. It provides a reference for measuring what compression changes: the recall difference, query performance, memory usage, and build time\.
 
 Full\-precision vectors do not make HNSW search exact\. Graph traversal still determines which candidates are found\. Establishing an FP32 reference therefore includes tuning the graph search, rather than assuming an unquantized index will return every true nearest neighbor\.
 
-## HNSW_SQ reduces precision dimension by dimension
+### HNSW_SQ reduces precision dimension by dimension
 
 **Scalar quantization \(SQ\)** represents each dimension with fewer bits\. SQ8 and SQ6 use 8 and 6 bits per dimension, respectively, with separately estimated ranges for each dimension\. They retain the vector's dimensional structure while reducing the precision of individual values\.
 
 SQ4U, available in Milvus 2.6.8 and later, uses 4\-bit unsigned values with a shared global range\. That shared range makes it better suited to normalized vectors or datasets with similar value distributions across dimensions\. A smaller representation can save more space, but its effect on recall and throughput needs measurement; lowering the bit width does not guarantee a useful performance improvement\.
 
-## HNSW_PQ compresses groups of dimensions
+### HNSW_PQ compresses groups of dimensions
 
 **Product quantization \(PQ\)** divides a vector into m subvectors and represents each with an index into a learned codebook\. The parameter nbits determines the number of bits used for each codebook index\. Together, m and nbits control the code length and the approximation budget\.
 
 For our 768\-dimensional vectors, m=96 gives eight dimensions per subvector\. With nbits=8, each codebook index takes one byte, producing a 96\-byte code per vector\. This is much smaller than the 768\-byte SQ8 representation in the same test, but it is also a different compression budget\. Comparing the two requires considering the resulting recall, not just the index size\.
 
-## HNSW_PRQ also encodes the remaining approximation error
+### HNSW_PRQ also encodes the remaining approximation error
 
 **Product residual quantization \(PRQ\)** uses additional stages to encode the error left by earlier approximations\. After a first PQ approximation, another stage encodes its residual\. More stages retain additional information and add encoding, training, and search work\.
 
@@ -80,7 +80,7 @@ For PQ, the code length is m × nbits / 8 bytes; PRQ multiplies that budget by n
 
 Vector representation can also affect the graph itself\. Quantization error may change neighbor selection during construction and candidate ordering during search, so using the same graph parameters does not guarantee identical connections across index types\.
 
-# Where refinement fits into the choice
+## Where refinement fits into the choice
 
 Quantization affects the distances used to find and rank candidates\. **Refinement** gives a quantized index another representation for the final ranking step: the base index retrieves candidates, Milvus recomputes their distances using refine_type, and the search returns the best TopK results after reranking\.
 
@@ -105,7 +105,7 @@ ef and refine_k address different parts of this process\. Increasing ef widens g
 
 The retained refinement representation adds index storage and runtime memory costs\. FP32 refinement requires access to full\-precision vectors, although their physical memory residency depends on memory mapping, the page cache, loading behavior, and access patterns\.
 
-# What we benchmarked
+## What we benchmarked
 
 We used the same dataset and graph construction parameters to compare selected configurations across all four index types\. The tests examined both the base indexes and the cost of recovering recall through refinement\.
 
@@ -134,7 +134,7 @@ The resource measurements use these definitions:
 
 The client and Milvus shared one VM and competed for CPU resources\. The results exclude cross\-host network latency\. These measurements compare configurations within this environment and should not be used directly to size another deployment\.
 
-# What the index comparison shows
+## What the index comparison shows
 
 The main comparison used configured ef=256. Refined configurations used FP32 and refine_k=4. Matching the configured ef does not make the query work equal: refinement asks the base search for a larger candidate set and then recomputes distances\.
 
@@ -166,7 +166,7 @@ Table 1. Recall and query performance at configured ef=256. Each peak QPS value 
 
 Table 2. Resource measurements for the same configurations\. Memory and index artifacts are increases measured as defined above\.
 
-## SQ8 was a strong first compression option
+### SQ8 was a strong first compression option
 
 SQ8 without refinement kept recall close to the FP32 reference: 0.9761 versus 0.9807, a difference of **0.46 percentage points**\. Its peak throughput was 793.1 QPS versus 614.8 QPS, about 1.29 times as high, although the peaks occurred at different concurrency levels\.
 
@@ -184,7 +184,7 @@ Table 3. SQ configurations without refinement at ef=256. Latency is serial; memo
 
 SQ6 saved another 178 MB of memory relative to SQ8, while recall fell by about 2.0 percentage points and peak throughput stayed almost unchanged\. SQ4U delivered higher throughput and lower memory usage, with recall of 0.8861. The lower\-bit configurations offer additional compression, but they need a quality requirement that justifies that loss or a way to recover it\.
 
-## PQ and PRQ made different compromises for smaller codes
+### PQ and PRQ made different compromises for smaller codes
 
 Without refinement, the tested PQ configuration had the smallest memory increase, 446 MB, with Recall@100 of 0.6083. PRQ's larger code budget improved recall to 0.7869 and used 516 MB\. Both were substantially smaller than SQ8 in this setup, with much lower recall at the tested TopK\.
 
@@ -192,17 +192,17 @@ Build cost further separated them\. PQ took 363.3 seconds to build; PRQ took 5,3
 
 The results describe these particular code budgets\. They do not establish a fixed recall ceiling for PQ or an inherent build time for PRQ\. Changing m, nbits, or nrq can change the comparison\.
 
-## FP32 refinement changed the resource comparison
+### FP32 refinement changed the resource comparison
 
 With refine_k=4, SQ8 plus FP32 refinement reached 0.9881 Recall@100, but its memory increase rose to 3,975 MB, above the 3,217 MB FP32 HNSW reference\. PQ reached 0.9667 with 3,422 MB, and PRQ reached 0.9869 with 3,508 MB\.
 
 PRQ also retained its long build time and higher query latency\. With refinement, it delivered 420.4 peak QPS and 109.5 ms P95 at that operating point\. Refinement made higher recall possible, but comparing only the base codes would substantially understate the resulting configuration's cost\.
 
-# Which adjustments recovered recall
+## Which adjustments recovered recall
 
 The base comparison identifies the tradeoffs at one set of search parameters\. The following sweeps test what to change when a configuration misses the required recall\.
 
-## Widening graph search helped SQ8 more than the tested PQ encoding
+### Widening graph search helped SQ8 more than the tested PQ encoding
 
 |**Configuration**|**ef=128**|**ef=256**|**ef=512**|
 |---|---|---|---|
@@ -229,7 +229,7 @@ Figure 4. Peak QPS versus configured ef from the separate parameter sweep\. Refi
 
 Wider search generally reduced throughput\. An increase in ef is useful when the resulting recall gain is worth its latency and throughput cost\.
 
-## More refinement candidates improved recall and reduced throughput
+### More refinement candidates improved recall and reduced throughput
 
 With FP32 refinement enabled and configured ef=256, increasing refine_k produced these recall results:
 
@@ -271,7 +271,7 @@ Table 6. SQ configurations with FP32 refinement at configured ef=256 and refine_
 
 SQ4U retained a throughput advantage, but its 0.9899 recall did not meet a strict 0.99 minimum\. These are nearby recall points, not an equal\-recall comparison\. Lower\-bit SQ remains worth evaluating when throughput matters, even if FP32 refinement absorbs much of the memory savings\.
 
-## Refinement precision offered another way to control cost
+### Refinement precision offered another way to control cost
 
 FP32 is one choice of refinement representation\. At ef=256 and refine_k=4, we also tested SQ8 refinement for SQ6 and SQ4U:
 
@@ -288,23 +288,23 @@ For SQ6, switching refinement from FP32 to SQ8 reduced the memory increase from 
 
 SQ4U with SQ8 refinement used 1,381 MB and reached 0.9779 recall\. It may be useful when that recall is sufficient, but it did not meet a strict 0.98 threshold at these settings\. Select the refinement precision and candidate count together; the highest\-precision representation may exceed what the application needs and can afford\.
 
-## What these experiments do not establish
+### What these experiments do not establish
 
 The benchmark covers Cohere 1M's 768\-dimensional vectors, COSINE, and TopK=100. We did not sweep M, efConstruction, m, nbits, or nrq, or test BF16 and FP16 encodings\. The VM exposed a QEMU virtual block device, so the physical storage type and host\-level I/O contention were not observable\.
 
 The experiments also excluded scalar filters, hybrid retrieval, ongoing inserts and deletes, compaction, cluster deployments, and multitenant contention\. Different vector distributions, dimensions, metrics, TopK values, and hardware can change the results\. The measurements narrow the configurations worth testing; they do not determine a universal best index\.
 
-# Matching an index to your workload
+## Matching an index to your workload
 
 The first decision is the minimum acceptable result quality at the TopK your application actually uses\. After that, compare the complete configurations against throughput, concurrent latency, memory, index storage, and build\-window requirements\.
 
-## For a full precision reference start with HNSW
+### For a full precision reference start with HNSW
 
 Use FP32 HNSW to establish recall and latency before quantization, sweeping ef under fixed M and efConstruction\. This gives you a reference for deciding whether a quantized configuration saves enough resources to justify its recall loss or additional refinement work\.
 
 If memory permits and the recall requirement is demanding, keep that reference in the final comparison\. A refined quantized configuration that beats one FP32 recall point may be doing more candidate retrieval and reranking work; compare the resulting service performance as well\.
 
-## For balanced recall and resource usage evaluate SQ8 first
+### For balanced recall and resource usage evaluate SQ8 first
 
 SQ8 without refinement is a useful first compression candidate based on this benchmark\. If it meets the required recall, its memory and build\-time savings can make the configuration straightforward to adopt\. If recall falls short, compare a wider search with refinement before choosing a more complex encoding\.
 
@@ -325,13 +325,13 @@ If **0.9761 is sufficient**, SQ8 without refinement offered substantial savings 
 
 Also include **SQ8 without refinement at ef=512**, which reached 0.9844 in the earlier sweep\. The table's fixed ef=256 does not imply that refinement is necessary to exceed 0.98. Compare wider search and refinement at the required recall and concurrent latency\.
 
-## For tighter memory limits test the cost of more compression
+### For tighter memory limits test the cost of more compression
 
 SQ6, SQ4U, PQ, and PRQ provide further options for reducing the base representation\. Choose candidates according to the recall you can accept, then measure whether wider search or refinement is needed\. Include the retained refinement data in the memory and storage budget\.
 
 For a retrieval stage feeding a downstream reranker, test candidate coverage at the shortlist size actually passed to that model and assess the complete pipeline\. These Recall@100 results do not establish how well a much larger shortlist will work\. A downstream model can reorder retrieved candidates, but cannot recover a relevant item omitted by retrieval\.
 
-## For frequent rebuilds include construction cost in the decision
+### For frequent rebuilds include construction cost in the decision
 
 If index rebuilds are frequent, a configuration's offline cost can rule it out even when query performance is acceptable\. The tested PRQ build took about 89.6 minutes without refinement, compared with seconds to a few minutes for the SQ and PQ configurations in this environment\. Include SQ and alternative PQ budgets in the comparison and verify that any PRQ configuration fits the actual build window\.
 
@@ -339,7 +339,7 @@ Once you have a shortlist, tune ef, refine_type, and refine_k against the requir
 
 The HNSW variants give you different ways to balance vector precision and search cost\. Select the configuration whose complete retrieval path meets the workload's quality and resource requirements, using these results to choose the experiments worth running first\.
 
-## Experiment code and reference documentation
+### Experiment code and reference documentation
 
 - Experiment scripts and results: [milvus\-hnsw\-quantization\-cohere\-1m\-experiments](https://github.com/JackLCL/milvus-hnsw-quantization-cohere-1m-experiments)
 
