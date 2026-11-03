@@ -3,7 +3,7 @@ id: improving-vector-graph-rag-with-two-stage-jev-reranking.md
 title: >
  Improving Vector Graph RAG with Two-Stage Jev Reranking
 author: Cheney Chen
-date: 2026-11-3
+date: 2026-10-30
 cover: assets.zilliz.com/cms-cn/blog_cover_Improving_Vector_Graph_RAG_with_Two_Stage_Jev_Reranking_2c90b4eac5.jpg
 tag: Engineering
 recommend: false
@@ -11,7 +11,7 @@ publishToMedium: true
 tags: Milvus, vector database
 meta_keywords: Vector Graph RAG, Milvus, Jev reranking, multi-hop retrieval, Graph RAG
 meta_title: >
- mproving Vector Graph RAG with Two-Stage Jev Reranking
+ Improving Vector Graph RAG with Two-Stage Jev Reranking
 desc: >
  Vector Graph RAG combines multi-hop retrieval in Milvus with two-stage Jev reranking to improve evidence recall and the observed quality–latency tradeoff.
 origin: https://milvus.io/blog/improving-vector-graph-rag-with-two-stage-jev-reranking.md
