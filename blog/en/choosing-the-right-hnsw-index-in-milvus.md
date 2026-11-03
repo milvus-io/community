@@ -4,7 +4,7 @@ title: >
  Choosing the Right HNSW Index in Milvus
 author: Jack Li
 date: 2026-11-1
-cover: assets.zilliz.com/cms-cn/Improving_Vector_Graph_RAG_cover_image_bd215eb1e6.jpg
+cover: assets.zilliz.com/cms-cn/Choosing_the_Right_HNSW_Index_in_Milvus_cover_image_aa502ff741.png
 tag: Engineering
 recommend: false
 publishToMedium: true
