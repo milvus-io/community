@@ -1,7 +1,7 @@
 ---
 id: improving-vector-graph-rag-with-two-stage-jev-reranking.md
 title: >
- Improving Vector Graph RAG with Two\-Stage Jev Reranking
+ Improving Vector Graph RAG with Two-Stage Jev Reranking
 author: Cheney Chen
 date: 2026-11-3
 cover: assets.zilliz.com/cms-cn/blog_cover_Improving_Vector_Graph_RAG_with_Two_Stage_Jev_Reranking_2c90b4eac5.jpg
