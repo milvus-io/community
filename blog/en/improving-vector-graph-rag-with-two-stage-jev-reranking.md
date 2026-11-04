@@ -40,7 +40,7 @@ During indexing, we extract entities and relationships from the source text\. En
 
 This gives the project a practical architectural advantage: the vector database also holds the logical graph\. Multi\-hop evidence retrieval uses Milvus for both similarity search and connected\-data lookups, without adding a separate graph database\.
 
-![image1.jpeg](./improving-vector-graph-rag-with-two-stage-jev-reranking-8.jpeg)
+![](https://assets.zilliz.com/cms-cn/traditional_graph_RAG_vs_vector_graph_RAG_91b83dda62.jpeg)
 
 Vector Graph RAG stores its logical graph in Milvus and combines vector search with ID\-based expansion to retrieve connected evidence\.
 
@@ -56,7 +56,7 @@ The first four steps below describe the original retrieval path\. The Jev change
 
 The system extracts entities from the question and searches for matching entities\. In parallel, it uses the full question to search for relevant relationships\. Both searches use vector similarity\. In this example, the entities “type 2 diabetes” and “adverse effects,” together with a relationship such as “diabetes affects blood sugar,” become the starting points for expansion\.
 
-![image2.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-2.png)
+![](https://assets.zilliz.com/cms-cn/01_retrieve_seeds_96f1ed7ff2.png)
 
 Entity and relationship searches establish complementary starting points for graph expansion\.
 
@@ -64,7 +64,7 @@ Entity and relationship searches establish complementary starting points for gra
 
 ID lookups follow the connections recorded on the retrieved entities and relationships\. From the diabetes and adverse\-effect entities, expansion can reach metformin and the relationships connecting the drug to the condition and its side effects\. Another hop can bring in development history\. The unnamed drug is now in the retrieval scope, along with branches that may need filtering\.
 
-![image3.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-4.png)
+![](https://assets.zilliz.com/cms-cn/02_expand_graphs_9bbdbd0a40.png)
 
 Graph expansion discovers the unnamed drug and additional connected relationships through ID lookups\.
 
@@ -72,7 +72,7 @@ Graph expansion discovers the unnamed drug and additional connected relationship
 
 The original pipeline sends the question and expanded candidate relationships to an LLM in one selection pass\. It retains the treatment relationship R1 and adverse\-effect relationship R2, while filtering out branches such as drug development history and blood\-sugar effects\. Useful intermediate connections remain available to lead retrieval to the evidence\. The link identifying metformin is one such connection\.
 
-![image4.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-5.png)
+![](https://assets.zilliz.com/cms-cn/03_filter_relationspng_e9fad426d4.png)
 
 One relationship\-selection pass keeps the treatment and adverse\-effect connections needed by the question\.
 
@@ -82,7 +82,7 @@ In the two\-stage configuration, the first Jev stage takes over this same relati
 
 The system follows the selected relationships back to their source passages\. In this example, R1 points to P01 and P03, while R2 points to P02. Those IDs lead to the original text, which becomes evidence for answer generation\. Graph relationships guide retrieval all the way back to the passages that support them\.
 
-![image5.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-6.png)
+![](https://assets.zilliz.com/cms-cn/04_fetch_passages_9e4a03b780.png)
 
 Selected relationships lead back to original source text through the passage IDs stored in Milvus\.
 
@@ -107,7 +107,7 @@ In the example, graph retrieval returns P01, P02, and P03. Direct vector search 
 
 Jev now scores the four passages against the question\. P02 should rank highly because it directly addresses the question\. P01 establishes which drug the question refers to, and P04 adds relevant precautions\. P03 can move down the ranking even though it remains a legitimate source for the treatment relationship\.
 
-![image6.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-7.png)
+![](https://assets.zilliz.com/cms-cn/05_rerank_passages_e7d99e69a0.png)
 
 The second stage ranks the merged passages by their content\. The scores shown here are illustrative\.
 
@@ -135,7 +135,7 @@ Our first Jev experiment preserved the searches, graph expansion, and passage lo
 
 In that earlier MuSiQue and HotpotQA evaluation, Jev outperformed GPT\-4o\-mini but trailed GPT\-5\-mini, with a larger gap on MuSiQue’s harder multi\-hop questions\. The stronger LLM configuration remained an effective retrieval option; the next task was to improve the Jev configuration while retaining the graph\-based evidence discovery\.
 
-![image7.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-3.png)
+![](https://assets.zilliz.com/cms-cn/retrieval_performance_comparison_b36af6397d.png)
 
 The earlier MuSiQue and HotpotQA comparison shows the Vector Graph RAG configurations used in the first Jev experiment\.
 
@@ -163,7 +163,7 @@ The two\-stage Jev 1.13 configuration also exceeded both LLM rerankers in Recall
 
 Jev 1.14 raised average Recall@5 to **86.61%**\. It provides the highest\-recall option in this comparison, while Jev 1.13 retains the lower recorded model time\. Using the displayed timings, both two\-stage configurations lie on the quality–latency Pareto frontier\.
 
-![image8.png](./improving-vector-graph-rag-with-two-stage-jev-reranking-1.png)
+![](https://assets.zilliz.com/cms-cn/retrieval_quality_latency_trade_off_99bd1d4ebe.png)
 
 The two\-stage Jev configurations extend the observed recall/API\-time frontier\. Jev 1.14 and HippoRAG 2 include estimated timings\.
 
