@@ -35,7 +35,7 @@ HNSW organizes vectors into a hierarchical proximity graph\. Search starts in th
 
 These are starting points for evaluation\. Within each quantized index type, the encoding parameters and optional refinement settings can substantially change the result\.
 
-![image1.png](./choosing-the-right-hnsw-index-in-milvus-3.png)
+![](https://assets.zilliz.com/cms-cn/HNSW_index_variants_in_Milvus_d2a7ab87a8.PNG)
 
 Figure 1. Milvus HNSW index variants share the same graph\-search framework while using different vector representations\. Optional refinement applies to the quantized variants; their graph connections need not match FP32 HNSW\.
 
@@ -63,7 +63,7 @@ For our 768\-dimensional vectors, m=96 gives eight dimensions per subvector\. Wi
 
 Our PRQ configuration used m=96, nbits=8, and nrq=2, for two quantization stages and a 192\-byte code per vector\. Its comparison with the 96\-byte PQ configuration therefore measures the effect of both residual encoding and a larger code budget\. It is not a comparison at the same compression ratio\.
 
-![image2.png](./choosing-the-right-hnsw-index-in-milvus-5.png)
+![](https://assets.zilliz.com/cms-cn/Compression_Granularity_sq_vs_pq_vs_prq_e8c93fc8f7.PNG)
 
 Figure 2. SQ quantizes individual dimensions, PQ encodes groups of dimensions, and PRQ adds stages to encode residual error\. The theoretical code lengths exclude graph, codebook, metadata, and refinement overhead\.
 
@@ -97,7 +97,7 @@ For HNSW_SQ, the refinement representation must be more precise than the base sq
 
 refine_k sets the candidate count relative to TopK\. With TopK=100 and refine_k=4, the base search is asked for up to 400 candidates, which are reranked to return 100 results\. A larger candidate set gives refinement more opportunities to recover true neighbors ranked below the initial top 100. It also adds retrieval, distance\-calculation, and memory\-access costs\. A neighbor absent from the candidate set remains unavailable to the reranker\.
 
-![image3.png](./choosing-the-right-hnsw-index-in-milvus-4.png)
+![](https://assets.zilliz.com/cms-cn/quantized_hnsw_search_with_refinement_4818df763b.png)
 
 Figure 3. Conceptual workflow for quantized HNSW retrieval and higher\-precision refinement\. The base search requests TopK multiplied by refine_k candidates, reranks them using refine_type, and returns TopK results\.
 
@@ -223,7 +223,7 @@ FP32 HNSW and SQ8 without refinement continued to gain recall as ef increased\. 
 
 The tested PQ configuration improved only from 0.6068 to 0.6088, while PRQ improved from 0.7816 to 0.7896. For those unrefined configurations, a wider search over this range produced little additional recall\. That plateau is a reason to evaluate another encoding budget or refinement\. It does not isolate one cause for all the recall loss\.
 
-![image4.png](./choosing-the-right-hnsw-index-in-milvus-2.png)
+![](https://assets.zilliz.com/cms-cn/qps_vs_ef_55ebf7c35c.png)
 
 Figure 4. Peak QPS versus configured ef from the separate parameter sweep\. Refined configurations use FP32 and refine_k=4.
 
@@ -245,7 +245,7 @@ PQ showed the largest gain, rising from 0.8629 at refine_k=1 to 0.9848 at 8. Pas
 
 PRQ improved from 0.9704 to 0.9931, while peak QPS fell from 560.1 to 270.9 and serial P95 rose from 12.3 ms to 24.5 ms\. SQ8 recorded 0.9807 at both refine_k=1 and 2, then reached 0.9940 at 8; peak QPS fell from 768.6 to 443.0 across the sweep\.
 
-![image5.png](./choosing-the-right-hnsw-index-in-milvus-1.png)
+![](https://assets.zilliz.com/cms-cn/qps_vs_refine_k_43455a2244.png)
 
 Figure 5. Peak QPS versus refine_k at configured ef=256 from the separate parameter sweep\. All three configurations use FP32 refinement\.
 
