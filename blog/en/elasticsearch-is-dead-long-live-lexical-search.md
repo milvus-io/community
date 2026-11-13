@@ -4,7 +4,7 @@ title: Elasticsearch is Dead, Long Live Lexical Search
 author: James Luan
 date: 2024-12-17
 cover: assets.zilliz.com/Elasticsearch_is_Dead_Long_Live_Lexical_Search_0fa15cd6d7.png
-tag: Engineering
+tag: Insights
 tags: Milvus
 recommend: false
 canonicalUrl: https://milvus.io/blog/elasticsearch-is-dead-long-live-lexical-search.md

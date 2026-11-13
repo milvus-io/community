@@ -5,7 +5,7 @@ title: >
 author: Jack Li and Juan Xu
 date: 2026-3-26
 cover: assets.zilliz.com/cover_access_control_2_3e211dd48b.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

@@ -6,7 +6,7 @@ author: Min Yin
 date: 2025-08-11
 desc:  The integration of Refly and Milvus offers a pragmatic approach to automation—one that values reliability and ease of use over unnecessary complexity. 
 cover: assets.zilliz.com/AI_Agents_or_Workflows_Why_You_Should_Skip_Agents_for_80_of_Automation_Tasks_9f54386e8a.png
-tag: Tutorials
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search

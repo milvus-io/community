@@ -5,7 +5,7 @@ title: >
 author: Yiqing Lu
 date: 2025-12-25
 cover: assets.zilliz.com/milvus_upgrade_25x_to_26x_700x438_856ac6b75c.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

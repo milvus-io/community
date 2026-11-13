@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2026-3-6
 cover: assets.zilliz.com/download_11zon_1862455eb4.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: multimodal RAG, RAG, Milvus, Qwen3.5, vector database

@@ -5,7 +5,7 @@ title: >
 author: Jack Li
 date: 2026-3-13
 cover: assets.zilliz.com/blog_Gemini_Embedding2_4_62bc980b71.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: multi-vector search, gemini embedding 2, multimodal embeddings,  milvus, vector database

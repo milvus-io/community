@@ -5,7 +5,7 @@ author: Stefan Webb
 date: 2025-02-3
 desc: Learn how to build a semantic search app using multimodal AI that understands text-image relationships, beyond basic keyword matching.
 cover: assets.zilliz.com/Multimodal_Semantic_Search_with_Images_and_Text_1_3da9b83015.png 
-tag: Engineering
+tag: Tutorials
 tags: Milvus, Vector Database, Open Source, Semantic Search, Multimodal AI
 recommend: true
 canonicalUrl: https://milvus.io/blog/multimodal-semantic-search-with-images-and-text.md

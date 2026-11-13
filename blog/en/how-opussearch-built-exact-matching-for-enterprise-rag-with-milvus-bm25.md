@@ -4,7 +4,7 @@ title: How OpusSearch Built Exact Matching for Enterprise RAG with Milvus BM25
 author: Chronos Kou
 date: 2025-10-17
 cover: assets.zilliz.com/opus_cover_new_1505263938.png
-tag: Tutorials
+tag: Use Cases
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

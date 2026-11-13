@@ -5,7 +5,7 @@ author: Yi Gong
 date: 2025-06-05
 desc: Monitor Milvus vector database performance with OpenTelemetry tracing. Complete tutorial with Docker setup, Python client, Jaeger visualization, and debugging tips. 
 cover: assets.zilliz.com/How_to_Set_Up_Open_Telemetry_with_Milvus_for_End_to_End_Request_Tracing_f1842af82a.png
-tag: Tutorial
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM

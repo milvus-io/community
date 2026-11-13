@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-02-13
 cover: assets.zilliz.com/memsearch_openclaw_memory_11zon_b2a6b4cbb9.jpg
-tag: Engineering
+tag: Tutorials
 recommend: true
 publishToMedium: true
 tags: OpenClaw, AI agent memory, vector search, Milvus

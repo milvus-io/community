@@ -6,7 +6,7 @@ date: 2024-3-8
 desc: By embracing Apache Parquet, users can streamline their data import processes and enjoy substantial storage and computation cost savings.
 metaTitle: Milvus Supports Imports of Apache Parquet Files
 cover: assets.zilliz.com/Milvus_Supports_the_Imports_of_Parquet_Files_3288e755b8.png
-tag: Engineering
+tag: Tutorials
 tags: Data science, Database, Tech, Artificial Intelligence, Vector Management, Milvus
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-supports-apache-parquet-file-supports.md

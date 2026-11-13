@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-02-18
 cover: assets.zilliz.com/Debugging_RAG_in_3_D_f1b45f9a99_5f98979c06.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, RAG

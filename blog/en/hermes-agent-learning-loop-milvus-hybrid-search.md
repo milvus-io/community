@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-4-24
 cover: assets.zilliz.com/hermes_agent_learning_loop_milvus_hybrid_search_md_2_e0b44ee562.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2025-06-13
 cover: assets.zilliz.com/milvus_mcp_b1dab2a00c.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, mcp, AI Agents, LLM

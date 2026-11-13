@@ -5,7 +5,7 @@ title: >
 author: Bill Chen
 date: 2026-01-30
 cover: assets.zilliz.com/cover_Claudecode_storage_81155960ef.jpeg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Claude, Claude Code, Vector Database, Retreival Augmented Generation, Milvus

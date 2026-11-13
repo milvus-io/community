@@ -6,7 +6,7 @@ author: Min Yin
 date: 2025-07-09
 desc:  Compare Gemini CLI and Claude Code, two AI coding tools transforming terminal workflows. Which one should power your next project?
 cover: assets.zilliz.com/Claude_Code_vs_Gemini_CLI_e3a04a49cf.jpeg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, Gemini, Claude

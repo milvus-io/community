@@ -5,7 +5,7 @@ title: >
 author: Cheney Chen
 date: 2026-10-30
 cover: assets.zilliz.com/cms-cn/blog_cover_Improving_Vector_Graph_RAG_with_Two_Stage_Jev_Reranking_2c90b4eac5.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

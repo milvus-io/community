@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-10-09
 cover: assets.zilliz.com/Jev_vs_LL_Ms_in_Agentic_Search_51f49f1c28.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

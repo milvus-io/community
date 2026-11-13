@@ -6,7 +6,7 @@ author: Min Tian
 date: 2025-05-14
 desc: Uncover the performance gap in vector databases with VDBBench. Our tool tests under real production scenarios, ensuring your AI applications run smoothly without unexpected downtime.
 cover: assets.zilliz.com/Benchmarks_Lie_Vector_D_Bs_Deserve_a_Real_Test_9280c66efc.png
-tag: Engineering
+tag: Insights
 recommend: true
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM

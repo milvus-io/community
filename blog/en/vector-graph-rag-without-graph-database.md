@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-4-17
 cover: assets.zilliz.com/vector_graph_rag_without_graph_database_md_1_e9c1adda4a.jpeg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

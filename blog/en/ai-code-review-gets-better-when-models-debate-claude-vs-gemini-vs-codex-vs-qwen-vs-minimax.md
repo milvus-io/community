@@ -5,7 +5,7 @@ title: >
 author: Li Liu
 date: 2026-02-26
 cover: assets.zilliz.com/Code_Review_Benchmark_Cover_Fixed_Icons_2048x1143_11zon_1_04796f1364.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: AI Code Review, Qwen, Claude, Gemini, Codex

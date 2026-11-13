@@ -5,7 +5,7 @@ author: Lumina Wang
 date: 2025-04-01
 desc: Connecting Your Private Data with GPT-4o Using Milvus for More Curated Image Outputs 
 cover: assets.zilliz.com/GPT_4opagephoto_5e934b89e5.png
-tag: Engineering
+tag: Tutorials
 tags: GPT-4o, Database, Milvus, Artificial Intelligence, Image Generation
 canonicalUrl: https://milvus.io/blog/generate-more-creative-and-curated-ghibli-style-images-with-gpt-4o-and-milvus.md
 ---
