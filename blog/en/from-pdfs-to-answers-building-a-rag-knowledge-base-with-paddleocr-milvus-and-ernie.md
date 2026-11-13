@@ -5,7 +5,7 @@ title: >
 author: LiaoYF and Jing Zhang
 date: 2026-3-17
 cover: assets.zilliz.com/cover_747a1385ed.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

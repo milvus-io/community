@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-03-02
 cover: assets.zilliz.com/cover_deepagents_b45edd5f94.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

@@ -6,7 +6,7 @@ author: Jeremy Zhu
 date: 2025-05-23
 desc:  The most popular embedding APIs aren't the fastest. Geography matters more than model architecture. And sometimes a $20/month CPU beats a $200/month API call.
 cover: assets.zilliz.com/We_Benchmarked_20_Embedding_AP_Is_with_Milvus_7_Insights_That_Will_Surprise_You_12268622f0.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search

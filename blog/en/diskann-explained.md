@@ -5,7 +5,7 @@ author: Stefan Webb
 date: 2025-05-20
 desc: Learn how DiskANN delivers billion-scale vector searches using SSDs, balancing low memory usage, high accuracy, and scalable performance. 
 cover: assets.zilliz.com/Disk_ANN_Explained_35db4b3ef1.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search

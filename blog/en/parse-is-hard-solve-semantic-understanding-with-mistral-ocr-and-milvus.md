@@ -6,7 +6,7 @@ author: Stephen Batifol
 date: 2025-04-03
 desc: Tackling the challenge head-on using the powerful combo of Mistral OCR and Milvus Vector DB, turning your doc parsing nightmares into a calm dream with searchable, semantically meaningful vector embeddings.
 cover: assets.zilliz.com/Parsing_is_Hard_Solving_Semantic_Understanding_with_Mistral_OCR_and_Milvus_316ac013b6.png
-tag: Engineering
+tag: Tutorials
 canonicalUrl: https://milvus.io/blog/parse-is-hard-solve-semantic-understanding-with-mistral-ocr-and-milvus.md
 ---
 

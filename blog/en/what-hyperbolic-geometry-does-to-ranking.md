@@ -5,7 +5,7 @@ title: >
 author: Simon Hearne
 date: 2026-10-13
 cover: assets.zilliz.com/cover_what_hyperbolic_geometry_does_to_ranking_63d328ae81.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: false
 tags: Milvus, vector database

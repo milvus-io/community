@@ -5,7 +5,7 @@ author: Jack Li
 date: 2025-04-23
 desc: Simplify your Milvus configuration with our focused guide. Discover key parameters to adjust for enhanced performance in your vector database applications. 
 cover: assets.zilliz.com/The_Developer_s_Guide_to_Milvus_Configuration_1519241756.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search

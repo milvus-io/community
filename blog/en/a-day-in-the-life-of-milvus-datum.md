@@ -5,7 +5,7 @@ author: Stefan Webb, Anthony Tu
 date: 2025-03-17
 desc: So, let’s take a stroll in a day in the life of Dave, the Milvus datum. 
 cover: assets.zilliz.com/a_day_in_the_life_of_a_milvus_datum_ca279f7f59.png
-tag: Engineering
+tag: Tutorials
 tags: Deep Research, open source AI, Milvus, LangChain, DeepSeek R1
 recommend: true
 canonicalUrl: https://milvus.io/blog/a-day-in-the-life-of-milvus-datum.md 

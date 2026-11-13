@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-5-7
 cover: assets.zilliz.com/Chat_GPT_Image_Jun_22_2026_07_49_53_PM_11zon_d1a8de60bd.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

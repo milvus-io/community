@@ -5,7 +5,7 @@ title: >
 author: Cal Huang
 date: 2026-3-26
 cover: assets.zilliz.com/download_2867bc5064.jpg
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

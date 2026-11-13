@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-4-3
 cover: assets.zilliz.com/claude_memory_845a789ee8.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

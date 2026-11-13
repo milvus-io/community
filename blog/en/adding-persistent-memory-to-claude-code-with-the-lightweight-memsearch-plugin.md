@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-02-13
 cover: assets.zilliz.com/blog_cover_memsearch_ccplugin_43b5ecfd6f.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: OpenClaw, vector search, Milvus, Claude Code

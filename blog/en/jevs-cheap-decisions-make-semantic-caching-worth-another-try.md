@@ -5,7 +5,7 @@ title: >
 author: James Luan, CTO of Zilliz
 date: 2026-10-12
 cover: assets.zilliz.com/jevs_cheap_decisions_semantic_caching_cover_08494007d4.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

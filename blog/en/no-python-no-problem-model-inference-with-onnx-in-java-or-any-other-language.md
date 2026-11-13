@@ -6,7 +6,7 @@ author: Stefan Webb
 date: 2025-05-30
 desc: ONNX (Open Neural Network Exchange) is a platform-agnostic ecosystem of tools for performing neural network model inference. 
 cover: assets.zilliz.com/No_Python_No_Problem_7fe97dad46.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM

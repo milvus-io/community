@@ -5,7 +5,7 @@ title: >
 author: Simon Hearne
 date: 2026-10-14
 cover: assets.zilliz.com/cover_your_vector_database_already_speaks_hyperbolic_07e1bd06ba.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: false
 tags: Milvus, vector database

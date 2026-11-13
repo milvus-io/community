@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-4-1
 cover: assets.zilliz.com/mcp_dead_a23ff23c27.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2025-11-19
 cover: assets.zilliz.com/skill_mcp_cover_162fd27dc1.png
-tag: Tutorials
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

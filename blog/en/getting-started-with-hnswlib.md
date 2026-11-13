@@ -6,7 +6,7 @@ date: 2024-11-25
 desc: HNSWlib, a library implementing HNSW, is highly efficient and scalable, performing well even with millions of points. Learn how to implement it in minutes. 
 metaTitle: Getting Started with HNSWlib
 cover: assets.zilliz.com/Getting_Started_with_HNS_Wlib_30922def3e.png 
-tag: Engineering
+tag: Tutorials
 tags: HNSWlib, HNSW Hierarchical Navigable Small Worlds, Vector Search, Approximate Nearest Neighbor (ANN) search, ANNS
 recommend: true
 canonicalUrl: https://milvus.io/blog/getting-started-with-hnswlib.md

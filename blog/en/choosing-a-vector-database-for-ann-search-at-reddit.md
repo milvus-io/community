@@ -5,7 +5,7 @@ title: >
 author: Chris Fournie
 date: 2025-11-28
 cover: assets.zilliz.com/Chat_GPT_Image_Nov_29_2025_12_03_05_AM_min_1_05250269a8.png
-tag: Engineering
+tag: Use Cases
 recommend: true
 publishToMedium: true
 tags: Milvus, vector database, reddit

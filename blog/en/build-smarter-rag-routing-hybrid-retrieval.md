@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-3-25
 cover: assets.zilliz.com/cover_beyond_naive_rag_7db83a08f9.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

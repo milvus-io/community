@@ -5,7 +5,7 @@ title: >
 author: Jack Li
 date: 2026-01-21
 cover: assets.zilliz.com/scann_cover_9a9787ee8a.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database
