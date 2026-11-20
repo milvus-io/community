@@ -32,6 +32,8 @@ Our multimodal search application is of the type _retrieve-and-rerank._ If you a
 
 Our search application must have something to search. In our case, we use a small subset of the “Amazon Reviews 2023” dataset, which contains both text and images from Amazon customer reviews across all types of products. You can imagine a semantic search like that that we are building as being a useful addition to an ecommerce website. We use 900 images and discard the text, although observe that this notebook can scale to production-size with the right database and inference deployments.
 
+For other visual-search applications, [DepositPhotos image datasets](https://depositphotos.com/ai-training-data/image-datasets.html) are one potential source of images, depending on the content and usage rights required.
+
 The first piece of “magic” in our pipeline is the choice of embedding model. We use a recently developed multimodal model called [Visualized BGE](https://huggingface.co/BAAI/bge-visualized) that is able to embed text and images jointly, or either separately, into the same space with a single model where points that are close are semantically similar. Other such models have been developed recently, for instance [MagicLens](https://github.com/google-deepmind/magiclens).
 
 ![](https://assets.zilliz.com/indexing_1937241be5.jpg)
