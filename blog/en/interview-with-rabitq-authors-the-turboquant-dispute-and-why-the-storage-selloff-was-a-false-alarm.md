@@ -5,7 +5,7 @@ title: >
 author: Cheng Long, Jianyang Gao, Li Liu
 date: 2026-4-17
 cover: assets.zilliz.com/0415_updated_rabitq_interviewdocx_md_1_d5709718fc.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

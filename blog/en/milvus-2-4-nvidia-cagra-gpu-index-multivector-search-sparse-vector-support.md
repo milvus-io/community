@@ -6,7 +6,7 @@ date: 2024-3-20
 desc: We are happy to announce the launch of Milvus 2.4, a major advancement in enhancing search capabilities for large-scale datasets. 
 metaTitle: Milvus 2.4 Supports Multi-vector Search, Sparse Vector, CAGRA, and More!
 cover: assets.zilliz.com/What_is_new_in_Milvus_2_4_1_c580220be3.png
-tag: Engineering
+tag: Tutorials
 tags: Data science, Database, Tech, Artificial Intelligence, Vector Management, Milvus
 recommend: true
 canonicalUrl: https://milvus.io/blog/milvus-2-4-nvidia-cagra-gpu-index-multivector-search-sparse-vector-support.md 

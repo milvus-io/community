@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-4-9
 cover: assets.zilliz.com/05842e3a_b21b_41c9_9d29_13b8d7afa211_428ab449a7.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

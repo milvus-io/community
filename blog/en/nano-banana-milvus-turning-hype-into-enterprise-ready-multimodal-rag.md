@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2025-09-04
 cover: assets.zilliz.com/me_with_a_dress_1_1_084defa237.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, mcp, AI Agents, nano banana

@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-07-02
 cover: assets.zilliz.com/open_source_claude_tag_mfs_md_1_3b8acc2927.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: AI agents, agent memory, MFS, vector database, Milvus

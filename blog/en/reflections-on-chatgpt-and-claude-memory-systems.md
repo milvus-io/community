@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-01-09
 cover: assets.zilliz.com/Chat_GPT_VS_Claude_cover_555fdac36d.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

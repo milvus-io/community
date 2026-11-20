@@ -6,7 +6,7 @@ author: Min Yin
 date: 2025-09-09
 desc: Compare LangChain and LangGraph for LLM apps. See how they differ in architecture, state management, and use cases — plus when to use each.
 cover: assets.zilliz.com/Chat_GPT_Image_Sep_9_2025_09_42_12_PM_1_49154d15cc.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, langchain, langgraph

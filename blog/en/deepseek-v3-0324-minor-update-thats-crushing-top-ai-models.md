@@ -6,7 +6,7 @@ author: Lumina Wang
 date: 2025-03-25
 desc: DeepSeek v3-0324 is trained with larger parameters, has a longer context window and enhanced Reasoning, Coding, and Math capabilities. 
 cover: assets.zilliz.com/Deep_Seek_V3_0324_The_Minor_Update_That_s_Crushing_Top_AI_Models_391585994c.png
-tag: Engineering
+tag: Insights
 tags: DeepSeek V3-0324, DeepSeek V3, Milvus, RAG
 recommend: true
 canonicalUrl: https://milvus.io/blog/deepseek-v3-0324-minor-update-thats-crushing-top-ai-models.md

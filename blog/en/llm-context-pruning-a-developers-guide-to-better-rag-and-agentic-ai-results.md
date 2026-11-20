@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-01-15
 cover: assets.zilliz.com/context_pruning_cover_d1b034ba67.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

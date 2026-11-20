@@ -5,7 +5,7 @@ title: >
 author: Buqian Zheng
 date: 2025-12-15
 cover: assets.zilliz.com/tiered_storage_cover_38237a3bda.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

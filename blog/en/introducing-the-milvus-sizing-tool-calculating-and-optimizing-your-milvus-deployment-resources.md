@@ -6,7 +6,7 @@ author: Ken Zhang, Fendy Feng
 date: 2025-04-11
 desc: Maximize your Milvus performance with our user-friendly Sizing Tool! Learn how to configure your deployment for optimal resource use and cost savings.
 cover: assets.zilliz.com/Introducing_Milvus_Sizing_Tool_c0c98343a2.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 canonicalUrl: https://zilliz.com/blog/demystify-milvus-sizing-tool
 ---

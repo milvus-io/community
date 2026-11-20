@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2025-08-08
 cover: assets.zilliz.com/gpt_5_review_7df71f395a.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, OpenAI, gpt-5

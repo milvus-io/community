@@ -5,7 +5,7 @@ title: >
 author: Jael Gu
 date: 2025-10-02
 cover: assets.zilliz.com/Chat_GPT_Image_Oct_2_2025_10_52_33_AM_min_fdb227d8c6.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

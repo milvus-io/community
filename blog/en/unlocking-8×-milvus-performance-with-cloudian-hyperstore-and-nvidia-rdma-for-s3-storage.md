@@ -5,7 +5,7 @@ title: >
 author: Jon Toor
 date: 2025-11-17
 cover: assets.zilliz.com/cloudian_931ffc8646.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

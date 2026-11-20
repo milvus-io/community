@@ -5,7 +5,7 @@ title: >
 author: Simon Hearne
 date: 2026-10-13
 cover: assets.zilliz.com/cover_hyperbolic_search_on_zilliz_cloud_8fe27353f2.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: false
 tags: Milvus, vector database

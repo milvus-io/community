@@ -6,7 +6,7 @@ author: Alexandr Guzhva, Li Liu, Jiang Chen
 date: 2025-05-13
 desc: Discover how Milvus leverages RaBitQ to enhance vector search efficiency, reducing memory costs while maintaining accuracy. Learn to optimize your AI solutions today!
 cover: assets.zilliz.com/Bring_Vector_Compression_to_the_Extreme_How_Milvus_Serves_3_More_Queries_with_Ra_Bit_Q_12f5b4d932.jpg
-tag: Engineering
+tag: Tutorials
 recommend: true
 publishToMedium: true
 tags: Milvus, vector database, vector search, AI Agents, LLM

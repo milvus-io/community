@@ -6,7 +6,7 @@ author: Min Yin
 date: 2026-1-27
 desc: An in-depth analysis of Claude Cowork’s long-term memory, writable agent memory, RAG trade-offs, and why vector databases still matter.
 cover: assets.zilliz.com/RAG_vs_Long_Running_Agents_fc67810cf8.png 
-tag: Engineering
+tag: Insights
 recommend: false 
 publishToMedium: true
 tags: Milvus, vector database, claude, RAG

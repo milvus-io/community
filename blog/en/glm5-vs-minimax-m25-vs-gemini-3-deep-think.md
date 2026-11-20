@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang, Julie Xia
 date: 2026-02-14
 cover: assets.zilliz.com/gemini_vs_minimax_vs_glm5_cover_1bc6d20c39.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Gemini, GLM, Minimax, ChatGPT

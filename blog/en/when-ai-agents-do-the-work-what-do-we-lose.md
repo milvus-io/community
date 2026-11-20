@@ -5,7 +5,7 @@ title: >
 author: Bill Chen
 date: 2026-06-18
 cover: assets.zilliz.com/AI_Agents_Work_blog_cover_1536x1024_565f1739a0.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

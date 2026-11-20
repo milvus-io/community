@@ -5,7 +5,7 @@ title: >
 author: Denise Ochoa-Mendoza
 date: 2025-11-10
 cover: assets.zilliz.com/hpe_cover_ead19ff709.png
-tag: Engineering
+tag: Use Cases
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

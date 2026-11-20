@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-2-28
 cover: assets.zilliz.com/Blog_Open_Claw_Burning_Through_Tokens_1_39b7ee4fdf.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: OpenClaw, Token Optimization, Vector Search, AI Agents, Milvus

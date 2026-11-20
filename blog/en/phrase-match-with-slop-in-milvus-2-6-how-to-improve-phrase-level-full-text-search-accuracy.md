@@ -5,7 +5,7 @@ title: >
 author: Alex Zhang
 date: 2025-12-29
 cover: assets.zilliz.com/Phrase_Match_Cover_93a84b0587.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

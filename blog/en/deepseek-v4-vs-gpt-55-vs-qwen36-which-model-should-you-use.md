@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2026-4-28
 cover: assets.zilliz.com/blog_cover_narrow_1152x720_87d33982dd.jpg
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

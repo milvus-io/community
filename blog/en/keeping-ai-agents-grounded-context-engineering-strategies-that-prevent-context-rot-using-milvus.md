@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2025-12-23
 cover: assets.zilliz.com/context_rot_cover_804387e7c9.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

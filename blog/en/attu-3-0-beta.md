@@ -5,7 +5,7 @@ title: >
 author: Ray Jiang
 date: 2026-06-11
 cover: assets.zilliz.com/Attu_3_0_New_cover_1af4c44467.png
-tag: Engineering
+tag: Announcements
 recommend: false
 publishToMedium: true
 tags: Attu, Milvus, vector database, AI agent, database management

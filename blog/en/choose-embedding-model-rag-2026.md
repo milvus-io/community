@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-3-26
 cover: assets.zilliz.com/embedding_model_cover_ab72ccd651.jpg
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, Gemini Embedding 2, Embedding Model, RAG

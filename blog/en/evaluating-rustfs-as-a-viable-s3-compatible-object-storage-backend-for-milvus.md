@@ -5,7 +5,7 @@ title: >
 author: Min Yin
 date: 2026-01-14
 cover: assets.zilliz.com/minio_cover_new_bc94d37abe.png
-tag: Tutorials
+tag: Engineering
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

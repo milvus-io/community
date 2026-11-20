@@ -5,7 +5,7 @@ title: >
 author: Lumina Wang
 date: 2025-07-25
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_06_40_46_PM_a262e721ae.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: vector database, mcp, AI Agents, LLM, Kimi

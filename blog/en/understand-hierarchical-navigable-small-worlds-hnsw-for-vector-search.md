@@ -6,7 +6,7 @@ author: Stefan Webb
 date: 2025-05-21
 desc: HNSW (Hierarchical Navigable Small World) is an efficient algorithm for approximate nearest neighbor search using a layered graph structure.
 cover: assets.zilliz.com/Chat_GPT_Image_May_26_2025_11_56_17_AM_1a84d31090.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, vector search

@@ -5,7 +5,7 @@ title: >
 author: Rachel Liu
 date: 2025-12-24
 cover: assets.zilliz.com/maxmin_cover_8be0b87409.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

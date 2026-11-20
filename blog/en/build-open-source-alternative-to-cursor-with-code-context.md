@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2025-07-24
 cover: assets.zilliz.com/Chat_GPT_Image_Jul_26_2025_08_26_35_PM_b728fb730c.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: vector database, mcp, LLM, claude, gemini

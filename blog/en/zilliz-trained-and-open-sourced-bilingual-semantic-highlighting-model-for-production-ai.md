@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang
 date: 2026-01-06
 cover: assets.zilliz.com/semantic_highlight_cover_f35a98fc58.png
-tag: Engineering
+tag: Announcements
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

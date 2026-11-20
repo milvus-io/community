@@ -5,7 +5,7 @@ title: >
 author: James Luan
 date: 2025-05-30
 cover: assets.zilliz.com/why_ai_databases_don_t_need_SQL_2d12f615df.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database, SQL, AI Agents, LLM

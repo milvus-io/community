@@ -5,7 +5,7 @@ title: >
 author: Cheney Zhang, Jiang Chen
 date: 2026-1-19
 cover: assets.zilliz.com/semantic_highlight2_cover_1406d8b11e.png
-tag: Engineering
+tag: Tutorials
 recommend: false
 publishToMedium: true
 tags: Milvus, vector database

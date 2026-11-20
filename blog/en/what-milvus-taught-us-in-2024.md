@@ -5,7 +5,7 @@ author: Stefan Webb
 date: 2025-02-18
 desc: Check out the top asked questions about Milvus in our Discord. 
 cover: assets.zilliz.com/What_Milvus_Users_Taught_Us_in_2024_db63863725.png
-tag: Engineering
+tag: Announcements
 tags: 
 recommend: true
 canonicalUrl: https://milvus.io/blog/what-milvus-taught-us-in-2024.md

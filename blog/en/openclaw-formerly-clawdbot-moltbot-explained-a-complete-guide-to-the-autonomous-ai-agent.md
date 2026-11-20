@@ -5,7 +5,7 @@ title: >
 author: Julie Xia, Fendy Feng
 date: 2026-02-10
 cover: assets.zilliz.com/Open_Claw_Autonomous_Agent_Cover_11zon_1_8124f1b98b.png
-tag: Engineering
+tag: Insights
 recommend: false
 publishToMedium: true
 tags: OpenClaw, Clawdbot, Moltbot, Moltbook, Tutorial
