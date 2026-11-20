@@ -1,17 +1,16 @@
-
 {
   "label": "Our Journey to 35K+ GitHub Stars: The Real Story of Building Milvus from Scratch",
   "link": "https://milvus.io/blog/journey-to-35k-github-stars-story-of-building-milvus-from-scratch.md",
   "headlines": [
     {
+      "tag": "Event",
+      "label": "Meet Zilliz at AWS re:Invent 2026 | Nov 30–Dec 4 | Book a meeting →",
+      "link": "https://zilliz.com/event/aws-reinvent-2026-book-meeting"
+    },
+    {
       "tag": "Webinar",
       "label": "Search Your Lance Table Faster with Milvus External Collection | Live on December 16",
       "link": "https://zilliz.com/event/milvus-external-collection-lance-tables-webinar"
-    },
-    {
-      "tag": "Blog",
-      "label": "Announcing Milvus 3.0: Lake-Native Vector Search, S3-based storage, and a More Powerful Retrieval Engine",
-      "link": "https://milvus.io/blog/announcing-milvus-3-lake-native-vector-search-and-a-more-powerful-retrieval-engine.md"
     }
   ]
 }
