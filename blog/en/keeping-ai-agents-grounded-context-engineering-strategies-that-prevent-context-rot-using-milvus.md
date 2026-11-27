@@ -24,6 +24,8 @@ This is where **context engineering** comes in. Instead of handing the model eve
 
 Retrieval plays a central role here, especially for long-running agents. Vector databases like [**Milvus**](https://milvus.io/) provide the foundation for efficiently pulling relevant knowledge back into context, letting the system stay grounded even as tasks grow in depth and complexity.
 
+For a broader guide to context engineering, including how it differs from prompt engineering, a worked token budget, and how to build the retrieval step on Milvus, see [Context Engineering for AI Agents: A Practical Guide](https://milvus.io/blog/context-engineering-guide.md).
+
 In this blog, we’ll look at how context rot happens, the strategies teams use to manage it, and the architectural patterns — from retrieval to prompt design — that keep AI agents sharp across long, multi-step workflows.
 
 
