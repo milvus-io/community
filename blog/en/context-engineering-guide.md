@@ -7,7 +7,7 @@ date: 2026-11-27
 cover: ''
 tag: Tutorials
 recommend: false
-publishToMedium: true
+publishToMedium: false
 tags: Milvus, vector database
 meta_keywords: context engineering, context engineering vs prompt engineering, context window management, agent context, tool retrieval, token budget
 meta_title: >
@@ -217,6 +217,7 @@ For each step, the assembler:
 | `access_level` | VARCHAR | Who may see it; filtered on every query |
 | `text` | VARCHAR, analyzer and match enabled | The chunk; input to BM25 and keyword match |
 | `dense`, `sparse` | vectors | Embedding and BM25 for hybrid search |
+| `identifiers` | ARRAY of VARCHAR | Error codes, ticket numbers and symbol names extracted at ingestion, for exact lookups |
 | `token_count` | INT64 | Tokens the chunk costs, counted at ingestion |
 | `updated_at` | INT64 | Freshness, for tie-breaks and stale-content checks |
 
@@ -231,7 +232,7 @@ Two fields do most of the work. **`token_count` and `token_cost`** let the assem
 ### Read path: what happens on every step
 
 1. **Tools.** Run a [hybrid search](https://milvus.io/docs/multi-vector-search.md) (dense plus BM25, fused with RRF) on `tool_registry`, filtered by `enabled`, `risk` and role. Walk the results in order and add tools while the sum of `token_cost` stays under the tool budget (4,000 tokens in the example above). Always include one small `search_tools` meta-tool, so the agent can ask for more tools when the top results miss.
-2. **Knowledge.** Run a hybrid search on `knowledge_chunks`, filtered by product, version and access level. When the request contains an exact identifier (an error code, a function name, a ticket number), also run a [keyword match](https://milvus.io/docs/keyword-match.md) on `text`, so the chunk that contains it is never lost to a paraphrase that scores higher. Rerank, then add chunks while the sum of `token_count` stays under the knowledge budget.
+2. **Knowledge.** Run a hybrid search on `knowledge_chunks`, filtered by product, version and access level. When the request contains an exact identifier (an error code, a function name, a ticket number), also run a literal lookup, so the chunk that contains it is never lost to a paraphrase that scores higher. A plain [keyword match](https://milvus.io/docs/keyword-match.md) is not enough on its own: the analyzer can split `PAY-1042` into `pay` and `1042` and match either token. Extract identifiers into an `identifiers` [array field](https://milvus.io/docs/array_data_type.md) at ingestion and filter on it, or use [phrase match](https://milvus.io/docs/phrase-match.md) or a `LIKE` pattern on the NGRAM-indexed text. Rerank, then add chunks while the sum of `token_count` stays under the knowledge budget.
 3. **Memory.** Search the memory wiki for the relevant topic, then grep the event log inside the events that page cites, within the memory budget.
 4. **Assemble.** Put instructions and tool definitions first, since they change least, then knowledge, memory, conversation state and the scratchpad. Log the token count of each component with the trace.
 5. **Compact if needed.** If the total passes the compaction trigger (75% of the window in the example), clear consumed tool results first, then summarize older turns.
